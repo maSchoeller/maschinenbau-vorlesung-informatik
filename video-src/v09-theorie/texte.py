@@ -1,14 +1,14 @@
 """Sprechertext V09 Theorie (Quelltext mit Markup)."""
 SRC = [
  ["Du hast dein Handy am Fahrradlenker befestigt und eine Bremsung aufgezeichnet.",
-  "Die App phyphox exportiert die Messung als Datei: 400 Zeilen, 50 Messungen pro Sekunde.",
+  "Die App [[phyphox|Fyfox]] exportiert die Messung als Datei: 400 Zeilen, 50 Messungen pro Sekunde.",
   "Gesucht ist die Spitze der Verzögerung. Dafür muss dein Programm die Datei lesen können, und es muss auch mit einer kaputten Zeile klarkommen."],
  ["Eine Datei ist ein Inhalt, der unter einem Namen auf einem Datenträger liegt. Sie steckt in einem Ordner, und der Pfad beschreibt den Weg dorthin.",
   "Ein absoluter Pfad beginnt ganz oben im Laufwerk. Ein relativer Pfad beginnt im Ordner, in dem dein Programm steht.",
-  "Die häufigste Fehlermeldung ist `FileNotFoundError`: Die Datei gibt es unter diesem Namen nicht. Meist ist es ein Tippfehler oder der falsche Ordner."],
+  "Die häufigste Fehlermeldung ist [[`FileNotFoundError`|File Not Found Error]]: Die Datei gibt es unter diesem Namen nicht. Meist ist es ein Tippfehler oder der falsche Ordner."],
  ["Eine Datei besteht nur aus Bytes. Wie daraus Buchstaben werden, legt die Textkodierung fest.",
   "Heute gilt [[UTF-8|U T F acht]]: Umlaute brauchen dort zwei Bytes.",
-  "Liest dein Programm mit der falschen Tabelle, wird aus einem ä ein [[„Ã¤“|ein A mit Tilde, gefolgt von einem Währungszeichen]]. Darum schreibst du immer `encoding=\"utf-8\"`."],
+  "Liest dein Programm mit der falschen Tabelle, wird aus einem ä ein [[„Ã¤“|A mit Tilde, gefolgt von einem Währungszeichen]]. Darum schreibst du immer [[`encoding=\"utf-8\"`|encoding gleich U T F acht in Anführungszeichen]]."],
  ["Tabellen speichert man als [[CSV|C S V]]-Datei: eine Zeile je Messung, die Spalten durch ein Trennzeichen getrennt, oben die Kopfzeile.",
   "Dein deutsches Excel nimmt das Semikolon als Trennzeichen und das Komma als Dezimalzeichen. Andere Programme nehmen das Komma als Trenner und den Punkt als Dezimalpunkt.",
   "Beides siehst du erst in der Datei. Python versteht als Dezimalzeichen nur den Punkt."],
@@ -18,7 +18,7 @@ SRC = [
   "Bis zum letzten Schritt ist alles nur Text."],
  ["Was passiert bei einer kaputten Zeile? Python löst eine Ausnahme aus, und das Programm bricht ab.",
   "Den Traceback liest du von unten nach oben: Die letzte Zeile nennt die Fehlerart.",
-  "Mit `try` und `except` fängst du eine Fehlerart ab: Bei einer kaputten Zeile springt Python in den `except`-Block, du zählst sie mit und machst weiter.",
+  "Mit `try` und `except` fängst du eine Fehlerart ab: Bei einer kaputten Zeile springt Python in den Block mit `except`, du zählst sie mit und machst weiter.",
   "Fang aber nur die Fehlerart, die du erwartest, und verschweige nie, was du übersprungen hast."],
 ]
 

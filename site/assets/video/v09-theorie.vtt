@@ -1,0 +1,81 @@
+WEBVTT
+
+1
+00:00:00.400 --> 00:00:04.537
+Du hast dein Handy am Fahrradlenker befestigt und eine Bremsung aufgezeichnet.
+
+2
+00:00:04.654 --> 00:00:11.172
+Die App phyphox exportiert die Messung als Datei: 400 Zeilen, 50 Messungen pro Sekunde.
+
+3
+00:00:11.321 --> 00:00:19.570
+Gesucht ist die Spitze der Verzögerung. Dafür muss dein Programm die Datei lesen können, und es muss auch mit einer kaputten Zeile klarkommen.
+
+4
+00:00:20.470 --> 00:00:29.076
+Eine Datei ist ein Inhalt, der unter einem Namen auf einem Datenträger liegt. Sie steckt in einem Ordner, und der Pfad beschreibt den Weg dorthin.
+
+5
+00:00:29.485 --> 00:00:37.275
+Ein absoluter Pfad beginnt ganz oben im Laufwerk. Ein relativer Pfad beginnt im Ordner, in dem dein Programm steht.
+
+6
+00:00:38.254 --> 00:00:48.040
+Die häufigste Fehlermeldung ist `FileNotFoundError`: Die Datei gibt es unter diesem Namen nicht. Meist ist es ein Tippfehler oder der falsche Ordner.
+
+7
+00:00:48.940 --> 00:00:54.865
+Eine Datei besteht nur aus Bytes. Wie daraus Buchstaben werden, legt die Textkodierung fest.
+
+8
+00:00:55.043 --> 00:01:00.084
+Heute gilt UTF-8: Umlaute brauchen dort zwei Bytes.
+
+9
+00:01:00.379 --> 00:01:13.470
+Liest dein Programm mit der falschen Tabelle, wird aus einem ä ein „Ã¤“. Darum schreibst du immer `encoding="utf-8"`.
+
+10
+00:01:14.370 --> 00:01:22.900
+Tabellen speichert man als CSV-Datei: eine Zeile je Messung, die Spalten durch ein Trennzeichen getrennt, oben die Kopfzeile.
+
+11
+00:01:23.860 --> 00:01:34.400
+Dein deutsches Excel nimmt das Semikolon als Trennzeichen und das Komma als Dezimalzeichen. Andere Programme nehmen das Komma als Trenner und den Punkt als Dezimalpunkt.
+
+12
+00:01:34.850 --> 00:01:41.020
+Beides siehst du erst in der Datei. Python versteht als Dezimalzeichen nur den Punkt.
+
+13
+00:01:41.960 --> 00:01:44.550
+So wird aus einer Zeile eine Zahl.
+
+14
+00:01:45.601 --> 00:01:53.522
+strip schneidet den Zeilenumbruch ab. split zerschneidet den Text am Trennzeichen, das Ergebnis ist eine Liste aus Texten.
+
+15
+00:01:54.323 --> 00:01:59.786
+replace macht aus dem Komma einen Punkt, und float macht daraus endlich eine Zahl.
+
+16
+00:02:00.788 --> 00:02:03.610
+Bis zum letzten Schritt ist alles nur Text.
+
+17
+00:02:04.510 --> 00:02:10.408
+Was passiert bei einer kaputten Zeile? Python löst eine Ausnahme aus, und das Programm bricht ab.
+
+18
+00:02:10.833 --> 00:02:15.367
+Den Traceback liest du von unten nach oben: Die letzte Zeile nennt die Fehlerart.
+
+19
+00:02:15.726 --> 00:02:24.243
+Mit try und except fängst du eine Fehlerart ab: Bei einer kaputten Zeile springt Python in den Block mit except, du zählst sie mit und machst weiter.
+
+20
+00:02:24.729 --> 00:02:29.760
+Fang aber nur die Fehlerart, die du erwartest, und verschweige nie, was du übersprungen hast.

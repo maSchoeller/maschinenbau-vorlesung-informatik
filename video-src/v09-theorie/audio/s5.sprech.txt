@@ -1,0 +1,1 @@
+So wird aus einer Zeile eine Zahl. strip schneidet den Zeilenumbruch ab. split zerschneidet den Text am Trennzeichen, das Ergebnis ist eine Liste aus Texten. replace macht aus dem Komma einen Punkt, und float macht daraus endlich eine Zahl. Bis zum letzten Schritt ist alles nur Text.
