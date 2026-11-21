@@ -1,0 +1,1 @@
+Zum Schluss die Faustregel. Eine Liste für Werte, die wachsen und nach Position geordnet sind, etwa eine Messreihe. Ein Tupel für feste, zusammengehörige Werte. Ein Dictionary für Werte, die du über einen Namen findest, etwa eine Stückliste. Und beim Prüfen von K I-Code achtest du auf drei Dinge: Index um eins daneben, Kopie, die keine ist, und Schlüssel, die es nicht gibt.

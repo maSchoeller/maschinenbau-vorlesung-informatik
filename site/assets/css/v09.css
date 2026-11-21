@@ -1,0 +1,74 @@
+/* =============================================================
+   v09.css – Lektion V09 (Dateien & Fehler): Explorables Kodierung, CSV-Zeile zerlegen, try/except, Datei lesen (PAP).
+   Baut auf kurs.css und v05.css (PAP-Stile .pap, .pap--run) auf. Präfix v09-. Rot nur für den aktiven Zustand.
+   ============================================================= */
+
+.v09-lbl { margin: var(--sp-3) 0 var(--sp-1); font-size: var(--fs-sm); font-weight: 600; max-width: none; }
+.v09-bar { align-items: center; margin: 0 0 var(--sp-3); }
+.v09-bar .k-btn { min-height: 44px; }
+.v09-count { margin-left: var(--sp-2); }
+.v09-cb { display: inline-flex; align-items: center; gap: var(--sp-2); min-height: 44px; font-size: var(--fs-sm); cursor: pointer; }
+.v09-cb input { width: 20px; height: 20px; }
+.v09-msg { min-height: 3.3em; margin: 0 0 var(--sp-3); font-weight: 600; max-width: var(--k-measure); }
+.v09-msg.is-on { padding: var(--sp-3) var(--sp-4); border-left: 3px solid var(--k-info); background: var(--k-info-bg); }
+.v09-msg.is-on.is-ok { border-color: var(--k-ok); background: var(--k-ok-bg); }
+.v09-msg.is-on.is-bad { border-color: var(--k-bad); background: var(--k-bad-bg); color: var(--k-bad); }
+.v09-res { margin: 0 0 var(--sp-3); min-height: 3.1em; padding: var(--sp-2) var(--sp-3); font-family: var(--dhbw-font-mono); font-size: var(--fs-base); border-left: 3px solid var(--border); background: var(--canvas); max-width: none; word-break: break-word; }
+.v09-res.is-ok { border-color: var(--k-ok); background: var(--k-ok-bg); }
+.v09-res.is-bad { border-color: var(--k-bad); background: var(--k-bad-bg); color: var(--k-bad); }
+
+/* Bytes */
+.v09-bytes { display: flex; flex-wrap: wrap; gap: 4px; margin: 0 0 var(--sp-2); max-width: none; }
+.v09-byte { display: inline-block; min-width: 2.4em; padding: 4px 6px; text-align: center; font-family: var(--dhbw-font-mono); font-size: var(--fs-sm); border: 2px solid #374151; background: #fff; }
+.v09-byte.is-hi { border-color: #164B8C; background: #E7EEFC; font-weight: 700; }
+
+/* Zwischenergebnisse beim Zerlegen */
+.v09-stage { list-style: none; margin: 0 0 var(--sp-3); padding: 0; display: grid; gap: 6px; max-width: none; }
+.v09-stg { display: grid; grid-template-columns: minmax(0, 18rem) minmax(0, 1fr); gap: var(--sp-3); align-items: center; padding: var(--sp-2) var(--sp-3); border-left: 3px solid var(--border); background: var(--canvas); }
+@media (max-width: 800px) { .v09-stg { grid-template-columns: minmax(0, 1fr); gap: var(--sp-1); } }
+.v09-stg.is-past { opacity: .72; }
+.v09-stg.is-active { border-left-color: #E2001A; background: var(--red-tint); opacity: 1; }
+.v09-stg.is-bad { border-left-color: var(--k-bad); background: var(--k-bad-bg); }
+.v09-stg__code { font-family: var(--dhbw-font-mono); font-size: var(--fs-sm); background: transparent; padding: 0; word-break: break-word; }
+.v09-stg__val { display: flex; flex-wrap: wrap; gap: 6px; font-family: var(--dhbw-font-mono); font-size: var(--fs-sm); word-break: break-all; }
+.v09-stg__val code { font: inherit; background: transparent; padding: 0; }
+.v09-err { color: var(--k-bad); font-weight: 700; }
+.v09-chip { display: inline-grid; justify-items: center; gap: 1px; }
+.v09-chip__i { font-size: var(--fs-xs); font-weight: 700; color: var(--k-muted); }
+.v09-chip__t { padding: 3px 7px; border: 2px solid #374151; background: #fff; }
+.v09-chip.is-sel .v09-chip__t { border-color: #E2001A; background: var(--red-tint); font-weight: 700; }
+
+/* Code, Variablen, Ausgabe */
+.v09-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: var(--sp-5); align-items: start; margin-bottom: var(--sp-3); }
+.v09-grid--pap { grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); }
+@media (max-width: 900px) { .v09-grid, .v09-grid--pap { grid-template-columns: minmax(0, 1fr); } }
+.v09-pap { margin: 0; }
+.v09-pap .pap { max-width: 380px; }
+.v09-right { display: grid; gap: var(--sp-4); align-content: start; }
+.v09-code { list-style: none; margin: 0; padding: var(--sp-3) 0; background: var(--code-bg); color: var(--code-text); font-family: var(--dhbw-font-mono); font-size: var(--fs-sm); line-height: 1.7; border-radius: var(--r-base); max-width: none; counter-reset: ln; overflow-x: auto; }
+.v09-code li { counter-increment: ln; padding: 0 var(--sp-4) 0 0; white-space: pre; border-left: 3px solid transparent; }
+.v09-code li::before { content: counter(ln); display: inline-block; width: 2.4em; margin-right: .8em; text-align: right; color: var(--code-comment); }
+.v09-code li code { font: inherit; background: transparent; color: inherit; padding: 0; }
+.v09-code li.is-active { background: rgba(226, 0, 26, .28); border-left-color: #FF5A6E; }
+.v09-code li.is-err { background: rgba(255, 90, 90, .5); border-left-color: #FF8A8A; }
+.v09-code li.is-skipped { opacity: .4; text-decoration: line-through; }
+.v09-vars { display: grid; grid-template-columns: max-content 1fr; gap: 4px var(--sp-4); margin: 0; font-size: var(--fs-sm); max-width: none; }
+.v09-vars dt { font-weight: 600; color: var(--k-muted); font-family: var(--dhbw-font-mono); }
+.v09-vars dd { margin: 0; font-family: var(--dhbw-font-mono); word-break: break-all; }
+.v09-out { margin: 0; padding: var(--sp-3); min-height: 4em; background: var(--canvas); border-left: 3px solid var(--border); font-family: var(--dhbw-font-mono); font-size: var(--fs-sm); white-space: pre-wrap; max-width: none; }
+.v09-out.is-bad { border-color: var(--k-bad); background: var(--k-bad-bg); color: var(--k-bad); }
+
+/* Zeilen der Datei */
+.v09-rows { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; max-width: none; }
+.v09-row { padding: 4px var(--sp-3); border: 2px solid #374151; background: #fff; font-family: var(--dhbw-font-mono); font-size: var(--fs-sm); }
+.v09-row code { font: inherit; background: transparent; padding: 0; }
+.v09-row.is-sel { border-color: #E2001A; background: var(--red-tint); font-weight: 700; }
+.v09-row.is-ok { border-color: var(--k-ok); background: var(--k-ok-bg); }
+.v09-row.is-bad { border-color: #9B1213; background: var(--k-bad-bg); color: var(--k-bad); }
+
+/* Pfad-Baum und Tabellen in der Lerneinheit */
+.v09-tree { margin: 0 0 var(--sp-4); max-width: none; overflow-x: auto; }
+.v09-three { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sp-5); max-width: none !important; }
+@media (max-width: 1000px) { .v09-three { grid-template-columns: minmax(0, 1fr); } }
+.v09-three > div > p:first-child { margin-top: 0; }
+.v09-raw { margin: 0 0 var(--sp-3); padding: var(--sp-3); background: var(--canvas); border-left: 3px solid var(--border); font-family: var(--dhbw-font-mono); font-size: var(--fs-sm); overflow-x: auto; max-width: none; }

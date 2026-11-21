@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>V09 Programmierlabor · Informatik Maschinenbau</title>
+  <meta name="description" content="Programmierlabor V09: Arbeitsumgebung mit Aufgabenliste, Editor und Befehls-Bibliothek. Teil A im Labor, Teil B Training zu Hause. Dateien lesen und schreiben, CSV, try/except, eigene Messdatei laden.">
+  <link rel="stylesheet" href="../assets/css/dhbw-base.css">
+  <link rel="stylesheet" href="../assets/css/kurs.css">
+  <link rel="stylesheet" href="../assets/css/aufgaben.css">
+  <link rel="stylesheet" href="../assets/css/editor.css">
+  <link rel="stylesheet" href="../assets/css/labor.css">
+  <link rel="stylesheet" href="../assets/css/v05.css">
+  <link rel="stylesheet" href="../assets/css/pap-editor.css">
+  <link rel="stylesheet" href="../assets/css/v09.css">
+</head>
+<body data-lesson="V09" data-page="labor">
+  <a class="k-skip" href="#inhalt">Zum Inhalt springen</a>
+
+  <header class="dhbw-header k-header">
+    <div class="dhbw-header__inner">
+      <a class="k-logo" href="../index.html" aria-label="Zur Startseite">
+        <span class="k-logo__mark" aria-hidden="true">DHBW</span>
+        <span class="k-logo__text">Informatik Maschinenbau<small>Campus Horb · 2026/27</small></span>
+      </a>
+      <nav class="k-nav" aria-label="Hauptnavigation">
+        <a href="../index.html">Start</a>
+        <a href="../index.html#lernpfad">Lernpfad</a>
+        <a href="../bibliothek.html">Bibliothek</a>
+        <a href="../pap-editor.html">PAP-Editor</a>
+        <a href="v09-dateien-und-fehler.html">V09 Lerneinheit</a>
+        <a href="v09-labor.html" aria-current="page">V09 Labor</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="lab" data-lab>
+
+    <nav class="lab__list" aria-label="Aufgabenliste">
+      <div class="lab__listhead">
+        <p class="lab__title">Programmierlabor V09</p>
+        <a class="lab__back" href="v09-dateien-und-fehler.html">← Lerneinheit</a>
+      </div>
+      <div class="a-progress" data-a-progress>
+        <span class="a-progress__bar"><span class="a-progress__fill"></span></span>
+        <span class="a-progress__text">0 von 15 Aufgaben gelöst</span>
+      </div>
+      <p class="lab__legend k-small k-muted"><span><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-circle"/></svg> offen</span><span><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-half"/></svg> begonnen</span><span><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-done"/></svg> gelöst</span></p>
+      <div data-lab-items></div>
+    </nav>
+
+    <main id="inhalt" class="lab__main" tabindex="-1">
+      <div class="lab__bar">
+        <div class="lab__select">
+          <label for="lab-select">Aufgabe</label>
+          <select id="lab-select"></select>
+        </div>
+        <button type="button" class="k-btn k-btn--ghost k-btn--small" id="lab-toolbox-btn" aria-expanded="false" aria-controls="lab-drawer">Werkzeugkasten</button>
+      </div>
+      <section class="lab__drawer" id="lab-drawer" aria-label="Werkzeugkasten" hidden></section>
+
+    <section class="l-task" id="a-werkzeugkasten" data-title="Werkzeugkasten" data-part="A" data-stars="" data-min="5" data-extra="" aria-labelledby="h-a-werkzeugkasten" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-werkzeugkasten" tabindex="-1">Werkzeugkasten</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Heute neu in Python: Text zerlegen mit <code class="k-i">strip</code>, <code class="k-i">split</code> und <code class="k-i">replace</code>, <abbr class="k-begriff" data-erklaerung="Eine Datei ist ein Inhalt (Text, Zahlen, Bild), der unter einem Namen auf einem Datenträger liegt, wie ein beschriftetes Blatt im Aktenordner. Ein Programm kann sie öffnen, lesen und schreiben.">Dateien</abbr> lesen und schreiben mit <code class="k-i">with open(...)</code>, das <abbr class="k-begriff" data-erklaerung="Ein Modul ist eine Sammlung fertiger Python-Funktionen, die du mit import dazunimmst, wie math in V03 oder csv heute.">Modul</abbr> <code class="k-i">csv</code> mit <abbr class="k-begriff" data-erklaerung="Der csv.reader ist ein Leser aus dem Modul csv: Er liefert dir zeilenweise schon die Liste der Felder, entfernt Anführungszeichen und teilt am angegebenen Trennzeichen.">csv.reader</abbr> und <abbr class="k-begriff" data-erklaerung="Mit next(leser) holst du eine Zeile einzeln ab. Holst du die Kopfzeile so ab, läuft sie nicht als Messwert in die Schleife.">next(leser)</abbr> sowie <code class="k-i">try</code> und <code class="k-i">except</code>. Aus V08 setzen wir Listen und <code class="k-i">for</code> über Listen voraus, aus V06 <code class="k-i">for</code>, <code class="k-i">if</code>, <code class="k-i">continue</code> und Zähler, aus V07 <code class="k-i">def</code> und <code class="k-i">return</code> (nur im Beispiel), aus V03 <code class="k-i">float</code> und f-Strings mit Format. Die Klausur verlangt, dass du Code von Hand schreibst. Darum gehen wir in kleinen Schritten vom Vormachen zum Selberschreiben, und die Hilfen werden dabei weniger.</p>
+      <figure class="k-video">
+        <video controls preload="metadata" poster="../assets/video/v09-python-poster.png" aria-label="Python-Werkstatt: Dateien lesen und schreiben, csv, try und except (ca. 3 Min)">
+          <source src="../assets/video/v09-python.mp4" type="video/mp4">
+          <track kind="subtitles" srclang="de" label="Deutsch" src="../assets/video/v09-python.vtt" default>
+          Dein Browser kann dieses Video nicht abspielen.
+        </video>
+        <div class="k-video__missing" hidden>Video folgt. Bis dahin: Lies den Code unten Zeile für Zeile und probiere ihn aus.</div>
+        <figcaption>Python-Werkstatt: Dateien lesen und schreiben, csv, try und except (ca. 3 Min). Untertitel sind eingeschaltet (Deutsch).</figcaption>
+      </figure>
+      <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke</strong><p>Diese sieben <abbr class="k-begriff" data-erklaerung="Die Syntax ist die Schreibweise einer Programmiersprache, wie die Grammatik einer Sprache: Reihenfolge, Klammern, Anführungszeichen. Ein Tippfehler dort heißt Syntaxfehler.">Syntax</abbr>-Karten sind dein Spickzettel, bis es sitzt. Du erreichst sie in jeder Aufgabe über den Knopf „Werkzeugkasten“ oben. Alle Befehle des Kurses stehen außerdem rechts in der Befehls-Bibliothek. Die Beispieldateien (<code class="k-i">bremsen.csv</code>, <code class="k-i">waschmaschine.csv</code>) liegen bei den Karten schon im Arbeitsordner. Führe jede Karte aus und drück bei den Listen auf „Schritt für Schritt“.</p></div>
+      <div class="lab__toolbox" id="lab-toolbox">
+<div class="a-syntax-list">
+  <article class="a-syntax" aria-labelledby="sk-zerlegen">
+    <span class="a-syntax__label">Syntax-Karte 1</span>
+    <h4 id="sk-zerlegen">Eine Zeile zerlegen: strip, split, replace, float</h4>
+<pre><code>zeile = "4,94;-0,13;-3,78\n"
+felder = zeile.strip().split(";")
+print(felder)
+a = float(felder[2].replace(",", "."))
+print(a, type(a))</code></pre>
+    <ul>
+      <li><code class="k-i">text.strip()</code> schneidet Leerzeichen und den Zeilenumbruch <code class="k-i">\n</code> an beiden Enden ab. Der Text in der Mitte bleibt.</li>
+      <li><code class="k-i">text.split(";")</code> zerschneidet den Text an jedem Semikolon und liefert eine <strong>Liste aus Texten</strong> (V08). Das Trennzeichen steht in Anführungszeichen und muss zur Datei passen.</li>
+      <li><code class="k-i">text.replace(",", ".")</code> ersetzt <em>jedes</em> Komma durch einen Punkt und gibt einen neuen Text zurück (der alte bleibt unverändert, Texte lassen sich nicht ändern). Erst dann versteht <code class="k-i">float</code> das Dezimalkomma.</li>
+      <li><code class="k-i">float(text)</code> macht aus dem Text eine Kommazahl. Passt der Text nicht (<code class="k-i">"Fehler"</code>, <code class="k-i">""</code>, <code class="k-i">"3,5"</code>), gibt es einen <code class="k-i">ValueError</code>. Die Methoden lassen sich verketten: <code class="k-i">felder[2].replace(",", ".")</code>.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-lesen">
+    <span class="a-syntax__label">Syntax-Karte 2</span>
+    <h4 id="sk-lesen">Datei lesen: with open</h4>
+<pre data-files="../assets/data/v09/bremsen.csv"><code>with open("bremsen.csv", encoding="utf-8") as datei:
+    zeilen = datei.readlines()
+print(len(zeilen), "Zeilen")
+print(zeilen[1].strip())</code></pre>
+<pre data-files="../assets/data/v09/bremsen.csv"><code>anzahl = 0
+with open("bremsen.csv", encoding="utf-8") as datei:
+    for zeile in datei:
+        anzahl = anzahl + 1
+print(anzahl)</code></pre>
+    <ul>
+      <li><code class="k-i">open(name, encoding="utf-8")</code> öffnet die Datei zum <strong>Lesen</strong> (Standard). Der Name ist ein Text, relativ zum Arbeitsordner. Die Kodierung gibst du immer mit an.</li>
+      <li><code class="k-i">with ... as datei:</code> schließt die Datei am Ende des eingerückten Blocks automatisch. Alles, was die Datei braucht, steht <strong>eingerückt</strong> darunter.</li>
+      <li><code class="k-i">datei.readlines()</code> liefert alle Zeilen als Liste aus Texten, jeweils mit <code class="k-i">\n</code> am Ende. <code class="k-i">for zeile in datei:</code> läuft über dieselben Zeilen, eine nach der anderen, ohne dass die ganze Datei im Speicher liegen muss.</li>
+      <li>Gibt es die Datei nicht, folgt ein <code class="k-i">FileNotFoundError</code>. Prüfe Namen, Endung, Groß-/Kleinschreibung und Ordner.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-schreiben">
+    <span class="a-syntax__label">Syntax-Karte 3</span>
+    <h4 id="sk-schreiben">Datei schreiben: Modus "w"</h4>
+<pre><code>werte = [0.5, -1.25, 3.0]
+with open("export.csv", "w", encoding="utf-8") as aus:
+    aus.write("Nr;Wert\n")
+    for i in range(len(werte)):
+        text = f"{werte[i]:.2f}".replace(".", ",")
+        aus.write(f"{i + 1};{text}\n")
+print("fertig")</code></pre>
+    <ul>
+      <li>Der zweite Parameter ist der <strong>Modus</strong>: <code class="k-i">"r"</code> lesen (Standard), <code class="k-i">"w"</code> schreiben, <abbr class="k-begriff" data-erklaerung="Der Modus a (append) öffnet eine Datei zum Anhängen: Der alte Inhalt bleibt, neue Zeilen kommen hinten dazu. Der Modus w dagegen löscht den alten Inhalt."><code class="k-i">"a"</code></abbr> anhängen. <code class="k-i">"w"</code> <strong>löscht eine vorhandene Datei sofort</strong>, auch wenn danach nichts geschrieben wird.</li>
+      <li><code class="k-i">aus.write(text)</code> schreibt genau den Text. Einen Zeilenumbruch musst du selbst mit <code class="k-i">\n</code> anhängen, sonst steht alles in einer Zeile. <code class="k-i">write</code> nimmt nur Text: Zahlen vorher mit <code class="k-i">str()</code> oder einem f-String umwandeln.</li>
+      <li>Für ein deutsches Excel schreibst du den Rückweg: Punkt durch Komma ersetzen und Semikolon als Trenner nehmen.</li>
+      <li>Im Labor erscheint die Datei unter der Ausgabe als „Erzeugte Datei“ mit „Anzeigen“ und „Herunterladen“.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-csv">
+    <span class="a-syntax__label">Syntax-Karte 4</span>
+    <h4 id="sk-csv">Das csv-Modul: reader, delimiter, next</h4>
+<pre data-files="../assets/data/v09/bremsen.csv"><code>import csv
+
+with open("bremsen.csv", encoding="utf-8") as datei:
+    leser = csv.reader(datei, delimiter=";")
+    kopf = next(leser)
+    for zeile in leser:
+        t = float(zeile[0].replace(",", "."))
+        a = float(zeile[2].replace(",", "."))
+        if a &lt; -3.5:
+            print(f"t = {t:.2f} s: {a:.2f} m/s²")
+print("Spalte 2:", kopf[2])</code></pre>
+<pre data-files="../assets/data/v09/waschmaschine.csv"><code>import csv
+
+with open("waschmaschine.csv", encoding="utf-8") as datei:
+    leser = csv.reader(datei)        # Komma ist der Standard
+    kopf = next(leser)
+    erste = next(leser)
+print(kopf[2], "->", float(erste[2]))</code></pre>
+    <ul>
+      <li><code class="k-i">import csv</code> holt das Modul. <code class="k-i">csv.reader(datei, delimiter=";")</code> liefert beim Durchlaufen jede Zeile schon <strong>als Liste von Feldern</strong>. Ohne <code class="k-i">delimiter</code> gilt das Komma. Das Modul rät das Trennzeichen nicht.</li>
+      <li><code class="k-i">next(leser)</code> holt <em>eine</em> Zeile ab, hier die Kopfzeile. Danach läuft die Schleife nur noch über Messzeilen. Ohne das <code class="k-i">next</code> wäre die Kopfzeile der erste „Messwert“ und <code class="k-i">float</code> bricht mit einem <code class="k-i">ValueError</code> ab.</li>
+      <li>Das Modul entfernt die Anführungszeichen um die Spaltennamen. Das Dezimalkomma wandelt es <strong>nicht</strong> um: <code class="k-i">replace(",", ".")</code> bleibt nötig, wenn die Datei Dezimalkomma hat (erste Datei), und entfällt bei Dezimalpunkt (zweite Datei).</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-try">
+    <span class="a-syntax__label">Syntax-Karte 5</span>
+    <h4 id="sk-try">try und except ValueError</h4>
+<pre><code>for text in ["12,5", "abc", "7"]:
+    try:
+        wert = float(text.replace(",", "."))
+        print("ok:", wert)
+    except ValueError:
+        print("kein Zahlenwert:", text)
+print("Programm läuft weiter")</code></pre>
+    <ul>
+      <li>Der Block unter <code class="k-i">try:</code> wird ausgeführt. Tritt <strong>darin</strong> ein <code class="k-i">ValueError</code> auf, springt Python sofort in den <code class="k-i">except</code>-Block. Die restlichen Zeilen des <code class="k-i">try</code>-Blocks werden übersprungen (hier: das <code class="k-i">print("ok:")</code> bei „abc“).</li>
+      <li>Geht alles gut, wird der <code class="k-i">except</code>-Block übersprungen. Danach geht es in beiden Fällen unter dem Block weiter.</li>
+      <li>Der Name hinter <code class="k-i">except</code> sagt, <em>welche</em> Fehlerart du fängst. Alles andere bricht weiter ab. Schreibe nie ein nacktes <code class="k-i">except:</code>: Es verschluckt auch Tippfehler und Rechenfehler.</li>
+      <li>Halte den <code class="k-i">try</code>-Block <strong>klein</strong>: Nur die Zeilen, die schiefgehen können, nicht das ganze Programm.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-mehrere">
+    <span class="a-syntax__label">Syntax-Karte 6</span>
+    <h4 id="sk-mehrere">Mehrere Fehlerarten, kaputte Zeilen zählen, continue</h4>
+<pre><code>zeilen = ["1,0;2,0", "3,0;Fehler", "5,0", "7,0;8,0"]
+gut = []
+kaputt = 0
+for zeile in zeilen:
+    try:
+        wert = float(zeile.split(";")[1].replace(",", "."))
+    except (ValueError, IndexError):
+        kaputt = kaputt + 1
+        continue
+    gut.append(wert)
+print(gut, kaputt)</code></pre>
+    <ul>
+      <li><code class="k-i">except (ValueError, IndexError):</code> fängt <strong>beide</strong> Arten, die Fehlerarten stehen als Tupel (V08) in Klammern. <code class="k-i">ValueError</code>: der Text ist keine Zahl. <code class="k-i">IndexError</code>: die Zeile hat zu wenige Felder.</li>
+      <li>Das Muster aus dem Kurs: Im <code class="k-i">except</code> wird der <strong>Zähler</strong> erhöht (nicht verschweigen!) und mit <code class="k-i">continue</code> die Schleife mit der nächsten Zeile fortgesetzt (V06). Was nach dem <code class="k-i">try/except</code> steht, läuft so nur für gute Zeilen.</li>
+      <li>Danach prüfst du die Ausgabe: Wie viele Zeilen waren gut, wie viele kaputt? Sind es auffällig viele kaputte, stimmt meist nicht die Datei, sondern das Trennzeichen oder das Dezimalzeichen im Programm.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-datei-fehler">
+    <span class="a-syntax__label">Syntax-Karte 7</span>
+    <h4 id="sk-datei-fehler">Fehler lesen: Traceback und FileNotFoundError</h4>
+<pre><code>dateiname = "bremsn.csv"        # Tippfehler im Namen
+try:
+    with open(dateiname, encoding="utf-8") as datei:
+        zeilen = datei.readlines()
+    print(len(zeilen), "Zeilen")
+except FileNotFoundError:
+    print("Datei nicht gefunden:", dateiname)</code></pre>
+<pre><code>dateiname = "bremsn.csv"
+with open(dateiname, encoding="utf-8") as datei:
+    zeilen = datei.readlines()</code></pre>
+    <ul>
+      <li>Der Traceback im zweiten Beispiel endet mit <code class="k-i">FileNotFoundError: [Errno 2] No such file or directory: 'bremsn.csv'</code>. <strong>Von unten nach oben lesen:</strong> Fehlerart und Meldung, dann die Codezeile, dann der Weg dorthin.</li>
+      <li>Eine fehlende Datei fängst du, wenn du dem Menschen eine verständliche Meldung geben willst (erstes Beispiel). Bei der eigenen Auswertung ist der Abbruch oft besser als eine leere Auswertung.</li>
+      <li>Weitere Fehlerarten bei Dateien: <code class="k-i">UnicodeDecodeError</code> (falsche Kodierung), <code class="k-i">PermissionError</code> (Datei gesperrt, zum Beispiel in Excel geöffnet) und <code class="k-i">IsADirectoryError</code> (der Name ist ein Ordner).</li>
+    </ul>
+  </article>
+</div>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-vorgemacht" data-title="Vorgerechnetes Beispiel: Bremsmessung mit kaputten Zeilen" data-part="A" data-stars="" data-min="10" data-extra="" aria-labelledby="h-a-vorgemacht" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-vorgemacht" tabindex="-1">Vorgerechnetes Beispiel: Bremsmessung mit kaputten Zeilen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Aufgabe: Die Datei <code class="k-i">bremsen-kaputt.csv</code> ist eine Fahrrad-Bremsmessung mit 400 Messzeilen, Semikolon als Trennzeichen und Dezimalkomma. Fünf Zeilen sind kaputt: leere Felder, das Wort „Fehler“ statt einer Zahl und eine Zeile mit nur zwei Spalten. Das <abbr class="k-begriff" data-erklaerung="Ein Programm ist eine Liste von Anweisungen, die Python von oben nach unten Zeile für Zeile abarbeitet.">Programm</abbr> liest die Datei, überspringt die kaputten Zeilen und zählt sie mit, bestimmt Spitzenwert und Mittelwert der Beschleunigung in Fahrtrichtung und schreibt das Ergebnis in eine Datei. Lies den Code Zeile für Zeile, dann führe ihn aus. Unter der Ausgabe erscheint die erzeugte Datei <code class="k-i">auswertung.txt</code>. Drück danach auf „Schritt für Schritt“ und beobachte, wie bei einer kaputten Zeile der Sprung in den <code class="k-i">except</code>-Block passiert.</p>
+      <figure class="k-video">
+        <video controls preload="metadata" poster="../assets/video/v09-beispiel-poster.png" aria-label="Vorgerechnet: Bremsmessung mit kaputten Zeilen auswerten (ca. 3 Min)">
+          <source src="../assets/video/v09-beispiel.mp4" type="video/mp4">
+          <track kind="subtitles" srclang="de" label="Deutsch" src="../assets/video/v09-beispiel.vtt" default>
+          Dein Browser kann dieses Video nicht abspielen.
+        </video>
+        <div class="k-video__missing" hidden>Video folgt. Bis dahin: Lies den Code unten Zeile für Zeile und probiere ihn aus.</div>
+        <figcaption>Vorgerechnet: Bremsmessung mit kaputten Zeilen auswerten (ca. 3 Min). Untertitel sind eingeschaltet (Deutsch).</figcaption>
+      </figure>
+      <div class="a-task" data-a="run" data-id="w-vorgemacht" data-count="0" data-mode="programm" data-timeout="8000" data-files="../assets/data/v09/bremsen-kaputt.csv">
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V09" aria-label="Python-Code: Bremsmessung mit kaputten Zeilen auswerten"># Eigene Smartphone-Messung auswerten: Bremsen mit dem Fahrrad (phyphox-Export)
+# (V09: Strings split/strip/replace, with open, csv-Modul, try/except)
+# Datei: bremsen-kaputt.csv (Semikolon als Trennzeichen, Dezimalkomma, einige kaputte Zeilen)
+
+import csv
+
+
+def zahl(text):
+    """Wandelt '1,234E-01' (Dezimalkomma) in eine float-Zahl um."""
+    return float(text.strip().replace(",", "."))
+
+
+zeiten = []
+werte_y = []          # Beschleunigung in Fahrtrichtung (y) in m/s²
+kaputt = 0
+
+with open("bremsen-kaputt.csv", encoding="utf-8") as datei:
+    leser = csv.reader(datei, delimiter=";")
+    kopf = next(leser)                       # erste Zeile: Spaltennamen
+    for zeile in leser:
+        try:
+            t = zahl(zeile[0])
+            a = zahl(zeile[2])
+        except (ValueError, IndexError):
+            kaputt = kaputt + 1              # Zeile überspringen, aber mitzählen
+            continue
+        zeiten.append(t)
+        werte_y.append(a)
+
+print("Spalte:", kopf[2])
+print(f"Gültige Zeilen: {len(werte_y)}, übersprungen: {kaputt}")
+
+spitze = werte_y[0]                          # stärkste Verzögerung = kleinster Wert
+t_spitze = zeiten[0]
+for i in range(len(werte_y)):
+    if werte_y[i] &lt; spitze:
+        spitze = werte_y[i]
+        t_spitze = zeiten[i]
+mittel = sum(werte_y) / len(werte_y)
+print(f"Spitzenwert: {spitze:.2f} m/s² bei t = {t_spitze:.2f} s")
+print(f"Mittelwert über die ganze Fahrt: {mittel:.2f} m/s²")
+
+with open("auswertung.txt", "w", encoding="utf-8") as aus:
+    aus.write(f"Spitzenverzoegerung;{spitze:.2f}\n")
+    aus.write(f"Zeitpunkt;{t_spitze:.2f}\n")
+print("Auswertung gespeichert in auswertung.txt")</textarea></div>
+      </div>
+      <p class="k-small k-muted">Erwartete Ausgabe:</p>
+      <pre class="v09-raw" data-run="no">Spalte: Linear Acceleration y (m/s^2)
+Gültige Zeilen: 395, übersprungen: 5
+Spitzenwert: -3.78 m/s² bei t = 4.94 s
+Mittelwert über die ganze Fahrt: -0.53 m/s²
+Auswertung gespeichert in auswertung.txt</pre>
+      <p class="k-small k-muted">Der Programmablaufplan zeigt die Schleife über die Zeilen (Zeilen 20 bis 28 im Code) an einer kleinen Beispieldatei mit sechs Zeilen. Beide Wege nach der Umwandlung führen zurück vor die Schleifenraute: der Weg „ja“ merkt den Wert, der Weg „nein“ zählt die kaputte Zeile.</p>
+      <div data-explorable="datei"></div>
+      <ol class="a-explain">
+        <li><strong>Zeilen 5 bis 10:</strong> <code class="k-i">import csv</code> holt das Modul. Die Funktion <code class="k-i">zahl</code> (V07) bündelt, was für jedes Feld gilt: <code class="k-i">strip()</code> (Leerzeichen weg), <code class="k-i">replace(",", ".")</code> (Dezimalkomma zum Punkt), <code class="k-i">float</code>. So steht die Regel an <em>einer</em> Stelle und wird zweimal benutzt (DRY).</li>
+        <li><strong>Zeilen 13 bis 15:</strong> Zwei leere Listen für Zeit und Beschleunigung und der Zähler <code class="k-i">kaputt</code> bei 0, alle <em>vor</em> der Schleife. Die Beschleunigung in Fahrtrichtung ist bei phyphox Spalte 2 (y).</li>
+        <li><strong>Zeilen 17 bis 19:</strong> <code class="k-i">with open(..., encoding="utf-8")</code> öffnet die Datei und schließt sie am Ende selbst. <code class="k-i">csv.reader(datei, delimiter=";")</code> zerlegt jede Zeile am Semikolon in eine Liste von Feldern. <code class="k-i">next(leser)</code> holt die Kopfzeile ab, die Spaltennamen landen in <code class="k-i">kopf</code>.</li>
+        <li><strong>Zeilen 20 bis 28:</strong> Die Schleife über die Messzeilen. Im <code class="k-i">try</code> stehen <em>nur</em> die zwei Umwandlungen. Wenn eine scheitert, springt Python in Zeile 24: <code class="k-i">ValueError</code> bei einem Text oder leeren Feld, <code class="k-i">IndexError</code>, wenn die Zeile zu kurz ist. Im <code class="k-i">except</code> wird die kaputte Zeile <strong>gezählt</strong> und mit <code class="k-i">continue</code> übersprungen, die Zeilen 27 und 28 laufen dann nicht. Nur gute Zeilen kommen in die Listen.</li>
+        <li><strong>Zeilen 30 und 31:</strong> Der Spaltenname und die Zahlen: 395 gültige, 5 übersprungene Zeilen. Gegenprobe von Hand: 395 + 5 = 400 Messzeilen, wie in der Datei.</li>
+        <li><strong>Zeilen 33 bis 41:</strong> Die Spitze der Verzögerung ist der <em>kleinste</em> Wert (Bremsen ist eine negative Beschleunigung). Das Suchmuster aus V06 und V08: Startwert ist das erste Element, im Schleifenrumpf wird bei jedem kleineren Wert <code class="k-i">spitze</code> und der Zeitpunkt aktualisiert. Der Mittelwert ist <code class="k-i">sum / len</code>.</li>
+        <li><strong>Zeilen 43 bis 46:</strong> <code class="k-i">open("auswertung.txt", "w", ...)</code> schreibt das Ergebnis. Jede Zeile bekommt ihren <code class="k-i">\n</code> selbst. Die Datei erscheint unter der Ausgabe.</li>
+        <li><strong>Selbsterklärung:</strong> Ändere in Zeile 17 den Dateinamen auf <code class="k-i">"bremsen.csv"</code>: Wie viele Zeilen sind übersprungen? Dann lösche in Zeile 24 das <code class="k-i">IndexError</code> samt Komma und Klammern, sodass nur <code class="k-i">except ValueError:</code> bleibt: Was meldet Python, und in welcher Zeile der Datei passiert es? Zuletzt: Was ändert sich in der Ausgabe, wenn du in Zeile 18 <code class="k-i">delimiter=","</code> schreibst?</li>
+      </ol>
+    </section>
+
+    <section class="l-task" id="a-ablauf" data-title="Ablauf verfolgen" data-part="A" data-stars="" data-min="7" data-extra="" aria-labelledby="h-a-ablauf" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-ablauf" tabindex="-1">Ablauf verfolgen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Bevor du Dateien und Fehler schreibst, musst du sie lesen können. Führe das Programm im Kopf aus, <strong>Zeile für Zeile, so wie Python es tut</strong>. Trage ein, was danach in den hervorgehobenen Variablen steht. Texte schreibst du so, wie Python sie ausgibt, mit Anführungszeichen, zum Beispiel <code class="k-i">'4,5'</code>, Listen als <code class="k-i">['4,5', '7,2']</code>. Die Zeile mit <code class="k-i">for</code> ist ein Schritt je Durchlauf (die Laufvariable ändert sich), eine <code class="k-i">try</code>-Zeile bekommt keinen eigenen Schritt. Wenn unsicher: Lass den Code vorher im „Vorgerechneten Beispiel“ oder in Karte 5 mit „Schritt für Schritt“ laufen.</p>
+      <div class="a-task" data-a="trace" data-id="w-trace">
+        <script type="application/json">{"code":["zeile = \"  4,5;7,2  \"","felder = zeile.strip().split(\";\")","a = float(felder[1].replace(\",\", \".\"))","b = a * 2","print(felder, b)"],
+"vars":["zeile","felder","a","b"],
+"steps":[
+{"line":1,"set":{"zeile":"'  4,5;7,2  '"},"hint":"Ein Text mit zwei Leerzeichen vorn und hinten. Python zeigt ihn mit einfachen Anführungszeichen und den Leerzeichen."},
+{"line":2,"set":{"felder":"['4,5', '7,2']"},"hint":"strip() schneidet die Leerzeichen an den Enden ab: '4,5;7,2'. split(';') zerschneidet am Semikolon in eine Liste mit zwei Texten. Es bleiben Texte mit Komma, keine Zahlen."},
+{"line":3,"set":{"a":"7.2"},"hint":"felder[1] ist der Text '7,2' (Index 1, das zweite Element). replace macht daraus '7.2', float die Zahl 7.2. Das Ergebnis ist eine Kommazahl, deshalb ohne Anführungszeichen."},
+{"line":4,"set":{"b":"14.4"},"hint":"7.2 mal 2."},
+{"line":5,"out":"['4,5', '7,2'] 14.4","hint":"print gibt die Liste (mit den Texten in Anführungszeichen) und die Zahl aus, getrennt durch ein Leerzeichen. Die Liste felder wurde nie verändert: Zahl und Liste sind getrennte Werte."}
+]}</script>
+      </div>
+      <p class="l-task__intro">Zweiter Ablauf: <code class="k-i">try</code> und <code class="k-i">except</code>. Bei „abc“ scheitert <code class="k-i">float</code>: Python springt in den <code class="k-i">except</code>-Block und überspringt dabei Zeile 6. Die Variable <code class="k-i">x</code> behält dann ihren alten Wert.</p>
+      <div class="a-task" data-a="trace" data-id="w-trace2">
+        <script type="application/json">{"code":["gut = 0","kaputt = 0","for text in [\"2,5\", \"abc\", \"4\"]:","    try:","        x = float(text.replace(\",\", \".\"))","        gut = gut + 1","    except ValueError:","        kaputt = kaputt + 1","print(gut, kaputt)"],
+"vars":["gut","kaputt","text","x"],
+"steps":[
+{"line":1,"set":{"gut":"0"},"hint":"Zähler für gute Zeilen."},
+{"line":2,"set":{"kaputt":"0"},"hint":"Zähler für kaputte Zeilen."},
+{"line":3,"set":{"text":"'2,5'"},"hint":"Erster Durchlauf: text ist der erste Text der Liste, mit Anführungszeichen. Die Zeile try: ist kein eigener Schritt."},
+{"line":5,"set":{"x":"2.5"},"hint":"replace macht aus '2,5' den Text '2.5', float die Zahl 2.5. Es gibt keinen Fehler."},
+{"line":6,"set":{"gut":"1"},"hint":"Kein Fehler, also läuft der try-Block weiter: gut wird 1. Der except-Block wird übersprungen."},
+{"line":3,"set":{"text":"'abc'"},"hint":"Zweiter Durchlauf: text ist 'abc'."},
+{"line":8,"set":{"kaputt":"1"},"hint":"float('abc') löst einen ValueError aus. Python springt sofort in den except-Block: Zeile 6 wird nicht ausgeführt (gut bleibt 1, x bleibt 2.5), kaputt wird 1."},
+{"line":3,"set":{"text":"'4'"},"hint":"Dritter Durchlauf: text ist '4'."},
+{"line":5,"set":{"x":"4.0"},"hint":"replace findet kein Komma, der Text bleibt '4'. float('4') ist 4.0, eine Kommazahl."},
+{"line":6,"set":{"gut":"2"},"hint":"Kein Fehler: gut wird 2."},
+{"line":9,"out":"2 1","hint":"Zwei gute und eine kaputte Zeile. print gibt beide Zahlen aus, getrennt durch ein Leerzeichen."}
+]}</script>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-zeilen" data-title="Zeilen ordnen" data-part="A" data-stars="" data-min="8" data-extra="" aria-labelledby="h-a-zeilen" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-zeilen" tabindex="-1">Zeilen ordnen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Alle Zeilen sind da, aber durcheinander. Bring sie in die richtige Reihenfolge <strong>und rücke die Zeilen ein</strong> (Pfeil nach rechts oder Mausziehen). Manche Zeilen sind <strong>Ablenker</strong>: Sie gehören nicht ins Programm.</p>
+      <div class="a-task" data-a="parsons" data-id="w-parsons1">
+        <div class="a-task__head"><h3 class="a-task__title">Datei mit csv lesen</h3></div>
+        <p>Das Programm liest die Beschleunigung (Spalte 2) aus der Semikolon-Datei <code>bremsen.csv</code> mit Dezimalkomma in eine Liste und gibt zum Schluss die Zahl der Werte aus. Überlege vorher: Was muss vor der Schleife passieren, und was gehört in den eingerückten Block unter <code>with</code>?</p>
+        <script type="application/json">{"solution":["import csv","werte = []","with open('bremsen.csv', encoding='utf-8') as datei:","    leser = csv.reader(datei, delimiter=';')","    kopf = next(leser)","    for zeile in leser:","        werte.append(float(zeile[2].replace(',', '.')))","print(len(werte))"],
+"distractors":["    leser = csv.reader(datei)","        werte.append(float(zeile[2]))"],
+"alts":[["werte = []","import csv","with open('bremsen.csv', encoding='utf-8') as datei:","    leser = csv.reader(datei, delimiter=';')","    kopf = next(leser)","    for zeile in leser:","        werte.append(float(zeile[2].replace(',', '.')))","print(len(werte))"]]}</script>
+      </div>
+
+      <div class="a-task" data-a="parsons" data-id="w-parsons2">
+        <div class="a-task__head"><h3 class="a-task__title">Kaputte Zeilen zählen</h3></div>
+        <p>Das Programm versucht, jeden Text in eine Zahl umzuwandeln, und zählt die Texte, bei denen das nicht gelingt. Die Ausgabe gehört erst nach die Schleife. Der Zähler wird <em>vor</em> der Schleife angelegt.</p>
+        <script type="application/json">{"solution":["texte = ['3,5', 'x', '4,0', '']","kaputt = 0","for text in texte:","    try:","        zahl = float(text.replace(',', '.'))","    except ValueError:","        kaputt = kaputt + 1","print(kaputt)"],
+"distractors":["    except ValueError","        kaputt = 0"],
+"alts":[["kaputt = 0","texte = ['3,5', 'x', '4,0', '']","for text in texte:","    try:","        zahl = float(text.replace(',', '.'))","    except ValueError:","        kaputt = kaputt + 1","print(kaputt)"]]}</script>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-luecken" data-title="Lücken füllen" data-part="A" data-stars="" data-min="5" data-extra="" aria-labelledby="h-a-luecken" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-luecken" tabindex="-1">Lücken füllen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Jetzt tippst du Teile selbst. Ergänze die fünf Lücken, sodass das Programm drei Messzeilen zerlegt (eine davon ist kaputt), die Summe der guten Werte in die Datei <code class="k-i">aus.txt</code> schreibt und die Zahl der guten und kaputten Zeilen ausgibt. Geprüft wird nicht nur dein Wortlaut, sondern ob das Programm das Richtige tut und die Datei richtig geschrieben wird.</p>
+      <div class="a-task" data-a="gap" data-id="w-luecken" data-mode="programm">
+        <pre class="a-gap__src">zeilen = ["0,10;-0,5", "0,12;Fehler", "0,14;-1,5"]
+gut = []
+kaputt = 0
+for z in zeilen:
+    felder = z.@@split@@(";")
+    try:
+        wert = float(felder[1].@@replace@@(",", "."))
+        gut.append(wert)
+    @@except@@ ValueError:
+        kaputt = kaputt + 1
+print(f"Gültig: {len(gut)}, kaputt: {kaputt}")
+with open("aus.txt", @@"w"|'w'@@, encoding="utf-8") as aus:
+    aus.@@write@@(f"{sum(gut):.2f}\n")</pre>
+        <script type="text/x-python" data-role="tests">
+def _lauf():
+    return zeilen(run_program([]))
+
+def test_ausgabe():
+    """Zwei gute Zeilen, eine kaputte"""
+    z = _lauf()
+    assert "Gültig: 2, kaputt: 1" in z, "Erwartet wird die Zeile 'Gültig: 2, kaputt: 1'. Dein Programm gibt aus: %r" % z
+
+def test_datei():
+    """Die Datei aus.txt enthält die Summe -2.00"""
+    _lauf()
+    try:
+        inhalt = open("aus.txt", encoding="utf-8").read().strip()
+    except FileNotFoundError:
+        raise AssertionError("Die Datei aus.txt wurde nicht angelegt. Mit dem Modus \"w\" schreibst du eine neue Datei.")
+    assert inhalt == "-2.00", "In aus.txt steht %r, erwartet wird '-2.00' (die Summe der guten Werte -0,5 und -1,5)." % inhalt
+        </script>
+        <ol class="a-hints">
+          <li>Lücke 1 und 2: Der Text wird am Semikolon zerschnitten, danach muss das Dezimalkomma zum Punkt werden (Syntax-Karte 1). Beides sind Methoden des Textes.</li>
+          <li>Lücke 3: Hinter <code>try:</code> kommt der Block für den Fehlerfall. Das Wort steht auf der Höhe von <code>try</code> (Karte 5).</li>
+          <li>Lücke 4 und 5: Zum Schreiben öffnest du die Datei mit dem Modus für „write“ (in Anführungszeichen), und das Schreiben selbst ist die Methode <code>write</code> (Karte 3).</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-eigene" data-title="Erste eigene Aufgabe: Eigene CSV auswerten" data-part="A" data-stars="1" data-min="10" data-extra="mit deiner Datei" aria-labelledby="h-a-eigene" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-eigene" tabindex="-1">Erste eigene Aufgabe: Eigene CSV auswerten</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Jetzt schreibst du die Auswertung selbst, mit <abbr class="k-begriff" data-erklaerung="Ein Test ist ein kleines Prüfprogramm. Es startet dein Programm mit festen Eingaben und vergleicht die Ausgabe mit dem erwarteten Ergebnis.">Tests</abbr> als Sicherheitsnetz. Die Tests laufen mit der mitgelieferten Datei <code class="k-i">bremsen.csv</code> und mit einer zweiten, die du nicht siehst. <strong>Mit deiner eigenen phyphox-Datei:</strong> Drück „Eigene CSV laden“, trag oben bei <code class="k-i">dateiname</code> den Namen deiner Datei ein und prüfe in ihren ersten Zeilen, welches Trennzeichen sie hat. Dann „Ausführen“. Deine Datei bleibt in deinem Browser. Ohne eigene Datei löst du die Aufgabe mit den mitgelieferten (<code class="k-i">waschmaschine.csv</code> hat ein Komma als Trennzeichen).</p>
+      <div class="a-task" data-a="code" data-id="w-eigene" data-mode="programm" data-files="../assets/data/v09/bremsen.csv ../assets/data/v09/waschmaschine.csv" data-upload>
+        <div class="a-task__text">
+          <p>Das Programm liest aus der CSV-Datei die Spalte 2 (Beschleunigung in Fahrtrichtung, m/s²) mit dem <code class="k-i">csv</code>-Modul in die Liste <code class="k-i">werte</code> (Kopfzeile überspringen, Dezimalkomma mit <code class="k-i">replace</code> behandeln) und gibt vier Zeilen aus: die Zahl der Messzeilen, den kleinsten Wert (Minimum), den größten Wert (Maximum) und den Mittelwert, alle mit zwei Nachkommastellen. Datei und Trennzeichen stehen oben in den Variablen <code class="k-i">dateiname</code> und <code class="k-i">trenner</code>.</p>
+          <div class="a-spec"><strong>Ausgabe genau so (für die mitgelieferte Datei bremsen.csv):</strong><pre data-run="no">Messzeilen: 400
+Minimum: -3.78 m/s²
+Maximum: 0.76 m/s²
+Mittelwert: -0.54 m/s²</pre></div>
+          <p class="k-small k-muted">Gegenprobe von Hand: Die Datei hat 401 Zeilen, die erste ist die Kopfzeile. Das Minimum ist die Verzögerungsspitze aus dem Beispiel.</p>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V09" aria-label="Python-Code: CSV-Datei auswerten">import csv
+
+dateiname = "bremsen.csv"     # für deine eigene Datei: Namen hier eintragen
+trenner = ";"                 # Semikolon oder Komma: siehe die ersten Zeilen deiner Datei
+
+werte = []
+# öffne die Datei (mit encoding), überspringe die Kopfzeile, lies Spalte 2 als Zahlen in die Liste werte
+
+# Ausgabe: Messzeilen, Minimum, Maximum, Mittelwert
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+KOPF = '"Time (s)";"Linear Acceleration x (m/s^2)";"Linear Acceleration y (m/s^2)";"Linear Acceleration z (m/s^2)";"Absolute acceleration (m/s^2)"'
+
+def _soll(w):
+    return ["Messzeilen: %d" % len(w), "Minimum: %.2f m/s²" % min(w), "Maximum: %.2f m/s²" % max(w), "Mittelwert: %.2f m/s²" % (sum(w) / len(w))]
+
+def _pruefe(w):
+    z = zeilen(run_program([]))
+    for t in _soll(w):
+        assert t in z, "Es wird die Zeile %r erwartet. Dein Programm gibt aus: %r" % (t, z)
+
+def _schreibe(w):
+    with open("bremsen.csv", "w", encoding="utf-8") as f:
+        f.write(KOPF + "\n")
+        for i in range(len(w)):
+            f.write("%s;0,0;%s;0,0;1,0\n" % (("%.6f" % (i * 0.02)).replace(".", ","), ("%.4f" % w[i]).replace(".", ",")))
+
+def test_mitgelieferte_datei():
+    """bremsen.csv: 400 Messzeilen, Minimum -3.78, Maximum 0.76, Mittelwert -0.54"""
+    z = zeilen(run_program([]))
+    for t in ["Messzeilen: 400", "Minimum: -3.78 m/s²", "Maximum: 0.76 m/s²", "Mittelwert: -0.54 m/s²"]:
+        assert t in z, "Es wird die Zeile %r erwartet. Dein Programm gibt aus: %r" % (t, z)
+
+def test_andere_datei():
+    """Andere Datei mit 5 Messzeilen (Werte -2.5, 1.0, 0.0, -0.5, 2.0)"""
+    w = [-2.5, 1.0, 0.0, -0.5, 2.0]
+    _schreibe(w)
+    _pruefe(w)
+
+def test_eine_zeile():
+    """Datei mit genau einer Messzeile"""
+    w = [-1.25]
+    _schreibe(w)
+    _pruefe(w)
+
+def test_negative_werte():
+    """Nur negative Werte (Bremsung ohne Gegenbewegung)"""
+    w = [-0.25, -3.0, -1.75]
+    _schreibe(w)
+    _pruefe(w)
+        </script>
+        <script type="text/x-python" data-role="solution">
+import csv
+
+dateiname = "bremsen.csv"
+trenner = ";"
+
+werte = []
+with open(dateiname, encoding="utf-8") as datei:
+    leser = csv.reader(datei, delimiter=trenner)
+    kopf = next(leser)
+    for zeile in leser:
+        werte.append(float(zeile[2].replace(",", ".")))
+
+print(f"Messzeilen: {len(werte)}")
+print(f"Minimum: {min(werte):.2f} m/s²")
+print(f"Maximum: {max(werte):.2f} m/s²")
+print(f"Mittelwert: {sum(werte) / len(werte):.2f} m/s²")
+        </script>
+        <ol class="a-hints">
+          <li><code>with open(dateiname, encoding="utf-8") as datei:</code>, darunter eingerückt <code>leser = csv.reader(datei, delimiter=trenner)</code> und <code>kopf = next(leser)</code> (Syntax-Karte 4).</li>
+          <li>Eine Schleife <code>for zeile in leser:</code> liefert pro Durchlauf eine Liste von Feldern. Spalte 2 ist <code>zeile[2]</code>, ein Text mit Komma: <code>float(zeile[2].replace(",", "."))</code>, dann <code>werte.append(...)</code>.</li>
+          <li>Die Ausgaben stehen <em>nach</em> der Schleife (nicht eingerückt): <code>len(werte)</code>, <code>min(werte)</code>, <code>max(werte)</code> und <code>sum(werte) / len(werte)</code>, jeweils mit <code>:.2f</code> (V08).</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-review" data-seen="manual" data-title="Code-Review: KI-Code prüfen" data-part="A" data-stars="" data-min="20" data-extra="" aria-labelledby="h-a-review" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-review" tabindex="-1">Code-Review: KI-Code prüfen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Eine KI hat Code geliefert. Er sieht sauber aus und läuft los. Würdest du ihn freigeben? Klick die Zeilen an, die du für fehlerhaft hältst, dann lass auflösen.</p>
+      <figure class="k-figure">
+        <picture>
+          <source srcset="../assets/img/ki-spiegel.webp" type="image/webp">
+          <img src="../assets/img/ki-spiegel.png" alt="Illustration: KI-Code wird von einem Ingenieur geprüft" width="1600" height="901" loading="lazy" onerror="this.closest('figure').hidden=true">
+        </picture>
+      </figure>
+
+      <div class="k-mirror">
+        <h3>Szenario: Bremsmessung auswerten</h3>
+        <p class="k-prompt__who">Prompt eines Studierenden</p>
+        <blockquote class="k-prompt">Lies die phyphox-Datei bremsen-kaputt.csv ein (Semikolon als Trennzeichen, Dezimalkomma, UTF-8, mit Kopfzeile). Überspringe kaputte Zeilen und sag mir, wie viele Zeilen du übersprungen hast. Gib die Zahl der gültigen Zeilen und die größte Verzögerung aus (kleinster Wert in Spalte 2).</blockquote>
+        <p class="k-prompt__who">KI-Antwort (Python)</p>
+          <ol class="k-codelines" aria-label="Code der KI, Zeilen anklickbar">
+            <li><button type="button" class="k-line">import csv</button></li>
+            <li><button type="button" class="k-line"> </button></li>
+            <li><button type="button" class="k-line" data-bug="a">datei = open("bremsen-kaputt.csv")</button></li>
+            <li><button type="button" class="k-line">leser = csv.reader(datei, delimiter=&quot;;&quot;)</button></li>
+            <li><button type="button" class="k-line">kopf = next(leser)</button></li>
+            <li><button type="button" class="k-line">werte = []</button></li>
+            <li><button type="button" class="k-line">for zeile in leser:</button></li>
+            <li><button type="button" class="k-line">    try:</button></li>
+            <li><button type="button" class="k-line" data-bug="b">        werte.append(float(zeile[2]))</button></li>
+            <li><button type="button" class="k-line" data-bug="c">    except:</button></li>
+            <li><button type="button" class="k-line">        continue</button></li>
+            <li><button type="button" class="k-line"> </button></li>
+            <li><button type="button" class="k-line">print(f&quot;Gültige Zeilen: {len(werte)}&quot;)</button></li>
+            <li><button type="button" class="k-line">print(f&quot;Größte Verzögerung: {min(werte):.2f} m/s²&quot;)</button></li>
+          </ol>
+        <p class="k-small k-muted">Tipp: Es sind drei Fehler eingebaut. Nicht jede Zeile ist falsch.</p>
+
+        <div class="k-mirror__task">
+          <p><strong>Würdest du das freigeben?</strong> Markiere die fehlerhaften Zeilen, dann lass auflösen.</p>
+          <button type="button" class="k-btn" data-mirror-check>Auflösen</button>
+          <p class="k-verdict" role="status" hidden></p>
+
+          <div data-mirror-after hidden>
+            <h3>Die drei Fehler</h3>
+            <h4>Fehler 1: Datei ohne encoding und ohne with (Zeile 3)</h4>
+            <p><code class="k-i">open("bremsen-kaputt.csv")</code> ohne <code class="k-i">encoding="utf-8"</code> benutzt den Standard des Betriebssystems, unter Windows oft cp1252. Bei dieser Datei fällt das nicht auf, weil sie nur ASCII-Zeichen enthält. Die nächste Datei mit „²“ im Kopf liefert „Â²“ oder einen <code class="k-i">UnicodeDecodeError</code>. Ohne <code class="k-i">with</code> wird die Datei außerdem nie geschlossen. Lösung: <code class="k-i">with open("...", encoding="utf-8") as datei:</code> und den Rest eingerückt darunter.</p>
+            <h4>Fehler 2: Dezimalkomma ohne replace (Zeile 9)</h4>
+            <p><code class="k-i">float(zeile[2])</code> bekommt Texte wie <code class="k-i">"-3,777725E+00"</code> und löst bei <em>jeder</em> Zeile einen <code class="k-i">ValueError</code> aus. Das Programm läuft trotzdem durch (siehe Fehler 3), liefert aber keine einzige gültige Zeile. Lösung: <code class="k-i">float(zeile[2].replace(",", "."))</code>.</p>
+            <h4>Fehler 3: nacktes except, das alles verschluckt (Zeile 10)</h4>
+            <p>Ein <code class="k-i">except:</code> ohne Fehlerart fängt <em>jeden</em> Fehler, auch den aus Fehler 2, und <code class="k-i">continue</code> macht einfach weiter. Es meldet nichts und zählt auch nichts, obwohl der Prompt die Zahl der übersprungenen Zeilen verlangt hat. Das Programm stürzt erst bei <code class="k-i">min(werte)</code> mit einer Liste ohne Elemente ab: eine Fehlermeldung, die mit der Ursache nichts mehr zu tun hat. Lösung: <code class="k-i">except (ValueError, IndexError):</code>, im Block einen Zähler erhöhen und am Ende ausgeben.</p>
+
+            <h3>Die KI-Version zum Ausprobieren</h3>
+            <p class="k-small k-muted">Die Ausgabe beginnt mit „Gültige Zeilen: 0“ (alles wurde verschluckt), danach bricht <code class="k-i">min(werte)</code> mit einem ValueError ab.</p>
+            <pre data-files="../assets/data/v09/bremsen-kaputt.csv"><code>import csv
+
+datei = open("bremsen-kaputt.csv")
+leser = csv.reader(datei, delimiter=";")
+kopf = next(leser)
+werte = []
+for zeile in leser:
+    try:
+        werte.append(float(zeile[2]))
+    except:
+        continue
+
+print(f"Gültige Zeilen: {len(werte)}")
+print(f"Größte Verzögerung: {min(werte):.2f} m/s²")</code></pre>
+
+            <h3>Korrigierte Version</h3>
+            <pre data-files="../assets/data/v09/bremsen-kaputt.csv"><code>import csv
+
+werte = []
+kaputt = 0
+with open("bremsen-kaputt.csv", encoding="utf-8") as datei:
+    leser = csv.reader(datei, delimiter=";")
+    kopf = next(leser)
+    for zeile in leser:
+        try:
+            werte.append(float(zeile[2].replace(",", ".")))
+        except (ValueError, IndexError):
+            kaputt = kaputt + 1
+
+print(f"Gültige Zeilen: {len(werte)}, übersprungen: {kaputt}")
+print(f"Größte Verzögerung: {min(werte):.2f} m/s²")</code></pre>
+            <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke</strong><p>Bei KI-Code zu Dateien prüfst du immer vier Dinge: Stimmen Trennzeichen und Dezimalzeichen zu <em>deiner</em> Datei? Steht <code class="k-i">encoding</code> da? Fängt das <code class="k-i">except</code> nur die erwartete Fehlerart? Und wird gezählt, was übersprungen wurde? Die KI liefert den Normalfall (Punkt, Komma, saubere Datei), nicht deine Messung vom Fahrrad. Teste mit einer kleinen Datei, deren Ergebnis du von Hand kennst.</p></div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-fehler" data-title="Typische Fehlermeldungen" data-part="A" data-stars="" data-min="5" data-extra="" aria-labelledby="h-a-fehler" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-fehler" tabindex="-1">Typische Fehlermeldungen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Bei Dateien gibt es Fehler mit Meldung und solche ganz ohne. Jedes Beispiel lässt sich ausführen: Schau dir die echte Meldung an und lies sie von unten nach oben (zuerst die letzte Zeile).</p>
+      <div class="a-errors">
+        <div class="a-error">
+          <h3><code class="k-i">FileNotFoundError</code>: die Datei gibt es nicht</h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="5000" data-files="../assets/data/v09/bremsen.csv">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V09" aria-label="Fehlerbeispiel FileNotFoundError">with open("Bremsen.csv", encoding="utf-8") as datei:
+    zeilen = datei.readlines()
+print(len(zeilen))</textarea></div>
+          </div>
+          <p>Meldung: <code class="k-i">FileNotFoundError: [Errno 2] No such file or directory: 'Bremsen.csv'</code>. Die Meldung nennt den Namen, den Python gesucht hat: Hier steht ein großes „B“, die Datei heißt klein <code>bremsen.csv</code>. Prüfe Tippfehler, Endung (Windows versteckt sie gern), Groß-/Kleinschreibung und den Ordner. Unter Windows hätte dieser Code funktioniert, bei einem Kollegen mit Linux oder Mac nicht.</p>
+        </div>
+        <div class="a-error">
+          <h3><code class="k-i">ValueError</code>: Dezimalkomma</h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="5000">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V09" aria-label="Fehlerbeispiel ValueError beim Dezimalkomma">zeile = "4,94;-0,13;-3,78"
+felder = zeile.split(";")
+a = float(felder[2])
+print(a)</textarea></div>
+          </div>
+          <p>Meldung: <code class="k-i">ValueError: could not convert string to float: '-3,78'</code>. Die Meldung nennt den Text, den <code>float</code> nicht verstanden hat: Er enthält ein Komma. Lösung: <code>float(felder[2].replace(",", "."))</code>. Dieselbe Meldung bekommst du bei einem leeren Feld (<code>'' </code>), einem Wort wie <code>'Fehler'</code> oder wenn die Kopfzeile als Messwert gelesen wird.</p>
+        </div>
+        <div class="a-error">
+          <h3><code class="k-i">IndexError</code>: Spalte gibt es nicht (falsches Trennzeichen)</h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="5000" data-files="../assets/data/v09/waschmaschine.csv">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V09" aria-label="Fehlerbeispiel IndexError durch falsches Trennzeichen">import csv
+
+with open("waschmaschine.csv", encoding="utf-8") as datei:
+    leser = csv.reader(datei, delimiter=";")
+    kopf = next(leser)
+    erste = next(leser)
+print(len(erste), "Spalte(n)")
+print(erste[2])</textarea></div>
+          </div>
+          <p>Meldung: <code class="k-i">IndexError: list index out of range</code>. Die Datei hat ein <em>Komma</em> als Trennzeichen, aber <code>delimiter=";"</code> sucht ein Semikolon. Die ganze Zeile bleibt <em>ein</em> Feld, und der Index 2 existiert nicht. Die Zeile davor verrät es: „1 Spalte(n)“ statt fünf. Gegenprobe: erst <code>len(zeile)</code> ausgeben, wenn die Spaltenzahl nicht passt.</p>
+        </div>
+        <div class="a-error">
+          <h3><code class="k-i">UnicodeDecodeError</code>: falsche Kodierung</h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="5000">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V09" aria-label="Fehlerbeispiel UnicodeDecodeError">with open("alt.txt", "w", encoding="latin-1") as aus:
+    aus.write("Größe in mm\n")
+
+with open("alt.txt", encoding="utf-8") as datei:
+    print(datei.read())</textarea></div>
+          </div>
+          <p>Meldung: <code class="k-i">UnicodeDecodeError: 'utf-8' codec can't decode byte 0xf6 in position 2: invalid start byte</code>. Die Datei wurde in Latin-1 geschrieben (ö ist dort ein Byte, <code>F6</code>), UTF-8 erwartet aber etwas anderes. Das passiert mit alten Dateien und mit Excel-CSV ohne „UTF-8“. Lösung: die richtige Kodierung angeben (<code>encoding="latin-1"</code> oder <code>"cp1252"</code>) oder die Datei in UTF-8 neu speichern. Siehst du dagegen „Ã¶“ im Text, wurde UTF-8 mit Latin-1 gelesen (umgekehrter Fall).</p>
+        </div>
+        <div class="a-error">
+          <h3>Falsches Ergebnis ohne Meldung: Modus "w" löscht die Datei</h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="5000" data-files="../assets/data/v09/bremsen.csv">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V09" aria-label="Beispiel Modus w löscht die Messdatei">with open("bremsen.csv", "w", encoding="utf-8") as aus:
+    aus.write("Ergebnis;0\n")
+
+with open("bremsen.csv", encoding="utf-8") as datei:
+    zeilen = datei.readlines()
+print(len(zeilen), "Zeilen")</textarea></div>
+          </div>
+          <p>Ausgabe: „1 Zeilen“. Python meldet nichts: Das Programm tut genau, was dasteht. Wer die <em>Eingabedatei</em> mit <code>"w"</code> öffnet, um das Ergebnis hineinzuschreiben, hat die Messdaten sofort gelöscht (im Browser nur die Kopie, auf dem Rechner das Original). Messdaten nur lesen, Ergebnisse in eine <strong>andere</strong> Datei schreiben. Und ein Backup der Rohdaten schadet nie.</p>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-1" data-title="Eine Zeile zerlegen" data-part="B" data-stars="1" data-min="5" data-extra="" aria-labelledby="h-t-1" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-1" tabindex="-1">Eine Zeile zerlegen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Programmieren lernst du mit den Fingern, nicht mit den Augen. Das Training ist ein fester Teil jedes Termins und gehört zum Selbststudium. Du musst nicht alles an einem Stück machen, aber alles bis zum nächsten Termin. Die Aufgaben laufen komplett im Browser und werden automatisch geprüft.</p>
+      <div class="hinweis hinweis--achtung"><strong class="hinweis__title">Achtung</strong><p>Phase 1: <abbr class="k-begriff" data-erklaerung="GitHub Copilot ist ein KI-Assistent, der in der Entwicklungsumgebung Programmcode vorschlägt oder erklärt.">Copilot</abbr> nur als Erklärer. Erlaubt: „Erkläre mir diese Fehlermeldung“, „Was macht Zeile 3?“, „Warum findet Python die Datei nicht?“. Nicht erlaubt: „Schreib mir die Auswertung“. Du tippst den Code selbst, denn nur dann lernst du, ihn zu prüfen. Ab V10 darf die KI Code erzeugen, und du prüfst.</p></div>
+
+      <div class="a-task" data-a="code" data-id="tr-1" data-mode="code">
+        <div class="a-task__text">
+          <p>Eine Zeile aus einer phyphox-Datei (Semikolon, Dezimalkomma) steckt als Text in <code class="k-i">zeile</code>. Zerlege sie und weise die drei Werte als <strong>Kommazahlen</strong> den Variablen <code class="k-i">zeit</code>, <code class="k-i">y</code> und <code class="k-i">z</code> zu: erstes, zweites und drittes Feld. Der Zeilenumbruch am Ende darf nicht stören.</p>
+          <div class="a-spec"><strong>Ausgabe genau so:</strong><pre data-run="no">0.02 -0.08 1.25</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V09" aria-label="Python-Code Aufgabe 1">zeile = "0,02;-0,08;1,25\n"
+zeit = None     # erstes Feld als Zahl
+y = None        # zweites Feld als Zahl
+z = None        # drittes Feld als Zahl
+print(zeit, y, z)
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def test_zeit():
+    """zeit ist die Kommazahl 0.02"""
+    assert isinstance(zeit, float) and zeit == 0.02, "zeit ist %r, erwartet die Kommazahl 0.02. Dezimalkomma durch Punkt ersetzen und float benutzen." % (zeit,)
+
+def test_y():
+    """y ist die Kommazahl -0.08"""
+    assert isinstance(y, float) and y == -0.08, "y ist %r, erwartet die Kommazahl -0.08." % (y,)
+
+def test_z():
+    """z ist die Kommazahl 1.25 (letztes Feld mit Zeilenumbruch)"""
+    assert isinstance(z, float) and z == 1.25, "z ist %r, erwartet die Kommazahl 1.25. Tipp: strip() entfernt den Zeilenumbruch am Ende." % (z,)
+
+def test_ausgabe():
+    """Ausgabe: '0.02 -0.08 1.25'"""
+    z2 = zeilen(AUSGABE)
+    assert "0.02 -0.08 1.25" in z2, "Erwartet wird die Zeile '0.02 -0.08 1.25'. Dein Programm gibt aus: %r" % z2
+        </script>
+        <script type="text/x-python" data-role="solution">
+zeile = "0,02;-0,08;1,25\n"
+felder = zeile.strip().split(";")
+zeit = float(felder[0].replace(",", "."))
+y = float(felder[1].replace(",", "."))
+z = float(felder[2].replace(",", "."))
+print(zeit, y, z)
+        </script>
+        <ol class="a-hints">
+          <li>Erst zerlegen: <code>felder = zeile.strip().split(";")</code> (Syntax-Karte 1). Danach ist <code>felder[0]</code> der Text <code>'0,02'</code>.</li>
+          <li>Jedes Feld ist noch ein Text mit Komma. <code>replace(",", ".")</code> macht den Punkt daraus.</li>
+          <li><code>zeit = float(felder[0].replace(",", "."))</code>, entsprechend <code>y</code> mit Index 1 und <code>z</code> mit Index 2.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-2" data-title="Datei lesen: Zeilen zählen" data-part="B" data-stars="1" data-min="6" data-extra="" aria-labelledby="h-t-2" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-2" tabindex="-1">Datei lesen: Zeilen zählen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="code" data-id="tr-2" data-mode="programm" data-files="../assets/data/v09/waschmaschine.csv">
+        <div class="a-task__text">
+          <p>Die Datei <code class="k-i">waschmaschine.csv</code> (UTF-8) ist die Schleudermessung: Kopfzeile, dann je Zeile fünf Werte mit <strong>Komma</strong> als Trennzeichen und <strong>Punkt</strong> als Dezimalzeichen. Spalte 0 ist die Zeit in s. Lies die Datei mit dem <code class="k-i">csv</code>-Modul und gib aus, wie viele Messzeilen sie hat (ohne Kopfzeile) und welche Zeit in der letzten Zeile steht.</p>
+          <div class="a-spec"><strong>Ausgabe genau so (für die mitgelieferte Datei):</strong><pre data-run="no">Messzeilen: 600
+Letzte Zeit: 5.99 s</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V09" aria-label="Python-Code Aufgabe 2">import csv
+
+# lies waschmaschine.csv: Kopfzeile überspringen, Messzeilen zählen, letzte Zeit merken
+
+# Ausgabe: Messzeilen und letzte Zeit
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+KOPF = "Time (s),Linear Acceleration x (m/s^2),Linear Acceleration y (m/s^2),Linear Acceleration z (m/s^2),Absolute acceleration (m/s^2)"
+
+def _schreibe(zeiten):
+    with open("waschmaschine.csv", "w", encoding="utf-8") as f:
+        f.write(KOPF + "\n")
+        for t in zeiten:
+            f.write("%.6E,0.1,0.2,0.3,0.4\n" % t)
+
+def _pruefe(zeiten):
+    z = zeilen(run_program([]))
+    soll = ["Messzeilen: %d" % len(zeiten), "Letzte Zeit: %.2f s" % zeiten[-1]]
+    for t in soll:
+        assert t in z, "Es wird die Zeile %r erwartet. Dein Programm gibt aus: %r" % (t, z)
+
+def test_mitgelieferte_datei():
+    """waschmaschine.csv: 600 Messzeilen, letzte Zeit 5.99 s"""
+    z = zeilen(run_program([]))
+    for t in ["Messzeilen: 600", "Letzte Zeit: 5.99 s"]:
+        assert t in z, "Es wird die Zeile %r erwartet. Dein Programm gibt aus: %r" % (t, z)
+
+def test_kurze_datei():
+    """Andere Datei mit drei Messzeilen: 0.0, 0.5, 1.0"""
+    _schreibe([0.0, 0.5, 1.0])
+    _pruefe([0.0, 0.5, 1.0])
+
+def test_eine_zeile():
+    """Datei mit nur einer Messzeile"""
+    _schreibe([2.5])
+    _pruefe([2.5])
+        </script>
+        <script type="text/x-python" data-role="solution">
+import csv
+
+anzahl = 0
+letzte = 0.0
+with open("waschmaschine.csv", encoding="utf-8") as datei:
+    leser = csv.reader(datei)
+    kopf = next(leser)
+    for zeile in leser:
+        anzahl = anzahl + 1
+        letzte = float(zeile[0])
+
+print(f"Messzeilen: {anzahl}")
+print(f"Letzte Zeit: {letzte:.2f} s")
+        </script>
+        <ol class="a-hints">
+          <li><code>with open("waschmaschine.csv", encoding="utf-8") as datei:</code>, darunter eingerückt <code>leser = csv.reader(datei)</code>. Das Komma ist der Standard, ein <code>delimiter</code> ist nicht nötig (Karte 4).</li>
+          <li><code>kopf = next(leser)</code> holt die Kopfzeile ab. Danach läuft <code>for zeile in leser:</code> nur noch über Messzeilen. Im Rumpf erhöhst du einen Zähler und merkst dir <code>float(zeile[0])</code>.</li>
+          <li>Das Dezimalzeichen ist hier schon der Punkt: <code>replace</code> brauchst du nicht. Die Ausgabe steht nach der Schleife und dem <code>with</code>-Block.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-3" data-title="Fehler finden: ValueError beim Mittelwert" data-part="B" data-stars="2" data-min="6" data-extra="" aria-labelledby="h-t-3" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-3" tabindex="-1">Fehler finden: ValueError beim Mittelwert</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="code" data-id="tr-3" data-mode="code">
+        <div class="a-task__text">
+          <p>Die vier Texte stammen aus einer deutschen CSV-Datei. Das Programm soll ihren Mittelwert ausgeben, bricht aber ab. Lies die Fehlermeldung von unten nach oben, finde die Ursache und repariere das Programm mit <strong>einer</strong> Änderung.</p>
+          <div class="a-spec"><strong>Ausgabe genau so:</strong><pre data-run="no">Mittelwert: 12.25</pre></div>
+          <p class="k-small k-muted">Tipp: Die letzte Zeile des Tracebacks nennt den Text, den <code class="k-i">float</code> nicht versteht.</p>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V09" aria-label="Python-Code Aufgabe 3">texte = ["12,5", "13,0", "11,5", "12,0"]
+summe = 0.0
+for text in texte:
+    summe = summe + float(text)
+mittel = summe / len(texte)
+print(f"Mittelwert: {mittel:.2f}")
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def test_summe():
+    """Die Summe der Werte ist 49.0"""
+    assert summe == 49.0, "summe ist %r, erwartet 49.0 (12,5 + 13,0 + 11,5 + 12,0)." % (summe,)
+
+def test_mittel():
+    """Der Mittelwert ist 12.25"""
+    assert abs(mittel - 12.25) < 1e-9, "mittel ist %r, erwartet 12.25." % (mittel,)
+
+def test_texte_unveraendert():
+    """Die Textliste bleibt unverändert (Reparatur in der Schleife, nicht in den Daten)"""
+    assert texte == ["12,5", "13,0", "11,5", "12,0"], "Die Liste texte darf nicht geändert werden: Das Komma gehört zu den Daten, die Umwandlung zur Auswertung."
+
+def test_ausgabe():
+    """Ausgabe: 'Mittelwert: 12.25'"""
+    z = zeilen(AUSGABE)
+    assert "Mittelwert: 12.25" in z, "Erwartet wird die Zeile 'Mittelwert: 12.25'. Dein Programm gibt aus: %r" % z
+        </script>
+        <script type="text/x-python" data-role="solution">
+texte = ["12,5", "13,0", "11,5", "12,0"]
+summe = 0.0
+for text in texte:
+    summe = summe + float(text.replace(",", "."))
+mittel = summe / len(texte)
+print(f"Mittelwert: {mittel:.2f}")
+        </script>
+        <ol class="a-hints">
+          <li>Die Meldung heißt <code>ValueError: could not convert string to float: '12,5'</code>. Was ist an <code>'12,5'</code> für Python falsch?</li>
+          <li>Python kennt als Dezimalzeichen nur den Punkt. Ein Text mit Komma muss vor <code>float</code> angepasst werden (Syntax-Karte 1).</li>
+          <li>Ändere nur Zeile 4: <code>float(text.replace(",", "."))</code>.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-4" data-title="Stückliste aus Textzeilen aufbauen" data-part="B" data-stars="2" data-min="8" data-extra="Wiederholung V08" aria-labelledby="h-t-4" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-4" tabindex="-1">Stückliste aus Textzeilen aufbauen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="code" data-id="tr-4" data-mode="code">
+        <div class="a-task__text">
+          <p>Wiederholung V08 (Dictionary, Tupel, <code class="k-i">.items()</code>) mit dem Neuen aus V09: Eine Stückliste kommt als CSV-Zeilen im Format <code class="k-i">Teilenummer;Menge;Gewicht in kg</code> mit Dezimalkomma. Baue daraus das Dictionary <code class="k-i">stueckliste</code>: Der Schlüssel ist die Teilenummer, der Wert ein <strong>Tupel</strong> (Menge als ganze Zahl, Gewicht als Kommazahl). Berechne danach mit <code class="k-i">.items()</code> das Gesamtgewicht (Menge mal Gewicht, Summe) in der Variablen <code class="k-i">gesamt</code>.</p>
+          <div class="a-spec"><strong>Ausgabe genau so:</strong><pre data-run="no">Gesamtgewicht: 2.71 kg</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V09" aria-label="Python-Code Aufgabe 4">zeilen = ["W-100;1;2,40", "L-6205;2;0,13", "D-35;2;0,02", "P-8x7;1;0,01"]
+stueckliste = {}
+# zerlege jede Zeile und trage sie ein: Teilenummer -> (Menge, Gewicht)
+
+gesamt = 0.0
+# Gesamtgewicht mit .items() berechnen
+print(f"Gesamtgewicht: {gesamt:.2f} kg")
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def test_dictionary():
+    """Das Dictionary hat vier Einträge mit Tupeln (Menge, Gewicht)"""
+    soll = {"W-100": (1, 2.4), "L-6205": (2, 0.13), "D-35": (2, 0.02), "P-8x7": (1, 0.01)}
+    assert stueckliste == soll, "stueckliste ist %r, erwartet %r. Menge als int, Gewicht als float, beides in einem Tupel." % (stueckliste, soll)
+
+def test_gesamt():
+    """gesamt ist 2.71"""
+    assert abs(gesamt - 2.71) < 1e-9, "gesamt ist %r, erwartet 2.71 (2,40 + 0,26 + 0,04 + 0,01)." % (gesamt,)
+
+def test_ausgabe():
+    """Ausgabe: 'Gesamtgewicht: 2.71 kg'"""
+    z = zeilen(AUSGABE)
+    assert "Gesamtgewicht: 2.71 kg" in z, "Erwartet wird die Zeile 'Gesamtgewicht: 2.71 kg'. Dein Programm gibt aus: %r" % z
+        </script>
+        <script type="text/x-python" data-role="solution">
+zeilen = ["W-100;1;2,40", "L-6205;2;0,13", "D-35;2;0,02", "P-8x7;1;0,01"]
+stueckliste = {}
+for zeile in zeilen:
+    felder = zeile.split(";")
+    menge = int(felder[1])
+    gewicht = float(felder[2].replace(",", "."))
+    stueckliste[felder[0]] = (menge, gewicht)
+
+gesamt = 0.0
+for teil, werte in stueckliste.items():
+    gesamt = gesamt + werte[0] * werte[1]
+print(f"Gesamtgewicht: {gesamt:.2f} kg")
+        </script>
+        <ol class="a-hints">
+          <li>Eine Schleife über die Liste <code>zeilen</code> (V08): <code>for zeile in zeilen:</code>. Im Rumpf zerlegst du die Zeile mit <code>split(";")</code>.</li>
+          <li>Das Feld 0 ist der Schlüssel. Die Menge ist <code>int(felder[1])</code>, das Gewicht <code>float(felder[2].replace(",", "."))</code>. Der Eintrag: <code>stueckliste[felder[0]] = (menge, gewicht)</code>.</li>
+          <li>Das Gesamtgewicht wie in V08: <code>for teil, werte in stueckliste.items():</code> und <code>gesamt = gesamt + werte[0] * werte[1]</code>, nach der ersten Schleife.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-zeichnen" data-title="PAP zeichnen: Verzögerungsspitze suchen" data-part="B" data-stars="2" data-min="8" data-extra="PAP-Editor" aria-labelledby="h-t-zeichnen" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-zeichnen" tabindex="-1">PAP zeichnen: Verzögerungsspitze suchen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task k-pap-aufgabe" data-a="pap-zeichnen" data-id="tr-zeichnen" data-timeout="8000" data-erlaubt="in,out,op,if,for">
+        <div class="a-task__head"><h3 class="a-task__title">Stärkste Bremsung finden</h3></div>
+        <p>Beim Einlesen einer Datei kommt eine Messzeile nach der anderen. Zeichne einen Programmablaufplan, der zuerst die Zahl <em>n</em> der Messwerte (ganze Zahl) einliest und danach <em>n</em> Beschleunigungswerte in m/s² (Kommazahlen, einen nach dem anderen). Gesucht ist der <strong>kleinste</strong> Wert, die Verzögerungsspitze, und seine Nummer (gezählt ab 0). Gib zuerst den kleinsten Wert und danach seine Nummer aus. Mindestens ein Wert ist negativ. Der Anfang steht schon im Plan. Der Plan folgt dem Muster „Zeile lesen, vergleichen, merken“ aus der Lerneinheit.</p>
+        <script type="application/json" data-role="start">{"baum":[{"k":"in","v":"n","typ":"int"},{"k":"op","v":"spitze = 0.0"},{"k":"op","v":"stelle = 0"}]}</script>
+        <script type="text/x-python" data-role="tests">
+def _pruefe(werte, spitze, stelle):
+    z = zahlen(run_program([str(len(werte))] + [str(w) for w in werte]))
+    assert len(z) >= 2 and z[-2] == spitze and z[-1] == stelle, "Bei %r wird zuerst %s und dann %s ausgegeben. Dein Programm gibt aus: %r" % (werte, spitze, stelle, z)
+
+def test_beispiel():
+    """Beispiel: 0.5, -1.5, -3.8, -2.0: Spitze -3.8 bei Nummer 2"""
+    _pruefe([0.5, -1.5, -3.8, -2.0], -3.8, 2)
+
+def test_spitze_vorn():
+    """Die Spitze ist der erste Wert: -4.2, -1.0, 0.3"""
+    _pruefe([-4.2, -1.0, 0.3], -4.2, 0)
+
+def test_spitze_hinten():
+    """Die Spitze ist der letzte Wert: -0.5, -1.0, -2.5"""
+    _pruefe([-0.5, -1.0, -2.5], -2.5, 2)
+
+def test_ein_wert():
+    """Genau ein Wert: n = 1, -1.5"""
+    _pruefe([-1.5], -1.5, 0)
+        </script>
+        <script type="application/json" data-role="solution">{"baum":[{"k":"in","v":"n","typ":"int"},{"k":"op","v":"spitze = 0.0"},{"k":"op","v":"stelle = 0"},{"k":"for","v":"i in range(n)","body":[{"k":"in","v":"a","typ":"float"},{"k":"if","v":"a < spitze","yes":[{"k":"op","v":"spitze = a"},{"k":"op","v":"stelle = i"}],"no":[]}]},{"k":"out","v":"spitze"},{"k":"out","v":"stelle"}]}</script>
+        <ol class="a-hints">
+          <li>Die Werte kommen in einer Zählschleife (<code class="k-i">i in range(n)</code>) herein. In <em>jedem</em> Durchlauf liest du <em>einen</em> Wert ein (Symbol Eingabe, Datentyp Kommazahl).</li>
+          <li>Unter dem Einlesen fragt eine Verzweigung: <code class="k-i">a &lt; spitze</code>? Nur im Weg „ja“ merkst du dir den neuen Wert und seine Nummer: <code class="k-i">spitze = a</code> und <code class="k-i">stelle = i</code>.</li>
+          <li>Beide Ausgaben stehen <em>hinter</em> der Schleife, erst <code class="k-i">spitze</code>, dann <code class="k-i">stelle</code>. Die Rückführlinie der Schleife läuft von beiden Wegen der Verzweigung zurück.</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="l-task" id="t-6" data-title="Ergebnis für Excel schreiben" data-part="B" data-stars="3" data-min="10" data-extra="" aria-labelledby="h-t-6" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-6" tabindex="-1">Ergebnis für Excel schreiben</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="code" data-id="tr-6" data-mode="programm" data-inputs="3|0.5|-1.25|12.5">
+        <div class="a-task__text">
+          <p>Ein Messprogramm gibt Werte mit Punkt aus, dein Kollege öffnet die Datei aber in einem deutschen Excel. Das Programm liest zuerst die Zahl <em>n</em> der Werte (ganze Zahl) und danach n Werte (Kommazahlen, mit Punkt eingegeben, je ein <code class="k-i">input()</code>). Es schreibt die Datei <code class="k-i">export.csv</code> (UTF-8): erste Zeile <code class="k-i">Nr;Wert</code>, danach je Wert eine Zeile aus der laufenden Nummer (ab 1), einem Semikolon und dem Wert mit <strong>zwei Nachkommastellen und Dezimalkomma</strong>. Zum Schluss gibt es die Zahl der geschriebenen Zeilen aus.</p>
+          <div class="a-spec"><strong>Datei export.csv und Ausgabe (Eingabe n = 3 mit 0.5, -1.25, 12.5):</strong><pre data-run="no">Nr;Wert
+1;0,50
+2;-1,25
+3;12,50
+
+Geschrieben: 3 Zeilen</pre></div>
+          <p class="k-small k-muted">Die Datei erscheint unter der Ausgabe als „Erzeugte Datei“. Die Kopfzeile zählt nicht als geschriebene Zeile.</p>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V09" aria-label="Python-Code Aufgabe 6">n = int(input("Anzahl Werte: "))
+werte = []
+# lies n Werte ein und hänge sie an werte an
+
+# schreibe export.csv: Kopfzeile, dann je Wert eine Zeile mit Dezimalkomma
+
+# Ausgabe: Zahl der geschriebenen Zeilen
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _pruefe(werte):
+    z = zeilen(run_program([str(len(werte))] + [str(w) for w in werte]))
+    try:
+        inhalt = open("export.csv", encoding="utf-8").read().splitlines()
+    except FileNotFoundError:
+        raise AssertionError("Die Datei export.csv wurde nicht angelegt. Mit open(\"export.csv\", \"w\", encoding=\"utf-8\") schreibst du sie.")
+    soll = ["Nr;Wert"] + ["%d;%s" % (i + 1, ("%.2f" % w).replace(".", ",")) for i, w in enumerate(werte)]
+    assert inhalt == soll, "In export.csv stehen die Zeilen %r, erwartet werden %r." % (inhalt, soll)
+    t = "Geschrieben: %d Zeilen" % len(werte)
+    assert t in z, "Es wird die Zeile %r erwartet. Dein Programm gibt aus: %r" % (t, z)
+
+def test_beispiel():
+    """n = 3: 0.5, -1.25, 12.5"""
+    _pruefe([0.5, -1.25, 12.5])
+
+def test_ein_wert():
+    """n = 1: ein Wert"""
+    _pruefe([-3.78])
+
+def test_viele():
+    """n = 4 mit verschiedenen Nachkommastellen: 1.0, 2.5, 3.125, 100.0"""
+    _pruefe([1.0, 2.5, 3.25, 100.0])
+
+def test_null():
+    """n = 0: nur die Kopfzeile, 0 Zeilen"""
+    _pruefe([])
+        </script>
+        <script type="text/x-python" data-role="solution">
+n = int(input("Anzahl Werte: "))
+werte = []
+for i in range(n):
+    werte.append(float(input(f"Wert {i + 1}: ")))
+
+with open("export.csv", "w", encoding="utf-8") as aus:
+    aus.write("Nr;Wert\n")
+    for i in range(len(werte)):
+        text = f"{werte[i]:.2f}".replace(".", ",")
+        aus.write(f"{i + 1};{text}\n")
+
+print(f"Geschrieben: {len(werte)} Zeilen")
+        </script>
+        <ol class="a-hints">
+          <li>Das Einlesen kennst du aus V08: <code>for i in range(n):</code> und <code>werte.append(float(input(...)))</code>.</li>
+          <li>Datei öffnen mit <code>with open("export.csv", "w", encoding="utf-8") as aus:</code> (Karte 3). Als Erstes <code>aus.write("Nr;Wert\n")</code>, dann eine Schleife über die Positionen der Liste.</li>
+          <li>Pro Zeile: <code>text = f"{werte[i]:.2f}".replace(".", ",")</code> macht aus dem Wert den Text mit Komma, und <code>aus.write(f"{i + 1};{text}\n")</code> schreibt die Zeile. Vergiss das <code>\n</code> nicht, sonst steht alles in einer Zeile.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-7" data-title="Knobelaufgabe: Bremsphase und Geschwindigkeitsabnahme" data-part="B" data-stars="4" data-min="Zusatz" data-extra="" aria-labelledby="h-t-7" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-7" tabindex="-1">Knobelaufgabe: Bremsphase und Geschwindigkeitsabnahme</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="code" data-id="tr-7" data-mode="programm" data-files="../assets/data/v09/bremsen.csv">
+        <div class="a-task__text">
+          <p>Aus der Beschleunigung <em>a</em>(t) lässt sich berechnen, wie viel Geschwindigkeit beim Bremsen verloren ging: Über ein kurzes Zeitintervall Δt ändert sich die Geschwindigkeit um <em>a</em>·Δt. Alle Beiträge der Bremsphase addiert ergeben die Geschwindigkeitsänderung (Näherung durch eine Summe, V06). Lies <code class="k-i">bremsen.csv</code> (Semikolon, Dezimalkomma). Zur <strong>Bremsphase</strong> zählt jede Messzeile ab der zweiten, deren Beschleunigung (Spalte 2) <strong>kleiner als −1,0 m/s²</strong> ist. Für sie ist Δt der Abstand zur Zeit der <em>vorigen</em> Zeile (Spalte 0). Berechne die Dauer der Bremsphase (Summe der Δt) und die Geschwindigkeitsänderung (Summe von <em>a</em>·Δt) in m/s und in km/h (Faktor 3,6).</p>
+          <div class="a-spec"><strong>Ausgabe genau so (für die mitgelieferte Datei):</strong><pre data-run="no">Bremsphase: 1.56 s
+Geschwindigkeitsänderung: -4.20 m/s (-15.1 km/h)</pre></div>
+          <p class="k-small k-muted">Kontrolle: Das Rad verliert im Beispiel rund 15 km/h in eineinhalb Sekunden: eine kräftige, aber plausible Bremsung.</p>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V09" aria-label="Python-Code Aufgabe 7"># Bremsphase aus bremsen.csv
+
+# lies die Datei: Zeiten und Beschleunigungen in zwei Listen
+
+# summiere Dauer und Geschwindigkeitsänderung über die Bremsphase
+
+# Ausgabe: Dauer, Geschwindigkeitsänderung in m/s und km/h
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+KOPF = '"Time (s)";"Linear Acceleration x (m/s^2)";"Linear Acceleration y (m/s^2)";"Linear Acceleration z (m/s^2)";"Absolute acceleration (m/s^2)"'
+
+def _zahl(s):
+    return float(s.replace(",", "."))
+
+def _ref():
+    import csv
+    with open("bremsen.csv", encoding="utf-8") as f:
+        r = csv.reader(f, delimiter=";")
+        next(r)
+        t, a = [], []
+        for z in r:
+            t.append(_zahl(z[0])); a.append(_zahl(z[2]))
+    dur = 0.0
+    dv = 0.0
+    for i in range(1, len(a)):
+        if a[i] < -1.0:
+            dt = t[i] - t[i - 1]
+            dur = dur + dt
+            dv = dv + a[i] * dt
+    return ["Bremsphase: %.2f s" % dur, "Geschwindigkeitsänderung: %.2f m/s (%.1f km/h)" % (dv, dv * 3.6)]
+
+def _pruefe():
+    soll = _ref()
+    z = zeilen(run_program([]))
+    for t in soll:
+        assert t in z, "Es wird die Zeile %r erwartet. Dein Programm gibt aus: %r" % (t, z)
+
+def _schreibe(t, a):
+    with open("bremsen.csv", "w", encoding="utf-8") as f:
+        f.write(KOPF + "\n")
+        for i in range(len(a)):
+            f.write("%s;0,0;%s;0,0;1,0\n" % (("%.6f" % t[i]).replace(".", ","), ("%.4f" % a[i]).replace(".", ",")))
+
+def test_mitgelieferte_datei():
+    """bremsen.csv: 1.56 s und -4.20 m/s (-15.1 km/h)"""
+    z = zeilen(run_program([]))
+    for t in ["Bremsphase: 1.56 s", "Geschwindigkeitsänderung: -4.20 m/s (-15.1 km/h)"]:
+        assert t in z, "Es wird die Zeile %r erwartet. Dein Programm gibt aus: %r" % (t, z)
+
+def test_andere_datei():
+    """Andere Datei mit Zeitabstand 0.1 s und drei Bremswerten"""
+    _schreibe([0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6], [0.0, -0.5, -1.5, -2.5, -1.2, -0.4, 0.3])
+    _pruefe()
+
+def test_keine_bremsung():
+    """Keine Zeile unter -1.0: Dauer 0.00 s, Änderung 0.00 m/s"""
+    _schreibe([0.0, 0.5, 1.0], [0.2, -0.5, 0.1])
+    _pruefe()
+
+def test_erste_zeile_zaehlt_nicht():
+    """Die erste Zeile gehört nie zur Bremsphase (kein Zeitabstand)"""
+    _schreibe([0.0, 0.5, 1.0], [-5.0, -2.0, 0.1])
+    _pruefe()
+        </script>
+        <script type="text/x-python" data-role="solution">
+import csv
+
+zeiten = []
+werte = []
+with open("bremsen.csv", encoding="utf-8") as datei:
+    leser = csv.reader(datei, delimiter=";")
+    kopf = next(leser)
+    for zeile in leser:
+        zeiten.append(float(zeile[0].replace(",", ".")))
+        werte.append(float(zeile[2].replace(",", ".")))
+
+dauer = 0.0
+dv = 0.0
+for i in range(1, len(werte)):
+    if werte[i] < -1.0:
+        dt = zeiten[i] - zeiten[i - 1]
+        dauer = dauer + dt
+        dv = dv + werte[i] * dt
+
+print(f"Bremsphase: {dauer:.2f} s")
+print(f"Geschwindigkeitsänderung: {dv:.2f} m/s ({dv * 3.6:.1f} km/h)")
+        </script>
+        <ol class="a-hints">
+          <li>Lies die Datei wie in der Beispielaufgabe in zwei Listen <code>zeiten</code> und <code>werte</code> (<code>replace</code> und <code>float</code> für beide Spalten, Kopfzeile mit <code>next</code> überspringen).</li>
+          <li>Zwei Akkumulatoren vor der Schleife: <code>dauer = 0.0</code> und <code>dv = 0.0</code> (V06). Die Schleife braucht den Index, denn du brauchst die <em>vorige</em> Zeit: <code>for i in range(1, len(werte)):</code> (V08).</li>
+          <li>Im Rumpf: <code>if werte[i] &lt; -1.0:</code>, dann <code>dt = zeiten[i] - zeiten[i - 1]</code>, <code>dauer = dauer + dt</code> und <code>dv = dv + werte[i] * dt</code>. Die Ausgabe in km/h: <code>dv * 3.6</code>.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-8" data-title="Klausur-Modus: Waschmaschine auswerten" data-part="B" data-stars="4" data-min="15" data-extra="8 Punkte" aria-labelledby="h-t-8" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-8" tabindex="-1">Klausur-Modus: Waschmaschine auswerten</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="klausur" data-id="tr-8" data-mode="programm" data-minutes="15" data-files="../assets/data/v09/waschmaschine.csv">
+        <div class="a-task__text">
+          <p><strong>So wie in der Klausur:</strong> Schreibe den Code ohne Ausführen und ohne <abbr class="k-begriff" data-erklaerung="Die Auto-Vervollständigung schlägt dir beim Tippen passende Wörter vor. In der Klausur gibt es sie nicht.">Auto-Vervollständigung</abbr>, wenn möglich zuerst auf Papier. Erst danach „Abgeben und prüfen“, dann bewertest du dich selbst.</p>
+          <p>Die Datei <code>waschmaschine.csv</code> (UTF-8) enthält die Vibrationsmessung einer Waschmaschine beim Schleudern: erste Zeile Kopfzeile, danach je Zeile fünf durch <strong>Komma</strong> getrennte Werte mit <strong>Dezimalpunkt</strong>. Spalte 2 ist die Beschleunigung in m/s². Manche Zeilen können kaputt sein (Text oder leeres Feld statt Zahl, zu wenige Spalten). Schreibe ein Programm, das die Datei mit dem <code>csv</code>-Modul liest, kaputte Zeilen mit <code>try/except</code> überspringt und zählt, und danach ausgibt: die Zahl der gültigen Zeilen, die Zahl der kaputten Zeilen und die größte <strong>Amplitude</strong> (größter Betrag der Beschleunigung, der Betrag einer Zahl <code>x</code> ist <code>abs(x)</code>). Die Amplitude schreibt es außerdem in die Datei <code>ergebnis.txt</code>.</p>
+          <div class="a-spec"><strong>Ausgabe genau so (für die mitgelieferte Datei) und Inhalt von ergebnis.txt:</strong><pre data-run="no">Gültige Zeilen: 600
+Kaputte Zeilen: 0
+Größte Amplitude: 1.10 m/s²
+
+ergebnis.txt:
+Amplitude;1.10</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V09" data-assist="off" aria-label="Python-Code von Hand schreiben, ohne Ausführen"></textarea></div>
+        <script type="text/x-python" data-role="tests">
+KOPF = "Time (s),Linear Acceleration x (m/s^2),Linear Acceleration y (m/s^2),Linear Acceleration z (m/s^2),Absolute acceleration (m/s^2)"
+
+def _schreibe(zeilen_):
+    with open("waschmaschine.csv", "w", encoding="utf-8") as f:
+        f.write(KOPF + "\n")
+        for z in zeilen_:
+            f.write(z + "\n")
+
+def _pruefe(zeilen_, gut, kaputt, amp):
+    _schreibe(zeilen_)
+    z = zeilen(run_program([]))
+    soll = ["Gültige Zeilen: %d" % gut, "Kaputte Zeilen: %d" % kaputt, "Größte Amplitude: %.2f m/s²" % amp]
+    for t in soll:
+        assert t in z, "Es wird die Zeile %r erwartet. Dein Programm gibt aus: %r" % (t, z)
+    try:
+        inhalt = open("ergebnis.txt", encoding="utf-8").read().strip()
+    except FileNotFoundError:
+        raise AssertionError("Die Datei ergebnis.txt wurde nicht angelegt.")
+    assert inhalt == "Amplitude;%.2f" % amp, "In ergebnis.txt steht %r, erwartet wird %r." % (inhalt, "Amplitude;%.2f" % amp)
+
+def test_mitgelieferte_datei():
+    """waschmaschine.csv: 600 gültige, 0 kaputte, Amplitude 1.10"""
+    z = zeilen(run_program([]))
+    for t in ["Gültige Zeilen: 600", "Kaputte Zeilen: 0", "Größte Amplitude: 1.10 m/s²"]:
+        assert t in z, "Es wird die Zeile %r erwartet. Dein Programm gibt aus: %r" % (t, z)
+    inhalt = open("ergebnis.txt", encoding="utf-8").read().strip()
+    assert inhalt == "Amplitude;1.10", "In ergebnis.txt steht %r, erwartet wird 'Amplitude;1.10'." % inhalt
+
+def test_kleine_datei():
+    """Drei Zeilen: größter Betrag bei -2.5 (negativ)"""
+    _pruefe(["0.00,0.1,0.50,0.3,0.4", "0.01,0.1,-2.50,0.3,0.4", "0.02,0.1,1.25,0.3,0.4"], 3, 0, 2.5)
+
+def test_kaputte_zeilen():
+    """Text, leeres Feld und zu kurze Zeile werden übersprungen"""
+    _pruefe(["0.00,0.1,0.50,0.3,0.4", "0.01,0.1,Fehler,0.3,0.4", "0.02,0.1,,0.3,0.4", "0.03,0.1", "0.04,0.1,-1.75,0.3,0.4"], 2, 3, 1.75)
+
+def test_betrag_positiv():
+    """Die größte Amplitude ist positiv: 0.25, 3.00, -1.00"""
+    _pruefe(["0.00,0.1,0.25,0.3,0.4", "0.01,0.1,3.00,0.3,0.4", "0.02,0.1,-1.00,0.3,0.4"], 3, 0, 3.0)
+        </script>
+        <script type="text/x-python" data-role="solution">
+import csv
+
+gut = 0
+kaputt = 0
+amplitude = 0.0
+with open("waschmaschine.csv", encoding="utf-8") as datei:
+    leser = csv.reader(datei)
+    kopf = next(leser)
+    for zeile in leser:
+        try:
+            a = float(zeile[2])
+        except (ValueError, IndexError):
+            kaputt = kaputt + 1
+            continue
+        gut = gut + 1
+        if abs(a) > amplitude:
+            amplitude = abs(a)
+
+print(f"Gültige Zeilen: {gut}")
+print(f"Kaputte Zeilen: {kaputt}")
+print(f"Größte Amplitude: {amplitude:.2f} m/s²")
+with open("ergebnis.txt", "w", encoding="utf-8") as aus:
+    aus.write(f"Amplitude;{amplitude:.2f}\n")
+        </script>
+        <script type="application/json" data-role="scheme">[
+{"p":1,"t":"Die Datei wird mit with open(..., encoding=\"utf-8\") geöffnet (automatisch geschlossen)"},
+{"p":1,"t":"csv.reader mit dem richtigen Trennzeichen (Komma ist Standard) und die Kopfzeile wird mit next(leser) abgeholt"},
+{"p":2,"t":"try/except fängt ValueError und IndexError (zu kurze Zeilen) in der Schleife ab, die Umwandlung mit float steht im try-Block (Dezimalpunkt: kein replace nötig)"},
+{"p":1,"t":"Zähler für gültige und kaputte Zeilen starten vor der Schleife bei 0 und werden an der richtigen Stelle erhöht (kaputte nur im except)"},
+{"p":1,"t":"Die größte Amplitude wird über den Betrag abs(a) bestimmt (auch bei negativen Werten) und nur mit gültigen Zeilen"},
+{"p":1,"t":"Die drei Ausgaben haben den richtigen Text, die Einheit m/s² und zwei Nachkommastellen"},
+{"p":1,"t":"ergebnis.txt wird mit Modus \"w\" geschrieben, der Inhalt hat das Format Amplitude;1.10 mit Zeilenumbruch"}
+]</script>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-notebook" data-nonumber="1" data-title="Notebook und Deep Dive" data-part="B" data-stars="" data-min="" data-extra="ohne Wertung" aria-labelledby="h-t-notebook" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-notebook" tabindex="-1">Notebook und Deep Dive</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Mehr üben mit Messdateien, Dezimalkomma, Trennzeichen und kaputten Zeilen. Das Notebook erzeugt seine Beispieldateien selbst (du brauchst keine Datei herunterzuladen) und nimmt auf Wunsch deine eigene phyphox-Datei. Es nutzt nur Python aus V01 bis V09, hat drei Stufen (Aufwärmen, Anwenden, Knobeln), keine Lösungen, dafür Selbsttests.</p>
+      <p><a class="k-btn k-btn--ghost" href="../notebooks/V09-Dateien-und-Fehler.ipynb" download>V09-Dateien-und-Fehler.ipynb herunterladen</a></p>
+      <ol class="k-steps">
+        <li><strong>In Codespaces öffnen:</strong> Im Kurs-Repository auf GitHub „Code“ → „Codespaces“ → „Create codespace“. Die Umgebung (Python 3.12, NumPy, Matplotlib, Jupyter) ist vorbereitet. Dann <code class="k-i">notebooks/V09-Dateien-und-Fehler.ipynb</code> öffnen. Eigene Dateien legst du per Ziehen in den Dateibaum links neben das Notebook.</li>
+        <li><strong>Oder lokal:</strong> <code class="k-i">pip install numpy matplotlib jupyter</code>, dann <code class="k-i">jupyter lab</code>. Beachte: Auf deinem Rechner liegen die Dateien im Ordner des Notebooks, das ist das Arbeitsverzeichnis.</li>
+        <li>Immer erst die Vorhersage-Zellen ausfüllen, dann ausführen.</li>
+      </ol>
+      <h3>Danach</h3>
+      <p><a href="v09-dateien-und-fehler.html#deepdive">Zum Deep Dive</a> (freiwillig): Text- und Binärdateien, Excel-Fallen, Ausnahmen selbst auslösen. Oder zurück zur <a href="v09-dateien-und-fehler.html">Lerneinheit</a>, um etwas nachzulesen. Nächster Termin: V10, wie funktioniert KI?</p>
+
+    </section>
+
+      <nav class="lab__pager" aria-label="Zwischen Aufgaben wechseln">
+        <a class="k-btn k-btn--ghost" id="lab-prev" href="#a-werkzeugkasten">← Zurück</a>
+        <a class="k-btn k-btn--ghost" id="lab-next" href="#a-vorgemacht">Weiter →</a>
+      </nav>
+    </main>
+
+    <div class="lab__dock" data-library-dock data-state="off"></div>
+  </div>
+
+  <footer class="dhbw-footer k-footer">
+    <div class="dhbw-footer__inner">
+      <span><span class="dhbw-footer__brand">DHBW Stuttgart</span> · Campus Horb</span>
+      <span><a href="../index.html">Zurück zum Lernpfad</a> · V09 Programmierlabor</span>
+    </div>
+  </footer>
+
+  <script src="../assets/js/speicher.js"></script>
+  <script src="../assets/js/icons.js"></script>
+  <script src="../assets/js/editor.js" defer></script>
+  <script src="../assets/js/pap-engine.js"></script>
+  <script src="../assets/js/explorables-v09.js"></script>
+  <script src="../assets/js/kurs.js"></script>
+  <script src="../assets/js/aufgaben.js"></script>
+  <script src="../assets/js/pap-editor.js"></script>
+  <script src="../assets/js/labor.js"></script>
+</body>
+</html>
