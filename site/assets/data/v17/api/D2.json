@@ -1,0 +1,13 @@
+{
+  "id": "D2",
+  "zeit": "2026-11-20T10:15:00+01:00",
+  "status": "laeuft",
+  "programm": "WELLE_20H6",
+  "stueckzahl_schicht": 142,
+  "drehzahl_1_min": 1450,
+  "temperatur_spindel_c": 48.5,
+  "werkzeugverschleiss_prozent": {
+    "T1": 22,
+    "T4": 83
+  }
+}

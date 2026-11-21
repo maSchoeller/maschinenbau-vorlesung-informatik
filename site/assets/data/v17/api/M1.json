@@ -1,0 +1,8 @@
+{
+  "id": "M1",
+  "zeit": "2026-11-20T10:15:00+01:00",
+  "status": "bereit",
+  "programm": "PRUEF_WELLE",
+  "stueckzahl_schicht": 140,
+  "temperatur_raum_c": 20.1
+}

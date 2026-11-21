@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PAP-Editor · Informatik Maschinenbau · DHBW Stuttgart Campus Horb</title>
+  <meta name="description" content="Programmablaufpläne nach DIN 66001 per Klick bauen: Symbole einfügen, Texte bearbeiten, Python-Code live erzeugen und ausführen, Code in einen Plan zurückverwandeln, als SVG oder PNG exportieren.">
+  <link rel="stylesheet" href="assets/css/dhbw-base.css">
+  <link rel="stylesheet" href="assets/css/kurs.css">
+  <link rel="stylesheet" href="assets/css/aufgaben.css">
+  <link rel="stylesheet" href="assets/css/editor.css">
+  <link rel="stylesheet" href="assets/css/pap-editor.css">
+</head>
+<body data-page="pap-editor" data-lesson="PAP">
+  <a class="k-skip" href="#inhalt">Zum Inhalt springen</a>
+
+  <header class="dhbw-header k-header">
+    <div class="dhbw-header__inner">
+      <a class="k-logo" href="index.html" aria-label="Startseite Informatik Maschinenbau">
+        <span class="k-logo__mark" aria-hidden="true">DHBW</span>
+        <span class="k-logo__text">Informatik Maschinenbau<small>Campus Horb · 2026/27</small></span>
+      </a>
+      <nav class="k-nav" aria-label="Hauptnavigation">
+        <a href="index.html#leitidee">Leitidee</a>
+        <a href="index.html#ampel">Wissens-Ampel</a>
+        <a href="index.html#lernpfad">Lernpfad</a>
+        <a href="index.html#termin">Ablauf</a>
+        <a href="lektionen/v05-programmablaufplan.html">V05 Lerneinheit</a>
+        <a href="bibliothek.html">Bibliothek</a>
+        <a href="pap-editor.html" aria-current="page">PAP-Editor</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="inhalt">
+    <div class="ped-wrap">
+      <section class="ped-hero" aria-labelledby="h-ped">
+        <h1 id="h-ped">PAP-Editor</h1>
+        <p>Baue einen Programmablaufplan aus Symbolen. Der Plan ist immer gültig, und daneben entsteht der Python-Code, den du direkt ausführen kannst. Umgekehrt macht „Code → PAP“ aus Python einen Plan.</p>
+      </section>
+
+      <div class="ped-app" data-pap-editor-app>
+        <div data-ped="files"></div>
+        <noscript><p class="ped-status is-bad">Der PAP-Editor braucht JavaScript.</p></noscript>
+
+        <div class="ped-grid">
+          <section aria-labelledby="h-ped-pap">
+            <h2 id="h-ped-pap">Programmablaufplan</h2>
+            <div data-ped="editor"></div>
+            <div data-ped="export"></div>
+          </section>
+          <section aria-labelledby="h-ped-code">
+            <h2 id="h-ped-code">Python-Code</h2>
+            <p class="k-small k-muted" data-ped="codehint">Der Code entsteht live aus dem Plan.</p>
+            <div data-ped="code"></div>
+            <div class="ped-codebar" data-ped="codebar"></div>
+          </section>
+        </div>
+      </div>
+
+      <section class="ped-help" id="hilfe" aria-labelledby="h-hilfe">
+        <h2 id="h-hilfe">Die Symbole und ihr Python-Code</h2>
+        <p>Der Editor kennt die Symbole nach DIN 66001. Start und Ende setzt er automatisch. Du fügst Symbole mit dem + im Plan ein, klickst ein Symbol an, um den Text zu ändern, und verschiebst oder löschst es im Bedienfeld unter dem Plan.</p>
+        <ul class="ped-syms" data-ped="symbole" aria-label="Symbole"></ul>
+        <p class="ped-keys"><strong>Tastatur:</strong> <kbd>Tab</kbd> springt in den Plan, <kbd>↑</kbd> <kbd>↓</kbd> wechseln das Symbol, <kbd>Enter</kbd> bearbeitet den Text, <kbd>+</kbd> oder <kbd>Einfg</kbd> fügt danach ein (mit <kbd>Umschalt</kbd> davor), <kbd>Alt</kbd>+<kbd>↑</kbd>/<kbd>↓</kbd> verschiebt, <kbd>Entf</kbd> löscht, <kbd>Strg</kbd>+<kbd>Z</kbd> macht rückgängig, <kbd>Strg</kbd>+<kbd>Y</kbd> stellt wieder her.</p>
+        <p class="k-small k-muted">Gespeichert wird nur in diesem Browser (unter „Gespeicherte PAPs“). Dein letzter Stand bleibt als Entwurf erhalten. Beim Rückübersetzen („Code → PAP“) versteht der Editor Zuweisungen, <code class="k-i">input</code>, <code class="k-i">print</code>, <code class="k-i">if</code>/<code class="k-i">elif</code>/<code class="k-i">else</code>, <code class="k-i">while</code>, <code class="k-i">for … in range(…)</code> und Funktionsaufrufe.</p>
+      </section>
+
+      <section class="ped-aufgabe" id="aufgabe" aria-labelledby="h-aufgabe">
+        <h2 id="h-aufgabe">Aufgabe zum Ausprobieren</h2>
+        <div class="a-task k-pap-aufgabe" data-a="pap-zeichnen" data-id="pz-gerade-summe" data-timeout="8000" data-erlaubt="in,out,op,if,while,repeat,for,call">
+          <div class="a-task__head"><h3 class="a-task__title">Summe der geraden Zahlen</h3></div>
+          <p>Zeichne einen Programmablaufplan, der eine ganze Zahl <em>n</em> einliest und die Summe aller <strong>geraden</strong> Zahlen von 1 bis n ausgibt. Für n = 10 ist das 2 + 4 + 6 + 8 + 10 = 30. Benutze eine Zählschleife und eine Verzweigung. Der Anfang steht schon im Plan.</p>
+          <script type="application/json" data-role="start">{"baum":[{"k":"in","v":"n","typ":"int"},{"k":"op","v":"summe = 0"}]}</script>
+          <script type="text/x-python" data-role="tests">
+def _summe(n, soll):
+    z = zahlen(run_program([str(n)]))
+    assert z and z[-1] == soll, "Bei n = %s soll die Summe %s ausgegeben werden. Dein Programm gibt aus: %r" % (n, soll, z)
+
+def test_n10():
+    """n = 10: Summe 30"""
+    _summe(10, 30)
+
+def test_n7():
+    """n = 7: Summe 12"""
+    _summe(7, 12)
+
+def test_n1():
+    """n = 1: keine gerade Zahl, Summe 0"""
+    _summe(1, 0)
+
+def test_n0():
+    """n = 0: Summe 0"""
+    _summe(0, 0)
+          </script>
+          <script type="application/json" data-role="solution">{"baum":[{"k":"in","v":"n","typ":"int"},{"k":"op","v":"summe = 0"},{"k":"for","v":"i in range(1, n + 1)","body":[{"k":"if","v":"i % 2 == 0","yes":[{"k":"op","v":"summe = summe + i"}],"no":[]}]},{"k":"out","v":"summe"}]}</script>
+          <ol class="a-hints">
+            <li>Die Eingabe muss eine <em>ganze</em> Zahl sein (Datentyp „ganze Zahl (int)“), sonst kann <code class="k-i">range</code> nicht damit arbeiten.</li>
+            <li>Die Zählschleife läuft von 1 bis n: <code class="k-i">i in range(1, n + 1)</code>. In der Schleife prüft eine Verzweigung, ob i gerade ist.</li>
+            <li>Gerade heißt: Rest 0 bei Division durch 2, in Python <code class="k-i">i % 2 == 0</code>. Nur im Ja-Weg wird addiert: <code class="k-i">summe = summe + i</code>. Die Ausgabe steht hinter der Schleife.</li>
+          </ol>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="dhbw-footer k-footer">
+    <div class="dhbw-footer__inner">
+      <span><span class="dhbw-footer__brand">DHBW Stuttgart</span> · Campus Horb</span>
+      <span><a href="index.html">Zurück zum Lernpfad</a> · PAP-Editor</span>
+    </div>
+  </footer>
+
+  <script src="assets/js/speicher.js"></script>
+  <script src="assets/js/icons.js"></script>
+  <script src="assets/js/pap-engine.js"></script>
+  <script src="assets/js/editor.js" defer></script>
+  <script src="assets/js/kurs.js"></script>
+  <script src="assets/js/aufgaben.js"></script>
+  <script src="assets/js/pap-editor.js"></script>
+  <script>
+  /* Symbol-Hilfe: kleine Zeichnungen aus der Engine */
+  document.addEventListener('DOMContentLoaded', function () {
+    var host = document.querySelector('[data-ped="symbole"]'), K = window.KursPAP;
+    if (!host || !K) return;
+    var P = K.P;
+    var S = [
+      { n: 'Grenzstelle: Start und Ende', t: 'Oval. Setzt der Editor automatisch. Python: kein eigener Code.', spec: function () { return [P.start('a')]; } },
+      { n: 'Eingabe', t: 'Parallelogramm. Python: x = float(input("x: ")). Wähle den Datentyp: Zahl, ganze Zahl oder Text.', spec: function () { return [P.io('x einlesen', 'a')]; } },
+      { n: 'Ausgabe', t: 'Parallelogramm. Python: print(…).', spec: function () { return [P.io('Ausgabe: y', 'a')]; } },
+      { n: 'Operation', t: 'Rechteck für Rechnung und Zuweisung. Python: y = 2 * x.', spec: function () { return [P.op('y = 2 · x', 'a')]; } },
+      { n: 'Verzweigung', t: 'Raute mit „ja“ und „nein“. Python: if / else, bei weiterer Raute im Nein-Zweig elif.', spec: function () { return [P.iff('x ≤ 5?', [], [], 'a')]; } },
+      { n: 'Schleife, kopfgesteuert', t: 'Raute vor dem Rumpf, der Rückweg führt vor die Raute. Python: while bedingung:', spec: function () { return [P.whil('x < 10?', [P.op('x = x + 1', 'b')], 'a')]; } },
+      { n: 'Schleife, fußgesteuert', t: 'Raute nach dem Rumpf, bei „ja“ zurück an den Anfang. Python: while True: … if not bedingung: break', spec: function () { return [P.repeat('x < 10?', [P.op('x = x + 1', 'b')], 'a')]; } },
+      { n: 'Zählschleife', t: 'Raute mit Rückführung, Vorgabe wie in Python. Python: for i in range(1, 6):', spec: function () { return [P.whil('i in range(1, 6)?', [P.op('s = s + i', 'b')], 'a')]; } },
+      { n: 'Unterprogramm', t: 'Rechteck mit doppelten Seitenlinien. Python: ein Funktionsaufruf wie abs(-3).', spec: function () { return [P.sub('abs(-3)', 'a')]; } }
+    ];
+    S.forEach(function (s) {
+      var li = document.createElement('li'), fig = document.createElement('div'), tx = document.createElement('div');
+      fig.innerHTML = K.figure(s.spec(), { label: s.n, minw: 0, badges: false });
+      tx.innerHTML = '<strong></strong><p></p>';
+      tx.firstChild.textContent = s.n; tx.lastChild.textContent = s.t;
+      li.appendChild(fig); li.appendChild(tx); host.appendChild(li);
+    });
+  });
+  </script>
+</body>
+</html>

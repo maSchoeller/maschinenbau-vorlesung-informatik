@@ -22,7 +22,6 @@
   var URL_CSS = rel('../css/editor.css');
   var URL_LIBPAGE = rel('../../bibliothek.html');
 
-  var STAND_KEY = 'dhbw-inf-mb:bib-stand';
 
   /* ── Hilfsfunktionen ─────────────────────────────────────── */
   function $(sel, root) { return (root || document).querySelector(sel); }
@@ -42,8 +41,9 @@
   function norm(s) {
     return String(s || '').toLowerCase().replace(/ä/g, 'a').replace(/ö/g, 'o').replace(/ü/g, 'u').replace(/ß/g, 'ss').replace(/[^a-z0-9_.#*/%=<>!+\- ]/g, ' ');
   }
-  function storeGet(k) { try { return window.localStorage.getItem(k); } catch (e) { return null; } }
-  function storeSet(k, v) { try { window.localStorage.setItem(k, v); } catch (e) { /* ohne Speicher weiter */ } }
+  /* Bibliotheks-Stand über KursSpeicher (Pfad inf-mb/bibliothek/stand); null = nie gesetzt */
+  function storeGet() { var v = window.KursSpeicher && window.KursSpeicher.sofort.lesen('inf-mb/bibliothek/stand'); return v === undefined ? null : v; }
+  function storeSet(k, v) { if (window.KursSpeicher) window.KursSpeicher.sofort.schreiben('inf-mb/bibliothek/stand', String(v)); }
   function pageLesson() {
     var n = lessonNum(document.body && document.body.getAttribute('data-lesson'));
     return n;
@@ -575,7 +575,7 @@
   function buildPanel() {
     if (panel) return panel;
     var P = { open: false, current: null, query: '', kategorie: '', stand: null };
-    var saved = storeGet(STAND_KEY);
+    var saved = storeGet();
     P.stand = saved === 'alle' ? null : (saved ? parseInt(saved, 10) : pageLesson());
     if (saved === null) P.stand = pageLesson();
 
@@ -691,7 +691,7 @@
     catSel.addEventListener('change', function () { P.kategorie = catSel.value; showList(); });
     standSel.addEventListener('change', function () {
       P.stand = standSel.value === 'alle' ? null : parseInt(standSel.value, 10);
-      storeSet(STAND_KEY, standSel.value);
+      storeSet(null, standSel.value);
       if (P.current) showEntry(P.current); else showList();
     });
     P.open_ = open; P.close = close; P.toggle = toggle; P.aside = aside; P.showEntry = showEntry;

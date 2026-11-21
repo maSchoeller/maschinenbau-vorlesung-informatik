@@ -10,7 +10,6 @@
   var lab = document.querySelector('[data-lab]');
   if (!lab) return;
 
-  var STORE_KEY = 'dhbw-inf-mb:v1';
   var LESSON = document.body.getAttribute('data-lesson') || 'V03';
   var BASE_TITLE = 'Programmierlabor ' + LESSON + ' · Informatik Maschinenbau';
   var MARK = { open: 'circle', part: 'half', done: 'done' };  // Icon-IDs im Sprite
@@ -26,14 +25,12 @@
   }
 
   /* ── Speicher (gleicher Schlüssel wie kurs.js/aufgaben.js) ── */
-  var mem = {};
-  function read() { try { var raw = window.localStorage.getItem(STORE_KEY); if (raw) return JSON.parse(raw) || {}; } catch (e) { /* ohne Speicher */ } return mem; }
-  function write(d) { mem = d; try { window.localStorage.setItem(STORE_KEY, JSON.stringify(d)); } catch (e) { /* ignorieren */ } }
-  function bucket(name) { var d = read(); return (d[LESSON] && d[LESSON][name]) || {}; }
+  var KS = window.KursSpeicher;
+  function bucket(name) { return KS.sofort.lesen(KS.pfad(LESSON, name)) || {}; }
   function markSeen(id) {
-    var d = read(); d[LESSON] = d[LESSON] || {}; d[LESSON].gesehen = d[LESSON].gesehen || {};
-    if (d[LESSON].gesehen[id]) return false;
-    d[LESSON].gesehen[id] = 1; write(d); return true;
+    var g = bucket('gesehen');
+    if (g[id]) return false;
+    g[id] = 1; KS.sofort.schreiben(KS.pfad(LESSON, 'gesehen'), g); return true;
   }
 
   /* ── Aufgaben (Stationen) einsammeln ─────────────────────── */

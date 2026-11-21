@@ -1,0 +1,12 @@
+{
+  "id": "F1",
+  "zeit": "2026-11-20T10:15:00+01:00",
+  "status": "laeuft",
+  "programm": "FLANSCH_80",
+  "stueckzahl_schicht": 61,
+  "drehzahl_1_min": 3000,
+  "temperatur_spindel_c": 41.0,
+  "werkzeugverschleiss_prozent": {
+    "T1": 47
+  }
+}

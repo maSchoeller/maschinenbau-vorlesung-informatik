@@ -1,0 +1,9 @@
+{
+  "zelle": "Fertigungszelle 1",
+  "zeit": "2026-11-20T10:15:00+01:00",
+  "maschinen": [
+    {"id": "F1", "typ": "Fräsmaschine", "status": "laeuft", "temperatur_c": 41.5},
+    {"id": "D2", "typ": "Drehmaschine", "status": "stoerung", "temperatur_c": 63.2},
+    {"id": "R1", "typ": "Roboter", "status": "bereit", "temperatur_c": 28.0}
+  ]
+}

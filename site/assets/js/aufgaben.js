@@ -2,13 +2,12 @@
    aufgaben.js – wiederverwendbare Aufgabentypen für die Python-Werkstatt
    Typen (data-a): trace | parsons | gap | code | run | klausur
    Braucht kurs.js (window.KursPy) nur für Aufgaben mit Ausführung.
-   Seite funktioniert auch ohne localStorage und ohne editor.js.
+   Speicher über KursSpeicher (speicher.js), funktioniert auch ohne editor.js.
    Python-Seite der Prüfung: siehe PY_PRELUDE (zwischen den Markern).
    ============================================================= */
 (function () {
   'use strict';
 
-  var STORE_KEY = 'dhbw-inf-mb:v1';
 
   /* ── Hilfsfunktionen ─────────────────────────────────────── */
   function $(sel, root) { return (root || document).querySelector(sel); }
@@ -27,27 +26,18 @@
   function plural(n, one, many) { return n + ' ' + (n === 1 ? one : many); }
 
   /* ── Speicher (Muster wie kurs.js, mit try/catch) ────────── */
+  var KS = window.KursSpeicher;
+  function bucketGet(lesson, name) { return KS.sofort.lesen(KS.pfad(lesson, name)) || {}; }
+  function bucketMark(lesson, name, id) {
+    var b = bucketGet(lesson, name);
+    if (b[id]) return false;
+    b[id] = 1; KS.sofort.schreiben(KS.pfad(lesson, name), b); return true;
+  }
   var Store = {
-    mem: {},
-    read: function () {
-      try { var raw = window.localStorage.getItem(STORE_KEY); if (raw) return JSON.parse(raw) || {}; } catch (e) { /* ohne Speicher weiter */ }
-      return Store.mem;
-    },
-    write: function (data) {
-      Store.mem = data;
-      try { window.localStorage.setItem(STORE_KEY, JSON.stringify(data)); } catch (e) { /* ignorieren */ }
-    },
-    solved: function (lesson) { var d = Store.read(); return (d[lesson] && d[lesson].aufg) || {}; },
-    setSolved: function (lesson, id) {
-      var d = Store.read(); d[lesson] = d[lesson] || {}; d[lesson].aufg = d[lesson].aufg || {};
-      d[lesson].aufg[id] = 1; Store.write(d);
-    },
-    started: function (lesson) { var d = Store.read(); return (d[lesson] && d[lesson].begonnen) || {}; },
-    setStarted: function (lesson, id) {
-      var d = Store.read(); d[lesson] = d[lesson] || {}; d[lesson].begonnen = d[lesson].begonnen || {};
-      if (d[lesson].begonnen[id]) return false;
-      d[lesson].begonnen[id] = 1; Store.write(d); return true;
-    }
+    solved: function (lesson) { return bucketGet(lesson, 'aufg'); },
+    setSolved: function (lesson, id) { bucketMark(lesson, 'aufg', id); },
+    started: function (lesson) { return bucketGet(lesson, 'begonnen'); },
+    setStarted: function (lesson, id) { return bucketMark(lesson, 'begonnen', id); }
   };
 
   /* ── Fortschritt „x von y gelöst“ ────────────────────────── */
@@ -245,11 +235,14 @@ def _main(kind, src, inputs, tests_src, mode):
         } catch (e) { /* ignorieren */ }
       } else if (hooks.onLine) hooks.onLine(l + '\n');
     }
-    return window.KursPy.run(pyProgram(kind, src, inputs, tests, mode), {
-      timeout: timeout,
+    var ro = {
+      timeout: timeout, scan: src, files: hooks.files || null,
       onOut: function (t) { buf += t; var parts = buf.split('\n'); buf = parts.pop(); parts.forEach(line); },
       onErr: function (t) { if (hooks.onErr) hooks.onErr(t); }
-    }).then(function (r) {
+    };
+    if (hooks.py && window.KursPy.mix) window.KursPy.mix(ro, hooks.py);
+    return window.KursPy.run(pyProgram(kind, src, inputs, tests, mode), ro).then(function (r) {
+      if (hooks.py && hooks.py.finish) hooks.py.finish();
       if (buf) { line(buf); buf = ''; }
       if (r.timedOut) res.timedOut = true;
       else if (r.error) res.jsError = r.error;
@@ -401,6 +394,9 @@ def _main(kind, src, inputs, tests_src, mode):
     var anchor = ui.inputBox || editorBox;
     anchor.insertAdjacentElement('afterend', ui.bar);
     var cursor = ui.bar;
+    var dataFiles = window.KursPy && window.KursPy.parseFiles ? window.KursPy.parseFiles(root.getAttribute('data-files')) : [];
+    var uploader = root.hasAttribute('data-upload') && window.KursPy && window.KursPy.uploadUI ? window.KursPy.uploadUI('a-' + Math.random().toString(36).slice(2, 7)) : null;
+    if (uploader) { cursor.insertAdjacentElement('afterend', uploader.el); cursor = uploader.el; }
     if (kind !== 'klausur') {
       ui.out = el('pre', { class: 'k-runner__out a-out', 'aria-live': 'polite', 'aria-label': 'Ausgabe', hidden: '' });
       cursor.insertAdjacentElement('afterend', ui.out); cursor = ui.out;
@@ -424,7 +420,8 @@ def _main(kind, src, inputs, tests_src, mode):
       ui.out.hidden = false; ui.out.textContent = '';
       function app(t, cls) { var s = el('span', cls ? { class: cls } : null); s.textContent = t; ui.out.appendChild(s); ui.out.scrollTop = ui.out.scrollHeight; }
       var got = false;
-      runPython('run', ta.value, currentInputs(), '', mode, timeout, { onLine: function (t) { got = true; app(t); }, onErr: function (t) { got = true; app(t, 'err'); } }).then(function (r) {
+      var rich = window.KursPy && window.KursPy.ui ? window.KursPy.ui(ui.out, { files: dataFiles, upload: uploader ? uploader.get : null, scan: ta.value }) : null;
+      runPython('run', ta.value, currentInputs(), '', mode, timeout, { py: rich, files: dataFiles, onLine: function (t) { got = true; app(t); }, onErr: function (t) { got = true; app(t, 'err'); } }).then(function (r) {
         if (r.loadError) app('Python konnte nicht gestartet werden. Bist du online? (' + r.loadError + ')\n', 'err');
         else if (r.timedOut) app('\nAbgebrochen nach ' + (timeout / 1000) + ' s. Läuft da eine Endlosschleife?\n', 'err');
         else if (r.jsError) app(r.jsError + '\n', 'err');
@@ -438,7 +435,7 @@ def _main(kind, src, inputs, tests_src, mode):
       if (running) return;
       if (!tests) return;
       busy(true, loadingText());
-      runPython('test', ta.value, [], tests, mode, timeout).then(function (r) {
+      runPython('test', ta.value, [], tests, mode, timeout, { files: dataFiles }).then(function (r) {
         busy(false);
         var all = renderResults(ui, r, root, timeout);
         if (!r.loadError && !r.timedOut) ui.unlockSolution();
@@ -590,7 +587,7 @@ def _main(kind, src, inputs, tests_src, mode):
       ui.status.appendChild(el('span', { class: 'k-spinner', 'aria-hidden': 'true' }));
       ui.status.appendChild(document.createTextNode(window.KursPy && !window.KursPy.worker ? 'Python wird geladen (einmalig, ca. 10 MB) …' : 'läuft …'));
       gaps.forEach(function (g) { g.inp.classList.remove('is-ok', 'is-bad'); });
-      runPython('test', assemble(), [], tests, mode, timeout).then(function (r) {
+      runPython('test', assemble(), [], tests, mode, timeout, { files: window.KursPy && window.KursPy.parseFiles ? window.KursPy.parseFiles(root.getAttribute('data-files')) : [] }).then(function (r) {
         running = false; checkBtn.disabled = false; ui.status.textContent = '';
         var all = renderResults(ui, r, root, timeout);
         if (!r.loadError && !r.timedOut) ui.unlockSolution();

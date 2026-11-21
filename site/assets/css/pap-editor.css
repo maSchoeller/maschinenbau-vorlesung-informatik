@@ -1,0 +1,121 @@
+/* =============================================================
+   pap-editor.css – PAP-Editor (Seite pap-editor.html) und aufgabentyp „PAP zeichnen“ (.k-pap-aufgabe)
+   Baut auf dhbw-base.css und kurs.css auf. Enthält die PAP-Grundregeln (.pap), damit der Editor auch auf
+   Seiten ohne v05.css funktioniert (gleiche Werte wie dort). Präfix: ped-
+   ============================================================= */
+
+/* ── PAP als inline-SVG (Grundregeln, identisch zu v05.css) ───── */
+.pap-wrap { overflow-x: auto; margin: var(--k-block-gap) 0; padding: 2px 2px 6px; max-width: 100%; }
+.pap { --pap-line: #1A1A1A; display: block; width: 100%; height: auto; min-width: var(--pap-min, 0); max-width: var(--pap-max, 100%); margin: 0 auto; color: var(--text); font-family: inherit; }
+.pap .pap-shape { fill: #fff; stroke: var(--pap-line); stroke-width: 1.8; stroke-linejoin: round; }
+.pap .pap-line { fill: none; stroke: var(--pap-line); stroke-width: 1.8; stroke-linejoin: round; stroke-linecap: butt; }
+.pap .pap-line--in { stroke-width: 1.5; }
+.pap .pap-ah { fill: var(--pap-line); stroke: none; }
+.pap .pap-hit { fill: none; stroke: transparent; stroke-width: 14; pointer-events: none; }
+.pap text { font-family: inherit; font-size: 13.5px; fill: var(--text); pointer-events: none; }
+.pap .pap-lab { font-size: 12.5px; font-weight: 700; }
+.pap .pap-badge circle { fill: #4B5563; stroke: none; }
+.pap .pap-badge text { fill: #fff; font-size: 11px; font-weight: 700; }
+.pap-n.is-gap .pap-shape { fill: #FAFAFA; stroke-dasharray: 6 4; }
+.pap-n.is-gap .pap-t { fill: var(--k-muted); font-style: italic; }
+
+/* ── Editor-Baustein ─────────────────────────────────────────── */
+.ped { display: grid; gap: var(--sp-3); min-width: 0; }
+.ped-bar { display: flex; flex-wrap: wrap; gap: var(--sp-2); align-items: center; }
+.ped-bar__sp { flex: 1 1 0; }
+.ped-zoom { min-width: 44px; min-height: 44px; padding: 4px 10px; font-size: var(--fs-md); }
+.ped-zoomlab { min-width: 3.6em; text-align: center; font-size: var(--fs-sm); color: var(--k-muted); font-variant-numeric: tabular-nums; }
+
+/* Zeichenfläche: eigener Scrollbereich, Plan in Originalgröße (Zoom über --ped-zoom) */
+.ped-pap { overflow: auto; background: #fff; border: 1px solid var(--k-line); border-radius: var(--r-base); padding: var(--sp-2) var(--sp-3) var(--sp-4); max-height: min(78vh, 900px); min-height: 11rem; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+.ped-pap .pap { width: calc(var(--pap-max, 300px) * var(--ped-zoom, 1)); max-width: none; min-width: 0; margin: 0 auto; }
+.pap--edit .pap-n { cursor: pointer; }
+.pap--edit .pap-n:hover .pap-shape { fill: #F3F4F6; }
+.pap--edit .pap-n:focus { outline: none; }
+.pap--edit .pap-n:focus-visible .pap-shape { stroke: var(--k-focus); stroke-width: 4; }
+.pap--edit .pap-n.is-sel .pap-shape { fill: var(--red-tint); stroke: #E2001A; stroke-width: 3.4; }
+.pap--edit .pap-n.is-sel:focus-visible .pap-shape { stroke: #E2001A; stroke-width: 4.6; }
+.pap--edit .pap-n.is-sel.is-gap .pap-shape { stroke-dasharray: 6 4; }
+
+/* Einfügemarken: kleines +, Trefferfläche 40 px */
+.ped-mark { cursor: pointer; }
+.ped-mark-hit { fill: transparent; stroke: none; }
+.ped-mark-dot { fill: #fff; stroke: #6B7280; stroke-width: 1.6; }
+.ped-mark-plus { fill: none; stroke: #4B5563; stroke-width: 1.9; stroke-linecap: round; }
+.ped-mark:hover .ped-mark-dot { fill: var(--red-tint); stroke: var(--red-dark); }
+.ped-mark:hover .ped-mark-plus { stroke: var(--red-dark); }
+.ped-mark:focus { outline: none; }
+.ped-mark:focus-visible .ped-mark-dot { stroke: var(--k-focus); stroke-width: 3.4; }
+
+/* Bedienfeld */
+.ped-panel { padding: var(--sp-2) 0; }
+.ped-ptitle { font-size: var(--fs-md); margin: 0 0 var(--sp-3); }
+.ped-hint { color: var(--k-muted); margin: 0 0 var(--sp-3); }
+.ped-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: var(--sp-3); margin-bottom: var(--sp-3); }
+.ped-field input, .ped-field select { width: 100%; box-sizing: border-box; }
+.ped-actions { display: flex; flex-wrap: wrap; gap: var(--sp-2); align-items: end; }
+.ped-field--kind { min-width: 12rem; }
+.ped-actions .k-btn--small { min-height: 44px; }
+
+/* Einfügemenü (Popover; auf dem Handy als Blatt am unteren Rand) */
+.ped-menu { position: fixed; z-index: 400; width: 280px; max-height: calc(100vh - 16px); overflow: auto; background: #fff; border: 2px solid #4B5563; border-radius: var(--r-base); box-shadow: 0 8px 28px rgba(0, 0, 0, .2); padding: var(--sp-2); display: grid; gap: 2px; }
+.ped-menu__title { margin: 0; padding: var(--sp-1) var(--sp-2); font-size: var(--fs-xs); font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--k-muted); }
+.ped-menu__seg { margin: var(--sp-1) var(--sp-2) var(--sp-2); display: flex; }
+.ped-menu__seg button { flex: 1; }
+.ped-menu__item { display: grid; text-align: left; min-height: 48px; padding: 6px var(--sp-3); border: 0; border-radius: var(--r-base); background: #fff; font: inherit; color: var(--text); cursor: pointer; }
+.ped-menu__item span { font-size: var(--fs-sm); color: var(--k-muted); }
+.ped-menu__item:hover, .ped-menu__item:focus-visible { background: var(--red-tint); }
+@media (max-width: 640px) {
+  .ped-menu { left: 0; right: 0; bottom: 0; top: auto; width: auto; max-height: 75vh; border-radius: 14px 14px 0 0; border-width: 2px 0 0; }
+}
+
+/* ── Seite ───────────────────────────────────────────────────── */
+.ped-hero { padding: var(--sp-6) 0 var(--sp-2); }
+.ped-hero h1 { margin: 0 0 var(--sp-2); }
+.ped-hero p { max-width: var(--k-measure); color: var(--k-muted); }
+.ped-wrap { width: min(94%, 1700px); margin: 0 auto; }
+.ped-app { margin-top: var(--sp-4); }
+.ped-filebar { display: flex; flex-wrap: wrap; gap: var(--sp-3) var(--sp-4); align-items: end; }
+.ped-name input { width: min(100%, 20rem); }
+.ped-tpl select { min-width: 16rem; max-width: 100%; }
+.ped-filebtns { display: flex; gap: var(--sp-2); flex-wrap: wrap; }
+.ped-status { margin: var(--sp-2) 0 0; font-size: var(--fs-sm); color: var(--k-muted); min-height: 1.4em; }
+.ped-status.is-bad { color: var(--k-bad); font-weight: 600; }
+.ped-status.is-ok { color: var(--k-ok); font-weight: 600; }
+.ped-warn { color: var(--k-warn); font-weight: 600; }
+.ped-open { margin-top: var(--sp-2); }
+.ped-open summary, .ped-details summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; font-weight: 600; color: var(--red-dark); }
+.ped-files { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--sp-1); }
+.ped-files li { display: flex; flex-wrap: wrap; gap: var(--sp-2); align-items: center; padding: 2px 0; border-bottom: 1px solid var(--k-line); }
+.ped-files__name { flex: 1 1 12rem; font-weight: 600; }
+.ped-files__name small { font-weight: 400; color: var(--k-muted); }
+.ped-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: var(--sp-6); margin-top: var(--sp-5); align-items: start; }
+.ped-grid > section { min-width: 0; }
+.ped-grid h2 { font-size: var(--fs-lg); margin: 0 0 var(--sp-3); }
+.ped-exp { display: flex; flex-wrap: wrap; gap: var(--sp-2); margin-top: var(--sp-3); }
+.ped-codebar { display: flex; flex-wrap: wrap; gap: var(--sp-3); align-items: center; margin-top: var(--sp-3); }
+.ped-codebar .ped-status { margin: 0; }
+.ped-code .k-runner__bar .k-btn--link { display: none; }
+.ped-plain { width: 100%; box-sizing: border-box; font-family: var(--dhbw-font-mono); font-size: var(--fs-sm); min-height: 14rem; }
+@media (max-width: 1000px) { .ped-grid { grid-template-columns: minmax(0, 1fr); gap: var(--sp-5); } }
+
+/* Hilfe: Symbole */
+.ped-help { margin-top: var(--k-section-gap); }
+.ped-help h2 { font-size: var(--fs-lg); margin: 0 0 var(--sp-3); }
+.ped-syms { display: grid; grid-template-columns: repeat(auto-fill, minmax(27rem, 1fr)); gap: var(--sp-5) var(--sp-6); margin: var(--sp-4) 0 0; padding: 0; list-style: none; }
+.ped-syms li { display: grid; grid-template-columns: 12.5rem minmax(0, 1fr); gap: var(--sp-3); align-items: center; }
+.ped-syms .pap-wrap { margin: 0; padding: 0; overflow: visible; }
+.ped-syms .pap { max-width: 190px; min-width: 0; }
+.ped-syms strong { display: block; }
+.ped-syms p { margin: 2px 0 0; font-size: var(--fs-sm); color: var(--k-muted); }
+.ped-keys { margin-top: var(--sp-4); font-size: var(--fs-sm); }
+.ped-keys kbd { font-family: var(--dhbw-font-mono); font-size: .85em; padding: 1px 6px; border: 1px solid var(--border); border-bottom-width: 2px; border-radius: 4px; background: var(--canvas); }
+@media (max-width: 560px) { .ped-syms { grid-template-columns: minmax(0, 1fr); } .ped-syms li { grid-template-columns: 9rem minmax(0, 1fr); } }
+
+/* Aufgabe „PAP zeichnen“ */
+.k-pap-aufgabe .ped-task { margin-top: var(--sp-3); }
+.k-pap-aufgabe .ped-pap { max-height: min(70vh, 760px); }
+.k-pap-aufgabe .a-bar .k-btn--small { min-height: 44px; }
+.ped-details { margin-top: var(--sp-3); }
+.ped-aufgabe { margin-top: var(--k-section-gap); }
+.ped-aufgabe h2 { font-size: var(--fs-lg); margin: 0 0 var(--sp-3); }

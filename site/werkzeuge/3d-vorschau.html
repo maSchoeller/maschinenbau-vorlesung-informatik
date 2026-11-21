@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>3D-Vorschau · Informatik Maschinenbau · DHBW Stuttgart Campus Horb</title>
+  <meta name="description" content="Demo der 3D-Vorschau: Flansch und Welle aus Python-Daten, drehbar und als STL-Datei herunterladbar.">
+  <link rel="stylesheet" href="../assets/css/dhbw-base.css">
+  <link rel="stylesheet" href="../assets/css/kurs.css">
+  <link rel="stylesheet" href="../assets/css/vorschau3d.css">
+  <style>
+    .demo-wrap { max-width: 1100px; margin: 0 auto; padding: var(--sp-6) var(--gutter) var(--k-section-gap); }
+    .demo-wrap h1 { font-size: 2rem; margin: 0 0 var(--sp-3); }
+    .demo-wrap h2 { font-size: 1.5rem; margin: var(--k-section-gap) 0 var(--sp-3); }
+    .demo-wrap p { margin: 0 0 var(--sp-4); }
+    .demo-wahl { display: flex; flex-wrap: wrap; gap: var(--sp-2); margin: 0 0 var(--sp-4); }
+    .demo-wahl button { font: inherit; font-weight: 600; min-height: 44px; padding: 6px 16px; background: #fff; color: var(--text); border: 2px solid var(--border); border-radius: var(--r-sm); cursor: pointer; }
+    .demo-wahl button[aria-pressed="true"] { border-color: var(--red); color: var(--red-dark); }
+    .demo-wahl button:focus-visible { outline: 3px solid var(--k-focus); outline-offset: 2px; }
+  </style>
+</head>
+<body data-page="werkzeug-3d">
+  <a class="k-skip" href="#inhalt">Zum Inhalt springen</a>
+
+  <header class="dhbw-header k-header">
+    <div class="dhbw-header__inner">
+      <a class="k-logo" href="../index.html" aria-label="Startseite Informatik Maschinenbau">
+        <span class="k-logo__mark" aria-hidden="true">DHBW</span>
+        <span class="k-logo__text">Informatik Maschinenbau<small>Campus Horb · 2026/27</small></span>
+      </a>
+      <nav class="k-nav" aria-label="Hauptnavigation">
+        <a href="../index.html#leitidee">Leitidee</a>
+        <a href="../index.html#ampel">Wissens-Ampel</a>
+        <a href="../index.html#lernpfad">Lernpfad</a>
+        <a href="../index.html#termin">Ablauf</a>
+        <a href="../lektionen/v03-fliesskommazahlen.html">V03 Lerneinheit</a>
+        <a href="../lektionen/v03-labor.html">V03 Labor</a>
+        <a href="../bibliothek.html">Bibliothek</a>
+        <a href="../pap-editor.html">PAP-Editor</a>
+        <a href="3d-vorschau.html" aria-current="page">3D-Vorschau</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="inhalt">
+    <div class="demo-wrap">
+      <h1>3D-Vorschau</h1>
+      <p>Bauteile, die ein Python-Programm berechnet, lassen sich hier drehen und als STL-Datei für CAD oder 3D-Druck speichern. Die Daten dieser Demo hat <code>bauteil3d.py</code> erzeugt.</p>
+
+      <h2>1 Bauteil wählen</h2>
+      <div class="demo-wahl" role="group" aria-label="Bauteil wählen">
+        <button type="button" data-k="flansch" aria-pressed="true">Flansch</button>
+        <button type="button" data-k="welle" aria-pressed="false">Welle mit Absätzen</button>
+        <button type="button" data-k="baugruppe" aria-pressed="false">Flansch auf Welle</button>
+      </div>
+      <div id="ansicht"></div>
+
+      <h2>2 Bedienung</h2>
+      <p>Maus: ziehen dreht, Mausrad zoomt, rechte Maustaste verschiebt. Touch: ein Finger dreht, zwei Finger zoomen und verschieben. Tastatur: Tab auf die Ansicht, dann Pfeiltasten drehen, <kbd>+</kbd> und <kbd>-</kbd> zoomen, <kbd>0</kbd> setzt zurück.</p>
+    </div>
+  </main>
+
+  <footer class="dhbw-footer k-footer">
+    <div class="dhbw-footer__inner">
+      <span><span class="dhbw-footer__brand">DHBW Stuttgart</span> · Campus Horb</span>
+      <span><a href="../index.html">Zurück zum Lernpfad</a> · 3D-Vorschau</span>
+    </div>
+  </footer>
+
+  <script src="../assets/js/speicher.js"></script>
+  <script src="../assets/js/vorschau3d.js"></script>
+  <script>
+  (function () {
+    var daten = null;
+    var knoepfe = document.querySelectorAll('.demo-wahl button');
+    function zeige(k) {
+      knoepfe.forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.k === k ? 'true' : 'false'); });
+      Vorschau3D.zeige(document.getElementById('ansicht'), daten[k]);
+    }
+    knoepfe.forEach(function (b) { b.addEventListener('click', function () { zeige(b.dataset.k); }); });
+    fetch('../assets/data/3d-demo.json').then(function (r) { return r.json(); }).then(function (d) {
+      daten = d; zeige('flansch');
+    }).catch(function () {
+      document.getElementById('ansicht').textContent = 'Die Demo-Daten konnten nicht geladen werden.';
+    });
+  })();
+  </script>
+</body>
+</html>

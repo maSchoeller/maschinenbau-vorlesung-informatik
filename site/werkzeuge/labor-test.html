@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Labor-Test · Informatik Maschinenbau · DHBW Stuttgart Campus Horb</title>
+  <meta name="description" content="Testseite für die Labor-Erweiterungen: Beispieldateien, Upload, NumPy, pandas, matplotlib, sqlite3, requests und 3D.">
+  <link rel="stylesheet" href="../assets/css/dhbw-base.css">
+  <link rel="stylesheet" href="../assets/css/kurs.css">
+  <link rel="stylesheet" href="../assets/css/aufgaben.css">
+  <link rel="stylesheet" href="../assets/css/editor.css">
+  <style>
+    .demo-wrap { max-width: 900px; margin: 0 auto; padding: var(--sp-6) var(--gutter) var(--k-section-gap); }
+    .demo-wrap h1 { font-size: 2rem; margin: 0 0 var(--sp-3); }
+    .demo-wrap h2 { font-size: 1.4rem; margin: var(--k-section-gap) 0 var(--sp-3); }
+    .demo-wrap p { margin: 0 0 var(--sp-4); }
+  </style>
+</head>
+<body data-page="werkzeug-labor-test">
+  <a class="k-skip" href="#inhalt">Zum Inhalt springen</a>
+
+  <header class="dhbw-header k-header">
+    <div class="dhbw-header__inner">
+      <a class="k-logo" href="../index.html" aria-label="Startseite Informatik Maschinenbau">
+        <span class="k-logo__mark" aria-hidden="true">DHBW</span>
+        <span class="k-logo__text">Informatik Maschinenbau<small>Campus Horb · 2026/27</small></span>
+      </a>
+    </div>
+  </header>
+
+  <main id="inhalt">
+    <div class="demo-wrap">
+      <h1>Labor-Test</h1>
+      <p>Je ein Block pro Fähigkeit des Browser-Labors. Beschreibung für Lektionsautoren: <code>docs/LABOR-ERWEITERUNGEN.md</code>.</p>
+
+      <h2>1 Beispieldatei (data-files)</h2>
+      <pre data-files="../assets/data/v09/bremsen.csv ../assets/data/v09/waschmaschine.csv"><code>zeilen = open("bremsen.csv", encoding="utf-8").read().splitlines()
+print(len(zeilen), "Zeilen")
+print(zeilen[0])
+print(zeilen[1])</code></pre>
+
+      <h2>2 Eigene CSV laden (data-upload)</h2>
+      <pre data-upload><code>import os
+for name in sorted(os.listdir(".")):
+    print(name, os.path.getsize(name), "Byte")</code></pre>
+
+      <h2>3 NumPy</h2>
+      <pre><code>import numpy as np
+t = np.linspace(0, 1, 5)
+print(t)
+print(np.sin(2 * np.pi * t).round(3))</code></pre>
+
+      <h2>4 matplotlib, zwei Abbildungen</h2>
+      <pre><code>import numpy as np
+import matplotlib.pyplot as plt
+
+x = np.linspace(0, 2 * np.pi, 100)
+plt.plot(x, np.sin(x))
+plt.title("Sinus")
+plt.xlabel("x in rad")
+plt.show()
+
+plt.plot(x, np.cos(x), color="tab:red")
+plt.title("Kosinus")
+plt.show()
+print("fertig")</code></pre>
+
+      <h2>5 pandas mit Beispieldatei und Diagramm</h2>
+      <pre data-files="../assets/data/v09/bremsen.csv"><code>import pandas as pd
+import matplotlib.pyplot as plt
+
+df = pd.read_csv("bremsen.csv", sep=";", decimal=",")
+print(df.head(3))
+print(df.describe().loc[["min", "max"]])
+df.plot(x=df.columns[0], y=df.columns[4])
+plt.show()</code></pre>
+
+      <h2>6 sqlite3</h2>
+      <pre><code>import sqlite3
+con = sqlite3.connect(":memory:")
+con.execute("CREATE TABLE teile (name TEXT, masse REAL)")
+con.executemany("INSERT INTO teile VALUES (?, ?)", [("Welle", 2.4), ("Flansch", 5.1), ("Ring", 0.8)])
+for zeile in con.execute("SELECT name, masse FROM teile WHERE masse > ? ORDER BY masse", (1.0,)):
+    print(zeile)
+con.close()</code></pre>
+
+      <h2>7 HTTP mit requests (statische JSON-Datei der Website)</h2>
+      <pre><code>import requests
+
+antwort = requests.get("../assets/data/v17/zelle.json")
+print(antwort.status_code)
+daten = antwort.json()
+for m in daten["maschinen"]:
+    print(m["id"], m["status"], m["temperatur_c"])</code></pre>
+
+      <h2>8 3D-Vorschau mit bauteil3d.py</h2>
+      <pre data-files="../assets/py/bauteil3d.py"><code>import bauteil3d
+
+f = bauteil3d.flansch(120, 40, 15, 90, 6, 11)
+print("Volumen in mm3:", round(bauteil3d.volumen(f)))
+bauteil3d.zeige(f, "Flansch")</code></pre>
+
+      <h2>9 Erzeugte Dateien</h2>
+      <pre><code>with open("ergebnis.csv", "w", encoding="utf-8") as f:
+    f.write("x;y\n")
+    for x in range(5):
+        f.write(f"{x};{x * x}\n")
+print("ergebnis.csv geschrieben")</code></pre>
+
+      <h2>10 ZIP mit Ordnerstruktur</h2>
+      <pre data-files="../assets/data/labortest/zelle.zip"><code>import os
+for ordner, _, dateien in os.walk("."):
+    for d in dateien:
+        print(os.path.join(ordner, d))</code></pre>
+
+      <h2>11 Code-Aufgabe mit Beispieldatei</h2>
+      <div class="a-task" data-a="code" data-id="labortest-datei" data-mode="programm" data-files="../assets/data/v09/bremsen.csv">
+        <div class="a-task__head"><span class="a-task__title">T1 · Zeilen zählen</span><span class="a-pts">1 Punkt</span></div>
+        <div class="a-task__text"><p>Lies <code>bremsen.csv</code> ein und gib die Anzahl der Datenzeilen (ohne Kopfzeile) aus.</p></div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="LT" aria-label="Python-Code">zeilen = open("bremsen.csv", encoding="utf-8").read().splitlines()
+print(len(zeilen) - 1)</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def test_anzahl():
+    """Gibt die Zahl der Datenzeilen aus"""
+    n = len(open("bremsen.csv", encoding="utf-8").read().splitlines()) - 1
+    z = zeilen(run_program())
+    assert z and z[0] == str(n), "Erwartet wird %d, ausgegeben wird %r" % (n, z)
+        </script>
+        <script type="text/x-python" data-role="solution">
+zeilen = open("bremsen.csv", encoding="utf-8").read().splitlines()
+print(len(zeilen) - 1)
+        </script>
+      </div>
+    </div>
+  </main>
+
+  <footer class="dhbw-footer k-footer">
+    <div class="dhbw-footer__inner">
+      <span><span class="dhbw-footer__brand">DHBW Stuttgart</span> · Campus Horb</span>
+      <span><a href="../index.html">Zurück zum Lernpfad</a> · Labor-Test</span>
+    </div>
+  </footer>
+
+  <script src="../assets/js/speicher.js"></script>
+  <script src="../assets/js/icons.js"></script>
+  <script src="../assets/js/editor.js" defer></script>
+  <script src="../assets/js/kurs.js"></script>
+  <script src="../assets/js/aufgaben.js"></script>
+</body>
+</html>

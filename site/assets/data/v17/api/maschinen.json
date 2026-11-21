@@ -1,0 +1,43 @@
+{
+  "zelle": "FZ-3",
+  "netz": "192.168.30.0/24",
+  "gateway": "192.168.30.1",
+  "broker": "192.168.30.5:1883",
+  "maschinen": [
+    {
+      "id": "D2",
+      "typ": "Drehmaschine",
+      "ip": "192.168.30.11",
+      "status": "laeuft",
+      "mqtt_topic": "fz3/D2/status"
+    },
+    {
+      "id": "F1",
+      "typ": "Fraesmaschine",
+      "ip": "192.168.30.12",
+      "status": "laeuft",
+      "mqtt_topic": "fz3/F1/status"
+    },
+    {
+      "id": "R1",
+      "typ": "Roboter",
+      "ip": "192.168.31.20",
+      "status": "gestoert",
+      "mqtt_topic": "fz3/R1/status"
+    },
+    {
+      "id": "M1",
+      "typ": "Messmaschine",
+      "ip": "192.168.30.14",
+      "status": "bereit",
+      "mqtt_topic": "fz3/M1/status"
+    },
+    {
+      "id": "SPS",
+      "typ": "Zellensteuerung",
+      "ip": "192.168.30.2",
+      "status": "laeuft",
+      "mqtt_topic": "fz3/SPS/status"
+    }
+  ]
+}

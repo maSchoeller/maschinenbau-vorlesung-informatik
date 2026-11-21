@@ -7,7 +7,6 @@
 
   var PYODIDE_VERSION = 'v0.26.4';
   var PYODIDE_BASE = 'https://cdn.jsdelivr.net/pyodide/' + PYODIDE_VERSION + '/full/';
-  var STORE_KEY = 'dhbw-inf-mb:v1';
 
   /* ── Hilfsfunktionen ─────────────────────────────────────── */
   function $(sel, root) { return (root || document).querySelector(sel); }
@@ -23,29 +22,16 @@
     return n;
   }
 
-  /* ── (a) Speicher mit try/catch ──────────────────────────── */
+  /* ── (a) Speicher über KursSpeicher (speicher.js) ───────── */
   var Store = {
-    mem: {},
-    read: function () {
-      try {
-        var raw = window.localStorage.getItem(STORE_KEY);
-        if (raw) return JSON.parse(raw) || {};
-      } catch (e) { /* ohne Speicher weiter */ }
-      return Store.mem;
-    },
-    write: function (data) {
-      Store.mem = data;
-      try { window.localStorage.setItem(STORE_KEY, JSON.stringify(data)); } catch (e) { /* ignorieren */ }
-    },
+    /* über KursSpeicher (speicher.js): Pfad inf-mb/<lektion>/<schluessel> */
     get: function (lesson, key) {
-      var d = Store.read();
-      return d[lesson] && d[lesson][key];
+      return window.KursSpeicher.sofort.lesen(window.KursSpeicher.pfad(lesson, key));
     },
     set: function (lesson, key, value) {
-      var d = Store.read();
-      d[lesson] = d[lesson] || {};
-      if (value === null || value === undefined) delete d[lesson][key]; else d[lesson][key] = value;
-      Store.write(d);
+      var p = window.KursSpeicher.pfad(lesson, key);
+      if (value === null || value === undefined) window.KursSpeicher.sofort.loeschen(p);
+      else window.KursSpeicher.sofort.schreiben(p, value);
     }
   };
 
@@ -344,6 +330,183 @@
       }
       return msg;
     }
+    /* ── Labor-Erweiterungen im Worker: Dateien, Pakete, reiche Ausgaben, HTTP ── */
+    var curId = 0, fileCache = {}, loadedPk = {}, mplReady = false, httpReady = false, kaReady = false;
+    var PK_INFO = { numpy: ['NumPy', 8], pandas: ['pandas', 16], matplotlib: ['matplotlib', 22], scipy: ['SciPy', 30] };
+    self._kc_rich = function (art, daten) { self.postMessage({ type: 'rich', id: curId, art: art, daten: daten }); };
+    var KURSAUSGABE_PY = [
+      'import sys, types, json, js',
+      '_m = types.ModuleType("kursausgabe")',
+      '_m.__doc__ = "Reiche Ausgaben (Bild, 3D) an die Kursseite senden."',
+      'def zeige(art, daten):',
+      '    if not isinstance(daten, str):',
+      '        daten = json.dumps(daten)',
+      '    js._kc_rich(art, daten)',
+      '_m.zeige = zeige',
+      'sys.modules["kursausgabe"] = _m',
+      'del _m',
+      // Konsolen-Echo: Rückgabewerte von plt.plot(...) und con.execute(...) nicht als Zeile ausgeben
+      '_dh = sys.displayhook',
+      'def _kc_dh(v):',
+      '    xs = v if isinstance(v, (list, tuple)) and v else [v]',
+      '    if all(type(x).__module__.split(".")[0] in ("matplotlib", "sqlite3") for x in xs):',
+      '        return',
+      '    _dh(v)',
+      'sys.displayhook = _kc_dh'
+    ].join('\n');
+    var MPL_PY = [
+      'import io, base64, matplotlib',
+      'matplotlib.use("Agg")',
+      'import matplotlib.pyplot as _plt, kursausgabe',
+      'def _kc_show(*args, **kwargs):',
+      '    for num in _plt.get_fignums():',
+      '        fig = _plt.figure(num)',
+      '        alt = "Diagramm"',
+      '        if fig.axes and fig.axes[0].get_title():',
+      '            alt = "Diagramm: " + fig.axes[0].get_title()',
+      '        elif fig._suptitle is not None:',
+      '            alt = "Diagramm: " + fig._suptitle.get_text()',
+      '        buf = io.BytesIO()',
+      '        fig.savefig(buf, format="png", dpi=100, bbox_inches="tight")',
+      '        kursausgabe.zeige("bild", {"png": base64.b64encode(buf.getvalue()).decode("ascii"), "alt": alt})',
+      '    _plt.close("all")',
+      '_plt.show = _kc_show',
+      'del _kc_show',
+      '_f = _plt.figure()',
+      '_f.add_subplot(111).plot([0, 1])',
+      '_f.savefig(io.BytesIO(), format="png")',
+      '_plt.close("all")'
+    ].join('\n');
+    // requests: echtes requests-Paket + pyodide-http (synchrones XMLHttpRequest im Worker); relative URLs gegen die Seite auflösen
+    var HTTP_PY = [
+      'import js, pyodide_http, requests, urllib.parse',
+      'pyodide_http.patch_all()',
+      '_orig_request = requests.sessions.Session.request',
+      'def _kc_request(self, method, url, *args, **kwargs):',
+      '    url = urllib.parse.urljoin(str(js._kc_page), str(url))',
+      '    return _orig_request(self, method, url, *args, **kwargs)',
+      'requests.sessions.Session.request = _kc_request'
+    ].join('\n');
+    function listFiles() {
+      var FS = pyodide.FS, out = {};
+      FS.readdir(FS.cwd()).forEach(function (n) {
+        if (n === '.' || n === '..') return;
+        try {
+          var st = FS.stat(n);
+          if (!FS.isDir(st.mode)) out[n] = st.size + ':' + (+st.mtime);
+        } catch (e) { /* ignorieren */ }
+      });
+      return out;
+    }
+    function fetchFile(u) {
+      if (!fileCache[u]) {
+        fileCache[u] = fetch(u).then(function (r) {
+          if (!r.ok) throw new Error('Beispieldatei ' + decodeURIComponent(u.split('?')[0].split('/').pop()) + ' nicht ladbar (HTTP ' + r.status + ')');
+          return r.arrayBuffer();
+        }).then(function (b) { return new Uint8Array(b); });
+        fileCache[u].catch(function () { delete fileCache[u]; });
+      }
+      return fileCache[u];
+    }
+    var WIPE_PY = ['import os, shutil', 'for _n in os.listdir("."):', '    _p = os.path.join(".", _n)', '    if os.path.isdir(_p) and not os.path.islink(_p):', '        shutil.rmtree(_p, ignore_errors=True)', '    else:', '        os.remove(_p)'].join(String.fromCharCode(10));
+    var ZIP_PY = ['import zipfile, os', 'zipfile.ZipFile(_kc_zip).extractall(".")', 'os.remove(_kc_zip)'].join(String.fromCharCode(10));
+    var PATH_PY = ['import sys, os, importlib', 'if os.getcwd() not in sys.path:', '    sys.path.insert(0, os.getcwd())', 'importlib.invalidate_caches()'].join(String.fromCharCode(10));
+    function prepareFiles(m) {
+      var FS = pyodide.FS;
+      // frisches Arbeitsverzeichnis: Dateien und Ordner früherer Läufe entfernen
+      pyodide.runPython(WIPE_PY);
+      return Promise.all((m.files || []).map(function (u) {
+        return fetchFile(u).then(function (data) { return { name: decodeURIComponent(u.split('?')[0].split('/').pop()), data: data }; });
+      })).then(function (list) {
+        list.forEach(function (f) { FS.writeFile(f.name, f.data); });
+        (m.upload || []).forEach(function (f) { FS.writeFile(f.name, f.data); });
+        // ZIP-Dateien entpacken (Ordnerstruktur bleibt erhalten), das ZIP selbst verschwindet
+        list.concat(m.upload || []).forEach(function (f) {
+          if (!/\.zip$/i.test(f.name)) return;
+          pyodide.globals.set('_kc_zip', f.name);
+          pyodide.runPython(ZIP_PY);
+        });
+        pyodide.runPython(PATH_PY);
+      });
+    }
+    function importsOf(text) {
+      var found = {};
+      ['numpy', 'pandas', 'matplotlib', 'scipy', 'requests'].forEach(function (k) {
+        if (new RegExp('^[ \\t]*(?:import|from)[ \\t][^\\n#]*\\b' + k + '\\b', 'm').test(text || '')) found[k] = true;
+      });
+      return found;
+    }
+    function loadPackages(m) {
+      var texts = [m.code]; if (m.scan) texts.push(m.scan);
+      var imp = {};
+      texts.forEach(function (t) { var f = importsOf(t); Object.keys(f).forEach(function (k) { imp[k] = true; }); });
+      var need = Object.keys(PK_INFO).filter(function (k) { return imp[k] && !loadedPk[k]; });
+      if ((imp.pandas || imp.matplotlib || imp.scipy) && !loadedPk.numpy && need.indexOf('numpy') < 0) need.unshift('numpy');
+      if (need.length) {
+        var mb = need.reduce(function (s, k) { return s + PK_INFO[k][1]; }, 0);
+        self.postMessage({ type: 'status', id: m.id, text: need.map(function (k) { return PK_INFO[k][0]; }).join(', ') + ' wird geladen … nur beim ersten Mal, ca. ' + mb + ' MB' });
+      }
+      var quiet = { messageCallback: function () {}, errorCallback: function () {} };
+      var p = Promise.resolve();
+      texts.forEach(function (t) { p = p.then(function () { return pyodide.loadPackagesFromImports(t, quiet); }); });
+      if (imp.requests && !httpReady) {
+        self._kc_page = m.page || '';
+        p = p.then(function () { return pyodide.loadPackage(['requests', 'pyodide-http'], quiet); })
+          .then(function () { pyodide.runPython(HTTP_PY); httpReady = true; });
+      }
+      // Importe vorwärmen, damit sie nicht auf die Laufzeitgrenze des Programms zählen
+      var warm = [];
+      if (imp.numpy || imp.pandas || imp.matplotlib || imp.scipy) warm.push('import numpy');
+      if (imp.pandas) warm.push('import warnings', 'warnings.filterwarnings("ignore", message="(?s).*Pyarrow")', 'import pandas', 'pandas.set_option("display.width", 110)', 'pandas.set_option("display.max_columns", 20)');
+      if (imp.scipy) warm.push('import scipy');
+      if (warm.length) p = p.then(function () { pyodide.runPython(warm.join(String.fromCharCode(10))); });
+      if ((imp.matplotlib || imp.pylab) && !mplReady) {
+        p = p.then(function () { pyodide.runPython(MPL_PY); mplReady = true; });
+      }
+      return p.then(function () {
+        need.forEach(function (k) { loadedPk[k] = true; });
+        self._kc_page = m.page || self._kc_page || '';
+        if (need.length) self.postMessage({ type: 'status', id: m.id, text: '' });
+      });
+    }
+    function sendNewFiles(m, before) {
+      var FS = pyodide.FS, after = listFiles(), list = [], tr = [];
+      Object.keys(after).forEach(function (n) {
+        if (before[n] === after[n] || /\.pyc$/.test(n) || list.length >= 12) return;
+        var data = FS.readFile(n);
+        list.push({ name: n, data: data }); tr.push(data.buffer);
+      });
+      if (list.length) self.postMessage({ type: 'files', id: m.id, files: list }, tr);
+    }
+    function runJob(m) {
+      curId = m.id;
+      pyodide.setStdout({ batched: function (s) { self.postMessage({ type: 'out', id: m.id, text: s + '\n' }); } });
+      pyodide.setStderr({ batched: function (s) { self.postMessage({ type: 'err', id: m.id, text: s + '\n' }); } });
+      pyodide.setStdin({ stdin: function () { return undefined; } });
+      var before = {};
+      Promise.resolve().then(function () {
+        if (!kaReady) { pyodide.runPython(KURSAUSGABE_PY); kaReady = true; }
+        return prepareFiles(m);
+      }).then(function () { return loadPackages(m); }).then(function () {
+        before = listFiles();
+        self.postMessage({ type: 'started', id: m.id });
+        var g = pyodide.globals.get('dict')();
+        if (m.harness) {
+          // Harness-Modus (Konsolen-Echo, Visualisierer): Python-Hilfsprogramm statt des Codes selbst; Code kommt als _kc_src
+          var v = m.vars || {};
+          Object.keys(v).forEach(function (k) { g.set(k, v[k]); });
+          g.set('_kc_src', m.code);
+          return pyodide.runPythonAsync(m.harness, { globals: g }).then(function (r) { try { g.destroy(); } catch (x) {} return r == null ? '' : String(r); });
+        }
+        return pyodide.runPythonAsync(m.code, { globals: g }).then(function () { try { g.destroy(); } catch (x) {} return undefined; });
+      }).then(function (result) {
+        try { sendNewFiles(m, before); } catch (e) { /* ignorieren */ }
+        self.postMessage({ type: 'done', id: m.id, result: result });
+      }).catch(function (err) {
+        try { sendNewFiles(m, before); } catch (e) { /* ignorieren */ }
+        self.postMessage({ type: 'done', id: m.id, error: clean(String(err && err.message ? err.message : err)) });
+      });
+    }
     self.onmessage = function (e) {
       var m = e.data;
       if (m.type === 'init') {
@@ -374,24 +537,7 @@
           self.postMessage({ type: 'rpc', rid: m.rid, ok: false, error: String(err && err.message ? err.message : err) });
         } finally { try { if (fn) fn.destroy(); } catch (x) {} }
       } else if (m.type === 'run') {
-        pyodide.setStdout({ batched: function (s) { self.postMessage({ type: 'out', id: m.id, text: s + '\n' }); } });
-        pyodide.setStderr({ batched: function (s) { self.postMessage({ type: 'err', id: m.id, text: s + '\n' }); } });
-        pyodide.setStdin({ stdin: function () { return undefined; } });
-        pyodide.loadPackagesFromImports(m.code).then(function () {
-          var g = pyodide.globals.get('dict')();
-          if (m.harness) {
-            // Harness-Modus (Konsolen-Echo, Visualisierer): Python-Hilfsprogramm statt des Codes selbst; Code kommt als _kc_src
-            var v = m.vars || {};
-            Object.keys(v).forEach(function (k) { g.set(k, v[k]); });
-            g.set('_kc_src', m.code);
-            return pyodide.runPythonAsync(m.harness, { globals: g }).then(function (r) { try { g.destroy(); } catch (x) {} return r == null ? '' : String(r); });
-          }
-          return pyodide.runPythonAsync(m.code, { globals: g }).then(function () { try { g.destroy(); } catch (x) {} return undefined; });
-        }).then(function (result) {
-          self.postMessage({ type: 'done', id: m.id, result: result });
-        }).catch(function (err) {
-          self.postMessage({ type: 'done', id: m.id, error: clean(String(err && err.message ? err.message : err)) });
-        });
+        runJob(m);
       }
     };
   }
@@ -532,14 +678,24 @@ _result
         return Py.ensure().then(function () {
           return new Promise(function (resolve) {
             var id = ++Py.seq, timer = null;
+            var loadLimit = Math.max(opts.timeout, 240000);   // Paket-/Dateiladen zählt nicht zur Laufzeitgrenze
+            function startTimer(ms) { clearTimeout(timer); timer = setTimeout(function () { Py.reset(); resolve({ timedOut: true }); }, ms); }
             Py.handler = function (m) {
               if (m.id !== id) return;
               if (m.type === 'out') opts.onOut(m.text);
               else if (m.type === 'err') opts.onErr(m.text);
+              else if (m.type === 'started') startTimer(opts.timeout);
+              else if (m.type === 'status') { if (opts.onStatus) opts.onStatus(m.text); }
+              else if (m.type === 'rich') { if (opts.onRich) opts.onRich(m.art, m.daten); }
+              else if (m.type === 'files') { if (opts.onFiles) opts.onFiles(m.files); }
               else if (m.type === 'done') { clearTimeout(timer); Py.handler = null; resolve({ error: m.error, result: m.result }); }
             };
-            timer = setTimeout(function () { Py.reset(); resolve({ timedOut: true }); }, opts.timeout);
-            Py.worker.postMessage({ type: 'run', id: id, code: code, harness: opts.harness || null, vars: opts.vars || null });
+            startTimer(loadLimit);
+            Py.worker.postMessage({
+              type: 'run', id: id, code: code, harness: opts.harness || null, vars: opts.vars || null,
+              files: (opts.files || []).map(function (u) { return new URL(u, opts.baseUrl || location.href).href; }),
+              upload: opts.upload || null, scan: opts.scan || null, page: location.href.split('#')[0]
+            });
           });
         });
       });
@@ -581,6 +737,121 @@ _result
     }
     return scriptP[path];
   }
+  /* ── Labor-Erweiterungen (Hauptseite): Beispieldateien, Upload, reiche Ausgaben, erzeugte Dateien ── */
+  // data-files="a.csv b.py" -> Liste der Einträge (relativ zur Seite, Py.run macht absolute URLs daraus)
+  Py.parseFiles = function (str) {
+    return (str || '').split(/[\s,]+/).filter(Boolean);
+  };
+  function fmtSize(n) { return n < 1024 ? n + ' B' : (n < 1048576 ? Math.round(n / 102.4) / 10 + ' kB' : Math.round(n / 104857.6) / 10 + ' MB'); }
+  var IMG_EXT = /\.(png|jpg|jpeg|gif|svg)$/i;
+  function isBinary(bytes) {
+    var n = Math.min(bytes.length, 512);
+    for (var i = 0; i < n; i++) if (bytes[i] === 0) return true;
+    return false;
+  }
+  function renderFiles(holder, list) {
+    var box = holder._kFiles;
+    if (!box) {
+      box = el('div', { class: 'k-files', role: 'group', 'aria-label': 'Erzeugte Dateien' }, [el('p', { class: 'k-files__title', text: 'Erzeugte Dateien' })]);
+      holder._kFiles = box; holder.appendChild(box);
+    }
+    var ul = el('ul', { class: 'k-files__list' });
+    box.appendChild(ul);
+    list.forEach(function (f) {
+      var name = f.name, bytes = f.data;
+      var li = el('li', { class: 'k-files__item' });
+      var head = el('div', { class: 'k-files__row' }, [el('code', { class: 'k-files__name', text: name }), el('span', { class: 'k-small k-muted', text: fmtSize(bytes.length) })]);
+      var show = el('button', { type: 'button', class: 'k-btn k-btn--small k-btn--ghost', text: 'Anzeigen', 'aria-expanded': 'false' });
+      var ext = name.split('.').pop().toLowerCase();
+      var mime = IMG_EXT.test(name) ? (ext === 'svg' ? 'image/svg+xml' : 'image/' + (ext === 'jpg' ? 'jpeg' : ext)) : 'application/octet-stream';
+      var url = URL.createObjectURL(new Blob([bytes], { type: mime }));
+      var dl = el('a', { class: 'k-btn k-btn--small k-btn--link', href: url, download: name, text: 'Herunterladen' });
+      var view = null;
+      show.addEventListener('click', function () {
+        if (view) { view.hidden = !view.hidden; show.setAttribute('aria-expanded', String(!view.hidden)); show.textContent = view.hidden ? 'Anzeigen' : 'Ausblenden'; return; }
+        if (IMG_EXT.test(name) && ext !== 'svg') {
+          view = el('img', { class: 'k-rich__img', src: url, alt: 'Erzeugte Datei ' + name });
+        } else if (!isBinary(bytes)) {
+          view = el('pre', { class: 'k-files__view', tabindex: '0', 'aria-label': 'Inhalt von ' + name });
+          view.textContent = new TextDecoder().decode(bytes.subarray(0, 20000)) + (bytes.length > 20000 ? '\n… (gekürzt, vollständig über „Herunterladen“)' : '');
+        } else {
+          view = el('p', { class: 'k-small k-muted', text: 'Binärdatei, nur zum Herunterladen.' });
+        }
+        li.appendChild(view); show.setAttribute('aria-expanded', 'true'); show.textContent = 'Ausblenden';
+      });
+      head.appendChild(show); head.appendChild(dl);
+      li.appendChild(head); ul.appendChild(li);
+    });
+  }
+  function renderRich(holder, art, daten) {
+    var d;
+    try { d = typeof daten === 'string' ? JSON.parse(daten) : daten; } catch (e) { return; }
+    if (art === 'bild') {
+      var fig = el('figure', { class: 'k-rich__fig' }, [el('img', { class: 'k-rich__img', src: 'data:image/png;base64,' + d.png, alt: d.alt || 'Abbildung aus dem Programm' })]);
+      holder.insertBefore(fig, holder._kFiles || null);
+    } else if (art === '3d') {
+      var c = el('div', { class: 'k-rich__3d' });
+      holder.insertBefore(c, holder._kFiles || null);
+      var go = function () {
+        try { window.Vorschau3D.zeige(c, d); }
+        catch (e) { c.appendChild(el('p', { class: 'k-small', text: '3D-Vorschau nicht möglich: ' + e.message })); }
+      };
+      if (window.Vorschau3D) go();
+      else {
+        ensureCss('../css/vorschau3d.css');
+        loadScript('vorschau3d.js').then(go, function () { c.appendChild(el('p', { class: 'k-small', text: '3D-Vorschau konnte nicht geladen werden.' })); });
+      }
+    }
+  }
+  /* Ausgabe-Hooks für einen Lauf. Aufruf: Py.run(code, mix({timeout, onOut, onErr}, Py.ui(outEl, {files, upload, scan}))).
+     Legt unter outEl einen Bereich für Bilder, 3D und erzeugte Dateien an (wird bei jedem Lauf geleert).
+     files: Liste von URLs/Pfaden; upload: Funktion oder Array [{name, data}]; scan: Quelltext für die Paket-Erkennung. */
+  Py.ui = function (out, o) {
+    o = o || {};
+    ensureCss('../css/runner.css');
+    var holder = out._kRich;
+    if (!holder) { holder = el('div', { class: 'k-rich' }); out.insertAdjacentElement('afterend', holder); out._kRich = holder; }
+    holder.textContent = ''; holder._kFiles = null;
+    var load = null;
+    function status(t) {
+      if (!t) { if (load && load.parentNode) load.parentNode.removeChild(load); load = null; return; }
+      if (!load) { load = el('span', { class: 'sys k-loadmsg' }); out.insertBefore(load, out.firstChild); }
+      load.textContent = t + '\n'; out.hidden = false;
+    }
+    return {
+      files: o.files || null, scan: o.scan || null,
+      upload: typeof o.upload === 'function' ? o.upload() : (o.upload || null),
+      onStatus: status,
+      onRich: function (art, daten) { renderRich(holder, art, daten); },
+      onFiles: function (list) { renderFiles(holder, list); },
+      finish: function () { status(''); }
+    };
+  };
+  Py.mix = function (a, b) { Object.keys(b || {}).forEach(function (k) { a[k] = b[k]; }); return a; };
+  /* Knopf „Eigene CSV laden“: gibt {el, get()} zurück; get() liefert [{name, data}] für opts.upload */
+  Py.uploadUI = function (idBase) {
+    var store = {};
+    var input = el('input', { type: 'file', class: 'k-upload__input', id: idBase + '-file', accept: '.csv,.tsv,.txt,.json,text/csv,text/plain', multiple: '', hidden: '' });
+    var btn = el('button', { type: 'button', class: 'k-btn k-btn--small k-btn--ghost' });
+    btn.appendChild(document.createTextNode('Eigene CSV laden'));
+    var list = el('span', { class: 'k-upload__names k-small', role: 'status', 'aria-live': 'polite' });
+    var note = el('p', { class: 'k-upload__note k-small k-muted', text: 'Die Datei bleibt in deinem Browser, nichts wird hochgeladen.' });
+    var wrap = el('div', { class: 'k-upload' }, [el('div', { class: 'k-upload__row' }, [btn, list]), note, input]);
+    btn.addEventListener('click', function () { input.click(); });
+    input.addEventListener('change', function () {
+      Array.prototype.slice.call(input.files || []).forEach(function (f) {
+        if (f.size > 20 * 1048576) { list.textContent = f.name + ' ist größer als 20 MB und wird nicht geladen.'; return; }
+        var name = f.name.replace(/[\\/]/g, '_');
+        f.arrayBuffer().then(function (b) {
+          store[name] = new Uint8Array(b);
+          list.textContent = 'Im Arbeitsverzeichnis: ' + Object.keys(store).map(function (n) { return n + ' (' + fmtSize(store[n].length) + ')'; }).join(', ');
+        });
+      });
+      input.value = '';
+    });
+    return { el: wrap, get: function () { return Object.keys(store).map(function (n) { return { name: n, data: store[n] }; }); } };
+  };
+
   /* Schritt-für-Schritt-Visualisierer: Platzhalter, lädt viz.js erst beim ersten Öffnen (viz.js ersetzt window.KursViz) */
   window.KursViz = {
     open: function (code, opts) {
@@ -635,6 +906,10 @@ _result
     ta.insertAdjacentElement('afterend', stdinBox);
     stdinBox.insertAdjacentElement('afterend', bar);
     bar.insertAdjacentElement('afterend', out);
+    // Labor: Beispieldateien (data-files) und eigener Upload (data-upload)
+    var dataFiles = Py.parseFiles(box.getAttribute('data-files') || ta.getAttribute('data-files'));
+    var uploader = (box.hasAttribute('data-upload') || ta.hasAttribute('data-upload')) ? Py.uploadUI(ta.id) : null;
+    if (uploader) bar.insertAdjacentElement('afterend', uploader.el);
 
     var tryBox = box.closest('.k-try');
     var predict = !auto && tryBox && $('.k-predict', tryBox);
@@ -671,11 +946,13 @@ _result
       status.appendChild(el('span', { class: 'k-spinner', 'aria-hidden': 'true' }));
       status.appendChild(document.createTextNode(first ? 'Python wird geladen (einmalig, ca. 10 MB) …' : 'läuft …'));
       var gotOutput = false;
-      Py.console(curCode(), stdinTa.value, {
+      var rich = Py.ui(out, { files: dataFiles, upload: uploader ? uploader.get : null, scan: curCode() });
+      Py.console(curCode(), stdinTa.value, Py.mix({
         timeout: timeout,
         onOut: function (t) { gotOutput = true; append(t); },
         onErr: function (t) { gotOutput = true; append(t, 'err'); }
-      }).then(function (r) {
+      }, rich)).then(function (r) {
+        rich.finish();
         if (r.timedOut) append('\nAbgebrochen nach ' + (timeout / 1000) + ' s. Läuft da eine Endlosschleife?\n', 'err');
         else if (r.error) append((out.textContent && !/\n$/.test(out.textContent) ? '\n' : '') + r.error.replace(/\s+$/, '') + '\n', 'err');
         else if (!gotOutput) append('(keine Ausgabe – hast du print() benutzt?)', 'sys');
@@ -689,6 +966,7 @@ _result
           if (ex) { var c = el('span'); c.innerHTML = ex.innerHTML; res.appendChild(c); }
         }
       }).catch(function (err) {
+        rich.finish();
         append('Python konnte nicht gestartet werden. Bist du online? (' + err.message + ')\n', 'err');
         status.textContent = 'Ladefehler – erneut versuchen';
       }).then(function () { running = false; runBtn.disabled = false; });
@@ -704,6 +982,7 @@ _result
     resetBtn.addEventListener('click', function () {
       ta.value = original; stdinTa.value = stdinOrig; fitStdin(); syncStdinBox();
       out.textContent = ''; out.hidden = true; status.textContent = 'zurückgesetzt';
+      if (out._kRich) out._kRich.textContent = '';
     });
     box._kRunner = { run: run, ta: ta, stdinTa: stdinTa, out: out };
   }
@@ -726,6 +1005,8 @@ _result
     var box = el('div', { class: 'k-runner k-runner--auto' }, [ta]);
     if (o.stdin != null && o.stdin !== '') box.setAttribute('data-stdin', o.stdin);
     if (o.timeout) box.setAttribute('data-timeout', o.timeout);
+    if (o.files) box.setAttribute('data-files', o.files);
+    if (o.upload) box.setAttribute('data-upload', '');
     return box;
   }
   var NORUN_LATE = NORUN.replace('.k-q, .k-quiz, ', '');
@@ -773,6 +1054,8 @@ _result
     var box = makeRunner(text, {
       stdin: pre.getAttribute('data-stdin') != null ? pre.getAttribute('data-stdin') : code.getAttribute('data-stdin'),
       timeout: pre.getAttribute('data-timeout'),
+      files: pre.getAttribute('data-files') || code.getAttribute('data-files'),
+      upload: pre.hasAttribute('data-upload') || code.hasAttribute('data-upload'),
       label: pre.getAttribute('aria-label')
     });
     target.parentNode.replaceChild(box, target);

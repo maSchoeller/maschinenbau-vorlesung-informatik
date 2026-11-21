@@ -26,6 +26,7 @@
         <a href="lektionen/v03-fliesskommazahlen.html">V03 Lerneinheit</a>
         <a href="lektionen/v03-labor.html">V03 Labor</a>
         <a href="bibliothek.html" aria-current="page">Bibliothek</a>
+        <a href="pap-editor.html">PAP-Editor</a>
       </nav>
     </div>
   </header>
@@ -90,6 +91,7 @@ print(&quot;Hallo, Welle!&quot;)"></textarea>
     </div>
   </footer>
 
+  <script src="assets/js/speicher.js"></script>
   <script src="assets/js/icons.js"></script>
   <script src="assets/js/kurs.js"></script>
   <script src="assets/js/editor.js" defer></script>
@@ -100,8 +102,8 @@ print(&quot;Hallo, Welle!&quot;)"></textarea>
     var L = KE.lib;
     var $ = function (s) { return document.getElementById(s); };
     var state = { q: '', stand: null, ampel: '', kat: '', mode: 'cards', open: null };
-    var STAND_KEY = 'dhbw-inf-mb:bib-stand';
-    try { var sv = window.localStorage.getItem(STAND_KEY); if (sv && sv !== 'alle') state.stand = parseInt(sv, 10); } catch (e) {}
+    var STAND_PFAD = 'inf-mb/bibliothek/stand';
+    try { var sv = window.KursSpeicher.sofort.lesen(STAND_PFAD); if (sv && sv !== 'alle') state.stand = parseInt(sv, 10); } catch (e) {}
     var view = $('bib-view'), sheet = $('bib-sheet'), count = $('bib-count');
 
     function el(tag, attrs, kids) {
@@ -213,7 +215,7 @@ print(&quot;Hallo, Welle!&quot;)"></textarea>
       $('bib-q').addEventListener('input', function (ev) { state.q = ev.target.value; state.open = null; render(); });
       sel.addEventListener('change', function () {
         state.stand = sel.value === 'alle' ? null : parseInt(sel.value, 10);
-        try { window.localStorage.setItem(STAND_KEY, sel.value); } catch (e) {}
+        try { window.KursSpeicher.sofort.schreiben(STAND_PFAD, sel.value); } catch (e) {}
         render();
       });
       $('bib-ampel').addEventListener('change', function (ev) { state.ampel = ev.target.value; state.open = null; render(); });

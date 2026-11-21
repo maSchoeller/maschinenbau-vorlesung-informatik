@@ -30,3 +30,25 @@
 /* Ausgabe bekommt nur dann Platzhalter, wenn sie sichtbar ist */
 .k-runner__out:not([hidden]):empty::before { content: "Ausgabe erscheint hier."; }
 .k-runner__out[hidden] { display: none; }
+
+/* Labor-Erweiterungen: Upload, Bilder, 3D, erzeugte Dateien */
+.k-upload { padding: var(--sp-2) var(--sp-3); background: #F6F8FA; border-top: 1px solid var(--k-line, #E5E7EB); }
+.k-upload__row { display: flex; flex-wrap: wrap; gap: var(--sp-2); align-items: center; }
+.k-upload__names { overflow-wrap: anywhere; }
+.k-upload__note { margin: var(--sp-1) 0 0; }
+.k-upload__input[hidden] { display: none; }
+.k-runner__out .k-loadmsg { display: block; }
+
+.k-rich { max-width: 100%; min-width: 0; }
+.k-rich:empty { display: none; }
+.k-rich__fig { margin: var(--sp-3) 0 0; padding: 0; max-width: 100%; }
+.k-rich__img { display: block; max-width: 100%; height: auto; background: #fff; border: 1px solid var(--k-line, #E5E7EB); border-radius: var(--r-sm, 4px); }
+.k-rich__3d { margin: var(--sp-3) 0 0; max-width: 100%; min-width: 0; }
+
+.k-files { margin: var(--sp-3) 0 0; padding: var(--sp-2) var(--sp-3); border: 1px solid var(--k-line, #E5E7EB); border-radius: var(--r-sm, 4px); background: #fff; }
+.k-files__title { margin: 0 0 var(--sp-1); font-size: var(--fs-xs); font-weight: 700; color: var(--k-muted, #4B5563); }
+.k-files__list { list-style: none; margin: 0; padding: 0; }
+.k-files__item { padding: var(--sp-1) 0; }
+.k-files__row { display: flex; flex-wrap: wrap; gap: var(--sp-2); align-items: center; }
+.k-files__name { overflow-wrap: anywhere; }
+.k-files__view { margin: var(--sp-2) 0 0; max-height: 14em; overflow: auto; padding: var(--sp-2); background: #F6F8FA; font-size: var(--fs-sm); white-space: pre; }

@@ -1,7 +1,7 @@
 /* =============================================================
    explorables-v05.js – interaktive Bausteine für V05 (reines JS, kein Framework)
    Programmablaufplan (PAP) nach DIN 66001 / ISO 5807 als inline-SVG.
-   (A) PAP-Engine: Baum -> Layout -> SVG-Text (auch ohne DOM, per node nutzbar)
+   (A) PAP-Engine liegt in pap-engine.js (window.KursPAP), hier nur genutzt
    (B) Symbol-Lexikon, (C) PAP läuft ab (Marke wandert, Codezeile leuchtet),
    (D) PAP-Baukasten (PAP <-> Python live), (E) Fehler im PAP finden,
    (F) PAP ergänzen (Code gegeben), (G) Selbstcheck-Haken für Papieraufgaben.
@@ -11,201 +11,14 @@
   'use strict';
 
   /* ══════════════════════════════════════════════════════════
-     (A) PAP-Engine
-     Knotenarten: start | end | io | op | if | conn | sub
-     Eine Folge (Array) läuft von oben nach unten. Eine Raute (if) hat zwei
-     Folgen: yes (links, "ja") und no (rechts, "nein"). Enden beide Zweige
-     nicht in einem Ende, laufen sie unter der Raute wieder zusammen.
+     (A) PAP-Engine: ausgelagert in pap-engine.js (window.KursPAP). Hier nur die Kurzschreibweisen.
      ══════════════════════════════════════════════════════════ */
-  var CH = 6.3, LH = 17, VG = 28, COLG = 22, SK = 14, ARW = 9, PAD = 14;
-  var uidN = 0;
-  function autoId() { uidN += 1; return 'p' + uidN; }
-  function mk(t, text, extra) { var n = { id: autoId(), t: t, text: text }; if (extra) Object.keys(extra).forEach(function (k) { n[k] = extra[k]; }); return n; }
-  var P = {
-    start: function (id) { return mk('start', 'Start', { id: id || 'start' }); },
-    end: function (id, text, extra) { var n = mk('end', text || 'Ende', extra); if (id) n.id = id; return n; },
-    io: function (text, id, extra) { var n = mk('io', text, extra); if (id) n.id = id; return n; },
-    op: function (text, id, extra) { var n = mk('op', text, extra); if (id) n.id = id; return n; },
-    iff: function (text, yes, no, id, extra) { var n = mk('if', text, extra); n.yes = yes || []; n.no = no || []; if (id) n.id = id; return n; }
-  };
-
-  function textW(s) { return s.length * CH; }
-  function wrap(text, max) {
-    var out = [];
-    String(text).split('\n').forEach(function (para) {
-      var words = para.split(/\s+/).filter(Boolean), line = '';
-      if (!words.length) { out.push(''); return; }
-      words.forEach(function (w) {
-        if (!line) line = w;
-        else if ((line + ' ' + w).length <= max) line += ' ' + w;
-        else { out.push(line); line = w; }
-      });
-      out.push(line);
-    });
-    return out;
-  }
-  function maxLine(lines) { var m = 0; lines.forEach(function (l) { m = Math.max(m, textW(l)); }); return m; }
-
-  function sizeOf(n) {
-    var t = n.t, L, tx;
-    if (t === 'start' || t === 'end') { tx = n.text || (t === 'start' ? 'Start' : 'Ende'); n.lines = [tx]; return { w: Math.max(96, textW(tx) + 44), h: 34 }; }
-    if (t === 'conn') { n.lines = [String(n.text)]; return { w: 32, h: 32 }; }
-    if (t === 'op' || t === 'io' || t === 'sub') {
-      n.lines = wrap(n.text, n.wrapAt || 22); L = maxLine(n.lines);
-      var w = L + 28 + (t === 'io' && n.shape !== 'op' ? 2 * SK : 0) + (t === 'sub' ? 16 : 0);
-      return { w: Math.max(t === 'io' ? 120 : 98, Math.ceil(w)), h: Math.max(38, n.lines.length * LH + 18) };
-    }
-    n.lines = wrap(n.text, n.wrapAt || 20); L = maxLine(n.lines);
-    var H = n.lines.length * LH;
-    return { w: Math.max(136, Math.ceil(L / 0.54 + 10)), h: Math.max(78, Math.ceil(H / 0.44 + 10)) };
-  }
-
-  function measureSeq(seq) {
-    var l = 0, r = 0;
-    (seq || []).forEach(function (n) { var m = measureNode(n); l = Math.max(l, m.l); r = Math.max(r, m.r); });
-    return { l: l, r: r };
-  }
-  function measureNode(n) {
-    n._s = sizeOf(n);
-    if (n.t !== 'if') return (n._m = { l: n._s.w / 2, r: n._s.w / 2 });
-    var y = measureSeq(n.yes), no = measureSeq(n.no);
-    var a = Math.max(n._s.w / 2, y.r + COLG / 2), b = Math.max(n._s.w / 2, no.l + COLG / 2);
-    return (n._m = { l: Math.max(a + y.l, n._s.w / 2), r: Math.max(b + no.r, n._s.w / 2), a: a, b: b });
-  }
-  function lastPt(e) { return e.pts[e.pts.length - 1]; }
-  function simplify(pts) {
-    var out = [];
-    pts.forEach(function (p) {
-      var q = out[out.length - 1];
-      if (q && Math.abs(q[0] - p[0]) < 0.01 && Math.abs(q[1] - p[1]) < 0.01) return;
-      out.push([p[0], p[1]]);
-    });
-    for (var i = out.length - 2; i > 0; i--) {
-      var a = out[i - 1], b = out[i], c = out[i + 1];
-      if ((Math.abs(a[0] - b[0]) < 0.01 && Math.abs(b[0] - c[0]) < 0.01) || (Math.abs(a[1] - b[1]) < 0.01 && Math.abs(b[1] - c[1]) < 0.01)) out.splice(i, 1);
-    }
-    return out;
-  }
-
-  function placeSeq(seq, x, exits, y0, ctx) {
-    (seq || []).forEach(function (n) {
-      var s = n._s, top;
-      if (!exits.length) top = y0;
-      else {
-        var maxY = -1e9;
-        exits.forEach(function (e) { maxY = Math.max(maxY, lastPt(e)[1]); });
-        var need = exits.length > 1 || exits.some(function (e) { return Math.abs(lastPt(e)[0] - x) > 0.5; });
-        var mergeY = maxY + VG * 0.55;
-        top = need ? maxY + VG + 12 : maxY + VG;
-        /* erster Knoten eines Zweigs darf die Raute nicht berühren */
-        exits.forEach(function (e) {
-          if (!e.dia) return;
-          var d = e.dia, rel = e.side < 0 ? (x + n._s.w / 2) - d.cx : d.cx - (x - n._s.w / 2);
-          if (rel + 10 > -d.hw) top = Math.max(top, d.yc + d.hh * (1 + (rel + 10) / d.hw));
-        });
-        exits.forEach(function (e) {
-          var pts = e.pts.slice(), p = lastPt(e);
-          if (need) { pts.push([p[0], mergeY]); pts.push([x, mergeY]); }
-          pts.push([x, top]);
-          ctx.edges.push({ from: e.id, to: n.id, label: e.label || '', show: e.show, side: e.side, pts: simplify(pts), noArrow: !!n.noArrow });
-        });
-      }
-      n._x = x; n._y = top; ctx.nodes.push(n);
-      if (n.t === 'if') {
-        var yc = top + s.h / 2, m = n._m, hw = s.w / 2;
-        var yes0 = [{ id: n.id, label: 'ja', show: n.yesLabel !== '', side: -1, dia: { cx: x, yc: yc, hw: hw, hh: s.h / 2 }, pts: [[x - hw, yc], [x - m.a, yc]] }];
-        var no0 = [{ id: n.id, label: 'nein', show: n.noLabel !== '', side: 1, dia: { cx: x, yc: yc, hw: hw, hh: s.h / 2 }, pts: [[x + hw, yc], [x + m.b, yc]] }];
-        var ye = placeSeq(n.yes, x - m.a, yes0, yc, ctx), ne = placeSeq(n.no, x + m.b, no0, yc, ctx);
-        exits = ye.concat(ne);
-      } else if (n.t === 'end' || n.open) exits = [];
-      else exits = [{ id: n.id, label: '', pts: [[x, top + s.h]] }];
-    });
-    return exits;
-  }
-
-  function layout(spec) {
-    var seq = Array.isArray(spec) ? spec : spec.nodes;
-    measureSeq(seq);
-    var ctx = { nodes: [], edges: [] };
-    placeSeq(seq, 0, [], 0, ctx);
-    var x0 = 1e9, x1 = -1e9, y1 = -1e9;
-    ctx.nodes.forEach(function (n) { x0 = Math.min(x0, n._x - n._s.w / 2); x1 = Math.max(x1, n._x + n._s.w / 2); y1 = Math.max(y1, n._y + n._s.h); });
-    ctx.edges.forEach(function (e) { e.pts.forEach(function (p) { x0 = Math.min(x0, p[0]); x1 = Math.max(x1, p[0]); y1 = Math.max(y1, p[1]); }); });
-    ctx.edges.forEach(function (e) { if (e.show && e.label) { var p = e.pts[0]; if (e.side < 0) x0 = Math.min(x0, p[0] - 36); else x1 = Math.max(x1, p[0] + 40); } });
-    return { nodes: ctx.nodes, edges: ctx.edges, x0: x0 - PAD, y0: -PAD, w: x1 - x0 + 2 * PAD, h: y1 + 2 * PAD };
-  }
-
-  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
-  function f1(v) { return (Math.round(v * 10) / 10).toString(); }
-
-  function shapeSvg(n) {
-    var s = n._s, x = n._x, y = n._y, w = s.w, h = s.h, cx = x, cy = y + h / 2, d, cls = 'pap-shape';
-    if (n.t === 'start' || n.t === 'end') return '<rect class="' + cls + '" x="' + f1(x - w / 2) + '" y="' + f1(y) + '" width="' + f1(w) + '" height="' + h + '" rx="' + h / 2 + '"/>';
-    if (n.t === 'conn') return '<circle class="' + cls + '" cx="' + f1(cx) + '" cy="' + f1(cy) + '" r="' + w / 2 + '"/>';
-    if (n.t === 'op' || (n.t === 'io' && n.shape === 'op')) return '<rect class="' + cls + '" x="' + f1(x - w / 2) + '" y="' + f1(y) + '" width="' + f1(w) + '" height="' + h + '"/>';
-    if (n.t === 'sub') return '<rect class="' + cls + '" x="' + f1(x - w / 2) + '" y="' + f1(y) + '" width="' + f1(w) + '" height="' + h + '"/><path class="pap-line pap-line--in" d="M' + f1(x - w / 2 + 9) + ' ' + f1(y) + 'V' + f1(y + h) + 'M' + f1(x + w / 2 - 9) + ' ' + f1(y) + 'V' + f1(y + h) + '"/>';
-    if (n.t === 'io') { d = 'M' + f1(x - w / 2 + SK) + ' ' + f1(y) + 'H' + f1(x + w / 2) + 'L' + f1(x + w / 2 - SK) + ' ' + f1(y + h) + 'H' + f1(x - w / 2) + 'Z'; return '<path class="' + cls + '" d="' + d + '"/>'; }
-    d = 'M' + f1(x) + ' ' + f1(y) + 'L' + f1(x + w / 2) + ' ' + f1(cy) + 'L' + f1(x) + ' ' + f1(y + h) + 'L' + f1(x - w / 2) + ' ' + f1(cy) + 'Z';
-    return '<path class="' + cls + '" d="' + d + '"/>';
-  }
-  function nodeSvg(n, o) {
-    var s = n._s, cy = n._y + s.h / 2, lines = n.lines, k, out = '';
-    var cls = 'pap-n pap-n--' + n.t + (n.cls ? ' ' + n.cls : '');
-    out += '<g class="' + cls + '" data-id="' + esc(n.id) + '" data-bid="' + esc(n.id) + '">' + shapeSvg(n);
-    for (k = 0; k < lines.length; k++) {
-      out += '<text class="pap-t" x="' + f1(n._x) + '" y="' + f1(cy - (lines.length - 1) * LH / 2 + k * LH + 4.6) + '" text-anchor="middle">' + esc(lines[k]) + '</text>';
-    }
-    if (n.num && o.badges !== false) {
-      var bx = n._x - s.w / 2 + (n.t === 'if' ? s.w * 0.12 : 4), by = n._y + (n.t === 'if' ? s.h * 0.2 : 2);
-      out += '<g class="pap-badge"><circle cx="' + f1(bx) + '" cy="' + f1(by) + '" r="9"/><text x="' + f1(bx) + '" y="' + f1(by + 3.8) + '" text-anchor="middle">' + n.num + '</text></g>';
-    }
-    return out + '</g>';
-  }
-  function edgeSvg(e) {
-    var pts = e.pts, d = 'M' + pts.map(function (p) { return f1(p[0]) + ' ' + f1(p[1]); }).join('L'), out;
-    out = '<g class="pap-e" data-from="' + esc(e.from) + '" data-to="' + esc(e.to) + '" data-lab="' + esc(e.label) + '"><path class="pap-hit" d="' + d + '"/><path class="pap-line" d="' + d + '"/>';
-    if (!e.noArrow && pts.length > 1) {
-      var a = pts[pts.length - 2], b = pts[pts.length - 1], dx = b[0] - a[0], dy = b[1] - a[1], len = Math.sqrt(dx * dx + dy * dy) || 1;
-      dx /= len; dy /= len;
-      var bx = b[0] - dx * ARW, by = b[1] - dy * ARW, px = -dy * 4.6, py = dx * 4.6;
-      out += '<path class="pap-ah" d="M' + f1(b[0]) + ' ' + f1(b[1]) + 'L' + f1(bx + px) + ' ' + f1(by + py) + 'L' + f1(bx - px) + ' ' + f1(by - py) + 'Z"/>';
-    }
-    if (e.show && e.label) {
-      var p = pts[0];
-      out += '<text class="pap-lab" x="' + f1(p[0] + e.side * 6) + '" y="' + f1(p[1] - 6) + '" text-anchor="' + (e.side < 0 ? 'end' : 'start') + '">' + esc(e.label) + '</text>';
-    }
-    return out + '</g>';
-  }
-
-  /* Ablauf in Worten (aria-label) */
-  function describeSeq(seq) {
-    var parts = [];
-    (seq || []).forEach(function (n) {
-      if (n.t === 'if') {
-        var y = describeSeq(n.yes), no = describeSeq(n.no);
-        parts.push('Verzweigung „' + n.text + '“: bei ja ' + (y || 'weiter') + '; bei nein ' + (no || 'weiter'));
-      } else if (n.t === 'start' || n.t === 'end') parts.push(n.text || (n.t === 'start' ? 'Start' : 'Ende'));
-      else if (n.t === 'io') parts.push(n.shape === 'op' ? 'Rechteck „' + n.text + '“' : n.text);
-      else if (n.t === 'op') parts.push(n.text);
-      else if (n.t === 'conn') parts.push('Übergangsstelle ' + n.text);
-      else if (n.t === 'sub') parts.push('Unterprogramm ' + n.text);
-    });
-    return parts.join(', dann ');
-  }
-  function describe(spec) { return 'Programmablaufplan: ' + describeSeq(Array.isArray(spec) ? spec : spec.nodes) + '.'; }
-
-  /* spec -> SVG-Text. opts: label, cls, minw (Anteil der Breite, ab dem gescrollt wird), badges */
-  function svg(spec, o) {
-    o = o || {};
-    var lay = layout(spec), out = '';
-    var W = Math.round(lay.w), H = Math.round(lay.h);
-    var label = o.label || describe(spec);
-    lay.edges.forEach(function (e) { out += edgeSvg(e); });
-    lay.nodes.forEach(function (n) { out += nodeSvg(n, o); });
-    var minw = Math.round(W * (o.minw || 0.78));
-    return '<svg class="pap' + (o.cls ? ' ' + o.cls : '') + '" xmlns="http://www.w3.org/2000/svg" viewBox="' + f1(lay.x0) + ' ' + f1(lay.y0) + ' ' + W + ' ' + H + '" role="img" aria-label="' + esc(label) + '" style="--pap-min:' + minw + 'px;--pap-max:' + W + 'px">' + out + '</svg>';
-  }
-  function figure(spec, o) { return '<div class="pap-wrap">' + svg(spec, o) + '</div>'; }
+  var K = root.KursPAP || (typeof require === 'function' ? require('./pap-engine.js') : null);
+  if (!K) throw new Error('pap-engine.js muss vor explorables-v05.js geladen werden.');
+  var P = K.P, layout = K.layout, svg = K.svg, describe = K.describe;
+  var esc = K.esc, nice = K.nice;
+  var nIn = K.nIn, nOut = K.nOut, nOp = K.nOp, nIf = K.nIf;
+  var toLines = K.toLines, toText = K.toText, toPap = K.toPap, parseCode = K.parseCode, numberTree = K.numberTree, countBlocks = K.countBlocks;
 
   /* ══════════════════════════════════════════════════════════
      Werkstoff-PAP (Beispiel V05) und Rechenkern für die Ablauf-Animation
@@ -303,119 +116,6 @@
     return { werkstoff: w, text: 'Empfohlener Werkstoff: ' + w, steps: steps };
   }
 
-  /* ── Baukasten-Kern: Baum {in,out,op,if} -> Python und PAP ── */
-  var uid = 0;
-  function nid() { uid += 1; return 'b' + uid; }
-  function nIn(v) { return { id: nid(), k: 'in', v: v }; }
-  function nOut(v) { return { id: nid(), k: 'out', v: v }; }
-  function nOp(v) { return { id: nid(), k: 'op', v: v }; }
-  function nIf(v, yes, no) { return { id: nid(), k: 'if', v: v, yes: yes || [], no: no || [] }; }
-  function lineOf(n) {
-    var v = String(n.v).trim();
-    if (n.k === 'in') return v ? v + ' = float(input("' + v + ': "))' : 'pass  # Lücke: Variable eintragen';
-    if (n.k === 'out') return 'print(' + v + ')';
-    return v || 'pass  # Lücke: Anweisung eintragen';
-  }
-  function ifLines(n, level, out, kw) {
-    out.push({ ind: level, text: kw + ' ' + (String(n.v).trim() || 'True') + ':', id: n.id, role: kw });
-    if (n.yes.length) toLines(n.yes, level + 1, out); else out.push({ ind: level + 1, text: 'pass', id: n.id, role: 'pass' });
-    if (n.no.length === 1 && n.no[0].k === 'if') ifLines(n.no[0], level, out, 'elif');
-    else if (n.no.length) { out.push({ ind: level, text: 'else:', id: n.id, role: 'else' }); toLines(n.no, level + 1, out); }
-  }
-  function toLines(nodes, level, out) {
-    out = out || [];
-    nodes.forEach(function (n) {
-      if (n.k === 'if') ifLines(n, level, out, 'if');
-      else out.push({ ind: level, text: lineOf(n), id: n.id, role: n.k });
-    });
-    return out;
-  }
-  function toText(nodes) { return toLines(nodes, 0, []).map(function (l) { return new Array(l.ind * 4 + 1).join(' ') + l.text; }).join('\n'); }
-  function numberTree(nodes, c) { c = c || { n: 0 }; nodes.forEach(function (n) { c.n += 1; n.num = c.n; if (n.k === 'if') { numberTree(n.yes, c); numberTree(n.no, c); } }); return c.n; }
-  function countBlocks(nodes) { var c = 0; nodes.forEach(function (n) { c += 1; if (n.k === 'if') c += countBlocks(n.yes) + countBlocks(n.no); }); return c; }
-  /* Python-Schreibweise -> PAP-Schreibweise */
-  function nice(s) {
-    return String(s).replace(/<=/g, '≤').replace(/>=/g, '≥').replace(/!=/g, '≠').replace(/==/g, '=')
-      .replace(/\band\b/g, 'und').replace(/\bor\b/g, 'oder').replace(/\bnot\b/g, 'nicht');
-  }
-  function outText(v) {
-    var s = String(v).trim();
-    if (!s) return 'Ausgabe: …';
-    var m = /^"([^"]*)"$|^'([^']*)'$/.exec(s);
-    return 'Ausgabe: ' + (m ? (m[1] !== undefined ? m[1] : m[2]) : s);
-  }
-  function toPap(tree) {
-    function conv(arr) {
-      return arr.map(function (n) {
-        var c = { num: n.num, cls: n.cls };
-        if (n.k === 'in') return P.io((String(n.v).trim() || '…') + ' einlesen', n.id, c);
-        if (n.k === 'out') return P.io(outText(n.v), n.id, c);
-        if (n.k === 'op') return P.op(nice(String(n.v).trim() || '…'), n.id, c);
-        return P.iff(nice(String(n.v).trim() || '…') + '?', conv(n.yes), conv(n.no), n.id, c);
-      });
-    }
-    return [P.start('start')].concat(conv(tree), [P.end('end')]);
-  }
-  /* Python-Text -> Baum (nur Zuweisung/Aufruf, if, elif, else) */
-  function parseCode(src) {
-    var raw = String(src).replace(/\t/g, '    ').split('\n'), lines = [];
-    raw.forEach(function (l, k) {
-      if (!l.trim() || /^\s*#/.test(l)) return;
-      var tx = l.trim();
-      if (!/["']/.test(tx)) tx = tx.replace(/\s+#.*$/, '');
-      lines.push({ no: k + 1, ind: l.match(/^ */)[0].length, text: tx });
-    });
-    var pos = 0;
-    function fail(l, msg) { var e = new Error('Zeile ' + l.no + ': ' + msg); e.line = l.no; throw e; }
-    function simple(text) {
-      var m = /^([A-Za-z_]\w*)\s*=\s*float\(\s*input\(.*\)\s*\)$/.exec(text);
-      if (m) return nIn(m[1]);
-      m = /^print\((.*)\)$/.exec(text);
-      if (m) return nOut(m[1]);
-      return nOp(text);
-    }
-    function parseBlock(ind) {
-      var out = [];
-      while (pos < lines.length) {
-        var l = lines[pos];
-        if (l.ind < ind) break;
-        if (l.ind > ind) fail(l, 'Diese Zeile ist weiter eingerückt als die Zeile davor. Eine Einrückung ist nur nach einem Doppelpunkt erlaubt.');
-        if (/^(elif\b|else\b)/.test(l.text)) fail(l, l.text.split(/[\s:]/)[0] + ' steht ohne passendes if auf derselben Einrückungsstufe.');
-        if (/^if\b/.test(l.text)) out.push(parseIf(l, ind, 'if'));
-        else {
-          if (/:$/.test(l.text)) fail(l, 'Dieser Baukasten kennt nur if, elif und else mit Doppelpunkt. Andere Blockköpfe (while, for, def …) kommen später im Kurs.');
-          out.push(simple(l.text)); pos += 1;
-        }
-      }
-      return out;
-    }
-    function parseBody(ind, head) {
-      var next = lines[pos];
-      if (!next || next.ind <= ind) fail(head, 'Nach dem Doppelpunkt muss eine eingerückte Zeile folgen.');
-      return parseBlock(next.ind);
-    }
-    function parseIf(l, ind, kw) {
-      var m = new RegExp('^' + kw + '\\s+(.*?)\\s*:$').exec(l.text);
-      if (!m) { if (!/:$/.test(l.text)) fail(l, 'Nach der Bedingung fehlt der Doppelpunkt.'); fail(l, 'Hinter ' + kw + ' fehlt die Bedingung.'); }
-      if (!m[1]) fail(l, 'Hinter ' + kw + ' fehlt die Bedingung.');
-      pos += 1;
-      var n = nIf(m[1], [], []);
-      n.yes = parseBody(ind, l);
-      var nx = lines[pos];
-      if (nx && nx.ind === ind && /^elif\b/.test(nx.text)) n.no = [parseIf(nx, ind, 'elif')];
-      else if (nx && nx.ind === ind && /^else\b/.test(nx.text)) {
-        if (!/^else\s*:$/.test(nx.text)) fail(nx, 'else hat keine Bedingung, nur den Doppelpunkt: else:');
-        pos += 1; n.no = parseBody(ind, nx);
-      }
-      return n;
-    }
-    if (!lines.length) return { nodes: [] };
-    if (lines[0].ind !== 0) fail(lines[0], 'Das Programm beginnt ganz links, ohne Einrückung.');
-    var nodes = parseBlock(0);
-    if (pos < lines.length) fail(lines[pos], 'Die Einrückung passt zu keiner Zeile davor.');
-    return { nodes: nodes };
-  }
-
   /* ── Fehler-im-PAP: Beispiel mit vier eingebauten Fehlern ── */
   function fehlerSpec() {
     return [
@@ -429,15 +129,12 @@
       P.end('e1', 'Ende', { noArrow: true })
     ];
   }
-  var api = {
-    P: P, layout: layout, svg: svg, figure: figure, describe: describe,
-    wSpec: wSpec, wRun: wRun, W_CODE: W_CODE, fehlerSpec: fehlerSpec,
-    toLines: toLines, toText: toText, toPap: toPap, parseCode: parseCode, numberTree: numberTree,
-    nIn: nIn, nOut: nOut, nOp: nOp, nIf: nIf, pyFloat: pyFloat, nice: nice
-  };
-  if (typeof module !== 'undefined' && module.exports) { module.exports = api; }
+  /* V05-Beispieldaten an die gemeinsame Engine hängen (wie bisher window.KursPAP.wSpec usw.) */
+  var extra = { wSpec: wSpec, wRun: wRun, W_CODE: W_CODE, fehlerSpec: fehlerSpec, pyFloat: pyFloat };
+  Object.keys(extra).forEach(function (k) { K[k] = extra[k]; });
+  if (typeof module !== 'undefined' && module.exports) { module.exports = K; }
   if (typeof document === 'undefined') return;
-  root.KursPAP = api;
+  root.KursPAP = K;
 
   /* ══════════════════════════════════════════════════════════
      DOM-Hilfen
