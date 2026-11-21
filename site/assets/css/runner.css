@@ -1,0 +1,32 @@
+/* =============================================================
+   runner.css – kompakte Runner für jeden Python-Codeblock (DESIGN.md Regel 12)
+   Wird von kurs.js nachgeladen. Ruhig: Editor dunkel, Leiste hell, Ausgabe erst nach dem Ausführen.
+   ============================================================= */
+
+/* Eingabefeld für input() */
+.k-runner__stdinbox { display: flex; flex-direction: column; gap: 4px; padding: var(--sp-2) var(--sp-3) var(--sp-3); background: #F6F8FA; border-top: 1px solid var(--k-line, #E5E7EB); }
+.k-runner__stdinlabel { font-size: var(--fs-xs); font-weight: 600; color: var(--k-muted, #4B5563); }
+.k-runner__stdin {
+  display: block; width: 100%; max-width: 32rem; min-height: 40px; resize: vertical; padding: 8px 10px;
+  font-family: var(--dhbw-font-mono); font-size: var(--fs-sm); line-height: var(--lh-code);
+  color: var(--text); background: #fff; border: 1px solid #9CA3AF; border-radius: var(--r-sm, 4px); white-space: pre; overflow: auto;
+}
+.k-runner__stdin:focus-visible { outline: 3px solid var(--k-focus, #1A1A1A); outline-offset: 1px; }
+.k-runner__stdinbox[hidden] { display: none; }
+
+/* Leiste: Knöpfe umbrechen auf dem Handy, Status wandert in eine eigene Zeile */
+.k-runner__bar .k-btn .k-ic { margin-right: .4em; }
+@media (max-width: 560px) { .k-runner__status { margin-left: 0; flex-basis: 100%; } }
+
+/* Automatisch erzeugte Runner: Editorhöhe = Zeilenzahl, keine Mindesthöhe */
+.k-runner--auto { margin: var(--sp-4) 0; max-width: 100%; min-width: 0; }
+.k-runner--auto .ke .cm-editor { min-height: 0; }
+.k-runner--auto .k-runner__code { min-height: 0; }
+.k-runner--auto .ke__status { display: none; }          /* Hinweiszeile erst bei Fokus nötig, sonst Unruhe */
+.k-runner--auto .ke:focus-within .ke__status { display: block; }
+.k-runner--auto .k-runner__out[hidden] { display: none; }
+.k-runner--auto .k-runner__out { max-height: 16em; }
+
+/* Ausgabe bekommt nur dann Platzhalter, wenn sie sichtbar ist */
+.k-runner__out:not([hidden]):empty::before { content: "Ausgabe erscheint hier."; }
+.k-runner__out[hidden] { display: none; }

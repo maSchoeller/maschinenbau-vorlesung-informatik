@@ -52,16 +52,16 @@
       <header class="k-title">
         <p class="k-title__label">V01 · Phase 1 Fundament · Lerneinheit</p>
         <h1 id="h-titel">Warum programmieren, wenn KI es kann?</h1>
-        <p class="k-title__lead">Eine KI rechnet dir eine Spannung aus, mit Formel und Einheit, und sie ist um den Faktor 1000 falsch. Heute lernst du, warum du trotzdem programmieren lernst und wie du solche Fehler in Sekunden findest.</p>
+        <p class="k-title__lead">Eine <abbr class="k-begriff" data-erklaerung="KI heißt künstliche Intelligenz: eine Software, die aus riesigen Textmengen gelernt hat, auf Fragen plausibel klingende Antworten zu erzeugen. Stell dir einen sehr belesenen Assistenten vor, der sich nie unsicher zeigt und trotzdem irren kann.">KI</abbr> rechnet dir eine Spannung aus, mit Formel und Einheit, und sie ist um den Faktor 1000 falsch. Heute lernst du, warum du trotzdem programmieren lernst und wie du solche Fehler in Sekunden findest.</p>
         <p class="k-title__goals">Nach dieser Lerneinheit kannst du:</p>
         <ul class="k-title__list">
           <li>begründen, warum Ingenieure programmieren lernen, obwohl KI Code schreibt,</li>
           <li>mit der Wissens-Ampel einordnen, was du im Kopf haben musst und was du delegieren darfst,</li>
-          <li>erklären, was ein Programm ist und wie sich Interpreter und KI unterscheiden,</li>
-          <li>Zuweisungen Schritt für Schritt nachvollziehen (Name zeigt auf Wert),</li>
-          <li>ein Ergebnis mit einem Überschlag auf die Größenordnung prüfen.</li>
+          <li>erklären, was ein <abbr class="k-begriff" data-erklaerung="Ein Programm ist eine Liste von Anweisungen für den Computer, wie ein Arbeitsplan in der Fertigung: Schritt 1, Schritt 2, Schritt 3, genau in dieser Reihenfolge.">Programm</abbr> ist und wie sich <abbr class="k-begriff" data-erklaerung="Der Interpreter ist das Programm, das deinen Python-Text liest und Zeile für Zeile ausführt, wie ein Werker, der die Arbeitsanweisung Schritt für Schritt abarbeitet.">Interpreter</abbr> und KI unterscheiden,</li>
+          <li><abbr class="k-begriff" data-erklaerung="Eine Zuweisung legt einen Wert unter einem Namen ab, zum Beispiel laenge_mm = 250. Das ist ein Befehl und keine Gleichung: Rechts wird gerechnet, links steht der Name.">Zuweisungen</abbr> Schritt für Schritt nachvollziehen (Name zeigt auf <abbr class="k-begriff" data-erklaerung="Ein Wert ist eine konkrete Angabe, mit der das Programm arbeitet: eine Zahl wie 250 oder ein Text wie Welle. Vergleichbar mit einem Messwert auf dem Prüfprotokoll.">Wert</abbr>),</li>
+          <li>ein Ergebnis mit einem <abbr class="k-begriff" data-erklaerung="Ein Überschlag ist eine grobe Kopfrechnung mit gerundeten Zahlen, um zu prüfen, ob ein Ergebnis in der richtigen Größenordnung liegt.">Überschlag</abbr> auf die <abbr class="k-begriff" data-erklaerung="Die Größenordnung sagt, ob ein Ergebnis eher bei 0,1, bei 100 oder bei 100 000 liegt, also die Zehnerpotenz. Ein Faktor 1000 daneben ist eine falsche Größenordnung.">Größenordnung</abbr> prüfen.</li>
         </ul>
-        <p class="k-small k-muted">Das Schreiben von Python-Code (<code class="k-i">print</code>, Variablen, Kommentare, <code class="k-i">input</code>) übst du danach im <a href="v01-labor.html">Programmierlabor</a>.</p>
+        <p class="k-small k-muted">Das Schreiben von <abbr class="k-begriff" data-erklaerung="Python ist eine Programmiersprache: ein fester Wortschatz mit Schreibregeln, in dem du dem Rechner Anweisungen gibst, ähnlich wie eine Zeichnungsnorm für technische Zeichnungen.">Python</abbr>-<abbr class="k-begriff" data-erklaerung="Code ist der Text, in dem ein Programm geschrieben steht, auch Quellcode genannt. So wie eine Zeichnung dem Bauteil vorausgeht, geht der Code dem laufenden Programm voraus.">Code</abbr> (<code class="k-i">print</code> für die <abbr class="k-begriff" data-erklaerung="Eine Ausgabe ist alles, was das Programm anzeigt, hier meist als Text im Fenster unter dem Code, so wie ein Messgerät seinen Wert anzeigt.">Ausgabe</abbr>, <abbr class="k-begriff" data-erklaerung="Eine Variable ist ein Name für einen Wert, wie ein Etikett an einer Kiste im Lager. Der Wert kann sich ändern, der Name bleibt.">Variablen</abbr>, <abbr class="k-begriff" data-erklaerung="Ein Kommentar ist eine Notiz im Code, die mit # beginnt. Python überspringt sie, sie ist nur für Menschen, wie eine Randbemerkung auf einer Zeichnung.">Kommentare</abbr>, <code class="k-i">input</code> für die <abbr class="k-begriff" data-erklaerung="Eine Eingabe sind Daten, die von außen ins Programm kommen, zum Beispiel etwas, das du tippst. Das entspricht dem, was du in ein Prüfformular einträgst.">Eingabe</abbr>) übst du danach im <a href="v01-labor.html">Programmierlabor</a>. Die genauen Schreibregeln stehen dort im <a href="v01-labor.html#a-werkzeugkasten">Werkzeugkasten</a>. Hier unten siehst du die Befehle nur kurz erklärt.</p>
       </header>
 
       <!-- 1 ───────────── WARUM ───────────── -->
@@ -79,7 +79,7 @@
 
         <h3>Szene 1: Die Spannung, die 1000-mal zu klein ist</h3>
         <p>Du fragst eine KI: Ein Kragarm aus Rundstahl (Durchmesser 40 mm, Länge 0,5 m) trägt am freien Ende eine Kraft von 2 kN. Wie groß ist die Biegespannung? Die Antwort kommt in Sekunden und wirkt professionell:</p>
-<pre class="k-code">Biegemoment:        M = F · l = 2000 N · 0,5 m = 1000 N·m
+<pre class="k-code" data-run="no">Biegemoment:        M = F · l = 2000 N · 0,5 m = 1000 N·m
 Widerstandsmoment:  W = π · d³ / 32 = 6283 mm³
 Biegespannung:      σ = M / W = 1000 / 6283 = 0,159 N/mm²</pre>
         <p>Jeder Schritt sieht richtig aus, sogar die Einheiten stehen da. Trotzdem stimmt das Ergebnis nicht: Das Moment steht in <strong>N·m</strong>, das Widerstandsmoment in <strong>mm³</strong>. Wer das eine durch das andere teilt, mischt Meter und Millimeter und liegt um den Faktor 1000 daneben. Richtig sind 1 000 000 N·mm / 6283 mm³ = 159 N/mm². Das ist eine hohe, aber plausible Auslastung für Baustahl mit einer Streckgrenze von gut 200 N/mm². Mit 0,159 N/mm² hättest du den Stab für gewaltig überdimensioniert gehalten.</p>
@@ -87,7 +87,7 @@ Biegespannung:      σ = M / W = 1000 / 6283 = 0,159 N/mm²</pre>
 
         <div class="k-try" aria-labelledby="t-hook">
           <h3 id="t-hook">Selbst nachrechnen: Wo steckt der Faktor 1000?</h3>
-          <p class="k-small k-muted">Das ist dein erstes Python-Programm in diesem Kurs. Du musst noch nicht jede Zeile selbst schreiben können, aber lesen kannst du sie schon: Namen stehen für Werte, <code class="k-i">print</code> zeigt etwas an. Drück „Ausführen“ (beim ersten Mal lädt Python einmalig nach).</p>
+          <p class="k-small k-muted">Das ist dein erstes Python-Programm in diesem Kurs. Du musst noch nicht jede Zeile selbst schreiben können, aber lesen kannst du sie schon: Ein Name wie <code class="k-i">kraft_n</code> steht für einen Wert, <code class="k-i">=</code> legt den Wert unter dem Namen ab, <code class="k-i">print</code> zeigt etwas an, <code class="k-i">*</code> heißt mal, <code class="k-i">/</code> heißt geteilt, und alles hinter <code class="k-i">#</code> ist ein Kommentar nur für Menschen. Genauer erklärt das der <a href="v01-labor.html#a-werkzeugkasten">Werkzeugkasten im Labor →</a> Drück „Ausführen“ (beim ersten Mal lädt <abbr class="k-begriff" data-erklaerung="Python läuft hier direkt in deinem Browser, ohne dass du etwas installierst. Beim ersten Start wird es einmalig geladen.">Python im Browser</abbr> einmalig nach). Die Ausgabe erscheint in der <abbr class="k-begriff" data-erklaerung="Die Konsole ist das Textfenster, in dem ein Programm seine Ausgaben zeigt und in dem das Ergebnis einzelner Ausdrücke erscheint, wie das Display eines Taschenrechners.">Konsole</abbr>. Danach drück „Schritt für Schritt“ und beobachte den <abbr class="k-begriff" data-erklaerung="Der Speicher ist der Arbeitsplatz des Computers, an dem Werte während des Programmlaufs liegen. Stell ihn dir als Regal mit nummerierten Fächern vor.">Speicher</abbr>: Du siehst, welcher Name nach jeder Zeile auf welchen Wert zeigt.</p>
           <div class="k-runner" data-timeout="8000">
 <textarea class="k-runner__code py-editor" data-lesson="V01" aria-label="Python-Code: Faktor 1000 nachrechnen">kraft_n = 2000            # Kraft am freien Ende in N
 hebel_m = 0.5             # Länge in m
@@ -104,12 +104,12 @@ print("Richtig:   ", moment_nmm / widerstand_mm3)    # N·mm geteilt durch mm³<
         </div>
 
         <h3>Szene 2: Wer unterschreibt?</h3>
-        <p>Ein Skript erzeugt das Prüfprotokoll für eine Serie von Bauteilen. Eine KI hat es geschrieben, und du hast es freigegeben, weil es lief. Ein halbes Jahr später versagt ein Bauteil. Niemand fragt die KI. Gefragt wird, wer das Protokoll unterschrieben hat. Das warst du. Dass Verantwortung beim Menschen bleibt, ändert auch die beste KI nicht.</p>
+        <p>Ein <abbr class="k-begriff" data-erklaerung="Ein Skript ist ein kurzes Programm, das eine kleine Aufgabe automatisiert, zum Beispiel ein Protokoll zu erzeugen.">Skript</abbr> erzeugt das Prüfprotokoll für eine Serie von Bauteilen. Eine KI hat es geschrieben, und du hast es freigegeben, weil es lief. Ein halbes Jahr später versagt ein Bauteil. Niemand fragt die KI. Gefragt wird, wer das Protokoll unterschrieben hat. Das warst du. Dass die <abbr class="k-begriff" data-erklaerung="Haftung heißt: Wer etwas freigibt, muss für die Folgen geradestehen, auch wenn ein Werkzeug den Fehler gemacht hat.">Haftung</abbr> beim Menschen bleibt, ändert auch die beste KI nicht.</p>
 
         <h3>Wissens-Ampel für V01</h3>
         <ul class="k-ampel-list" aria-label="Wissens-Ampel zu V01">
-          <li><span class="k-ampel k-ampel--kopf"><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-head"/></svg> Im Kopf</span><span>Ein Programm führt Anweisungen nacheinander aus (Eingabe, Verarbeitung, Ausgabe). Eine Variable ist ein Name für einen Wert, <code class="k-i">x = x + 1</code> ersetzt den alten Wert. Laufen heißt nicht richtig: Ein Überschlag prüft die Größenordnung.</span></li>
-          <li><span class="k-ampel k-ampel--lesen"><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-book"/></svg> Lesen &amp; erkennen</span><span>Fehlermeldungen wie <code class="k-i">NameError</code> und <code class="k-i">SyntaxError</code> lesen und die Zeile finden. Kurzen Code lesen und Eingabe, Verarbeitung und Ausgabe darin erkennen.</span></li>
+          <li><span class="k-ampel k-ampel--kopf"><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-head"/></svg> Im Kopf</span><span>Ein Programm führt <abbr class="k-begriff" data-erklaerung="Eine Anweisung ist ein einzelner Befehl an den Computer, meist eine Zeile Code, zum Beispiel: Zeige diesen Text an.">Anweisungen</abbr> nacheinander aus (<abbr class="k-begriff" data-erklaerung="Eine Eingabe sind Daten, die von außen ins Programm kommen, zum Beispiel etwas, das du tippst. Das entspricht dem, was du in ein Prüfformular einträgst.">Eingabe</abbr>, Verarbeitung, <abbr class="k-begriff" data-erklaerung="Eine Ausgabe ist alles, was das Programm anzeigt, hier meist als Text im Fenster unter dem Code, so wie ein Messgerät seinen Wert anzeigt.">Ausgabe</abbr>). Eine <abbr class="k-begriff" data-erklaerung="Eine Variable ist ein Name für einen Wert, wie ein Etikett an einer Kiste im Lager. Der Wert kann sich ändern, der Name bleibt.">Variable</abbr> ist ein Name für einen Wert, <code class="k-i">x = x + 1</code> ersetzt den alten Wert (im Abschnitt „Theorie“ siehst du das Schritt für Schritt). Laufen heißt nicht richtig: Ein Überschlag prüft die Größenordnung.</span></li>
+          <li><span class="k-ampel k-ampel--lesen"><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-book"/></svg> Lesen &amp; erkennen</span><span><abbr class="k-begriff" data-erklaerung="Eine Fehlermeldung nennt Python, wenn es eine Zeile nicht ausführen kann: Art des Fehlers, Zeile und Grund. Der ausführliche Bericht heißt Traceback und wird von unten nach oben gelesen.">Fehlermeldungen</abbr> wie <code class="k-i">NameError</code> (ein Name ist unbekannt) und <code class="k-i">SyntaxError</code> (Verstoß gegen die <abbr class="k-begriff" data-erklaerung="Die Syntax ist die Grammatik einer Programmiersprache: Schreibregeln wie Klammern, Anführungszeichen und Schreibweise der Befehle. Verstößt du dagegen, meldet Python einen SyntaxError.">Syntax</abbr>, die Schreibregeln der Sprache) lesen und die Zeile finden. Kurzen Code lesen und Eingabe, Verarbeitung und Ausgabe darin erkennen.</span></li>
           <li><span class="k-ampel k-ampel--deleg"><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-handover"/></svg> Delegieren</span><span>Die genaue Schreibweise von <code class="k-i">print</code>-Optionen wie <code class="k-i">sep</code> und <code class="k-i">end</code> nachschlagen (Befehls-Bibliothek oder KI). Du musst nur wissen, dass es sie gibt.</span></li>
         </ul>
 
@@ -134,11 +134,11 @@ print("Richtig:   ", moment_nmm / widerstand_mm3)    # N·mm geteilt durch mm³<
     <h3>Vier Argumente: Warum trotzdem programmieren lernen?</h3>
     <ol>
       <li><strong>Was du nicht lesen kannst, kannst du nicht prüfen.</strong> KI-Code läuft meistens ohne Fehlermeldung los, auch wenn er das Falsche rechnet. Prüfen heißt: Zeile für Zeile verstehen, welche Zahl welche Einheit hat. Die Haftung liegt bei dem, der freigibt.</li>
-      <li><strong>KI verstärkt, was du ihr gibst.</strong> „Rechne die Spannung“ liefert eine Vermutung. „Eingaben mit Einheit, diese Formel, dieser Testfall mit Sollwert“ liefert ein brauchbares Programm. Wer genau beschreiben kann, was ein Programm tun soll (Eingabe, Verarbeitung, Ausgabe), bekommt bessere Ergebnisse. Ein Struktogramm (V05) ist ein sehr guter Prompt.</li>
-      <li><strong>Überschlagen schlägt Rechnen.</strong> Der Computer rechnet schnell und weiß nicht, ob das Ergebnis sinnvoll ist. Typische Fallen wirst du in diesem Kurs wiedererkennen: die mm/m-Verwechslung von heute, den Überlauf eines Zählers (V02) und <code class="k-i">0.1 + 0.2</code> (V03).</li>
-      <li><strong>Im Betrieb ist KI oft nicht erlaubt.</strong> CAD-Daten, Kundendaten und Steuerungscode für die SPS dürfen in vielen Firmen nicht in ein Cloud-Tool. Dann zählt, was du selbst lesen, ändern und prüfen kannst.</li>
+      <li><strong>KI verstärkt, was du ihr gibst.</strong> „Rechne die Spannung“ liefert eine Vermutung. „Eingaben mit Einheit, diese Formel, dieser Testfall mit Sollwert“ liefert ein brauchbares Programm. Wer genau beschreiben kann, was ein Programm tun soll (Eingabe, Verarbeitung, Ausgabe), bekommt bessere Ergebnisse. Ein <abbr class="k-begriff" data-erklaerung="Ein Struktogramm ist ein Ablaufplan aus Kästchen, der zeigt, was ein Programm in welcher Reihenfolge tut. Du lernst es in V05.">Struktogramm</abbr> (V05) ist ein sehr guter <abbr class="k-begriff" data-erklaerung="Ein Prompt ist die Anweisung oder Frage, die du an eine KI schreibst, wie der Arbeitsauftrag an einen Kollegen.">Prompt</abbr>.</li>
+      <li><strong>Überschlagen schlägt Rechnen.</strong> Der Computer rechnet schnell und weiß nicht, ob das Ergebnis sinnvoll ist. Typische Fallen wirst du in diesem Kurs wiedererkennen: die mm/m-Verwechslung von heute, den <abbr class="k-begriff" data-erklaerung="Ein Überlauf entsteht, wenn ein Zähler über seinen größten Wert hinaus zählt und von vorn beginnt, wie der Kilometerzähler im Auto.">Überlauf</abbr> eines Zählers (V02) und <code class="k-i">0.1 + 0.2</code> (V03).</li>
+      <li><strong>Im Betrieb ist KI oft nicht erlaubt.</strong> CAD-Daten, Kundendaten und Steuerungscode für die <abbr class="k-begriff" data-erklaerung="Eine SPS (speicherprogrammierbare Steuerung) ist der kleine Industrie-Computer, der Maschinen und Anlagen steuert.">SPS</abbr> dürfen in vielen Firmen nicht in ein <abbr class="k-begriff" data-erklaerung="Cloud heißt: Die Daten liegen auf fremden Servern im Internet und nicht auf dem eigenen Rechner oder im Firmennetz.">Cloud</abbr>-Tool. Dann zählt, was du selbst lesen, ändern und prüfen kannst.</li>
     </ol>
-    <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke</strong><p>Die KI schreibt, du spezifizierst, prüfst und verantwortest. Beides ist zu wenig, wenn dir eine der drei Fähigkeiten fehlt.</p></div>
+    <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke</strong><p>Die KI schreibt, du <abbr class="k-begriff" data-erklaerung="Spezifizieren heißt, genau und überprüfbar festzulegen, was herauskommen soll: Eingaben, Rechenweg, Einheiten und Sollwerte.">spezifizierst</abbr>, prüfst und verantwortest. Beides ist zu wenig, wenn dir eine der drei Fähigkeiten fehlt.</p></div>
 
     <h3>Die Wissens-Ampel: dein Kompass durch den Kurs</h3>
     <p>Du kannst nicht alles gleich tief lernen. Deshalb steht bei jedem Thema eine Ampel mit drei Stufen. Sie sagt dir, wie gut du etwas können musst, nicht wie wichtig es ist.</p>
@@ -183,10 +183,11 @@ print("Richtig:   ", moment_nmm / widerstand_mm3)    # N·mm geteilt durch mm³<
       </tbody>
     </table>
     </div>
-    <p>Weil die Reihenfolge zählt, kannst du einen Namen erst benutzen, nachdem er einen Wert bekommen hat. Sonst meldet Python einen <code class="k-i">NameError</code>. Das ist in Ordnung: Die Fehlermeldung ist ehrlich und zeigt auf die Zeile.</p>
+    <p class="k-small k-muted">Die Befehle in der letzten Spalte sind für dich noch neu. Das schauen wir uns im Labor genauer an: <a href="v01-labor.html#a-werkzeugkasten">Werkzeugkasten →</a></p>
+    <p>Weil die Reihenfolge zählt, kannst du einen Namen erst benutzen, nachdem er einen Wert bekommen hat. Sonst meldet Python einen <code class="k-i">NameError</code> (Name unbekannt). Das ist in Ordnung: Die Fehlermeldung ist ehrlich und zeigt auf die Zeile.</p>
 
     <h3>Variablen: Namen zeigen auf Werte</h3>
-    <p>Eine <span class="k-term">Variable</span> ist ein Name für einen Wert. Die Zuweisung <code class="k-i">laenge_mm = 250</code> ist keine Gleichung, sondern ein Befehl: Erst wird die rechte Seite ausgerechnet, dann bekommt das Ergebnis das Etikett, das links steht. Ein späteres <code class="k-i">laenge_mm = laenge_mm + 50</code> rechnet mit dem alten Wert und hängt das Etikett an den neuen. Anders als eine Formel in Excel rechnet nichts von allein nach. Schau dir das Schritt für Schritt an.</p>
+    <p>Eine <span class="k-term">Variable</span> ist ein Name für einen Wert. Die Zuweisung <code class="k-i">laenge_mm = 250</code> ist keine Gleichung, sondern ein Befehl: Erst wird die rechte Seite ausgerechnet, dann bekommt das Ergebnis das Etikett, das links steht. Ein späteres <code class="k-i">laenge_mm = laenge_mm + 50</code> rechnet mit dem alten Wert und hängt das Etikett an den neuen. Anders als eine Formel in Excel rechnet nichts von allein nach. Schau dir das Schritt für Schritt an. Dasselbe zeigt dir bei jedem Codeblock der Knopf „Schritt für Schritt“: Drück darauf und beobachte den Speicher.</p>
 
     <div class="k-explorable">
       <h3>Variablen als Etiketten</h3>
@@ -224,10 +225,10 @@ print("Richtig:   ", moment_nmm / widerstand_mm3)    # N·mm geteilt durch mm³<
     <p>Python führt dein Programm mit einem <span class="k-term">Interpreter</span> aus. Er liest eine Zeile nach der anderen und tut genau, was dasteht. Eine KI funktioniert anders: Sie erzeugt die wahrscheinlichste Fortsetzung eines Textes, auch wenn dieser Text Programmcode ist. Wie das genau geht, lernst du in V10. Für heute reicht der Unterschied:</p>
     <div class="k-tablewrap">
     <table class="k-types">
-      <thead><tr><th scope="col">Frage</th><th scope="col">Python-Interpreter</th><th scope="col">KI (Sprachmodell)</th></tr></thead>
+      <thead><tr><th scope="col">Frage</th><th scope="col">Python-Interpreter</th><th scope="col">KI (<abbr class="k-begriff" data-erklaerung="Ein Sprachmodell (LLM, Large Language Model) ist die KI hinter Chatbots: Es berechnet, welches Wort am wahrscheinlichsten als nächstes folgt.">Sprachmodell</abbr>)</th></tr></thead>
       <tbody>
         <tr><td>Was tut er?</td><td>Führt Anweisungen exakt aus</td><td>Liefert die wahrscheinlichste Antwort auf deine Frage</td></tr>
-        <tr><td>Gleiche Eingabe, gleiches Ergebnis?</td><td>Ja, immer (deterministisch)</td><td>Nicht garantiert: Zweimal fragen kann zwei verschiedene Antworten geben</td></tr>
+        <tr><td>Gleiche Eingabe, gleiches Ergebnis?</td><td>Ja, immer (<abbr class="k-begriff" data-erklaerung="Deterministisch heißt: gleiche Eingabe, gleiches Ergebnis, jedes Mal, wie bei einer Formel.">deterministisch</abbr>)</td><td>Nicht garantiert: Zweimal fragen kann zwei verschiedene Antworten geben</td></tr>
         <tr><td>Wenn etwas unklar oder falsch ist</td><td>Bricht ab und nennt eine Fehlermeldung mit Zeile</td><td>Antwortet trotzdem, selbstbewusst und ohne Warnung</td></tr>
         <tr><td>Weiß er, was du meinst?</td><td>Nein, nur was dasteht</td><td>Er rät aus dem Zusammenhang</td></tr>
       </tbody>
@@ -245,7 +246,7 @@ print("Richtig:   ", moment_nmm / widerstand_mm3)    # N·mm geteilt durch mm³<
         <tr><td>Programmierlabor, Teil A</td><td>Im Labor (Präsenz) selbst programmieren, mit abnehmenden Hilfen: Werkzeugkasten, vorgerechnetes Beispiel, Ablauf verfolgen, Zeilen ordnen, Lücken füllen, erste eigene Aufgabe.</td></tr>
         <tr><td>Training zu Hause, Teil B</td><td>Ca. 60 Minuten pro Woche mit automatisch geprüften Aufgaben im Browser, am Ende eine Aufgabe im Klausur-Modus (erst von Hand, dann prüfen). Das gehört zum Selbststudium.</td></tr>
         <tr><td>Befehls-Bibliothek</td><td>Nachschlagen: Zu jedem Python-Befehl Erklärung, Beispiel, typische Fehler und die Wissens-Ampel. Im Labor rechts angedockt, außerdem als eigene Seite.</td></tr>
-        <tr><td>KI und Codespaces</td><td>Phase 1 (V01 bis V09): KI nur als Erklärer, du tippst selbst. Ab V10 erzeugt die KI Code und du prüfst. Ab V11 arbeitest du mit GitHub Copilot, den du über die DHBW bekommst, und mit Codespaces (Python im Browser, vorinstalliert). Für heute ist beides optional.</td></tr>
+        <tr><td>KI und Codespaces</td><td>Phase 1 (V01 bis V09): KI nur als Erklärer, du tippst selbst. Ab V10 erzeugt die KI Code und du prüfst. Ab V11 arbeitest du mit <abbr class="k-begriff" data-erklaerung="GitHub Copilot ist ein KI-Assistent, der im Editor Code vorschlägt und Fragen zu Code beantwortet.">GitHub Copilot</abbr>, den du über die DHBW bekommst, und mit <abbr class="k-begriff" data-erklaerung="Codespaces ist eine fertig eingerichtete Programmierumgebung im Browser, wie ein vorbereiteter Arbeitsplatz, an den du dich nur setzen musst.">Codespaces</abbr> (Python im Browser, vorinstalliert). Für heute ist beides optional.</td></tr>
       </tbody>
     </table>
     </div>
@@ -256,10 +257,11 @@ print("Richtig:   ", moment_nmm / widerstand_mm3)    # N·mm geteilt durch mm³<
       <section class="k-section" id="ausprobieren" data-section="ausprobieren" aria-labelledby="h-aus">
         <h2 class="k-section__title" id="h-aus"><span class="k-section__num" aria-hidden="true">3</span> Ausprobieren</h2>
 
-        <p>Python läuft direkt hier im Browser. Erst tippen, was herauskommt, dann ausführen. Das Tippen ist der Lernmoment. Du kannst den Code ändern und mit „Zurücksetzen“ das Original holen (Strg+Enter führt aus).</p>
+        <p>Python läuft direkt hier im Browser. Erst tippen, was herauskommt, dann ausführen. Das Tippen ist der Lernmoment. Jeder Codeblock steckt in einem <abbr class="k-begriff" data-erklaerung="Ein Editor ist ein Textfeld zum Schreiben von Code. Er färbt Wörter ein und hilft beim Tippen, anders als ein einfaches Textfenster.">Editor</abbr>: Du kannst den Code ändern und mit „Zurücksetzen“ das Original holen (Strg+Enter führt aus). Was das Programm ausgibt, erscheint darunter. Mit „Schritt für Schritt“ siehst du, wie sich der Speicher Zeile für Zeile verändert.</p>
 
       <div class="k-try">
         <h3>print mit mehreren Argumenten</h3>
+        <p class="k-small k-muted">Neu: <code class="k-i">print</code> darf mehrere Werte bekommen, die <abbr class="k-begriff" data-erklaerung="Argumente sind die Werte, die du einem Befehl wie print in die Klammern gibst, durch Kommas getrennt. Sie sind die Zutaten, mit denen der Befehl arbeitet.">Argumente</abbr> (durch Komma getrennt). <abbr class="k-begriff" data-erklaerung="Text heißt in Python String, wörtlich Zeichenkette. Er steht in Anführungszeichen, damit Python ihn nicht mit einem Namen verwechselt: Welle in Anführungszeichen ist Text, Welle ohne wäre ein Name.">Text</abbr> steht in Anführungszeichen. Mit <code class="k-i">sep</code> (Trenner) und <code class="k-i">end</code> (Zeilenende) steuerst du das Aussehen. Das üben wir im <a href="v01-labor.html#a-werkzeugkasten">Labor genauer →</a></p>
         <div class="k-predict">
           <p class="k-predict__q">Was gibt die zweite Zeile aus?</p>
           <div class="k-predict__opts"><button type="button">Kraft: 250 N</button><button type="button" data-correct>Kraft:250N</button><button type="button">Fehler</button></div>
@@ -275,6 +277,7 @@ print("fertig")</textarea>
       </div>
       <div class="k-try">
         <h3>Reihenfolge und Neu-Zuweisung</h3>
+        <p class="k-small k-muted">Drück nach dem Ausführen auf „Schritt für Schritt“ und beobachte den Speicher: Welcher Name zeigt nach Zeile 3 worauf?</p>
         <div class="k-predict">
           <p class="k-predict__q">Was gibt <code class="k-i">print(a, b)</code> aus?</p>
           <div class="k-predict__opts"><button type="button">100 200</button><button type="button" data-correct>100 10</button><button type="button">5 10</button></div>
@@ -290,6 +293,7 @@ print(a, b)</textarea>
       </div>
       <div class="k-try">
         <h3>x = x + 1</h3>
+        <p class="k-small k-muted">Drück auf „Schritt für Schritt“ und beobachte den Speicher: Das Etikett <code class="k-i">teile</code> wandert bei jeder Zeile auf einen neuen Wert.</p>
         <div class="k-predict">
           <p class="k-predict__q">Was gibt das Programm aus?</p>
           <div class="k-predict__opts"><button type="button">11</button><button type="button" data-correct>22</button><button type="button">Fehler, denn teile kann nicht gleich teile + 1 sein</button></div>
@@ -305,6 +309,7 @@ print(teile)</textarea>
       </div>
       <div class="k-try">
         <h3>Eine Eingabe ist immer Text</h3>
+        <p class="k-small k-muted">Der Befehl <code class="k-i">input()</code> fragt den Benutzer etwas und liefert die Antwort zurück. Wie das im Programm aussieht, übst du im <a href="v01-labor.html#a-werkzeugkasten">Labor (Syntax-Karte input) →</a> Hier steht die Antwort fest im Code. Mit <code class="k-i">+</code> und <code class="k-i">*</code> auf Text rechnest du nicht, du verkettest und wiederholst ihn.</p>
         <div class="k-predict">
           <p class="k-predict__q">Was gibt <code class="k-i">print(eingabe + eingabe)</code> aus?</p>
           <div class="k-predict__opts"><button type="button">24</button><button type="button" data-correct>1212</button><button type="button">Fehler</button></div>
@@ -343,7 +348,7 @@ print(kraft_n / flaeche)</textarea>
 
         <div class="k-q" data-type="output" data-points="2" data-id="t1" data-answer="300 0.25">
           <div class="k-q__head"><span class="k-q__title">T1 · Programmausgabe</span><span class="k-q__pts">2 Punkte</span></div>
-          <div class="k-q__text">Was gibt das Programm aus (eine Zeile, Werte durch Leerzeichen)?<pre class="k-code">laenge_mm = 250
+          <div class="k-q__text">Was gibt das Programm aus (eine Zeile, Werte durch Leerzeichen)?<pre class="k-code" data-run="nach-antwort">laenge_mm = 250
 laenge_m = laenge_mm / 1000
 laenge_mm = laenge_mm + 50
 print(laenge_mm, laenge_m)</pre></div>
@@ -352,7 +357,7 @@ print(laenge_mm, laenge_m)</pre></div>
 
         <div class="k-q" data-type="output" data-points="2" data-id="t2" data-answer="8">
           <div class="k-q__head"><span class="k-q__title">T2 · Programmausgabe</span><span class="k-q__pts">2 Punkte</span></div>
-          <div class="k-q__text">Was gibt das Programm aus?<pre class="k-code">x = 3
+          <div class="k-q__text">Was gibt das Programm aus?<pre class="k-code" data-run="nach-antwort">x = 3
 x = x + 1
 x = x * 2
 print(x)</pre></div>
@@ -374,7 +379,7 @@ print(x)</pre></div>
 
         <div class="k-q" data-type="output" data-points="2" data-id="t4" data-answer="a-b-c!">
           <div class="k-q__head"><span class="k-q__title">T4 · print</span><span class="k-q__pts">2 Punkte</span></div>
-          <div class="k-q__text">Was gibt das Programm aus (eine Zeile, genau wie Python sie druckt)?<pre class="k-code">print("a", "b", "c", sep="-", end="!")</pre></div>
+          <div class="k-q__text">Was gibt das Programm aus (eine Zeile, genau wie Python sie druckt)?<pre class="k-code" data-run="nach-antwort">print("a", "b", "c", sep="-", end="!")</pre></div>
           <div class="k-q__expl"><code>sep="-"</code> steht zwischen den Argumenten, <code>end="!"</code> am Ende statt des Zeilenumbruchs. Ausgabe: <code>a-b-c!</code>.</div>
         </div>
 
@@ -392,7 +397,7 @@ print(x)</pre></div>
 
         <div class="k-q" data-type="mc" data-points="2" data-id="t6">
           <div class="k-q__head"><span class="k-q__title">T6 · Fehlermeldung lesen</span><span class="k-q__pts">2 Punkte</span></div>
-          <div class="k-q__text">Was meldet Python hier?<pre class="k-code">kraft_n = 12000
+          <div class="k-q__text">Was meldet Python hier?<pre class="k-code" data-run="nach-antwort">kraft_n = 12000
 print(Kraft_n)</pre></div>
           <ul class="k-q__options">
             <li>Es gibt 12000 aus.</li>
@@ -405,7 +410,7 @@ print(Kraft_n)</pre></div>
 
         <div class="k-q" data-type="mc" data-points="3" data-id="t7">
           <div class="k-q__head"><span class="k-q__title">T7 · KI-Code freigeben?</span><span class="k-q__pts">3 Punkte</span></div>
-          <div class="k-q__text">Die KI liefert für „Biegemoment einer Kraft von 2000 N an einem Hebelarm von 0,5 m in N·mm“:<pre class="k-code">kraft_n = 2000
+          <div class="k-q__text">Die KI liefert für „Biegemoment einer Kraft von 2000 N an einem Hebelarm von 0,5 m in N·mm“:<pre class="k-code" data-run="nach-antwort">kraft_n = 2000
 hebel_m = 0.5
 moment_nmm = kraft_n * hebel_m
 print("Moment in N·mm:", moment_nmm)</pre>Würdest du das freigeben?</div>
@@ -446,7 +451,7 @@ print("Moment in N·mm:", moment_nmm)</pre>Würdest du das freigeben?</div>
         <div class="a-task__head"><span class="a-task__title">T10 · Prüfprotokoll Zugstab</span><span class="a-pts">6 Punkte</span></div>
         <div class="a-task__text">
           <p>Schreibe ein Programm, das den Namen des Bauteils mit <code class="k-i">input()</code> einliest. Die Zugkraft F = 12000 N und die Querschnittsfläche A = 80 mm² stehen fest im Programm. Berechne die Spannung σ = F / A und gib zwei Zeilen aus: den Bauteilnamen und die Spannung mit Beschriftung und Einheit.</p>
-          <div class="a-spec"><strong>Ausgabe genau so (Beispiel Eingabe Welle-A):</strong><pre>Bauteil: Welle-A
+          <div class="a-spec"><strong>Ausgabe genau so (Beispiel Eingabe Welle-A):</strong><pre data-run="no">Bauteil: Welle-A
 Spannung in N/mm²: 150.0</pre></div>
         </div>
         <div class="a-editor"><textarea class="py-editor" data-lesson="V01" data-assist="off" aria-label="Python-Code von Hand schreiben, ohne Ausführen"></textarea></div>
@@ -504,7 +509,7 @@ print("Spannung in N/mm²:", spannung)
       <details class="k-deep">
         <summary>Namen sind Etiketten: Zwei Namen, ein Wert</summary>
         <div class="k-deep__body">
-          <p>Python legt jeden Wert an einer Stelle im Speicher ab. Der Name ist nur ein Etikett darauf. Mit <code class="k-i">id()</code> siehst du die Adresse des Wertes. Wenn zwei Namen auf denselben Wert zeigen, steht dort zweimal die gleiche Zahl. Die Zahlen unterscheiden sich von Rechner zu Rechner und von Lauf zu Lauf.</p>
+          <p>Python legt jeden Wert an einer Stelle im Speicher ab. Der Name ist nur ein Etikett darauf. Mit <code class="k-i">id()</code> siehst du die <abbr class="k-begriff" data-erklaerung="Die Adresse ist die Nummer der Stelle im Speicher, an der ein Wert liegt, wie die Hausnummer eines Lagerfachs.">Adresse</abbr> des Wertes. (Hinweis: <code class="k-i">id()</code> und der Vergleich <code class="k-i">==</code> gehören nicht zum Stoff von V01, der Vergleich kommt in V04. Hier dienen sie nur zum Anschauen.) Wenn zwei Namen auf denselben Wert zeigen, steht dort zweimal die gleiche Zahl. Die Zahlen unterscheiden sich von Rechner zu Rechner und von Lauf zu Lauf.</p>
           <div class="k-runner" data-timeout="8000">
 <textarea class="k-runner__code py-editor" data-lesson="V01" aria-label="Zwei Namen, ein Wert">links = "Welle"
 hilfe = links

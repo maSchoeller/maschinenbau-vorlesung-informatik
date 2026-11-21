@@ -55,12 +55,12 @@
         <p class="k-title__lead">Warum ein 16-Bit-Zähler von 65535 auf 0 springt, und was deine Positionsberechnung dann tut.</p>
         <p class="k-title__goals">Nach dieser Lerneinheit kannst du:</p>
         <ul class="k-title__list">
-          <li>kleine Zahlen zwischen dezimal, binär und hexadezimal umrechnen,</li>
-          <li>die Wertebereiche von 8, 16 und 32 Bit (mit und ohne Vorzeichen) nennen,</li>
-          <li>ein Bitmuster im Zweierkomplement lesen und einen Überlauf erkennen,</li>
-          <li>Hex-Angaben in SPS-Registern, Farbcodes und Fehlercodes einordnen.</li>
+          <li>kleine Zahlen zwischen <abbr class="k-begriff" data-erklaerung="Unser gewohntes Zahlensystem mit den zehn Ziffern 0 bis 9.">dezimal</abbr>, <abbr class="k-begriff" data-erklaerung="Zahlen nur mit den Ziffern 0 und 1 geschrieben, so wie ein Rechner sie speichert. Auch Dualsystem genannt.">binär</abbr> und <abbr class="k-begriff" data-erklaerung="Zahlen mit 16 Ziffern geschrieben (0 bis 9 und A bis F). Eine Hex-Ziffer steht für genau 4 Bit und kürzt lange Bitmuster ab.">hexadezimal</abbr> umrechnen,</li>
+          <li>die <abbr class="k-begriff" data-erklaerung="Der kleinste und der größte Wert, den ein Zahlenformat speichern kann. Wie die Skala eines Messgeräts von 0 bis 100.">Wertebereiche</abbr> von 8, 16 und 32 <abbr class="k-begriff" data-erklaerung="Die kleinste Informationseinheit: 0 oder 1. Wie ein Lichtschalter, der entweder aus oder an ist.">Bit</abbr> (mit und ohne <abbr class="k-begriff" data-erklaerung="Das Plus oder Minus vor einer Zahl. Mit Vorzeichen (englisch signed) kann ein Format auch negative Zahlen speichern, ohne Vorzeichen (unsigned) nur 0 und größer.">Vorzeichen</abbr>) nennen,</li>
+          <li>ein <abbr class="k-begriff" data-erklaerung="Eine Folge aus Nullen und Einsen, zum Beispiel 1010 0101. Was sie bedeutet, hängt von der Deutung ab.">Bitmuster</abbr> im <abbr class="k-begriff" data-erklaerung="Die übliche Art, negative Zahlen in Bits zu speichern: Das oberste Bit zählt negativ. So braucht die CPU zum Subtrahieren nur ihr Addierwerk.">Zweierkomplement</abbr> lesen und einen <abbr class="k-begriff" data-erklaerung="Ein Zähler wird größer als sein Wertebereich und springt an den Anfang zurück. Wie der Kilometerzähler im Auto, der von 999 999 auf 000 000 springt.">Überlauf</abbr> erkennen,</li>
+          <li>Hex-Angaben in <abbr class="k-begriff" data-erklaerung="Speicherprogrammierbare Steuerung: der Industrie-Computer, der Maschinen und Anlagen steuert, etwa eine Siemens S7.">SPS</abbr>-<abbr class="k-begriff" data-erklaerung="Ein Speicherplatz fester Breite in der Steuerung oder im Prozessor, zum Beispiel 16 Bit breit. Wie ein Fach mit genau 16 Kästchen für Nullen und Einsen.">Registern</abbr>, Farbcodes und Fehlercodes einordnen.</li>
         </ul>
-        <p class="k-small k-muted">Das Schreiben von Python-Code (<code class="k-i">int</code>, <code class="k-i">//</code>, <code class="k-i">%</code>, <code class="k-i">**</code>, <code class="k-i">bin()</code>, <code class="k-i">hex()</code>) übst du danach im <a href="v02-labor.html">Programmierlabor</a>.</p>
+        <p class="k-small k-muted">Das Schreiben von Python-Code (<code class="k-i">int</code>, <code class="k-i">//</code>, <code class="k-i">%</code>, <code class="k-i">**</code>, <code class="k-i">bin()</code>, <code class="k-i">hex()</code>) übst du danach im <a href="v02-labor.html">Programmierlabor</a>. Wo sie hier schon vorkommen, erkläre ich sie in einem Satz; die ausführliche Einführung steht im <a href="v02-labor.html#a-werkzeugkasten">Werkzeugkasten des Labors</a>.</p>
       </header>
 
       <!-- 1 ───────────── WARUM ───────────── -->
@@ -68,6 +68,7 @@
         <h2 class="k-section__title" id="h-warum"><span class="k-section__num" aria-hidden="true">1</span> Warum?</h2>
 
         <p>Zwei Szenen aus der Automatisierung. In beiden rechnet die Steuerung korrekt, nur auf einem Zahlenbereich, den niemand bedacht hat.</p>
+        <p><strong>Vorab, ohne Vorwissen:</strong> Ein Rechner kennt nur Schalter, die an oder aus sind. Ein einzelner Schalter heißt <abbr class="k-begriff" data-erklaerung="Die kleinste Informationseinheit: 0 oder 1. Wie ein Lichtschalter, der entweder aus oder an ist.">Bit</abbr>: aus ist 0, an ist 1. Mehrere Bits nebeneinander ergeben eine Zahl, so wie mehrere Ziffern im Dezimalsystem eine große Zahl ergeben. Die Anzahl der Stellen ist aber fest, und das hat Folgen: Beim Kilometerzähler im Auto springt die Anzeige nach 999 999 km wieder auf 000 000. Genau das passiert in jeder Steuerung, nur mit Bits statt Dezimalstellen.</p>
 
         <figure class="k-figure">
           <picture>
@@ -77,15 +78,15 @@
         </figure>
 
         <h3>Szene 1: Der Encoder-Zähler läuft über</h3>
-        <p>Ein Inkrementalgeber sitzt an einer Spindelachse und liefert 1024 Impulse pro Umdrehung. Die Spindel verfährt 5 mm pro Umdrehung. Die SPS zählt die Impulse in einem 16-Bit-Zähler und berechnet daraus die Position: <em>Zählerstand / 1024 × 5 mm</em>. Ein 16-Bit-Zähler ohne Vorzeichen kennt nur die Werte 0 bis 65 535. Nach 65 536 Impulsen, also 64 Umdrehungen oder 320 mm Verfahrweg, springt er auf 0 zurück. Die Steuerung meldet keinen Fehler. Die Position „springt“ um 320 mm zurück, und die Achse fährt im nächsten Zyklus gegen den Anschlag.</p>
+        <p>Ein <abbr class="k-begriff" data-erklaerung="Ein Sensor an einer Welle, der bei jeder kleinen Drehung einen Impuls sendet (Encoder, Drehgeber). Wer die Impulse zählt, kennt die Drehung und die Position.">Inkrementalgeber</abbr> sitzt an einer Spindelachse und liefert 1024 <abbr class="k-begriff" data-erklaerung="Ein kurzes elektrisches Signal, hier: ein Strich auf der Messscheibe des Gebers. Die Steuerung zählt diese Striche.">Impulse</abbr> pro Umdrehung. Die Spindel verfährt 5 mm pro Umdrehung. Die <abbr class="k-begriff" data-erklaerung="Speicherprogrammierbare Steuerung: der Industrie-Computer, der Maschinen und Anlagen steuert, etwa eine Siemens S7.">SPS</abbr> zählt die Impulse in einem <abbr class="k-begriff" data-erklaerung="Ein Speicherplatz, der bei jedem Ereignis um 1 hochgezählt wird, hier bei jedem Impuls. Wie ein Stückzähler an der Maschine.">16-Bit-Zähler</abbr> und berechnet daraus die Position: <em>Zählerstand / 1024 × 5 mm</em>. Ein 16-Bit-Zähler ohne Vorzeichen kennt nur die Werte 0 bis 65 535 (sein <abbr class="k-begriff" data-erklaerung="Der kleinste und der größte Wert, den ein Zahlenformat speichern kann. Wie die Skala eines Messgeräts von 0 bis 100.">Wertebereich</abbr>). Nach 65 536 Impulsen, also 64 Umdrehungen oder 320 mm Verfahrweg, springt er auf 0 zurück: ein <abbr class="k-begriff" data-erklaerung="Ein Zähler wird größer als sein Wertebereich und springt an den Anfang zurück. Wie der Kilometerzähler im Auto, der von 999 999 auf 000 000 springt.">Überlauf</abbr>, wie beim Kilometerzähler im Auto. Die Steuerung meldet keinen Fehler. Die Position „springt“ um 320 mm zurück, und die Achse fährt im nächsten Zyklus gegen den Anschlag.</p>
         <p>Zählt der Zähler <em>mit</em> Vorzeichen, passiert dasselbe woanders: Bei 32 767 (nach 160 mm) springt er auf −32 768, die Position fällt von +160 mm auf −160 mm.</p>
 
         <h3>Szene 2: Das Register, das 65 535 °C meldet</h3>
-        <p>Ein Temperaturmodul schickt über den Feldbus ein 16-Bit-Register. Bei −5 °C steht darin <code class="k-i">0xFFFB</code>. Wird dieses Register als Zahl <em>ohne</em> Vorzeichen gelesen, sind das 65 531. Der Regler sieht „65 531 °C“ und schaltet die Anlage ab. Das Bitmuster ist dasselbe, nur die Deutung ist eine andere.</p>
+        <p>Ein Temperaturmodul schickt über den <abbr class="k-begriff" data-erklaerung="Das Netzwerk in der Anlage: Sensoren, Antriebe und Steuerung schicken sich darüber Daten, wie die Straße zwischen Werkshallen.">Feldbus</abbr> ein 16-Bit-<abbr class="k-begriff" data-erklaerung="Ein Speicherplatz fester Breite in der Steuerung oder im Prozessor, zum Beispiel 16 Bit breit. Wie ein Fach mit genau 16 Kästchen für Nullen und Einsen.">Register</abbr>. Bei −5 °C steht darin <code class="k-i">0xFFFB</code> (eine Zahl in Hex-Schreibweise, dazu gleich mehr). Wird dieses Register als Zahl <em>ohne</em> Vorzeichen gelesen, sind das 65 531. Der Regler sieht „65 531 °C“ und schaltet die Anlage ab. Das <abbr class="k-begriff" data-erklaerung="Eine Folge aus Nullen und Einsen, zum Beispiel 1010 0101. Was sie bedeutet, hängt von der Deutung ab.">Bitmuster</abbr> ist dasselbe, nur die Deutung ist eine andere.</p>
 
         <div class="k-try" aria-labelledby="t-hook">
           <h3 id="t-hook">Selbst sehen: den Überlauf in Python nachbauen</h3>
-          <p class="k-small k-muted">Python-Zahlen (<code class="k-i">int</code>) laufen nie über. Wir bauen die SPS deshalb mit <code class="k-i">% 2 ** 16</code> nach. Drück „Ausführen“ (beim ersten Mal lädt Python einmalig nach).</p>
+          <p class="k-small k-muted">Python-Zahlen (<code class="k-i">int</code>, <abbr class="k-begriff" data-erklaerung="Eine Zahl ohne Nachkommastellen, auch negativ möglich. In Python heißt dieser Datentyp int (von englisch integer).">Ganzzahlen</abbr>) laufen nie über. Wir bauen die SPS deshalb mit einem Trick nach: <code class="k-i">%</code> liefert den Rest einer Division, <code class="k-i">**</code> ist die Potenz, <code class="k-i">% 2 ** 16</code> heißt also „Rest nach Division durch 65 536“. <code class="k-i">/</code> ist die normale Division (das Ergebnis hat Nachkommastellen, mehr dazu in V03). Alle Rechenzeichen (<abbr class="k-begriff" data-erklaerung="Ein Rechenzeichen wie + oder *. Es verknüpft zwei Werte zu einem neuen.">Operatoren</abbr>) erklärt der <a href="v02-labor.html#a-werkzeugkasten">Werkzeugkasten im Labor</a>. Drück „Ausführen“ (beim ersten Mal lädt Python einmalig nach). Danach drück auf „Schritt für Schritt“: Du siehst Zeile für Zeile, wie sich <code class="k-i">zaehler</code> verändert, vor allem beim Sprung von 65535 auf 0.</p>
           <div class="k-runner" data-timeout="8000">
 <textarea class="k-runner__code py-editor" data-lesson="V02" aria-label="Python-Code: 16-Bit-Zähler nachbauen">IMPULSE_PRO_U = 1024
 STEIGUNG = 5                         # mm pro Umdrehung
@@ -127,7 +128,7 @@ print(-5 % 2 ** 16)                  # -5 °C als 16-Bit-Register, ohne Vorzeich
 
     <div class="k-explorable">
       <h3>Bit-Schalter</h3>
-      <p class="k-explorable__lead">Klick auf die Bits und sieh, welche Zahl daraus wird. Schalte zwischen 8 und 16 Bit und zwischen „ohne“ und „mit Vorzeichen“ um. Probiere: <strong>255</strong> (alle Bits an), <strong>128</strong> (nur das oberste Bit), <strong>−5</strong>, und gib <strong>300</strong> bei 8 Bit ein.</p>
+      <p class="k-explorable__lead">Klick auf die <abbr class="k-begriff" data-erklaerung="Die kleinste Informationseinheit: 0 oder 1. Wie ein Lichtschalter, der entweder aus oder an ist.">Bits</abbr> und sieh, welche Zahl daraus wird. Schalte zwischen 8 und 16 Bit und zwischen „ohne“ und „mit Vorzeichen“ um. Probiere: <strong>255</strong> (alle Bits an), <strong>128</strong> (nur das oberste Bit), <strong>−5</strong>, und gib <strong>300</strong> bei 8 Bit ein.</p>
       <div data-explorable="bitschalter"></div>
       <noscript><p>Für den Bit-Schalter wird JavaScript benötigt.</p></noscript>
     </div>
@@ -141,7 +142,7 @@ print(-5 % 2 ** 16)                  # -5 °C als 16-Bit-Register, ohne Vorzeich
     </div>
 
     <h3>Stellenwertsysteme</h3>
-    <p>Im Dezimalsystem hat jede Stelle den Wert einer Zehnerpotenz: 4 7 2 heißt 4 · 100 + 7 · 10 + 2 · 1. Das Binärsystem funktioniert genauso, nur mit der Basis 2 und den Ziffern 0 und 1. Das Hexadezimalsystem hat die Basis 16 und die Ziffern 0 bis 9 sowie A bis F (A = 10, …, F = 15).</p>
+    <p>Zahlen schreiben wir in einem <abbr class="k-begriff" data-erklaerung="Der Wert einer Ziffer hängt von ihrer Stelle ab: In 472 steht die 4 für 400, weil sie an der Hunderterstelle steht.">Stellenwertsystem</abbr>: Eine <abbr class="k-begriff" data-erklaerung="Ein einzelnes Zeichen, aus dem Zahlen gebaut werden (0 bis 9). Die Zahl 472 hat drei Ziffern, ist aber eine einzige Zahl.">Ziffer</abbr> steht an einer Stelle, und die Stelle bestimmt, wie viel sie wert ist. Im Dezimalsystem hat jede Stelle den Wert einer Zehnerpotenz: 4 7 2 heißt 4 · 100 + 7 · 10 + 2 · 1. Das <abbr class="k-begriff" data-erklaerung="Zahlen nur mit den Ziffern 0 und 1 geschrieben, so wie ein Rechner sie speichert. Auch Dualsystem genannt.">Binär</abbr>system (auch Dualsystem) funktioniert genauso, nur mit der <abbr class="k-begriff" data-erklaerung="Die Zahl, nach der ein Stellenwertsystem gebaut ist: 10 beim Dezimalsystem, 2 beim Binärsystem, 16 bei Hex.">Basis</abbr> 2 und den Ziffern 0 und 1. Das <abbr class="k-begriff" data-erklaerung="Zahlen mit 16 Ziffern geschrieben (0 bis 9 und A bis F). Eine Hex-Ziffer steht für genau 4 Bit und kürzt lange Bitmuster ab.">Hexadezimal</abbr>system hat die Basis 16 und die Ziffern 0 bis 9 sowie A bis F (A = 10, …, F = 15). Der Unterschied zwischen Ziffer und Zahl: „165“ ist <em>eine</em> Zahl, aber aus drei Ziffern geschrieben.</p>
     <div class="k-tablewrap">
     <table class="k-types">
       <thead><tr><th scope="col">Stelle</th><th scope="col">7</th><th scope="col">6</th><th scope="col">5</th><th scope="col">4</th><th scope="col">3</th><th scope="col">2</th><th scope="col">1</th><th scope="col">0</th></tr></thead>
@@ -151,10 +152,10 @@ print(-5 % 2 ** 16)                  # -5 °C als 16-Bit-Register, ohne Vorzeich
       </tbody>
     </table>
     </div>
-    <p>Das Muster <code class="k-i">1010 0101</code> bedeutet 128 + 32 + 4 + 1 = 165. Merke dir die Zweierpotenzen bis 2<sup>10</sup> = 1024: 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024. Mit ihnen rechnest du kleine Zahlen im Kopf.</p>
+    <p>Das <abbr class="k-begriff" data-erklaerung="Eine Folge aus Nullen und Einsen, zum Beispiel 1010 0101. Was sie bedeutet, hängt von der Deutung ab.">Bitmuster</abbr> <code class="k-i">1010 0101</code> bedeutet 128 + 32 + 4 + 1 = 165. Merke dir die <abbr class="k-begriff" data-erklaerung="Eine Zahl, die man durch wiederholtes Verdoppeln erhält: 1, 2, 4, 8, 16 und so weiter. Geschrieben 2 hoch n.">Zweierpotenzen</abbr> bis 2<sup>10</sup> = 1024: 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024. Mit ihnen rechnest du kleine Zahlen im Kopf.</p>
 
     <h3>Dezimal nach Binär: das Divisionsrestverfahren</h3>
-    <p>Teile die Zahl immer wieder ganzzahlig durch 2 und notiere die Reste. Die Reste von unten nach oben gelesen sind das Bitmuster. Beispiel 37:</p>
+    <p>Teile die Zahl immer wieder <abbr class="k-begriff" data-erklaerung="Teilen ohne Nachkommastellen. Wie beim Kuchenverteilen: 7 Stücke an 2 Personen ergibt 3 pro Person und 1 Stück Rest.">ganzzahlig</abbr> durch 2 und notiere die Reste (7 : 2 = 3 Rest 1). Die Reste von unten nach oben gelesen sind das Bitmuster. Beispiel 37:</p>
     <div class="k-tablewrap">
     <table class="k-types">
       <thead><tr><th scope="col">Rechnung</th><th scope="col">Ergebnis</th><th scope="col">Rest (Bit)</th></tr></thead>
@@ -168,10 +169,10 @@ print(-5 % 2 ** 16)                  # -5 °C als 16-Bit-Register, ohne Vorzeich
       </tbody>
     </table>
     </div>
-    <p>Die Reste von unten nach oben ergeben <code class="k-i">100101</code>. Probe: 32 + 4 + 1 = 37. Dasselbe Verfahren mit 16 statt 2 liefert Hex: 500 : 16 = 31 Rest 4, 31 : 16 = 1 Rest 15 (F), 1 : 16 = 0 Rest 1. Also <code class="k-i">0x1F4</code>. In Python sind das genau die Operatoren <code class="k-i">//</code> (Ergebnis) und <code class="k-i">%</code> (Rest), die du im Labor benutzt.</p>
+    <p>Die Reste von unten nach oben ergeben <code class="k-i">100101</code>. Probe: 32 + 4 + 1 = 37. Dasselbe Verfahren mit 16 statt 2 liefert Hex: 500 : 16 = 31 Rest 4, 31 : 16 = 1 Rest 15 (F), 1 : 16 = 0 Rest 1. Also <code class="k-i">0x1F4</code>. In Python sind das genau die <abbr class="k-begriff" data-erklaerung="Ein Rechenzeichen wie + oder *. Es verknüpft zwei Werte zu einem neuen.">Operatoren</abbr> <code class="k-i">//</code> (ganzzahliges Ergebnis) und <code class="k-i">%</code> (Rest). Das schauen wir uns im <a href="v02-labor.html#a-werkzeugkasten">Werkzeugkasten des Labors</a> genauer an.</p>
 
     <h3>Hexadezimal: Kurzschrift für Bits</h3>
-    <p>Eine Hex-Ziffer fasst genau 4 Bit zusammen (ein „Nibble“). Das macht die Umrechnung zwischen Binär und Hex trivial: Gruppiere von rechts in Viererblöcke und ersetze jeden Block.</p>
+    <p>Eine Hex-Ziffer fasst genau 4 Bit zusammen (ein „<abbr class="k-begriff" data-erklaerung="Ein halbes Byte, also 4 Bit. Genau eine Hex-Ziffer.">Nibble</abbr>“). Das macht die Umrechnung zwischen Binär und Hex trivial: Gruppiere von rechts in Viererblöcke und ersetze jeden Block.</p>
     <div class="k-tablewrap">
     <table class="k-types">
       <thead><tr><th scope="col">Binär</th><th scope="col">0000</th><th scope="col">0001</th><th scope="col">0010</th><th scope="col">0011</th><th scope="col">0100</th><th scope="col">0101</th><th scope="col">0110</th><th scope="col">0111</th></tr></thead>
@@ -180,13 +181,13 @@ print(-5 % 2 ** 16)                  # -5 °C als 16-Bit-Register, ohne Vorzeich
       <tbody><tr><th scope="row">Hex</th><td>8</td><td>9</td><td>A</td><td>B</td><td>C</td><td>D</td><td>E</td><td>F</td></tr></tbody>
     </table>
     </div>
-    <p>Beispiel: <code class="k-i">1010 0101</code> wird zu A und 5, also <code class="k-i">0xA5</code> (= 10 · 16 + 5 = 165). Das Präfix <code class="k-i">0x</code> markiert Hex, <code class="k-i">0b</code> markiert Binär. In der SPS-Welt schreibt man <code class="k-i">16#A5</code> und <code class="k-i">2#10100101</code>. Die Zahl ist immer dieselbe, nur die Schreibweise ändert sich.</p>
+    <p>Beispiel: <code class="k-i">1010 0101</code> wird zu A und 5, also <code class="k-i">0xA5</code> (= 10 · 16 + 5 = 165). Das <abbr class="k-begriff" data-erklaerung="Eine Vorsilbe, die sagt, wie der Rest zu lesen ist: 0b heißt Binär, 0x heißt Hex.">Präfix</abbr> <code class="k-i">0x</code> markiert Hex, <code class="k-i">0b</code> markiert Binär. In der SPS-Welt schreibt man <code class="k-i">16#A5</code> und <code class="k-i">2#10100101</code>. Die Zahl ist immer dieselbe, nur die Schreibweise ändert sich.</p>
 
     <h3>Bit, Byte, Wort</h3>
-    <p>Ein <span class="k-term">Bit</span> ist eine Stelle (0 oder 1). Ein <span class="k-term">Byte</span> sind 8 Bit. Ein <span class="k-term">Wort</span> ist keine feste Größe: In der SPS-Norm IEC 61131-3 ist <code class="k-i">WORD</code> 16 Bit und <code class="k-i">DWORD</code> 32 Bit, auf einem PC kann „Wort“ etwas anderes heißen. Schau im Zweifel ins Handbuch der Steuerung.</p>
+    <p>Ein <span class="k-term">Bit</span> ist eine Stelle (0 oder 1), wie ein Lichtschalter, der aus oder an ist. Ein <span class="k-term">Byte</span> sind 8 Bit, also acht Lichtschalter in einer Reihe: 256 mögliche Muster. Ein <span class="k-term">Wort</span> ist eine Gruppe von Bits, die die Steuerung als Einheit verarbeitet, und keine feste Größe: In der SPS-<abbr class="k-begriff" data-erklaerung="Eine gemeinsam vereinbarte Regel, hier für die Programmiersprachen und Datentypen von Steuerungen. So verstehen Geräte verschiedener Hersteller dasselbe.">Norm</abbr> IEC 61131-3 ist <code class="k-i">WORD</code> 16 Bit und <code class="k-i">DWORD</code> 32 Bit, auf einem PC kann „Wort“ etwas anderes heißen. Schau im Zweifel ins Handbuch der Steuerung.</p>
 
     <h3>Wertebereiche</h3>
-    <p>Mit <em>n</em> Bit gibt es 2<sup>n</sup> verschiedene Muster. Ohne Vorzeichen sind das die Zahlen 0 bis 2<sup>n</sup> − 1. Mit Vorzeichen (Zweierkomplement) reicht der Bereich von −2<sup>n−1</sup> bis 2<sup>n−1</sup> − 1: Er hat eine negative Zahl mehr als positive.</p>
+    <p>Der Wertebereich sagt, welche Zahlen ein Format überhaupt speichern kann. Mit <em>n</em> Bit gibt es 2<sup>n</sup> verschiedene Muster. Ohne Vorzeichen (nur 0 und größer; englisch „unsigned“) sind das die Zahlen 0 bis 2<sup>n</sup> − 1. Mit Vorzeichen (englisch „signed“, Zweierkomplement) reicht der Bereich von −2<sup>n−1</sup> bis 2<sup>n−1</sup> − 1: Er hat eine negative Zahl mehr als positive.</p>
     <div class="k-tablewrap">
     <table class="k-types">
       <thead><tr><th scope="col">Breite</th><th scope="col">ohne Vorzeichen</th><th scope="col">mit Vorzeichen</th><th scope="col">Typen in der SPS (IEC 61131-3)</th></tr></thead>
@@ -200,29 +201,29 @@ print(-5 % 2 ** 16)                  # -5 °C als 16-Bit-Register, ohne Vorzeich
     <p>Im Kopf behalten musst du nur das Prinzip und die kleinen Werte: 2<sup>8</sup> = 256 und 2<sup>16</sup> = 65 536. Alles andere leitest du ab oder lässt es nachschlagen.</p>
 
     <h3>Das Zweierkomplement</h3>
-    <p>Wie speichert man negative Zahlen? Man deutet das oberste Bit um: Es hat nicht den Wert +2<sup>n−1</sup>, sondern −2<sup>n−1</sup>. Bei 8 Bit ist das oberste Bit also −128 wert. Zahlen mit oberstem Bit 0 sind positiv, mit oberstem Bit 1 negativ. Das Bitmuster von −<em>x</em> bildest du so:</p>
+    <p>Wie speichert man negative Zahlen? Die übliche Antwort heißt <abbr class="k-begriff" data-erklaerung="Die übliche Art, negative Zahlen in Bits zu speichern: Das oberste Bit zählt negativ. So braucht die CPU zum Subtrahieren nur ihr Addierwerk.">Zweierkomplement</abbr>: Man deutet das oberste Bit um: Es hat nicht den Wert +2<sup>n−1</sup>, sondern −2<sup>n−1</sup>. Bei 8 Bit ist das oberste Bit also −128 wert. Zahlen mit oberstem Bit 0 sind positiv, mit oberstem Bit 1 negativ. Das Bitmuster von −<em>x</em> bildest du so:</p>
     <ol>
       <li>Bitmuster von <em>x</em> hinschreiben,</li>
-      <li>alle Bits <strong>invertieren</strong> (0 wird 1, 1 wird 0),</li>
+      <li>alle Bits <strong><abbr class="k-begriff" data-erklaerung="Jedes Bit umdrehen: aus 0 wird 1 und aus 1 wird 0. Wie ein Negativfilm.">invertieren</abbr></strong> (0 wird 1, 1 wird 0),</li>
       <li>eins <strong>addieren</strong>.</li>
     </ol>
     <p>Beispiel −5 in 8 Bit: 5 = <code class="k-i">0000 0101</code>, invertiert <code class="k-i">1111 1010</code>, plus 1 ergibt <code class="k-i">1111 1011</code> = <code class="k-i">0xFB</code>. Probe mit den Stellenwerten: −128 + 64 + 32 + 16 + 8 + 2 + 1 = −5. Und ohne Vorzeichen gelesen ist dasselbe Muster 251 (= 256 − 5). Das ist kein Zufall: Das Zweierkomplement von −<em>x</em> ist 2<sup>n</sup> − <em>x</em>.</p>
-    <p><strong>Warum das so gebaut ist:</strong> Eine Subtraktion ist eine Addition mit der negativen Zahl. Der Rechenbaustein in der CPU braucht nur ein Addierwerk, kein eigenes Subtrahierwerk. Es gibt nur eine Null, und das Vorzeichen fällt von selbst heraus. Probe: 7 − 5 = 7 + (−5): <code class="k-i">0000 0111</code> + <code class="k-i">1111 1011</code> = <code class="k-i">1 0000 0010</code>. Der Übertrag über das achte Bit hinaus fällt weg, übrig bleibt <code class="k-i">0000 0010</code> = 2.</p>
+    <p><strong>Warum das so gebaut ist:</strong> Eine Subtraktion ist eine Addition mit der negativen Zahl. Der Rechenbaustein in der <abbr class="k-begriff" data-erklaerung="Der Prozessor, das Rechenwerk des Computers oder der Steuerung. Er führt Befehle aus und rechnet.">CPU</abbr> braucht nur ein <abbr class="k-begriff" data-erklaerung="Der Teil der CPU, der Zahlen addiert. Er besteht aus Schaltern und arbeitet Bit für Bit.">Addierwerk</abbr>, kein eigenes Subtrahierwerk. Es gibt nur eine Null, und das Vorzeichen fällt von selbst heraus. Probe: 7 − 5 = 7 + (−5): <code class="k-i">0000 0111</code> + <code class="k-i">1111 1011</code> = <code class="k-i">1 0000 0010</code>. Der <abbr class="k-begriff" data-erklaerung="Beim Addieren die Eins, die in die nächste Stelle wandert, wie bei 9 + 1 = 10 im Dezimalen.">Übertrag</abbr> über das achte Bit hinaus fällt weg, übrig bleibt <code class="k-i">0000 0010</code> = 2.</p>
 
     <h3>Überlauf</h3>
-    <p>Ein Überlauf (Overflow) entsteht, wenn ein Ergebnis nicht mehr in die Bits passt. Die Hardware schneidet den Übertrag einfach ab: 255 + 1 = 0 bei 8 Bit ohne Vorzeichen, 127 + 1 = −128 bei 8 Bit mit Vorzeichen (<code class="k-i">0111 1111</code> + 1 = <code class="k-i">1000 0000</code>). Rechnerisch ist das Rechnen modulo 2<sup>n</sup>, wie bei einem Tachometer, der von 999 999 auf 000 000 springt. Viele Steuerungen melden das nicht als Fehler. Du musst die Wertebereiche selbst im Blick haben.</p>
-    <div class="hinweis hinweis--achtung"><strong class="hinweis__title">Achtung</strong><p>Python-<code class="k-i">int</code> hat keine feste Breite und läuft nie über: <code class="k-i">65535 + 1</code> ist einfach 65536. Wer eine SPS in Python simuliert, muss den Überlauf selbst einbauen, mit <code class="k-i">% 2 ** 16</code>. Umgekehrt: Code, den die KI für Python schreibt, enthält keine Überlauf-Behandlung, wenn du sie nicht verlangst.</p></div>
+    <p>Ein Überlauf (Overflow) entsteht, wenn ein Ergebnis nicht mehr in die Bits passt. Die <abbr class="k-begriff" data-erklaerung="Die Bauteile selbst (Chips, Leitungen), im Gegensatz zur Software, dem Programm.">Hardware</abbr> schneidet den Übertrag einfach ab: 255 + 1 = 0 bei 8 Bit ohne Vorzeichen, 127 + 1 = −128 bei 8 Bit mit Vorzeichen (<code class="k-i">0111 1111</code> + 1 = <code class="k-i">1000 0000</code>). Rechnerisch ist das Rechnen <abbr class="k-begriff" data-erklaerung="Modulo n heißt: Nur der Rest nach Division durch n zählt. Wie eine Uhr, die nach 12 wieder bei 1 anfängt.">modulo</abbr> 2<sup>n</sup> (nur der Rest zählt), wie bei einem Kilometerzähler, der von 999 999 auf 000 000 springt. Viele Steuerungen melden das nicht als Fehler. Du musst die Wertebereiche selbst im Blick haben.</p>
+    <div class="hinweis hinweis--achtung"><strong class="hinweis__title">Achtung</strong><p>Python-<code class="k-i">int</code> hat keine feste Breite und läuft nie über: <code class="k-i">65535 + 1</code> ist einfach 65536. Wer eine SPS in Python simuliert, muss den Überlauf selbst einbauen, mit <code class="k-i">% 2 ** 16</code> (Rest einer Division, siehe <a href="v02-labor.html#a-werkzeugkasten">Werkzeugkasten, Syntax-Karte 4</a>). Umgekehrt: Code, den die KI für Python schreibt, enthält keine Überlauf-Behandlung, wenn du sie nicht verlangst.</p></div>
 
     <h3>Hex in der Praxis</h3>
     <ul>
-      <li><strong>SPS-Register und Statusworte:</strong> Ein Statuswort <code class="k-i">16#0003</code> heißt: Bit 0 und Bit 1 sind gesetzt (z. B. „bereit“ und „Freigabe“). Hex ist kürzer zu lesen als 16 Nullen und Einsen.</li>
+      <li><strong>SPS-Register und Statusworte:</strong> Ein <abbr class="k-begriff" data-erklaerung="Ein Register, in dem jedes Bit eine Ja/Nein-Meldung ist, wie eine Reihe Kontrollleuchten am Schaltschrank.">Statuswort</abbr> <code class="k-i">16#0003</code> heißt: Bit 0 und Bit 1 sind gesetzt (z. B. „bereit“ und „Freigabe“). Hex ist kürzer zu lesen als 16 Nullen und Einsen.</li>
       <li><strong>Farbcodes:</strong> <code class="k-i">#FF8000</code> heißt Rot = FF = 255, Grün = 80 = 128, Blau = 00 = 0: ein kräftiges Orange. Jede Farbe belegt ein Byte.</li>
       <li><strong>Fehlercodes:</strong> <code class="k-i">0x80070005</code> ist ein bekannter Windows-Fehlercode („Zugriff verweigert“). Hex-Codes lassen sich im Handbuch nachschlagen, weil jede Ziffer 4 Bit entspricht.</li>
-      <li><strong>Speicheradressen:</strong> Debugger und Absturzmeldungen zeigen Adressen wie <code class="k-i">0x7FFE4A20</code>. Du musst sie nicht umrechnen, nur als Adresse erkennen.</li>
+      <li><strong><abbr class="k-begriff" data-erklaerung="Die Hausnummer einer Speicherzelle im Arbeitsspeicher. Über sie findet der Rechner seine Daten wieder.">Speicheradressen</abbr>:</strong> <abbr class="k-begriff" data-erklaerung="Ein Werkzeug, mit dem man ein laufendes Programm anhält und hineinschaut, um Fehler zu finden.">Debugger</abbr> und Absturzmeldungen zeigen Adressen wie <code class="k-i">0x7FFE4A20</code>. Du musst sie nicht umrechnen, nur als Adresse erkennen.</li>
     </ul>
 
     <h3>Ausblick: Bitoperatoren (nur lesen und erkennen)</h3>
-    <p>Mit Bitoperatoren arbeitet man gezielt auf einzelnen Bits, etwa um ein Statusbit abzufragen. Du musst sie heute nicht schreiben, aber wiedererkennen. Beispiele mit <code class="k-i">0b1100</code> (12) und <code class="k-i">0b1010</code> (10):</p>
+    <p>Mit <abbr class="k-begriff" data-erklaerung="Ein Rechenzeichen, das Zahlen Bit für Bit verknüpft, zum Beispiel UND oder ODER. Du musst sie nur lesen können.">Bitoperatoren</abbr> arbeitet man gezielt auf einzelnen Bits, etwa um ein Statusbit abzufragen. Du musst sie heute nicht schreiben, aber wiedererkennen (mehr im <a href="v02-labor.html#a-werkzeugkasten">Werkzeugkasten, Syntax-Karte 5</a>). Beispiele mit <code class="k-i">0b1100</code> (12) und <code class="k-i">0b1010</code> (10):</p>
     <div class="k-tablewrap">
     <table class="k-types">
       <thead><tr><th scope="col">Operator</th><th scope="col">Bedeutung</th><th scope="col">Beispiel</th></tr></thead>
@@ -242,6 +243,7 @@ print(-5 % 2 ** 16)                  # -5 °C als 16-Bit-Register, ohne Vorzeich
       <section class="k-section" id="ausprobieren" data-section="ausprobieren" aria-labelledby="h-aus">
         <h2 class="k-section__title" id="h-aus"><span class="k-section__num" aria-hidden="true">3</span> Ausprobieren</h2>
 
+        <p><strong>Was hier vorkommt:</strong> <code class="k-i">bin()</code>, <code class="k-i">hex()</code> und <code class="k-i">int(text, basis)</code> sind <abbr class="k-begriff" data-erklaerung="Ein fertiger Baustein mit Namen: Du gibst ihm in Klammern einen Wert, er rechnet und liefert ein Ergebnis zurück. Wie ein Taschenrechner-Knopf, zum Beispiel für die Wurzel.">Funktionen</abbr>: Du gibst ihnen in Klammern einen Wert, sie liefern ein Ergebnis. <code class="k-i">bin(37)</code> liefert die Zahl 37 als Binär-<abbr class="k-begriff" data-erklaerung="Eine Zeichenfolge in Anführungszeichen, zum Beispiel 0b1010 in Anführungszeichen. Mit Text rechnet man nicht, auch wenn Ziffern darin stehen.">Text</abbr>, <code class="k-i">int("100101", 2)</code> macht aus so einem Text wieder eine Zahl. <code class="k-i">0b…</code> und <code class="k-i">0x…</code> schreiben eine Binär- bzw. Hexzahl direkt in den Code. <code class="k-i">//</code> teilt ohne Nachkommastellen, <code class="k-i">%</code> liefert den Rest, <code class="k-i">**</code> ist die Potenz. Steht in einer Zeile nur ein <abbr class="k-begriff" data-erklaerung="Eine Rechnung, die einen Wert ergibt, zum Beispiel 7 // 2. Alleine in eine Zeile geschrieben, zeigt Python den Wert wie ein Taschenrechner an.">Ausdruck</abbr> wie <code class="k-i">7 // 2</code>, zeigt Python das Ergebnis direkt an, wie ein Taschenrechner. Die vollständige Einführung steht im <a href="v02-labor.html#a-werkzeugkasten">Werkzeugkasten des Labors</a>.</p>
         <p>Python läuft direkt hier im Browser. Erst tippen, was herauskommt, dann ausführen. Das Tippen ist der Lernmoment. Du kannst den Code ändern und mit „Zurücksetzen“ das Original holen (Strg+Enter führt aus).</p>
 
       <div class="k-try">
@@ -257,7 +259,7 @@ print(-5 % 2 ** 16)                  # -5 °C als 16-Bit-Register, ohne Vorzeich
 print(hex(37))
 print(int("100101", 2))
 print(int("25", 16))
-print(0b100101 == 0x25)</textarea>
+print(0b100101, 0x25)     # zwei Schreibweisen, dieselbe Zahl 37</textarea>
         </div>
       </div>
       <div class="k-try">
@@ -273,6 +275,7 @@ print(0b100101 == 0x25)</textarea>
 print(-17 // 5, -17 % 5)       # bei negativen Zahlen: Was fällt auf?
 print(2 ** 8, 2 ** 16, 2 ** 10)</textarea>
         </div>
+        <p class="k-small k-muted">Drück auf „Schritt für Schritt“: Du siehst, wie Python <code class="k-i">//</code> und <code class="k-i">%</code> auswertet. Die beiden gehören zusammen: Das Ergebnis mal Teiler plus Rest ergibt wieder die Ausgangszahl.</p>
       </div>
       <div class="k-try">
         <h3>Operatorrangfolge</h3>
@@ -305,6 +308,7 @@ print((127 + 1 + 2 ** 7) % 2 ** 8 - 2 ** 7)
 # 16 Bit mit Vorzeichen: 32767 + 1
 print((32767 + 1 + 2 ** 15) % 2 ** 16 - 2 ** 15)</textarea>
         </div>
+        <p class="k-small k-muted">Drück auf „Schritt für Schritt“ und verfolge, wie aus 300 durch <code class="k-i">% 2 ** 8</code> die 44 wird: erst die Potenz 2 ** 8 = 256, dann der Rest von 300 geteilt durch 256.</p>
       </div>
       <div class="k-try">
         <h3>Python-Ganzzahlen sind anders als SPS-Ganzzahlen</h3>
@@ -318,7 +322,7 @@ print((32767 + 1 + 2 ** 15) % 2 ** 16 - 2 ** 15)</textarea>
 <textarea class="k-runner__code py-editor" data-lesson="V02" aria-label="Python-Code 5">print(bin(-5))
 print(bin(-5 % 2 ** 8), hex(-5 % 2 ** 8))
 print(2 ** 100)                 # kein Überlauf in Python
-print(type(2 ** 100))
+print(2 ** 100 + 1)
 # print("5" * "2")             # Kommentarzeichen entfernen: Was passiert?</textarea>
         </div>
       </div>
@@ -340,13 +344,13 @@ print(type(2 ** 100))
 
         <div class="k-q" data-type="output" data-points="2" data-id="t2" data-answer="10 31">
           <div class="k-q__head"><span class="k-q__title">T2 · Programmausgabe</span><span class="k-q__pts">2 Punkte</span></div>
-          <div class="k-q__text">Was gibt das Programm aus (eine Zeile, Werte durch Leerzeichen)?<pre class="k-code">print(0b1010, 0x1F)</pre></div>
+          <div class="k-q__text">Was gibt das Programm aus (eine Zeile, Werte durch Leerzeichen)?<pre class="k-code" data-run="nach-antwort"><code>print(0b1010, 0x1F)</code></pre></div>
           <div class="k-q__expl"><code>0b1010</code> = 8 + 2 = 10. <code>0x1F</code> = 1 · 16 + 15 = 31. <code>print</code> gibt beide Zahlen dezimal aus: <code>10 31</code>.</div>
         </div>
 
         <div class="k-q" data-type="output" data-points="3" data-id="t3" data-answer="3 2 50">
           <div class="k-q__head"><span class="k-q__title">T3 · Operatoren und Rangfolge</span><span class="k-q__pts">3 Punkte</span></div>
-          <div class="k-q__text">Was gibt das Programm aus (eine Zeile, Werte durch Leerzeichen)?<pre class="k-code">print(17 // 5, 17 % 5, 2 + 3 * 4 ** 2)</pre></div>
+          <div class="k-q__text">Was gibt das Programm aus (eine Zeile, Werte durch Leerzeichen)?<pre class="k-code" data-run="nach-antwort"><code>print(17 // 5, 17 % 5, 2 + 3 * 4 ** 2)</code></pre></div>
           <div class="k-q__expl">17 // 5 = 3, 17 % 5 = 2, und 2 + 3 · 4² = 2 + 48 = 50 (erst <code>**</code>, dann <code>*</code>, dann <code>+</code>).</div>
         </div>
 
@@ -383,16 +387,16 @@ print(type(2 ** 100))
 
         <div class="k-q" data-type="output" data-points="3" data-id="t7" data-answer="256 0">
           <div class="k-q__head"><span class="k-q__title">T7 · Überlauf simulieren</span><span class="k-q__pts">3 Punkte</span></div>
-          <div class="k-q__text">Was gibt das Programm aus (eine Zeile)?<pre class="k-code">x = 255
-print(x + 1, (x + 1) % 2 ** 8)</pre></div>
+          <div class="k-q__text">Was gibt das Programm aus (eine Zeile)?<pre class="k-code" data-run="nach-antwort"><code>x = 255
+print(x + 1, (x + 1) % 2 ** 8)</code></pre></div>
           <div class="k-q__expl">Python rechnet <code>255 + 1</code> ohne Überlauf: 256. Der Ausdruck mit <code>% 2 ** 8</code> bildet das 8-Bit-Register nach: 256 % 256 = 0.</div>
         </div>
 
         <div class="k-q" data-type="mc" data-points="3" data-id="t8">
           <div class="k-q__head"><span class="k-q__title">T8 · KI-Code freigeben?</span><span class="k-q__pts">3 Punkte</span></div>
-          <div class="k-q__text">Du bittest die KI, den 16-Bit-Zähler der SPS (ohne Vorzeichen) in Python nachzubilden. Sie liefert:<pre class="k-code">zaehler = 65535
+          <div class="k-q__text">Du bittest die KI, den 16-Bit-Zähler der SPS (ohne Vorzeichen) in Python nachzubilden. Sie liefert:<pre class="k-code" data-run="nach-antwort"><code>zaehler = 65535
 zaehler = zaehler + 1
-print(zaehler)</pre>Würdest du das freigeben?</div>
+print(zaehler)</code></pre>Würdest du das freigeben?</div>
           <ul class="k-q__options">
             <li>Ja, es gibt 0 aus, wie der Zähler in der SPS.</li>
             <li data-correct>Nein, es gibt 65536 aus. Python-<code>int</code> läuft nicht über, es fehlt <code>% 2 ** 16</code>.</li>
@@ -411,7 +415,7 @@ print(zaehler)</pre>Würdest du das freigeben?</div>
         <div class="a-task__head"><span class="a-task__title">T9 · Zähler mit Überlauf</span><span class="a-pts">6 Punkte</span></div>
         <div class="a-task__text">
           <p>Ein 16-Bit-Zähler (ohne Vorzeichen) steht auf einem Zählerstand. Es kommen weitere Impulse hinzu. Schreibe ein Programm, das den Zählerstand und dann die Anzahl neuer Impulse einliest und den neuen Zählerstand des Zählers ausgibt (mit Überlauf), dazu binär und hexadezimal.</p>
-          <div class="a-spec"><strong>Ausgabe genau so (Beispiel Zählerstand 65530, neue Impulse 10):</strong><pre>Neuer Stand: 4
+          <div class="a-spec"><strong>Ausgabe genau so (Beispiel Zählerstand 65530, neue Impulse 10):</strong><pre data-run="no">Neuer Stand: 4
 Binär: 0b100
 Hex: 0x4</pre></div>
         </div>
@@ -465,12 +469,12 @@ print("Hex:", hex(ergebnis))
       <section class="k-section" id="deepdive" data-section="deepdive" aria-labelledby="h-dd">
         <h2 class="k-section__title" id="h-dd"><span class="k-section__num" aria-hidden="true">5</span> Deep Dive <span class="k-muted">(freiwillig)</span></h2>
 
-        <p>Für Neugierige. Nichts davon kommt in der Klausur dran.</p>
+        <p>Für Neugierige. Nichts davon kommt in der Klausur dran. Einige Beispiele nutzen Python-Mittel, die der Kurs erst später einführt; sie sind jeweils markiert.</p>
 
       <details class="k-deep">
         <summary>Warum funktioniert das Zweierkomplement? Rechnen im Kreis</summary>
         <div class="k-deep__body">
-          <p>Stell dir eine Uhr mit 256 Stunden vor. Drei Stunden zurück ist dasselbe wie 253 Stunden vor: Auf dem Zifferblatt landest du an derselben Stelle. Genauso ist −5 in einem 8-Bit-Register dasselbe wie 256 − 5 = 251. Alle Rechnungen sind Rechnungen modulo 256, und die Addierwerke der CPU rechnen von Natur aus so, weil der Übertrag über das letzte Bit hinaus verloren geht. Deshalb braucht es keine eigene Subtraktion: <code class="k-i">7 - 5</code> und <code class="k-i">7 + 251</code> liefern im 8-Bit-Register beide 2.</p>
+          <p>Stell dir eine Uhr mit 256 Stunden vor. Drei Stunden zurück ist dasselbe wie 253 Stunden vor: Auf dem Zifferblatt landest du an derselben Stelle. Genauso ist −5 in einem 8-Bit-Register dasselbe wie 256 − 5 = 251. Alle Rechnungen sind Rechnungen modulo 256, und die Addierwerke der CPU rechnen von Natur aus so, weil der Übertrag über das letzte Bit hinaus verloren geht. Deshalb braucht es keine eigene Subtraktion: <code class="k-i">7 - 5</code> und <code class="k-i">7 + 251</code> liefern im 8-Bit-Register beide 2. <em>Hinweis:</em> In der letzten Zeile des Beispiels steht das Zeichen <code class="k-i">^</code>, ein Bitoperator (siehe Ausblick oben, nur lesen).</p>
           <div class="k-runner" data-timeout="8000">
 <textarea class="k-runner__code py-editor" data-lesson="V02" aria-label="Rechnen im Kreis">print(-5 % 2 ** 8, 2 ** 8 - 5)
 print((7 + 251) % 2 ** 8)
@@ -482,7 +486,7 @@ print(bin(5), bin(5 ^ 0b11111111), bin((5 ^ 0b11111111) + 1))</textarea>
       <details class="k-deep">
         <summary>Bitoperatoren ausprobieren: ein Statuswort lesen</summary>
         <div class="k-deep__body">
-          <p>Ein Statuswort fasst viele Ja/Nein-Meldungen in einem Register zusammen. Mit <code class="k-i">&amp;</code> und einer Maske fragst du ein einzelnes Bit ab, mit <code class="k-i">|</code> setzt du es, mit <code class="k-i">^</code> schaltest du es um.</p>
+          <p>Ein Statuswort fasst viele Ja/Nein-Meldungen in einem Register zusammen. Mit <code class="k-i">&amp;</code> und einer Maske fragst du ein einzelnes Bit ab, mit <code class="k-i">|</code> setzt du es, mit <code class="k-i">^</code> schaltest du es um. Bitoperatoren sind im Kurs nur zum Lesen und Erkennen gedacht, hier darfst du damit spielen. Drück bei Interesse auf „Schritt für Schritt“, um jede Zeile einzeln zu sehen.</p>
           <div class="k-runner" data-timeout="8000">
 <textarea class="k-runner__code py-editor" data-lesson="V02" aria-label="Bitoperatoren">status = 0b0110           # Bit 1 und Bit 2 gesetzt
 print(status &amp; 0b0100)        # Bit 2 abfragen: ungleich 0 heißt gesetzt
@@ -497,7 +501,7 @@ print(bin(status))</textarea>
       <details class="k-deep">
         <summary>Byte-Reihenfolge (Endianness) bei Feldbus und Modbus</summary>
         <div class="k-deep__body">
-          <p>Die Zahl 258 ist <code class="k-i">0x0102</code>, also die zwei Bytes <code class="k-i">01</code> und <code class="k-i">02</code>. Manche Geräte senden das höherwertige Byte zuerst („Big Endian“), andere das niederwertige zuerst („Little Endian“). Wer ein 32-Bit-Messwert-Paar aus zwei 16-Bit-Registern falsch zusammensetzt, bekommt Unsinn, der trotzdem wie eine Zahl aussieht. Im Zweifel hilft das Handbuch des Geräts und ein Test mit einem bekannten Wert.</p>
+          <p>Die Zahl 258 ist <code class="k-i">0x0102</code>, also die zwei Bytes <code class="k-i">01</code> und <code class="k-i">02</code>. Manche Geräte senden das höherwertige Byte zuerst („Big Endian“), andere das niederwertige zuerst („Little Endian“), zusammen heißt das <abbr class="k-begriff" data-erklaerung="Die Reihenfolge der Bytes einer größeren Zahl. Wie ob man 1 024 von links oder von rechts diktiert.">Endianness</abbr>. Es betrifft vor allem <abbr class="k-begriff" data-erklaerung="Ein weit verbreitetes Kommunikationsprotokoll in der Automatisierung. Es überträgt Registerwerte zwischen Geräten.">Modbus</abbr> und ähnliche Protokolle. Wer ein 32-Bit-Messwert-Paar aus zwei 16-Bit-Registern falsch zusammensetzt, bekommt Unsinn, der trotzdem wie eine Zahl aussieht. Im Zweifel hilft das Handbuch des Geräts und ein Test mit einem bekannten Wert. <em>Hinweis:</em> Das Beispiel unten nutzt Methoden (<code class="k-i">zahl.to_bytes(…)</code>) und eine Liste (<code class="k-i">[1, 2]</code>). Beides lernst du erst später (Listen in V08), hier als Blackbox: Es geht nur um die Ausgabe.</p>
           <div class="k-runner" data-timeout="8000">
 <textarea class="k-runner__code py-editor" data-lesson="V02" aria-label="Byte-Reihenfolge">zahl = 258
 print(zahl.to_bytes(2, "big").hex())
@@ -511,7 +515,7 @@ print(int.from_bytes(bytes([1, 2]), "little"))</textarea>
         <summary>Berühmte Überläufe</summary>
         <div class="k-deep__body">
           <ul>
-            <li><strong>Ariane 5, Erstflug 1996:</strong> Ein 64-Bit-Gleitkommawert (horizontale Geschwindigkeitsgröße) wurde in eine 16-Bit-Ganzzahl mit Vorzeichen umgewandelt und passte nicht hinein. Die Software hatte die Konvertierung nicht abgesichert, die Lenkrechner fielen aus.</li>
+            <li><strong>Ariane 5, Erstflug 1996:</strong> Ein 64-Bit-<abbr class="k-begriff" data-erklaerung="Eine Zahl mit Nachkommastellen, wie 3.14. Sie wird in einem anderen Format gespeichert als eine Ganzzahl (Thema in V03).">Gleitkommawert</abbr> (horizontale Geschwindigkeitsgröße) wurde in eine 16-Bit-Ganzzahl mit Vorzeichen umgewandelt und passte nicht hinein. Die Software hatte die Konvertierung nicht abgesichert, die Lenkrechner fielen aus.</li>
             <li><strong>Unix-Zeit 2038:</strong> Zeit als 32-Bit-Zahl mit Vorzeichen in Sekunden seit 1970. Nach 2<sup>31</sup> Sekunden, am 19. Januar 2038, läuft sie über.</li>
             <li><strong>Boeing 787, 2015:</strong> Ein 32-Bit-Zähler in Hundertstelsekunden in der Generatorsteuerung läuft nach rund 248 Tagen über. Die Behörde forderte regelmäßige Neustarts, bis die Software korrigiert war.</li>
           </ul>

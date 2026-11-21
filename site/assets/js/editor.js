@@ -220,6 +220,21 @@
     return pre;
   }
 
+  /* Codeblock, den kurs.js zum Runner macht (DESIGN.md Regel 12); bei input() mit passenden Beispiel-Eingaben vorbelegt */
+  function guessStdin(code) {
+    var n = (code.match(/\binput\s*\(/g) || []).length;
+    if (!n) return null;
+    var parts = code.split(/\binput\s*\(/), out = [];
+    for (var i = 0; i < n; i++) out.push(/\b(?:int|float)\s*\(\s*$/.test(parts[i]) || /\b(?:int|float)\s*\(\s*[A-Za-z_]\w*\s*\)/.test(code) ? '12' : 'Anna');
+    return out.join('\n');
+  }
+  function runnableBlock(code) {
+    var pre = codeBlock(code);
+    var g = guessStdin(code);
+    if (g) pre.setAttribute('data-stdin', g);
+    return pre;
+  }
+
   /* ── „Ausprobieren“ über KursPy ──────────────────────────── */
   function tryRun(code, outEl, btn, statusEl) {
     outEl.hidden = false; outEl.textContent = '';
@@ -281,7 +296,9 @@
     root.appendChild(head);
     root.appendChild(el('p', { class: 'kb-lead', text: e.kurz }));
     root.appendChild(el('h4', { class: 'kb-h', text: 'Schreibweise' }));
-    root.appendChild(codeBlock(e.syntax));
+    var synPre = codeBlock(e.syntax);
+    synPre.setAttribute('data-run', 'no');   // Schreibweise mit Platzhaltern, nicht ausführbar
+    root.appendChild(synPre);
 
     if (e.stichwort) {
       root.appendChild(el('p', { class: 'kb-note', text: 'Dieses Konzept kommt erst später im Kurs (' + e.eingefuehrt + '). Hier steht nur das Stichwort, damit du es wiedererkennst.' }));
@@ -289,10 +306,9 @@
       if (later) root.appendChild(el('p', { class: 'kb-note', text: 'Achtung: Das lernst du erst in ' + e.eingefuehrt + '. Du kannst vorlesen, musst es aber noch nicht anwenden.' }));
       root.appendChild(el('p', { text: e.erklaerung }));
       root.appendChild(el('h4', { class: 'kb-h', text: 'Beispiel' }));
-      root.appendChild(codeBlock(e.beispiel));
-      codeActions(e.beispiel, opts, e.lauffaehig !== false).forEach(function (n) { root.appendChild(n); });
-      if (e.lauffaehig === false) root.appendChild(el('p', { class: 'kb-small', text: 'Dieses Beispiel wartet auf eine Tastatureingabe und läuft deshalb hier nicht im Browser.' }));
-      else if (e.beispiel_ausgabe) {
+      root.appendChild(runnableBlock(e.beispiel));
+      codeActions(e.beispiel, opts, false).forEach(function (n) { root.appendChild(n); });
+      if (e.beispiel_ausgabe) {
         root.appendChild(el('details', { class: 'kb-details' }, [el('summary', { text: 'Erwartete Ausgabe' }), el('pre', { class: 'kb-out kb-out--static', text: e.beispiel_ausgabe })]));
       }
       root.appendChild(el('h4', { class: 'kb-h', text: 'Wann nutze ich das?' }));
@@ -304,8 +320,8 @@
         e.transfer.forEach(function (t) {
           var li = el('li');
           li.appendChild(el('strong', { text: t.situation }));
-          li.appendChild(codeBlock(t.code));
-          codeActions(t.code, opts, e.lauffaehig !== false || !/input\(/.test(t.code)).forEach(function (n) { li.appendChild(n); });
+          li.appendChild(runnableBlock(t.code));
+          codeActions(t.code, opts, false).forEach(function (n) { li.appendChild(n); });
           ul.appendChild(li);
         });
         root.appendChild(ul);

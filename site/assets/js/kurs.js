@@ -265,6 +265,7 @@
         var pointsTxt = '';
         if (!state[id].answered && !res.invalid) {
           state[id].answered = true; state[id].pts = ok ? pts : 0;
+          setTimeout(function () { releasePres(q); }, 0);
           pointsTxt = ok ? ' +' + pts + ' P.' : ' 0 von ' + pts + ' P. (erster Versuch).';
         }
         fb.innerHTML = '';
@@ -378,15 +379,75 @@
         pyodide.setStdin({ stdin: function () { return undefined; } });
         pyodide.loadPackagesFromImports(m.code).then(function () {
           var g = pyodide.globals.get('dict')();
-          return pyodide.runPythonAsync(m.code, { globals: g }).then(function () { try { g.destroy(); } catch (x) {} });
-        }).then(function () {
-          self.postMessage({ type: 'done', id: m.id });
+          if (m.harness) {
+            // Harness-Modus (Konsolen-Echo, Visualisierer): Python-Hilfsprogramm statt des Codes selbst; Code kommt als _kc_src
+            var v = m.vars || {};
+            Object.keys(v).forEach(function (k) { g.set(k, v[k]); });
+            g.set('_kc_src', m.code);
+            return pyodide.runPythonAsync(m.harness, { globals: g }).then(function (r) { try { g.destroy(); } catch (x) {} return r == null ? '' : String(r); });
+          }
+          return pyodide.runPythonAsync(m.code, { globals: g }).then(function () { try { g.destroy(); } catch (x) {} return undefined; });
+        }).then(function (result) {
+          self.postMessage({ type: 'done', id: m.id, result: result });
         }).catch(function (err) {
           self.postMessage({ type: 'done', id: m.id, error: clean(String(err && err.message ? err.message : err)) });
         });
       }
     };
   }
+
+  /* ── Konsolen-Echo: Python-Hilfsprogramm (läuft im Worker, Code kommt als _kc_src) ──
+     Oberste Ausdrucks-Anweisungen werden im 'single'-Modus kompiliert und geben so ihren repr aus
+     (None bleibt still, Zuweisungen geben nichts aus). Eine Exception beendet den Lauf mit Kurz-Traceback. */
+  var CONSOLE_PY = String.raw`
+import ast, sys, builtins, traceback
+_lines = _kc_stdin.split("\n") if _kc_stdin else []
+if _lines and _lines[-1] == "":
+    _lines.pop()
+_pos = 0
+def _kc_input(prompt=""):
+    global _pos
+    sys.stdout.write(str(prompt))
+    if _pos >= len(_lines):
+        sys.stdout.write("\n")
+        raise EOFError("input() braucht eine Eingabe, aber im Feld \u201eEingaben\u201c steht keine Zeile mehr. Trage dort f\u00fcr jedes input() eine Zeile ein.")
+    v = _lines[_pos]
+    _pos += 1
+    sys.stdout.write(v + "\n")
+    return v
+_orig_input = builtins.input
+builtins.input = _kc_input
+_result = ""
+try:
+    try:
+        _tree = ast.parse(_kc_src, "<code>")
+    except SyntaxError as e:
+        _tree = None
+        _result = "Traceback (most recent call last):\n  Zeile %s\nSyntaxError: %s" % (e.lineno, e.msg)
+    if _tree is not None:
+        _g = {"__name__": "__main__"}
+        for _node in _tree.body:
+            try:
+                if isinstance(_node, ast.Expr):
+                    _co = compile(ast.Interactive(body=[_node]), "<code>", "single")
+                else:
+                    _co = compile(ast.Module(body=[_node], type_ignores=[]), "<code>", "exec")
+                exec(_co, _g)
+            except SystemExit:
+                break
+            except BaseException as e:
+                _fr = [f for f in traceback.extract_tb(e.__traceback__) if f.filename == "<code>"]
+                _ln = _fr[-1].lineno if _fr else _node.lineno
+                _all = _kc_src.split("\n")
+                _txt = _all[_ln - 1].strip() if 0 < _ln <= len(_all) else ""
+                _msg = ("%s: %s" % (type(e).__name__, e)) if str(e) else type(e).__name__
+                _result = "Traceback (most recent call last):\n  Zeile %d: %s\n%s" % (_ln, _txt, _msg)
+                break
+finally:
+    builtins.input = _orig_input
+    sys.stdout.flush()
+_result
+`;
 
   var Py = {
     worker: null, ready: null, chain: Promise.resolve(), seq: 0, handler: null, statusCb: [],
@@ -475,10 +536,10 @@
               if (m.id !== id) return;
               if (m.type === 'out') opts.onOut(m.text);
               else if (m.type === 'err') opts.onErr(m.text);
-              else if (m.type === 'done') { clearTimeout(timer); Py.handler = null; resolve({ error: m.error }); }
+              else if (m.type === 'done') { clearTimeout(timer); Py.handler = null; resolve({ error: m.error, result: m.result }); }
             };
             timer = setTimeout(function () { Py.reset(); resolve({ timedOut: true }); }, opts.timeout);
-            Py.worker.postMessage({ type: 'run', id: id, code: code });
+            Py.worker.postMessage({ type: 'run', id: id, code: code, harness: opts.harness || null, vars: opts.vars || null });
           });
         });
       });
@@ -487,26 +548,96 @@
     }
   };
 
+  /* Lauf mit Konsolen-Echo und input()-Eingaben; Ergebnis wie Py.run, Fehler-Kurzform in r.error */
+  Py.console = function (code, stdin, opts) {
+    opts = opts || {};
+    opts.harness = CONSOLE_PY;
+    opts.vars = { _kc_stdin: stdin || '' };
+    return Py.run(code, opts).then(function (r) {
+      if (!r.error && r.result) r.error = r.result;
+      return r;
+    });
+  };
+
+  /* ── Nachladen von Zusatzdateien (relativ zu kurs.js) ────── */
+  var SELF = (document.currentScript && document.currentScript.src) || (function () {
+    var s = $$('script[src*="kurs.js"]'); return s.length ? s[s.length - 1].src : location.href;
+  })();
+  function rel(p) { return new URL(p, SELF).href; }
+  function ensureCss(path) {
+    var url = rel(path), name = path.split('/').pop();
+    var has = $$('link[rel="stylesheet"]').some(function (l) { return l.href.split('?')[0].split('/').pop() === name; });
+    if (!has) document.head.appendChild(el('link', { rel: 'stylesheet', href: url }));
+  }
+  var scriptP = {};
+  function loadScript(path) {
+    if (!scriptP[path]) {
+      scriptP[path] = new Promise(function (resolve, reject) {
+        var s = el('script', { src: rel(path) });
+        s.onload = function () { resolve(); };
+        s.onerror = function () { delete scriptP[path]; reject(new Error(path + ' nicht ladbar')); };
+        document.head.appendChild(s);
+      });
+    }
+    return scriptP[path];
+  }
+  /* Schritt-für-Schritt-Visualisierer: Platzhalter, lädt viz.js erst beim ersten Öffnen (viz.js ersetzt window.KursViz) */
+  window.KursViz = {
+    open: function (code, opts) {
+      ensureCss('../css/viz.css');
+      return loadScript('viz.js').then(function () {
+        if (!window.KursViz || !window.KursViz._real) throw new Error('viz.js fehlerhaft');
+        return window.KursViz.open(code, opts);
+      });
+    }
+  };
+
+  /* ── Runner (Python-Code ausführen, Konsolen-Echo, input(), Schritt für Schritt) ── */
+  var INPUT_RE = /\binput\s*\(/;
+
   function initRunner(box) {
     var ta = $('.k-runner__code', box);
-    if (!ta) return;
+    if (!ta || box._kInit) return;
+    box._kInit = true;
+    var auto = box.classList.contains('k-runner--auto');
     var original = ta.value;
     var timeout = parseInt(box.getAttribute('data-timeout') || '8000', 10);
-    var rows = Math.min(24, Math.max(4, original.split('\n').length + 1));
-    ta.rows = rows; ta.setAttribute('spellcheck', 'false'); ta.setAttribute('autocapitalize', 'off');
+    if (!auto) {
+      var rows = Math.min(24, Math.max(4, original.split('\n').length + 1));
+      ta.rows = rows;
+    }
+    ta.setAttribute('spellcheck', 'false'); ta.setAttribute('autocapitalize', 'off');
     if (!ta.id) ta.id = 'runner-' + Math.random().toString(36).slice(2, 8);
     if (!ta.getAttribute('aria-label')) ta.setAttribute('aria-label', 'Python-Code, editierbar');
 
     var runBtn = el('button', { type: 'button', class: 'k-btn k-btn--small', text: 'Ausführen' });
+    var stepBtn = el('button', { type: 'button', class: 'k-btn k-btn--small k-btn--ghost' });
+    stepBtn.appendChild(window.KIcon('steps')); stepBtn.appendChild(document.createTextNode('Schritt für Schritt'));
     var resetBtn = el('button', { type: 'button', class: 'k-btn k-btn--small k-btn--link', text: 'Zurücksetzen' });
     var status = el('span', { class: 'k-runner__status', role: 'status', 'aria-live': 'polite' });
-    var bar = el('div', { class: 'k-runner__bar' }, [runBtn, resetBtn, status]);
-    var out = el('pre', { class: 'k-runner__out', 'aria-live': 'polite', 'aria-label': 'Ausgabe' });
-    ta.insertAdjacentElement('afterend', bar);
+    var bar = el('div', { class: 'k-runner__bar' }, [runBtn, stepBtn, resetBtn, status]);
+    var out = el('pre', { class: 'k-runner__out', 'aria-live': 'polite', 'aria-label': 'Ausgabe', hidden: '' });
+
+    // Eingabefeld für input()
+    var stdinOrig = (box.getAttribute('data-stdin') || ta.getAttribute('data-stdin') || '').replace(/\n$/, '');
+    var stdinTa = el('textarea', { class: 'k-runner__stdin', spellcheck: 'false', autocapitalize: 'off', autocomplete: 'off', id: ta.id + '-stdin' });
+    stdinTa.value = stdinOrig;
+    var stdinBox = el('div', { class: 'k-runner__stdinbox', hidden: '' }, [
+      el('label', { class: 'k-runner__stdinlabel', 'for': stdinTa.id, text: 'Eingaben (eine pro Zeile)' }), stdinTa
+    ]);
+    function fitStdin() { stdinTa.rows = Math.min(8, Math.max(1, stdinTa.value.split('\n').length)); }
+    function curCode() { return window.KursEditor && window.KursEditor.getValue ? window.KursEditor.getValue(ta) : ta.value; }
+    function syncStdinBox() { stdinBox.hidden = !INPUT_RE.test(ta.value); }
+    stdinTa.addEventListener('input', fitStdin);
+    ta.addEventListener('input', syncStdinBox);
+    fitStdin(); syncStdinBox();
+
+    ta.insertAdjacentElement('afterend', stdinBox);
+    stdinBox.insertAdjacentElement('afterend', bar);
     bar.insertAdjacentElement('afterend', out);
 
     var tryBox = box.closest('.k-try');
-    var predict = tryBox && $('.k-predict', tryBox);
+    var predict = !auto && tryBox && $('.k-predict', tryBox);
     var predicted = null;
     if (predict) {
       runBtn.disabled = true;
@@ -534,19 +665,19 @@
     var running = false;
     function run() {
       if (running || runBtn.disabled) return;
-      running = true; runBtn.disabled = true; out.textContent = '';
+      running = true; runBtn.disabled = true; out.textContent = ''; out.hidden = false;
       var first = !Py.worker;
       status.innerHTML = '';
       status.appendChild(el('span', { class: 'k-spinner', 'aria-hidden': 'true' }));
       status.appendChild(document.createTextNode(first ? 'Python wird geladen (einmalig, ca. 10 MB) …' : 'läuft …'));
       var gotOutput = false;
-      Py.run(ta.value, {
+      Py.console(curCode(), stdinTa.value, {
         timeout: timeout,
         onOut: function (t) { gotOutput = true; append(t); },
         onErr: function (t) { gotOutput = true; append(t, 'err'); }
       }).then(function (r) {
         if (r.timedOut) append('\nAbgebrochen nach ' + (timeout / 1000) + ' s. Läuft da eine Endlosschleife?\n', 'err');
-        else if (r.error) append(r.error.replace(/\s+$/, '') + '\n', 'err');
+        else if (r.error) append((out.textContent && !/\n$/.test(out.textContent) ? '\n' : '') + r.error.replace(/\s+$/, '') + '\n', 'err');
         else if (!gotOutput) append('(keine Ausgabe – hast du print() benutzt?)', 'sys');
         status.textContent = r.timedOut ? 'abgebrochen' : (r.error ? 'Fehler' : 'fertig');
         if (predict && predicted) {
@@ -563,8 +694,104 @@
       }).then(function () { running = false; runBtn.disabled = false; });
     }
     runBtn.addEventListener('click', run);
+    stepBtn.addEventListener('click', function () {
+      status.textContent = '';
+      window.KursViz.open(curCode(), { stdin: stdinTa.value, opener: stepBtn, timeout: timeout }).catch(function (err) {
+        status.textContent = 'Visualisierer nicht ladbar: ' + err.message;
+      });
+    });
     ta.addEventListener('keydown', function (e) { if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); run(); } });
-    resetBtn.addEventListener('click', function () { ta.value = original; out.textContent = ''; status.textContent = 'zurückgesetzt'; });
+    resetBtn.addEventListener('click', function () {
+      ta.value = original; stdinTa.value = stdinOrig; fitStdin(); syncStdinBox();
+      out.textContent = ''; out.hidden = true; status.textContent = 'zurückgesetzt';
+    });
+    box._kRunner = { run: run, ta: ta, stdinTa: stdinTa, out: out };
+  }
+
+  /* ── Jeder Python-Codeblock (pre > code) wird ein Runner ──── */
+  // Ausnahmen: data-run="no" am pre, code oder einem Vorfahren; Ausgaben, Tracebacks, Quizfragen (Lösung stünde sonst direkt daneben)
+  var NORUN = '[data-run="no"], .k-runner, .ke, .cm-editor, .k-q, .k-quiz, .a-spec, .a-banner, .a-out, .a-gap, .a-trace, .a-hint, .a-solution, .kb-out, .kb-err__msg, .ke-info, .k-runner__out, .k-sr, svg, textarea';
+  var editorLoading = false;
+  function attachEditor(ta) {
+    if (window.KursEditor) { window.KursEditor.attach(ta, {}); return; }
+    if (editorLoading || $('script[src*="editor.js"]')) return;   // vorhandenes editor.js hängt sich selbst an
+    editorLoading = true;
+    loadScript('editor.js').then(function () { if (window.KursEditor) window.KursEditor.attach(ta, {}); }, function () { /* einfache Textarea bleibt */ });
+  }
+  function makeRunner(code, o) {
+    o = o || {};
+    var lines = code.split('\n').length;
+    var ta = el('textarea', { class: 'k-runner__code py-editor', rows: String(Math.max(1, lines)), 'aria-label': o.label || 'Python-Code, ausführbar' });
+    ta.value = code;
+    var box = el('div', { class: 'k-runner k-runner--auto' }, [ta]);
+    if (o.stdin != null && o.stdin !== '') box.setAttribute('data-stdin', o.stdin);
+    if (o.timeout) box.setAttribute('data-timeout', o.timeout);
+    return box;
+  }
+  var NORUN_LATE = NORUN.replace('.k-q, .k-quiz, ', '');
+  function runnableText(pre, late) {
+    var code = pre.querySelector(':scope > code');
+    if (!code) return null;
+    var sel = late ? NORUN_LATE : NORUN;
+    if (pre.closest(sel) || code.closest(sel)) return null;
+    if (/\blanguage-(?!py)/.test(code.className + ' ' + pre.className)) return null;
+    var t = code.textContent.replace(/^\n+/, '').replace(/\s+$/, '');
+    if (!t.trim() || /^\s*Traceback\b/.test(t)) return null;
+    return t;
+  }
+  // data-run="nach-antwort": erst nur Highlighting, wird nach der Antwort auf die Quizfrage zum Runner
+  function holdPre(pre) {
+    if (pre._kHold) return;
+    pre._kHold = true;
+    var hint = el('p', { class: 'k-runhint k-small k-muted', text: 'Nach deiner Antwort kannst du den Code ausführen.' });
+    pre._kHint = hint;
+    pre.parentNode.insertBefore(hint, pre.nextSibling);
+    if (window.KursEditor && window.KursEditor.lib && window.KursEditor.lib.loadBundle) {
+      window.KursEditor.lib.loadBundle().then(function () {
+        var code = pre.querySelector(':scope > code');
+        var hl = window.KursEditor.lib.codeBlock(code.textContent.replace(/\s+$/, ''));
+        code.innerHTML = hl.firstChild.innerHTML;
+      }).catch(function () { /* ohne Farben weiter */ });
+    }
+  }
+  function releasePres(q) {
+    $$('pre[data-run="nach-antwort"]', q).forEach(function (pre) {
+      if (pre._kHint && pre._kHint.parentNode) pre._kHint.parentNode.removeChild(pre._kHint);
+      pre._kRelease = true;
+      convertPre(pre);
+    });
+  }
+  function convertPre(pre) {
+    if (pre._kDone || !pre.parentNode) return;
+    var late = pre.getAttribute('data-run') === 'nach-antwort';
+    if (late && !pre._kRelease) { if (runnableText(pre, true) != null) holdPre(pre); return; }
+    var text = runnableText(pre, late);
+    if (text == null) return;
+    pre._kDone = true;
+    var target = pre.parentNode.classList && pre.parentNode.classList.contains('k-copy') ? pre.parentNode : pre;
+    var code = pre.querySelector(':scope > code');
+    var box = makeRunner(text, {
+      stdin: pre.getAttribute('data-stdin') != null ? pre.getAttribute('data-stdin') : code.getAttribute('data-stdin'),
+      timeout: pre.getAttribute('data-timeout'),
+      label: pre.getAttribute('aria-label')
+    });
+    target.parentNode.replaceChild(box, target);
+    initRunner(box);
+    attachEditor($('.k-runner__code', box));
+  }
+  function enhanceRunners(root) {
+    if (!root || root.nodeType !== 1) return;
+    if (root.tagName === 'PRE') convertPre(root);
+    else if (root.querySelectorAll) $$('pre', root).forEach(convertPre);
+  }
+
+  /* ── Lazy: Begriffs-Hinweise (abbr.k-begriff) ────────────── */
+  function lazyFeatures(root) {
+    if (!root || root.nodeType !== 1) return;
+    if ((root.matches && root.matches('abbr.k-begriff')) || (root.querySelector && root.querySelector('abbr.k-begriff'))) {
+      ensureCss('../css/begriff.css');
+      loadScript('begriff.js').then(function () { if (window.KursBegriff) window.KursBegriff.scan(root); }, function () { /* ohne Popover weiter */ });
+    }
   }
 
   /* ── KI-Spiegel: Fehler markieren ────────────────────────── */
@@ -718,13 +945,28 @@
     initIndexProgress();
     initReveal();
     $$('.k-quiz').forEach(initQuiz);
+    ensureCss('../css/runner.css');
     $$('.k-runner').forEach(initRunner);
+    enhanceRunners(document.body);      // vor initCopy: Codeblöcke werden Runner, nicht erst Kopier-Blöcke
     $$('.k-mirror').forEach(initMirror);
     initVideo();
     initCopy();
+    lazyFeatures(document.body);
+    if (window.MutationObserver) {
+      new MutationObserver(function (muts) {
+        muts.forEach(function (m) {
+          Array.prototype.forEach.call(m.addedNodes, function (n) {
+            if (n.nodeType !== 1) return;
+            if (n.closest && n.closest('.cm-editor')) return;
+            enhanceRunners(n); lazyFeatures(n);
+          });
+        });
+      }).observe(document.body, { childList: true, subtree: true });
+    }
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
 
   window.KursPy = Py; // für Tests/Debug
+  window.KursRunner = { make: makeRunner, init: initRunner, enhance: enhanceRunners };
   window.KursCopy = { enhance: enhanceCopy, copyText: copyText };
 })();

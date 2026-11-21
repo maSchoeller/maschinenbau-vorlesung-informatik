@@ -61,7 +61,7 @@
         <h2 class="l-task__title" id="h-a-werkzeugkasten" tabindex="-1">Werkzeugkasten</h2>
         <p class="l-task__meta"></p>
       </header>
-      <p class="l-task__intro">Heute neu in Python: Kommazahlen (<code class="k-i">float</code>), Typen erkennen und umwandeln, Zahlen einlesen, formatiert ausgeben und das <code class="k-i">math</code>-Modul. Aus V01 und V02 setzen wir <code class="k-i">print</code>, Variablen, <code class="k-i">int</code> und die Operatoren <code class="k-i">+ - * / // % **</code> voraus. Die Klausur verlangt, dass du Code von Hand schreibst. Darum gehen wir in kleinen Schritten vom Vormachen zum Selberschreiben, und die Hilfen werden dabei weniger.</p>
+      <p class="l-task__intro">Heute neu in Python: Kommazahlen (<abbr class="k-begriff" data-erklaerung="Eine Fließkommazahl (englisch float) ist eine Zahl mit Nachkommastellen wie 2,5. Der Rechner speichert die Ziffern und getrennt davon, wo das Komma sitzt."><code class="k-i">float</code></abbr>), <abbr class="k-begriff" data-erklaerung="Der Datentyp sagt dem Rechner, was ein Wert ist (Ganzzahl, Kommazahl, Text) und was man damit tun darf. Wie bei Einheiten: Meter und Sekunden addiert man nicht.">Datentypen</abbr> erkennen und umwandeln, Zahlen <abbr class="k-begriff" data-erklaerung="Einlesen heißt: Das Programm wartet, bis der Benutzer etwas eintippt, und übernimmt es. Dafür gibt es den Befehl input().">einlesen</abbr>, <abbr class="k-begriff" data-erklaerung="Formatieren heißt: bestimmen, wie ein Wert aussieht, zum Beispiel auf zwei Nachkommastellen gerundet. Der Wert selbst bleibt unverändert.">formatiert ausgeben</abbr> und das <code class="k-i">math</code>-<abbr class="k-begriff" data-erklaerung="Ein Modul ist eine Werkzeugkiste mit fertigen Funktionen. Das Modul math enthält zum Beispiel Wurzel und Kreiszahl. Mit import holst du es ins Programm.">Modul</abbr>. Aus V01 und V02 setzen wir <abbr class="k-begriff" data-erklaerung="print() ist eine Funktion: ein fertiger Befehl, der einen Wert auf dem Bildschirm ausgibt."><code class="k-i">print</code></abbr>, <abbr class="k-begriff" data-erklaerung="Eine Variable ist ein Name für einen Speicherplatz, wie ein beschriftetes Schubfach. Mit x = 3 legst du die 3 unter dem Namen x ab.">Variablen</abbr>, <code class="k-i">int</code> und die <abbr class="k-begriff" data-erklaerung="Operatoren sind die Rechenzeichen von Python: + - * / // % **.">Operatoren</abbr> <code class="k-i">+ - * / // % **</code> voraus. Die Klausur verlangt, dass du Code von Hand schreibst. Darum gehen wir in kleinen Schritten vom Vormachen zum Selberschreiben, und die Hilfen werden dabei weniger.</p>
       <figure class="k-video">
         <video controls preload="metadata" poster="../assets/video/v03-python-typen-poster.png" aria-label="Python-Werkstatt: Typen, Umwandlung, f-Strings (ca. 3 Min)">
           <source src="../assets/video/v03-python-typen.mp4" type="video/mp4">
@@ -71,58 +71,68 @@
         <div class="k-video__missing" hidden>Video folgt. Bis dahin: Lies den Code unten Zeile für Zeile und probiere ihn aus.</div>
         <figcaption>Python-Werkstatt: Typen, Umwandlung, f-Strings (ca. 3 Min). Untertitel sind eingeschaltet (Deutsch).</figcaption>
       </figure>
-      <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke</strong><p>Diese fünf Syntax-Karten sind dein Spickzettel, bis es sitzt. Du erreichst sie in jeder Aufgabe über den Knopf „Werkzeugkasten“ oben. Alle Befehle des Kurses stehen außerdem rechts in der Befehls-Bibliothek.</p></div>
+      <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke</strong><p>Diese fünf <abbr class="k-begriff" data-erklaerung="Die Syntax ist die Schreibweise einer Programmiersprache, wie die Grammatik einer Sprache: Reihenfolge, Klammern, Anführungszeichen. Ein Tippfehler dort heißt Syntaxfehler.">Syntax</abbr>-Karten sind dein Spickzettel, bis es sitzt. Du erreichst sie in jeder Aufgabe über den Knopf „Werkzeugkasten“ oben. Alle Befehle des Kurses stehen außerdem rechts in der Befehls-Bibliothek.</p></div>
       <div class="lab__toolbox" id="lab-toolbox">
 <div class="a-syntax-list">
   <article class="a-syntax" aria-labelledby="sk-typ">
     <span class="a-syntax__label">Syntax-Karte 1</span>
     <h4 id="sk-typ">Zahlen und Typen</h4>
-<pre>x = 3          # int
+<pre><code>x = 3          # int
 y = 2.5        # float
 z = 1e-3       # float, 0.001
 t = "42"       # str (Text)
-print(type(y)) # &lt;class 'float'&gt;</pre>
+print(x, y, z, t)
+type(y)        # &lt;class 'float'&gt;
+7 / 2          # 3.5, immer float
+7 // 2         # 3, int</code></pre>
     <ul>
       <li>Dezimalpunkt, nie Komma: <code class="k-i">2.5</code>.</li>
       <li><code class="k-i">1e-3</code> heißt 1 · 10<sup>−3</sup>.</li>
       <li><code class="k-i">7 / 2</code> ist immer <code class="k-i">float</code> (3.5), <code class="k-i">7 // 2</code> ist <code class="k-i">int</code> (3).</li>
       <li><code class="k-i">int</code> und <code class="k-i">float</code> gemischt: das Ergebnis ist <code class="k-i">float</code>.</li>
+      <li><code class="k-i">type(y)</code> ist eine Funktion: Du gibst ihr einen Wert in die Klammern, sie antwortet mit dem Typ.</li>
     </ul>
   </article>
   <article class="a-syntax" aria-labelledby="sk-conv">
     <span class="a-syntax__label">Syntax-Karte 2</span>
     <h4 id="sk-conv">Typ umwandeln</h4>
-<pre>int("42")     # 42
+<pre><code>int("42")     # 42
 float("3.5")  # 3.5
 float(2)      # 2.0
 str(3)        # '3'
-int(3.9)      # 3 (schneidet ab)</pre>
+int(3.9)      # 3 (schneidet ab)
+round(3.9)    # 4 (rundet)</code></pre>
     <ul>
+      <li>Drück auf „Schritt für Schritt“: Du siehst jede Umwandlung einzeln und welchen Typ das Ergebnis hat.</li>
       <li><code class="k-i">int()</code> schneidet ab, <code class="k-i">round()</code> rundet.</li>
-      <li><code class="k-i">int("2.5")</code> geht nicht. Erst <code class="k-i">float</code>, dann <code class="k-i">int</code>.</li>
+      <li><code class="k-i">int("2.5")</code> geht nicht (ValueError, siehe „Typische Fehlermeldungen“). Erst <code class="k-i">float</code>, dann <code class="k-i">int</code>.</li>
       <li>Text und Zahl lassen sich nicht addieren: erst umwandeln.</li>
     </ul>
   </article>
   <article class="a-syntax" aria-labelledby="sk-in">
     <span class="a-syntax__label">Syntax-Karte 3</span>
     <h4 id="sk-in">Zahl einlesen</h4>
-<pre>d = float(input("Durchmesser in mm: "))
-n = int(input("Anzahl: "))</pre>
+<pre data-stdin="12.5&#10;4"><code>d = float(input("Durchmesser in mm: "))
+n = int(input("Anzahl: "))
+print(d, n)
+print(type(d), type(n))</code></pre>
     <ul>
+      <li>Die Eingabefelder unter dem Code sind vorbelegt, probier andere Werte.</li>
       <li><code class="k-i">input()</code> liefert <em>immer</em> Text. Sofort umwandeln.</li>
-      <li>Kommazahl als Text mit Komma? <code class="k-i">float(s.replace(",", "."))</code></li>
+      <li>Eingabe mit Dezimalkomma („2,5“) bricht mit <code class="k-i">ValueError</code> ab: Tippe den Punkt. Text zurechtschneiden lernst du in V09.</li>
     </ul>
   </article>
   <article class="a-syntax" aria-labelledby="sk-f">
     <span class="a-syntax__label">Syntax-Karte 4</span>
     <h4 id="sk-f">f-String und Format</h4>
-<pre>print(f"d = {d} mm")
+<pre><code>d = 12.3456
+print(f"d = {d} mm")
 print(f"d = {d:.2f} mm")
 print(f"{d:8.3f}|")
-print(f"{12345.6:e}")</pre>
+print(f"{12345.6:e}")</code></pre>
     <div class="k-tablewrap"><table>
       <tbody>
-        <tr><td><code class="k-i">:.2f</code></td><td>2 Nachkommastellen (gerundet)</td></tr>
+        <tr><td><code class="k-i">:.2f</code></td><td>2 <abbr class="k-begriff" data-erklaerung="Nachkommastellen sind die Ziffern hinter dem Komma. Bei 3.14159 sind es fünf.">Nachkommastellen</abbr> (gerundet)</td></tr>
         <tr><td><code class="k-i">:8.3f</code></td><td>mindestens 8 Zeichen breit, 3 Nachkommastellen, rechtsbündig</td></tr>
         <tr><td><code class="k-i">:e</code></td><td>wissenschaftlich: 1.234560e+04</td></tr>
         <tr><td><code class="k-i">:.2e</code></td><td>wissenschaftlich, 2 Nachkommastellen: 1.23e+04</td></tr>
@@ -133,12 +143,12 @@ print(f"{12345.6:e}")</pre>
   <article class="a-syntax" aria-labelledby="sk-math">
     <span class="a-syntax__label">Syntax-Karte 5</span>
     <h4 id="sk-math">math-Modul und isclose</h4>
-<pre>import math
+<pre><code>import math
 math.pi        # 3.141592653589793
 math.sqrt(2)   # 1.4142135623730951
-math.isclose(a, b, abs_tol=1e-9)</pre>
+math.isclose(0.1 + 0.2, 0.3, abs_tol=1e-9)   # True</code></pre>
     <ul>
-      <li><code class="k-i">import math</code> steht ganz oben im Programm.</li>
+      <li><code class="k-i">import math</code> steht ganz oben im Programm und holt das <abbr class="k-begriff" data-erklaerung="Ein Modul ist eine Werkzeugkiste mit fertigen Funktionen. Das Modul math enthält zum Beispiel Wurzel und Kreiszahl. Mit import holst du es ins Programm.">Modul</abbr> <code class="k-i">math</code>.</li>
       <li><code class="k-i">math.isclose</code> vergleicht mit Toleranz. Gegen 0 brauchst du <code class="k-i">abs_tol</code>.</li>
     </ul>
   </article>
@@ -153,7 +163,7 @@ math.isclose(a, b, abs_tol=1e-9)</pre>
         <h2 class="l-task__title" id="h-a-vorgemacht" tabindex="-1">Vorgerechnetes Beispiel: Toleranzrechner</h2>
         <p class="l-task__meta"></p>
       </header>
-      <p class="l-task__intro">Aufgabe: Ein Programm liest das Nennmaß, das Abmaß (±) und einen Messwert ein, gibt die Grenzmaße formatiert aus und prüft, ob der Messwert in der Toleranz liegt. Lies den Code Zeile für Zeile, dann führe ihn aus. Die Eingaben stehen im Feld darunter (Beispiel: der Messwert liegt genau auf der Grenze).</p>
+      <p class="l-task__intro">Aufgabe: Ein <abbr class="k-begriff" data-erklaerung="Ein Programm ist eine Liste von Anweisungen, die Python von oben nach unten Zeile für Zeile abarbeitet.">Programm</abbr> liest das Nennmaß, das Abmaß (±) und einen Messwert ein, gibt die Grenzmaße formatiert aus und prüft, ob der Messwert in der <abbr class="k-begriff" data-erklaerung="Der Bereich, um den ein Wert abweichen darf und trotzdem als „passt“ gilt, wie die Toleranz in der Zeichnung.">Toleranz</abbr> liegt. Lies den Code Zeile für Zeile, dann führe ihn aus. Die Eingaben stehen im Feld darunter (Beispiel: der Messwert liegt genau auf der Grenze). Drück danach auf „Schritt für Schritt“: Dann siehst du, wie jede Zeile eine Variable belegt und welchen Typ sie hat.</p>
       <figure class="k-video">
         <video controls preload="metadata" poster="../assets/video/v03-toleranzrechner-poster.png" aria-label="Vorgerechnet: der Toleranzrechner Schritt für Schritt (ca. 3 Min)">
           <source src="../assets/video/v03-toleranzrechner.mp4" type="video/mp4">
@@ -183,9 +193,9 @@ ok = math.isclose(messwert, nennmass, rel_tol=0.0, abs_tol=abmass + 1e-9)
 print(f"Messwert {messwert:.2f} mm in Toleranz: {ok}")</textarea></div>
       </div>
       <ol class="a-explain">
-        <li><strong>Zeilen 4 bis 6:</strong> <code class="k-i">input()</code> gibt Text zurück, <code class="k-i">float()</code> macht daraus eine Zahl. Ohne <code class="k-i">float()</code> würde <code class="k-i">nennmass - abmass</code> mit einem <code class="k-i">TypeError</code> abbrechen.</li>
+        <li><strong>Zeilen 4 bis 6:</strong> <code class="k-i">input()</code> gibt Text zurück, <code class="k-i">float()</code> macht daraus eine Zahl. Ohne <code class="k-i">float()</code> würde <code class="k-i">nennmass - abmass</code> mit einem <abbr class="k-begriff" data-erklaerung="Ein TypeError ist eine Fehlermeldung: Du hast einen Wert mit dem falschen Typ verwendet, zum Beispiel Text statt Zahl."><code class="k-i">TypeError</code></abbr> abbrechen.</li>
         <li><strong>Zeile 13:</strong> <code class="k-i">:.2f</code> zeigt zwei Nachkommastellen. Die Variablen selbst bleiben unverändert.</li>
-        <li><strong>Zeile 16:</strong> <code class="k-i">math.isclose</code> mit <code class="k-i">rel_tol=0.0</code> und <code class="k-i">abs_tol</code> prüft, ob der Abstand höchstens <code class="k-i">abmass</code> beträgt. Das <code class="k-i">+ 1e-9</code> fängt den Rundungsfehler ab: <code class="k-i">25.05 - 25.0</code> ergibt 0.05000000000000071, also knapp mehr als 0.05. Ohne den Zuschlag würde der Grenzwert fälschlich durchfallen. Probiere es aus: Lösche <code class="k-i"> + 1e-9</code> und führe nochmal aus.</li>
+        <li><strong>Zeile 16:</strong> <code class="k-i">math.isclose</code> mit <code class="k-i">rel_tol=0.0</code> und <code class="k-i">abs_tol</code> prüft, ob der Abstand höchstens <code class="k-i">abmass</code> beträgt. Das <code class="k-i">+ 1e-9</code> fängt den <abbr class="k-begriff" data-erklaerung="Der Rechner speichert nur endlich viele Stellen. Ist eine Zahl länger, wird sie gerundet, so wie ein Taschenrechner 1/3 nur als 0,3333333 zeigt.">Rundungsfehler</abbr> ab: <code class="k-i">25.05 - 25.0</code> ergibt 0.05000000000000071, also knapp mehr als 0.05. Ohne den Zuschlag würde der Grenzwert fälschlich durchfallen. Probiere es aus: Lösche <code class="k-i"> + 1e-9</code> und führe nochmal aus.</li>
         <li><strong>Selbsterklärung:</strong> Setze den Messwert auf 25.06. Was erwartest du? Warum ist das Ergebnis jetzt anders?</li>
       </ol>
     </section>
@@ -196,7 +206,7 @@ print(f"Messwert {messwert:.2f} mm in Toleranz: {ok}")</textarea></div>
         <h2 class="l-task__title" id="h-a-ablauf" tabindex="-1">Ablauf verfolgen</h2>
         <p class="l-task__meta"></p>
       </header>
-      <p class="l-task__intro">Bevor du Code schreibst, musst du ihn lesen können. Führe das Programm im Kopf aus: Eine Zeile nach der anderen. Trage ein, was danach in den hervorgehobenen Variablen steht. Achte auf den Typ: Text steht in Anführungszeichen, ein <code class="k-i">float</code> hat einen Dezimalpunkt.</p>
+      <p class="l-task__intro">Bevor du Code schreibst, musst du ihn lesen können. Jede <abbr class="k-begriff" data-erklaerung="Eine Variable ist ein Name für einen Speicherplatz, wie ein beschriftetes Schubfach. Mit x = 3 legst du die 3 unter dem Namen x ab.">Variable</abbr> hat zu jedem Zeitpunkt einen Wert. Führe das Programm im Kopf aus: Eine Zeile nach der anderen. Trage ein, was danach in den hervorgehobenen Variablen steht. Achte auf den <abbr class="k-begriff" data-erklaerung="Der Datentyp sagt dem Rechner, was ein Wert ist (Ganzzahl, Kommazahl, Text) und was man damit tun darf. Wie bei Einheiten: Meter und Sekunden addiert man nicht.">Typ</abbr>: Text (<abbr class="k-begriff" data-erklaerung="Ein String (Zeichenkette) ist Text in Anführungszeichen, zum Beispiel &quot;125.5&quot;. Python rechnet damit nicht, auch wenn es wie eine Zahl aussieht.">String</abbr>) steht in Anführungszeichen, ein <code class="k-i">float</code> hat einen Dezimalpunkt. Wenn du unsicher bist, lass den Code vorher einmal im „Vorgerechneten Beispiel“ mit „Schritt für Schritt“ laufen.</p>
       <div class="a-task" data-a="trace" data-id="w-trace">
         <script type="application/json">{"code":["laenge = \"125.5\"","anzahl = 4","laenge = float(laenge)","gesamt = laenge * anzahl","rest = int(gesamt) % 100","print(f\"{gesamt:.1f} mm, Rest {rest}\")"],
 "vars":["laenge","anzahl","gesamt","rest"],
@@ -230,11 +240,11 @@ print(f"Messwert {messwert:.2f} mm in Toleranz: {ok}")</textarea></div>
       </div>
 
       <div class="a-task" data-a="parsons" data-id="w-parsons2">
-        <div class="a-task__head"><h3 class="a-task__title">Zehnmal 0.1 addieren und prüfen</h3></div>
-        <p>Das Programm addiert zehnmal 0.1 und prüft mit <code class="k-i">math.isclose</code>, ob die Summe 1.0 ergibt. Die Einrückung gehört zur Lösung: Was in der Schleife steht, wird um eine Stufe eingerückt (Knopf ⇥ oder Pfeil rechts).</p>
-        <script type="application/json">{"solution":["import math","summe = 0.0","for _ in range(10):","    summe += 0.1","print(math.isclose(summe, 1.0))"],
-"distractors":["print(summe == 1.0)","summe = summe * 0.1"],
-"alts":[["summe = 0.0","import math","for _ in range(10):","    summe += 0.1","print(math.isclose(summe, 1.0))"],["summe = 0.0","for _ in range(10):","    summe += 0.1","import math","print(math.isclose(summe, 1.0))"]]}</script>
+        <div class="a-task__head"><h3 class="a-task__title">Summe mit Toleranz prüfen</h3></div>
+        <p>Das Programm addiert 0.1 und 0.2 und prüft mit <code class="k-i">math.isclose</code>, ob die Summe 0.3 ergibt.</p>
+        <script type="application/json">{"solution":["import math","a = 0.1 + 0.2","b = 0.3","print(math.isclose(a, b))"],
+"distractors":["print(a == b)","b = \"0.3\""],
+"alts":[["import math","b = 0.3","a = 0.1 + 0.2","print(math.isclose(a, b))"],["b = 0.3","import math","a = 0.1 + 0.2","print(math.isclose(a, b))"],["a = 0.1 + 0.2","b = 0.3","import math","print(math.isclose(a, b))"]]}</script>
       </div>
 
     </section>
@@ -245,7 +255,7 @@ print(f"Messwert {messwert:.2f} mm in Toleranz: {ok}")</textarea></div>
         <h2 class="l-task__title" id="h-a-luecken" tabindex="-1">Lücken füllen</h2>
         <p class="l-task__meta"></p>
       </header>
-      <p class="l-task__intro">Jetzt tippst du Teile selbst. Ergänze die vier Lücken, sodass das Programm eine Länge von mm in Zoll (inch) umrechnet und mit drei Nachkommastellen ausgibt. 1 Zoll = 25,4 mm. Geprüft wird nicht nur dein Wortlaut, sondern ob das Programm das Richtige tut.</p>
+      <p class="l-task__intro">Jetzt tippst du Teile selbst. Ergänze die vier Lücken, sodass das Programm eine Länge von mm in Zoll (inch) umrechnet und mit drei <abbr class="k-begriff" data-erklaerung="Nachkommastellen sind die Ziffern hinter dem Komma. Bei 3.14159 sind es fünf.">Nachkommastellen</abbr> ausgibt. 1 Zoll = 25,4 mm. Geprüft wird nicht nur dein Wortlaut, sondern ob das Programm das Richtige tut.</p>
       <div class="a-task" data-a="gap" data-id="w-luecken" data-mode="programm">
         <pre class="a-gap__src">mm = @@float@@(input("Länge in mm: "))
 zoll = mm / @@25.4@@
@@ -268,7 +278,7 @@ def test_typ():
     assert "<class 'float'>" in z, "Die letzte Zeile soll <class 'float'> zeigen. Ausgabe: %r" % z
         </script>
         <ol class="a-hints">
-          <li>Das Ergebnis einer Division mit <code>/</code> hat immer denselben Typ. Welchen? Und in welchen Typ wandelst du die Eingabe um, damit <code>:.1f</code> funktioniert?</li>
+          <li>Das Ergebnis einer Division mit <code>/</code> hat immer denselben Typ (probiere <code>type(7 / 2)</code>). Welchen? Und in welchen Typ wandelst du die Eingabe um, damit <code>:.1f</code> funktioniert?</li>
           <li>Das Format steht hinter dem Doppelpunkt im f-String: drei Nachkommastellen heißen <code>.3f</code>.</li>
           <li>Lücke 4: Welche Variable willst du auf ihren Typ prüfen?</li>
         </ol>
@@ -282,11 +292,11 @@ def test_typ():
         <h2 class="l-task__title" id="h-a-zugstab" tabindex="-1">Erste eigene Aufgabe: Zugstab</h2>
         <p class="l-task__meta"></p>
       </header>
-      <p class="l-task__intro">Jetzt schreibst du alles selbst, mit Tests als Sicherheitsnetz. Die Tests laufen mit mehreren Eingaben, auch mit solchen, die du nicht siehst.</p>
+      <p class="l-task__intro">Jetzt schreibst du alles selbst, mit <abbr class="k-begriff" data-erklaerung="Ein Test ist ein kleines Prüfprogramm. Es startet dein Programm mit festen Eingaben und vergleicht die Ausgabe mit dem erwarteten Ergebnis.">Tests</abbr> als Sicherheitsnetz. Die Tests laufen mit mehreren Eingaben, auch mit solchen, die du nicht siehst.</p>
       <div class="a-task" data-a="code" data-id="w-zugstab" data-mode="programm" data-inputs="20000|10">
         <div class="a-task__text">
           <p>Ein Rundstab wird mit der Kraft <em>F</em> (in N) auf Zug belastet. Der Durchmesser <em>d</em> (in mm) ist gegeben. Schreibe ein Programm, das beide Werte einliest und die Spannung σ = F / A in N/mm² ausgibt. Die Querschnittsfläche ist A = π · d² / 4.</p>
-          <div class="a-spec"><strong>Ausgabe genau so:</strong><pre>Spannung: 254.65 N/mm²</pre></div>
+          <div class="a-spec"><strong>Ausgabe genau so:</strong><pre data-run="no">Spannung: 254.65 N/mm²</pre></div>
           <p class="k-small k-muted">Beispiel: F = 20000, d = 10. Zwei Nachkommastellen. Erst F, dann d einlesen.</p>
         </div>
         <div class="a-editor"><textarea class="py-editor" data-lesson="V03" aria-label="Python-Code: Zugstab"># Zugspannung im Rundstab
@@ -344,7 +354,7 @@ print(f"Spannung: {sigma:.2f} N/mm²")
         <h2 class="l-task__title" id="h-a-review" tabindex="-1">Code-Review: KI-Code prüfen</h2>
         <p class="l-task__meta"></p>
       </header>
-      <p class="l-task__intro">Eine KI hat Code geliefert. Er sieht sauber aus, hat Docstrings und läuft los. Würdest du ihn freigeben? Klick die Zeilen an, die du für fehlerhaft hältst, dann lass auflösen.</p>
+      <p class="l-task__intro">Eine KI hat Code geliefert. Er sieht sauber aus und läuft los. Würdest du ihn freigeben? Klick die Zeilen an, die du für fehlerhaft hältst, dann lass auflösen.</p>
       <figure class="k-figure">
         <picture>
           <source srcset="../assets/img/ki-spiegel.webp" type="image/webp">
@@ -355,36 +365,25 @@ print(f"Spannung: {sigma:.2f} N/mm²")
       <div class="k-mirror">
         <h3>Szenario: Prüfprogramm für ein Wellenmaß</h3>
         <p class="k-prompt__who">Prompt eines Studierenden</p>
-        <blockquote class="k-prompt">Schreib mir Python-Funktionen für ein Prüfprogramm. (1) Liegt ein gemessenes Maß innerhalb der Toleranz? Nennmaß 25,00 mm, Toleranz ±0,05 mm; die Grenzwerte 24,95 und 25,05 sind noch in Ordnung. (2) Trifft der Mittelwert einer Messreihe das Nennmaß? (3) Liefere die Messpositionen von 0 bis 1 mm in 0,1-mm-Schritten.</blockquote>
+        <blockquote class="k-prompt">Schreib mir ein kleines Python-Programm für ein Prüfprogramm. (1) Liegt ein eingegebenes Maß innerhalb der Toleranz? Nennmaß 25,00 mm, Toleranz ±0,05 mm; die Grenzwerte 24,95 und 25,05 sind noch in Ordnung. (2) Trifft der Mittelwert der fünf Messwerte 24,92 / 24,99 / 25,02 / 25,02 / 25,05 das Nennmaß? (3) Teile eine Messstrecke von 1 mm in n gleiche Abschnitte (n wird eingegeben) und gib die Schrittweite aus.</blockquote>
         <p class="k-prompt__who">KI-Antwort (Python)</p>
           <ol class="k-codelines" aria-label="Code der KI, Zeilen anklickbar">
-            <li><button type="button" class="k-line">def in_toleranz(messwert, nennmass, toleranz):</button></li>
-            <li><button type="button" class="k-line">    &quot;&quot;&quot;Prüft, ob messwert innerhalb nennmass ± toleranz liegt.&quot;&quot;&quot;</button></li>
-            <li><button type="button" class="k-line">    untere_grenze = nennmass - toleranz</button></li>
-            <li><button type="button" class="k-line">    obere_grenze = nennmass + toleranz</button></li>
-            <li><button type="button" class="k-line" data-bug="a">    return untere_grenze &lt; messwert &lt; obere_grenze</button></li>
+            <li><button type="button" class="k-line">import math</button></li>
             <li><button type="button" class="k-line"> </button></li>
+            <li><button type="button" class="k-line">nennmass = 25.0</button></li>
+            <li><button type="button" class="k-line">toleranz = 0.05</button></li>
+            <li><button type="button" class="k-line">messwert = float(input(&quot;Messwert in mm: &quot;))</button></li>
+            <li><button type="button" class="k-line" data-bug="a">in_toleranz = abs(messwert - nennmass) &lt;= toleranz</button></li>
+            <li><button type="button" class="k-line">print(&quot;In Toleranz:&quot;, in_toleranz)</button></li>
             <li><button type="button" class="k-line"> </button></li>
-            <li><button type="button" class="k-line">def mittelwert_trifft_nennmass(werte, nennmass):</button></li>
-            <li><button type="button" class="k-line">    &quot;&quot;&quot;True, wenn der Mittelwert der Messreihe das Nennmaß trifft.&quot;&quot;&quot;</button></li>
-            <li><button type="button" class="k-line">    summe = 0.0</button></li>
-            <li><button type="button" class="k-line">    for w in werte:</button></li>
-            <li><button type="button" class="k-line">        summe += w</button></li>
-            <li><button type="button" class="k-line">    mittelwert = summe / len(werte)</button></li>
-            <li><button type="button" class="k-line" data-bug="b">    return mittelwert == nennmass</button></li>
+            <li><button type="button" class="k-line">mittelwert = (24.92 + 24.99 + 25.02 + 25.02 + 25.05) / 5</button></li>
+            <li><button type="button" class="k-line" data-bug="b">print(&quot;Mittelwert trifft Nennmaß:&quot;, mittelwert == nennmass)</button></li>
             <li><button type="button" class="k-line"> </button></li>
-            <li><button type="button" class="k-line"> </button></li>
-            <li><button type="button" class="k-line">def messpositionen(start, ende, schritt):</button></li>
-            <li><button type="button" class="k-line">    &quot;&quot;&quot;Liefert alle Positionen von start bis ende.&quot;&quot;&quot;</button></li>
-            <li><button type="button" class="k-line">    positionen = []</button></li>
-            <li><button type="button" class="k-line">    x = start</button></li>
-            <li><button type="button" class="k-line" data-bug="c">    while x != ende:</button></li>
-            <li><button type="button" class="k-line">        positionen.append(x)</button></li>
-            <li><button type="button" class="k-line">        x += schritt</button></li>
-            <li><button type="button" class="k-line">    positionen.append(ende)</button></li>
-            <li><button type="button" class="k-line">    return positionen</button></li>
+            <li><button type="button" class="k-line">anzahl = input(&quot;Wie viele Abschnitte? &quot;)</button></li>
+            <li><button type="button" class="k-line" data-bug="c">schrittweite = 1.0 / anzahl</button></li>
+            <li><button type="button" class="k-line">print(f&quot;Schrittweite: {schrittweite:.3f} mm&quot;)</button></li>
           </ol>
-        <p class="k-small k-muted">Tipp: Es sind drei Fehler eingebaut, die zu den drei Funktionen gehören. Nicht jede Zeile ist falsch.</p>
+        <p class="k-small k-muted">Tipp: Es sind drei Fehler eingebaut, einer je Teilaufgabe. Nicht jede Zeile ist falsch.</p>
 
         <div class="k-mirror__task">
           <p><strong>Würdest du das freigeben?</strong> Markiere die fehlerhaften Zeilen, dann lass auflösen.</p>
@@ -393,86 +392,47 @@ print(f"Spannung: {sigma:.2f} N/mm²")
 
           <div data-mirror-after hidden>
             <h3>Die drei Fehler</h3>
-            <h4>Fehler 1: Grenzwert falsch (Zeile 5)</h4>
-            <p><code class="k-i">&lt;</code> schließt die Grenzen aus, aber 24,95 und 25,05 sollten gelten. Mit <code class="k-i">&lt;=</code> allein ist es nicht getan: Rechnest du <code class="k-i">abs(25.05 - 25.0)</code>, erhältst du 0.05000000000000071, also knapp mehr als die Toleranz. An der Grenze entscheiden Rundungsfehler. Lösung: <code class="k-i">&lt;=</code> plus winzige Rechentoleranz <code class="k-i">EPS</code>.</p>
-            <h4>Fehler 2: Gleichheit bei Floats (Zeile 14)</h4>
-            <p>Der Mittelwert von 24.92, 24.99, 25.02, 25.02, 25.05 ist mathematisch genau 25.0. Die Schleife liefert aber 24.999999999999996, der <code class="k-i">==</code>-Vergleich ist <code class="k-i">False</code>. Lösung: <code class="k-i">math.isclose</code> mit passender Toleranz.</p>
-            <h4>Fehler 3: Endlosschleife (Zeile 21)</h4>
-            <p><code class="k-i">x</code> trifft 1.0 nie exakt: Die Folge geht 0.9999999999999999, 1.0999999999999999, … und das <code class="k-i">!=</code> bleibt für immer wahr. Das Programm friert ein und der Speicher läuft voll. Lösung: Anzahl der Schritte berechnen und mit <code class="k-i">for</code> zählen, Position jeweils als <code class="k-i">start + i * schritt</code> (kein Aufsummieren).</p>
+            <h4>Fehler 1: Grenzwert fällt durch (Zeile 6)</h4>
+            <p>Der Vergleich <code class="k-i">&lt;=</code> sieht richtig aus, die Grenze gehört ja dazu. Aber <code class="k-i">abs(25.05 - 25.0)</code> ist 0.05000000000000071, also knapp mehr als 0.05: Der Messwert 25,05 fällt fälschlich durch. An der Grenze entscheiden Rundungsfehler. Lösung: <code class="k-i">math.isclose</code> mit <code class="k-i">abs_tol</code> plus winziger Rechentoleranz.</p>
+            <h4>Fehler 2: Gleichheit bei Floats (Zeile 10)</h4>
+            <p>Der Mittelwert der fünf Werte ist mathematisch genau 25.0. Der Rechner liefert aber 24.999999999999996, der <code class="k-i">==</code>-Vergleich ist <code class="k-i">False</code>. Lösung: <code class="k-i">math.isclose</code> mit passender Toleranz.</p>
+            <h4>Fehler 3: Text statt Zahl (Zeile 13)</h4>
+            <p><code class="k-i">input()</code> liefert Text. <code class="k-i">1.0 / anzahl</code> teilt eine Zahl durch einen Text und bricht mit einem <code class="k-i">TypeError</code> ab. Lösung: <code class="k-i">anzahl = int(input(...))</code>. Dieser Fehler ist der gemeinste: Er zeigt sich erst, wenn jemand etwas eintippt.</p>
 
             <h3>Die KI-Version zum Ausprobieren</h3>
-            <p class="k-small k-muted">Die ersten zwei Ausgaben kommen sofort. Die dritte läuft in die Endlosschleife und wird nach 3 Sekunden abgebrochen.</p>
-            <div class="k-runner" data-timeout="3000">
-<textarea class="k-runner__code py-editor" data-lesson="V03" aria-label="Original-Code der KI mit Tests">def in_toleranz(messwert, nennmass, toleranz):
-    """Prüft, ob messwert innerhalb nennmass ± toleranz liegt."""
-    untere_grenze = nennmass - toleranz
-    obere_grenze = nennmass + toleranz
-    return untere_grenze &lt; messwert &lt; obere_grenze
+            <p class="k-small k-muted">Die ersten beiden Ausgaben sind falsch. Danach bricht das Programm mit dem <code class="k-i">TypeError</code> ab. Die Eingaben (25.05 und 10) stehen im Feld unter dem Code. Drück auf „Schritt für Schritt“, um jede Zeile einzeln zu sehen.</p>
+            <pre data-stdin="25.05&#10;10"><code>import math
 
+nennmass = 25.0
+toleranz = 0.05
+messwert = float(input("Messwert in mm: "))
+in_toleranz = abs(messwert - nennmass) &lt;= toleranz
+print("In Toleranz:", in_toleranz)
 
-def mittelwert_trifft_nennmass(werte, nennmass):
-    """True, wenn der Mittelwert der Messreihe das Nennmaß trifft."""
-    summe = 0.0
-    for w in werte:
-        summe += w
-    mittelwert = summe / len(werte)
-    return mittelwert == nennmass
+mittelwert = (24.92 + 24.99 + 25.02 + 25.02 + 25.05) / 5
+print("Mittelwert trifft Nennmaß:", mittelwert == nennmass)
 
-
-def messpositionen(start, ende, schritt):
-    """Liefert alle Positionen von start bis ende."""
-    positionen = []
-    x = start
-    while x != ende:
-        positionen.append(x)
-        x += schritt
-    positionen.append(ende)
-    return positionen
-
-
-# Tests (Sollwerte von Hand festgelegt)
-print(in_toleranz(25.05, 25.0, 0.05))   # Grenze, erwartet True
-print(mittelwert_trifft_nennmass([24.92, 24.99, 25.02, 25.02, 25.05], 25.0))   # erwartet True
-print(len(messpositionen(0.0, 1.0, 0.1)))   # erwartet 11</textarea>
-            </div>
+anzahl = input("Wie viele Abschnitte? ")
+schrittweite = 1.0 / anzahl
+print(f"Schrittweite: {schrittweite:.3f} mm")</code></pre>
 
             <h3>Korrigierte Version</h3>
-            <div class="k-runner" data-timeout="5000">
-<textarea class="k-runner__code py-editor" data-lesson="V03" aria-label="Korrigierter Code mit Tests">import math
+            <pre data-stdin="25.05&#10;10"><code>import math
 
 EPS = 1e-9   # Rechentoleranz, weit unter jeder Messauflösung
 
+nennmass = 25.0
+toleranz = 0.05
+messwert = float(input("Messwert in mm: "))
+in_toleranz = math.isclose(messwert, nennmass, rel_tol=0.0, abs_tol=toleranz + EPS)
+print("In Toleranz:", in_toleranz)
 
-def in_toleranz(messwert, nennmass, toleranz):
-    """Prüft, ob messwert in nennmass ± toleranz liegt (Grenzen gehören dazu)."""
-    untere_grenze = nennmass - toleranz - EPS
-    obere_grenze = nennmass + toleranz + EPS
-    return untere_grenze &lt;= messwert &lt;= obere_grenze
+mittelwert = (24.92 + 24.99 + 25.02 + 25.02 + 25.05) / 5
+print("Mittelwert trifft Nennmaß:", math.isclose(mittelwert, nennmass, abs_tol=EPS))
 
-
-def mittelwert_trifft_nennmass(werte, nennmass):
-    """True, wenn der Mittelwert der Messreihe das Nennmaß trifft."""
-    summe = 0.0
-    for w in werte:
-        summe += w
-    mittelwert = summe / len(werte)
-    return math.isclose(mittelwert, nennmass, abs_tol=EPS)
-
-
-def messpositionen(start, ende, schritt):
-    """Liefert alle Positionen von start bis ende."""
-    anzahl = round((ende - start) / schritt)
-    return [start + i * schritt for i in range(anzahl + 1)]
-
-
-# Tests (Sollwerte von Hand festgelegt)
-print(in_toleranz(25.05, 25.0, 0.05))   # erwartet True
-print(in_toleranz(24.95, 25.0, 0.05))   # erwartet True
-print(in_toleranz(25.06, 25.0, 0.05))   # erwartet False
-print(mittelwert_trifft_nennmass([24.92, 24.99, 25.02, 25.02, 25.05], 25.0))   # erwartet True
-pos = messpositionen(0.0, 1.0, 0.1)
-print(len(pos), pos[0], pos[-1])   # erwartet 11 0.0 1.0</textarea>
-            </div>
+anzahl = int(input("Wie viele Abschnitte? "))
+schrittweite = 1.0 / anzahl
+print(f"Schrittweite: {schrittweite:.3f} mm")</code></pre>
             <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke</strong><p>Die KI hat nicht „falsch gedacht“, sie hat das Muster geliefert, das am häufigsten vorkommt. Ob Grenzwerte dazugehören und wie genau „gleich“ sein muss, steht nur in deiner Spezifikation. Und deine Testfälle (Grenzwerte!) hättest du vorher von Hand aufschreiben sollen.</p></div>
           </div>
         </div>
@@ -493,7 +453,7 @@ print(len(pos), pos[0], pos[-1])   # erwartet 11 0.0 1.0</textarea>
           <div class="a-task" data-a="run" data-mode="programm" data-timeout="5000">
             <div class="a-editor"><textarea class="py-editor" data-lesson="V03" aria-label="Fehlerbeispiel TypeError">print("3" + 4)</textarea></div>
           </div>
-          <p>Meldung: <code class="k-i">TypeError: can only concatenate str (not "int") to str</code>. Gemeint: <code>"3"</code> ist Text, <code>4</code> ist eine Zahl. Entweder <code>int("3") + 4</code> oder <code>"3" + str(4)</code>. Tritt meistens auf, wenn du das <code>float()</code> um ein <code>input()</code> vergessen hast.</p>
+          <p>Meldung: <code class="k-i">TypeError: can only concatenate str (not "int") to str</code>. Gemeint: <code>"3"</code> ist Text, <code>4</code> ist eine Zahl. Entweder <code>int("3") + 4</code> oder <code>"3" + str(4)</code>. Tritt meistens auf, wenn du das <code>float()</code> um ein <code>input()</code> vergessen hast (<abbr class="k-begriff" data-erklaerung="Typumwandlung heißt: einen Wert in einen anderen Datentyp verwandeln, zum Beispiel den Text in eine Zahl.">Typumwandlung</abbr>).</p>
         </div>
         <div class="a-error">
           <h3><code class="k-i">ValueError</code>: Text lässt sich nicht umwandeln</h3>
@@ -508,7 +468,7 @@ print(len(pos), pos[0], pos[-1])   # erwartet 11 0.0 1.0</textarea>
             <div class="a-editor"><textarea class="py-editor" data-lesson="V03" aria-label="Fehlerbeispiel SyntaxError">abmass = 0,05
 print(abmass)</textarea></div>
           </div>
-          <p>Meldung: <code class="k-i">SyntaxError: leading zeros in decimal integer literals are not permitted; use an 0o prefix for octal integers</code>. Python liest <code>0,05</code> als zwei Zahlen getrennt durch ein Komma und stolpert über die führende Null. Heimtückisch: <code>abmass = 2,5</code> läuft <em>ohne</em> Fehler und ergibt das Tupel <code>(2, 5)</code>. Dezimalzahlen schreibst du immer mit Punkt.</p>
+          <p>Meldung: <code class="k-i">SyntaxError: leading zeros in decimal integer literals are not permitted; use an 0o prefix for octal integers</code>. Python liest <code>0,05</code> als zwei Zahlen getrennt durch ein Komma und stolpert über die führende Null. Heimtückisch: <code>abmass = 2,5</code> läuft <em>ohne</em> Fehler, macht aber aus 2,5 ein Paar <code>(2, 5)</code> (ein <abbr class="k-begriff" data-erklaerung="Ein Tupel ist eine feste Zusammenstellung mehrerer Werte, zum Beispiel (2, 5). Das lernst du in V08.">Tupel</abbr>). Dezimalzahlen schreibst du immer mit Punkt.</p>
         </div>
       </div>
 
@@ -521,12 +481,12 @@ print(abmass)</textarea></div>
         <p class="l-task__meta"></p>
       </header>
       <p class="l-task__intro">Programmieren lernst du mit den Fingern, nicht mit den Augen. Das Training ist ein fester Teil jedes Termins und gehört zum Selbststudium. Du musst nicht alles an einem Stück machen, aber alles bis zum nächsten Termin. Die Aufgaben laufen komplett im Browser und werden automatisch geprüft.</p>
-      <div class="hinweis hinweis--achtung"><strong class="hinweis__title">Achtung</strong><p>Phase 1: Copilot nur als Erklärer. Erlaubt: „Erkläre mir diese Fehlermeldung“, „Was macht Zeile 3?“, „Warum ist das Ergebnis nicht 0.3?“. Nicht erlaubt: „Schreib mir die Funktion“. Du tippst den Code selbst, denn nur dann lernst du, ihn zu prüfen. Ab V10 darf die KI Code erzeugen, und du prüfst.</p></div>
+      <div class="hinweis hinweis--achtung"><strong class="hinweis__title">Achtung</strong><p>Phase 1: <abbr class="k-begriff" data-erklaerung="GitHub Copilot ist ein KI-Assistent, der in der Entwicklungsumgebung Programmcode vorschlägt oder erklärt.">Copilot</abbr> nur als Erklärer. Erlaubt: „Erkläre mir diese Fehlermeldung“, „Was macht Zeile 3?“, „Warum ist das Ergebnis nicht 0.3?“. Nicht erlaubt: „Schreib mir die Funktion“. Du tippst den Code selbst, denn nur dann lernst du, ihn zu prüfen. Ab V10 darf die KI Code erzeugen, und du prüfst.</p></div>
       
       <div class="a-task" data-a="code" data-id="tr-1" data-mode="programm" data-inputs="3725">
         <div class="a-task__text">
           <p>Ein Messprogramm liefert die Laufzeit als ganze Sekunden. Zerlege sie mit <code class="k-i">//</code> und <code class="k-i">%</code> in Stunden, Minuten und Sekunden.</p>
-          <div class="a-spec"><strong>Ausgabe genau so (Beispiel 3725 Sekunden):</strong><pre>1 h 2 min 5 s</pre></div>
+          <div class="a-spec"><strong>Ausgabe genau so (Beispiel 3725 Sekunden):</strong><pre data-run="no">1 h 2 min 5 s</pre></div>
         </div>
         <div class="a-editor"><textarea class="py-editor" data-lesson="V03" aria-label="Python-Code Aufgabe 1"># Sekunden in h min s
 sekunden = int(input("Sekunden: "))
@@ -585,8 +545,8 @@ print(f"{stunden} h {minuten} min {sek} s")
       </header>
       <div class="a-task" data-a="code" data-id="tr-2" data-mode="code">
         <div class="a-task__text">
-          <p>Aus einer Datei kommen Länge und Stückzahl als Text. Wandle um: <code class="k-i">laenge</code> soll ein <code class="k-i">float</code> sein, <code class="k-i">anzahl</code> ein <code class="k-i">int</code>. <code class="k-i">gesamt</code> ist Länge mal Anzahl. Gib die Gesamtlänge mit einer Nachkommastelle aus.</p>
-          <div class="a-spec"><strong>Ausgabe genau so:</strong><pre>Gesamtlänge: 502.0 mm</pre></div>
+          <p>Aus einer Datei kommen Länge und Stückzahl als Text. Wandle um: <code class="k-i">laenge</code> soll ein <code class="k-i">float</code> sein, <code class="k-i">anzahl</code> ein <code class="k-i">int</code>. <abbr class="k-begriff" data-erklaerung="None ist Pythons Wort für „noch kein Wert“. Du ersetzt es durch deinen Ausdruck."><code class="k-i">None</code></abbr> in der Vorgabe ersetzt du jeweils durch deinen Ausdruck. Prüfe mit „Schritt für Schritt“, welchen Typ jede Variable hat. <code class="k-i">gesamt</code> ist Länge mal Anzahl. Gib die Gesamtlänge mit einer Nachkommastelle aus.</p>
+          <div class="a-spec"><strong>Ausgabe genau so:</strong><pre data-run="no">Gesamtlänge: 502.0 mm</pre></div>
         </div>
         <div class="a-editor"><textarea class="py-editor" data-lesson="V03" aria-label="Python-Code Aufgabe 2">laenge_text = "125.5"    # mm, kommt als Text
 anzahl_text = "4"
@@ -634,58 +594,48 @@ print(f"Gesamtlänge: {gesamt:.1f} mm")
 
     </section>
 
-    <section class="l-task" id="t-3" data-title="Umrechnungstabelle mm und Zoll" data-part="B" data-stars="2" data-min="7" data-extra="" aria-labelledby="h-t-3" hidden>
+    <section class="l-task" id="t-3" data-title="Tabellenzeile mm und Zoll" data-part="B" data-stars="2" data-min="7" data-extra="" aria-labelledby="h-t-3" hidden>
       <header class="l-task__head">
         <p class="l-task__kicker"></p>
-        <h2 class="l-task__title" id="h-t-3" tabindex="-1">Umrechnungstabelle mm und Zoll</h2>
+        <h2 class="l-task__title" id="h-t-3" tabindex="-1">Tabellenzeile mm und Zoll</h2>
         <p class="l-task__meta"></p>
       </header>
-      <div class="a-task" data-a="code" data-id="tr-3" data-mode="programm">
+      <div class="a-task" data-a="code" data-id="tr-3" data-mode="programm" data-inputs="5">
         <div class="a-task__text">
-          <p>Gib eine Tabelle aus: links die Länge in mm (Breite 8, zwei Nachkommastellen), dann <code class="k-i"> | </code>, rechts die Länge in Zoll (Breite 8, drei Nachkommastellen). 1 Zoll = 25,4 mm. Die Kopfzeile steht schon da. Die Schleife läuft über die Längen; was sie im Detail tut, lernst du in V06. Du schreibst nur, was <em>in</em> der Schleife passiert (eingerückt!).</p>
-          <div class="a-spec"><strong>Ausgabe genau so (erste Zeilen):</strong><pre>      mm |     Zoll
-    5.00 |    0.197
-   10.00 |    0.394</pre></div>
+          <p>Gib eine Tabellenzeile aus: links die Länge in mm (Breite 8, zwei Nachkommastellen), dann <code class="k-i"> | </code>, rechts die Länge in Zoll (Breite 8, drei Nachkommastellen). 1 Zoll = 25,4 mm. Die Kopfzeile steht schon da, die Länge in mm liest das Programm ein. Eine ganze Tabelle mit vielen Zeilen baust du in V06 mit einer Schleife.</p>
+          <div class="a-spec"><strong>Ausgabe genau so (Eingabe 5):</strong><pre data-run="no">      mm |     Zoll
+    5.00 |    0.197</pre></div>
         </div>
         <div class="a-editor"><textarea class="py-editor" data-lesson="V03" aria-label="Python-Code Aufgabe 3"># mm in Zoll (1 Zoll = 25.4 mm)
 print("      mm |     Zoll")
-for mm in [5, 10, 25.4, 50, 100]:
-    pass    # ersetze pass durch deine Zeile(n)
+mm = float(input("Länge in mm: "))
+# berechne den Zollwert und gib die Tabellenzeile aus
 </textarea></div>
         <script type="text/x-python" data-role="tests">
-LAENGEN = [5, 10, 25.4, 50, 100]
-
-def _zeilen_roh(out):
-    return out.rstrip("\n").split("\n")
+LAENGEN = [5, 25.4, 12.5, 100]
 
 def test_kopf():
     """Die Kopfzeile steht noch unverändert da"""
-    z = _zeilen_roh(run_program())
-    assert z[0] == "      mm |     Zoll", "Die erste Zeile soll die Kopfzeile bleiben. Sie lautet bei dir: %r" % z[0]
-
-def test_anzahl():
-    """Fünf Datenzeilen (je eine pro Länge)"""
-    z = _zeilen_roh(run_program())
-    assert len(z) == 6, "Erwartet: Kopfzeile plus 5 Datenzeilen, also 6 Zeilen. Dein Programm gibt %d Zeilen aus." % len(z)
+    z = run_program(["5"])
+    assert "      mm |     Zoll" in z, "Die Kopfzeile soll unverändert bleiben. Dein Programm gibt aus: %r" % z
 
 def test_format():
-    """Jede Zeile hat genau das Format {mm:8.2f} | {zoll:8.3f}"""
-    z = _zeilen_roh(run_program())
-    for i, mm in enumerate(LAENGEN):
+    """Die Tabellenzeile hat das Format {mm:8.2f} | {zoll:8.3f}"""
+    for mm in LAENGEN:
         soll = "%8.2f | %8.3f" % (mm, mm / 25.4)
-        assert i + 1 < len(z), "Zeile %d fehlt. Erwartet: %r" % (i + 2, soll)
-        assert z[i + 1] == soll, "Zeile %d stimmt nicht. Erwartet %r, bekommen %r. Prüfe Breite und Nachkommastellen im f-String." % (i + 2, soll, z[i + 1])
+        z = run_program([str(mm)])
+        assert soll in z, "Bei %s mm erwartet: %r. Dein Programm gibt aus: %r. Prüfe Breite und Nachkommastellen im f-String." % (mm, soll, z)
         </script>
         <script type="text/x-python" data-role="solution">
 print("      mm |     Zoll")
-for mm in [5, 10, 25.4, 50, 100]:
-    zoll = mm / 25.4
-    print(f"{mm:8.2f} | {zoll:8.3f}")
+mm = float(input("Länge in mm: "))
+zoll = mm / 25.4
+print(f"{mm:8.2f} | {zoll:8.3f}")
         </script>
         <ol class="a-hints">
-          <li>Rechne zuerst in der Schleife den Zollwert aus: <code>zoll = mm / 25.4</code>. Die Zeile muss eingerückt sein wie das <code>pass</code>.</li>
+          <li>Rechne zuerst den Zollwert aus: <code>zoll = mm / 25.4</code>.</li>
           <li>Ein f-String kann mehrere Platzhalter haben: <code>f"{a:8.2f} | {b:8.3f}"</code> (Syntax-Karte 4).</li>
-          <li>Das Muster ist <code>print(f"{mm:8.2f} | {zoll:8.3f}")</code>. Die Breite 8 sorgt dafür, dass alles rechtsbündig untereinander steht.</li>
+          <li>Das Muster ist <code>print(f"{mm:8.2f} | {zoll:8.3f}")</code>. Die Breite 8 sorgt dafür, dass mehrere Zeilen rechtsbündig untereinander stehen würden.</li>
         </ol>
       </div>
 
@@ -700,7 +650,7 @@ for mm in [5, 10, 25.4, 50, 100]:
       <div class="a-task" data-a="code" data-id="tr-4" data-mode="programm" data-inputs="40|250|7.85">
         <div class="a-task__text">
           <p>Eine Welle (Vollzylinder) hat den Durchmesser <em>d</em> in mm und die Länge <em>L</em> in mm; die Dichte <em>ρ</em> ist in g/cm³ gegeben (Stahl: 7,85). Lies <em>d</em>, <em>L</em> und <em>ρ</em> in dieser Reihenfolge ein. Berechne das Volumen in cm³ (V = π · d² / 4 · L, dann mm³ in cm³ umrechnen: 1 cm³ = 1000 mm³) und die Masse in kg (g in kg: durch 1000).</p>
-          <div class="a-spec"><strong>Ausgabe genau so (d = 40, L = 250, ρ = 7.85):</strong><pre>Volumen: 314.16 cm³
+          <div class="a-spec"><strong>Ausgabe genau so (d = 40, L = 250, ρ = 7.85):</strong><pre data-run="no">Volumen: 314.16 cm³
 Masse: 2.466 kg</pre></div>
           <p class="k-small k-muted">Überschlage vorher: Fläche ca. 1250 mm², mal 250 mm gibt ca. 310 000 mm³, das sind ca. 310 cm³. Passt dein Ergebnis zur Größenordnung?</p>
         </div>
@@ -758,20 +708,24 @@ print(f"Masse: {masse:.3f} kg")
         <h2 class="l-task__title" id="h-t-5" tabindex="-1">Toleranzprüfung mit Grenzfällen</h2>
         <p class="l-task__meta"></p>
       </header>
-      <div class="a-task" data-a="code" data-id="tr-5" data-mode="code">
+      <div class="a-task" data-a="code" data-id="tr-5" data-mode="programm" data-inputs="25.05|25.0|0.05">
         <div class="a-task__text">
-          <p>Schreibe den Rumpf der Funktion <code class="k-i">in_toleranz</code>. Sie liefert <code class="k-i">True</code>, wenn <code class="k-i">messwert</code> im Bereich <code class="k-i">nennmass ± abmass</code> liegt. Die <strong>Grenzen gehören dazu</strong>: 25,05 bei 25,00 ± 0,05 ist in Ordnung. Denk an die Rundungsfehler (<code class="k-i">25.05 - 25.0</code> ist 0.05000000000000071) und nutze <code class="k-i">math.isclose</code> oder eine kleine Rechentoleranz. Die Funktion ist als Vorgabe da; Funktionen lernst du in V07 genauer kennen. Hier zählt nur, was du hinter <code class="k-i">return</code> schreibst.</p>
+          <p>Schreibe ein Programm, das den Messwert, das Nennmaß und das Abmaß (in dieser Reihenfolge) einliest und ausgibt, ob der Messwert im Bereich <code class="k-i">nennmass ± abmass</code> liegt. Die <strong>Grenzen gehören dazu</strong>: 25,05 bei 25,00 ± 0,05 ist in Ordnung. Denk an die Rundungsfehler (<code class="k-i">25.05 - 25.0</code> ist 0.05000000000000071) und nutze <abbr class="k-begriff" data-erklaerung="isclose ist eine Funktion aus dem Modul math. Sie fragt: Liegen beide Zahlen innerhalb einer Toleranz beieinander?"><code class="k-i">math.isclose</code></abbr> oder eine kleine Rechentoleranz. Die Vorgabe liest schon alles ein, du ersetzt nur das <code class="k-i">None</code>.</p>
+          <div class="a-spec"><strong>Ausgabe genau so (Beispiel 25.05, 25.0, 0.05):</strong><pre data-run="no">In Toleranz: True</pre></div>
         </div>
         <div class="a-editor"><textarea class="py-editor" data-lesson="V03" aria-label="Python-Code Aufgabe 5">import math
 
-def in_toleranz(messwert, nennmass, abmass):
-    """True, wenn messwert in nennmass ± abmass liegt (Grenzen gehören dazu)."""
-    return None     # ersetze None
+messwert = float(input("Messwert in mm: "))
+nennmass = float(input("Nennmaß in mm: "))
+abmass = float(input("Abmaß ± in mm: "))
+ok = None     # ersetze None durch deinen Ausdruck
+print(f"In Toleranz: {ok}")
 </textarea></div>
         <script type="text/x-python" data-role="tests">
 def _f(args, soll, text):
-    r = in_toleranz(*args)
-    assert r is soll, "in_toleranz%r liefert %r, erwartet %r. %s" % (args, r, soll, text)
+    z = zeilen(run_program([str(a) for a in args]))
+    erwartet = "In Toleranz: %s" % soll
+    assert erwartet in z, "Bei %r wird %r erwartet. Dein Programm gibt aus: %r. %s" % (args, erwartet, z, text)
 
 def test_mitte():
     """Messwert genau auf dem Nennmaß"""
@@ -805,9 +759,11 @@ def test_negativ():
         <script type="text/x-python" data-role="solution">
 import math
 
-def in_toleranz(messwert, nennmass, abmass):
-    """True, wenn messwert in nennmass ± abmass liegt (Grenzen gehören dazu)."""
-    return math.isclose(messwert, nennmass, rel_tol=0.0, abs_tol=abmass + 1e-9)
+messwert = float(input("Messwert in mm: "))
+nennmass = float(input("Nennmaß in mm: "))
+abmass = float(input("Abmaß ± in mm: "))
+ok = math.isclose(messwert, nennmass, rel_tol=0.0, abs_tol=abmass + 1e-9)
+print(f"In Toleranz: {ok}")
         </script>
         <ol class="a-hints">
           <li>Der Messwert liegt in der Toleranz, wenn sein Abstand zum Nennmaß höchstens <code>abmass</code> beträgt: <code>abs(messwert - nennmass) &lt;= abmass</code>. Das schlägt an der Grenze durch Rundungsfehler trotzdem fehl.</li>
@@ -818,125 +774,106 @@ def in_toleranz(messwert, nennmass, abmass):
 
     </section>
 
-    <section class="l-task" id="t-6" data-title="Kaufmännisch runden statt round()" data-part="B" data-stars="3" data-min="8" data-extra="" aria-labelledby="h-t-6" hidden>
+    <section class="l-task" id="t-6" data-title="Kaufmännisch runden statt round()" data-part="B" data-stars="2" data-min="8" data-extra="" aria-labelledby="h-t-6" hidden>
       <header class="l-task__head">
         <p class="l-task__kicker"></p>
         <h2 class="l-task__title" id="h-t-6" tabindex="-1">Kaufmännisch runden statt round()</h2>
         <p class="l-task__meta"></p>
       </header>
-      <div class="a-task" data-a="code" data-id="tr-6" data-mode="code">
+      <div class="a-task" data-a="code" data-id="tr-6" data-mode="programm" data-inputs="2.5">
         <div class="a-task__text">
-          <p>Pythons <code class="k-i">round(2.5)</code> ergibt 2 (Banker's Rounding). Kaufmännisch gilt: Die Hälfte wird <strong>immer weg von null</strong> gerundet, also 2,5 → 3 und −2,5 → −3. Schreibe <code class="k-i">kaufmaennisch(x, stellen=0)</code>. Der naive Weg <code class="k-i">floor(x * 100 + 0.5) / 100</code> scheitert an Rundungsfehlern, zum Beispiel bei 1,005 (1.005 * 100 ist 100.49999999999999). Tipp: Das Modul <code class="k-i">decimal</code> rechnet exakt in Dezimalstellen.</p>
+          <p>Pythons <abbr class="k-begriff" data-erklaerung="round ist eine eingebaute Funktion, die rundet: round(2.6) ergibt 3."><code class="k-i">round(2.5)</code></abbr> ergibt 2 (Banker's Rounding). Kaufmännisch gilt: Die Hälfte wird <strong>immer aufgerundet</strong>, also 2,5 → 3. Schreibe ein Programm, das eine positive Kommazahl einliest und zwei Zeilen ausgibt: erst das Ergebnis von <code class="k-i">round()</code>, dann die kaufmännisch gerundete Zahl. Tipp: <code class="k-i">int()</code> schneidet ab. Was ergibt <code class="k-i">int(x + 0.5)</code>? Probiere es mit „Schritt für Schritt“ für 2.5 und 2.4 aus.</p>
+          <div class="a-spec"><strong>Ausgabe genau so (Eingabe 2.5):</strong><pre data-run="no">round(): 2
+kaufmännisch: 3</pre></div>
+          <p class="k-small k-muted">Für negative Zahlen, beliebige Nachkommastellen und exaktes Dezimalrechnen braucht man mehr (Verzweigungen ab V04, eigene Funktionen ab V07, das Modul <code class="k-i">decimal</code> im Deep Dive der Lerneinheit).</p>
         </div>
-        <div class="a-editor"><textarea class="py-editor" data-lesson="V03" aria-label="Python-Code Aufgabe 6">def kaufmaennisch(x, stellen=0):
-    """Rundet x kaufmännisch (Hälfte weg von null) auf 'stellen' Nachkommastellen."""
-    return round(x, stellen)    # round() reicht hier nicht
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V03" aria-label="Python-Code Aufgabe 6">x = float(input("Zahl: "))
+# gib round() und die kaufmännische Rundung aus
 </textarea></div>
         <script type="text/x-python" data-role="tests">
-def _k(x, s, soll):
-    r = kaufmaennisch(x, s)
-    assert r == soll, "kaufmaennisch(%r, %r) liefert %r, erwartet %r." % (x, s, r, soll)
+def _k(x):
+    soll = ["round(): %d" % round(x), "kaufmännisch: %d" % int(x + 0.5)]
+    z = zeilen(run_program([str(x)]))
+    for t in soll:
+        assert t in z, "Bei Eingabe %s wird die Zeile %r erwartet. Dein Programm gibt aus: %r" % (x, t, z)
 
 def test_halbe():
     """2.5 wird 3, 0.5 wird 1, 3.5 wird 4"""
-    _k(2.5, 0, 3); _k(0.5, 0, 1); _k(3.5, 0, 4)
-
-def test_negativ():
-    """Weg von null: -2.5 wird -3"""
-    _k(-2.5, 0, -3)
+    _k(2.5); _k(0.5); _k(3.5)
 
 def test_normal():
-    """Gewöhnliches Runden: 2.4 wird 2, 2.6 wird 3, 1234.5678 auf 1 Stelle ist 1234.6"""
-    _k(2.4, 0, 2); _k(2.6, 0, 3); _k(1234.5678, 1, 1234.6)
+    """Gewöhnliches Runden: 2.4 wird 2, 2.6 wird 3"""
+    _k(2.4); _k(2.6)
 
-def test_stellen():
-    """Mit Stellen: 2.675 auf 2 Stellen wird 2.68"""
-    _k(2.675, 2, 2.68)
+def test_ganz():
+    """Eine ganze Zahl bleibt: 7.0"""
+    _k(7.0)
 
-def test_float_falle():
-    """Float-Falle: 1.005 auf 2 Stellen wird 1.01 und 0.285 wird 0.29"""
-    _k(1.005, 2, 1.01)
-    _k(0.285, 2, 0.29)
+def test_round_zeile():
+    """Die erste Zeile zeigt das Ergebnis von round() (bei 4.5 ist das 4)"""
+    z = zeilen(run_program(["4.5"]))
+    assert "round(): 4" in z and "kaufmännisch: 5" in z, "Bei 4.5 erwartet: 'round(): 4' und 'kaufmännisch: 5'. Dein Programm gibt aus: %r" % z
         </script>
         <script type="text/x-python" data-role="solution">
-from decimal import Decimal, ROUND_HALF_UP
-
-def kaufmaennisch(x, stellen=0):
-    """Rundet x kaufmännisch (Hälfte weg von null) auf 'stellen' Nachkommastellen."""
-    schritt = Decimal(1).scaleb(-stellen)               # 10 hoch -stellen
-    return float(Decimal(str(x)).quantize(schritt, rounding=ROUND_HALF_UP))
+x = float(input("Zahl: "))
+print(f"round(): {round(x)}")
+print(f"kaufmännisch: {int(x + 0.5)}")
         </script>
         <ol class="a-hints">
-          <li>Nimm den <em>Text</em> der Zahl, nicht den Float: <code>Decimal(str(x))</code>. Dann kennt Python die Dezimalstellen genau.</li>
-          <li><code>.quantize(...)</code> rundet ein Decimal auf eine vorgegebene Stellenzahl, mit <code>rounding=ROUND_HALF_UP</code> weg von null.</li>
-          <li>Import: <code>from decimal import Decimal, ROUND_HALF_UP</code>. Die Zielstelle: <code>Decimal(1).scaleb(-stellen)</code> ist 1, 0.1, 0.01 ... Am Ende mit <code>float(...)</code> zurückwandeln.</li>
+          <li>Erste Zeile: <code>print(f"round(): {round(x)}")</code>.</li>
+          <li><code>int()</code> schneidet ab. Addierst du vorher 0.5, wird aus 2.5 die Zahl 3.0, und <code>int(3.0)</code> ist 3. Aus 2.4 wird 2.9, und <code>int(2.9)</code> ist 2.</li>
+          <li>Zweite Zeile: <code>print(f"kaufmännisch: {int(x + 0.5)}")</code>.</li>
         </ol>
       </div>
 
     </section>
 
-    <section class="l-task" id="t-7" data-title="Knobelaufgabe: float32-Positionsfehler" data-part="B" data-stars="4" data-min="Zusatz" data-extra="" aria-labelledby="h-t-7" hidden>
+    <section class="l-task" id="t-7" data-title="Knobelaufgabe: Der Zähler, der stehen bleibt" data-part="B" data-stars="4" data-min="Zusatz" data-extra="" aria-labelledby="h-t-7" hidden>
       <header class="l-task__head">
         <p class="l-task__kicker"></p>
-        <h2 class="l-task__title" id="h-t-7" tabindex="-1">Knobelaufgabe: float32-Positionsfehler</h2>
+        <h2 class="l-task__title" id="h-t-7" tabindex="-1">Knobelaufgabe: Der Zähler, der stehen bleibt</h2>
         <p class="l-task__meta"></p>
       </header>
-      <div class="a-task" data-a="code" data-id="tr-7" data-mode="code" data-timeout="10000">
+      <div class="a-task" data-a="code" data-id="tr-7" data-mode="code">
         <div class="a-task__text">
-          <p>Die Portalachse aus der Lektion zählt in µm mit einem 32-Bit-Float. Hier simulierst du das mit <code class="k-i">struct</code> (die Funktion <code class="k-i">f32</code> ist vorgegeben). Starte bei 16 777 200 µm und addiere in float32 immer +1, <strong>solange sich der Zähler dadurch ändert</strong>. Merke dir in <code class="k-i">schritte</code>, wie viele Additionen etwas geändert haben, und in <code class="k-i">stillstand</code> den Wert, bei dem der Zähler hängen bleibt. Wären es 20 000 000 µm Sollweg gewesen: Wie groß ist der Fehler in <code class="k-i">fehler_m</code> (in Metern)? Gib ihn mit zwei Nachkommastellen aus.</p>
-          <div class="a-spec"><strong>Die Ausgabe enthält:</strong><pre>... 3.22 m</pre></div>
+          <p>Die Portalachse aus der Lektion zählt mit einem 32-Bit-Float und bleibt bei 2<sup>24</sup> stehen. Python-Floats haben 64 Bit, dort passiert dasselbe erst bei 2<sup>53</sup> = 9 007 199 254 740 992. Eine Ganzzahl (<code class="k-i">int</code>) kennt diese Grenze nicht. Sieh, was passiert, wenn du die Ganzzahl <code class="k-i">gewollt = 2 ** 53 + 1</code> in einen <code class="k-i">float</code> steckst und wieder zurückholst: Wandle <code class="k-i">gewollt</code> in einen <code class="k-i">float</code> um (<code class="k-i">gespeichert</code>), dann <code class="k-i">gespeichert</code> zurück in einen <code class="k-i">int</code> (<code class="k-i">zurueck</code>) und berechne <code class="k-i">fehler</code> als <code class="k-i">gewollt - zurueck</code>. Gib den Fehler aus.</p>
+          <div class="a-spec"><strong>Die Ausgabe enthält:</strong><pre data-run="no">Fehler: 1</pre></div>
         </div>
-        <div class="a-editor"><textarea class="py-editor" data-lesson="V03" aria-label="Python-Code Aufgabe 7">import struct
-
-def f32(x):
-    """Rundet x auf float32 (wie eine SPS-REAL)."""
-    return struct.unpack('f', struct.pack('f', x))[0]
-
-zaehler = f32(16_777_200)
-schritte = 0
-# Schleife: +1 in float32, solange sich der Zähler ändert (while ...)
-
-stillstand = None   # ersetze
-fehler_m = None     # ersetze
-# gib den Fehler mit zwei Nachkommastellen aus
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V03" aria-label="Python-Code Aufgabe 7">gewollt = 2 ** 53 + 1      # exakte Ganzzahl
+gespeichert = None         # ersetze None: als float speichern
+zurueck = None             # ersetze None: wieder in int umwandeln
+fehler = None              # ersetze None: gewollt minus zurueck
+# gib den Fehler aus
 </textarea></div>
         <script type="text/x-python" data-role="tests">
-def test_stillstand():
-    """Der Zähler bleibt bei 2^24 = 16777216 stehen"""
-    assert stillstand == 16777216, "stillstand ist %r, erwartet 16777216.0. Zähle +1 in float32, bis f32(zaehler + 1) == zaehler." % (stillstand,)
+def test_typ():
+    """gespeichert ist ein float"""
+    assert type(gespeichert) is float, "gespeichert hat den Typ %s, erwartet float. Tipp: float(gewollt)." % type(gespeichert).__name__
 
-def test_schritte():
-    """Von 16777200 bis 16777216 sind es 16 wirksame Additionen"""
-    assert schritte == 16, "schritte ist %r, erwartet 16. Zähle nur Additionen, die den Zähler verändert haben." % (schritte,)
+def test_zurueck():
+    """zurueck ist ein int und 2**53"""
+    assert type(zurueck) is int, "zurueck hat den Typ %s, erwartet int. Tipp: int(gespeichert)." % type(zurueck).__name__
+    assert zurueck == 2 ** 53, "zurueck ist %r, erwartet 9007199254740992. Der float kann die ...993 nicht darstellen und rundet auf ...992." % (zurueck,)
 
 def test_fehler():
-    """Fehler nach 20 Mio. µm Sollweg: 3.222784 m"""
-    assert fehler_m is not None and abs(fehler_m - 3.222784) < 1e-6, "fehler_m ist %r, erwartet 3.222784. Rechne (20_000_000 - stillstand) und wandle von µm in m um (durch 1_000_000)." % (fehler_m,)
+    """Der Fehler ist genau 1"""
+    assert fehler == 1, "fehler ist %r, erwartet 1 (gewollt minus zurueck)." % (fehler,)
 
 def test_ausgabe():
-    """Ausgabe mit zwei Nachkommastellen: 3.22"""
-    assert "3.22" in AUSGABE, "In der Ausgabe fehlt 3.22. Dein Programm gibt aus: %r" % AUSGABE.strip()
+    """Der Fehler wird ausgegeben"""
+    assert "1" in AUSGABE, "In der Ausgabe fehlt der Fehler 1. Dein Programm gibt aus: %r" % AUSGABE.strip()
         </script>
         <script type="text/x-python" data-role="solution">
-import struct
-
-def f32(x):
-    return struct.unpack('f', struct.pack('f', x))[0]
-
-zaehler = f32(16_777_200)
-schritte = 0
-while f32(zaehler + 1) != zaehler:
-    zaehler = f32(zaehler + 1)
-    schritte += 1
-
-stillstand = zaehler
-fehler_m = (20_000_000 - stillstand) / 1_000_000
-print(f"Stillstand bei {stillstand:.0f} µm, Fehler {fehler_m:.2f} m")
+gewollt = 2 ** 53 + 1
+gespeichert = float(gewollt)
+zurueck = int(gespeichert)
+fehler = gewollt - zurueck
+print(f"Fehler: {fehler}")
         </script>
         <ol class="a-hints">
-          <li>Die Bedingung der Schleife: Der nächste Wert <code>f32(zaehler + 1)</code> unterscheidet sich noch vom aktuellen <code>zaehler</code>. Geht das mit <code>while</code> und <code>!=</code>? Hier ja, denn float32-Zahlen haben ein festes Raster.</li>
-          <li>In der Schleife: <code>zaehler = f32(zaehler + 1)</code> und <code>schritte += 1</code>.</li>
-          <li>Danach: <code>stillstand = zaehler</code>, <code>fehler_m = (20_000_000 - stillstand) / 1_000_000</code>, dann <code>print(f"... {fehler_m:.2f} m")</code>.</li>
+          <li>Umwandeln in eine Kommazahl: <code>float(...)</code>. Zurück in eine Ganzzahl: <code>int(...)</code>.</li>
+          <li><code>gespeichert = float(gewollt)</code>, <code>zurueck = int(gespeichert)</code>.</li>
+          <li><code>fehler = gewollt - zurueck</code>, dann <code>print(f"Fehler: {fehler}")</code>. Mit „Schritt für Schritt“ siehst du, wo die letzte Stelle verloren geht.</li>
         </ol>
       </div>
 
@@ -950,14 +887,14 @@ print(f"Stillstand bei {stillstand:.0f} µm, Fehler {fehler_m:.2f} m")
       </header>
       <div class="a-task" data-a="klausur" data-id="tr-8" data-mode="programm" data-minutes="15">
         <div class="a-task__text">
-          <p><strong>So wie in der Klausur:</strong> Schreibe den Code ohne Ausführen und ohne Auto-Vervollständigung, wenn möglich zuerst auf Papier. Erst danach „Abgeben und prüfen“, dann bewertest du dich selbst.</p>
+          <p><strong>So wie in der Klausur:</strong> Schreibe den Code ohne Ausführen und ohne <abbr class="k-begriff" data-erklaerung="Die Auto-Vervollständigung schlägt dir beim Tippen passende Wörter vor. In der Klausur gibt es sie nicht.">Auto-Vervollständigung</abbr>, wenn möglich zuerst auf Papier. Erst danach „Abgeben und prüfen“, dann bewertest du dich selbst.</p>
           <p>Bei einem Zugversuch an einem Rundstab werden nacheinander eingelesen: Kraft <em>F</em> in N, Durchmesser <em>d</em> in mm, Messlänge <em>L</em><sub>0</sub> in mm und Verlängerung <em>ΔL</em> in mm. Berechne und gib aus:</p>
           <ul>
             <li>die Spannung σ = F / A in N/mm² mit A = π · d² / 4 (2 Nachkommastellen),</li>
             <li>die Dehnung ε = ΔL / L<sub>0</sub> in Prozent (3 Nachkommastellen),</li>
-            <li>den E-Modul E = σ / ε mit ε als Verhältnis (nicht in Prozent), in N/mm² in wissenschaftlicher Schreibweise mit 2 Nachkommastellen.</li>
+            <li>den E-Modul E = σ / ε mit ε als Verhältnis (nicht in Prozent), in N/mm² in <abbr class="k-begriff" data-erklaerung="Wissenschaftliche Schreibweise: Ziffern mal Zehnerpotenz. 2.10e+05 bedeutet 2,10 · 10⁵ = 210 000.">wissenschaftlicher Schreibweise</abbr> mit 2 Nachkommastellen.</li>
           </ul>
-          <div class="a-spec"><strong>Ausgabe genau so (F = 20000, d = 10, L0 = 100, ΔL = 0.121):</strong><pre>Spannung: 254.65 N/mm²
+          <div class="a-spec"><strong>Ausgabe genau so (F = 20000, d = 10, L0 = 100, ΔL = 0.121):</strong><pre data-run="no">Spannung: 254.65 N/mm²
 Dehnung: 0.121 %
 E-Modul: 2.10e+05 N/mm²</pre></div>
         </div>
@@ -1024,7 +961,7 @@ print(f"E-Modul: {E:.2e} N/mm²")
         <h2 class="l-task__title" id="h-t-notebook" tabindex="-1">Notebook und Deep Dive</h2>
         <p class="l-task__meta"></p>
       </header>
-      <p class="l-task__intro">Mehr üben mit Toleranzkette, Messwerte mitteln und dem float32-Zähler mit NumPy. Das Notebook hat drei Stufen (Aufwärmen, Anwenden, Knobeln), keine Lösungen, dafür Selbsttests.</p>
+      <p class="l-task__intro">Mehr üben mit Toleranzkette, Messwerten, Umrechnungen und Rundung. Das Notebook nutzt nur Python aus V01 bis V03. Es hat drei Stufen (Aufwärmen, Anwenden, Knobeln), keine Lösungen, dafür Selbsttests.</p>
       <p><a class="k-btn k-btn--ghost" href="../notebooks/V03-Fliesskommazahlen.ipynb" download>V03-Fliesskommazahlen.ipynb herunterladen</a></p>
       <ol class="k-steps">
         <li><strong>In Codespaces öffnen:</strong> Im Kurs-Repository auf GitHub „Code“ → „Codespaces“ → „Create codespace“. Die Umgebung (Python 3.12, NumPy, Matplotlib, Jupyter) ist vorbereitet. Dann <code class="k-i">notebooks/V03-Fliesskommazahlen.ipynb</code> öffnen.</li>

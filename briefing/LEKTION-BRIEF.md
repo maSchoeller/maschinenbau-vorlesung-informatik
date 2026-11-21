@@ -6,6 +6,8 @@ Repo-Wurzel: dieses Verzeichnis. Website in `site/`. Verbindlich: `KONZEPT.md` (
 
 **Nur Konzepte verwenden, die bis zu dieser Lektion eingeführt sind** (Python-Strang-Spalte). Beispiel: In V01 gibt es noch keine Typumwandlung (V03), kein `**` (V02), kein if (V04). `input()` liefert in V01/V02 nur Text.
 
+**Didaktische Pflichtregeln (DESIGN.md 12–15):** Jeder Python-Codeblock ist ausführbar (automatisch; Ausgaben/Tracebacks/Pseudocode mit `data-run="no"`, input-Code mit `data-stdin`), einzelne Ausdrücke zeigen ihr Ergebnis wie in der Konsole. Kein Code vor seiner Einführung (abstrakt bleiben, kurz einführen oder auf die Labor-Station verlinken). Abläufe (Speicher, Zuweisung, Verzweigung, Schleife, Aufrufstapel) mit Animation bzw. „Schritt für Schritt“-Visualisierer (`KursViz`) sichtbar machen. Kein Vorwissen voraussetzen: jeden Fachbegriff beim ersten Auftreten erklären, gern als `<abbr class="k-begriff" data-erklaerung="…">Begriff</abbr>`.
+
 **Dateizuständigkeit:** Du legst nur Dateien deiner Lektion an: `site/lektionen/vXX-<thema>.html`, `site/lektionen/vXX-labor.html`, `site/notebooks/VXX-<Thema>.ipynb`, optional `site/assets/js/explorables-vXX.js` und `site/assets/css/vXX.css` für lektionsspezifische Explorables. NICHT ändern: gemeinsame CSS/JS-Dateien, `index.html`, `bibliothek.html`, `assets/data/bibliothek.json`, V03-Dateien, `site/assets/video/`, `site/assets/img/`. Brauchst du dort eine Änderung (z. B. Fehler in gemeinsamem JS, fehlender Bibliothekseintrag), beschreibe sie im Bericht statt sie selbst zu machen.
 
 **Videos und Bilder** entstehen parallel. Binde mit festen Namen und dem bestehenden „Video folgt“-Fallback ein:

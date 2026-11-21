@@ -1,0 +1,21 @@
+/* begriff.css – Begriffs-Hinweise (abbr.k-begriff + Popover); wird von kurs.js nachgeladen */
+abbr.k-begriff {
+  text-decoration: underline dotted; text-decoration-color: #6B7280; text-decoration-thickness: 1.5px; text-underline-offset: 3px;
+  cursor: help; border-radius: 2px;
+}
+abbr.k-begriff:hover, abbr.k-begriff[data-open] { text-decoration-style: solid; text-decoration-color: var(--k-info, #164B8C); background: var(--k-info-bg, #F2F7FC); }
+abbr.k-begriff:focus-visible { outline: 3px solid var(--k-focus, #1A1A1A); outline-offset: 2px; }
+
+.k-pop {
+  position: absolute; z-index: 500; box-sizing: border-box; width: max-content; max-width: 320px; padding: 10px 14px 12px;
+  background: #fff; color: var(--text, #1A1A1A); border: 1px solid #9CA3AF; border-left: 3px solid var(--k-info, #164B8C);
+  border-radius: var(--r-sm, 4px); box-shadow: var(--shadow-raised, 0 4px 16px rgba(0,0,0,.12));
+  font-family: var(--dhbw-font); font-size: var(--fs-sm, .875rem); line-height: 1.5; font-weight: 400; text-align: left;
+  animation: k-pop-in .15s ease-out;
+}
+.k-pop[hidden] { display: none; }
+.k-pop__t { display: block; margin-bottom: 2px; font-weight: 700; }
+.k-pop__x { display: block; }
+@keyframes k-pop-in { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .k-pop { animation: none; } }
+@media print { .k-pop { display: none; } }
