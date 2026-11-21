@@ -3,18 +3,25 @@ import os, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, "..", "v01-common"))
 from ext import *
+from sprechen import anzeige, sprechfassung, pruefen, tts
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 NAME = "v01-python"; LABEL = "DHBW · Informatik · V01 · Erste Schritte in Python"
 
-def S(t, sp=None): return (t, sp or t)
+class Satz(tuple):
+    """(Untertitel, Sprechfassung) mit Quelltext .q (Markup)."""
+
+def S(t):
+    """Ein Quelltext mit Markup: Untertitel = anzeige(t), Audio = tts(t) -> sprechfassung(t) (sprechen.py)."""
+    r = Satz((anzeige(t), sprechfassung(t))); r.q = t
+    return r
 
 SECS = [
- [S("Mit print gibst du etwas auf dem Bildschirm aus."),
+ [S("Mit `print` gibst du etwas auf dem Bildschirm aus."),
   S("Text steht in Anführungszeichen, Zahlen schreibst du ohne."),
   S("Du kannst mehrere Argumente übergeben, getrennt durch Kommas."),
   S("Python setzt zwischen die Teile automatisch ein Leerzeichen."),
-  S("Und jedes print beginnt in einer neuen Zeile.")],
+  S("Und jedes `print` beginnt in einer neuen Zeile.")],
  [S("Eine Variable ist ein Name für einen Wert."),
   S("Mit dem Gleichheitszeichen gibst du einem Wert einen Namen."),
   S("Das nennt man Zuweisung, und es ist keine Gleichung."),
@@ -22,24 +29,24 @@ SECS = [
   S("Danach kannst du den Namen überall verwenden, wo du den Wert brauchst.")],
  [S("Einer Variablen darfst du jederzeit einen neuen Wert zuweisen."),
   S("Der alte Wert ist dann weg."),
-  S("Häufig siehst du zähler gleich zähler plus eins.", "Häufig siehst du zähler gleich zähler plus eins."),
-  S("Das ist keine Gleichung, sondern eine Anweisung: Nimm den aktuellen Wert, addiere eins und speichere das Ergebnis unter demselben Namen.")],
+  S("Häufig siehst du `zähler = zähler + 1`."),
+  S("Das ist keine Gleichung, sondern eine Anweisung: Nimm den aktuellen Wert, addiere 1 und speichere das Ergebnis unter demselben Namen.")],
  [S("Kommentare beginnen mit einer Raute."),
   S("Python ignoriert alles ab der Raute bis zum Zeilenende."),
   S("Sie erklären dir und anderen, warum etwas im Code steht, zum Beispiel die Einheit."),
-  S("Mit input liest du eine Eingabe von der Tastatur."),
+  S("Mit `input` liest du eine Eingabe von der Tastatur."),
   S("Der Text in den Klammern erscheint als Aufforderung, und die Antwort speichert Python in einer Variablen."),
-  S("Wichtig: input liefert immer Text, auch wenn du Ziffern tippst."),
-  S("Wie du daraus Zahlen machst, lernst du in Lektion drei.")],
+  S("Wichtig: `input` liefert immer Text, auch wenn du Ziffern tippst."),
+  S("Wie du daraus Zahlen machst, lernst du in Lektion 3.")],
  [S("Für Namen gelten feste Regeln."),
   S("Erlaubt sind Buchstaben, Ziffern und der Unterstrich."),
   S("Ein Name darf nicht mit einer Ziffer beginnen und keine Leerzeichen enthalten."),
-  S("Python unterscheidet Groß- und Kleinschreibung: kraft und Kraft sind zwei verschiedene Namen."),
-  S("Wähle sprechende Namen mit Einheit, zum Beispiel kraft_n statt nur k.", "Wähle sprechende Namen mit Einheit, zum Beispiel kraft Unterstrich n statt nur k.")],
+  S("Python unterscheidet Groß- und Kleinschreibung: `kraft` und `Kraft` sind zwei verschiedene Namen."),
+  S("Wähle sprechende Namen mit Einheit, zum Beispiel [[kraft_n|kraft Unterstrich n]] statt nur `k`.")],
  [S("Zum Schluss: Fehlermeldungen sind keine Strafe, sondern Hinweise."),
-  S("Ein NameError heißt: Python kennt diesen Namen nicht, hier wegen eines Tippfehlers."),
+  S("Ein `NameError` heißt: Python kennt diesen Namen nicht, hier wegen eines Tippfehlers."),
   S("Die Meldung schlägt sogar den richtigen Namen vor."),
-  S("Ein SyntaxError heißt: Die Zeile ist grammatisch falsch, hier fehlt ein Komma. Dann läuft das Programm gar nicht erst los."),
+  S("Ein `SyntaxError` heißt: Die Zeile ist grammatisch falsch, hier fehlt ein Komma. Dann läuft das Programm gar nicht erst los."),
   S("Lies immer die letzte Zeile der Meldung und die Zeilennummer darüber."),
   S("Jetzt bist du dran: Tippe alle Beispiele selbst ab und probiere sie aus.")],
 ]
@@ -156,12 +163,14 @@ def poster(path):
     f.el(1, fn); f.img.save(path)
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1 and sys.argv[1] == "text":
+    if len(sys.argv) > 1 and sys.argv[1] in ("text", "tts"):
         tot = 0
-        for i, s in enumerate(SECS, 1):
-            txt = " ".join(sp for _, sp in s); tot += len(txt)
-            print(f"s{i} ({len(txt)} Z., {len(txt.split())} W.)")
-            open(os.path.join(HERE, "audio", f"s{i}.txt"), "w", encoding="utf-8").write(txt)
-        print("Zeichen gesamt", tot, "Woerter", sum(len(sp.split()) for s in SECS for _, sp in s))
+        for i, sec in enumerate(SECS, 1):
+            q = " ".join(x.q for x in sec); sp = sprechfassung(q); tot += len(sp)
+            print(f"s{i} ({len(sp)} Z.)")
+            for h in pruefen(q): print("  PRUEFEN:", h)
+            if sys.argv[1] == "tts": tts(q, os.path.join(HERE, "audio", f"s{i}.mp3"))
+            else: open(os.path.join(HERE, "audio", f"s{i}.sprech.txt"), "w", encoding="utf-8").write(sp)
+        print("Zeichen gesamt", tot)
     else:
         main(HERE, SECS, SCENES, LABEL, poster, NAME)

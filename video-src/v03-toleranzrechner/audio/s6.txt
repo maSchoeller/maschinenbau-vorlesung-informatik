@@ -1,1 +1,0 @@
-Zum Schluss: Vergleiche deine Lösung mit einem KI-Vorschlag. Steht float um input? Werden Floats irgendwo mit zwei Gleichheitszeichen verglichen? Und teste immer die Grenzfälle: genau auf der Grenze, knapp darüber und knapp darunter. Dann weißt du, ob du den Code wirklich verstanden hast.

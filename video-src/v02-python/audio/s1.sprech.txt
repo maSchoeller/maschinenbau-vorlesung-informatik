@@ -1,0 +1,1 @@
+In Python rechnest du mit int, also mit ganzen Zahlen. Plus, Minus und Mal funktionieren wie gewohnt, nur dass Mal als Sternchen geschrieben wird. sieben plus drei ist zehn, sieben minus drei ist vier, sieben mal drei ist einundzwanzig. Das Ergebnis bleibt dabei ein int.

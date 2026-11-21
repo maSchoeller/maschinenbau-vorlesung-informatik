@@ -2,6 +2,8 @@
 Liest audio/s1..s6.mp3 (Dauer per ffprobe), erzeugt Timeline, VTT, Video (ohne Ton) -> out/v03_silent.mp4
 """
 import os, sys, subprocess, struct, json, math
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "common"))
+from sprechen import tts, anzeige, sprechfassung, pruefen
 from PIL import Image, ImageDraw, ImageFont, ImageChops
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -97,43 +99,45 @@ BITS64 = bin(int.from_bytes(struct.pack(">d", 0.1), "big"))[2:].zfill(64)
 BITS32 = bin(int.from_bytes(struct.pack(">f", 0.1), "big"))[2:].zfill(32)
 
 # ---------------------------------------------------------------- Sektionen (Sprech-Chunks)
-# je Chunk: (Untertitel, gesprochener Text fuer Gewichtung)
-SEC = {
- 1: [("Stell dir vor, du addierst in einer Toleranzkette 0,1 mm und 0,2 mm.", "Stell dir vor, du addierst in einer Toleranzkette null Komma eins Millimeter und null Komma zwei Millimeter."),
-     ("Python antwortet: 0,30000000000000004.", "Python antwortet: null Komma drei, dann viele Nullen, und ganz hinten eine Vier."),
-     ("Ist das Ergebnis gleich 0,3? Python sagt: Falsch.", "Und die Frage, ob das Ergebnis gleich null Komma drei ist? Python sagt: Falsch."),
-     ("Noch ein Beispiel: Eine SPS mit dem Datentyp REAL (32 Bit) kann die Zahl", "Noch ein Beispiel: Eine SPS mit dem Datentyp REAL, also zweiunddreißig Bit, kann die Zahl"),
-     ("16 777 217 gar nicht darstellen.", "sechzehn Millionen siebenhundertsiebenundsiebzigtausend zweihundertsiebzehn gar nicht darstellen."),
-     ("Was ist da los?", "Was ist da los?")],
- 2: [("Computer speichern Zahlen binär, also mit Nullen und Einsen.", "Computer speichern Zahlen binär, also mit Nullen und Einsen."),
-     ("Im Dezimalsystem kannst du 1/3 nicht exakt aufschreiben: 0,333…, ewig weiter.", "Im Dezimalsystem kannst du ein Drittel nicht exakt aufschreiben: null Komma drei drei drei, ewig weiter."),
-     ("Genauso ist 0,1 im Binärsystem periodisch: 0,0001100110011…, und so weiter.", "Genauso ist null Komma eins im Binärsystem periodisch: null Komma null null null eins eins, null null eins eins, und so weiter."),
-     ("Der Speicher hat aber nur endlich viele Stellen, also wird abgeschnitten.", "Der Speicher hat aber nur endlich viele Stellen, also wird abgeschnitten."),
-     ("Schon die einzelne Zahl 0,1 ist im Rechner minimal falsch.", "Schon die einzelne Zahl null Komma eins ist im Rechner minimal falsch.")],
- 3: [("Gespeichert wird nach dem Standard IEEE 754.", "Gespeichert wird nach dem Standard I triple E sieben fünf vier."),
-     ("Das ist die wissenschaftliche Schreibweise, nur binär: Vorzeichen, Exponent und Mantisse.", "Das ist die wissenschaftliche Schreibweise, nur binär: ein Vorzeichen, ein Exponent und eine Mantisse."),
-     ("Beim float64, dem normalen Python-Float, sind das 1, 11 und 52 Bit.", "Beim float vierundsechzig, dem normalen Python-Float, sind das ein, elf und zweiundfünfzig Bit."),
-     ("Beim float32, dem REAL der SPS: 1, 8 und 23 Bit.", "Beim float zweiunddreißig, dem REAL der SPS, ein, acht und dreiundzwanzig Bit."),
-     ("Weil die Mantisse begrenzt ist, liegen die darstellbaren Zahlen nicht gleichmäßig:", "Weil die Mantisse begrenzt ist, liegen die darstellbaren Zahlen nicht gleichmäßig:"),
-     ("Nahe null sind sie dicht, bei großen Zahlen wachsen die Lücken.", "Nahe null sind sie dicht, bei großen Zahlen wachsen die Lücken."),
-     ("Bei float32 liegen ab 16 Millionen schon zwei Einheiten zwischen zwei Nachbarn.", "Bei float zweiunddreißig liegen ab sechzehn Millionen schon zwei Einheiten zwischen zwei Nachbarn."),
-     ("Deshalb fehlt die 17.", "Deshalb fehlt die siebzehn.")],
- 4: [("Was heißt das für dich als Ingenieur?", "Was heißt das für dich als Ingenieur?"),
-     ("Erstens: Vergleiche Floats nie mit dem doppelten Gleichheitszeichen.", "Erstens: Vergleiche Floats nie mit dem doppelten Gleichheitszeichen."),
-     ("Nimm math.isclose, oder prüfe, ob der Betrag der Differenz kleiner ist als deine Toleranz.", "Nimm math Punkt is close, oder prüfe, ob der Betrag der Differenz kleiner ist als deine Toleranz."),
-     ("Zweitens: Fehler summieren sich.", "Zweitens: Fehler summieren sich."),
-     ("Addierst du zehnmal 0,1, kommst du nicht genau auf 1.", "Addierst du zehnmal null Komma eins, kommst du nicht genau auf eins."),
-     ("Und drittens: In Steuerungen mit float32 sind die Lücken noch viel größer, etwa bei Zählern oder Zeitstempeln.", "Und drittens: In Steuerungen mit float zweiunddreißig sind die Lücken noch viel größer, etwa bei Zählern oder Zeitstempeln.")],
- 5: [("Jetzt der Bezug zur KI.", "Jetzt der Bezug zur KI."),
-     ("KI-generierter Code vergleicht Floats erstaunlich oft mit dem doppelten Gleichheitszeichen.", "KI-generierter Code vergleicht Floats erstaunlich oft mit dem doppelten Gleichheitszeichen."),
-     ("Das sieht richtig aus, läuft durch, und scheitert erst im Betrieb.", "Das sieht richtig aus, läuft durch, und scheitert erst im Betrieb."),
-     ("Genau das musst du beim Prüfen erkennen.", "Genau das musst du beim Prüfen erkennen."),
-     ("In unserer Wissens-Ampel heißt das: Im Kopf haben musst du, dass das passiert und warum.", "In unserer Wissens-Ampel heißt das: Im Kopf haben musst du, dass das passiert und warum."),
-     ("Ein Bitmuster von Hand umzurechnen darfst du nachschlagen, oder der KI überlassen.", "Ein Bitmuster von Hand umzurechnen darfst du nachschlagen, oder der KI überlassen.")],
- 6: [("Auf der Seite kannst du das gleich selbst erkunden:", "Auf der Seite kannst du das gleich selbst erkunden:"),
-     ("In den Explorables schiebst du Bits hin und her und siehst, wie die Lücken auf dem Zahlenstrahl wachsen.", "In den Explorables schiebst du Bits hin und her und siehst, wie die Lücken auf dem Zahlenstrahl wachsen."),
-     ("Probier es aus!", "Probier es aus!")],
+# EIN Quelltext mit Markup je Chunk: Untertitel = anzeige(), Audio = tts() ueber den ganzen Absatz,
+# Gewichtung der Chunkzeiten = Laenge der Sprechfassung.
+SRC = {
+ 1: ["Stell dir vor, du addierst in einer Toleranzkette 0,1 mm und 0,2 mm.",
+     "Python antwortet: 0,30000000000000004.",
+     "Ist das Ergebnis gleich 0,3? Python sagt: Falsch.",
+     "Noch ein Beispiel: Eine SPS mit dem Datentyp REAL (32 Bit) kann die Zahl",
+     "[[16 777 217|sechzehn Millionen siebenhundertsiebenundsiebzigtausend zweihundertsiebzehn]] gar nicht darstellen.",
+     "Was ist da los?"],
+ 2: ["Computer speichern Zahlen binär, also mit Nullen und Einsen.",
+     "Im Dezimalsystem kannst du [[1/3|ein Drittel]] nicht exakt aufschreiben: 0,333…, ewig weiter.",
+     "Genauso ist 0,1 im Binärsystem periodisch: [[0,0001100110011…|null Komma null null null eins eins, null null eins eins]], und so weiter.",
+     "Der Speicher hat aber nur endlich viele Stellen, also wird abgeschnitten.",
+     "Schon die einzelne Zahl 0,1 ist im Rechner minimal falsch."],
+ 3: ["Gespeichert wird nach dem Standard IEEE 754.",
+     "Das ist die wissenschaftliche Schreibweise, nur binär: Vorzeichen, Exponent und Mantisse.",
+     "Beim `float64`, dem normalen Python-Float, sind das [[1|ein]], 11 und 52 Bit.",
+     "Beim `float32`, dem REAL der SPS: [[1|ein]], 8 und 23 Bit.",
+     "Weil die Mantisse begrenzt ist, liegen die darstellbaren Zahlen nicht gleichmäßig:",
+     "Nahe null sind sie dicht, bei großen Zahlen wachsen die Lücken.",
+     "Bei `float32` liegen ab 16 Millionen schon zwei Einheiten zwischen zwei Nachbarn.",
+     "Deshalb fehlt die 17."],
+ 4: ["Was heißt das für dich als Ingenieur?",
+     "Erstens: Vergleiche Floats nie mit dem doppelten Gleichheitszeichen.",
+     "Nimm `math.isclose`, oder prüfe, ob der Betrag der Differenz kleiner ist als deine Toleranz.",
+     "Zweitens: Fehler summieren sich.",
+     "Addierst du zehnmal 0,1, kommst du nicht genau auf 1.",
+     "Und drittens: In Steuerungen mit `float32` sind die Lücken noch viel größer, etwa bei Zählern oder Zeitstempeln."],
+ 5: ["Jetzt der Bezug zur KI.",
+     "KI-generierter Code vergleicht Floats erstaunlich oft mit dem doppelten Gleichheitszeichen.",
+     "Das sieht richtig aus, läuft durch, und scheitert erst im Betrieb.",
+     "Genau das musst du beim Prüfen erkennen.",
+     "In unserer Wissens-Ampel heißt das: Im Kopf haben musst du, dass das passiert und warum.",
+     "Ein Bitmuster von Hand umzurechnen darfst du nachschlagen, oder der KI überlassen."],
+ 6: ["Auf der Seite kannst du das gleich selbst erkunden:",
+     "In den Explorables schiebst du Bits hin und her und siehst, wie die Lücken auf dem Zahlenstrahl wachsen.",
+     "Probier es aus!"],
 }
+SEC = {i: [(anzeige(s), sprechfassung(s)) for s in v] for i, v in SRC.items()}
 LEAD, GAP, TAIL = 0.35, 0.6, 1.6
 
 def audio_dur(i):
@@ -511,6 +515,17 @@ def poster(path):
 
 if __name__ == "__main__":
     mode = sys.argv[1] if len(sys.argv) > 1 else "full"
+    if mode == "text":   # Vorschau ohne Kosten
+        for i, v in SRC.items():
+            roh = " ".join(v); print(f"s{i} ({len(sprechfassung(roh))} Z.): {sprechfassung(roh)}")
+            for h in pruefen(roh): print("  PRUEFEN:", h)
+            print()
+        sys.exit()
+    if mode == "vertonen":   # je Absatz eine Datei audio/sN.mp3 (+ sN.sprech.txt)
+        gesamt = 0
+        for i, v in SRC.items():
+            roh = " ".join(v); tts(roh, os.path.join(HERE, "audio", f"s{i}.mp3")); gesamt += len(sprechfassung(roh))
+        print("Zeichen gesendet", gesamt); sys.exit()
     tl = build_timeline()
     json.dump(tl, open(os.path.join(OUT, "timeline.json"), "w"), indent=1)
     write_vtt(tl, os.path.join(OUT, "v03.vtt"))

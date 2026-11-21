@@ -20,6 +20,10 @@ Leitidee: *KI schreibt Code – Ingenieure spezifizieren, prüfen und verantwort
 | `tools/editor-build/` | Build des Code-Editors (CodeMirror 6) → `site/assets/vendor/codemirror.bundle.js` |
 | `.devcontainer/` | GitHub Codespaces mit Python, Jupyter und GitHub Copilot |
 
+## Erklärvideos
+
+Die Videos (Quellen in `video-src/`) werden mit ElevenLabs vertont (Modell `eleven_v3`, Stimme Theo Teacher). Workflow: **Sprechertext → Markup → `sprechfassung()` → `tts()` → Untertitel aus `anzeige()`**. Den Text schreibst du einmal so, wie er auf dem Bildschirm stehen soll (Ziffern, Einheiten, Code in Backticks); wo die Automatik falsch liegt, setzt du `[[Anzeige|Sprechweise]]`. `video-src/common/sprechen.py` macht daraus die Sprechfassung (Zahlen und Einheiten ausgeschrieben, englische Begriffe bleiben englisch, Code wird gesprochen), `tts(text, "audio/s1.mp3")` vertont sie (Schlüssel in `ELEVENLABS_API_KEY`, max. 3000 Zeichen je Aufruf) und legt den gesendeten Text als `s1.sprech.txt` daneben; Untertitel/VTT entstehen immer aus `anzeige(text)`. Kostenlose Vorschau: `python sprechen.py "Text"` bzw. `python sprechfassungen_erzeugen.py` (schreibt `video-src/SPRECHFASSUNGEN.md` mit PRÜFEN-Markierungen). Tests: `video-src/.venv/Scripts/python -m unittest test_sprechen` im Ordner `video-src/common`. Abhängigkeiten: `video-src/requirements.txt`.
+
 ## Lokal ansehen
 
 ```powershell

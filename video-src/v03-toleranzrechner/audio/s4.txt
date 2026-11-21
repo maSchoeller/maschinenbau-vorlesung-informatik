@@ -1,1 +1,0 @@
-Abschnitt vier ist der Kern der Aufgabe. math Punkt is close prüft, ob der Messwert höchstens ein Abmaß vom Nennmaß entfernt liegt. rel tol ist null, damit nur die absolute Toleranz zählt. abs tol ist das Abmaß. Der kleine Zuschlag von eins mal zehn hoch minus neun fängt Rundungsfehler ab.

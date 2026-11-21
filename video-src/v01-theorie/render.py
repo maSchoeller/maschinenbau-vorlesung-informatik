@@ -3,49 +3,46 @@ import os, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, "..", "v01-common"))
 from ext import *
+from sprechen import anzeige, sprechfassung, pruefen, tts
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 NAME = "v01-theorie"; LABEL = "DHBW · Informatik · V01 · Warum programmieren?"
 
+class Satz(tuple):
+    """(Untertitel, Sprechfassung) mit Quelltext .q (Markup)."""
+
+def S(t):
+    """Ein Quelltext mit Markup: Untertitel = anzeige(t), Audio = tts(t) -> sprechfassung(t) (sprechen.py)."""
+    r = Satz((anzeige(t), sprechfassung(t))); r.q = t
+    return r
+
 SECS = [
- [("Eine KI soll die Zugspannung in einem Rundstab berechnen.", "Eine KI soll die Zugspannung in einem Rundstab berechnen."),
-  ("Die Zugkraft beträgt 12 000 Newton, der Durchmesser 10 Millimeter.", "Die Zugkraft beträgt zwölftausend Newton, der Durchmesser zehn Millimeter."),
-  ("Die KI antwortet selbstsicher: 0,153 Megapascal.", "Die KI antwortet selbstsicher: null Komma eins fünf drei Megapascal."),
-  ("Das klingt plausibel, ist aber um den Faktor 1000 falsch.", "Das klingt plausibel, ist aber um den Faktor tausend falsch."),
-  ("Richtig sind etwa 152,8 Megapascal.", "Richtig sind etwa einhundertzweiundfünfzig Komma acht Megapascal."),
-  ("Die Fläche wurde von Quadratmillimetern falsch in Quadratmeter umgerechnet: durch 1000 statt durch eine Million.",
-   "Die Fläche wurde von Quadratmillimetern falsch in Quadratmeter umgerechnet: durch tausend statt durch eine Million."),
-  ("Wer das nicht merkt, dimensioniert danach ein Bauteil falsch.", "Wer das nicht merkt, dimensioniert danach ein Bauteil falsch.")],
- [("Warum also selbst programmieren lernen, wenn eine KI das kann? Dafür gibt es vier Gründe.",
-   "Warum also selbst programmieren lernen, wenn eine KI das kann? Dafür gibt es vier Gründe."),
-  ("Erstens: Du musst Code lesen können, um ihn zu prüfen. Wer ihn nicht versteht, kann nur glauben.",
-   "Erstens: Du musst Code lesen können, um ihn zu prüfen. Wer ihn nicht versteht, kann nur glauben."),
-  ("Zweitens: Eine KI verstärkt deine Spezifikation. Ist die Aufgabe unklar, bekommst du schnell und überzeugend das Falsche.",
-   "Zweitens: Eine KI verstärkt deine Spezifikation. Ist die Aufgabe unklar, bekommst du schnell und überzeugend das Falsche."),
-  ("Drittens: Du musst überschlagen können. 12 000 durch rund 80 sind etwa 150, und schon fällt der Fehler auf.",
-   "Drittens: Du musst überschlagen können. Zwölftausend durch rund achtzig sind etwa hundertfünfzig, und schon fällt der Fehler auf."),
-  ("Viertens: Im Betrieb läuft oft gar keine KI. Steuerungen, Messgeräte und Skripte sind Code, den du verstehen und anpassen musst.",
-   "Viertens: Im Betrieb läuft oft gar keine KI. Steuerungen, Messgeräte und Skripte sind Code, den du verstehen und anpassen musst.")],
- [("Du musst aber nicht alles selbst können. Dafür gibt es die Wissens-Ampel.", "Du musst aber nicht alles selbst können. Dafür gibt es die Wissens-Ampel."),
-  ("Im Kopf: Das brauchst du ohne Hilfe, sonst kannst du KI-Ergebnisse nicht beurteilen, zum Beispiel Größenordnungen und Einheiten.",
-   "Im Kopf: Das brauchst du ohne Hilfe, sonst kannst du KI-Ergebnisse nicht beurteilen, zum Beispiel Größenordnungen und Einheiten."),
-  ("Lesen und erkennen: Du verstehst Code, musst ihn aber nicht zwingend selbst schreiben.",
-   "Lesen und erkennen: Du verstehst Code, musst ihn aber nicht zwingend selbst schreiben."),
-  ("Delegieren: Die KI übernimmt, du musst nur wissen, dass es das gibt.", "Delegieren: Die KI übernimmt, du musst nur wissen, dass es das gibt."),
-  ("Bei jedem Thema im Kurs zeigt dir die Ampel, in welche Stufe es gehört.", "Bei jedem Thema im Kurs zeigt dir die Ampel, in welche Stufe es gehört.")],
- [("Doch was ist eigentlich ein Programm?", "Doch was ist eigentlich ein Programm?"),
-  ("Ein Programm folgt fast immer demselben Muster: Eingabe, Verarbeitung, Ausgabe.", "Ein Programm folgt fast immer demselben Muster: Eingabe, Verarbeitung, Ausgabe."),
-  ("Hier stehen in den ersten beiden Zeilen die Eingaben, in der dritten wird gerechnet, und die vierte gibt das Ergebnis aus.",
-   "Hier stehen in den ersten beiden Zeilen die Eingaben, in der dritten wird gerechnet, und die vierte gibt das Ergebnis aus."),
-  ("Der Interpreter arbeitet den Code Zeile für Zeile von oben nach unten ab.", "Der Interpreter arbeitet den Code Zeile für Zeile von oben nach unten ab."),
-  ("Und er ist deterministisch: gleiche Eingabe, gleiches Ergebnis, jedes Mal.", "Und er ist deterministisch: gleiche Eingabe, gleiches Ergebnis, jedes Mal."),
-  ("Genau das macht ein Programm überprüfbar, anders als eine KI-Antwort, die bei jeder Anfrage anders ausfallen kann.",
-   "Genau das macht ein Programm überprüfbar, anders als eine KI-Antwort, die bei jeder Anfrage anders ausfallen kann.")],
- [("Merke dir: Die KI ist ein starkes Werkzeug, aber die Verantwortung für das Ergebnis bleibt bei dir.",
-   "Merke dir: Die KI ist ein starkes Werkzeug, aber die Verantwortung für das Ergebnis bleibt bei dir."),
-  ("Dafür brauchst du Wissen im Kopf, Leseverständnis und ein Gefühl für Größenordnungen.",
-   "Dafür brauchst du Wissen im Kopf, Leseverständnis und ein Gefühl für Größenordnungen."),
-  ("Im nächsten Video schreibst du deine ersten Zeilen Python.", "Im nächsten Video schreibst du deine ersten Zeilen Python.")],
+ [S("Eine KI soll die Zugspannung in einem Rundstab berechnen."),
+  S("Die Zugkraft beträgt 12 000 Newton, der Durchmesser 10 Millimeter."),
+  S("Die KI antwortet selbstsicher: 0,153 Megapascal."),
+  S("Das klingt plausibel, ist aber um den Faktor 1000 falsch."),
+  S("Richtig sind etwa 152,8 Megapascal."),
+  S("Die Fläche wurde von Quadratmillimetern falsch in Quadratmeter umgerechnet: durch 1000 statt durch eine Million."),
+  S("Wer das nicht merkt, dimensioniert danach ein Bauteil falsch.")],
+ [S("Warum also selbst programmieren lernen, wenn eine KI das kann? Dafür gibt es vier Gründe."),
+  S("Erstens: Du musst Code lesen können, um ihn zu prüfen. Wer ihn nicht versteht, kann nur glauben."),
+  S("Zweitens: Eine KI verstärkt deine Spezifikation. Ist die Aufgabe unklar, bekommst du schnell und überzeugend das Falsche."),
+  S("Drittens: Du musst überschlagen können. Rechne im Kopf: 12 000 durch rund 80 sind etwa 150, und schon fällt der Fehler auf."),
+  S("Viertens: Im Betrieb läuft oft gar keine KI. Steuerungen, Messgeräte und Skripte sind Code, den du verstehen und anpassen musst.")],
+ [S("Du musst aber nicht alles selbst können. Dafür gibt es die Wissens-Ampel."),
+  S("Im Kopf: Das brauchst du ohne Hilfe, sonst kannst du [[KI-Ergebnisse|K I Ergebnisse]] nicht beurteilen, zum Beispiel Größenordnungen und Einheiten."),
+  S("Lesen und erkennen: Du verstehst Code, musst ihn aber nicht zwingend selbst schreiben."),
+  S("Delegieren: Die KI übernimmt, du musst nur wissen, dass es das gibt."),
+  S("Bei jedem Thema im Kurs zeigt dir die Ampel, in welche Stufe es gehört.")],
+ [S("Doch was ist eigentlich ein Programm?"),
+  S("Ein Programm folgt fast immer demselben Muster: Eingabe, Verarbeitung, Ausgabe."),
+  S("Hier stehen in den ersten beiden Zeilen die Eingaben, in der dritten wird gerechnet, und die vierte gibt das Ergebnis aus."),
+  S("Der Interpreter arbeitet den Code Zeile für Zeile von oben nach unten ab."),
+  S("Und er ist deterministisch: gleiche Eingabe, gleiches Ergebnis, jedes Mal."),
+  S("Genau das macht ein Programm überprüfbar, anders als eine [[KI-Antwort|K I Antwort]], die bei jeder Anfrage anders ausfallen kann.")],
+ [S("Merke dir: Die KI ist ein starkes Werkzeug, aber die Verantwortung für das Ergebnis bleibt bei dir."),
+  S("Dafür brauchst du Wissen im Kopf, Leseverständnis und ein Gefühl für Größenordnungen."),
+  S("Im nächsten Video schreibst du deine ersten Zeilen Python.")],
 ]
 
 def rise(f, t, ti, fn):
@@ -176,12 +173,14 @@ def poster(path):
     f.el(1, fn); f.img.save(path)
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1 and sys.argv[1] == "text":
+    if len(sys.argv) > 1 and sys.argv[1] in ("text", "tts"):
         tot = 0
-        for i, s in enumerate(SECS, 1):
-            txt = " ".join(sp for _, sp in s); tot += len(txt)
-            print(f"s{i} ({len(txt)} Z., {len(txt.split())} W.)")
-            open(os.path.join(HERE, "audio", f"s{i}.txt"), "w", encoding="utf-8").write(txt)
-        print("Zeichen gesamt", tot, "Woerter", sum(len(sp.split()) for s in SECS for _, sp in s))
+        for i, sec in enumerate(SECS, 1):
+            q = " ".join(x.q for x in sec); sp = sprechfassung(q); tot += len(sp)
+            print(f"s{i} ({len(sp)} Z.)")
+            for h in pruefen(q): print("  PRUEFEN:", h)
+            if sys.argv[1] == "tts": tts(q, os.path.join(HERE, "audio", f"s{i}.mp3"))
+            else: open(os.path.join(HERE, "audio", f"s{i}.sprech.txt"), "w", encoding="utf-8").write(sp)
+        print("Zeichen gesamt", tot)
     else:
         main(HERE, SECS, SCENES, LABEL, poster, NAME)

@@ -1,1 +1,0 @@
-Dezimal in binär wandelst du mit dem Divisionsrestverfahren um. Du teilst immer wieder durch zwei und merkst dir den Rest. Fünfundvierzig durch zwei ist zweiundzwanzig Rest eins, und so geht es weiter, bis du bei null ankommst. Die Reste liest du von unten nach oben: eins null eins eins null eins. Zurück rechnest du, indem du die Stellenwerte der Einsen addierst.

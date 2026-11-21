@@ -4,50 +4,45 @@ import os, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, "..", "common"))
 from core import *
+from sprechen import tts, anzeige, sprechfassung, pruefen
 from pages import page_scene, O
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 NAME = "v03-python-typen"; LABEL = "DHBW · Informatik · V03 · Python-Werkstatt"
 
-# (Untertitel, gesprochener Text)
-SECS = [
- [("In Python hat jeder Wert einen Typ.", "In Python hat jeder Wert einen Typ."),
-  ("Eine ganze Zahl ist ein int, eine Kommazahl ein float, Text ein str und ein Wahrheitswert ein bool.",
-   "Eine ganze Zahl ist ein int, eine Kommazahl ein float, Text ein str und ein Wahrheitswert ein bool."),
-  ("Mit type() fragst du den Typ ab.", "Mit der Funktion type fragst du den Typ ab."),
-  ("Beachte: 25 ist ein int, 25.0 ein float und \"25\" in Anführungszeichen ein str.",
-   "Beachte: fünfundzwanzig ist ein int, fünfundzwanzig Punkt null ein float und fünfundzwanzig in Anführungszeichen ein str.")],
- [("Jetzt der wichtigste Stolperstein bei Messwerten: input() liefert immer Text.",
-   "Jetzt der wichtigste Stolperstein bei Messwerten: Die Funktion input liefert immer Text."),
-  ("Auch wenn du eine Zahl eintippst, steht in der Variablen ein str.", "Auch wenn du eine Zahl eintippst, steht in der Variablen ein str."),
-  ("Zum Rechnen wandelst du um: float(input(...)).", "Zum Rechnen wandelst du um: float von input."),
-  ("So hast du in einer Zeile gleich eine Zahl.", "So hast du in einer Zeile gleich eine Zahl.")],
- [("Was passiert, wenn du Typen falsch mischst?", "Was passiert, wenn du Typen falsch mischst?"),
-  ("int(\"2.5\") ist ein ValueError: Text mit Dezimalpunkt lässt sich nicht direkt in eine Ganzzahl wandeln.",
-   "int von Text zwei Punkt fünf ist ein ValueError, denn Text mit Dezimalpunkt lässt sich nicht direkt in eine Ganzzahl umwandeln."),
-  ("Der Umweg geht erst über float, dann über int.", "Der Umweg geht erst über float und dann über int."),
-  ("\"3\" + 4 ist ein TypeError: Text und Zahl lassen sich nicht addieren.",
-   "Und der Text drei plus die Zahl vier ist ein TypeError, denn Text und Zahl lassen sich nicht addieren."),
-  ("Lies immer die letzte Zeile der Fehlermeldung: Dort steht, was los ist.", "Lies immer die letzte Zeile der Fehlermeldung: Dort steht, was los ist.")],
- [("Jetzt: Abschneiden gegen Runden.", "Jetzt: Abschneiden gegen Runden."),
-  ("int() schneidet die Nachkommastellen ab, in Richtung null: int(2.9) ist 2, int(-2.9) ist -2.",
-   "int schneidet die Nachkommastellen ab, in Richtung null: int von zwei Punkt neun ist zwei, und int von minus zwei Punkt neun ist minus zwei."),
-  ("round() rundet: round(2.9) ist 3.", "round rundet: round von zwei Punkt neun ist drei."),
-  ("Genau bei .5 rundet Python zur nächsten geraden Zahl: round(2.5) ist 2, round(3.5) ist 4.",
-   "Genau bei einem halben rundet Python zur nächsten geraden Zahl: round von zwei Punkt fünf ist zwei, round von drei Punkt fünf ist vier."),
-  ("Das nennt man Banker's Rounding.", "Das nennt man Bankers Rounding.")],
- [("Für saubere Ausgaben nimmst du f-Strings.", "Für saubere Ausgaben nimmst du f-Strings."),
-  ("Vor dem Anführungszeichen steht ein f, in geschweiften Klammern der Wert.", "Vor dem Anführungszeichen steht ein f, und in geschweiften Klammern der Wert."),
-  ("Nach dem Doppelpunkt folgt das Format: .2f bedeutet zwei Nachkommastellen.", "Nach dem Doppelpunkt folgt das Format: Punkt zwei f bedeutet zwei Nachkommastellen."),
-  ("8.3f macht das Feld 8 Zeichen breit, mit drei Nachkommastellen.", "Acht Punkt drei f macht das Feld acht Zeichen breit, mit drei Nachkommastellen."),
-  ("Und e schreibt in wissenschaftlicher Schreibweise.", "Und e schreibt in wissenschaftlicher Schreibweise."),
-  ("Das Format ändert nur die Anzeige, nicht den gespeicherten Wert.", "Das Format ändert nur die Anzeige, nicht den gespeicherten Wert.")],
- [("Das Modul math bringt Funktionen mit. Du holst es mit import math.", "Das Modul math bringt Funktionen mit. Du holst es mit import math."),
-  ("math.sqrt(2) ist die Wurzel aus 2, math.pi ist die Kreiszahl.", "math Punkt sqrt von zwei ist die Wurzel aus zwei, und math Punkt pi ist die Kreiszahl."),
-  ("Weil Floats nie ganz exakt sind, ist 0.1 + 0.2 == 0.3 falsch.", "Weil Floats nie ganz exakt sind, ist null Komma eins plus null Komma zwei gleich null Komma drei: False."),
-  ("Vergleiche stattdessen mit math.isclose, und du bekommst True.", "Vergleiche stattdessen mit math Punkt is close, und du bekommst True."),
-  ("Probier alles selbst aus!", "Probier alles selbst aus!")],
+# Ein Quelltext mit Markup: Untertitel = anzeige(), Audio = tts() (Sprechfassung automatisch)
+SRC = [
+ ["In Python hat jeder Wert einen Typ.",
+  "Eine ganze Zahl ist ein int, eine Kommazahl ein float, Text ein str und ein Wahrheitswert ein bool.",
+  "Mit `type()` fragst du den Typ ab.",
+  'Beachte: 25 ist ein int, [[25.0|fünfundzwanzig Punkt null]] ein float und [["25"|fünfundzwanzig]] in Anführungszeichen ein str.'],
+ ["Jetzt der wichtigste Stolperstein bei Messwerten: `input()` liefert immer Text.",
+  "Auch wenn du eine Zahl eintippst, steht in der Variablen ein str.",
+  "Zum Rechnen wandelst du um: [[float(input(...))|float von input]].",
+  "So hast du in einer Zeile gleich eine Zahl."],
+ ["Was passiert, wenn du Typen falsch mischst?",
+  '[[int("2.5")|int von dem Text zwei Punkt fünf]] ist ein ValueError: Text mit Dezimalpunkt lässt sich nicht direkt in eine Ganzzahl wandeln.',
+  "Der Umweg geht erst über float, dann über int.",
+  '[["3" + 4|Der Text drei plus die Zahl vier]] ist ein TypeError: Text und Zahl lassen sich nicht addieren.',
+  "Lies immer die letzte Zeile der Fehlermeldung: Dort steht, was los ist."],
+ ["Jetzt: Abschneiden gegen Runden.",
+  "`int()` schneidet die Nachkommastellen ab, in Richtung null: [[int(2.9)|int von zwei Punkt neun]] ist 2, [[int(-2.9)|int von minus zwei Punkt neun]] ist -2.",
+  "`round()` rundet: [[round(2.9)|round von zwei Punkt neun]] ist 3.",
+  "Genau bei [[.5|einem halben]] rundet Python zur nächsten geraden Zahl: [[round(2.5)|round von zwei Punkt fünf]] ist 2, [[round(3.5)|round von drei Punkt fünf]] ist 4.",
+  "Das nennt man Banker's Rounding."],
+ ["Für saubere Ausgaben nimmst du f-Strings.",
+  "Vor dem Anführungszeichen steht ein f, in geschweiften Klammern der Wert.",
+  "Nach dem Doppelpunkt folgt das Format: [[.2f|Punkt zwei f]] bedeutet zwei Nachkommastellen.",
+  "[[8.3f|Acht Punkt drei f]] macht das Feld 8 Zeichen breit, mit drei Nachkommastellen.",
+  "Und e schreibt in wissenschaftlicher Schreibweise.",
+  "Das Format ändert nur die Anzeige, nicht den gespeicherten Wert."],
+ ["Das Modul math bringt Funktionen mit. Du holst es mit `import math`.",
+  "`math.sqrt(2)` ist die Wurzel aus 2, `math.pi` ist die Kreiszahl.",
+  "Weil Floats nie ganz exakt sind, ist [[0.1 + 0.2 == 0.3|null Komma eins plus null Komma zwei gleich null Komma drei]] falsch.",
+  "Vergleiche stattdessen mit `math.isclose`, und du bekommst `True`.",
+  "Probier alles selbst aus!"],
 ]
+SECS = [[(anzeige(s), sprechfassung(s)) for s in sec] for sec in SRC]
 
 C = lambda s: O(s, CODE_T)
 ERR = lambda s: O(s, CODE_R)
@@ -152,12 +147,18 @@ def poster(path):
     f.el(1, fn); f.img.save(path)
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1 and sys.argv[1] == "text":
-        tot = 0
-        for i, s in enumerate(SECS, 1):
-            txt = " ".join(sp for _, sp in s); tot += len(txt)
-            print(f"s{i} ({len(txt)} Z., {len(txt.split())} W.): {txt}\n")
-            open(os.path.join(HERE, "audio", f"s{i}.txt"), "w", encoding="utf-8").write(txt)
-        print("Zeichen gesamt", tot, "Woerter", sum(len(sp.split()) for s in SECS for _, sp in s))
+    modus = sys.argv[1] if len(sys.argv) > 1 else "full"
+    if modus == "text":   # Vorschau ohne Kosten: gesendeter Text je Absatz + PRUEFEN-Hinweise
+        for i, sec in enumerate(SRC, 1):
+            roh = " ".join(sec); sp = sprechfassung(roh)
+            print(f"s{i} ({len(sp)} Z.): {sp}")
+            for h in pruefen(roh): print("  PRUEFEN:", h)
+            print()
+    elif modus == "vertonen":   # je Absatz eine Datei audio/sN.mp3 (+ sN.sprech.txt)
+        gesamt = 0
+        for i, sec in enumerate(SRC, 1):
+            roh = " ".join(sec)
+            tts(roh, os.path.join(HERE, "audio", f"s{i}.mp3")); gesamt += len(sprechfassung(roh))
+        print("Zeichen gesendet", gesamt)
     else:
         main(HERE, SECS, SCENES, LABEL, poster, NAME)

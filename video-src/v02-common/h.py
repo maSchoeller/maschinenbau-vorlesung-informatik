@@ -3,24 +3,23 @@ import os, sys, io, json, contextlib, urllib.request
 HERE0 = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE0, "..", "common"))
 from core import *
+import sprechen as SP
 
-VOICE = "TIKjTeWOFujJEvXK1qIU"   # Theo Teacher - Clear & Trustworthy
-MODEL = "eleven_multilingual_v2"
+
+def make_secs(src):
+    """Quelltext mit Markup -> [(anzeige, sprechfassung)] je Satz (Untertitel/VTT = anzeige, Audio = sprechfassung)."""
+    return [[(SP.anzeige(s), SP.sprechfassung(s)) for s in sents] for sents in src]
 
 def spoken(secs, i): return " ".join(sp for _, sp in secs[i - 1])
 
 def tts(vdir, secs):
+    """Pro Absatz eine Datei (eleven_v3 ueber sprechen.tts); vorhandene Audios werden ueberschrieben."""
     ad = os.path.join(vdir, "audio"); os.makedirs(ad, exist_ok=True); used = 0
     for i in range(1, len(secs) + 1):
-        txt = spoken(secs, i); p = os.path.join(ad, f"s{i}.mp3"); tp = os.path.join(ad, f"s{i}.txt")
-        if os.path.exists(p) and os.path.exists(tp) and open(tp, encoding="utf-8").read() == txt:
-            print("vorhanden", i); continue
-        body = json.dumps({"text": txt, "model_id": MODEL, "voice_settings": {"stability": 0.5, "similarity_boost": 0.75}}).encode("utf-8")
-        rq = urllib.request.Request(f"https://api.elevenlabs.io/v1/text-to-speech/{VOICE}?output_format=mp3_44100_128", data=body,
-                                    headers={"xi-api-key": os.environ["ELEVENLABS_API_KEY"], "Content-Type": "application/json", "Accept": "audio/mpeg"})
-        open(p, "wb").write(urllib.request.urlopen(rq).read()); open(tp, "w", encoding="utf-8").write(txt); used += len(txt)
-        print("erzeugt", i, len(txt), "Zeichen", flush=True)
-    print("Zeichen neu verbraucht:", used)
+        txt = spoken(secs, i)
+        SP.tts(txt, os.path.join(ad, f"s{i}.mp3"), sprechfassung_anwenden=False)
+        used += len(txt); print("erzeugt", i, len(txt), "Zeichen", flush=True)
+    print("Zeichen verbraucht:", used)
 
 def text_report(vdir, secs):
     os.makedirs(os.path.join(vdir, "audio"), exist_ok=True); tot = 0

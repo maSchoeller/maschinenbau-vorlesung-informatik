@@ -1,0 +1,1 @@
+Was passiert, wenn du Typen falsch mischst? int von dem Text zwei Punkt fünf ist ein ValueError: Text mit Dezimalpunkt lässt sich nicht direkt in eine Ganzzahl wandeln. Der Umweg geht erst über float, dann über int. Der Text drei plus die Zahl vier ist ein TypeError: Text und Zahl lassen sich nicht addieren. Lies immer die letzte Zeile der Fehlermeldung: Dort steht, was los ist.

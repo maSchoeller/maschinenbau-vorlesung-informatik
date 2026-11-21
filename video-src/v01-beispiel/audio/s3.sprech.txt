@@ -1,0 +1,1 @@
+Dann folgen die festen Werte: kraft n ist zwölftausend, durchmesser m m ist zehn. Die Einheit steckt im Namen und im Kommentar, so verwechselst du später nichts. Pi ist hier eine Näherung: drei Komma eins vier eins fünf neun. Alle Zahlen stehen noch fest im Code. Zahlen einlesen lernst du in Lektion drei.

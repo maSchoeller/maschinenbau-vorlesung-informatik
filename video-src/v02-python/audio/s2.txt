@@ -1,1 +1,0 @@
-Der einfache Schrägstrich dividiert und liefert immer einen float, auch wenn die Division aufgeht. Sieben durch zwei ergibt drei Komma fünf, sechs durch drei ergibt zwei Komma null. Zwei Sterne potenzieren: Zwei hoch zehn ist eintausendvierundzwanzig. Brauchst du eine ganze Zahl als Ergebnis, nimmst du den doppelten Schrägstrich.

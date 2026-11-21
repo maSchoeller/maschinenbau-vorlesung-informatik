@@ -1,1 +1,0 @@
-Zum Schluss folgen fünf print-Zeilen. Die erste gibt die Überschrift aus. Die nächsten vier haben je zwei Argumente, einen Text und eine Variable. print setzt dazwischen ein Leerzeichen. So landen Prüfer, Bauteil, Fläche und Spannung im Protokoll.

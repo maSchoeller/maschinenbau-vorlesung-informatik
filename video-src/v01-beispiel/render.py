@@ -3,49 +3,52 @@ import os, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, "..", "v01-common"))
 from ext import *
+from sprechen import anzeige, sprechfassung, pruefen, tts
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 NAME = "v01-beispiel"; LABEL = "DHBW · Informatik · V01 · Prüfprotokoll Zugstab"
 CODE = open(os.path.join(HERE, "..", "..", "briefing", "v01-beispiel.py"), encoding="utf-8").read().splitlines()
 assert len(CODE) == 18
 
-def S(t, sp=None): return (t, sp or t)
+class Satz(tuple):
+    """(Untertitel, Sprechfassung) mit Quelltext .q (Markup)."""
+
+def S(t):
+    """Ein Quelltext mit Markup: Untertitel = anzeige(t), Audio = tts(t) -> sprechfassung(t) (sprechen.py)."""
+    r = Satz((anzeige(t), sprechfassung(t))); r.q = t
+    return r
 
 SECS = [
  [S("Heute rechnest du ein Prüfprotokoll vor: die Zugspannung in einem Rundstab."),
-  S("Bekannt sind die Zugkraft von 12 000 Newton und der Durchmesser von 10 Millimetern.", "Bekannt sind die Zugkraft von zwölftausend Newton und der Durchmesser von zehn Millimetern."),
+  S("Bekannt sind die Zugkraft von 12 000 Newton und der Durchmesser von 10 Millimetern."),
   S("Das Programm fragt nach Prüfer und Bauteil, berechnet Fläche und Spannung und gibt ein Protokoll aus."),
-  S("Dafür reichen print, Variablen, Kommentare und input aus diesem Kapitel.")],
+  S("Dafür reichen `print`, Variablen, Kommentare und `input` aus diesem Kapitel.")],
  [S("Die ersten beiden Zeilen sind Kommentare. Sie beginnen mit einer Raute und sagen, worum es geht."),
-  S("In Zeile 4 und 5 liest input zwei Texte ein: den Namen der Prüferin oder des Prüfers und die Bauteil-Bezeichnung.",
-    "In Zeile vier und fünf liest input zwei Texte ein: den Namen der Prüferin oder des Prüfers und die Bauteil-Bezeichnung."),
-  S("Der Text in den Klammern ist die Aufforderung, die Antworten landen in den Variablen pruefer und bauteil.", "Der Text in den Klammern ist die Aufforderung, die Antworten landen in den Variablen prüfer und bauteil."),
+  S("In Zeile 4 und 5 liest `input` zwei Texte ein: den Namen der Prüferin oder des Prüfers und die Bauteil-Bezeichnung."),
+  S("Der Text in den Klammern ist die Aufforderung, die Antworten landen in den Variablen [[pruefer|prüfer]] und `bauteil`."),
   S("Beides bleibt Text, damit wird nichts gerechnet.")],
- [S("Dann folgen die festen Werte: kraft_n ist 12000, durchmesser_mm ist 10.", "Dann folgen die festen Werte: kraft Unterstrich n ist zwölftausend, durchmesser Unterstrich m m ist zehn."),
+ [S("Dann folgen die festen Werte: [[kraft_n|kraft n]] ist 12000, [[durchmesser_mm|durchmesser m m]] ist 10."),
   S("Die Einheit steckt im Namen und im Kommentar, so verwechselst du später nichts."),
-  S("Pi ist hier eine Näherung: 3,14159.", "Pi ist hier eine Näherung: drei Punkt eins vier eins fünf neun."),
-  S("Alle Zahlen stehen noch fest im Code. Zahlen einlesen lernst du in Lektion drei.")],
- [S("Jetzt wird gerechnet. Zeile 11 berechnet die Fläche: pi mal d mal d durch vier.", "Jetzt wird gerechnet. Zeile elf berechnet die Fläche: pi mal d mal d durch vier."),
-  S("Denk an die Zuweisung von rechts nach links: Erst wird die rechte Seite ausgerechnet, dann bekommt flaeche_mm2 das Ergebnis.", "Denk an die Zuweisung von rechts nach links: Erst wird die rechte Seite ausgerechnet, dann bekommt flaeche Unterstrich m m zwei das Ergebnis."),
-  S("Zeile 12 teilt die Kraft durch die Fläche und speichert die Spannung.", "Zeile zwölf teilt die Kraft durch die Fläche und speichert die Spannung."),
+  S("Pi ist hier eine Näherung: [[3,14159|drei Komma eins vier eins fünf neun]]."),
+  S("Alle Zahlen stehen noch fest im Code. Zahlen einlesen lernst du in Lektion 3.")],
+ [S("Jetzt wird gerechnet. Zeile 11 berechnet die Fläche: `pi * d * d / 4`."),
+  S("Denk an die Zuweisung von rechts nach links: Erst wird die rechte Seite ausgerechnet, dann bekommt [[flaeche_mm2|fläche m m zwei]] das Ergebnis."),
+  S("Zeile 12 teilt die Kraft durch die Fläche und speichert die Spannung."),
   S("Die Fläche liegt in Quadratmillimetern vor, also kommt Newton pro Quadratmillimeter heraus, das sind Megapascal."),
   S("Die Reihenfolge zählt: Die Fläche muss existieren, bevor du sie benutzt.")],
- [S("Zum Schluss folgen fünf print-Zeilen."),
+ [S("Zum Schluss folgen fünf [[print-Zeilen|print Zeilen]]."),
   S("Die erste gibt die Überschrift aus."),
-  S("Die nächsten vier haben je zwei Argumente, einen Text und eine Variable. print setzt dazwischen ein Leerzeichen."),
+  S("Die nächsten vier haben je zwei Argumente, einen Text und eine Variable. `print` setzt dazwischen ein Leerzeichen."),
   S("So landen Prüfer, Bauteil, Fläche und Spannung im Protokoll.")],
- [S("Jetzt der Probelauf. Als Prüfer gibst du Max Mustermann ein, als Bauteil Welle W siebzehn.", "Jetzt der Probelauf. Als Prüfer gibst du Max Mustermann ein, als Bauteil Welle W siebzehn."),
+ [S("Jetzt der Probelauf. Als Prüfer gibst du Max Mustermann ein, als Bauteil Welle W siebzehn."),
   S("Danach läuft der Rest ohne weitere Eingabe, Zeile für Zeile."),
-  S("Die Fläche beträgt 78,53975 Quadratmillimeter.", "Die Fläche beträgt achtundsiebzig Komma fünf drei neun sieben fünf Quadratmillimeter."),
-  S("Die Spannung ist 152,78887 und dann noch viele weitere Stellen, in Megapascal.", "Die Spannung ist einhundertzweiundfünfzig Komma sieben acht acht acht sieben und dann noch viele weitere Stellen, in Megapascal.")],
- [S("Jetzt der wichtigste Schritt: Passt das Ergebnis? Im Kopf überschlägst du 12 000 durch rund 80, das sind etwa 150.",
-    "Jetzt der wichtigste Schritt: Passt das Ergebnis? Im Kopf überschlägst du zwölftausend durch rund achtzig, das sind etwa hundertfünfzig."),
-  S("Unser Ergebnis liegt bei etwa 153 Megapascal, die Größenordnung stimmt.", "Unser Ergebnis liegt bei etwa hundertdreiundfünfzig Megapascal, die Größenordnung stimmt."),
-  S("Das passt zu Baustahl S235: Die Streckgrenze liegt bei 235 Megapascal, der Stab bleibt also darunter.",
-    "Das passt zu Baustahl S zwei drei fünf: Die Streckgrenze liegt bei zweihundertfünfunddreißig Megapascal, der Stab bleibt also darunter."),
-  S("Die vielen Nachkommastellen formatieren wir in Lektion drei."),
-  S("Ein Ergebnis wie 0,153 oder 150 000 Megapascal würde dir dagegen sofort auffallen.",
-    "Ein Ergebnis wie null Komma eins fünf drei oder hundertfünfzigtausend Megapascal würde dir dagegen sofort auffallen.")],
+  S("Die Fläche beträgt [[78,53975|achtundsiebzig Komma fünf drei neun sieben fünf]] Quadratmillimeter."),
+  S("Die Spannung beginnt mit [[152,78887|hundertzweiundfünfzig Komma sieben acht acht acht sieben]], danach folgen noch viele weitere Stellen, in Megapascal.")],
+ [S("Jetzt der wichtigste Schritt: Passt das Ergebnis? Im Kopf überschlägst du 12 000 durch rund 80, das sind etwa 150."),
+  S("Unser Ergebnis liegt bei etwa 153 Megapascal, die Größenordnung stimmt."),
+  S("Das passt zu Baustahl [[S235|S zwei drei fünf]]: Die Streckgrenze liegt bei 235 Megapascal, der Stab bleibt also darunter."),
+  S("Die vielen Nachkommastellen formatieren wir in Lektion 3."),
+  S("Ein Ergebnis wie 0,153 oder 150 000 Megapascal würde dir dagegen sofort auffallen.")],
 ]
 
 def rise(f, t, ti, fn):
@@ -212,12 +215,14 @@ def poster(path):
     f.el(1, fn); f.img.save(path)
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1 and sys.argv[1] == "text":
+    if len(sys.argv) > 1 and sys.argv[1] in ("text", "tts"):
         tot = 0
-        for i, s in enumerate(SECS, 1):
-            txt = " ".join(sp for _, sp in s); tot += len(txt)
-            print(f"s{i} ({len(txt)} Z., {len(txt.split())} W.)")
-            open(os.path.join(HERE, "audio", f"s{i}.txt"), "w", encoding="utf-8").write(txt)
-        print("Zeichen gesamt", tot, "Woerter", sum(len(sp.split()) for s in SECS for _, sp in s))
+        for i, sec in enumerate(SECS, 1):
+            q = " ".join(x.q for x in sec); sp = sprechfassung(q); tot += len(sp)
+            print(f"s{i} ({len(sp)} Z.)")
+            for h in pruefen(q): print("  PRUEFEN:", h)
+            if sys.argv[1] == "tts": tts(q, os.path.join(HERE, "audio", f"s{i}.mp3"))
+            else: open(os.path.join(HERE, "audio", f"s{i}.sprech.txt"), "w", encoding="utf-8").write(sp)
+        print("Zeichen gesamt", tot)
     else:
         main(HERE, SECS, SCENES, LABEL, poster, NAME)

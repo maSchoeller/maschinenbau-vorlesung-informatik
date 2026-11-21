@@ -1,1 +1,0 @@
-Das Modul math bringt Funktionen mit. Du holst es mit import math. math Punkt sqrt von zwei ist die Wurzel aus zwei, und math Punkt pi ist die Kreiszahl. Weil Floats nie ganz exakt sind, ist null Komma eins plus null Komma zwei gleich null Komma drei: False. Vergleiche stattdessen mit math Punkt is close, und du bekommst True. Probier alles selbst aus!

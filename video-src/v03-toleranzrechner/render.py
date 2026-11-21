@@ -3,41 +3,44 @@ Aufruf: python render.py [text|stills t1 t2..|full|mux]"""
 import os, sys
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "common"))
 from core import *
+from sprechen import tts, anzeige, sprechfassung, pruefen
 from pages import O
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 NAME = "v03-toleranzrechner"; LABEL = "DHBW · Informatik · V03 · Toleranzrechner"
 
-SECS = [
- [("Aufgabe: Ein Programm liest Nennmaß, Abmaß und Messwert ein.", "Aufgabe: Ein Programm liest Nennmaß, Abmaß und Messwert ein."),
-  ("Es gibt die Grenzmaße aus und prüft, ob der Messwert in der Toleranz liegt.", "Es gibt die Grenzmaße aus und prüft, ob der Messwert in der Toleranz liegt."),
-  ("Unser Beispiel: Nennmaß 25 mm, Abmaß ± 0,05 mm.", "Unser Beispiel: Nennmaß fünfundzwanzig Millimeter, Abmaß plus minus null Komma null fünf Millimeter."),
-  ("Das Bauteil darf also zwischen 24,95 und 25,05 mm messen.", "Das Bauteil darf also zwischen vierundzwanzig Komma neun fünf und fünfundzwanzig Komma null fünf Millimeter messen."),
-  ("Unser Messwert liegt genau auf der Grenze: 25,05 mm. Ist das noch in Ordnung?", "Unser Messwert liegt genau auf der Grenze: fünfundzwanzig Komma null fünf Millimeter. Ist das noch in Ordnung?")],
- [("Bevor du Code schreibst, zerlegst du die Aufgabe, ähnlich wie in einem Struktogramm.", "Bevor du Code schreibst, zerlegst du die Aufgabe, ähnlich wie in einem Struktogramm."),
-  ("Eingabe: drei Zahlen, nämlich Nennmaß, Abmaß und Messwert.", "Eingabe: drei Zahlen, nämlich Nennmaß, Abmaß und Messwert."),
-  ("Verarbeitung: Untermaß und Obermaß berechnen und prüfen, ob der Messwert passt.", "Verarbeitung: Untermaß und Obermaß berechnen und prüfen, ob der Messwert passt."),
-  ("Ausgabe: die Grenzmaße und das Ergebnis der Prüfung.", "Ausgabe: die Grenzmaße und das Ergebnis der Prüfung."),
-  ("Jeder dieser Kästen wird später ein Abschnitt im Code.", "Jeder dieser Kästen wird später ein Abschnitt im Code.")],
- [("Abschnitt 1 liest die Eingaben. input() liefert Text, deshalb steht float() drumherum.", "Abschnitt eins liest die Eingaben. input liefert Text, deshalb steht float drumherum."),
-  ("Ohne float() bricht schon die Subtraktion mit einem TypeError ab.", "Ohne float bricht schon die Subtraktion mit einem TypeError ab."),
-  ("Abschnitt 2 rechnet: Untermaß ist Nennmaß minus Abmaß, Obermaß ist Nennmaß plus Abmaß.", "Abschnitt zwei rechnet: Untermaß ist Nennmaß minus Abmaß, Obermaß ist Nennmaß plus Abmaß."),
-  ("Abschnitt 3 gibt die Grenzmaße aus. Der f-String mit :.2f zeigt zwei Nachkommastellen.", "Abschnitt drei gibt die Grenzmaße aus. Der f-String mit Doppelpunkt, Punkt zwei f, zeigt zwei Nachkommastellen.")],
- [("Abschnitt 4 ist der Kern der Aufgabe.", "Abschnitt vier ist der Kern der Aufgabe."),
-  ("math.isclose prüft, ob der Messwert höchstens ein Abmaß vom Nennmaß entfernt liegt.", "math Punkt is close prüft, ob der Messwert höchstens ein Abmaß vom Nennmaß entfernt liegt."),
-  ("rel_tol ist null, damit nur die absolute Toleranz zählt. abs_tol ist das Abmaß.", "rel tol ist null, damit nur die absolute Toleranz zählt. abs tol ist das Abmaß."),
-  ("Der kleine Zuschlag von 1e-9 fängt Rundungsfehler ab.", "Der kleine Zuschlag von eins mal zehn hoch minus neun fängt Rundungsfehler ab.")],
- [("Jetzt der Probelauf mit den Eingaben 25, 0.05 und 25.05.", "Jetzt der Probelauf mit den Eingaben fünfundzwanzig, null Punkt null fünf und fünfundzwanzig Punkt null fünf."),
-  ("Die Grenzmaße lauten 24.95 und 25.05.", "Die Grenzmaße lauten vierundzwanzig Punkt neun fünf und fünfundzwanzig Punkt null fünf."),
-  ("Der Messwert liegt genau auf der Grenze, also erwarten wir True.", "Der Messwert liegt genau auf der Grenze, also erwarten wir True."),
-  ("Aber 25.05 minus 25 ergibt in Python 0.05000000000000071, also minimal mehr als 0.05.", "Aber fünfundzwanzig Punkt null fünf minus fünfundzwanzig ergibt in Python null Punkt null fünf, dann viele Nullen und ganz hinten sieben eins, also minimal mehr als null Punkt null fünf."),
-  ("Ohne Zuschlag fiele der Grenzwert fälschlich durch. Bei 25.06 ist False dagegen richtig.", "Ohne den Zuschlag fiele der Grenzwert fälschlich durch. Bei fünfundzwanzig Punkt null sechs ist False dagegen richtig.")],
- [("Zum Schluss: Vergleiche deine Lösung mit einem KI-Vorschlag.", "Zum Schluss: Vergleiche deine Lösung mit einem KI-Vorschlag."),
-  ("Steht float() um input()?", "Steht float um input?"),
-  ("Werden Floats irgendwo mit == verglichen?", "Werden Floats irgendwo mit zwei Gleichheitszeichen verglichen?"),
-  ("Und teste immer die Grenzfälle: genau auf der Grenze, knapp darüber und knapp darunter.", "Und teste immer die Grenzfälle: genau auf der Grenze, knapp darüber und knapp darunter."),
-  ("Dann weißt du, ob du den Code wirklich verstanden hast.", "Dann weißt du, ob du den Code wirklich verstanden hast.")],
+# Ein Quelltext mit Markup: Untertitel = anzeige(), Audio = tts() (Sprechfassung automatisch)
+SRC = [
+ ["Aufgabe: Ein Programm liest Nennmaß, Abmaß und Messwert ein.",
+  "Es gibt die Grenzmaße aus und prüft, ob der Messwert in der Toleranz liegt.",
+  "Unser Beispiel: Nennmaß 25 mm, Abmaß ± 0,05 mm.",
+  "Das Bauteil darf also zwischen 24,95 und 25,05 mm messen.",
+  "Unser Messwert liegt genau auf der Grenze: 25,05 mm. Ist das noch in Ordnung?"],
+ ["Bevor du Code schreibst, zerlegst du die Aufgabe, ähnlich wie in einem Struktogramm.",
+  "Eingabe: drei Zahlen, nämlich Nennmaß, Abmaß und Messwert.",
+  "Verarbeitung: Untermaß und Obermaß berechnen und prüfen, ob der Messwert passt.",
+  "Ausgabe: die Grenzmaße und das Ergebnis der Prüfung.",
+  "Jeder dieser Kästen wird später ein Abschnitt im Code."],
+ ["Abschnitt 1 liest die Eingaben. `input()` liefert Text, deshalb steht `float()` drumherum.",
+  "Ohne `float()` bricht schon die Subtraktion mit einem TypeError ab.",
+  "Abschnitt 2 rechnet: Untermaß ist Nennmaß minus Abmaß, Obermaß ist Nennmaß plus Abmaß.",
+  "Abschnitt 3 gibt die Grenzmaße aus. Der f-String mit [[:.2f|Doppelpunkt, Punkt zwei f,]] zeigt zwei Nachkommastellen."],
+ ["Abschnitt 4 ist der Kern der Aufgabe.",
+  "`math.isclose` prüft, ob der Messwert höchstens ein Abmaß vom Nennmaß entfernt liegt.",
+  "`rel_tol` ist null, damit nur die absolute Toleranz zählt. `abs_tol` ist das Abmaß.",
+  "Der kleine Zuschlag von `1e-9` fängt Rundungsfehler ab."],
+ ["Jetzt der Probelauf mit den Eingaben 25, 0.05 und 25.05.",
+  "Die Grenzmaße lauten 24.95 und 25.05.",
+  "Der Messwert liegt genau auf der Grenze, also erwarten wir True.",
+  "Aber 25.05 minus 25 ergibt in Python 0.05000000000000071, also minimal mehr als 0.05.",
+  "Ohne Zuschlag fiele der Grenzwert fälschlich durch. Bei 25.06 ist False dagegen richtig."],
+ ["Zum Schluss: Vergleiche deine Lösung mit einem KI-Vorschlag.",
+  "Steht `float()` um `input()`?",
+  "Werden Floats irgendwo mit [[==|zwei Gleichheitszeichen]] verglichen?",
+  "Und teste immer die Grenzfälle: genau auf der Grenze, knapp darüber und knapp darunter.",
+  "Dann weißt du, ob du den Code wirklich verstanden hast."],
 ]
+SECS = [[(anzeige(s), sprechfassung(s)) for s in sec] for sec in SRC]
 
 CODE = [
  "import math",
@@ -256,12 +259,18 @@ def poster(path):
     f.el(1, fn); f.img.save(path)
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1 and sys.argv[1] == "text":
-        tot = 0
-        for i, s in enumerate(SECS, 1):
-            txt = " ".join(sp for _, sp in s); tot += len(txt)
-            print(f"s{i} ({len(txt)} Z., {len(txt.split())} W.): {txt}\n")
-            open(os.path.join(HERE, "audio", f"s{i}.txt"), "w", encoding="utf-8").write(txt)
-        print("Zeichen gesamt", tot, "Woerter", sum(len(sp.split()) for s in SECS for _, sp in s))
+    modus = sys.argv[1] if len(sys.argv) > 1 else "full"
+    if modus == "text":   # Vorschau ohne Kosten: gesendeter Text je Absatz + PRUEFEN-Hinweise
+        for i, sec in enumerate(SRC, 1):
+            roh = " ".join(sec); sp = sprechfassung(roh)
+            print(f"s{i} ({len(sp)} Z.): {sp}")
+            for h in pruefen(roh): print("  PRUEFEN:", h)
+            print()
+    elif modus == "vertonen":   # je Absatz eine Datei audio/sN.mp3 (+ sN.sprech.txt)
+        gesamt = 0
+        for i, sec in enumerate(SRC, 1):
+            roh = " ".join(sec)
+            tts(roh, os.path.join(HERE, "audio", f"s{i}.mp3")); gesamt += len(sprechfassung(roh))
+        print("Zeichen gesendet", gesamt)
     else:
         main(HERE, SECS, SCENES, LABEL, poster, NAME)
