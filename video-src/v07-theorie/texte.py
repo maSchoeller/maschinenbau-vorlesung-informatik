@@ -1,6 +1,6 @@
 """Sprechertext V07 Theorie (Quelltext mit Markup)."""
 SRC = [
- ["Eine KI hat dir einen Wellen-Rechner geschrieben: 44 Zeilen, drei Wellen, und es läuft sofort durch.",
+ ["Eine [[KI|Ka I]] hat dir einen Wellen-Rechner geschrieben: 44 Zeilen, drei Wellen, und es läuft sofort durch.",
   "Doch die Formel für die Torsionsspannung steht dreimal im Skript, und bei der dritten Welle steht ein Tippfehler: [[d ** 2|d hoch zwei]] statt [[d ** 3|d hoch drei]].",
   "Das Ergebnis: 461 MPa, die Welle gilt als überlastet. Dabei wäre sie völlig in Ordnung.",
   "Das Skript läuft ohne Fehlermeldung, nur das Ergebnis stimmt nicht.",
@@ -25,7 +25,7 @@ SRC = [
   "Darin leben die Parameter und alle Variablen der Funktion. Sie sind lokal und von außen unsichtbar.",
   "Ruft [[tau(T, d)|tau von T und d]] nun selbst `widerstandsmoment(d)` auf, kommt ein zweiter Frame obendrauf. Das ist der Aufrufstapel.",
   "Mit `return` endet der Aufruf, der oberste Frame verschwindet, und der Wert geht zurück an die Stelle des Aufrufs."],
- ["Die häufigsten Fehler in KI-Code: ein `print` statt `return`, dann bekommst du den Wert `None` zurück.",
+ ["Die häufigsten Fehler in [[KI|Ka I]]-Code: ein `print` statt `return`, dann bekommst du den Wert `None` zurück.",
   "Oder ein Zweig, der keinen Wert zurückgibt, und die Einheit: Kilowatt statt Watt.",
   "Darum prüfst du jede Funktion einzeln mit einem Wert, den du von Hand nachrechnen kannst.",
   "Das Lesen von Typ-Hinweisen und Docstrings genügt dir. Das Schreiben der Funktionen übst du im Labor."],
