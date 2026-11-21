@@ -1,0 +1,1 @@
+Ein Sprachmodell rechnet nicht mit Buchstaben, sondern mit Tokens. Ein Tokenizer zerlegt den Text in Stücke und gibt jedem Stück eine Nummer. Häufige Wörter sind ein Token. Lange Wörter werden zerlegt: Wellendichtring wird zu Wellen, dicht und ring. Das Modell sieht nur die Nummern.

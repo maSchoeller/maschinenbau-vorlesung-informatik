@@ -1,14 +1,14 @@
 """Sprechertext V10 Theorie (Quelltext mit Markup)."""
 SRC = [
- ["Du fragst eine KI: Welches Anzugsdrehmoment hat eine Schraube [[M10|M zehn]] der Festigkeitsklasse [[8.8|acht Punkt acht]]?",
+ ["Du fragst eine [[KI|Ka I]]: Welches Anzugsdrehmoment hat eine Schraube [[M10|M zehn]] der Festigkeitsklasse [[8.8|acht Punkt acht]]?",
   "Die Antwort kommt sofort: [[86 Nm|sechsundachtzig Newtonmeter]]. Das klingt sicher. Der Tabellenwert ist aber [[49 Nm|neunundvierzig Newtonmeter]]. Die sechsundachtzig gehören zur [[M12|M zwölf]].",
-  "Wie kommt eine KI zu so einer selbstbewussten Falschaussage?"],
+  "Wie kommt eine [[KI|Ka I]] zu so einer selbstbewussten Falschaussage?"],
  ["Ein Sprachmodell rechnet nicht mit Buchstaben, sondern mit Tokens.",
   "Ein Tokenizer zerlegt den Text in Stücke und gibt jedem Stück eine Nummer.",
   "Häufige Wörter sind ein Token. Lange Wörter werden zerlegt: Wellendichtring wird zu Wellen, dicht und ring.",
   "Das Modell sieht nur die Nummern."],
  ["Beim Training wird gezählt: Welches Token folgte auf welchen Kontext?",
-  "Kam nach dem Wort die fünfmal ein Wort, viermal Welle und einmal Schraube, dann sind das achtzig Prozent für Welle und zwanzig Prozent für Schraube.",
+  "Kam nach dem Wort „die“ fünfmal ein Wort, viermal Welle und einmal Schraube, dann sind das achtzig Prozent für Welle und zwanzig Prozent für Schraube.",
   "Das ist ein Bigramm-Modell, der einfachste Fall. Große Modelle speichern ihre Wahrscheinlichkeiten in einem neuronalen Netz, aber gelernt wird dasselbe."],
  ["Zum Erzeugen würfelt das Modell den Nachfolger nach diesen Wahrscheinlichkeiten, hängt ihn an und macht weiter, Token für Token.",
   "Die Temperatur regelt den Zufall: Niedrig heißt fast immer das häufigste Wort, hoch heißt, auch Unwahrscheinliches kommt dran.",
@@ -17,8 +17,8 @@ SRC = [
   "Jeder erzeugte Satz besteht aus Wortpaaren, die es im Training gab. Darum klingt er flüssig, auch wenn die Aussage falsch ist.",
   "Das nennt man Halluzination. Das Modell prüft keine Quelle, es erzeugt Wahrscheinliches, nicht Wahres."],
  ["Für dich als Ingenieur heißt das: Zahlen gegenrechnen oder in der Tabelle nachschlagen, Einheiten prüfen, Normen im Original öffnen und Quellen anklicken.",
-  "Vertrauliche Daten gehören nicht in eine öffentliche KI.",
-  "Die KI schreibt den Entwurf, du verantwortest das Ergebnis."],
+  "Vertrauliche Daten gehören nicht in eine öffentliche [[KI|Ka I]].",
+  "Die [[KI|Ka I]] schreibt den Entwurf, du verantwortest das Ergebnis."],
 ]
 
 SZENEN = [
