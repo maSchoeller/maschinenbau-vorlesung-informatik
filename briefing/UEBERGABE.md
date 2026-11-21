@@ -41,5 +41,5 @@ Lokal noch nicht committet: V04–V06 (Seiten, Notebooks, explorables-v04/05/06,
 ## Stand 2026-11-21 spät (nach PAP-Umstellung)
 - Erledigt, noch nicht committet: V05 neu als PAP (`v05-programmablaufplan.html`, Labor, `V05-Programmablaufplan.ipynb`, explorables-v05.js, v05.css; Vorgabe `briefing/v05-pap-konzept.md`), V06 auf PAP-Schleifen, KONZEPT/DESIGN/index/V01/V04/Bibliothek auf PAP, Videos v05-theorie/-python/-beispiel neu, v06-theorie und v03-toleranzrechner (je Szene 2) neu vertont, PAP-Zeichenhilfe `video-src/v05-common/pap.py`, Hook-Bilder V04–V06.
 - Geprüft (Browser 1600/375 px, Konsole, Code-Aufgaben, Parsons, Schritt für Schritt, Popover, nach-antwort): ok.
-- Offen: OK des Dozenten, dann committen, nach `main` mergen, pushen, Deploy online prüfen. Danach V07–V09.
+- Veröffentlicht am 2026-11-21 (Commit 52b9b5d auf `main`), online geprüft. Weiter: Nachtlauf nach `briefing/NACHTLAUF-V07-V22.md`.
 - Bekannte Kleinigkeiten: in v05-beispiel-Video angeschnittene Linienstummel am Ausschnittrand; auf 375 px ist das Bedienfeld des Ablauf-Explorables in V05 recht groß.
