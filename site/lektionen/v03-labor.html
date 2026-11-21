@@ -41,7 +41,7 @@
         <span class="a-progress__bar"><span class="a-progress__fill"></span></span>
         <span class="a-progress__text">0 von 13 Aufgaben gelöst</span>
       </div>
-      <p class="lab__legend k-small k-muted"><span aria-hidden="true">○</span> offen · <span aria-hidden="true">◐</span> begonnen · <span aria-hidden="true">✓</span> gelöst</p>
+      <p class="lab__legend k-small k-muted"><span><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-circle"/></svg> offen</span><span><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-half"/></svg> begonnen</span><span><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-done"/></svg> gelöst</span></p>
       <div data-lab-items></div>
     </nav>
 
@@ -62,6 +62,15 @@
         <p class="l-task__meta"></p>
       </header>
       <p class="l-task__intro">Heute neu in Python: Kommazahlen (<code class="k-i">float</code>), Typen erkennen und umwandeln, Zahlen einlesen, formatiert ausgeben und das <code class="k-i">math</code>-Modul. Aus V01 und V02 setzen wir <code class="k-i">print</code>, Variablen, <code class="k-i">int</code> und die Operatoren <code class="k-i">+ - * / // % **</code> voraus. Die Klausur verlangt, dass du Code von Hand schreibst. Darum gehen wir in kleinen Schritten vom Vormachen zum Selberschreiben, und die Hilfen werden dabei weniger.</p>
+      <figure class="k-video">
+        <video controls preload="metadata" poster="../assets/video/v03-python-typen-poster.png" aria-label="Python-Werkstatt: Typen, Umwandlung, f-Strings (ca. 3 Min)">
+          <source src="../assets/video/v03-python-typen.mp4" type="video/mp4">
+          <track kind="subtitles" srclang="de" label="Deutsch" src="../assets/video/v03-python-typen.vtt" default>
+          Dein Browser kann dieses Video nicht abspielen.
+        </video>
+        <div class="k-video__missing" hidden>Video folgt. Bis dahin: Lies den Code unten Zeile für Zeile und probiere ihn aus.</div>
+        <figcaption>Python-Werkstatt: Typen, Umwandlung, f-Strings (ca. 3 Min). Untertitel sind eingeschaltet (Deutsch).</figcaption>
+      </figure>
       <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke</strong><p>Diese fünf Syntax-Karten sind dein Spickzettel, bis es sitzt. Du erreichst sie in jeder Aufgabe über den Knopf „Werkzeugkasten“ oben. Alle Befehle des Kurses stehen außerdem rechts in der Befehls-Bibliothek.</p></div>
       <div class="lab__toolbox" id="lab-toolbox">
 <div class="a-syntax-list">
@@ -145,6 +154,15 @@ math.isclose(a, b, abs_tol=1e-9)</pre>
         <p class="l-task__meta"></p>
       </header>
       <p class="l-task__intro">Aufgabe: Ein Programm liest das Nennmaß, das Abmaß (±) und einen Messwert ein, gibt die Grenzmaße formatiert aus und prüft, ob der Messwert in der Toleranz liegt. Lies den Code Zeile für Zeile, dann führe ihn aus. Die Eingaben stehen im Feld darunter (Beispiel: der Messwert liegt genau auf der Grenze).</p>
+      <figure class="k-video">
+        <video controls preload="metadata" poster="../assets/video/v03-toleranzrechner-poster.png" aria-label="Vorgerechnet: der Toleranzrechner Schritt für Schritt (ca. 3 Min)">
+          <source src="../assets/video/v03-toleranzrechner.mp4" type="video/mp4">
+          <track kind="subtitles" srclang="de" label="Deutsch" src="../assets/video/v03-toleranzrechner.vtt" default>
+          Dein Browser kann dieses Video nicht abspielen.
+        </video>
+        <div class="k-video__missing" hidden>Video folgt. Bis dahin: Lies den Code unten Zeile für Zeile und probiere ihn aus.</div>
+        <figcaption>Vorgerechnet: der Toleranzrechner Schritt für Schritt (ca. 3 Min). Untertitel sind eingeschaltet (Deutsch).</figcaption>
+      </figure>
       <div class="a-task" data-a="run" data-id="w-vorgemacht" data-count="0" data-mode="programm" data-inputs="25|0.05|25.05">
         <div class="a-editor"><textarea class="py-editor" data-lesson="V03" aria-label="Python-Code: Toleranzrechner">import math
 
@@ -1034,6 +1052,7 @@ print(f"E-Modul: {E:.2e} N/mm²")
     </div>
   </footer>
 
+  <script src="../assets/js/icons.js"></script>
   <script src="../assets/js/editor.js" defer></script>
   <script src="../assets/js/kurs.js"></script>
   <script src="../assets/js/aufgaben.js"></script>

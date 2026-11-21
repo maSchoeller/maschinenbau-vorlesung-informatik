@@ -1,7 +1,7 @@
 /* =============================================================
    labor.js – Arbeitsumgebung „Programmierlabor“
    - zeigt immer genau eine Aufgabe (.l-task) an, Navigation über Hash-Anker
-   - Aufgabenliste links mit Status ○ offen · ◐ begonnen · ✓ gelöst
+   - Aufgabenliste links mit Status offen · begonnen · gelöst (SVG-Symbole)
    - Zurück/Weiter, Auswahlmenü (mobil), Werkzeugkasten als aufklappbare Schublade
    Braucht aufgaben.js (Fortschritts-Speicher). Die Bibliothek dockt editor.js an.
    ============================================================= */
@@ -13,7 +13,7 @@
   var STORE_KEY = 'dhbw-inf-mb:v1';
   var LESSON = document.body.getAttribute('data-lesson') || 'V03';
   var BASE_TITLE = 'Programmierlabor ' + LESSON + ' · Informatik Maschinenbau';
-  var MARK = { open: '○', part: '◐', done: '✓' };
+  var MARK = { open: 'circle', part: 'half', done: 'done' };  // Icon-IDs im Sprite
   var MARK_TXT = { open: 'offen', part: 'begonnen', done: 'gelöst' };
 
   function $(s, r) { return (r || document).querySelector(s); }
@@ -43,7 +43,8 @@
   var current = -1;
 
   function countable(sec) { return $$('[data-a][data-id]:not([data-count="0"])', sec); }
-  function stars(n) { n = parseInt(n, 10) || 0; if (!n) return ''; return new Array(n + 1).join('★') + new Array(5 - n).join('☆'); }
+  function stars(n) { n = parseInt(n, 10) || 0; if (!n) return null; return window.KStars(n, 4); }
+  function setMark(node, s) { node.textContent = ''; node.appendChild(window.KIcon(MARK[s])); }
   function minText(m) { if (!m) return ''; return /^\d+$/.test(m) ? 'ca. ' + m + ' Min' : m; }
   function starLabel(n) { n = parseInt(n, 10) || 0; return n ? 'Schwierigkeit ' + n + ' von 4' : ''; }
 
@@ -75,14 +76,15 @@
       var n = partNo[part];
       var title = t.getAttribute('data-title');
       var st = stars(t.getAttribute('data-stars'));
-      var meta = [st, minText(t.getAttribute('data-min'))].filter(Boolean).join(' · ');
+      var metaMin = minText(t.getAttribute('data-min'));
+      var meta = !!(st || metaMin);
       // Kopf der Station
       var kick = $('.l-task__kicker', t);
       if (kick) kick.textContent = partName[part] + ' · ' + (nonum ? 'Zum Schluss' : (part === 'B' ? 'Aufgabe ' : 'Station ') + n + ' von ' + partTotal[part]);
       var mt = $('.l-task__meta', t);
       if (mt) {
         var bits = [];
-        if (st) { var sp = el('span', { role: 'img', 'aria-label': starLabel(t.getAttribute('data-stars')), text: st }); bits.push(sp); }
+        if (st) { var sp = el('span', {}, [stars(t.getAttribute('data-stars')), el('span', { class: 'k-sr', text: starLabel(t.getAttribute('data-stars')) })]); bits.push(sp); }
         var m = minText(t.getAttribute('data-min')); if (m) bits.push(m);
         var ex = t.getAttribute('data-extra'); if (ex) bits.push(ex);
         bits.forEach(function (b, i) { if (i) mt.appendChild(document.createTextNode(' · ')); if (typeof b === 'string') mt.appendChild(document.createTextNode(b)); else mt.appendChild(b); });
@@ -91,10 +93,16 @@
         mt.appendChild(stat); t._stat = stat;
       }
       // Eintrag in der Liste
-      var mark = el('span', { class: 'lab__mark', 'aria-hidden': 'true', text: MARK.open });
+      var mark = el('span', { class: 'lab__mark', 'aria-hidden': 'true' });
+      setMark(mark, 'open');
       var sr = el('span', { class: 'k-sr', text: ' (offen)' });
       var name = el('span', { class: 'lab__name' }, [el('span', { class: 'lab__nm', text: title })]);
-      if (meta) name.appendChild(el('span', { class: 'lab__meta', text: meta }));
+      if (meta) {
+        var metaEl = el('span', { class: 'lab__meta' });
+        if (st) { metaEl.appendChild(stars(t.getAttribute('data-stars'))); metaEl.appendChild(el('span', { class: 'k-sr', text: starLabel(t.getAttribute('data-stars')) + (metaMin ? ', ' : '') })); }
+        if (metaMin) metaEl.appendChild(document.createTextNode(metaMin));
+        name.appendChild(metaEl);
+      }
       var a = el('a', { class: 'lab__item', href: '#' + t.id }, [mark, name, sr]);
       ol.appendChild(el('li', null, [a]));
       items[t.id] = { a: a, mark: mark, sr: sr };
@@ -109,10 +117,14 @@
     tasks.forEach(function (t) {
       var s = statusOf(t), it = items[t.id];
       if (!it) return;
-      it.mark.textContent = MARK[s];
+      setMark(it.mark, s);
       it.a.setAttribute('data-status', s);
       it.sr.textContent = ' (' + (countable(t).length ? MARK_TXT[s] : (s === 'done' ? 'angesehen' : 'offen')) + ')';
-      if (t._stat) t._stat.textContent = s === 'done' && countable(t).length ? ' · gelöst ✓' : (s === 'part' ? ' · begonnen' : '');
+      if (t._stat) {
+        t._stat.textContent = '';
+        if (s === 'done' && countable(t).length) { t._stat.appendChild(document.createTextNode(' · gelöst')); t._stat.appendChild(window.KIcon('check')); }
+        else if (s === 'part') t._stat.textContent = ' · begonnen';
+      }
     });
   }
 

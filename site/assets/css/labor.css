@@ -5,9 +5,13 @@
    Mobil: Auswahlmenü statt Liste, Bibliothek als Bottom-Sheet.
    ============================================================= */
 
+/* Arbeitsfläche: ca. 90 % der Fensterbreite, zentriert; auf kleineren Fenstern wie bisher
+   bis 1560 px, auf großen Monitoren bis 2400 px. Kopfzeile und Arbeitsfläche teilen die Breite. */
+:root { --lab-w: max(min(90vw, 2400px), min(100%, 1560px)); --lab-dock: clamp(340px, 18vw, 460px); }
+body[data-page="labor"] .dhbw-header__inner { max-width: none; width: var(--lab-w); padding-inline: var(--sp-5); }
 .lab {
-  display: grid; grid-template-columns: 260px minmax(0, 1fr) 340px; gap: 0 var(--sp-6);
-  max-width: 1560px; margin: 0 auto; padding: 0 var(--sp-5); align-items: start;
+  display: grid; grid-template-columns: 260px minmax(0, 1fr) var(--lab-dock); gap: 0 var(--sp-6);
+  width: var(--lab-w); margin: 0 auto; padding: 0 var(--sp-5); align-items: start; box-sizing: border-box;
 }
 html.kb-dock-closed .lab { grid-template-columns: 260px minmax(0, 1fr) 52px; }
 
@@ -24,7 +28,12 @@ html.kb-dock-closed .lab { grid-template-columns: 260px minmax(0, 1fr) 52px; }
 .lab__item:hover { background: var(--canvas); color: var(--text); text-decoration: none; }
 .lab__item[aria-current="page"] { background: var(--red-tint); border-left-color: var(--red); }
 .lab__item[aria-current="page"] .lab__nm { font-weight: 700; }
-.lab__mark { text-align: center; font-size: 1.05em; line-height: 1.5; color: var(--k-muted); }
+.lab__mark { display: flex; justify-content: center; padding-top: 3px; color: var(--k-muted); }
+.lab__mark .k-ic { width: 1.1rem; height: 1.1rem; vertical-align: 0; }
+.lab__legend { display: flex; flex-wrap: wrap; align-items: center; gap: 2px var(--sp-3); }
+.lab__legend span { display: inline-flex; align-items: center; gap: .3em; }
+.lab__meta .k-stars { margin-right: .4em; color: var(--k-warn); }
+.lab__meta .k-stars .k-ic { width: .9em; height: .9em; }
 .lab__item[data-status="part"] .lab__mark { color: var(--k-warn); }
 .lab__item[data-status="done"] .lab__mark { color: var(--k-ok); font-weight: 700; }
 .lab__nm { display: block; font-size: var(--fs-sm); line-height: 1.35; }
@@ -47,8 +56,9 @@ html.kb-dock-closed .lab { grid-template-columns: 260px minmax(0, 1fr) 52px; }
 .l-task__title { font-size: var(--fs-lg); outline: none; }
 .l-task__title:focus-visible { outline: 3px solid var(--k-focus); outline-offset: 4px; }
 .l-task__meta { font-size: var(--fs-sm); color: var(--k-muted); }
-.l-task__meta [role="img"] { color: var(--k-warn); letter-spacing: 1px; }
+.l-task__meta .k-stars { color: var(--k-warn); margin-right: .1em; }
 .l-task__status { font-weight: 700; color: var(--k-ok); }
+.l-task__status .k-ic { margin-left: .25em; }
 .l-task h3 { margin-top: var(--sp-6); font-size: var(--fs-md); }
 .l-task h4 { margin-top: var(--k-block-gap); font-size: var(--fs-base); }
 .l-task h3 + *, .l-task h4 + * { margin-top: var(--sp-2); }
@@ -64,14 +74,22 @@ html.kb-dock-closed .lab { grid-template-columns: 260px minmax(0, 1fr) 52px; }
 .lab__dock { position: sticky; top: var(--sp-4); height: calc(100vh - 2 * var(--sp-4)); margin: var(--sp-5) 0; min-width: 0; }
 .lab__dock[data-state="off"] { display: none; }
 
+/* Editor: in der Arbeitsumgebung höher (mindestens ca. 18 Zeilen) */
+.lab .ke .cm-editor { min-height: max(calc(var(--ke-rows) * 1.6 * var(--fs-sm, .875rem) + 24px), calc(18 * 1.6 * var(--fs-sm, .875rem) + 24px)); max-height: 52rem; }
+.lab .a-task textarea.py-editor { min-height: calc(18 * 1.6 * var(--fs-sm, .875rem) + 24px); }
+
 /* ── Tablet: zwei Spalten, Bibliothek als Overlay ───────────── */
 @media (max-width: 1099px) {
+  :root { --lab-w: 100%; }
   .lab, html.kb-dock-closed .lab { grid-template-columns: 240px minmax(0, 1fr); gap: 0 var(--sp-5); }
   .lab__dock { display: none; }
 }
 
 /* ── Mobil: Auswahlmenü statt Liste ─────────────────────────── */
 @media (max-width: 699px) {
+  body[data-page="labor"] .dhbw-header__inner { padding-inline: var(--gutter); }
+  .lab .ke .cm-editor { min-height: calc(10 * 1.6 * var(--fs-sm, .875rem) + 24px); }
+  .lab .a-task textarea.py-editor { min-height: calc(10 * 1.6 * var(--fs-sm, .875rem) + 24px); }
   .lab, html.kb-dock-closed .lab { display: block; padding: 0 var(--gutter); }
   .lab__list { position: static; max-height: none; overflow: visible; padding: var(--sp-4) 0 0; }
   .lab__list [data-lab-items], .lab__legend { display: none; }

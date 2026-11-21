@@ -79,7 +79,7 @@
   }
   function addBadge(root) {
     var head = $('.a-task__head', root);
-    if (head && !$('.a-badge', head)) head.appendChild(el('span', { class: 'a-badge', text: '✓ gelöst' }));
+    if (head && !$('.a-badge', head)) head.appendChild(el('span', { class: 'a-badge' }, [window.KIcon('check'), 'gelöst']));
   }
 
   /* ── Python-Seite der Prüfung (wird als Text an KursPy.run übergeben) ── */
@@ -341,7 +341,7 @@ def _main(kind, src, inputs, tests_src, mode):
     r.results.forEach(function (t) {
       if (t.ok) ok++;
       var li = el('li', { class: t.ok ? 'is-ok' : 'is-bad' }, [
-        el('span', { class: 'a-tests__mark', 'aria-hidden': 'true', text: t.ok ? '✓' : '✗' }),
+        el('span', { class: 'a-tests__mark', 'aria-hidden': 'true' }, [window.KIcon(t.ok ? 'check' : 'x')]),
         el('span', { class: 'k-sr', text: t.ok ? 'Bestanden: ' : 'Nicht bestanden: ' }),
         el('span', { class: 'a-tests__title', text: t.t })
       ]);
@@ -350,7 +350,7 @@ def _main(kind, src, inputs, tests_src, mode):
     });
     var total = r.results.length;
     var all = total > 0 && ok === total;
-    ui.results.appendChild(el('div', { class: 'a-banner ' + (all ? 'is-ok' : 'is-bad'), text: total === 0 ? 'Keine Tests gefunden.' : (all ? 'Alle ' + total + ' Tests bestanden. Aufgabe gelöst.' : ok + ' von ' + total + ' Tests bestanden. Lies die Meldungen bei den Einträgen mit ✗.') }));
+    ui.results.appendChild(el('div', { class: 'a-banner ' + (all ? 'is-ok' : 'is-bad'), text: total === 0 ? 'Keine Tests gefunden.' : (all ? 'Alle ' + total + ' Tests bestanden. Aufgabe gelöst.' : ok + ' von ' + total + ' Tests bestanden. Lies die Meldungen bei den nicht bestandenen Einträgen.') }));
     ui.results.appendChild(list);
     return all;
   }
@@ -783,8 +783,8 @@ def _main(kind, src, inputs, tests_src, mode):
     function say(t) { live.textContent = ''; setTimeout(function () { live.textContent = t; }, 20); }
     function clearMarks() { $$('.is-right,.is-wrong', ansUl).forEach(function (n) { n.classList.remove('is-right', 'is-wrong'); }); fb.className = 'a-p-fb'; fb.textContent = ''; }
 
-    function toolBtn(label, aria, fn) {
-      var b = el('button', { type: 'button', class: 'a-p-tool', 'aria-label': aria, title: aria, tabindex: '-1', text: label });
+    function toolBtn(icon, aria, fn) {
+      var b = el('button', { type: 'button', class: 'a-p-tool', 'aria-label': aria, title: aria, tabindex: '-1' }, [window.KIcon(icon)]);
       b.addEventListener('click', function (e) { e.stopPropagation(); fn(); });
       return b;
     }
@@ -797,10 +797,10 @@ def _main(kind, src, inputs, tests_src, mode):
       if (grabbed === it.id) { li.classList.add('is-grabbed'); li.setAttribute('aria-grabbed', 'true'); }
       if (inAns) {
         var tools = el('span', { class: 'a-p-tools' });
-        tools.appendChild(toolBtn('▲', 'Nach oben', function () { move(it, -1); }));
-        tools.appendChild(toolBtn('▼', 'Nach unten', function () { move(it, 1); }));
-        tools.appendChild(toolBtn('⇤', 'Weniger einrücken', function () { indent(it, -1); }));
-        tools.appendChild(toolBtn('⇥', 'Weiter einrücken', function () { indent(it, 1); }));
+        tools.appendChild(toolBtn('chevron-up', 'Nach oben', function () { move(it, -1); }));
+        tools.appendChild(toolBtn('chevron-down', 'Nach unten', function () { move(it, 1); }));
+        tools.appendChild(toolBtn('indent-less', 'Weniger einrücken', function () { indent(it, -1); }));
+        tools.appendChild(toolBtn('indent-more', 'Weiter einrücken', function () { indent(it, 1); }));
         tools.appendChild(toolBtn('×', 'Zurück in den Vorrat', function () { toPool(it); }));
         li.appendChild(tools);
         li.addEventListener('click', function () { li.classList.toggle('is-sel'); });
@@ -866,7 +866,7 @@ def _main(kind, src, inputs, tests_src, mode):
       else if (k === 'Delete' || k === 'Backspace') { e.preventDefault(); toPool(it); }
     }
 
-    // Drag & Drop (Maus; Touch-Geräte nutzen Klick und die ▲▼-Knöpfe)
+    // Drag & Drop (Maus; Touch-Geräte nutzen Klick und die Pfeil-Knöpfe)
     function dropIndex(ul, y) {
       var kids = $$('.a-p-item', ul).filter(function (n) { return n.getAttribute('data-id') !== dragId; });
       for (var i = 0; i < kids.length; i++) { var r = kids[i].getBoundingClientRect(); if (y < r.top + r.height / 2) return i; }

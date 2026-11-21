@@ -81,7 +81,11 @@
       var id = sec.getAttribute('data-section');
       var inner = $('.k-section__inner', sec) || sec;
       var btn = el('button', { type: 'button', class: 'k-btn k-btn--link k-btn--small', 'aria-pressed': done[id] ? 'true' : 'false' });
-      function label() { btn.textContent = btn.getAttribute('aria-pressed') === 'true' ? '✓ Abschnitt erledigt (rückgängig)' : 'Abschnitt als erledigt markieren'; }
+      function label() {
+        btn.textContent = '';
+        if (btn.getAttribute('aria-pressed') === 'true') { btn.appendChild(window.KIcon('check')); btn.appendChild(document.createTextNode('Abschnitt erledigt (rückgängig)')); }
+        else btn.textContent = 'Abschnitt als erledigt markieren';
+      }
       label();
       btn.addEventListener('click', function () {
         var on = btn.getAttribute('aria-pressed') !== 'true';
@@ -264,7 +268,10 @@
           pointsTxt = ok ? ' +' + pts + ' P.' : ' 0 von ' + pts + ' P. (erster Versuch).';
         }
         fb.innerHTML = '';
-        fb.appendChild(el('strong', { text: (res.invalid ? '' : (ok ? '✓ ' : '✗ ')) + head + pointsTxt }));
+        var fbHead = el('strong');
+        if (!res.invalid) fbHead.appendChild(window.KIcon(ok ? 'check' : 'x'));
+        fbHead.appendChild(document.createTextNode((res.invalid ? '' : ' ') + head + pointsTxt));
+        fb.appendChild(fbHead);
         if (!res.invalid && explHTML) { var d = el('div'); d.innerHTML = explHTML; fb.appendChild(d); }
         if (!res.invalid) {
           markOptions(ok);
@@ -656,7 +663,8 @@
     btn.addEventListener('click', function () {
       copyText(getText()).then(function (ok) {
         clearTimeout(timer);
-        label.textContent = ok ? 'Kopiert ✓' : 'Nicht möglich';
+        label.textContent = ok ? 'Kopiert' : 'Nicht möglich';
+        if (ok && window.KIcon) label.appendChild(window.KIcon('check'));
         btn.setAttribute('data-state', ok ? 'done' : 'fail');
         announce(ok ? 'Code in die Zwischenablage kopiert.' : 'Kopieren nicht möglich. Bitte den Code markieren und mit Strg plus C kopieren.');
         timer = setTimeout(function () { label.textContent = 'Kopieren'; btn.removeAttribute('data-state'); }, 2000);

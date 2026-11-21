@@ -100,9 +100,9 @@ print(f32(0.1 + 0.2) == f32(0.3))</textarea>
 
         <h3>Wissens-Ampel für V03</h3>
         <ul class="k-ampel-list" aria-label="Wissens-Ampel zu V03">
-          <li><span class="k-ampel k-ampel--kopf">🧠 Im Kopf</span><span>Dass und warum Rundungsfehler entstehen. Floats vergleicht man mit Toleranz, nie mit <code class="k-i">==</code>.</span></li>
-          <li><span class="k-ampel k-ampel--lesen">📖 Lesen &amp; erkennen</span><span>Der IEEE-754-Aufbau: Vorzeichen, Exponent, Mantisse. Du erkennst, was float32 und float64 unterscheidet.</span></li>
-          <li><span class="k-ampel k-ampel--deleg">🤖 Delegieren</span><span>Bitmuster von Hand in Dezimalzahlen umrechnen. Das kann die KI (oder die Float-Lupe unten). Du musst nur wissen, dass es geht.</span></li>
+          <li><span class="k-ampel k-ampel--kopf"><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-head"/></svg> Im Kopf</span><span>Dass und warum Rundungsfehler entstehen. Floats vergleicht man mit Toleranz, nie mit <code class="k-i">==</code>.</span></li>
+          <li><span class="k-ampel k-ampel--lesen"><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-book"/></svg> Lesen &amp; erkennen</span><span>Der IEEE-754-Aufbau: Vorzeichen, Exponent, Mantisse. Du erkennst, was float32 und float64 unterscheidet.</span></li>
+          <li><span class="k-ampel k-ampel--deleg"><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-handover"/></svg> Delegieren</span><span>Bitmuster von Hand in Dezimalzahlen umrechnen. Das kann die KI (oder die Float-Lupe unten). Du musst nur wissen, dass es geht.</span></li>
         </ul>
 
         <div class="hinweis hinweis--warum"><strong class="hinweis__title">Warum muss ich das wissen?</strong><p>Weil die KI dir Code liefert, der auf dem Papier richtig aussieht und trotzdem an der Grenze falsch entscheidet. Prüfprogramme, Zähler und Toleranzrechnungen sind genau die Stellen, an denen Float-Fehler Geld und Sicherheit kosten. Wer das Prinzip im Kopf hat, erkennt die Falle in Sekunden. In der Klausur kommt das als „Was gibt der Code aus?“ dran.</p></div>
@@ -113,7 +113,7 @@ print(f32(0.1 + 0.2) == f32(0.3))</textarea>
         <h2 class="k-section__title" id="h-theorie"><span class="k-section__num" aria-hidden="true">2</span> Theorie</h2>
 
     <h3>Erklärvideo (ca. 3 Min)</h3>
-    <figure class="k-video">
+    <figure class="k-video" id="video-theorie">
       <video controls preload="metadata" poster="../assets/video/v03-poster.png" aria-label="Erklärvideo Fließkommazahlen">
         <source src="../assets/video/v03-erklaervideo.mp4" type="video/mp4">
         <track kind="subtitles" srclang="de" label="Deutsch" src="../assets/video/v03.vtt" default>
@@ -469,6 +469,17 @@ print("fsum ", math.fsum(xs))</textarea>
       </details>
       </section>
 
+      <!-- Videos zur Nachbereitung -->
+      <section class="k-section" id="videos" aria-labelledby="h-videos">
+        <h2 class="k-section__title" id="h-videos">Videos zur Nachbereitung</h2>
+        <p>Alle drei Erklärvideos zu V03 zum Wiederholen, jeweils mit deutschen Untertiteln.</p>
+        <ul class="k-video-list">
+          <li><a href="#video-theorie">Fließkommazahlen erklärt</a> <span class="k-muted">(ca. 3 Min, Theorie, Abschnitt 2 dieser Lerneinheit)</span></li>
+          <li><a href="v03-labor.html#a-werkzeugkasten">Python-Werkstatt: Typen, Umwandlung, f-Strings</a> <span class="k-muted">(ca. 3 Min, im Labor bei „Werkzeugkasten“)</span></li>
+          <li><a href="v03-labor.html#a-vorgemacht">Vorgerechnet: der Toleranzrechner Schritt für Schritt</a> <span class="k-muted">(ca. 3 Min, im Labor bei „Vorgerechnetes Beispiel“)</span></li>
+        </ul>
+      </section>
+
       <!-- Übergang -->
       <section class="k-next" aria-labelledby="h-next">
         <h2 id="h-next">Wie geht es weiter?</h2>
@@ -510,6 +521,7 @@ print("fsum ", math.fsum(xs))</textarea>
     </div>
   </footer>
 
+  <script src="../assets/js/icons.js"></script>
   <script src="../assets/js/editor.js" defer></script>
   <script src="../assets/js/explorables.js"></script>
   <script src="../assets/js/kurs.js"></script>

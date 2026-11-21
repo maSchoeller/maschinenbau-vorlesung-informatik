@@ -1,0 +1,1 @@
+In Python hat jeder Wert einen Typ. Eine ganze Zahl ist ein int, eine Kommazahl ein float, Text ein str und ein Wahrheitswert ein bool. Mit der Funktion type fragst du den Typ ab. Beachte: fünfundzwanzig ist ein int, fünfundzwanzig Punkt null ein float und fünfundzwanzig in Anführungszeichen ein str.
