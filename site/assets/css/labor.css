@@ -1,0 +1,84 @@
+/* =============================================================
+   Programmierlabor · Arbeitsumgebung mit drei Spalten
+   links: Aufgabenliste (sticky) · Mitte: eine Aufgabe · rechts: Befehls-Bibliothek
+   Desktop >= 1100 px dreispaltig, Tablet zweispaltig (Bibliothek als Overlay),
+   Mobil: Auswahlmenü statt Liste, Bibliothek als Bottom-Sheet.
+   ============================================================= */
+
+.lab {
+  display: grid; grid-template-columns: 260px minmax(0, 1fr) 340px; gap: 0 var(--sp-6);
+  max-width: 1560px; margin: 0 auto; padding: 0 var(--sp-5); align-items: start;
+}
+html.kb-dock-closed .lab { grid-template-columns: 260px minmax(0, 1fr) 52px; }
+
+/* ── links: Aufgabenliste ───────────────────────────────────── */
+.lab__list { position: sticky; top: var(--sp-4); max-height: calc(100vh - 2 * var(--sp-4)); overflow-y: auto; padding: var(--sp-5) 0; }
+.lab__listhead { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--sp-1) var(--sp-3); margin-bottom: var(--sp-3); }
+.lab__title { font-weight: 700; font-size: var(--fs-md); }
+.lab__back { font-size: var(--fs-sm); font-weight: 600; display: inline-flex; align-items: center; min-height: 44px; }
+.lab__legend { margin-top: var(--sp-2); }
+.lab__group { font-size: var(--fs-xs); font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--k-muted); margin: var(--sp-5) 0 var(--sp-2); }
+.lab__items { list-style: none; padding: 0; display: grid; gap: 2px; }
+.lab__items li { margin: 0; }
+.lab__item { display: grid; grid-template-columns: 1.5em minmax(0, 1fr); gap: 0 var(--sp-2); align-items: start; min-height: 44px; padding: 8px 10px; color: var(--text); text-decoration: none; border-left: 3px solid transparent; border-radius: 0 var(--r-base) var(--r-base) 0; }
+.lab__item:hover { background: var(--canvas); color: var(--text); text-decoration: none; }
+.lab__item[aria-current="page"] { background: var(--red-tint); border-left-color: var(--red); }
+.lab__item[aria-current="page"] .lab__nm { font-weight: 700; }
+.lab__mark { text-align: center; font-size: 1.05em; line-height: 1.5; color: var(--k-muted); }
+.lab__item[data-status="part"] .lab__mark { color: var(--k-warn); }
+.lab__item[data-status="done"] .lab__mark { color: var(--k-ok); font-weight: 700; }
+.lab__nm { display: block; font-size: var(--fs-sm); line-height: 1.35; }
+.lab__meta { display: block; font-size: var(--fs-xs); color: var(--k-muted); }
+
+/* ── Mitte: eine Aufgabe ────────────────────────────────────── */
+.lab__main { min-width: 0; padding: var(--sp-5) 0 var(--sp-7); outline: none; }
+.lab__bar { display: flex; flex-wrap: wrap; align-items: end; justify-content: flex-end; gap: var(--sp-3); margin-bottom: var(--sp-4); }
+.lab__select { display: none; flex: 1 1 14rem; }
+.lab__select label { display: block; font-size: var(--fs-sm); font-weight: 600; margin-bottom: 2px; }
+.lab__select select { width: 100%; min-height: 44px; padding: 6px 10px; font: inherit; border: 2px solid #6B7280; border-radius: var(--r-base); background: #fff; color: var(--text); }
+.lab__drawer { background: #F6F7F9; padding: var(--sp-5); margin-bottom: var(--sp-5); border-radius: var(--r-card); }
+.lab__drawerfoot { margin-top: var(--sp-4); }
+
+.l-task > * + * { margin-top: var(--k-block-gap); }
+.l-task :where(p, ul, ol, dl, h3, h4, blockquote, .hinweis) { max-width: var(--k-measure); }
+.l-task__head { margin-bottom: var(--sp-5); }
+.l-task__head > * + * { margin-top: 2px; }
+.l-task__kicker { font-size: var(--fs-sm); font-weight: 600; color: var(--k-muted); }
+.l-task__title { font-size: var(--fs-lg); outline: none; }
+.l-task__title:focus-visible { outline: 3px solid var(--k-focus); outline-offset: 4px; }
+.l-task__meta { font-size: var(--fs-sm); color: var(--k-muted); }
+.l-task__meta [role="img"] { color: var(--k-warn); letter-spacing: 1px; }
+.l-task__status { font-weight: 700; color: var(--k-ok); }
+.l-task h3 { margin-top: var(--sp-6); font-size: var(--fs-md); }
+.l-task h4 { margin-top: var(--k-block-gap); font-size: var(--fs-base); }
+.l-task h3 + *, .l-task h4 + * { margin-top: var(--sp-2); }
+.l-task__intro { max-width: var(--k-measure); }
+
+.lab__pager { display: flex; flex-wrap: wrap; gap: var(--sp-3); margin-top: var(--sp-7); padding-top: var(--sp-4); }
+.lab__pager .k-btn { flex: 1 1 14rem; flex-direction: column; align-items: flex-start; gap: 0; text-align: left; min-height: 56px; }
+#lab-next { align-items: flex-end; text-align: right; }
+.lab__pagerdir { font-size: var(--fs-xs); font-weight: 700; text-transform: uppercase; letter-spacing: .05em; }
+.lab__pagerto { font-weight: 600; font-size: var(--fs-sm); }
+
+/* ── rechts: angedockte Befehls-Bibliothek ──────────────────── */
+.lab__dock { position: sticky; top: var(--sp-4); height: calc(100vh - 2 * var(--sp-4)); margin: var(--sp-5) 0; min-width: 0; }
+.lab__dock[data-state="off"] { display: none; }
+
+/* ── Tablet: zwei Spalten, Bibliothek als Overlay ───────────── */
+@media (max-width: 1099px) {
+  .lab, html.kb-dock-closed .lab { grid-template-columns: 240px minmax(0, 1fr); gap: 0 var(--sp-5); }
+  .lab__dock { display: none; }
+}
+
+/* ── Mobil: Auswahlmenü statt Liste ─────────────────────────── */
+@media (max-width: 699px) {
+  .lab, html.kb-dock-closed .lab { display: block; padding: 0 var(--gutter); }
+  .lab__list { position: static; max-height: none; overflow: visible; padding: var(--sp-4) 0 0; }
+  .lab__list [data-lab-items], .lab__legend { display: none; }
+  .lab__listhead { margin-bottom: var(--sp-2); }
+  .lab__select { display: block; }
+  .lab__bar { justify-content: stretch; }
+  .lab__main { padding-top: var(--sp-3); }
+  .lab__drawer { padding: var(--sp-4); }
+  .l-task__title { font-size: 1.375rem; }
+}

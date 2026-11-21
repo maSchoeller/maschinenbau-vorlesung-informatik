@@ -1,0 +1,3287 @@
+{
+ "version": 1,
+ "ampel": {
+  "kopf": "Im Kopf",
+  "lesen": "Lesen & erkennen",
+  "delegieren": "Delegieren"
+ },
+ "eintraege": [
+  {
+   "id": "print",
+   "name": "print",
+   "kategorie": "Ausgabe & Eingabe",
+   "eingefuehrt": "V01",
+   "ampel": "kopf",
+   "kurz": "Gibt Werte auf dem Bildschirm aus.",
+   "syntax": "print(wert1, wert2, ..., sep=' ', end='\\n')",
+   "erklaerung": "print() schreibt alles, was du in die Klammern setzt, in die Ausgabe. Mehrere Werte trennst du mit Komma, Python setzt dazwischen ein Leerzeichen. Mit sep= änderst du das Trennzeichen, mit end= das Zeilenende. Zum Prüfen deines Programms ist print() dein wichtigstes Werkzeug.",
+   "beispiel": "drehzahl = 1450\nprint(\"Drehzahl:\", drehzahl, \"1/min\")\nprint(\"Welle\", 3, sep=\"-\")",
+   "wann_nutzen": "Immer wenn du ein Ergebnis sehen oder einen Zwischenwert kontrollieren willst.",
+   "transfer": [
+    {
+     "situation": "Mehrere Werte mit Einheit in eine Zeile",
+     "code": "kraft = 250\nprint(\"Kraft:\", kraft, \"N\")"
+    },
+    {
+     "situation": "Leere Zeile als optischer Abstand",
+     "code": "print(\"Ergebnis A\")\nprint()\nprint(\"Ergebnis B\")"
+    },
+    {
+     "situation": "Ausgabe in derselben Zeile fortsetzen",
+     "code": "print(\"Messung läuft\", end=\" ... \")\nprint(\"fertig\")"
+    }
+   ],
+   "verwandt": [
+    "zuweisung",
+    "str-text",
+    "fstring"
+   ],
+   "bezeichner": [
+    "print"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "Drehzahl: 1450 1/min\nWelle-3",
+   "typische_fehler": [
+    {
+     "beschreibung": "Klammern vergessen (Python-2-Schreibweise)",
+     "code": "print \"Hallo\"",
+     "meldung": "SyntaxError: Missing parentheses in call to 'print'. Did you mean print(...)?"
+    },
+    {
+     "beschreibung": "Anführungszeichen vergessen: Python sucht eine Variable",
+     "code": "print(Hallo)",
+     "meldung": "NameError: name 'Hallo' is not defined"
+    }
+   ]
+  },
+  {
+   "id": "zuweisung",
+   "name": "Variable & Zuweisung",
+   "kategorie": "Variablen & Datentypen",
+   "eingefuehrt": "V01",
+   "ampel": "kopf",
+   "kurz": "Legt einen Wert unter einem Namen ab.",
+   "syntax": "name = ausdruck",
+   "erklaerung": "Das Gleichheitszeichen ist in Python keine Gleichung, sondern ein Befehl: Erst wird die rechte Seite ausgerechnet, dann liegt das Ergebnis unter dem Namen links. Danach kannst du den Namen überall statt des Werts benutzen. Eine Variable darfst du später jederzeit neu belegen.",
+   "beispiel": "laenge_mm = 250\nlaenge_m = laenge_mm / 1000\nlaenge_mm = laenge_mm + 50\nprint(laenge_mm, laenge_m)",
+   "wann_nutzen": "Sobald ein Wert mehrfach gebraucht wird oder du ihm einen sprechenden Namen geben willst (statt Zahlen im Code zu verstecken).",
+   "transfer": [
+    {
+     "situation": "Zwei Werte tauschen, ohne Hilfsvariable",
+     "code": "a = 1\nb = 2\na, b = b, a\nprint(a, b)"
+    },
+    {
+     "situation": "Einen Wert hochzählen (Zähler)",
+     "code": "stueck = 0\nstueck = stueck + 1\nstueck = stueck + 1\nprint(stueck)"
+    },
+    {
+     "situation": "Mehrere Namen auf denselben Startwert setzen",
+     "code": "x = y = 0\nprint(x, y)"
+    }
+   ],
+   "verwandt": [
+    "namensregeln",
+    "vergleiche",
+    "kommentar"
+   ],
+   "bezeichner": [
+    "Zuweisung"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "300 0.25",
+   "typische_fehler": [
+    {
+     "beschreibung": "Name benutzt, bevor er einen Wert hat",
+     "code": "print(gewicht_n * 9.81)",
+     "meldung": "NameError: name 'gewicht_n' is not defined"
+    },
+    {
+     "beschreibung": "Zuweisung = statt Vergleich == in einer Bedingung",
+     "code": "x = 5\nif x = 5:\n    print(\"fünf\")",
+     "meldung": "SyntaxError: invalid syntax. Maybe you meant '==' or ':=' instead of '='?"
+    }
+   ]
+  },
+  {
+   "id": "kommentar",
+   "name": "Kommentar",
+   "kategorie": "Ausgabe & Eingabe",
+   "eingefuehrt": "V01",
+   "ampel": "kopf",
+   "kurz": "Text nach # ignoriert Python – er ist nur für Menschen.",
+   "syntax": "# Kommentar bis zum Zeilenende",
+   "erklaerung": "Alles ab dem #-Zeichen bis zum Zeilenende überspringt Python. Schreibe Kommentare für das Warum und für Einheiten, nicht für das, was der Code ohnehin sagt. Mit # kannst du außerdem Zeilen beim Testen kurz deaktivieren.",
+   "beispiel": "d_mm = 40          # Wellendurchmesser in mm\n# print(\"Debug:\", d_mm)\nprint(d_mm / 2)    # Radius in mm",
+   "wann_nutzen": "Für Einheiten, Annahmen, Quellen von Formeln und zum zeitweisen Abschalten einer Zeile.",
+   "transfer": [
+    {
+     "situation": "Einheit dokumentieren",
+     "code": "p_bar = 6.5   # Betriebsdruck in bar\nprint(p_bar * 0.1, \"MPa\")"
+    },
+    {
+     "situation": "Zeile zum Testen auskommentieren",
+     "code": "print(\"A\")\n# print(\"B\")\nprint(\"C\")"
+    },
+    {
+     "situation": "Merker für später (TODO)",
+     "code": "# TODO: Toleranz aus Zeichnung prüfen\ntoleranz = 0.05\nprint(toleranz)"
+    }
+   ],
+   "verwandt": [
+    "print",
+    "zuweisung"
+   ],
+   "bezeichner": [
+    "Kommentar"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "20.0",
+   "typische_fehler": [
+    {
+     "beschreibung": "# innerhalb von Anführungszeichen ist Text, kein Kommentar",
+     "code": "print(\"Nr. # 5\")",
+     "meldung": "(keine Fehlermeldung) Ausgabe: Nr. # 5 – in einem String bleibt das # normaler Text."
+    },
+    {
+     "beschreibung": "Code hinter # wird nie ausgeführt",
+     "code": "x = 5  # + 10\nprint(x)",
+     "meldung": "(keine Fehlermeldung) Ausgabe: 5 – das \"+ 10\" steht im Kommentar und zählt nicht."
+    }
+   ]
+  },
+  {
+   "id": "input",
+   "name": "input",
+   "kategorie": "Ausgabe & Eingabe",
+   "eingefuehrt": "V01",
+   "ampel": "kopf",
+   "kurz": "Liest eine Eingabe von der Tastatur – immer als Text (str).",
+   "syntax": "text = input('Fragetext: ')",
+   "erklaerung": "input() zeigt den Fragetext, wartet auf Enter und liefert das Eingegebene als Text zurück – auch wenn du eine Zahl tippst. Für Rechnungen wandelst du mit int() oder float() um. Im Browser-Runner dieser Seite gibt es keine Tastatureingabe; dort setzt du die Werte stattdessen direkt in den Code.",
+   "beispiel": "text = input(\"Durchmesser in mm: \")\nd = float(text)\nprint(\"Umfang:\", 3.14159 * d, \"mm\")",
+   "wann_nutzen": "Wenn dein Programm Werte vom Benutzer braucht, die beim Schreiben noch nicht feststehen.",
+   "transfer": [
+    {
+     "situation": "Ganze Zahl abfragen",
+     "code": "n = int(input(\"Stückzahl: \"))\nprint(\"Doppelt:\", n * 2)"
+    },
+    {
+     "situation": "Text abfragen und begrüßen",
+     "code": "name = input(\"Name: \")\nprint(\"Hallo\", name)"
+    }
+   ],
+   "verwandt": [
+    "typumwandlung",
+    "float",
+    "int"
+   ],
+   "bezeichner": [
+    "input"
+   ],
+   "lauffaehig": false,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "Durchmesser in mm: Umfang: 15.70795 mm",
+   "typische_fehler": [
+    {
+     "beschreibung": "Eingabe ist Text: Rechnen mit + scheitert",
+     "code": "zahl = input(\"Zahl: \")\nprint(zahl + 1)",
+     "meldung": "TypeError: can only concatenate str (not \"int\") to str"
+    },
+    {
+     "beschreibung": "Dezimalkomma statt Punkt eingegeben",
+     "code": "wert = float(\"3,5\")",
+     "meldung": "ValueError: could not convert string to float: '3,5'"
+    }
+   ]
+  },
+  {
+   "id": "namensregeln",
+   "name": "Namensregeln",
+   "kategorie": "Variablen & Datentypen",
+   "eingefuehrt": "V01",
+   "ampel": "kopf",
+   "kurz": "Welche Namen für Variablen erlaubt und sinnvoll sind.",
+   "syntax": "kleinbuchstaben_mit_unterstrich  (nicht mit Ziffer beginnen, keine Leerzeichen)",
+   "erklaerung": "Namen bestehen aus Buchstaben, Ziffern und Unterstrich und dürfen nicht mit einer Ziffer beginnen. Groß- und Kleinschreibung zählt: kraft und Kraft sind zwei verschiedene Variablen. Wörter wie if, for oder class sind reserviert. Wähle Namen, die das Gemeinte samt Einheit sagen, zum Beispiel wandstaerke_mm.",
+   "beispiel": "wandstaerke_mm = 2.5\nanzahl_bohrungen = 4\nkraft = 10\nKraft = 99\nprint(wandstaerke_mm * anzahl_bohrungen, kraft, Kraft)",
+   "wann_nutzen": "Bei jeder Variable: Ein guter Name erspart den Kommentar und verhindert mm/m-Verwechslungen.",
+   "transfer": [
+    {
+     "situation": "Einheit im Namen gegen Verwechslungen",
+     "code": "laenge_mm = 1200\nlaenge_m = laenge_mm / 1000\nprint(laenge_m)"
+    },
+    {
+     "situation": "Konstanten GROSS schreiben (Konvention)",
+     "code": "G = 9.81\nmasse_kg = 5\nprint(masse_kg * G)"
+    }
+   ],
+   "verwandt": [
+    "zuweisung",
+    "kommentar"
+   ],
+   "bezeichner": [
+    "Namensregeln"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "10.0 10 99",
+   "typische_fehler": [
+    {
+     "beschreibung": "Name beginnt mit einer Ziffer",
+     "code": "2d_flaeche = 3",
+     "meldung": "SyntaxError: invalid decimal literal"
+    },
+    {
+     "beschreibung": "Leerzeichen im Namen",
+     "code": "wand staerke = 3",
+     "meldung": "SyntaxError: invalid syntax"
+    },
+    {
+     "beschreibung": "Reserviertes Wort als Name",
+     "code": "class = 3",
+     "meldung": "SyntaxError: invalid syntax"
+    }
+   ]
+  },
+  {
+   "id": "str-text",
+   "name": "Text (str)",
+   "kategorie": "Variablen & Datentypen",
+   "eingefuehrt": "V01",
+   "ampel": "kopf",
+   "kurz": "Zeichenketten in Anführungszeichen – Namen, Meldungen, Dateipfade.",
+   "syntax": "text = \"Hallo\"   oder   'Hallo'",
+   "erklaerung": "Ein str ist Text in einfachen oder doppelten Anführungszeichen. Mit + hängst du Texte aneinander, mit * wiederholst du sie. Zahlen und Text lassen sich nicht einfach mischen: Dafür wandelst du mit str() um oder nimmst einen f-String.",
+   "beispiel": "bauteil = \"Welle\"\nnr = \"A-17\"\nprint(bauteil + \" \" + nr)\nprint(\"=\" * 20)",
+   "wann_nutzen": "Für alles, was Text ist: Meldungen, Bauteilnamen, Dateinamen, Eingaben.",
+   "transfer": [
+    {
+     "situation": "Trennlinie in der Ausgabe",
+     "code": "print(\"-\" * 30)"
+    },
+    {
+     "situation": "Dateinamen zusammensetzen",
+     "code": "nummer = \"07\"\nprint(\"messung_\" + nummer + \".csv\")"
+    },
+    {
+     "situation": "Anführungszeichen im Text",
+     "code": "print(\"Er sagte: 'Stopp'\")"
+    }
+   ],
+   "verwandt": [
+    "print",
+    "typumwandlung",
+    "fstring"
+   ],
+   "bezeichner": [
+    "str"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "Welle A-17\n====================",
+   "typische_fehler": [
+    {
+     "beschreibung": "Text und Zahl mit + verbinden",
+     "code": "print(\"Teil \" + 5)",
+     "meldung": "TypeError: can only concatenate str (not \"int\") to str"
+    },
+    {
+     "beschreibung": "Anführungszeichen nicht geschlossen",
+     "code": "print(\"Hallo)",
+     "meldung": "SyntaxError: unterminated string literal (detected at line 1)"
+    }
+   ]
+  },
+  {
+   "id": "int",
+   "name": "int (Ganzzahl)",
+   "kategorie": "Variablen & Datentypen",
+   "eingefuehrt": "V02",
+   "ampel": "kopf",
+   "kurz": "Ganze Zahlen ohne Nachkommastellen.",
+   "syntax": "zahl = 42     int(wert)",
+   "erklaerung": "Python-Ganzzahlen haben keine feste Obergrenze: Sie wachsen so weit, wie der Speicher reicht. Das ist anders als bei einem 16-Bit-Zähler in der Steuerung, der bei 65535 überläuft. int(x) wandelt Text oder eine Fließkommazahl in eine Ganzzahl um und schneidet dabei Nachkommastellen ab.",
+   "beispiel": "zaehler = 65535\nzaehler = zaehler + 1\nprint(zaehler)\nprint(2**64)\nprint(int(7.9), int(\"42\"))",
+   "wann_nutzen": "Für Zählungen, Stückzahlen, Indizes und alles, was nicht gebrochen sein kann.",
+   "transfer": [
+    {
+     "situation": "Stückzahl hochrechnen",
+     "code": "pro_schicht = 480\nprint(pro_schicht * 3)"
+    },
+    {
+     "situation": "Abschneiden statt Runden",
+     "code": "print(int(2.99), int(-2.99))"
+    },
+    {
+     "situation": "Riesige Zahlen ohne Überlauf",
+     "code": "print(2**100)"
+    }
+   ],
+   "verwandt": [
+    "float",
+    "typumwandlung",
+    "bin-hex"
+   ],
+   "bezeichner": [
+    "int"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "65536\n18446744073709551616\n7 42",
+   "typische_fehler": [
+    {
+     "beschreibung": "Text mit Dezimalpunkt direkt in int umwandeln",
+     "code": "int(\"3.7\")",
+     "meldung": "ValueError: invalid literal for int() with base 10: '3.7'"
+    },
+    {
+     "beschreibung": "Führende Null im Zahlenliteral",
+     "code": "x = 007",
+     "meldung": "SyntaxError: leading zeros in decimal integer literals are not permitted; use an 0o prefix for octal integers"
+    }
+   ]
+  },
+  {
+   "id": "rechenoperatoren",
+   "name": "Rechenoperatoren + − * /",
+   "kategorie": "Rechnen",
+   "eingefuehrt": "V02",
+   "ampel": "kopf",
+   "kurz": "Addieren, Subtrahieren, Multiplizieren, Dividieren.",
+   "syntax": "a + b    a - b    a * b    a / b",
+   "erklaerung": "Die vier Grundrechenarten schreibst du wie gewohnt, das Malzeichen ist aber immer *. Die Division / liefert stets eine Fließkommazahl, auch wenn das Ergebnis glatt aufgeht: 10 / 2 ergibt 5.0. Durch null zu teilen bricht das Programm ab.",
+   "beispiel": "kraft_n = 1200\nflaeche_mm2 = 40\nspannung = kraft_n / flaeche_mm2\nprint(spannung, \"N/mm²\")\nprint(10 / 2)",
+   "wann_nutzen": "Für jede Formel, die du in Code übersetzt.",
+   "transfer": [
+    {
+     "situation": "Mittelwert zweier Messwerte",
+     "code": "a = 20.1\nb = 20.5\nprint((a + b) / 2)"
+    },
+    {
+     "situation": "Einheit umrechnen",
+     "code": "weg_mm = 3250\nprint(weg_mm / 1000, \"m\")"
+    },
+    {
+     "situation": "Prozentwert",
+     "code": "preis = 80\nprint(preis * 0.19, \"Euro MwSt\")"
+    }
+   ],
+   "verwandt": [
+    "floordiv",
+    "modulo",
+    "rangfolge",
+    "potenz"
+   ],
+   "bezeichner": [
+    "+",
+    "-",
+    "*",
+    "/"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "30.0 N/mm²\n5.0",
+   "typische_fehler": [
+    {
+     "beschreibung": "Division durch null",
+     "code": "print(5 / 0)",
+     "meldung": "ZeroDivisionError: division by zero"
+    },
+    {
+     "beschreibung": "Malzeichen vergessen oder durch x ersetzt",
+     "code": "print(5 x 3)",
+     "meldung": "SyntaxError: invalid syntax. Perhaps you forgot a comma?"
+    }
+   ]
+  },
+  {
+   "id": "floordiv",
+   "name": "Ganzzahldivision //",
+   "kategorie": "Rechnen",
+   "eingefuehrt": "V02",
+   "ampel": "kopf",
+   "kurz": "Teilt und rundet das Ergebnis ab auf die nächste ganze Zahl.",
+   "syntax": "a // b",
+   "erklaerung": "Mit // fragst du, wie oft b ganz in a passt. Das Ergebnis wird immer nach unten gerundet, bei negativen Zahlen also weg von der Null. Zusammen mit dem Rest (%) zerlegst du Mengen in volle Einheiten und Rest.",
+   "beispiel": "teile = 1000\npro_palette = 48\nprint(teile // pro_palette, \"volle Paletten\")",
+   "wann_nutzen": "Wenn nur ganze Einheiten zählen: volle Paletten, ganze Stunden, Seitenzahlen.",
+   "transfer": [
+    {
+     "situation": "Minuten in volle Stunden",
+     "code": "minuten = 135\nprint(minuten // 60, \"h\")"
+    },
+    {
+     "situation": "Anzahl benötigter Kisten aufrunden (Trick)",
+     "code": "teile = 1000\nprint(-(-teile // 48))"
+    },
+    {
+     "situation": "Mitte einer Liste finden",
+     "code": "n = 9\nprint(n // 2)"
+    }
+   ],
+   "verwandt": [
+    "modulo",
+    "rechenoperatoren",
+    "round"
+   ],
+   "bezeichner": [
+    "//"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "20 volle Paletten",
+   "typische_fehler": [
+    {
+     "beschreibung": "Durch null teilen",
+     "code": "print(7 // 0)",
+     "meldung": "ZeroDivisionError: integer division or modulo by zero"
+    },
+    {
+     "beschreibung": "Negative Zahl rundet nach unten, nicht Richtung null",
+     "code": "print(-7 // 2)",
+     "meldung": "(keine Fehlermeldung) Ausgabe: -4 – // rundet Richtung minus unendlich, nicht Richtung null."
+    }
+   ]
+  },
+  {
+   "id": "modulo",
+   "name": "Rest (Modulo) %",
+   "kategorie": "Rechnen",
+   "eingefuehrt": "V02",
+   "ampel": "kopf",
+   "kurz": "Liefert den Rest der Division.",
+   "syntax": "a % b",
+   "erklaerung": "a % b ist der Rest, der bei a geteilt durch b übrig bleibt. Er liegt immer zwischen 0 und b-1. Typische Einsätze: gerade oder ungerade prüfen, Zähler im Kreis laufen lassen (wie ein Encoder) und jede n-te Wiederholung erkennen.",
+   "beispiel": "sekunden = 7384\nminuten = sekunden // 60\nrest_s = sekunden % 60\nprint(minuten, \"min\", rest_s, \"s\")",
+   "wann_nutzen": "Für Restmengen, gerade/ungerade und alles, was sich zyklisch wiederholt.",
+   "transfer": [
+    {
+     "situation": "Gerade oder ungerade",
+     "code": "n = 17\nprint(n % 2 == 0)"
+    },
+    {
+     "situation": "Zähler läuft im Kreis (Encoder mit 4096 Schritten)",
+     "code": "pos = 4095\npos = (pos + 1) % 4096\nprint(pos)"
+    },
+    {
+     "situation": "Nur jeden 10. Durchlauf melden",
+     "code": "for i in range(1, 31):\n    if i % 10 == 0:\n        print(\"Durchlauf\", i)"
+    }
+   ],
+   "verwandt": [
+    "floordiv",
+    "rechenoperatoren",
+    "if"
+   ],
+   "bezeichner": [
+    "%"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "123 min 4 s",
+   "typische_fehler": [
+    {
+     "beschreibung": "Rest mit null",
+     "code": "print(7 % 0)",
+     "meldung": "ZeroDivisionError: integer modulo by zero"
+    },
+    {
+     "beschreibung": "% als Prozentzeichen missverstanden",
+     "code": "print(200 * 5 %)",
+     "meldung": "SyntaxError: invalid syntax"
+    }
+   ]
+  },
+  {
+   "id": "potenz",
+   "name": "Potenz **",
+   "kategorie": "Rechnen",
+   "eingefuehrt": "V02",
+   "ampel": "kopf",
+   "kurz": "Potenzieren und Wurzelziehen.",
+   "syntax": "a ** b",
+   "erklaerung": "a ** b ist a hoch b. Mit gebrochenen Exponenten ziehst du Wurzeln: x ** 0.5 ist die Quadratwurzel. Das Zeichen ^, das du vom Taschenrechner kennst, ist in Python etwas ganz anderes (bitweises XOR).",
+   "beispiel": "d = 20\nprint(d**2)\nprint(2**10)\nprint(9**0.5)",
+   "wann_nutzen": "Für Quadrate, Kubikzahlen, Zweierpotenzen (Bits!) und Wurzeln ohne math-Modul.",
+   "transfer": [
+    {
+     "situation": "Anzahl Werte bei n Bit",
+     "code": "bits = 8\nprint(2**bits)"
+    },
+    {
+     "situation": "Kreisfläche aus dem Durchmesser",
+     "code": "d = 40\nprint(3.14159 * d**2 / 4)"
+    },
+    {
+     "situation": "Kubikwurzel als Exponent 1/3",
+     "code": "print(27 ** (1/3))"
+    }
+   ],
+   "verwandt": [
+    "rangfolge",
+    "sqrt",
+    "rechenoperatoren"
+   ],
+   "bezeichner": [
+    "**"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "400\n1024\n3.0",
+   "typische_fehler": [
+    {
+     "beschreibung": "^ statt ** benutzt",
+     "code": "print(2 ^ 3)",
+     "meldung": "(keine Fehlermeldung) Ausgabe: 1 – ^ ist bitweises XOR, nicht Potenz."
+    },
+    {
+     "beschreibung": "Null hoch negative Zahl",
+     "code": "print(0 ** -1)",
+     "meldung": "ZeroDivisionError: 0.0 cannot be raised to a negative power"
+    }
+   ]
+  },
+  {
+   "id": "rangfolge",
+   "name": "Operatorrangfolge",
+   "kategorie": "Rechnen",
+   "eingefuehrt": "V02",
+   "ampel": "kopf",
+   "kurz": "Punkt vor Strich – und wie Klammern die Reihenfolge ändern.",
+   "syntax": "** vor * / // % vor + -   (Klammern gehen vor)",
+   "erklaerung": "Python rechnet wie in der Mathematik: Potenz vor Punktrechnung, Punkt vor Strich, gleichrangige Operatoren von links nach rechts. Bei Zweifeln setze Klammern, sie kosten nichts und machen Formeln lesbar. Achtung: -2 ** 2 ist -4, weil ** stärker bindet als das Minus.",
+   "beispiel": "print(2 + 3 * 4)\nprint((2 + 3) * 4)\nprint(-2 ** 2)\nprint(2 ** 3 ** 2)",
+   "wann_nutzen": "Bei jeder Formel mit mehr als einem Operator – besonders beim Nenner eines Bruchs.",
+   "transfer": [
+    {
+     "situation": "Mittelwert: Klammern sind Pflicht",
+     "code": "a = 10\nb = 20\nprint(a + b / 2, (a + b) / 2)"
+    },
+    {
+     "situation": "Nenner mit mehreren Faktoren klammern",
+     "code": "F = 1000\nd = 10\nprint(F / (3.14159 * d**2 / 4))"
+    },
+    {
+     "situation": "Gleichrangig läuft von links nach rechts",
+     "code": "print(100 / 10 / 2)"
+    }
+   ],
+   "verwandt": [
+    "potenz",
+    "rechenoperatoren"
+   ],
+   "bezeichner": [
+    "Rangfolge"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "14\n20\n-4\n512",
+   "typische_fehler": [
+    {
+     "beschreibung": "Klammer nicht geschlossen",
+     "code": "print((2 + 3) * 4",
+     "meldung": "SyntaxError: '(' was never closed"
+    },
+    {
+     "beschreibung": "Nenner ohne Klammer: Formel falsch, aber kein Fehler",
+     "code": "print(100 / 2 * 5)",
+     "meldung": "(keine Fehlermeldung) Ausgabe: 250.0 – gemeint war vielleicht 100 / (2 * 5) = 10.0."
+    }
+   ]
+  },
+  {
+   "id": "bin-hex",
+   "name": "bin(), hex(), int(x, Basis)",
+   "kategorie": "Rechnen",
+   "eingefuehrt": "V02",
+   "ampel": "lesen",
+   "kurz": "Zahlen in Binär- und Hexadezimalschreibweise umwandeln.",
+   "syntax": "bin(n)    hex(n)    int('1010', 2)    0b1010    0xFF",
+   "erklaerung": "bin() und hex() liefern Text wie '0b11001010' oder '0xca'. In die Gegenrichtung gibst du int() den Text und die Basis: int('11001010', 2). Zahlen kannst du auch direkt als 0b… oder 0x… schreiben. Für Bitmuster aus Sensoren und Bussen ist das nützlich.",
+   "beispiel": "wert = 202\nprint(bin(wert))\nprint(hex(wert))\nprint(int(\"11001010\", 2))\nprint(int(\"CA\", 16))",
+   "wann_nutzen": "Beim Lesen von Registerwerten, Bitmasken und Zahlen aus Datenblättern.",
+   "transfer": [
+    {
+     "situation": "Hex-Literal im Code",
+     "code": "maske = 0xFF\nprint(maske)"
+    },
+    {
+     "situation": "Binär-Literal im Code",
+     "code": "status = 0b1010\nprint(status)"
+    },
+    {
+     "situation": "Größter Wert eines 8-Bit-Zählers",
+     "code": "print(2**8 - 1, hex(2**8 - 1))"
+    }
+   ],
+   "verwandt": [
+    "int",
+    "potenz"
+   ],
+   "bezeichner": [
+    "bin",
+    "hex"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "0b11001010\n0xca\n202\n202",
+   "typische_fehler": [
+    {
+     "beschreibung": "Ziffer 2 in einer Binärzahl",
+     "code": "int(\"102\", 2)",
+     "meldung": "ValueError: invalid literal for int() with base 2: '102'"
+    },
+    {
+     "beschreibung": "Text statt Zahl an bin()",
+     "code": "bin(\"5\")",
+     "meldung": "TypeError: 'str' object cannot be interpreted as an integer"
+    }
+   ]
+  },
+  {
+   "id": "float",
+   "name": "float (Fließkommazahl)",
+   "kategorie": "Variablen & Datentypen",
+   "eingefuehrt": "V03",
+   "ampel": "kopf",
+   "kurz": "Zahlen mit Nachkommastellen – mit Rundungsfehlern.",
+   "syntax": "x = 3.14     float(wert)     1e-3",
+   "erklaerung": "float speichert Zahlen mit Dezimalpunkt (nicht Komma!). Intern sind es Binärbrüche, deshalb sind viele Dezimalzahlen nur angenähert: 0.1 + 0.2 ergibt 0.30000000000000004. Vergleiche mit == sind bei floats gefährlich, nimm math.isclose().",
+   "beispiel": "print(0.1 + 0.2)\nprint(0.1 + 0.2 == 0.3)\nprint(1e-3, 2.5e6)\nprint(10 / 4)",
+   "wann_nutzen": "Für alle Messwerte, Längen, Kräfte, Temperaturen – alles, was nicht ganzzahlig ist.",
+   "transfer": [
+    {
+     "situation": "Zehnmal 0,1 addieren",
+     "code": "summe = 0.0\nfor i in range(10):\n    summe += 0.1\nprint(summe)"
+    },
+    {
+     "situation": "Wissenschaftliche Schreibweise",
+     "code": "e_modul = 2.1e5\nprint(e_modul, \"N/mm²\")"
+    },
+    {
+     "situation": "Ganzzahl in float umwandeln",
+     "code": "print(float(3), float(\"2.5\"))"
+    }
+   ],
+   "verwandt": [
+    "isclose",
+    "int",
+    "typumwandlung",
+    "round"
+   ],
+   "bezeichner": [
+    "float"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "0.30000000000000004\nFalse\n0.001 2500000.0\n2.5",
+   "typische_fehler": [
+    {
+     "beschreibung": "Dezimalkomma statt Punkt im Code",
+     "code": "x = 3,5\nprint(x)",
+     "meldung": "(keine Fehlermeldung) x ist das Tupel (3, 5), keine Zahl."
+    },
+    {
+     "beschreibung": "Text ohne Zahl umwandeln",
+     "code": "float(\"abc\")",
+     "meldung": "ValueError: could not convert string to float: 'abc'"
+    }
+   ]
+  },
+  {
+   "id": "type",
+   "name": "type()",
+   "kategorie": "Variablen & Datentypen",
+   "eingefuehrt": "V03",
+   "ampel": "lesen",
+   "kurz": "Zeigt, welchen Datentyp ein Wert hat.",
+   "syntax": "type(wert)",
+   "erklaerung": "type() verrät, ob ein Wert int, float, str oder bool ist. Das ist die schnellste Hilfe, wenn eine Rechnung merkwürdige Ergebnisse oder einen TypeError liefert, zum Beispiel weil input() Text geliefert hat.",
+   "beispiel": "print(type(42))\nprint(type(3.14))\nprint(type(\"Hallo\"))\nprint(type(5 / 2))\nprint(type(True))",
+   "wann_nutzen": "Beim Debuggen: Wenn ein Ergebnis überrascht oder ein TypeError auftritt.",
+   "transfer": [
+    {
+     "situation": "Prüfen, was eine Rechnung liefert",
+     "code": "print(type(6 // 2), type(6 / 2))"
+    },
+    {
+     "situation": "Wert nach der Umwandlung kontrollieren",
+     "code": "x = \"12\"\nprint(type(x), type(int(x)))"
+    }
+   ],
+   "verwandt": [
+    "typumwandlung",
+    "float",
+    "int"
+   ],
+   "bezeichner": [
+    "type"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "<class 'int'>\n<class 'float'>\n<class 'str'>\n<class 'float'>\n<class 'bool'>",
+   "typische_fehler": [
+    {
+     "beschreibung": "Text und Zahl addieren",
+     "code": "\"5\" + 3",
+     "meldung": "TypeError: can only concatenate str (not \"int\") to str"
+    },
+    {
+     "beschreibung": "Text mit Text multiplizieren",
+     "code": "\"5\" * \"3\"",
+     "meldung": "TypeError: can't multiply sequence by non-int of type 'str'"
+    }
+   ]
+  },
+  {
+   "id": "typumwandlung",
+   "name": "Typumwandlung int() / float() / str()",
+   "kategorie": "Variablen & Datentypen",
+   "eingefuehrt": "V03",
+   "ampel": "kopf",
+   "kurz": "Wandelt einen Wert in einen anderen Datentyp um.",
+   "syntax": "int(x)    float(x)    str(x)",
+   "erklaerung": "Daten aus input() oder Dateien sind Text und müssen für Rechnungen mit float() oder int() umgewandelt werden. int() schneidet Nachkommastellen ab, rundet also nicht. str() macht aus einer Zahl Text, etwa um sie an einen Text zu hängen. Passt der Inhalt nicht, gibt es einen ValueError.",
+   "beispiel": "eingabe = \"12.5\"\nd = float(eingabe)\nn = int(7.9)\nprint(d * 2, n, str(n) + \" Stück\")",
+   "wann_nutzen": "Immer, wenn Daten aus einer Eingabe oder Datei kommen oder Zahlen in einen Text sollen.",
+   "transfer": [
+    {
+     "situation": "Dezimalkomma ersetzen",
+     "code": "text = \"3,5\"\nprint(float(text.replace(\",\", \".\")))"
+    },
+    {
+     "situation": "int() schneidet ab, auch bei negativen Zahlen",
+     "code": "print(int(-2.7), int(2.7))"
+    },
+    {
+     "situation": "Wahrheitswert als Zahl",
+     "code": "print(int(True), int(False))"
+    }
+   ],
+   "verwandt": [
+    "input",
+    "type",
+    "float",
+    "int",
+    "str-text"
+   ],
+   "bezeichner": [
+    "Typumwandlung"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "25.0 7 7 Stück",
+   "typische_fehler": [
+    {
+     "beschreibung": "Text mit Dezimalpunkt direkt in int",
+     "code": "int(\"3.7\")",
+     "meldung": "ValueError: invalid literal for int() with base 10: '3.7'"
+    },
+    {
+     "beschreibung": "Leerer Text lässt sich nicht umwandeln",
+     "code": "float(\"\")",
+     "meldung": "ValueError: could not convert string to float: ''"
+    }
+   ]
+  },
+  {
+   "id": "fstring",
+   "name": "f-String & Formatierung",
+   "kategorie": "Text & Formatierung",
+   "eingefuehrt": "V03",
+   "ampel": "kopf",
+   "kurz": "Werte direkt in Text einbauen und dabei formatieren.",
+   "syntax": "f\"Text {wert}\"    {x:.2f}    {x:>8}    {x:.1%}",
+   "erklaerung": "Ein f vor dem Anführungszeichen macht aus dem Text eine Schablone: Alles in {} wird als Ausdruck berechnet und eingesetzt. Nach einem Doppelpunkt legst du das Format fest: .2f heißt zwei Nachkommastellen, >8 rechtsbündig in Breite 8, .1% als Prozent, , als Tausendertrennzeichen.",
+   "beispiel": "d = 12.3456\nlaenge = 250\nprint(f\"Durchmesser: {d:.2f} mm\")\nprint(f\"Länge: {laenge:>8} mm\")\nprint(f\"Anteil: {0.256:.1%}\")",
+   "wann_nutzen": "Für jede Ausgabe mit Zahlen: Ergebnisse mit passender Stellenzahl und Einheit.",
+   "transfer": [
+    {
+     "situation": "Tausendertrennzeichen",
+     "code": "print(f\"{1234567:,} Stück\")"
+    },
+    {
+     "situation": "Wissenschaftliche Notation",
+     "code": "print(f\"{0.000123:.2e}\")"
+    },
+    {
+     "situation": "Tabelle mit festen Spaltenbreiten",
+     "code": "for n, w in [(\"M6\", 10.0), (\"M10\", 49.5)]:\n    print(f\"{n:<5}{w:>8.1f} N\")"
+    }
+   ],
+   "verwandt": [
+    "print",
+    "round",
+    "str-text"
+   ],
+   "bezeichner": [
+    "f-String"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "Durchmesser: 12.35 mm\nLänge:      250 mm\nAnteil: 25.6%",
+   "typische_fehler": [
+    {
+     "beschreibung": "f vor dem String vergessen",
+     "code": "d = 3.14159\nprint(\"{d:.2f}\")",
+     "meldung": "(keine Fehlermeldung) Ausgabe: {d:.2f} – ohne f bleibt die Schablone wörtlich stehen."
+    },
+    {
+     "beschreibung": "Geschweifte Klammer nicht geschlossen",
+     "code": "d = 3.14\nprint(f\"Wert {d\")",
+     "meldung": "SyntaxError: f-string: expecting '}'"
+    },
+    {
+     "beschreibung": "Zahlenformat auf Text angewendet",
+     "code": "print(f\"{'abc':.2f}\")",
+     "meldung": "ValueError: Unknown format code 'f' for object of type 'str'"
+    }
+   ]
+  },
+  {
+   "id": "round",
+   "name": "round()",
+   "kategorie": "Rechnen",
+   "eingefuehrt": "V03",
+   "ampel": "kopf",
+   "kurz": "Rundet auf eine bestimmte Stellenzahl.",
+   "syntax": "round(x)    round(x, stellen)",
+   "erklaerung": "round(x, 2) rundet auf zwei Nachkommastellen, round(x) auf eine ganze Zahl. Bei genau .5 rundet Python zur nächsten geraden Zahl (round(2.5) ist 2) und wegen der Fließkomma-Darstellung kann auch round(2.675, 2) überraschen. Für reine Anzeige reicht oft die Formatierung mit :.2f im f-String.",
+   "beispiel": "print(round(3.14159, 2))\nprint(round(2.5), round(3.5))\nprint(round(1234.5678, -2))",
+   "wann_nutzen": "Wenn du den gerundeten Wert weiterverwenden willst; zum reinen Anzeigen nimm :.2f.",
+   "transfer": [
+    {
+     "situation": "Auf eine Nachkommastelle",
+     "code": "print(round(20.46, 1))"
+    },
+    {
+     "situation": "Auf Hunderter runden",
+     "code": "print(round(8765, -2))"
+    },
+    {
+     "situation": "Anzeige ohne den Wert zu verändern",
+     "code": "x = 2.0 / 3\nprint(f\"{x:.3f}\", x)"
+    }
+   ],
+   "verwandt": [
+    "fstring",
+    "float",
+    "abs"
+   ],
+   "bezeichner": [
+    "round"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "3.14\n2 4\n1200.0",
+   "typische_fehler": [
+    {
+     "beschreibung": "Text statt Zahl",
+     "code": "round(\"3.5\")",
+     "meldung": "TypeError: type str doesn't define __round__ method"
+    },
+    {
+     "beschreibung": "Dezimal-Rundung überrascht",
+     "code": "print(round(2.675, 2))",
+     "meldung": "(keine Fehlermeldung) Ausgabe: 2.67 – 2.675 ist intern etwas kleiner als 2,675."
+    }
+   ]
+  },
+  {
+   "id": "abs",
+   "name": "abs()",
+   "kategorie": "Rechnen",
+   "eingefuehrt": "V03",
+   "ampel": "kopf",
+   "kurz": "Betrag: entfernt das Vorzeichen.",
+   "syntax": "abs(x)",
+   "erklaerung": "abs() liefert den Betrag einer Zahl, also ihren Abstand von null. Für Toleranzprüfungen ist abs(ist - soll) die richtige Größe, weil es egal ist, ob du zu groß oder zu klein bist.",
+   "beispiel": "soll = 50.00\nist = 49.97\nabweichung = abs(ist - soll)\nprint(f\"Abweichung: {abweichung:.2f} mm\")",
+   "wann_nutzen": "Bei Abweichungen, Abständen und Toleranzprüfungen.",
+   "transfer": [
+    {
+     "situation": "Toleranzprüfung",
+     "code": "ist, soll, tol = 10.04, 10.0, 0.05\nprint(abs(ist - soll) <= tol)"
+    },
+    {
+     "situation": "Betrag einer negativen Zahl",
+     "code": "print(abs(-3.5))"
+    }
+   ],
+   "verwandt": [
+    "isclose",
+    "round",
+    "vergleiche"
+   ],
+   "bezeichner": [
+    "abs"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "Abweichung: 0.03 mm",
+   "typische_fehler": [
+    {
+     "beschreibung": "Text statt Zahl",
+     "code": "abs(\"5\")",
+     "meldung": "TypeError: bad operand type for abs(): 'str'"
+    },
+    {
+     "beschreibung": "Klammern vergessen: abs wird mit Minus verwechselt",
+     "code": "abs -3",
+     "meldung": "TypeError: unsupported operand type(s) for -: 'builtin_function_or_method' and 'int'"
+    }
+   ]
+  },
+  {
+   "id": "import-math",
+   "name": "import math",
+   "kategorie": "Mathematik (math)",
+   "eingefuehrt": "V03",
+   "ampel": "kopf",
+   "kurz": "Holt das math-Modul mit Wurzel, Pi, Winkelfunktionen & Co.",
+   "syntax": "import math    from math import sqrt",
+   "erklaerung": "Nicht alles ist sofort in Python verfügbar. Mit import math lädst du ein Modul, danach rufst du seine Funktionen mit Punkt auf: math.sqrt(2). Die import-Zeile steht üblicherweise ganz oben im Programm.",
+   "beispiel": "import math\nprint(math.pi)\nprint(math.sqrt(2))\nprint(math.sin(math.radians(30)))",
+   "wann_nutzen": "Sobald du Wurzel, Pi, Sinus/Cosinus, Logarithmus oder isclose brauchst.",
+   "transfer": [
+    {
+     "situation": "Einzelne Funktion direkt importieren",
+     "code": "from math import sqrt\nprint(sqrt(16))"
+    },
+    {
+     "situation": "Kurzer Alias",
+     "code": "import math as m\nprint(m.pi)"
+    }
+   ],
+   "verwandt": [
+    "sqrt",
+    "pi",
+    "isclose"
+   ],
+   "bezeichner": [
+    "math"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "3.141592653589793\n1.4142135623730951\n0.49999999999999994",
+   "typische_fehler": [
+    {
+     "beschreibung": "Modul nicht importiert",
+     "code": "print(math.pi)",
+     "meldung": "NameError: name 'math' is not defined. Did you forget to import 'math'?"
+    },
+    {
+     "beschreibung": "Modulname falsch geschrieben (Groß/Klein)",
+     "code": "import Math",
+     "meldung": "ModuleNotFoundError: No module named 'Math'"
+    }
+   ]
+  },
+  {
+   "id": "sqrt",
+   "name": "math.sqrt()",
+   "kategorie": "Mathematik (math)",
+   "eingefuehrt": "V03",
+   "ampel": "kopf",
+   "kurz": "Quadratwurzel.",
+   "syntax": "math.sqrt(x)",
+   "erklaerung": "math.sqrt(x) liefert die Quadratwurzel als float. Sie ist für negative Zahlen nicht definiert und löst dann einen ValueError aus. Für den Abstand zweier Punkte oder den Satz des Pythagoras brauchst du sie ständig.",
+   "beispiel": "import math\na = 3.0\nb = 4.0\nc = math.sqrt(a**2 + b**2)\nprint(c)",
+   "wann_nutzen": "Für Längen aus Komponenten, Standardabweichung, Radius aus Fläche.",
+   "transfer": [
+    {
+     "situation": "Radius aus der Kreisfläche",
+     "code": "import math\nA = 314.0\nprint(math.sqrt(A / math.pi))"
+    },
+    {
+     "situation": "Abstand zweier Punkte",
+     "code": "import math\nx1, y1, x2, y2 = 0, 0, 30, 40\nprint(math.sqrt((x2 - x1)**2 + (y2 - y1)**2))"
+    },
+    {
+     "situation": "Wurzel als Potenz (gleiches Ergebnis)",
+     "code": "print(16 ** 0.5)"
+    }
+   ],
+   "verwandt": [
+    "import-math",
+    "potenz",
+    "pi"
+   ],
+   "bezeichner": [
+    "math.sqrt",
+    "sqrt"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "5.0",
+   "typische_fehler": [
+    {
+     "beschreibung": "Wurzel einer negativen Zahl",
+     "code": "import math\nmath.sqrt(-4)",
+     "meldung": "ValueError: math domain error"
+    },
+    {
+     "beschreibung": "Text statt Zahl",
+     "code": "import math\nmath.sqrt(\"9\")",
+     "meldung": "TypeError: must be real number, not str"
+    }
+   ]
+  },
+  {
+   "id": "pi",
+   "name": "math.pi",
+   "kategorie": "Mathematik (math)",
+   "eingefuehrt": "V03",
+   "ampel": "kopf",
+   "kurz": "Die Kreiszahl π als float-Konstante.",
+   "syntax": "math.pi",
+   "erklaerung": "math.pi ist keine Funktion, sondern eine Konstante – deshalb ohne Klammern. Sie hat rund 15 gültige Stellen, genug für jede technische Rechnung. Für Winkel in Grad brauchst du math.radians().",
+   "beispiel": "import math\nd = 40.0\nprint(\"Umfang:\", math.pi * d)\nprint(\"Fläche:\", math.pi * d**2 / 4)",
+   "wann_nutzen": "Bei allem mit Kreisen, Wellen, Schwingungen und Winkeln.",
+   "transfer": [
+    {
+     "situation": "Kreisfrequenz aus der Frequenz",
+     "code": "import math\nf = 50\nprint(2 * math.pi * f)"
+    },
+    {
+     "situation": "Grad in Bogenmaß",
+     "code": "import math\nprint(math.radians(90))"
+    },
+    {
+     "situation": "Zylindervolumen",
+     "code": "import math\nd, h = 20, 50\nprint(math.pi * d**2 / 4 * h)"
+    }
+   ],
+   "verwandt": [
+    "import-math",
+    "sqrt"
+   ],
+   "bezeichner": [
+    "math.pi",
+    "pi"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "Umfang: 125.66370614359172\nFläche: 1256.6370614359173",
+   "typische_fehler": [
+    {
+     "beschreibung": "Konstante großgeschrieben",
+     "code": "import math\nprint(math.PI)",
+     "meldung": "AttributeError: module 'math' has no attribute 'PI'"
+    },
+    {
+     "beschreibung": "pi wie eine Funktion aufgerufen",
+     "code": "import math\nprint(math.pi())",
+     "meldung": "TypeError: 'float' object is not callable"
+    }
+   ]
+  },
+  {
+   "id": "isclose",
+   "name": "math.isclose()",
+   "kategorie": "Mathematik (math)",
+   "eingefuehrt": "V03",
+   "ampel": "kopf",
+   "kurz": "Vergleicht zwei Fließkommazahlen mit Toleranz.",
+   "syntax": "math.isclose(a, b, rel_tol=1e-09, abs_tol=0.0)",
+   "erklaerung": "Wegen Rundungsfehlern sind a == b bei floats unzuverlässig. math.isclose(a, b) prüft, ob die Werte praktisch gleich sind. Mit abs_tol=… gibst du eine absolute Toleranz an, nötig zum Beispiel beim Vergleich mit 0 oder bei Maßtoleranzen.",
+   "beispiel": "import math\na = 0.1 + 0.2\nprint(a == 0.3)\nprint(math.isclose(a, 0.3))\nprint(math.isclose(10.02, 10.0, abs_tol=0.05))",
+   "wann_nutzen": "Immer, wenn berechnete Fließkommazahlen auf Gleichheit oder Toleranz geprüft werden.",
+   "transfer": [
+    {
+     "situation": "Maß innerhalb Toleranz",
+     "code": "import math\nprint(math.isclose(49.97, 50.0, abs_tol=0.05))"
+    },
+    {
+     "situation": "Vergleich mit null braucht abs_tol",
+     "code": "import math\nprint(math.isclose(0.0, 1e-12), math.isclose(0.0, 1e-12, abs_tol=1e-9))"
+    }
+   ],
+   "verwandt": [
+    "float",
+    "vergleiche",
+    "abs"
+   ],
+   "bezeichner": [
+    "math.isclose",
+    "isclose"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "False\nTrue\nTrue",
+   "typische_fehler": [
+    {
+     "beschreibung": "Dritter Wert positional übergeben",
+     "code": "import math\nmath.isclose(1, 1.1, 0.2)",
+     "meldung": "TypeError: isclose() takes exactly 2 positional arguments (3 given)"
+    },
+    {
+     "beschreibung": "Vergleich mit 0 ohne abs_tol",
+     "code": "import math\nprint(math.isclose(0.0, 1e-12))",
+     "meldung": "(keine Fehlermeldung) Ausgabe: False – relative Toleranz hilft bei 0 nicht, abs_tol angeben."
+    }
+   ]
+  },
+  {
+   "id": "bool",
+   "name": "bool (Wahrheitswert)",
+   "kategorie": "Variablen & Datentypen",
+   "eingefuehrt": "V04",
+   "ampel": "kopf",
+   "kurz": "Ein Wert, der nur True oder False sein kann.",
+   "syntax": "True    False    bool(wert)",
+   "erklaerung": "Vergleiche liefern einen bool: entweder True (wahr) oder False (falsch). Beides schreibst du mit großem Anfangsbuchstaben. Intern zählt True wie 1 und False wie 0. Als falsch gelten außerdem 0, der leere Text und die leere Liste, alles andere gilt als wahr.",
+   "beispiel": "druck_bar = 6.5\nzu_hoch = druck_bar > 6\nprint(zu_hoch, type(zu_hoch))\nprint(True + True)\nprint(bool(0), bool(\"\"), bool(\"0\"))",
+   "wann_nutzen": "Für Zustände wie „Tür geschlossen“, „Grenzwert überschritten“ oder Schalter im Programm.",
+   "transfer": [
+    {
+     "situation": "Zustand in einer Variablen merken",
+     "code": "tuer_zu = True\nnot_aus = False\nprint(tuer_zu and not not_aus)"
+    },
+    {
+     "situation": "Wie viele Messwerte über dem Limit? (True zählt als 1)",
+     "code": "werte = [3, 8, 9, 2]\nprint(sum(w > 5 for w in werte))"
+    },
+    {
+     "situation": "Leere Liste ist falsch",
+     "code": "fehler = []\nif not fehler:\n    print(\"keine Fehler\")"
+    }
+   ],
+   "verwandt": [
+    "vergleiche",
+    "and-or",
+    "not",
+    "if"
+   ],
+   "bezeichner": [
+    "bool",
+    "True",
+    "False"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "True <class 'bool'>\n2\nFalse False True",
+   "typische_fehler": [
+    {
+     "beschreibung": "true klein geschrieben",
+     "code": "x = true",
+     "meldung": "NameError: name 'true' is not defined. Did you mean: 'True'?"
+    },
+    {
+     "beschreibung": "bool(\"False\") ist wahr, weil der Text nicht leer ist",
+     "code": "print(bool(\"False\"))",
+     "meldung": "(keine Fehlermeldung) Ausgabe: True – jeder nicht leere Text ist wahr."
+    }
+   ]
+  },
+  {
+   "id": "vergleiche",
+   "name": "Vergleichsoperatoren",
+   "kategorie": "Bedingungen",
+   "eingefuehrt": "V04",
+   "ampel": "kopf",
+   "kurz": "Vergleicht Werte und liefert True oder False.",
+   "syntax": "==   !=   <   >   <=   >=",
+   "erklaerung": "Mit == prüfst du auf Gleichheit, mit != auf Ungleichheit, dazu kommen <, >, <= und >=. Ein einfaches = ist die Zuweisung und gehört nicht in eine Bedingung. Du kannst Vergleiche verketten: 9.5 <= d <= 10.5 prüft ein Toleranzband.",
+   "beispiel": "soll = 50.0\nist = 50.2\nprint(ist == soll, ist != soll)\nprint(ist > soll, soll >= ist)\nprint(49.5 <= ist <= 50.5)",
+   "wann_nutzen": "In jeder if- und while-Bedingung.",
+   "transfer": [
+    {
+     "situation": "Toleranzband in einem Ausdruck",
+     "code": "d = 10.03\nprint(9.95 <= d <= 10.05)"
+    },
+    {
+     "situation": "Texte vergleichen",
+     "code": "print(\"Stahl\" == \"Stahl\", \"a\" < \"b\")"
+    },
+    {
+     "situation": "Gleichheit bei Fließkommazahlen ist heikel",
+     "code": "print(0.1 + 0.2 == 0.3)"
+    }
+   ],
+   "verwandt": [
+    "bool",
+    "if",
+    "isclose",
+    "and-or"
+   ],
+   "bezeichner": [
+    "==",
+    "!=",
+    "<",
+    ">",
+    "<=",
+    ">="
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "False True\nTrue False\nTrue",
+   "typische_fehler": [
+    {
+     "beschreibung": "= statt == in der Bedingung",
+     "code": "x = 3\nif x = 3:\n    print(\"drei\")",
+     "meldung": "SyntaxError: invalid syntax. Maybe you meant '==' or ':=' instead of '='?"
+    },
+    {
+     "beschreibung": "Text mit Zahl vergleichen",
+     "code": "print(\"5\" > 3)",
+     "meldung": "TypeError: '>' not supported between instances of 'str' and 'int'"
+    }
+   ]
+  },
+  {
+   "id": "and-or",
+   "name": "and / or",
+   "kategorie": "Bedingungen",
+   "eingefuehrt": "V04",
+   "ampel": "kopf",
+   "kurz": "Verknüpft zwei Bedingungen: beide (and) oder mindestens eine (or).",
+   "syntax": "a and b      a or b",
+   "erklaerung": "and ist nur wahr, wenn beide Seiten wahr sind – wie die Zweihand-Sicherheitsschaltung, bei der beide Taster gedrückt sein müssen. or ist wahr, sobald eine Seite wahr ist. and bindet stärker als or; mit Klammern machst du deine Absicht eindeutig.",
+   "beispiel": "links = True\nrechts = False\nprint(links and rechts)\nprint(links or rechts)\nt = 55\nprint(10 <= t and t <= 80)",
+   "wann_nutzen": "Wenn mehrere Voraussetzungen gleichzeitig oder alternativ gelten müssen.",
+   "transfer": [
+    {
+     "situation": "Zweihandbedienung",
+     "code": "taste_l, taste_r = True, True\nif taste_l and taste_r:\n    print(\"Presse fährt\")"
+    },
+    {
+     "situation": "Eine von zwei Störungen genügt",
+     "code": "ueberlast = False\nuebertemperatur = True\nprint(\"Abschalten:\", ueberlast or uebertemperatur)"
+    },
+    {
+     "situation": "Wert außerhalb des Bereichs",
+     "code": "x = 120\nprint(x < 0 or x > 100)"
+    }
+   ],
+   "verwandt": [
+    "not",
+    "vergleiche",
+    "if"
+   ],
+   "bezeichner": [
+    "and",
+    "or"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "False\nTrue\nTrue",
+   "typische_fehler": [
+    {
+     "beschreibung": "or 2 vergleicht nicht mit 2",
+     "code": "x = 5\nif x == 1 or 2:\n    print(\"immer wahr\")",
+     "meldung": "(keine Fehlermeldung) Ausgabe: immer wahr – die 2 allein gilt als wahr; richtig ist x == 1 or x == 2."
+    },
+    {
+     "beschreibung": "Zweiten Vergleich unvollständig geschrieben",
+     "code": "x = 7\nprint(x > 5 and < 10)",
+     "meldung": "SyntaxError: invalid syntax"
+    }
+   ]
+  },
+  {
+   "id": "not",
+   "name": "not",
+   "kategorie": "Bedingungen",
+   "eingefuehrt": "V04",
+   "ampel": "kopf",
+   "kurz": "Dreht einen Wahrheitswert um.",
+   "syntax": "not bedingung",
+   "erklaerung": "not macht aus True ein False und umgekehrt. Es ist gut lesbar bei Zuständen wie „nicht Tür offen“. Für Vergleiche ist != meist die lesbarere Alternative zu not (a == b).",
+   "beispiel": "tuer_offen = False\nprint(not tuer_offen)\nif not tuer_offen:\n    print(\"Maschine darf starten\")",
+   "wann_nutzen": "Zum Umkehren von Zuständen und Flags.",
+   "transfer": [
+    {
+     "situation": "Verneinte Zusammensetzung",
+     "code": "a, b = True, False\nprint(not (a and b))"
+    },
+    {
+     "situation": "Ungleich: zwei gleichwertige Schreibweisen",
+     "code": "x = 3\nprint(not x == 4, x != 4)"
+    },
+    {
+     "situation": "Leere Eingabe erkennen",
+     "code": "eingabe = \"\"\nif not eingabe:\n    print(\"Bitte etwas eingeben\")"
+    }
+   ],
+   "verwandt": [
+    "and-or",
+    "bool",
+    "vergleiche"
+   ],
+   "bezeichner": [
+    "not"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "True\nMaschine darf starten",
+   "typische_fehler": [
+    {
+     "beschreibung": "! wie in anderen Sprachen",
+     "code": "tuer_offen = True\nprint(!tuer_offen)",
+     "meldung": "SyntaxError: invalid syntax"
+    },
+    {
+     "beschreibung": "not gilt nur für den nächsten Ausdruck",
+     "code": "print(not True == False)",
+     "meldung": "(keine Fehlermeldung) Ausgabe: True – gelesen als not (True == False)."
+    }
+   ]
+  },
+  {
+   "id": "if",
+   "name": "if",
+   "kategorie": "Bedingungen",
+   "eingefuehrt": "V04",
+   "ampel": "kopf",
+   "kurz": "Führt einen Block nur aus, wenn eine Bedingung wahr ist.",
+   "syntax": "if bedingung:\n    anweisungen",
+   "erklaerung": "Hinter if steht eine Bedingung und ein Doppelpunkt. Die Zeilen darunter, um vier Leerzeichen eingerückt, laufen nur ab, wenn die Bedingung wahr ist. Wo die Einrückung endet, endet auch der if-Block.",
+   "beispiel": "temperatur = 92\nif temperatur > 90:\n    print(\"Warnung: Lager überhitzt\")\nprint(\"Ende der Prüfung\")",
+   "wann_nutzen": "Sobald dein Programm je nach Wert etwas anderes tun soll.",
+   "transfer": [
+    {
+     "situation": "Grenzwert überwachen",
+     "code": "druck = 7.2\nif druck > 6.5:\n    print(\"Überdruck!\")"
+    },
+    {
+     "situation": "Mehrere Anweisungen im Block",
+     "code": "n = 4\nif n % 2 == 0:\n    print(\"gerade\")\n    print(\"durch 2 teilbar\")"
+    },
+    {
+     "situation": "Eingabe plausibilisieren",
+     "code": "alter = -3\nif alter < 0:\n    print(\"Ungültig\")"
+    }
+   ],
+   "verwandt": [
+    "else",
+    "elif",
+    "einrueckung",
+    "vergleiche"
+   ],
+   "bezeichner": [
+    "if"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "Warnung: Lager überhitzt\nEnde der Prüfung",
+   "typische_fehler": [
+    {
+     "beschreibung": "Doppelpunkt vergessen",
+     "code": "x = 3\nif x > 2\n    print(\"groß\")",
+     "meldung": "SyntaxError: expected ':'"
+    },
+    {
+     "beschreibung": "Block nicht eingerückt",
+     "code": "x = 3\nif x > 2:\nprint(\"groß\")",
+     "meldung": "IndentationError: expected an indented block after 'if' statement on line 2"
+    }
+   ]
+  },
+  {
+   "id": "else",
+   "name": "else",
+   "kategorie": "Bedingungen",
+   "eingefuehrt": "V04",
+   "ampel": "kopf",
+   "kurz": "Der Alternativ-Block, wenn die if-Bedingung nicht zutrifft.",
+   "syntax": "if bedingung:\n    ...\nelse:\n    ...",
+   "erklaerung": "else hat keine eigene Bedingung und gehört immer zu einem davor stehenden if. Genau einer der beiden Blöcke wird ausgeführt.",
+   "beispiel": "last_kn = 8.5\nif last_kn <= 10:\n    print(\"Last zulässig\")\nelse:\n    print(\"Überlast\")",
+   "wann_nutzen": "Bei einer Entweder-oder-Entscheidung.",
+   "transfer": [
+    {
+     "situation": "Gerade oder ungerade",
+     "code": "n = 7\nif n % 2 == 0:\n    print(\"gerade\")\nelse:\n    print(\"ungerade\")"
+    },
+    {
+     "situation": "Gut/Schlecht-Prüfung eines Maßes",
+     "code": "d = 10.08\nif abs(d - 10.0) <= 0.05:\n    print(\"i.O.\")\nelse:\n    print(\"n.i.O.\")"
+    }
+   ],
+   "verwandt": [
+    "if",
+    "elif"
+   ],
+   "bezeichner": [
+    "else"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "Last zulässig",
+   "typische_fehler": [
+    {
+     "beschreibung": "else mit eigener Bedingung",
+     "code": "x = 3\nif x > 5:\n    print(\"groß\")\nelse x > 2:\n    print(\"mittel\")",
+     "meldung": "SyntaxError: expected ':'"
+    },
+    {
+     "beschreibung": "else ohne if davor",
+     "code": "else:\n    print(\"allein\")",
+     "meldung": "SyntaxError: invalid syntax"
+    }
+   ]
+  },
+  {
+   "id": "elif",
+   "name": "elif",
+   "kategorie": "Bedingungen",
+   "eingefuehrt": "V04",
+   "ampel": "kopf",
+   "kurz": "Weitere Bedingung, die nur geprüft wird, wenn die vorherigen falsch waren.",
+   "syntax": "if a:\n    ...\nelif b:\n    ...\nelse:\n    ...",
+   "erklaerung": "elif (else if) stellt eine Kette von Fällen dar. Python prüft von oben nach unten und führt den ersten passenden Block aus, den Rest überspringt es. Deshalb zählt die Reihenfolge: zuerst der engste Fall.",
+   "beispiel": "druck_bar = 5.2\nif druck_bar > 8:\n    print(\"ROT: Abschalten\")\nelif druck_bar > 6:\n    print(\"GELB: Warnung\")\nelse:\n    print(\"GRÜN: normal\")",
+   "wann_nutzen": "Wenn es mehr als zwei Fälle gibt: Güteklassen, Druckstufen, Notenskalen.",
+   "transfer": [
+    {
+     "situation": "Drei Temperaturbereiche",
+     "code": "t = 45\nif t < 20:\n    print(\"kalt\")\nelif t < 60:\n    print(\"warm\")\nelse:\n    print(\"heiß\")"
+    },
+    {
+     "situation": "Vorzeichen bestimmen",
+     "code": "x = -2.5\nif x > 0:\n    print(\"positiv\")\nelif x < 0:\n    print(\"negativ\")\nelse:\n    print(\"null\")"
+    }
+   ],
+   "verwandt": [
+    "if",
+    "else",
+    "and-or"
+   ],
+   "bezeichner": [
+    "elif"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "GRÜN: normal",
+   "typische_fehler": [
+    {
+     "beschreibung": "else if wie in C geschrieben",
+     "code": "x = 3\nif x > 5:\n    print(\"a\")\nelse if x > 2:\n    print(\"b\")",
+     "meldung": "SyntaxError: expected ':'"
+    },
+    {
+     "beschreibung": "Falsche Reihenfolge: der erste Treffer gewinnt",
+     "code": "x = 100\nif x > 10:\n    print(\"über 10\")\nelif x > 50:\n    print(\"über 50\")",
+     "meldung": "(keine Fehlermeldung) Ausgabe: über 10 – der zweite Zweig wird nie erreicht; erst den engsten Fall prüfen."
+    }
+   ]
+  },
+  {
+   "id": "einrueckung",
+   "name": "Einrückung",
+   "kategorie": "Bedingungen",
+   "eingefuehrt": "V04",
+   "ampel": "kopf",
+   "kurz": "Python erkennt Blöcke an der Einrückung, nicht an Klammern.",
+   "syntax": "4 Leerzeichen pro Ebene (Tab im Editor = 4 Leerzeichen)",
+   "erklaerung": "Alles, was zu einem if, while, for oder def gehört, steht eine Ebene weiter rechts – üblich sind vier Leerzeichen. Wo du zurückspringst, endet der Block. Deshalb ist die Einrückung Teil der Programmlogik, nicht Kosmetik. Mische keine Tabs und Leerzeichen.",
+   "beispiel": "last = 120\nif last > 100:\n    print(\"Überlast\")\n    print(\"Abschalten\")\nprint(\"immer\")",
+   "wann_nutzen": "Bei jedem Block: if, else, while, for, def.",
+   "transfer": [
+    {
+     "situation": "Verschachtelter Block: zwei Ebenen",
+     "code": "a, b = 5, 7\nif a > 0:\n    if b > 0:\n        print(\"beide positiv\")"
+    },
+    {
+     "situation": "Eine Zeile gehört nicht mehr zur Schleife",
+     "code": "for i in range(3):\n    print(\"Runde\", i)\nprint(\"fertig\")"
+    }
+   ],
+   "verwandt": [
+    "if",
+    "for",
+    "while",
+    "def"
+   ],
+   "bezeichner": [
+    "Einrueckung"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "Überlast\nAbschalten\nimmer",
+   "typische_fehler": [
+    {
+     "beschreibung": "Unerwartet eingerückt",
+     "code": "x = 1\n    y = 2",
+     "meldung": "IndentationError: unexpected indent"
+    },
+    {
+     "beschreibung": "Ausrücken passt zu keiner Ebene",
+     "code": "if True:\n        print(\"a\")\n    print(\"b\")",
+     "meldung": "IndentationError: unindent does not match any outer indentation level"
+    }
+   ]
+  },
+  {
+   "id": "verschachtelte-if",
+   "name": "Verschachtelte Verzweigung",
+   "kategorie": "Bedingungen",
+   "eingefuehrt": "V05",
+   "ampel": "kopf",
+   "kurz": "Eine Entscheidung innerhalb einer anderen – so setzt du Struktogramme um.",
+   "syntax": "if a:\n    if b:\n        ...\n    else:\n        ...\nelse:\n    ...",
+   "erklaerung": "Ein if darf in einem anderen if stehen. Jede Ebene wird einmal weiter eingerückt. Das übersetzt ein verschachteltes Struktogramm Zeile für Zeile. Prüfe zuerst die Bedingung, die alles andere erst sinnvoll macht, zum Beispiel ob die Eingabe überhaupt gültig ist.",
+   "beispiel": "drehzahl = 2800\noeltemp = 105\nif drehzahl > 2500:\n    if oeltemp > 100:\n        print(\"Drehzahl begrenzen\")\n    else:\n        print(\"Hohe Drehzahl, Temperatur ok\")\nelse:\n    print(\"Normalbetrieb\")",
+   "wann_nutzen": "Wenn eine zweite Frage nur Sinn hat, nachdem die erste mit Ja beantwortet wurde.",
+   "transfer": [
+    {
+     "situation": "Erst gültig?, dann Bereich?",
+     "code": "x = 7\nif x > 0:\n    if x < 10:\n        print(\"zwischen 0 und 10\")\n    else:\n        print(\"zu groß\")\nelse:\n    print(\"nicht positiv\")"
+    },
+    {
+     "situation": "Gleiche Logik flach mit and",
+     "code": "x = 7\nif x > 0 and x < 10:\n    print(\"zwischen 0 und 10\")"
+    }
+   ],
+   "verwandt": [
+    "if",
+    "else",
+    "and-or",
+    "eingabe-pruefen"
+   ],
+   "bezeichner": [
+    "Verschachtelung"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "Drehzahl begrenzen",
+   "typische_fehler": [
+    {
+     "beschreibung": "else gehört zum falschen if",
+     "code": "a, b = True, False\nif a:\n    if b:\n        print(\"beide\")\nelse:\n    print(\"a ist falsch\")",
+     "meldung": "(keine Fehlermeldung) Ausgabe: (nichts) – der else-Zweig hängt am äußeren if, nicht am inneren; hier ist a wahr und b falsch, also passiert nichts."
+    },
+    {
+     "beschreibung": "Innere Ebene nicht eingerückt",
+     "code": "if True:\n    if True:\n    print(\"x\")",
+     "meldung": "IndentationError: expected an indented block after 'if' statement on line 2"
+    }
+   ]
+  },
+  {
+   "id": "eingabe-pruefen",
+   "name": "Eingabe prüfen (isdigit, Bereich)",
+   "kategorie": "Text & Formatierung",
+   "eingefuehrt": "V05",
+   "ampel": "kopf",
+   "kurz": "Prüft, ob ein Text eine brauchbare Zahl ist, bevor du damit rechnest.",
+   "syntax": "text.isdigit()    if 1 <= n <= 100:",
+   "erklaerung": "Texte aus Eingaben sind unberechenbar. Mit text.isdigit() prüfst du, ob nur Ziffern drin stehen. Danach kannst du sicher mit int() umwandeln und den Wertebereich prüfen. Negative Zahlen und Dezimalzahlen bestehen den isdigit-Test nicht. Dafür gibt es später try/except (V09).",
+   "beispiel": "eingabe = \"250\"\nif eingabe.isdigit():\n    anzahl = int(eingabe)\n    if 1 <= anzahl <= 1000:\n        print(\"Auftrag über\", anzahl, \"Stück angenommen\")\n    else:\n        print(\"Stückzahl außerhalb 1–1000\")\nelse:\n    print(\"Bitte eine ganze Zahl eingeben\")",
+   "wann_nutzen": "Immer, wenn Eingaben von Menschen oder aus Dateien kommen.",
+   "transfer": [
+    {
+     "situation": "Leere Eingabe abfangen",
+     "code": "eingabe = \"\"\nif not eingabe:\n    print(\"Bitte etwas eingeben\")"
+    },
+    {
+     "situation": "Dezimalkomma tolerieren",
+     "code": "text = \"3,5\"\ntext = text.replace(\",\", \".\")\nprint(float(text) * 2)"
+    }
+   ],
+   "verwandt": [
+    "input",
+    "typumwandlung",
+    "verschachtelte-if",
+    "try-except"
+   ],
+   "bezeichner": [
+    ".isdigit"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "Auftrag über 250 Stück angenommen",
+   "typische_fehler": [
+    {
+     "beschreibung": "Negative Zahl besteht isdigit nicht",
+     "code": "print(\"-5\".isdigit())",
+     "meldung": "(keine Fehlermeldung) Ausgabe: False – das Minus ist keine Ziffer."
+    },
+    {
+     "beschreibung": "Ungeprüft umwandeln",
+     "code": "int(\"abc\")",
+     "meldung": "ValueError: invalid literal for int() with base 10: 'abc'"
+    }
+   ]
+  },
+  {
+   "id": "while",
+   "name": "while",
+   "kategorie": "Schleifen",
+   "eingefuehrt": "V06",
+   "ampel": "kopf",
+   "kurz": "Wiederholt einen Block, solange eine Bedingung wahr ist.",
+   "syntax": "while bedingung:\n    anweisungen",
+   "erklaerung": "Vor jedem Durchlauf prüft Python die Bedingung. Ist sie wahr, läuft der Block, sonst geht es hinter der Schleife weiter. Irgendetwas im Block muss die Bedingung irgendwann falsch machen, sonst läuft die Schleife ewig. Nimm while, wenn du die Anzahl der Durchläufe nicht vorher kennst.",
+   "beispiel": "temp = 90.0\nminuten = 0\nwhile temp > 30:\n    temp = temp * 0.9\n    minuten = minuten + 1\nprint(minuten, \"min bis unter 30 °C\")",
+   "wann_nutzen": "Wenn du wiederholst, bis ein Ziel erreicht ist: Abkühlen, Annähern (Newton), Eingabe wiederholen.",
+   "transfer": [
+    {
+     "situation": "Verdoppeln bis zur Grenze",
+     "code": "x = 1\nwhile x < 1000:\n    x = x * 2\nprint(x)"
+    },
+    {
+     "situation": "Newton-Verfahren für die Wurzel aus 2",
+     "code": "x = 1.0\nwhile abs(x * x - 2) > 1e-9:\n    x = (x + 2 / x) / 2\nprint(x)"
+    },
+    {
+     "situation": "Herunterzählen",
+     "code": "n = 3\nwhile n > 0:\n    print(n)\n    n -= 1\nprint(\"Start\")"
+    }
+   ],
+   "verwandt": [
+    "for",
+    "break",
+    "zaehler-summe",
+    "vergleiche"
+   ],
+   "bezeichner": [
+    "while"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "11 min bis unter 30 °C",
+   "typische_fehler": [
+    {
+     "beschreibung": "Doppelpunkt vergessen",
+     "code": "n = 3\nwhile n > 0\n    n -= 1",
+     "meldung": "SyntaxError: expected ':'"
+    },
+    {
+     "beschreibung": "Bedingung wird nie falsch: Endlosschleife",
+     "code": "n = 3\nwhile n > 0:\n    print(n)",
+     "meldung": "(kein Abbruch) Das Programm hängt: Im Browser kommt nach ein paar Sekunden \"Abgebrochen\". Es fehlt n -= 1 im Block."
+    }
+   ]
+  },
+  {
+   "id": "for",
+   "name": "for",
+   "kategorie": "Schleifen",
+   "eingefuehrt": "V06",
+   "ampel": "kopf",
+   "kurz": "Läuft über eine Folge von Werten und führt den Block für jeden aus.",
+   "syntax": "for variable in folge:\n    anweisungen",
+   "erklaerung": "for nimmt nacheinander jeden Wert der Folge, legt ihn in der Schleifenvariablen ab und führt den Block aus. Die Folge kann ein range(), eine Liste (ab V08) oder ein Text sein. Nimm for, wenn du weißt, wie oft oder worüber du wiederholst.",
+   "beispiel": "summe = 0\nfor i in range(1, 6):\n    summe = summe + i\nprint(summe)\nfor zeichen in \"M10\":\n    print(zeichen)",
+   "wann_nutzen": "Für feste Anzahl an Durchläufen und zum Abarbeiten von Folgen.",
+   "transfer": [
+    {
+     "situation": "Wertetabelle",
+     "code": "for d in range(10, 31, 10):\n    print(d, \"mm ->\", 3.14159 * d, \"mm Umfang\")"
+    },
+    {
+     "situation": "Alle Zeichen eines Textes",
+     "code": "for c in \"Welle\":\n    print(c, end=\" \")"
+    },
+    {
+     "situation": "Fakultät",
+     "code": "f = 1\nfor k in range(1, 6):\n    f = f * k\nprint(f)"
+    }
+   ],
+   "verwandt": [
+    "range",
+    "while",
+    "break",
+    "for-liste"
+   ],
+   "bezeichner": [
+    "for"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "15\nM\n1\n0",
+   "typische_fehler": [
+    {
+     "beschreibung": "Doppelpunkt vergessen",
+     "code": "for i in range(3)\n    print(i)",
+     "meldung": "SyntaxError: expected ':'"
+    },
+    {
+     "beschreibung": "Über eine Zahl statt einer Folge laufen",
+     "code": "for i in 5:\n    print(i)",
+     "meldung": "TypeError: 'int' object is not iterable"
+    }
+   ]
+  },
+  {
+   "id": "range",
+   "name": "range()",
+   "kategorie": "Schleifen",
+   "eingefuehrt": "V06",
+   "ampel": "kopf",
+   "kurz": "Erzeugt eine Zahlenfolge für Schleifen.",
+   "syntax": "range(stop)    range(start, stop)    range(start, stop, schritt)",
+   "erklaerung": "range(5) liefert 0, 1, 2, 3, 4: Der Startwert 0 ist dabei, der Endwert 5 nicht. range(1, 6) liefert 1 bis 5, range(0, 100, 25) liefert 0, 25, 50, 75. Mit negativem Schritt zählst du rückwärts.",
+   "beispiel": "for winkel in range(0, 91, 30):\n    print(winkel, \"Grad\")\nprint(list(range(5)))",
+   "wann_nutzen": "Wenn du n-mal etwas tun oder eine Zahlenreihe durchlaufen willst.",
+   "transfer": [
+    {
+     "situation": "Rückwärts zählen",
+     "code": "for i in range(5, 0, -1):\n    print(i)"
+    },
+    {
+     "situation": "Nur gerade Zahlen",
+     "code": "print(list(range(0, 11, 2)))"
+    },
+    {
+     "situation": "Eine Aktion dreimal wiederholen",
+     "code": "for _ in range(3):\n    print(\"Piep\")"
+    }
+   ],
+   "verwandt": [
+    "for",
+    "while",
+    "len"
+   ],
+   "bezeichner": [
+    "range"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "0 Grad\n30 Grad\n60 Grad\n90 Grad\n[0, 1, 2, 3, 4]",
+   "typische_fehler": [
+    {
+     "beschreibung": "Fließkommazahl als Argument",
+     "code": "range(1.5)",
+     "meldung": "TypeError: 'float' object cannot be interpreted as an integer"
+    },
+    {
+     "beschreibung": "Start größer als Stopp: keine Durchläufe",
+     "code": "for i in range(10, 0):\n    print(i)\nprint(\"fertig\")",
+     "meldung": "(keine Fehlermeldung) Ausgabe: fertig – die Folge ist leer; für abwärts brauchst du den Schritt -1."
+    }
+   ]
+  },
+  {
+   "id": "break",
+   "name": "break",
+   "kategorie": "Schleifen",
+   "eingefuehrt": "V06",
+   "ampel": "kopf",
+   "kurz": "Verlässt die Schleife sofort.",
+   "syntax": "break",
+   "erklaerung": "break beendet die innerste Schleife und springt dahinter weiter. Das brauchst du, wenn du ein Suchergebnis gefunden hast oder eine Grenze überschritten ist und weiteres Wiederholen nur Zeit kostet.",
+   "beispiel": "for v in range(1, 100):\n    if v * v > 200:\n        print(\"Erste Zahl mit Quadrat über 200:\", v)\n        break",
+   "wann_nutzen": "Beim Suchen und wenn eine Abbruchbedingung mitten im Durchlauf entsteht.",
+   "transfer": [
+    {
+     "situation": "Erstes Vielfaches finden",
+     "code": "for n in range(1, 100):\n    if n % 7 == 0 and n % 5 == 0:\n        print(n)\n        break"
+    },
+    {
+     "situation": "Endlosschleife mit sauberem Ausstieg",
+     "code": "zaehler = 0\nwhile True:\n    zaehler += 1\n    if zaehler >= 3:\n        break\nprint(zaehler)"
+    }
+   ],
+   "verwandt": [
+    "continue",
+    "while",
+    "for"
+   ],
+   "bezeichner": [
+    "break"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "Erste Zahl mit Quadrat über 200: 15",
+   "typische_fehler": [
+    {
+     "beschreibung": "break außerhalb einer Schleife",
+     "code": "x = 3\nbreak",
+     "meldung": "SyntaxError: 'break' outside loop"
+    },
+    {
+     "beschreibung": "break verlässt nur die innere Schleife",
+     "code": "for a in range(2):\n    for b in range(3):\n        if b == 1:\n            break\n        print(a, b)",
+     "meldung": "(keine Fehlermeldung) Ausgabe: 0 0 und 1 0 – die äußere Schleife läuft weiter."
+    }
+   ]
+  },
+  {
+   "id": "continue",
+   "name": "continue",
+   "kategorie": "Schleifen",
+   "eingefuehrt": "V06",
+   "ampel": "kopf",
+   "kurz": "Springt zum nächsten Durchlauf und überspringt den Rest des Blocks.",
+   "syntax": "continue",
+   "erklaerung": "continue lässt den Rest des aktuellen Durchlaufs aus und macht mit dem nächsten Wert weiter. Das ist praktisch, um ungültige Werte zu überspringen, ohne den ganzen Block zu verschachteln.",
+   "beispiel": "for n in range(1, 8):\n    if n % 2 == 0:\n        continue\n    print(n, \"ist ungerade\")",
+   "wann_nutzen": "Wenn bestimmte Durchläufe nichts tun sollen: ungültige Messwerte, leere Zeilen.",
+   "transfer": [
+    {
+     "situation": "Nur positive Werte summieren",
+     "code": "summe = 0\nfor x in range(-3, 4):\n    if x < 0:\n        continue\n    summe += x\nprint(summe)"
+    },
+    {
+     "situation": "Eine Zahl auslassen",
+     "code": "for i in range(5):\n    if i == 2:\n        continue\n    print(i)"
+    }
+   ],
+   "verwandt": [
+    "break",
+    "while",
+    "for"
+   ],
+   "bezeichner": [
+    "continue"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "1 ist ungerade\n3 ist ungerade\n5 ist ungerade\n7 ist ungerade",
+   "typische_fehler": [
+    {
+     "beschreibung": "continue außerhalb einer Schleife",
+     "code": "continue",
+     "meldung": "SyntaxError: 'continue' not properly in loop"
+    },
+    {
+     "beschreibung": "continue vor dem Hochzählen in while",
+     "code": "i = 0\nwhile i < 5:\n    if i == 2:\n        continue\n    i += 1",
+     "meldung": "(kein Abbruch) Endlosschleife: bei i == 2 wird i += 1 nie erreicht."
+    }
+   ]
+  },
+  {
+   "id": "zaehler-summe",
+   "name": "Zähler & Summe (+=)",
+   "kategorie": "Schleifen",
+   "eingefuehrt": "V06",
+   "ampel": "kopf",
+   "kurz": "Ergebnisse in einer Schleife sammeln: hochzählen und aufsummieren.",
+   "syntax": "summe = 0\nfor ...:\n    summe += wert",
+   "erklaerung": "Muster in fast jeder Schleife: Vor der Schleife startest du mit 0, in der Schleife addierst du. a += b ist die Kurzform von a = a + b, ebenso gibt es -=, *= und /=. Der Startwert gehört vor die Schleife, sonst wird er in jedem Durchlauf zurückgesetzt.",
+   "beispiel": "summe = 0\nanzahl = 0\nfor kraft in range(10, 60, 10):\n    summe += kraft\n    anzahl += 1\nprint(\"Mittelwert:\", summe / anzahl)",
+   "wann_nutzen": "Für Summen, Mittelwerte, Zählen von Treffern und Produkte.",
+   "transfer": [
+    {
+     "situation": "Treffer zählen",
+     "code": "treffer = 0\nfor n in range(1, 21):\n    if n % 3 == 0:\n        treffer += 1\nprint(treffer)"
+    },
+    {
+     "situation": "Produkt statt Summe",
+     "code": "p = 1\nfor n in range(1, 5):\n    p *= n\nprint(p)"
+    }
+   ],
+   "verwandt": [
+    "for",
+    "range",
+    "sum-min-max"
+   ],
+   "bezeichner": [
+    "+="
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "Mittelwert: 30.0",
+   "typische_fehler": [
+    {
+     "beschreibung": "Summe nicht initialisiert",
+     "code": "for i in range(3):\n    summe += i",
+     "meldung": "NameError: name 'summe' is not defined"
+    },
+    {
+     "beschreibung": "Startwert innerhalb der Schleife gesetzt",
+     "code": "for i in range(1, 4):\n    summe = 0\n    summe += i\nprint(summe)",
+     "meldung": "(keine Fehlermeldung) Ausgabe: 3 – die Summe wird in jedem Durchlauf auf 0 zurückgesetzt, übrig bleibt nur der letzte Wert."
+    }
+   ]
+  },
+  {
+   "id": "def",
+   "name": "def (Funktion definieren)",
+   "kategorie": "Funktionen",
+   "eingefuehrt": "V07",
+   "ampel": "kopf",
+   "kurz": "Fasst Code unter einem Namen zusammen, damit du ihn wiederverwenden kannst.",
+   "syntax": "def name(parameter):\n    anweisungen\n    return ergebnis",
+   "erklaerung": "Mit def bekommt ein Stück Code einen Namen. Der Block wird erst ausgeführt, wenn du die Funktion aufrufst: name(werte). Funktionen vermeiden Wiederholungen (DRY), halten Code lesbar und lassen sich einzeln testen.",
+   "beispiel": "def flaeche_kreis(d):\n    return 3.14159 * d**2 / 4\n\nprint(flaeche_kreis(20))\nprint(flaeche_kreis(40))",
+   "wann_nutzen": "Sobald du dieselbe Rechnung ein zweites Mal brauchst – oder einem Block einen Namen geben willst.",
+   "transfer": [
+    {
+     "situation": "Umrechnung als Funktion",
+     "code": "def mm_zu_m(mm):\n    return mm / 1000\n\nprint(mm_zu_m(2500))"
+    },
+    {
+     "situation": "Funktion ohne Rückgabewert, nur mit Ausgabe",
+     "code": "def gruss(name):\n    print(\"Hallo\", name)\n\ngruss(\"Anna\")"
+    }
+   ],
+   "verwandt": [
+    "parameter",
+    "return",
+    "default-werte",
+    "docstring"
+   ],
+   "bezeichner": [
+    "def"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "314.159\n1256.636",
+   "typische_fehler": [
+    {
+     "beschreibung": "Funktion vor der Definition aufgerufen",
+     "code": "print(quadrat(3))\n\ndef quadrat(x):\n    return x * x",
+     "meldung": "NameError: name 'quadrat' is not defined"
+    },
+    {
+     "beschreibung": "Doppelpunkt vergessen",
+     "code": "def quadrat(x)\n    return x * x",
+     "meldung": "SyntaxError: expected ':'"
+    }
+   ]
+  },
+  {
+   "id": "parameter",
+   "name": "Parameter & Argumente",
+   "kategorie": "Funktionen",
+   "eingefuehrt": "V07",
+   "ampel": "kopf",
+   "kurz": "Werte, die du einer Funktion beim Aufruf mitgibst.",
+   "syntax": "def f(a, b): ...    f(1, 2)    f(b=2, a=1)",
+   "erklaerung": "Parameter stehen in der Klammer der Definition, Argumente beim Aufruf. Die Zuordnung erfolgt nach Position oder mit Namen (f(b=2, a=1)). Die Anzahl muss passen, sonst gibt es einen TypeError.",
+   "beispiel": "def spannung(kraft, flaeche):\n    return kraft / flaeche\n\nprint(spannung(1200, 40))\nprint(spannung(flaeche=40, kraft=1200))",
+   "wann_nutzen": "Wenn eine Funktion mit unterschiedlichen Eingabewerten arbeiten soll.",
+   "transfer": [
+    {
+     "situation": "Zwei Werte, ein Ergebnis",
+     "code": "def rechteck(a, b):\n    return a * b\n\nprint(rechteck(3, 4))"
+    },
+    {
+     "situation": "Mit Namen aufrufen verhindert Reihenfolgefehler",
+     "code": "def verhaeltnis(zaehler, nenner):\n    return zaehler / nenner\n\nprint(verhaeltnis(nenner=4, zaehler=1))"
+    }
+   ],
+   "verwandt": [
+    "def",
+    "return",
+    "default-werte"
+   ],
+   "bezeichner": [
+    "Parameter"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "30.0\n30.0",
+   "typische_fehler": [
+    {
+     "beschreibung": "Argument fehlt",
+     "code": "def spannung(kraft, flaeche):\n    return kraft / flaeche\n\nspannung(1200)",
+     "meldung": "TypeError: spannung() missing 1 required positional argument: 'flaeche'"
+    },
+    {
+     "beschreibung": "Zu viele Argumente",
+     "code": "def quadrat(x):\n    return x * x\n\nquadrat(2, 3)",
+     "meldung": "TypeError: quadrat() takes 1 positional argument but 2 were given"
+    }
+   ]
+  },
+  {
+   "id": "return",
+   "name": "return",
+   "kategorie": "Funktionen",
+   "eingefuehrt": "V07",
+   "ampel": "kopf",
+   "kurz": "Gibt einen Wert aus der Funktion zurück und beendet sie.",
+   "syntax": "return ausdruck",
+   "erklaerung": "return liefert das Ergebnis an die aufrufende Stelle und beendet die Funktion sofort. Zeilen dahinter laufen nicht mehr. Ohne return gibt die Funktion None zurück. print() zeigt nur etwas an und gibt nichts zurück, das du weiterverwenden kannst.",
+   "beispiel": "def betrag_sicher(x):\n    if x < 0:\n        return -x\n    return x\n\nprint(betrag_sicher(-4), betrag_sicher(2.5))",
+   "wann_nutzen": "Immer, wenn du das Ergebnis weiterverwenden willst statt es nur anzuzeigen.",
+   "transfer": [
+    {
+     "situation": "Mehrere Werte als Tupel zurückgeben",
+     "code": "def min_max(a, b):\n    return min(a, b), max(a, b)\n\nkleiner, groesser = min_max(5, 2)\nprint(kleiner, groesser)"
+    },
+    {
+     "situation": "Frühes return statt else",
+     "code": "def vorzeichen(x):\n    if x > 0:\n        return \"plus\"\n    if x < 0:\n        return \"minus\"\n    return \"null\"\n\nprint(vorzeichen(-3))"
+    }
+   ],
+   "verwandt": [
+    "def",
+    "parameter",
+    "print"
+   ],
+   "bezeichner": [
+    "return"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "4 2.5",
+   "typische_fehler": [
+    {
+     "beschreibung": "return vergessen: Ergebnis ist None",
+     "code": "def verdopple(x):\n    x * 2\n\nprint(verdopple(3) + 1)",
+     "meldung": "TypeError: unsupported operand type(s) for +: 'NoneType' and 'int'"
+    },
+    {
+     "beschreibung": "Code nach return wird nie ausgeführt",
+     "code": "def f():\n    return 1\n    print(\"nie\")\n\nf()",
+     "meldung": "(keine Fehlermeldung) Die Zeile print(\"nie\") läuft nie, die Funktion endet beim return."
+    }
+   ]
+  },
+  {
+   "id": "default-werte",
+   "name": "Standardwerte für Parameter",
+   "kategorie": "Funktionen",
+   "eingefuehrt": "V07",
+   "ampel": "kopf",
+   "kurz": "Ein Parameter bekommt einen Vorgabewert, wenn du ihn weglässt.",
+   "syntax": "def f(a, b=10): ...",
+   "erklaerung": "Mit name=wert in der Definition machst du einen Parameter optional. Parameter mit Standardwert stehen immer hinter denen ohne. Das ist ideal für Konstanten wie π, Sicherheitsfaktoren oder Einheiten, die meistens gleich sind.",
+   "beispiel": "def umfang(d, pi=3.14159):\n    return pi * d\n\nprint(umfang(10))\nprint(umfang(10, pi=3.14))",
+   "wann_nutzen": "Für Parameter, die fast immer denselben Wert haben.",
+   "transfer": [
+    {
+     "situation": "Sicherheitsfaktor mit Vorgabe",
+     "code": "def zul_last(bruch_kn, s=2.0):\n    return bruch_kn / s\n\nprint(zul_last(100), zul_last(100, s=4))"
+    },
+    {
+     "situation": "Trennzeichen optional",
+     "code": "def verbinde(a, b, trenner=\"-\"):\n    return a + trenner + b\n\nprint(verbinde(\"M\", \"10\"), verbinde(\"M\", \"10\", \"_\"))"
+    }
+   ],
+   "verwandt": [
+    "def",
+    "parameter"
+   ],
+   "bezeichner": [
+    "Standardwert"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "31.4159\n31.400000000000002",
+   "typische_fehler": [
+    {
+     "beschreibung": "Parameter ohne Standardwert nach einem mit",
+     "code": "def f(a=1, b):\n    return a + b",
+     "meldung": "SyntaxError: parameter without a default follows parameter with a default"
+    },
+    {
+     "beschreibung": "Parametername falsch geschrieben",
+     "code": "def umfang(d, pi=3.14159):\n    return pi * d\n\numfang(10, PI=3.14)",
+     "meldung": "TypeError: umfang() got an unexpected keyword argument 'PI'. Did you mean 'pi'?"
+    }
+   ]
+  },
+  {
+   "id": "docstring",
+   "name": "Docstring",
+   "kategorie": "Funktionen",
+   "eingefuehrt": "V07",
+   "ampel": "kopf",
+   "kurz": "Beschreibung der Funktion als Text direkt unter der def-Zeile.",
+   "syntax": "def f(x):\n    \"\"\"Kurzbeschreibung.\"\"\"",
+   "erklaerung": "Ein Docstring ist ein Text in dreifachen Anführungszeichen als erste Anweisung der Funktion. Er beschreibt, was die Funktion tut, welche Einheiten sie erwartet und was sie zurückgibt. Editoren und help() zeigen ihn an – so sehen auch Kolleginnen und KI-Werkzeuge, wie die Funktion gemeint ist.",
+   "beispiel": "def flaeche_kreis(d_mm):\n    '''Kreisfläche in mm² aus dem Durchmesser in mm.'''\n    return 3.14159 * d_mm**2 / 4\n\nprint(flaeche_kreis.__doc__)\nhelp(flaeche_kreis)",
+   "wann_nutzen": "Bei jeder Funktion, die jemand anders (oder du in drei Monaten) benutzen soll.",
+   "transfer": [
+    {
+     "situation": "Einheiten im Docstring festhalten",
+     "code": "def mm_zu_m(mm):\n    \"\"\"Rechnet Millimeter in Meter um.\"\"\"\n    return mm / 1000\n\nprint(mm_zu_m.__doc__)"
+    },
+    {
+     "situation": "Mehrzeilig mit Parametern",
+     "code": "def spannung(kraft_n, flaeche_mm2):\n    \"\"\"Zugspannung in N/mm².\n\n    kraft_n: Kraft in Newton\n    flaeche_mm2: Querschnitt in mm²\n    \"\"\"\n    return kraft_n / flaeche_mm2\n\nprint(spannung(100, 10))"
+    }
+   ],
+   "verwandt": [
+    "def",
+    "kommentar"
+   ],
+   "bezeichner": [
+    "help"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "Kreisfläche in mm² aus dem Durchmesser in mm.\nHelp on function flaeche_kreis in module __main__:\n\nflaeche_kreis(d_mm)\n    Kreisfläche in mm² aus dem Durchmesser in mm.",
+   "typische_fehler": [
+    {
+     "beschreibung": "Docstring nicht geschlossen",
+     "code": "def f():\n    \"\"\"Text ohne Ende\n    return 1",
+     "meldung": "SyntaxError: unterminated triple-quoted string literal (detected at line 3)"
+    },
+    {
+     "beschreibung": "Text steht nicht als erste Anweisung: kein Docstring",
+     "code": "def f():\n    x = 1\n    \"\"\"Das ist kein Docstring\"\"\"\n    return x\n\nprint(f.__doc__)",
+     "meldung": "(keine Fehlermeldung) Ausgabe: None – nur der Text als erste Anweisung zählt."
+    }
+   ]
+  },
+  {
+   "id": "lokale-variablen",
+   "name": "Lokale Variablen",
+   "kategorie": "Funktionen",
+   "eingefuehrt": "V07",
+   "ampel": "kopf",
+   "kurz": "Variablen in einer Funktion sind nur dort sichtbar.",
+   "syntax": "def f(x):\n    lokal = x * 2    # nur innerhalb von f bekannt",
+   "erklaerung": "Namen, die du in einer Funktion zuweist, existieren nur während des Aufrufs. Eine gleichnamige Variable außerhalb bleibt unberührt. Eine äußere Variable kannst du in der Funktion lesen, aber nicht einfach verändern. Reiche Werte stattdessen als Parameter hinein und über return hinaus.",
+   "beispiel": "g = 10\n\ndef f(x):\n    g = x * 2          # neue lokale Variable\n    return g\n\nprint(f(3), g)",
+   "wann_nutzen": "Zum Verständnis, warum Funktionen sich nicht gegenseitig stören – und warum \"name not defined\" auftaucht.",
+   "transfer": [
+    {
+     "situation": "Hilfsvariable verschwindet nach dem Aufruf",
+     "code": "def quadrat_summe(a, b):\n    ergebnis = a**2 + b**2\n    return ergebnis\n\nprint(quadrat_summe(3, 4))"
+    },
+    {
+     "situation": "Äußeren Wert lesen ist erlaubt",
+     "code": "faktor = 3\n\ndef mal_faktor(x):\n    return x * faktor\n\nprint(mal_faktor(5))"
+    }
+   ],
+   "verwandt": [
+    "def",
+    "return",
+    "zuweisung"
+   ],
+   "bezeichner": [
+    "Lokale-Variablen"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "6 10",
+   "typische_fehler": [
+    {
+     "beschreibung": "Lokale Variable außerhalb benutzt",
+     "code": "def f(x):\n    ergebnis = x * 2\n    return ergebnis\n\nf(3)\nprint(ergebnis)",
+     "meldung": "NameError: name 'ergebnis' is not defined"
+    },
+    {
+     "beschreibung": "Äußere Variable verändern wollen",
+     "code": "zaehler = 0\n\ndef hoch():\n    zaehler = zaehler + 1\n\nhoch()",
+     "meldung": "UnboundLocalError: cannot access local variable 'zaehler' where it is not associated with a value"
+    }
+   ]
+  },
+  {
+   "id": "liste",
+   "name": "Liste",
+   "kategorie": "Listen, Tupel & Dicts",
+   "eingefuehrt": "V08",
+   "ampel": "kopf",
+   "kurz": "Eine geordnete, veränderbare Sammlung von Werten.",
+   "syntax": "liste = [wert1, wert2, ...]",
+   "erklaerung": "Eine Liste hält mehrere Werte unter einem Namen, zum Beispiel eine Messreihe oder eine Stückliste. Die Werte stehen in eckigen Klammern, durch Komma getrennt, und behalten ihre Reihenfolge. Du kannst einzelne Elemente lesen und ändern, Elemente anhängen und die Liste mit for durchlaufen.",
+   "beispiel": "messwerte = [20.1, 20.4, 19.9]\nprint(messwerte)\nmesswerte[0] = 20.0\nprint(messwerte)\nleer = []\nprint(len(leer))",
+   "wann_nutzen": "Sobald du mehr als ein paar zusammengehörige Werte hast: Messreihen, Stücklisten, Ergebnisse.",
+   "transfer": [
+    {
+     "situation": "Stückliste mit Texten",
+     "code": "teile = [\"Welle\", \"Lager\", \"Dichtung\"]\nprint(teile)"
+    },
+    {
+     "situation": "Gemischte Typen sind erlaubt",
+     "code": "zeile = [\"M10\", 10, 49.5]\nprint(zeile)"
+    },
+    {
+     "situation": "Liste mit Schleife füllen",
+     "code": "quadrate = []\nfor i in range(5):\n    quadrate.append(i * i)\nprint(quadrate)"
+    }
+   ],
+   "verwandt": [
+    "append",
+    "index",
+    "len",
+    "slicing",
+    "for-liste"
+   ],
+   "bezeichner": [
+    "list"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "[20.1, 20.4, 19.9]\n[20.0, 20.4, 19.9]\n0",
+   "typische_fehler": [
+    {
+     "beschreibung": "Komma zwischen den Werten vergessen",
+     "code": "werte = [1 2 3]",
+     "meldung": "SyntaxError: invalid syntax. Perhaps you forgot a comma?"
+    },
+    {
+     "beschreibung": "Index außerhalb der Liste",
+     "code": "werte = [1, 2, 3]\nprint(werte[3])",
+     "meldung": "IndexError: list index out of range"
+    }
+   ]
+  },
+  {
+   "id": "append",
+   "name": "append()",
+   "kategorie": "Listen, Tupel & Dicts",
+   "eingefuehrt": "V08",
+   "ampel": "kopf",
+   "kurz": "Hängt ein Element ans Ende einer Liste an.",
+   "syntax": "liste.append(wert)",
+   "erklaerung": "append() verändert die Liste direkt und gibt selbst nichts zurück (genauer: None). Deshalb darfst du das Ergebnis nicht wieder der Liste zuweisen. Mit append() baust du Ergebnislisten in Schleifen auf.",
+   "beispiel": "messwerte = []\nfor i in range(1, 4):\n    messwerte.append(i * 10.5)\nprint(messwerte)",
+   "wann_nutzen": "Beim schrittweisen Sammeln von Ergebnissen oder Messwerten.",
+   "transfer": [
+    {
+     "situation": "Nur gültige Werte sammeln",
+     "code": "gueltig = []\nfor x in [3, -1, 7, -4]:\n    if x > 0:\n        gueltig.append(x)\nprint(gueltig)"
+    },
+    {
+     "situation": "Mehrere Elemente auf einmal anhängen",
+     "code": "a = [1, 2]\na.extend([3, 4])\nprint(a)"
+    }
+   ],
+   "verwandt": [
+    "liste",
+    "len",
+    "tupel"
+   ],
+   "bezeichner": [
+    ".append"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "[10.5, 21.0, 31.5]",
+   "typische_fehler": [
+    {
+     "beschreibung": "append auf einem Tupel",
+     "code": "t = (1, 2)\nt.append(3)",
+     "meldung": "AttributeError: 'tuple' object has no attribute 'append'"
+    },
+    {
+     "beschreibung": "Ergebnis von append zugewiesen",
+     "code": "liste = [1, 2]\nliste = liste.append(3)\nprint(len(liste))",
+     "meldung": "TypeError: object of type 'NoneType' has no len()"
+    }
+   ]
+  },
+  {
+   "id": "len",
+   "name": "len()",
+   "kategorie": "Listen, Tupel & Dicts",
+   "eingefuehrt": "V08",
+   "ampel": "kopf",
+   "kurz": "Anzahl der Elemente (oder Zeichen).",
+   "syntax": "len(objekt)",
+   "erklaerung": "len() zählt die Elemente einer Liste, eines Tupels oder Dictionaries und die Zeichen eines Textes. Der letzte gültige Index einer Liste ist len(liste) - 1. Der Mittelwert einer Liste ergibt sich aus sum(liste) / len(liste).",
+   "beispiel": "messwerte = [20.1, 20.4, 19.9, 20.2]\nprint(len(messwerte))\nprint(sum(messwerte) / len(messwerte))\nprint(len(\"Welle\"))",
+   "wann_nutzen": "Für Mittelwerte, Schleifen über Indizes und Abfragen wie „ist die Liste leer?“.",
+   "transfer": [
+    {
+     "situation": "Liste leer?",
+     "code": "daten = []\nif len(daten) == 0:\n    print(\"keine Daten\")"
+    },
+    {
+     "situation": "Alle Indizes durchlaufen",
+     "code": "w = [5, 6, 7]\nfor i in range(len(w)):\n    print(i, w[i])"
+    }
+   ],
+   "verwandt": [
+    "liste",
+    "index",
+    "sum-min-max"
+   ],
+   "bezeichner": [
+    "len"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "4\n20.15\n5",
+   "typische_fehler": [
+    {
+     "beschreibung": "len auf einer Zahl",
+     "code": "len(5)",
+     "meldung": "TypeError: object of type 'int' has no len()"
+    },
+    {
+     "beschreibung": "Letztes Element mit len(liste) statt len(liste) - 1",
+     "code": "w = [1, 2, 3]\nprint(w[len(w)])",
+     "meldung": "IndexError: list index out of range"
+    }
+   ]
+  },
+  {
+   "id": "index",
+   "name": "Index [ ]",
+   "kategorie": "Listen, Tupel & Dicts",
+   "eingefuehrt": "V08",
+   "ampel": "kopf",
+   "kurz": "Greift auf ein einzelnes Element zu – gezählt ab 0.",
+   "syntax": "liste[0]    liste[-1]",
+   "erklaerung": "Das erste Element hat den Index 0, das zweite 1 und so weiter. Negative Indizes zählen von hinten: -1 ist das letzte Element. Ein Index außerhalb der Liste ist ein IndexError. Einzelne Zeichen eines Textes erreichst du genauso.",
+   "beispiel": "teile = [\"Welle\", \"Lager\", \"Dichtung\", \"Schraube\"]\nprint(teile[0])\nprint(teile[-1])\nprint(\"Welle\"[1])",
+   "wann_nutzen": "Wenn du ein bestimmtes Element brauchst: das erste, das letzte, das n-te.",
+   "transfer": [
+    {
+     "situation": "Erste und letzte Messung vergleichen",
+     "code": "w = [20.0, 20.5, 21.3]\nprint(w[-1] - w[0])"
+    },
+    {
+     "situation": "Zeile einer Tabelle als Liste",
+     "code": "zeile = [\"M10\", 10, 49.5]\nprint(\"Schraube\", zeile[0], \"hat\", zeile[2], \"N\")"
+    }
+   ],
+   "verwandt": [
+    "liste",
+    "slicing",
+    "len"
+   ],
+   "bezeichner": [
+    "Index"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "Welle\nSchraube\ne",
+   "typische_fehler": [
+    {
+     "beschreibung": "Index zu groß",
+     "code": "w = [1, 2, 3]\nprint(w[5])",
+     "meldung": "IndexError: list index out of range"
+    },
+    {
+     "beschreibung": "Index als Fließkommazahl",
+     "code": "w = [1, 2, 3]\nprint(w[1.0])",
+     "meldung": "TypeError: list indices must be integers or slices, not float"
+    }
+   ]
+  },
+  {
+   "id": "slicing",
+   "name": "Slicing [von:bis]",
+   "kategorie": "Listen, Tupel & Dicts",
+   "eingefuehrt": "V08",
+   "ampel": "kopf",
+   "kurz": "Schneidet einen Teil einer Liste oder eines Textes heraus.",
+   "syntax": "liste[start:stop]    liste[start:stop:schritt]",
+   "erklaerung": "Bei liste[a:b] ist das Element a dabei, b nicht (wie bei range). Lässt du eine Grenze weg, gilt Anfang bzw. Ende. Negative Werte zählen von hinten. Ein Slice liefert immer eine neue Liste, auch wenn er leer ist, und löst keinen IndexError aus.",
+   "beispiel": "m = [10, 20, 30, 40, 50]\nprint(m[1:4])\nprint(m[:2])\nprint(m[-2:])\nprint(m[::2])",
+   "wann_nutzen": "Zum Herausgreifen von Teilbereichen: erste drei Werte, letzte zwei, jeder zweite.",
+   "transfer": [
+    {
+     "situation": "Die ersten drei Messwerte",
+     "code": "w = [5, 6, 7, 8, 9]\nprint(w[:3])"
+    },
+    {
+     "situation": "Kopie einer Liste",
+     "code": "a = [1, 2, 3]\nb = a[:]\nb.append(4)\nprint(a, b)"
+    },
+    {
+     "situation": "Liste umkehren",
+     "code": "print([1, 2, 3][::-1])"
+    }
+   ],
+   "verwandt": [
+    "index",
+    "liste",
+    "len"
+   ],
+   "bezeichner": [
+    "Slicing"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "[20, 30, 40]\n[10, 20]\n[40, 50]\n[10, 30, 50]",
+   "typische_fehler": [
+    {
+     "beschreibung": "Komma statt Doppelpunkt",
+     "code": "m = [1, 2, 3, 4]\nprint(m[1,3])",
+     "meldung": "TypeError: list indices must be integers or slices, not tuple"
+    },
+    {
+     "beschreibung": "Slice über das Ende hinaus: kein Fehler",
+     "code": "m = [1, 2, 3]\nprint(m[1:10])",
+     "meldung": "(keine Fehlermeldung) Ausgabe: [2, 3] – Slices schneiden nur ab, was da ist."
+    }
+   ]
+  },
+  {
+   "id": "for-liste",
+   "name": "for über eine Liste",
+   "kategorie": "Listen, Tupel & Dicts",
+   "eingefuehrt": "V08",
+   "ampel": "kopf",
+   "kurz": "Jedes Element einer Liste der Reihe nach bearbeiten.",
+   "syntax": "for element in liste:\n    anweisungen",
+   "erklaerung": "Die Schleifenvariable nimmt nacheinander jedes Element der Liste an – ohne dass du Indizes brauchst. Brauchst du auch die Position, nimm enumerate(). Verändere die Liste nicht, während du darüber läufst.",
+   "beispiel": "gewichte_kg = [12.5, 8.0, 3.2]\ngesamt = 0\nfor g in gewichte_kg:\n    gesamt += g\nprint(gesamt, \"kg\")\nfor i, g in enumerate(gewichte_kg):\n    print(i, g)",
+   "wann_nutzen": "Für fast jede Auswertung einer Liste: summieren, filtern, ausgeben.",
+   "transfer": [
+    {
+     "situation": "Grenzwertverletzungen melden",
+     "code": "for p in [5.1, 6.8, 5.9]:\n    if p > 6:\n        print(\"zu hoch:\", p)"
+    },
+    {
+     "situation": "Zwei Listen parallel durchlaufen",
+     "code": "namen = [\"A\", \"B\"]\nwerte = [1.5, 2.5]\nfor n, w in zip(namen, werte):\n    print(n, w)"
+    }
+   ],
+   "verwandt": [
+    "for",
+    "liste",
+    "range",
+    "zaehler-summe"
+   ],
+   "bezeichner": [
+    "enumerate"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "23.7 kg\n0 12.5\n1 8.0\n2 3.2",
+   "typische_fehler": [
+    {
+     "beschreibung": "Liste während der Schleife verändern",
+     "code": "w = [1, 2, 3, 4]\nfor x in w:\n    if x % 2 == 0:\n        w.remove(x)\nprint(w)",
+     "meldung": "(keine Fehlermeldung) Ausgabe: [1, 3] – hier zufällig richtig, aber bei anderen Daten werden Elemente übersprungen. Besser eine neue Liste aufbauen."
+    },
+    {
+     "beschreibung": "Schleifenvariable ändern ändert die Liste nicht",
+     "code": "w = [1, 2, 3]\nfor x in w:\n    x = x * 10\nprint(w)",
+     "meldung": "(keine Fehlermeldung) Ausgabe: [1, 2, 3] – x ist nur eine Kopie des Wertes."
+    }
+   ]
+  },
+  {
+   "id": "sum-min-max",
+   "name": "sum(), min(), max()",
+   "kategorie": "Listen, Tupel & Dicts",
+   "eingefuehrt": "V08",
+   "ampel": "kopf",
+   "kurz": "Summe, kleinster und größter Wert einer Liste.",
+   "syntax": "sum(liste)    min(liste)    max(liste)",
+   "erklaerung": "Diese drei Funktionen ersetzen viele Schleifen. Der Mittelwert ist sum(liste) / len(liste). Auf eine leere Liste angewendet, lösen min() und max() einen ValueError aus.",
+   "beispiel": "werte = [20.1, 20.4, 19.9, 20.2]\nprint(sum(werte))\nprint(min(werte), max(werte))\nprint(\"Spannweite:\", max(werte) - min(werte))\nprint(\"Mittelwert:\", sum(werte) / len(werte))",
+   "wann_nutzen": "Für die Statistik einer Messreihe.",
+   "transfer": [
+    {
+     "situation": "Zwei Zahlen vergleichen",
+     "code": "print(max(3, 8), min(3, 8))"
+    },
+    {
+     "situation": "Größtes Element eines Textes (alphabetisch)",
+     "code": "print(max([\"Welle\", \"Lager\", \"Zahnrad\"]))"
+    }
+   ],
+   "verwandt": [
+    "len",
+    "liste",
+    "sorted",
+    "zaehler-summe"
+   ],
+   "bezeichner": [
+    "sum",
+    "min",
+    "max"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "80.6\n19.9 20.4\nSpannweite: 0.5\nMittelwert: 20.15",
+   "typische_fehler": [
+    {
+     "beschreibung": "Summe über Texte",
+     "code": "sum([\"a\", \"b\"])",
+     "meldung": "TypeError: unsupported operand type(s) for +: 'int' and 'str'"
+    },
+    {
+     "beschreibung": "Maximum einer leeren Liste",
+     "code": "max([])",
+     "meldung": "ValueError: max() iterable argument is empty"
+    }
+   ]
+  },
+  {
+   "id": "sorted",
+   "name": "sorted() / sort()",
+   "kategorie": "Listen, Tupel & Dicts",
+   "eingefuehrt": "V08",
+   "ampel": "kopf",
+   "kurz": "Sortiert eine Liste.",
+   "syntax": "sorted(liste)    sorted(liste, reverse=True)    liste.sort()",
+   "erklaerung": "sorted() liefert eine neue, sortierte Liste und lässt das Original unverändert. liste.sort() sortiert die Liste selbst und gibt None zurück. Mit reverse=True sortierst du absteigend. Alle Elemente müssen vergleichbar sein.",
+   "beispiel": "werte = [3.2, 1.5, 2.8]\nprint(sorted(werte))\nprint(sorted(werte, reverse=True))\nprint(werte)\nwerte.sort()\nprint(werte)",
+   "wann_nutzen": "Für Ranglisten, Medianbestimmung, Ausreißer finden.",
+   "transfer": [
+    {
+     "situation": "Median einer ungeraden Zahl Werte",
+     "code": "w = sorted([7, 1, 5])\nprint(w[len(w) // 2])"
+    },
+    {
+     "situation": "Nach Länge sortieren",
+     "code": "print(sorted([\"Welle\", \"Ei\", \"Lager\"], key=len))"
+    }
+   ],
+   "verwandt": [
+    "liste",
+    "sum-min-max"
+   ],
+   "bezeichner": [
+    "sorted",
+    ".sort"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "[1.5, 2.8, 3.2]\n[3.2, 2.8, 1.5]\n[3.2, 1.5, 2.8]\n[1.5, 2.8, 3.2]",
+   "typische_fehler": [
+    {
+     "beschreibung": "Zahlen und Text mischen",
+     "code": "sorted([3, \"a\", 1])",
+     "meldung": "TypeError: '<' not supported between instances of 'str' and 'int'"
+    },
+    {
+     "beschreibung": "Ergebnis von sort() zugewiesen",
+     "code": "l = [3, 1, 2]\nl = l.sort()\nprint(l)",
+     "meldung": "(keine Fehlermeldung) Ausgabe: None – sort() verändert die Liste und gibt None zurück."
+    }
+   ]
+  },
+  {
+   "id": "tupel",
+   "name": "Tupel",
+   "kategorie": "Listen, Tupel & Dicts",
+   "eingefuehrt": "V08",
+   "ampel": "kopf",
+   "kurz": "Wie eine Liste, aber unveränderlich.",
+   "syntax": "t = (wert1, wert2)    a, b = t",
+   "erklaerung": "Ein Tupel hat runde Klammern und lässt sich nach dem Anlegen nicht mehr ändern. Das passt zu Dingen, die zusammengehören und fest sind, etwa Koordinaten. Mit dem „Auspacken“ x, y = punkt verteilst du die Werte auf Variablen. Funktionen, die mehrere Werte zurückgeben, liefern ein Tupel.",
+   "beispiel": "punkt = (10.5, 20.0)\nx, y = punkt\nprint(x, y)\nprint(punkt[0])",
+   "wann_nutzen": "Für feste Wertegruppen wie Koordinaten oder mehrere Rückgabewerte.",
+   "transfer": [
+    {
+     "situation": "Tupel mit einem Element braucht das Komma",
+     "code": "t = (5,)\nprint(type(t), len(t))"
+    },
+    {
+     "situation": "Mehrere Rückgabewerte",
+     "code": "def min_max(a, b):\n    return min(a, b), max(a, b)\n\nprint(min_max(7, 3))"
+    },
+    {
+     "situation": "Werte tauschen nutzt Tupel",
+     "code": "a, b = 1, 2\na, b = b, a\nprint(a, b)"
+    }
+   ],
+   "verwandt": [
+    "liste",
+    "dict",
+    "return"
+   ],
+   "bezeichner": [
+    "tuple"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "10.5 20.0\n10.5",
+   "typische_fehler": [
+    {
+     "beschreibung": "Element eines Tupels ändern",
+     "code": "punkt = (1, 2)\npunkt[0] = 5",
+     "meldung": "TypeError: 'tuple' object does not support item assignment"
+    },
+    {
+     "beschreibung": "Zu viele Werte beim Auspacken",
+     "code": "a, b = (1, 2, 3)",
+     "meldung": "ValueError: too many values to unpack (expected 2)"
+    }
+   ]
+  },
+  {
+   "id": "dict",
+   "name": "Dictionary (dict)",
+   "kategorie": "Listen, Tupel & Dicts",
+   "eingefuehrt": "V08",
+   "ampel": "kopf",
+   "kurz": "Speichert Werte unter Schlüsseln – wie ein Datenblatt.",
+   "syntax": "d = {'schluessel': wert}    d['schluessel']    d['neu'] = wert",
+   "erklaerung": "Ein Dictionary verbindet Schlüssel mit Werten, etwa Eigenschaften eines Bauteils. Du greifst mit dem Schlüssel in eckigen Klammern zu, nicht mit einer Nummer. Neue Einträge legst du einfach per Zuweisung an. Ein nicht vorhandener Schlüssel führt zu einem KeyError.",
+   "beispiel": "bauteil = {\"name\": \"Welle\", \"laenge_mm\": 250, \"werkstoff\": \"C45\"}\nprint(bauteil[\"name\"])\nbauteil[\"masse_kg\"] = 1.2\nprint(bauteil)",
+   "wann_nutzen": "Für Datensätze mit benannten Feldern: Bauteil, Messung, Konfiguration.",
+   "transfer": [
+    {
+     "situation": "Zahl pro Bauteilnummer ablegen",
+     "code": "lager = {\"A-17\": 12, \"B-04\": 3}\nlager[\"A-17\"] += 5\nprint(lager)"
+    },
+    {
+     "situation": "Wert ändern",
+     "code": "d = {\"d\": 10}\nd[\"d\"] = 12\nprint(d)"
+    },
+    {
+     "situation": "Anzahl Einträge",
+     "code": "d = {\"a\": 1, \"b\": 2}\nprint(len(d))"
+    }
+   ],
+   "verwandt": [
+    "dict-get",
+    "dict-items",
+    "liste"
+   ],
+   "bezeichner": [
+    "dict"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "Welle\n{'name': 'Welle', 'laenge_mm': 250, 'werkstoff': 'C45', 'masse_kg': 1.2}",
+   "typische_fehler": [
+    {
+     "beschreibung": "Schlüssel nicht vorhanden",
+     "code": "bauteil = {\"name\": \"Welle\"}\nprint(bauteil[\"preis\"])",
+     "meldung": "KeyError: 'preis'"
+    },
+    {
+     "beschreibung": "Liste als Schlüssel",
+     "code": "d = {}\nd[[1, 2]] = \"x\"",
+     "meldung": "TypeError: unhashable type: 'list'"
+    }
+   ]
+  },
+  {
+   "id": "dict-get",
+   "name": "dict.get()",
+   "kategorie": "Listen, Tupel & Dicts",
+   "eingefuehrt": "V08",
+   "ampel": "kopf",
+   "kurz": "Liest einen Wert und liefert einen Ersatzwert, wenn der Schlüssel fehlt.",
+   "syntax": "d.get(schluessel)    d.get(schluessel, ersatz)",
+   "erklaerung": "d[key] bricht mit KeyError ab, wenn der Schlüssel fehlt. d.get(key) gibt dann None zurück, d.get(key, 0) einen Ersatzwert deiner Wahl. Praktisch zum Zählen und für optionale Felder.",
+   "beispiel": "bauteil = {\"name\": \"Welle\", \"laenge_mm\": 250}\nprint(bauteil.get(\"name\"))\nprint(bauteil.get(\"preis\"))\nprint(bauteil.get(\"preis\", 0))",
+   "wann_nutzen": "Wenn ein Schlüssel fehlen darf.",
+   "transfer": [
+    {
+     "situation": "Häufigkeiten zählen",
+     "code": "zaehler = {}\nfor w in [\"a\", \"b\", \"a\"]:\n    zaehler[w] = zaehler.get(w, 0) + 1\nprint(zaehler)"
+    },
+    {
+     "situation": "Optionales Feld mit Vorgabe",
+     "code": "cfg = {\"tol\": 0.05}\nprint(cfg.get(\"einheit\", \"mm\"))"
+    }
+   ],
+   "verwandt": [
+    "dict",
+    "dict-items"
+   ],
+   "bezeichner": [
+    ".get"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "Welle\nNone\n0",
+   "typische_fehler": [
+    {
+     "beschreibung": "Eckige statt runde Klammern",
+     "code": "d = {\"a\": 1}\nprint(d.get[\"a\"])",
+     "meldung": "TypeError: 'builtin_function_or_method' object is not subscriptable"
+    },
+    {
+     "beschreibung": "Fehlender Wert ist None und lässt sich nicht verrechnen",
+     "code": "d = {\"a\": 1}\nprint(d.get(\"b\") + 1)",
+     "meldung": "TypeError: unsupported operand type(s) for +: 'NoneType' and 'int'"
+    }
+   ]
+  },
+  {
+   "id": "dict-items",
+   "name": "dict.items(), keys(), values()",
+   "kategorie": "Listen, Tupel & Dicts",
+   "eingefuehrt": "V08",
+   "ampel": "kopf",
+   "kurz": "Ein Dictionary durchlaufen.",
+   "syntax": "for k, v in d.items():    d.keys()    d.values()",
+   "erklaerung": "d.items() liefert Schlüssel-Wert-Paare, die du in der for-Schleife direkt in zwei Variablen auspackst. d.keys() sind die Schlüssel, d.values() die Werte. Läufst du nur über d, bekommst du nur die Schlüssel.",
+   "beispiel": "lager = {\"A-17\": 12, \"B-04\": 3, \"C-22\": 0}\nfor nr, menge in lager.items():\n    print(nr, \"->\", menge)\nprint(sum(lager.values()))\nprint(list(lager.keys()))",
+   "wann_nutzen": "Für Auswertungen über alle Einträge eines Dictionaries.",
+   "transfer": [
+    {
+     "situation": "Nur Einträge mit Bestand",
+     "code": "lager = {\"A\": 5, \"B\": 0}\nfor k, v in lager.items():\n    if v > 0:\n        print(k)"
+    },
+    {
+     "situation": "Prüfen, ob ein Schlüssel vorhanden ist",
+     "code": "d = {\"a\": 1}\nprint(\"a\" in d, \"b\" in d)"
+    }
+   ],
+   "verwandt": [
+    "dict",
+    "dict-get",
+    "for"
+   ],
+   "bezeichner": [
+    ".items",
+    ".keys",
+    ".values"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "A-17 -> 12\nB-04 -> 3\nC-22 -> 0\n15\n['A-17', 'B-04', 'C-22']",
+   "typische_fehler": [
+    {
+     "beschreibung": "Zwei Variablen für die Schlüsselschleife",
+     "code": "d = {\"abc\": 1}\nfor k, v in d:\n    print(k, v)",
+     "meldung": "ValueError: too many values to unpack (expected 2)"
+    },
+    {
+     "beschreibung": "Dictionary beim Durchlaufen ändern",
+     "code": "d = {\"a\": 1, \"b\": 2}\nfor k in d:\n    d[k + \"x\"] = 0",
+     "meldung": "RuntimeError: dictionary changed size during iteration"
+    }
+   ]
+  },
+  {
+   "id": "split",
+   "name": "str.split()",
+   "kategorie": "Text & Formatierung",
+   "eingefuehrt": "V09",
+   "ampel": "kopf",
+   "kurz": "Zerlegt einen Text in eine Liste von Teilen.",
+   "syntax": "text.split(trenner)    text.split()",
+   "erklaerung": "split(';') schneidet den Text an jedem Semikolon und liefert die Teile als Liste von Texten. Ohne Argument trennt split() an beliebigen Leerzeichen. Die Teile bleiben Text: Für Rechnungen musst du sie mit float() oder int() umwandeln.",
+   "beispiel": "zeile = \"12.5;13.1;12.9\"\nteile = zeile.split(\";\")\nprint(teile)\nsumme = 0\nfor t in teile:\n    summe += float(t)\nprint(summe / len(teile))",
+   "wann_nutzen": "Beim Lesen von Zeilen aus Dateien und bei Eingaben mit mehreren Werten.",
+   "transfer": [
+    {
+     "situation": "Wörter zählen",
+     "code": "satz = \"Welle Lager  Dichtung\"\nprint(len(satz.split()))"
+    },
+    {
+     "situation": "Zwei Zahlen aus einer Zeile",
+     "code": "a, b = \"3.5 4.5\".split()\nprint(float(a) + float(b))"
+    }
+   ],
+   "verwandt": [
+    "strip",
+    "join",
+    "csv-reader",
+    "typumwandlung"
+   ],
+   "bezeichner": [
+    ".split"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "['12.5', '13.1', '12.9']\n12.833333333333334",
+   "typische_fehler": [
+    {
+     "beschreibung": "split auf einer Liste",
+     "code": "[1, 2].split(\",\")",
+     "meldung": "AttributeError: 'list' object has no attribute 'split'"
+    },
+    {
+     "beschreibung": "Leeres Stück am Ende wird umgewandelt",
+     "code": "teile = \"1;2;\".split(\";\")\nfor t in teile:\n    print(float(t))",
+     "meldung": "ValueError: could not convert string to float: ''"
+    }
+   ]
+  },
+  {
+   "id": "strip",
+   "name": "str.strip()",
+   "kategorie": "Text & Formatierung",
+   "eingefuehrt": "V09",
+   "ampel": "kopf",
+   "kurz": "Entfernt Leerzeichen und Zeilenumbrüche an Anfang und Ende.",
+   "syntax": "text.strip()    text.strip(zeichen)",
+   "erklaerung": "Zeilen aus Dateien enden mit einem Zeilenumbruch \\n. strip() schneidet Leerzeichen, Tabs und Umbrüche an beiden Enden ab, nicht in der Mitte. Mit lstrip() und rstrip() nur links bzw. rechts.",
+   "beispiel": "zeile = \"  20.5\\n\"\nprint(repr(zeile))\nsauber = zeile.strip()\nprint(repr(sauber), float(sauber) * 2)",
+   "wann_nutzen": "Direkt nach dem Lesen einer Zeile, bevor du sie auswertest.",
+   "transfer": [
+    {
+     "situation": "Bestimmte Zeichen abschneiden",
+     "code": "print(\"###Titel###\".strip(\"#\"))"
+    },
+    {
+     "situation": "Nur rechts abschneiden",
+     "code": "print(repr(\"Text  \\n\".rstrip()))"
+    }
+   ],
+   "verwandt": [
+    "split",
+    "with-open",
+    "join"
+   ],
+   "bezeichner": [
+    ".strip"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "'  20.5\\n'\n'20.5' 41.0",
+   "typische_fehler": [
+    {
+     "beschreibung": "strip auf einer Zahl",
+     "code": "x = 5\nprint(x.strip())",
+     "meldung": "AttributeError: 'int' object has no attribute 'strip'"
+    },
+    {
+     "beschreibung": "strip wirkt nicht in der Mitte",
+     "code": "print(\"a  b\".strip())",
+     "meldung": "(keine Fehlermeldung) Ausgabe: a  b – innere Leerzeichen bleiben stehen."
+    }
+   ]
+  },
+  {
+   "id": "join",
+   "name": "str.join()",
+   "kategorie": "Text & Formatierung",
+   "eingefuehrt": "V09",
+   "ampel": "kopf",
+   "kurz": "Setzt eine Liste von Texten zu einem Text zusammen.",
+   "syntax": "trenner.join(liste_von_texten)",
+   "erklaerung": "Der Trenner steht vor dem Punkt: \", \".join(liste) verbindet alle Elemente mit Komma und Leerzeichen. Alle Elemente müssen Text sein; Zahlen wandelst du vorher mit str() um.",
+   "beispiel": "teile = [\"Welle\", \"Lager\", \"Dichtung\"]\nprint(\", \".join(teile))\nzahlen = [1.5, 2.5, 3.0]\ntexte = []\nfor z in zahlen:\n    texte.append(str(z))\nprint(\";\".join(texte))",
+   "wann_nutzen": "Zum Erzeugen von CSV-Zeilen und lesbaren Aufzählungen.",
+   "transfer": [
+    {
+     "situation": "Pfad zusammenbauen",
+     "code": "print(\"/\".join([\"daten\", \"2026\", \"messung.csv\"]))"
+    },
+    {
+     "situation": "Ohne Trenner zusammenfügen",
+     "code": "print(\"\".join([\"a\", \"b\", \"c\"]))"
+    }
+   ],
+   "verwandt": [
+    "split",
+    "str-text",
+    "fstring"
+   ],
+   "bezeichner": [
+    ".join"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "Welle, Lager, Dichtung\n1.5;2.5;3.0",
+   "typische_fehler": [
+    {
+     "beschreibung": "Zahlen in der Liste",
+     "code": "\",\".join([1, 2, 3])",
+     "meldung": "TypeError: sequence item 0: expected str instance, int found"
+    },
+    {
+     "beschreibung": "join mit vertauschten Rollen",
+     "code": "print([\"a\", \"b\"].join(\",\"))",
+     "meldung": "AttributeError: 'list' object has no attribute 'join'"
+    }
+   ]
+  },
+  {
+   "id": "with-open",
+   "name": "with open()",
+   "kategorie": "Dateien & Fehler",
+   "eingefuehrt": "V09",
+   "ampel": "kopf",
+   "kurz": "Öffnet eine Datei und schließt sie sicher wieder.",
+   "syntax": "with open(name, modus, encoding='utf-8') as datei:",
+   "erklaerung": "open() öffnet eine Datei zum Lesen (\"r\"), Schreiben (\"w\") oder Anhängen (\"a\"). Mit with schließt Python die Datei am Ende des Blocks automatisch, auch bei Fehlern. Mit for zeile in datei läufst du Zeile für Zeile durch die Datei. Gib encoding='utf-8' an, damit Umlaute auf jedem Rechner stimmen.",
+   "beispiel": "with open(\"messung.txt\", \"w\", encoding=\"utf-8\") as datei:\n    datei.write(\"20.5\\n21.0\\n19.8\\n\")\n\nwith open(\"messung.txt\", encoding=\"utf-8\") as datei:\n    for zeile in datei:\n        print(float(zeile.strip()))",
+   "wann_nutzen": "Für jedes Lesen und Schreiben von Textdateien: Messdaten, Protokolle, Konfiguration.",
+   "transfer": [
+    {
+     "situation": "Ganze Datei als Text lesen",
+     "code": "with open(\"t.txt\", \"w\", encoding=\"utf-8\") as f:\n    f.write(\"Hallo\\nWelt\\n\")\nwith open(\"t.txt\", encoding=\"utf-8\") as f:\n    print(f.read())"
+    },
+    {
+     "situation": "An eine Datei anhängen",
+     "code": "with open(\"log.txt\", \"a\", encoding=\"utf-8\") as f:\n    f.write(\"Start\\n\")\nprint(open(\"log.txt\", encoding=\"utf-8\").read())"
+    }
+   ],
+   "verwandt": [
+    "csv-reader",
+    "try-except",
+    "strip",
+    "split"
+   ],
+   "bezeichner": [
+    "open",
+    "with"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "20.5\n21.0\n19.8",
+   "typische_fehler": [
+    {
+     "beschreibung": "Datei existiert nicht",
+     "code": "with open(\"gibt_es_nicht.txt\") as f:\n    text = f.read()",
+     "meldung": "FileNotFoundError: [Errno 2] No such file or directory: 'gibt_es_nicht.txt'"
+    },
+    {
+     "beschreibung": "Nach dem with-Block weiterlesen",
+     "code": "with open(\"x.txt\", \"w\") as f:\n    f.write(\"a\")\nf.write(\"b\")",
+     "meldung": "ValueError: I/O operation on closed file."
+    }
+   ]
+  },
+  {
+   "id": "csv-reader",
+   "name": "csv.reader()",
+   "kategorie": "Dateien & Fehler",
+   "eingefuehrt": "V09",
+   "ampel": "lesen",
+   "kurz": "Liest CSV-Dateien Zeile für Zeile als Listen von Texten.",
+   "syntax": "import csv\ncsv.reader(datei, delimiter=';')",
+   "erklaerung": "CSV-Dateien sind Tabellen als Text, die Spalten durch ein Trennzeichen getrennt. csv.reader zerlegt jede Zeile für dich in eine Liste von Texten. Deutsche Excel-Dateien benutzen meist ; als Trennzeichen. Alle Werte sind zunächst Text, auch die Zahlen; die erste Zeile ist oft eine Kopfzeile, die du überspringen musst.",
+   "beispiel": "import csv\n\nwith open(\"messung.csv\", \"w\", encoding=\"utf-8\") as f:\n    f.write(\"zeit_s;kraft_n\\n0;0.0\\n1;12.5\\n2;24.9\\n\")\n\nwith open(\"messung.csv\", encoding=\"utf-8\") as f:\n    leser = csv.reader(f, delimiter=\";\")\n    kopf = next(leser)\n    print(kopf)\n    for zeile in leser:\n        print(float(zeile[0]), float(zeile[1]))",
+   "wann_nutzen": "Für Messdaten aus Excel, Messgeräten oder phyphox-Exports.",
+   "transfer": [
+    {
+     "situation": "Spalte aufsummieren",
+     "code": "import csv\nwith open(\"d.csv\", \"w\", encoding=\"utf-8\") as f:\n    f.write(\"a;b\\n1;2\\n3;4\\n\")\nwith open(\"d.csv\", encoding=\"utf-8\") as f:\n    r = csv.reader(f, delimiter=\";\")\n    next(r)\n    s = 0\n    for z in r:\n        s += float(z[1])\n    print(s)"
+    },
+    {
+     "situation": "Alle Zeilen als Liste von Listen",
+     "code": "import csv, io\nr = csv.reader(io.StringIO(\"1,2\\n3,4\"))\nprint(list(r))"
+    }
+   ],
+   "verwandt": [
+    "with-open",
+    "split",
+    "typumwandlung",
+    "try-except"
+   ],
+   "bezeichner": [
+    "csv",
+    "csv.reader"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "['zeit_s', 'kraft_n']\n0.0 0.0\n1.0 12.5\n2.0 24.9",
+   "typische_fehler": [
+    {
+     "beschreibung": "Kopfzeile als Zahl umgewandelt",
+     "code": "import csv, io\nr = csv.reader(io.StringIO(\"zeit;kraft\\n1;2\"), delimiter=\";\")\nfor z in r:\n    print(float(z[0]))",
+     "meldung": "ValueError: could not convert string to float: 'zeit'"
+    },
+    {
+     "beschreibung": "Falsches Trennzeichen: nur eine Spalte",
+     "code": "import csv, io\nr = csv.reader(io.StringIO(\"1;2;3\"))\nfor z in r:\n    print(z[1])",
+     "meldung": "IndexError: list index out of range"
+    }
+   ]
+  },
+  {
+   "id": "try-except",
+   "name": "try / except",
+   "kategorie": "Dateien & Fehler",
+   "eingefuehrt": "V09",
+   "ampel": "kopf",
+   "kurz": "Fängt Fehler ab, damit das Programm weiterläuft.",
+   "syntax": "try:\n    riskanter_code\nexcept ValueError:\n    ersatz",
+   "erklaerung": "Im try-Block steht Code, der scheitern kann. Tritt der genannte Fehler auf, springt Python in den except-Block, statt abzubrechen. Nenne den erwarteten Fehlertyp (ValueError, FileNotFoundError …) und fange nie alles pauschal ab, sonst verschwinden echte Fehler. Der Programmfluss danach läuft normal weiter.",
+   "beispiel": "for text in [\"12.5\", \"abc\", \"7\"]:\n    try:\n        wert = float(text)\n        print(\"OK:\", wert)\n    except ValueError:\n        print(\"Keine Zahl:\", text)",
+   "wann_nutzen": "Bei Eingaben, Dateien und Umwandlungen, die schiefgehen können.",
+   "transfer": [
+    {
+     "situation": "Datei fehlt",
+     "code": "try:\n    with open(\"fehlt.txt\") as f:\n        text = f.read()\nexcept FileNotFoundError:\n    print(\"Datei nicht gefunden\")"
+    },
+    {
+     "situation": "Division durch null abfangen",
+     "code": "try:\n    print(10 / 0)\nexcept ZeroDivisionError:\n    print(\"Nenner ist null\")"
+    },
+    {
+     "situation": "Wiederholen bis die Eingabe stimmt",
+     "code": "versuche = [\"x\", \"3,5\", \"3.5\"]\nfor v in versuche:\n    try:\n        zahl = float(v)\n        break\n    except ValueError:\n        print(\"ungültig:\", v)\nprint(zahl)"
+    }
+   ],
+   "verwandt": [
+    "typumwandlung",
+    "with-open",
+    "eingabe-pruefen"
+   ],
+   "bezeichner": [
+    "try",
+    "except"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "OK: 12.5\nKeine Zahl: abc\nOK: 7.0",
+   "typische_fehler": [
+    {
+     "beschreibung": "try ohne except",
+     "code": "try:\n    x = 1",
+     "meldung": "SyntaxError: expected 'except' or 'finally' block"
+    },
+    {
+     "beschreibung": "Falscher Fehlertyp wird nicht abgefangen",
+     "code": "try:\n    int(\"abc\")\nexcept TypeError:\n    print(\"nie erreicht\")",
+     "meldung": "ValueError: invalid literal for int() with base 10: 'abc'"
+    }
+   ]
+  },
+  {
+   "id": "list-comprehension",
+   "name": "List Comprehension",
+   "kategorie": "Ausblick (ab V10)",
+   "eingefuehrt": "V10",
+   "ampel": "lesen",
+   "kurz": "Baut eine Liste in einer Zeile: [x * 2 for x in daten if x > 0].",
+   "syntax": "[ausdruck for x in folge if bedingung]",
+   "stichwort": true,
+   "verwandt": [
+    "for-liste",
+    "liste"
+   ],
+   "bezeichner": [
+    "comprehension"
+   ]
+  },
+  {
+   "id": "tokenizer",
+   "name": "Tokenizer",
+   "kategorie": "Ausblick (ab V10)",
+   "eingefuehrt": "V10",
+   "ampel": "lesen",
+   "kurz": "Zerlegt Text in Tokens, die kleinsten Einheiten eines Sprachmodells.",
+   "syntax": "text.split()  → vereinfachter Tokenizer",
+   "stichwort": true,
+   "verwandt": [
+    "split"
+   ],
+   "bezeichner": [
+    "Tokenizer"
+   ]
+  },
+  {
+   "id": "import",
+   "name": "import & Module",
+   "kategorie": "Ausblick (ab V10)",
+   "eingefuehrt": "V11",
+   "ampel": "kopf",
+   "kurz": "Holt fremden Code in dein Programm: import modul, from modul import name.",
+   "syntax": "import modul    from modul import name    import modul as kurz",
+   "stichwort": true,
+   "verwandt": [
+    "import-math"
+   ],
+   "bezeichner": [
+    "from"
+   ]
+  },
+  {
+   "id": "pip",
+   "name": "pip install",
+   "kategorie": "Ausblick (ab V10)",
+   "eingefuehrt": "V11",
+   "ampel": "lesen",
+   "kurz": "Installiert zusätzliche Pakete aus dem Internet (Terminal).",
+   "syntax": "pip install paketname",
+   "stichwort": true,
+   "verwandt": [],
+   "bezeichner": [
+    "pip install"
+   ]
+  },
+  {
+   "id": "assert",
+   "name": "assert",
+   "kategorie": "Ausblick (ab V10)",
+   "eingefuehrt": "V12",
+   "ampel": "kopf",
+   "kurz": "Bricht mit Fehler ab, wenn eine Annahme nicht stimmt: assert x > 0, 'Meldung'.",
+   "syntax": "assert bedingung, 'Meldung'",
+   "stichwort": true,
+   "verwandt": [
+    "if",
+    "try-except"
+   ],
+   "bezeichner": [
+    "assert"
+   ]
+  },
+  {
+   "id": "traceback",
+   "name": "Traceback lesen",
+   "kategorie": "Ausblick (ab V10)",
+   "eingefuehrt": "V12",
+   "ampel": "kopf",
+   "kurz": "Die Fehlermeldung von unten nach oben lesen: letzte Zeile = Fehlerart, davor die Stelle im Code.",
+   "syntax": "Traceback (most recent call last): ...",
+   "stichwort": true,
+   "verwandt": [
+    "try-except"
+   ],
+   "bezeichner": [
+    "Traceback lesen"
+   ]
+  },
+  {
+   "id": "numpy-array",
+   "name": "NumPy-Array",
+   "kategorie": "Ausblick (ab V10)",
+   "eingefuehrt": "V13",
+   "ampel": "lesen",
+   "kurz": "Schnelles Feld aus Zahlen, mit dem sich ganze Reihen auf einmal rechnen lassen.",
+   "syntax": "import numpy as np\nnp.array([1, 2, 3])",
+   "stichwort": true,
+   "verwandt": [
+    "liste"
+   ],
+   "bezeichner": [
+    "numpy",
+    "np"
+   ]
+  },
+  {
+   "id": "vektorisierung",
+   "name": "Vektorisierung",
+   "kategorie": "Ausblick (ab V10)",
+   "eingefuehrt": "V13",
+   "ampel": "lesen",
+   "kurz": "Rechnen auf ganzen Arrays statt in Schleifen: a * 2 + b.",
+   "syntax": "arr * 2 + 1",
+   "stichwort": true,
+   "verwandt": [
+    "numpy-array",
+    "for"
+   ],
+   "bezeichner": [
+    "Vektorisierung"
+   ]
+  },
+  {
+   "id": "zeit-messen",
+   "name": "Zeit messen (time)",
+   "kategorie": "Ausblick (ab V10)",
+   "eingefuehrt": "V13",
+   "ampel": "lesen",
+   "kurz": "Laufzeit eines Programmteils messen: time.perf_counter().",
+   "syntax": "import time\nstart = time.perf_counter()",
+   "stichwort": true,
+   "verwandt": [
+    "import"
+   ],
+   "bezeichner": [
+    "time"
+   ]
+  },
+  {
+   "id": "matplotlib-plot",
+   "name": "matplotlib: plot()",
+   "kategorie": "Ausblick (ab V10)",
+   "eingefuehrt": "V14",
+   "ampel": "lesen",
+   "kurz": "Zeichnet Diagramme: plt.plot(x, y), Achsenbeschriftung nicht vergessen.",
+   "syntax": "import matplotlib.pyplot as plt\nplt.plot(x, y)\nplt.show()",
+   "stichwort": true,
+   "verwandt": [
+    "liste"
+   ],
+   "bezeichner": [
+    "matplotlib",
+    "plt"
+   ]
+  },
+  {
+   "id": "pandas-dataframe",
+   "name": "pandas: DataFrame",
+   "kategorie": "Ausblick (ab V10)",
+   "eingefuehrt": "V15",
+   "ampel": "lesen",
+   "kurz": "Tabelle im Speicher mit Spaltennamen; read_csv, Filtern, groupby, describe.",
+   "syntax": "import pandas as pd\ndf = pd.read_csv('daten.csv')",
+   "stichwort": true,
+   "verwandt": [
+    "csv-reader",
+    "dict"
+   ],
+   "bezeichner": [
+    "pandas",
+    "pd",
+    "read_csv",
+    "groupby"
+   ]
+  },
+  {
+   "id": "pathlib",
+   "name": "pathlib / os",
+   "kategorie": "Ausblick (ab V10)",
+   "eingefuehrt": "V16",
+   "ampel": "lesen",
+   "kurz": "Dateien und Ordner finden und durchsuchen.",
+   "syntax": "from pathlib import Path\nPath('.').glob('*.csv')",
+   "stichwort": true,
+   "verwandt": [
+    "with-open"
+   ],
+   "bezeichner": [
+    "Path",
+    "os"
+   ]
+  },
+  {
+   "id": "json",
+   "name": "json",
+   "kategorie": "Ausblick (ab V10)",
+   "eingefuehrt": "V17",
+   "ampel": "lesen",
+   "kurz": "Austauschformat für Daten, sieht fast aus wie ein dict.",
+   "syntax": "import json\njson.loads(text)",
+   "stichwort": true,
+   "verwandt": [
+    "dict"
+   ],
+   "bezeichner": [
+    "json"
+   ]
+  },
+  {
+   "id": "requests",
+   "name": "requests (HTTP)",
+   "kategorie": "Ausblick (ab V10)",
+   "eingefuehrt": "V17",
+   "ampel": "delegieren",
+   "kurz": "Fragt Daten von einer Web-API ab.",
+   "syntax": "import requests\nrequests.get(url).json()",
+   "stichwort": true,
+   "verwandt": [
+    "json"
+   ],
+   "bezeichner": [
+    "requests (HTTP)"
+   ]
+  },
+  {
+   "id": "hashlib",
+   "name": "hashlib",
+   "kategorie": "Ausblick (ab V10)",
+   "eingefuehrt": "V18",
+   "ampel": "delegieren",
+   "kurz": "Bildet Prüfsummen (Hashes) von Daten oder Dateien.",
+   "syntax": "import hashlib\nhashlib.sha256(daten).hexdigest()",
+   "stichwort": true,
+   "verwandt": [],
+   "bezeichner": [
+    "hashlib"
+   ]
+  },
+  {
+   "id": "sqlite3",
+   "name": "sqlite3 (SQL)",
+   "kategorie": "Ausblick (ab V10)",
+   "eingefuehrt": "V19",
+   "ampel": "lesen",
+   "kurz": "Eingebaute Datenbank: Tabellen abfragen mit SQL und Platzhaltern.",
+   "syntax": "import sqlite3\ncon = sqlite3.connect('daten.db')",
+   "stichwort": true,
+   "verwandt": [
+    "dict"
+   ],
+   "bezeichner": [
+    "sql"
+   ]
+  },
+  {
+   "id": "class",
+   "name": "class",
+   "kategorie": "Ausblick (ab V10)",
+   "eingefuehrt": "V20",
+   "ampel": "lesen",
+   "kurz": "Eigener Datentyp mit Attributen und Methoden, z. B. ein parametrisches Bauteil.",
+   "syntax": "class Bauteil:\n    def __init__(self, laenge):\n        self.laenge = laenge",
+   "stichwort": true,
+   "verwandt": [
+    "def"
+   ],
+   "bezeichner": [
+    "__init__",
+    "self"
+   ]
+  }
+ ]
+}

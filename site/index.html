@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Informatik Maschinenbau – interaktiv · DHBW Stuttgart Campus Horb</title>
+  <meta name="description" content="Interaktive Vorlesungs-Website Informatik für Maschinenbau: KI schreibt Code – Ingenieure spezifizieren, prüfen und verantworten.">
+  <link rel="stylesheet" href="assets/css/dhbw-base.css">
+  <link rel="stylesheet" href="assets/css/kurs.css">
+  <link rel="stylesheet" href="assets/css/aufgaben.css">
+</head>
+<body data-page="start">
+  <a class="k-skip" href="#inhalt">Zum Inhalt springen</a>
+
+  <header class="dhbw-header k-header">
+    <div class="dhbw-header__inner">
+      <a class="k-logo" href="index.html" aria-label="Startseite Informatik Maschinenbau">
+        <span class="k-logo__mark" aria-hidden="true">DHBW</span>
+        <span class="k-logo__text">Informatik Maschinenbau<small>Campus Horb · 2026/27</small></span>
+      </a>
+      <nav class="k-nav" aria-label="Hauptnavigation">
+        <a href="#leitidee" aria-current="page">Leitidee</a>
+        <a href="#ampel">Wissens-Ampel</a>
+        <a href="#lernpfad">Lernpfad</a>
+        <a href="#termin">Ablauf</a>
+        <a href="bibliothek.html">Bibliothek</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="inhalt" class="k-wrap">
+    <div class="k-intro">
+      <div>
+        <p class="k-title__label">Informatik · Maschinenbau · T4MB1006</p>
+        <h1 id="h-titel">KI schreibt Code – Ingenieure spezifizieren, prüfen und verantworten</h1>
+        <p class="k-title__lead">22 Termine, mehr als die Hälfte davon Programmieren. Du lernst Python so, dass du KI-Ergebnisse beurteilen kannst – und nicht nur abtippst. Alles läuft im Browser, ohne Installation.</p>
+        <div class="k-intro__cta">
+          <a class="k-btn" href="lektionen/v03-fliesskommazahlen.html">Zur Beispiel-Lerneinheit V03</a>
+          <a href="#lernpfad">Lernpfad ansehen</a>
+        </div>
+      </div>
+      <figure>
+        <picture><source srcset="assets/img/hero-lernpfad.webp" type="image/webp"><img src="assets/img/hero-lernpfad.png" alt="Illustration: Lernpfad vom Fundament über das Werkzeug zum Projekt" onerror="this.closest('figure').hidden=true"></picture>
+      </figure>
+    </div>
+
+    <section class="k-section" id="leitidee" aria-labelledby="h-leit">
+      <h2 class="k-section__title" id="h-leit"><span class="k-section__num" aria-hidden="true">1</span> Warum noch programmieren lernen?</h2>
+      <p>Weil Copilot &amp; Co. Code in Sekunden liefern – und du in der Praxis trotzdem unterschreibst. Vier Gründe:</p>
+      <ol class="k-args">
+        <li><strong>Lesen vor Prüfen</strong>Was du nicht lesen kannst, kannst du nicht prüfen. Die Haftung liegt beim Menschen, nicht beim Modell.</li>
+        <li><strong>KI verstärkt, was du ihr gibst</strong>Ein sauberes Struktogramm ist ein sehr guter Prompt. Ein vager Wunsch liefert vage Ergebnisse.</li>
+        <li><strong>Überschlagen schlägt Rechnen</strong>0.1 + 0.2, Überlauf, mm statt m: Wer Größenordnungen im Gefühl hat, erkennt falsche Ergebnisse sofort.</li>
+        <li><strong>Im Betrieb oft ohne KI</strong>CAD-Daten, Kundendaten, SPS-Programme: Vieles darf nicht in eine Cloud-KI. Dann zählt dein eigenes Können.</li>
+      </ol>
+    </section>
+
+    <section class="k-section" id="ampel" aria-labelledby="h-ampel">
+      <h2 class="k-section__title" id="h-ampel"><span class="k-section__num" aria-hidden="true">2</span> Die Wissens-Ampel</h2>
+      <p>Nicht alles musst du auswendig können. Bei jedem Thema siehst du, was in welche Kategorie fällt – und warum.</p>
+      <ul class="k-ampel-list">
+        <li><span class="k-ampel k-ampel--kopf">🧠 Im Kopf</span><span>Ohne das kannst du KI-Ergebnisse nicht beurteilen. Das sitzt, auch in der Klausur.<br><span class="k-small k-muted">Beispiel V03: Warum entstehen Rundungsfehler? Warum vergleicht man mit Toleranz?</span></span></li>
+        <li><span class="k-ampel k-ampel--lesen">📖 Lesen &amp; erkennen</span><span>Du verstehst es und erkennst es in fremdem Code. Selbst schreiben musst du es nicht zwingend.<br><span class="k-small k-muted">Beispiel V03: der IEEE-754-Aufbau aus Vorzeichen, Exponent und Mantisse.</span></span></li>
+        <li><span class="k-ampel k-ampel--deleg">🤖 Delegieren</span><span>Die KI macht das. Du musst nur wissen, dass es existiert, und das Ergebnis prüfen können.<br><span class="k-small k-muted">Beispiel V03: ein Bitmuster von Hand in eine Dezimalzahl umrechnen.</span></span></li>
+      </ul>
+      <div class="hinweis hinweis--warum"><strong class="hinweis__title">Warum muss ich das wissen?</strong><p>Diese Box steht bei jedem Thema. Sie sagt dir ehrlich, wofür du den Stoff brauchst: im Beruf, in der Klausur oder um der KI nicht blind zu glauben.</p></div>
+    </section>
+
+    <section class="k-section" id="lernpfad" aria-labelledby="h-pfad">
+      <h2 class="k-section__title" id="h-pfad"><span class="k-section__num" aria-hidden="true">3</span> Dein Lernpfad</h2>
+      <p>Drei Phasen, 22 Termine. Jeder Termin hat zwei Seiten: die <strong>Lerneinheit</strong> (verstehen: Warum, Theorie, Ausprobieren, Selbstcheck) und das <strong>Programmierlabor</strong> (selbst programmieren, in Präsenz und zu Hause). Jedes Python-Konzept wird einmal eingeführt und danach ständig wiederverwendet. In diesem Prototyp ist V03 fertig; alle anderen Stationen sind in Vorbereitung.</p>
+      <p class="k-small" id="v03-progress" data-lesson-progress="V03" data-total="5" hidden></p>
+      <p class="k-small" id="v03-training" data-a-index="V03" data-total="8" hidden></p>
+      <div class="k-phase">
+          <div class="k-phase__head"><h3>Phase 1 · Fundament</h3><p>V01–V09 · KI als Erklärer, nicht als Generator. Du tippst selbst.</p></div>
+          <ol class="k-path">
+            
+            <li class="k-station k-station--soon"><span class="k-station__nr">V01</span><span class="k-station__title">Warum programmieren, wenn KI es kann?</span><span class="k-station__hook">KI-Rechnung um Faktor 1000 falsch</span><span class="k-station__py"><strong>Python:</strong> print, Variablen &amp; Zuweisung, Kommentare, input, Namensregeln</span><span class="k-station__state">in Vorbereitung</span></li>
+            
+            <li class="k-station k-station--soon"><span class="k-station__nr">V02</span><span class="k-station__title">Bits, Binär, Hex, Zweierkomplement</span><span class="k-station__hook">Encoder-Zähler läuft über</span><span class="k-station__py"><strong>Python:</strong> int, Rechenoperatoren (+ - * / // % **), Operatorrangfolge, bin()/hex()/int(x, 2)</span><span class="k-station__state">in Vorbereitung</span></li>
+            
+            <li class="k-station k-station--live"><span class="k-station__nr">V03</span><span class="k-station__title">Fließkommazahlen &amp; Datentypen</span><span class="k-station__hook">0.1+0.2, Toleranzen addieren</span><span class="k-station__py"><strong>Python:</strong> float, type(), Typumwandlung, input → Zahl, f-Strings mit Format, math-Modul, math.isclose</span><span class="k-station__links"><a href="lektionen/v03-fliesskommazahlen.html">Lerneinheit</a><a href="lektionen/v03-labor.html">Labor</a></span></li>
+            
+            <li class="k-station k-station--soon"><span class="k-station__nr">V04</span><span class="k-station__title">Logik &amp; Verzweigungen</span><span class="k-station__hook">Zweihand-Sicherheitsschaltung</span><span class="k-station__py"><strong>Python:</strong> bool, Vergleichsoperatoren, and/or/not, if / elif / else, Einrückung</span><span class="k-station__state">in Vorbereitung</span></li>
+            
+            <li class="k-station k-station--soon"><span class="k-station__nr">V05</span><span class="k-station__title">Problemanalyse &amp; Struktogramm</span><span class="k-station__hook">Struktogramm wird zum Prompt</span><span class="k-station__py"><strong>Python:</strong> Struktogramm → Code, verschachtelte Verzweigungen, Eingabe prüfen</span><span class="k-station__state">in Vorbereitung</span></li>
+            
+            <li class="k-station k-station--soon"><span class="k-station__nr">V06</span><span class="k-station__title">Schleifen</span><span class="k-station__hook">Abkühlkurve, Newton-Verfahren</span><span class="k-station__py"><strong>Python:</strong> while, for, range, break/continue, Zähler &amp; Summen</span><span class="k-station__state">in Vorbereitung</span></li>
+            
+            <li class="k-station k-station--soon"><span class="k-station__nr">V07</span><span class="k-station__title">Funktionen, Zerlegung, KISS/DRY</span><span class="k-station__hook">Wellen-Rechner aus Bausteinen</span><span class="k-station__py"><strong>Python:</strong> def, Parameter, return, Default-Werte, Docstring, lokale Variablen</span><span class="k-station__state">in Vorbereitung</span></li>
+            
+            <li class="k-station k-station--soon"><span class="k-station__nr">V08</span><span class="k-station__title">Listen &amp; Dictionaries</span><span class="k-station__hook">Stückliste, Messreihe</span><span class="k-station__py"><strong>Python:</strong> Listen (Index, Slicing, append, len), for über Listen, Tupel, Dictionaries</span><span class="k-station__state">in Vorbereitung</span></li>
+            
+            <li class="k-station k-station--soon"><span class="k-station__nr">V09</span><span class="k-station__title">Dateien &amp; Fehlerbehandlung</span><span class="k-station__hook">eigene Smartphone-Messdaten (phyphox)</span><span class="k-station__py"><strong>Python:</strong> Strings (split, strip), with open, csv-Modul, try/except</span><span class="k-station__state">in Vorbereitung</span></li>
+          </ol>
+        </div>
+      <div class="k-phase">
+          <div class="k-phase__head"><h3>Phase 2 · Werkzeug</h3><p>V10–V13 · KI erzeugt, du prüfst (Testfälle vorher von Hand).</p></div>
+          <ol class="k-path">
+            
+            <li class="k-station k-station--soon"><span class="k-station__nr">V10</span><span class="k-station__title">Wie funktioniert KI?</span><span class="k-station__hook">warum KI selbstbewusst falsch liegt</span><span class="k-station__py"><strong>Python:</strong> String-Methoden vertieft, List Comprehension, einfacher Tokenizer</span><span class="k-station__state">in Vorbereitung</span></li>
+            
+            <li class="k-station k-station--soon"><span class="k-station__nr">V11</span><span class="k-station__title">Programmieren mit Copilot</span><span class="k-station__hook">Prompt A vs. Struktogramm als Prompt</span><span class="k-station__py"><strong>Python:</strong> import, Module &amp; pip, Codespaces/VS Code, Copilot-Workflow</span><span class="k-station__state">in Vorbereitung</span></li>
+            
+            <li class="k-station k-station--soon"><span class="k-station__nr">V12</span><span class="k-station__title">Testen &amp; Debuggen von KI-Code</span><span class="k-station__hook">Testfälle von Hand, Grenzwerte</span><span class="k-station__py"><strong>Python:</strong> assert, Testfälle schreiben, Tracebacks lesen, Debugger</span><span class="k-station__state">in Vorbereitung</span></li>
+            
+            <li class="k-station k-station--soon"><span class="k-station__nr">V13</span><span class="k-station__title">NumPy &amp; Vektorisierung</span><span class="k-station__hook">1 Mio. Messpunkte: Schleife vs. Vektor</span><span class="k-station__py"><strong>Python:</strong> NumPy-Arrays, Vektorisierung, Zeit messen</span><span class="k-station__state">in Vorbereitung</span></li>
+          </ol>
+        </div>
+      <div class="k-phase">
+          <div class="k-phase__head"><h3>Phase 3 · Projekt</h3><p>V14–V22 · Jeweils die letzten 30 Min: kleines Ingenieurwerkzeug mit Copilot.</p></div>
+          <ol class="k-path">
+            
+            <li class="k-station k-station--soon"><span class="k-station__nr">V14</span><span class="k-station__title">Diagramme richtig darstellen</span><span class="k-station__hook">Achsen, Einheiten, Täuschung – Projekt-Kickoff</span><span class="k-station__py"><strong>Python:</strong> matplotlib (plot, Achsen, Einheiten, Subplots)</span><span class="k-station__state">in Vorbereitung</span></li>
+            
+            <li class="k-station k-station--soon"><span class="k-station__nr">V15</span><span class="k-station__title">pandas &amp; Qualitätsdaten</span><span class="k-station__hook">Cp/Cpk, SPC-Regelkarte</span><span class="k-station__py"><strong>Python:</strong> pandas (read_csv, Filtern, groupby, describe)</span><span class="k-station__state">in Vorbereitung</span></li>
+            
+            <li class="k-station k-station--soon"><span class="k-station__nr">V16</span><span class="k-station__title">Rechner &amp; Betriebssystem kompakt</span><span class="k-station__hook">Warum ruckelt mein CAD?</span><span class="k-station__py"><strong>Python:</strong> pathlib/os, Dateien durchsuchen, Prozesse/Zeit</span><span class="k-station__state">in Vorbereitung</span></li>
+            
+            <li class="k-station k-station--soon"><span class="k-station__nr">V17</span><span class="k-station__title">Netzwerke &amp; Industrie 4.0</span><span class="k-station__hook">IP/Subnetz einer Fertigungszelle, MQTT</span><span class="k-station__py"><strong>Python:</strong> JSON, requests (HTTP-API abfragen)</span><span class="k-station__state">in Vorbereitung</span></li>
+            
+            <li class="k-station k-station--soon"><span class="k-station__nr">V18</span><span class="k-station__title">IT-Sicherheit für Ingenieure</span><span class="k-station__hook">CRA, Firmware-Signatur, KI &amp; vertrauliche Daten</span><span class="k-station__py"><strong>Python:</strong> hashlib, Prüfsummen von Dateien</span><span class="k-station__state">in Vorbereitung</span></li>
+            
+            <li class="k-station k-station--soon"><span class="k-station__nr">V19</span><span class="k-station__title">Datenbanken &amp; SQL</span><span class="k-station__hook">Fertigungsaufträge abfragen</span><span class="k-station__py"><strong>Python:</strong> sqlite3, Parameter-Platzhalter</span><span class="k-station__state">in Vorbereitung</span></li>
+            
+            <li class="k-station k-station--soon"><span class="k-station__nr">V20</span><span class="k-station__title">Objekte lesen &amp; CAD automatisieren</span><span class="k-station__hook">parametrisches Bauteil per Skript</span><span class="k-station__py"><strong>Python:</strong> class, __init__, Attribute, Methoden (lesen &amp; einfach schreiben)</span><span class="k-station__state">in Vorbereitung</span></li>
+            
+            <li class="k-station k-station--soon"><span class="k-station__nr">V21</span><span class="k-station__title">Projektwerkstatt</span><span class="k-station__hook">Werkzeug fertigstellen</span><span class="k-station__py"><strong>Python:</strong> Wiederholung nach Bedarf</span><span class="k-station__state">in Vorbereitung</span></li>
+            
+            <li class="k-station k-station--soon"><span class="k-station__nr">V22</span><span class="k-station__title">Code-Walkthroughs &amp; Klausurtraining</span><span class="k-station__hook">eigenen Code erklären</span><span class="k-station__py"><strong>Python:</strong> Klausuraufgaben von Hand</span><span class="k-station__state">in Vorbereitung</span></li>
+          </ol>
+        </div>
+    </section>
+
+    <section class="k-section" id="termin" aria-labelledby="h-termin">
+      <h2 class="k-section__title" id="h-termin"><span class="k-section__num" aria-hidden="true">4</span> So läuft ein Termin</h2>
+      <p>135 Minuten Präsenz, dazu etwa 60 Minuten Training zu Hause. Das Training ist fester Bestandteil jedes Termins (Selbststudium laut Modul). Vor dem Termin schaust du Video und Explorables an (freiwillig, aber es lohnt sich).</p>
+      <ol class="k-timeline">
+        <li><span class="k-timeline__time">0–10</span><strong>Warm-up</strong> <span class="k-timeline__len">10 Min</span><br>Lerneinheit, Abschnitt „Ausprobieren“: Vorhersagequiz, dazu die Wiederholung des letzten Python-Konzepts.</li>
+        <li><span class="k-timeline__time">10–35</span><strong>Informatik-Theorie mit Explorable</strong> <span class="k-timeline__len">25 Min</span><br>Lerneinheit, Abschnitte „Warum?“ und „Theorie“: Explorable ausprobieren, dann Ampel-Diskussion: Was muss in den Kopf, was nicht?</li>
+        <li><span class="k-timeline__time">35–80</span><strong>Programmierlabor, Teil A (1)</strong> <span class="k-timeline__len">45 Min</span><br>Werkzeugkasten, Vorgerechnetes Beispiel, Ablauf verfolgen, Zeilen ordnen, Lücken füllen, erste eigene Aufgabe mit automatischen Tests.</li>
+        <li class="is-break"><span class="k-timeline__time">80–90</span><strong>Pause</strong> <span class="k-timeline__len">10 Min</span></li>
+        <li><span class="k-timeline__time">90–120</span><strong>Programmierlabor, Teil A (2)</strong> <span class="k-timeline__len">30 Min</span><br>Code-Review: „Würdest du das freigeben?“ Dazu typische Fehlermeldungen. Ab V11 mit Copilot.</li>
+        <li><span class="k-timeline__time">120–135</span><strong>Selbstcheck, Exit-Ticket, Auftrag fürs Training</strong> <span class="k-timeline__len">15 Min</span><br>Lerneinheit, Abschnitt „Selbstcheck“. Was nimmst du mit? Und welche Aufgaben erledigst du zu Hause?</li>
+        <li class="is-home"><span class="k-timeline__time">zu Hause</span><strong>Programmierlabor, Teil B: Training</strong> <span class="k-timeline__len">ca. 60 Min</span><br>Sechs bis acht gestufte Code-Aufgaben mit automatischer Prüfung im Browser, Klausur-Modus (Code erst von Hand schreiben, dann prüfen), Notebook, optional Deep Dive. <a href="lektionen/v03-labor.html#t-1">Beispiel: Training V03</a></li>
+      </ol>
+    </section>
+
+    <section class="k-section" id="startklar" aria-labelledby="h-start">
+      <h2 class="k-section__title" id="h-start"><span class="k-section__num" aria-hidden="true">5</span> Startklar in 10 Minuten</h2>
+      <div class="k-start">
+        <h3>GitHub Copilot über DHBW / GitHub Education + Codespaces</h3>
+        <p>Du brauchst keinen weiteren Account als GitHub. Copilot bekommst du als Studierende:r kostenlos über GitHub Education. Codespaces liefert dir eine fertige Python-Umgebung im Browser, ohne dass du etwas installierst.</p>
+        <ol class="k-steps">
+          <li>GitHub-Account anlegen (falls noch nicht vorhanden) und mit deiner DHBW-Mailadresse verknüpfen.</li>
+          <li>Bei <strong>GitHub Education</strong> den Studierendenstatus beantragen und freischalten lassen. Das kann einige Tage dauern, also früh starten.</li>
+          <li>Copilot in den GitHub-Einstellungen aktivieren.</li>
+          <li>Ein Notebook der Lehrveranstaltung öffnen und dort „In Codespaces öffnen“ wählen.</li>
+        </ol>
+        <div class="hinweis hinweis--achtung"><strong class="hinweis__title">Achtung</strong><p>Phase 1 (V01–V09): Copilot nur als Erklärer. Du tippst selbst. Code generieren lassen kommt erst ab V10, dann mit deiner Prüfung.</p></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="dhbw-footer k-footer">
+    <div class="dhbw-footer__inner">
+      <span><span class="dhbw-footer__brand">DHBW Stuttgart</span> · Campus Horb</span>
+      <span>Informatik für Maschinenbau · Studienjahr 2026/27 · Prototyp</span>
+    </div>
+  </footer>
+
+  <script src="assets/js/kurs.js"></script>
+  <script src="assets/js/aufgaben.js"></script>
+</body>
+</html>

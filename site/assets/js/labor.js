@@ -1,0 +1,211 @@
+/* =============================================================
+   labor.js – Arbeitsumgebung „Programmierlabor“
+   - zeigt immer genau eine Aufgabe (.l-task) an, Navigation über Hash-Anker
+   - Aufgabenliste links mit Status ○ offen · ◐ begonnen · ✓ gelöst
+   - Zurück/Weiter, Auswahlmenü (mobil), Werkzeugkasten als aufklappbare Schublade
+   Braucht aufgaben.js (Fortschritts-Speicher). Die Bibliothek dockt editor.js an.
+   ============================================================= */
+(function () {
+  'use strict';
+  var lab = document.querySelector('[data-lab]');
+  if (!lab) return;
+
+  var STORE_KEY = 'dhbw-inf-mb:v1';
+  var LESSON = document.body.getAttribute('data-lesson') || 'V03';
+  var BASE_TITLE = 'Programmierlabor ' + LESSON + ' · Informatik Maschinenbau';
+  var MARK = { open: '○', part: '◐', done: '✓' };
+  var MARK_TXT = { open: 'offen', part: 'begonnen', done: 'gelöst' };
+
+  function $(s, r) { return (r || document).querySelector(s); }
+  function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
+  function el(tag, attrs, kids) {
+    var n = document.createElement(tag);
+    Object.keys(attrs || {}).forEach(function (k) { if (k === 'class') n.className = attrs[k]; else if (k === 'text') n.textContent = attrs[k]; else n.setAttribute(k, attrs[k]); });
+    (kids || []).forEach(function (c) { n.appendChild(typeof c === 'string' ? document.createTextNode(c) : c); });
+    return n;
+  }
+
+  /* ── Speicher (gleicher Schlüssel wie kurs.js/aufgaben.js) ── */
+  var mem = {};
+  function read() { try { var raw = window.localStorage.getItem(STORE_KEY); if (raw) return JSON.parse(raw) || {}; } catch (e) { /* ohne Speicher */ } return mem; }
+  function write(d) { mem = d; try { window.localStorage.setItem(STORE_KEY, JSON.stringify(d)); } catch (e) { /* ignorieren */ } }
+  function bucket(name) { var d = read(); return (d[LESSON] && d[LESSON][name]) || {}; }
+  function markSeen(id) {
+    var d = read(); d[LESSON] = d[LESSON] || {}; d[LESSON].gesehen = d[LESSON].gesehen || {};
+    if (d[LESSON].gesehen[id]) return false;
+    d[LESSON].gesehen[id] = 1; write(d); return true;
+  }
+
+  /* ── Aufgaben (Stationen) einsammeln ─────────────────────── */
+  var tasks = $$('.l-task', lab);
+  var index = {};
+  tasks.forEach(function (t, i) { index[t.id] = i; });
+  var current = -1;
+
+  function countable(sec) { return $$('[data-a][data-id]:not([data-count="0"])', sec); }
+  function stars(n) { n = parseInt(n, 10) || 0; if (!n) return ''; return new Array(n + 1).join('★') + new Array(5 - n).join('☆'); }
+  function minText(m) { if (!m) return ''; return /^\d+$/.test(m) ? 'ca. ' + m + ' Min' : m; }
+  function starLabel(n) { n = parseInt(n, 10) || 0; return n ? 'Schwierigkeit ' + n + ' von 4' : ''; }
+
+  function statusOf(sec) {
+    var nodes = countable(sec);
+    if (!nodes.length) return bucket('gesehen')[sec.id] ? 'done' : 'open';
+    var sv = bucket('aufg'), st = bucket('begonnen');
+    var solved = nodes.filter(function (n) { return sv[n.getAttribute('data-id')]; }).length;
+    if (solved === nodes.length) return 'done';
+    if (solved > 0 || nodes.some(function (n) { return st[n.getAttribute('data-id')]; })) return 'part';
+    return 'open';
+  }
+
+  /* ── Kopf jeder Station, Liste, Auswahlmenü ──────────────── */
+  var partName = { A: 'Teil A · Im Labor', B: 'Teil B · Training zu Hause' };
+  var partNo = { A: 0, B: 0 }, partTotal = { A: 0, B: 0 };
+  tasks.forEach(function (t) { if (!t.hasAttribute('data-nonumber')) partTotal[t.getAttribute('data-part')]++; });
+  var listBox = $('[data-lab-items]', lab);
+  var select = $('#lab-select');
+  var items = {};
+
+  ['A', 'B'].forEach(function (part) {
+    var h = el('h2', { class: 'lab__group', text: partName[part] + (part === 'A' ? ' (Präsenz)' : ' (ca. 60 Min)') });
+    var ol = el('ol', { class: 'lab__items' });
+    var og = el('optgroup', { label: partName[part] });
+    tasks.filter(function (t) { return t.getAttribute('data-part') === part; }).forEach(function (t) {
+      var nonum = t.hasAttribute('data-nonumber');
+      if (!nonum) partNo[part]++;
+      var n = partNo[part];
+      var title = t.getAttribute('data-title');
+      var st = stars(t.getAttribute('data-stars'));
+      var meta = [st, minText(t.getAttribute('data-min'))].filter(Boolean).join(' · ');
+      // Kopf der Station
+      var kick = $('.l-task__kicker', t);
+      if (kick) kick.textContent = partName[part] + ' · ' + (nonum ? 'Zum Schluss' : (part === 'B' ? 'Aufgabe ' : 'Station ') + n + ' von ' + partTotal[part]);
+      var mt = $('.l-task__meta', t);
+      if (mt) {
+        var bits = [];
+        if (st) { var sp = el('span', { role: 'img', 'aria-label': starLabel(t.getAttribute('data-stars')), text: st }); bits.push(sp); }
+        var m = minText(t.getAttribute('data-min')); if (m) bits.push(m);
+        var ex = t.getAttribute('data-extra'); if (ex) bits.push(ex);
+        bits.forEach(function (b, i) { if (i) mt.appendChild(document.createTextNode(' · ')); if (typeof b === 'string') mt.appendChild(document.createTextNode(b)); else mt.appendChild(b); });
+        mt.hidden = !bits.length;
+        var stat = el('span', { class: 'l-task__status', 'aria-live': 'polite' });
+        mt.appendChild(stat); t._stat = stat;
+      }
+      // Eintrag in der Liste
+      var mark = el('span', { class: 'lab__mark', 'aria-hidden': 'true', text: MARK.open });
+      var sr = el('span', { class: 'k-sr', text: ' (offen)' });
+      var name = el('span', { class: 'lab__name' }, [el('span', { class: 'lab__nm', text: title })]);
+      if (meta) name.appendChild(el('span', { class: 'lab__meta', text: meta }));
+      var a = el('a', { class: 'lab__item', href: '#' + t.id }, [mark, name, sr]);
+      ol.appendChild(el('li', null, [a]));
+      items[t.id] = { a: a, mark: mark, sr: sr };
+      var opt = el('option', { value: t.id, text: (part === 'B' ? 'Training ' : '') + n + ' · ' + title });
+      og.appendChild(opt);
+    });
+    listBox.appendChild(h); listBox.appendChild(ol);
+    if (select) select.appendChild(og);
+  });
+
+  function refreshStatus() {
+    tasks.forEach(function (t) {
+      var s = statusOf(t), it = items[t.id];
+      if (!it) return;
+      it.mark.textContent = MARK[s];
+      it.a.setAttribute('data-status', s);
+      it.sr.textContent = ' (' + (countable(t).length ? MARK_TXT[s] : (s === 'done' ? 'angesehen' : 'offen')) + ')';
+      if (t._stat) t._stat.textContent = s === 'done' && countable(t).length ? ' · gelöst ✓' : (s === 'part' ? ' · begonnen' : '');
+    });
+  }
+
+  /* ── Werkzeugkasten: Schublade ───────────────────────────── */
+  var toolbox = $('#lab-toolbox');
+  var toolboxHome = toolbox ? toolbox.parentNode : null;
+  var drawer = $('#lab-drawer');
+  var toolBtn = $('#lab-toolbox-btn');
+  var drawerClose = null;
+  if (drawer && toolbox) {
+    drawerClose = el('button', { type: 'button', class: 'k-btn k-btn--link k-btn--small', text: 'Werkzeugkasten schließen' });
+    drawerClose.addEventListener('click', function () { setToolbox(false, true); });
+  }
+  function setToolbox(open, focusBtn) {
+    if (!drawer || !toolbox || !toolBtn) return;
+    var onFirst = current === 0;
+    if (onFirst) { toolboxHome.appendChild(toolbox); drawer.hidden = true; toolBtn.hidden = true; toolBtn.setAttribute('aria-expanded', 'false'); return; }
+    toolBtn.hidden = false;
+    if (open) {
+      drawer.innerHTML = '';
+      drawer.appendChild(toolbox);
+      drawer.appendChild(el('p', { class: 'lab__drawerfoot' }, [drawerClose]));
+      drawer.hidden = false;
+    } else {
+      drawer.hidden = true;
+      toolboxHome.appendChild(toolbox);
+    }
+    toolBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (focusBtn && !open) toolBtn.focus();
+  }
+  if (toolBtn) toolBtn.addEventListener('click', function () { setToolbox(toolBtn.getAttribute('aria-expanded') !== 'true'); });
+
+  /* ── Anzeigen ────────────────────────────────────────────── */
+  var prev = $('#lab-prev'), next = $('#lab-next');
+  function show(id, initial) {
+    var i = index[id];
+    if (i === undefined) i = 0;
+    if (i === current) return;
+    current = i;
+    tasks.forEach(function (t, k) { t.hidden = k !== i; });
+    var t = tasks[i];
+    Object.keys(items).forEach(function (k) {
+      var it = items[k];
+      if (k === t.id) it.a.setAttribute('aria-current', 'page'); else it.a.removeAttribute('aria-current');
+    });
+    if (select) select.value = t.id;
+    setToolbox(false);
+    // Zurück / Weiter
+    function setLink(a, k, dir) {
+      if (!a) return;
+      if (k < 0 || k >= tasks.length) { a.hidden = true; return; }
+      a.hidden = false;
+      a.setAttribute('href', '#' + tasks[k].id);
+      a.textContent = '';
+      a.appendChild(el('span', { class: 'lab__pagerdir', text: dir < 0 ? '← Zurück' : 'Weiter →' }));
+      a.appendChild(el('span', { class: 'lab__pagerto', text: tasks[k].getAttribute('data-title') }));
+    }
+    setLink(prev, i - 1, -1); setLink(next, i + 1, 1);
+    document.title = t.getAttribute('data-title') + ' · ' + BASE_TITLE;
+    if (!countable(t).length && t.getAttribute('data-seen') !== 'manual' && markSeen(t.id)) refreshStatus();
+    // Editoren in der jetzt sichtbaren Station neu vermessen
+    requestAnimationFrame(function () {
+      $$('textarea.ke-source', t).forEach(function (ta) {
+        var c = window.KursEditor && window.KursEditor.controller(ta);
+        if (c && c.view && c.view.requestMeasure) c.view.requestMeasure();
+      });
+    });
+    if (!initial) {
+      var top = lab.getBoundingClientRect().top + window.pageYOffset;
+      if (window.pageYOffset > top) window.scrollTo(0, Math.max(0, top - 8));
+      var h = $('.l-task__title', t);
+      if (h) { try { h.focus({ preventScroll: true }); } catch (e) { h.focus(); } }
+    }
+  }
+
+  function fromHash(initial) {
+    var id = decodeURIComponent((location.hash || '').replace(/^#/, ''));
+    show(index[id] !== undefined ? id : tasks[0].id, initial);
+  }
+  window.addEventListener('hashchange', function () { fromHash(false); });
+  if (select) select.addEventListener('change', function () { location.hash = '#' + select.value; });
+  document.addEventListener('kurs:progress', refreshStatus);
+  // Code-Review gilt erst nach „Auflösen“ als erledigt
+  $$('[data-seen="manual"] [data-mirror-check]', lab).forEach(function (b) {
+    b.addEventListener('click', function () { var sec = b.closest('.l-task'); if (sec && markSeen(sec.id)) refreshStatus(); });
+  });
+
+  refreshStatus();
+  fromHash(true);
+  // Deep-Link: nicht mitten in die Seite springen, damit Aufgabenliste bzw. Auswahlmenü sichtbar bleiben
+  if (location.hash) {
+    window.addEventListener('load', function () { setTimeout(function () { window.scrollTo(0, 0); }, 30); });
+  }
+  if (!location.hash) { /* Standardstart ohne Hash: Adresse sauber lassen */ }
+  window.KursLabor = { show: function (id) { location.hash = '#' + id; }, status: statusOf, refresh: refreshStatus };
+})();

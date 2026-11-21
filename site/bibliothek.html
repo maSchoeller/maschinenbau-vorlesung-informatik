@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Befehls-Bibliothek · Informatik Maschinenbau · DHBW Stuttgart Campus Horb</title>
+  <meta name="description" content="Alle Python-Konzepte des Kurses zum Nachschlagen: Schreibweise, Beispiel, Transfer auf andere Situationen, typische Fehler – plus Spickzettel zum Drucken.">
+  <link rel="stylesheet" href="assets/css/dhbw-base.css">
+  <link rel="stylesheet" href="assets/css/kurs.css">
+  <link rel="stylesheet" href="assets/css/editor.css">
+</head>
+<body data-page="bibliothek">
+  <a class="k-skip" href="#inhalt">Zum Inhalt springen</a>
+
+  <header class="dhbw-header k-header">
+    <div class="dhbw-header__inner">
+      <a class="k-logo" href="index.html" aria-label="Startseite Informatik Maschinenbau">
+        <span class="k-logo__mark" aria-hidden="true">DHBW</span>
+        <span class="k-logo__text">Informatik Maschinenbau<small>Campus Horb · 2026/27</small></span>
+      </a>
+      <nav class="k-nav" aria-label="Hauptnavigation">
+        <a href="index.html#leitidee">Leitidee</a>
+        <a href="index.html#ampel">Wissens-Ampel</a>
+        <a href="index.html#lernpfad">Lernpfad</a>
+        <a href="index.html#termin">Ablauf</a>
+        <a href="lektionen/v03-fliesskommazahlen.html">V03 Lerneinheit</a>
+        <a href="lektionen/v03-labor.html">V03 Labor</a>
+        <a href="bibliothek.html" aria-current="page">Bibliothek</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="inhalt">
+    <section class="bib-hero" aria-labelledby="h-bib">
+      <div class="bib-hero__inner">
+        <p class="bib-hero__label">Nachschlagen · Transfer · Spickzettel</p>
+        <h1 id="h-bib">Befehls-Bibliothek</h1>
+        <p>Jedes Python-Konzept aus dem Kurs mit Schreibweise, lauffähigem Beispiel und Hinweisen, wo es dir noch hilft. Stell unten deinen Stand ein, dann sind spätere Themen als „kommt in Vxx“ markiert.</p>
+      </div>
+    </section>
+
+    <div class="bib-wrap">
+      <div class="bib-controls" role="search" aria-label="Bibliothek durchsuchen">
+        <div class="bib-controls__row">
+          <label>Suche
+            <input type="search" id="bib-q" placeholder="Befehl oder Stichwort, z. B. runden, for, Datei" autocomplete="off" spellcheck="false">
+          </label>
+          <label>Mein Stand
+            <select id="bib-stand"></select>
+          </label>
+          <label>Wissens-Ampel
+            <select id="bib-ampel">
+              <option value="">Alle</option>
+              <option value="kopf">Im Kopf</option>
+              <option value="lesen">Lesen &amp; erkennen</option>
+              <option value="delegieren">Delegieren</option>
+            </select>
+          </label>
+        </div>
+        <div class="bib-tools">
+          <div class="bib-cats" id="bib-cats" role="group" aria-label="Kategorie"></div>
+          <div class="bib-mode" role="group" aria-label="Ansicht">
+            <button type="button" class="k-btn k-btn--small k-btn--ghost" id="bib-m-cards" aria-pressed="true">Karten</button>
+            <button type="button" class="k-btn k-btn--small k-btn--ghost" id="bib-m-sheet" aria-pressed="false">Spickzettel</button>
+            <button type="button" class="k-btn k-btn--small" id="bib-print">Spickzettel drucken</button>
+          </div>
+        </div>
+      </div>
+
+      <p class="bib-count" id="bib-count" role="status" aria-live="polite"></p>
+
+      <div id="bib-view"></div>
+      <div class="bib-sheet" id="bib-sheet" aria-label="Spickzettel"></div>
+
+      <section class="bib-playground" aria-labelledby="h-play">
+        <h2 id="h-play">Spielwiese</h2>
+        <p class="k-muted">Probiere Beispiele aus: In einer Detailansicht auf „In Editor übernehmen“ klicken und hier mit „Ausführen“ (oder Strg+Enter) starten.</p>
+        <div class="k-runner" data-timeout="8000">
+<textarea class="k-runner__code py-editor" aria-label="Python-Spielwiese" rows="8" placeholder="# Hier kannst du frei ausprobieren
+print(&quot;Hallo, Welle!&quot;)"></textarea>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="dhbw-footer k-footer">
+    <div class="dhbw-footer__inner">
+      <span><span class="dhbw-footer__brand">DHBW Stuttgart</span> · Campus Horb</span>
+      <span><a href="index.html">Zurück zum Lernpfad</a> · Befehls-Bibliothek</span>
+    </div>
+  </footer>
+
+  <script src="assets/js/kurs.js"></script>
+  <script src="assets/js/editor.js" defer></script>
+  <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var KE = window.KursEditor;
+    if (!KE) return;
+    var L = KE.lib;
+    var $ = function (s) { return document.getElementById(s); };
+    var state = { q: '', stand: null, ampel: '', kat: '', mode: 'cards', open: null };
+    var STAND_KEY = 'dhbw-inf-mb:bib-stand';
+    try { var sv = window.localStorage.getItem(STAND_KEY); if (sv && sv !== 'alle') state.stand = parseInt(sv, 10); } catch (e) {}
+    var view = $('bib-view'), sheet = $('bib-sheet'), count = $('bib-count');
+
+    function el(tag, attrs, kids) {
+      var n = document.createElement(tag);
+      Object.keys(attrs || {}).forEach(function (k) { if (k === 'text') n.textContent = attrs[k]; else if (k === 'class') n.className = attrs[k]; else n.setAttribute(k, attrs[k]); });
+      (kids || []).forEach(function (c) { n.appendChild(typeof c === 'string' ? document.createTextNode(c) : c); });
+      return n;
+    }
+
+    Promise.all([L.load(), L.loadBundle().catch(function () { return null; })]).then(function () {
+      var entries = L.entries;
+      var cats = [];
+      entries.forEach(function (e) { if (cats.indexOf(e.kategorie) < 0) cats.push(e.kategorie); });
+
+      // Stand-Auswahl
+      var sel = $('bib-stand');
+      sel.appendChild(el('option', { value: 'alle', text: 'Alles anzeigen' }));
+      for (var i = 1; i <= 9; i++) sel.appendChild(el('option', { value: String(i), text: 'bis V0' + i }));
+      sel.value = state.stand ? String(Math.min(9, state.stand)) : 'alle';
+
+      // Kategorie-Knöpfe
+      var catBox = $('bib-cats');
+      function catBtn(label, val) {
+        var b = el('button', { type: 'button', class: 'bib-cat', 'aria-pressed': val === state.kat ? 'true' : 'false', text: label });
+        b.addEventListener('click', function () {
+          state.kat = val;
+          Array.prototype.forEach.call(catBox.children, function (c) { c.setAttribute('aria-pressed', c === b ? 'true' : 'false'); });
+          render();
+        });
+        catBox.appendChild(b);
+      }
+      catBtn('Alle', '');
+      cats.forEach(function (c) { catBtn(c, c); });
+
+      function filtered() {
+        return L.search(state.q, { kategorie: state.kat, ampel: state.ampel });
+      }
+
+      function renderCards(items) {
+        view.innerHTML = '';
+        if (state.open && L.byId(state.open)) {
+          var e = L.byId(state.open);
+          var back = el('button', { type: 'button', class: 'k-btn k-btn--small k-btn--ghost', text: '← Alle Befehle' });
+          back.addEventListener('click', function () { state.open = null; history.replaceState(null, '', location.pathname); render(); var f = view.querySelector('.bib-card[data-id="' + e.id + '"]'); if (f) f.focus(); });
+          view.appendChild(back);
+          var box = el('div', { class: 'bib-detail' });
+          box.appendChild(L.renderDetail(e, { lesson: state.stand, onOpen: function (id) { state.open = id; history.replaceState(null, '', '#' + id); render(); window.scrollTo(0, 0); } }));
+          view.appendChild(box);
+          count.textContent = e.name;
+          return;
+        }
+        var ul = el('ul', { class: 'bib-grid' });
+        items.forEach(function (e) {
+          var later = L.isLater(e, state.stand);
+          var b = el('button', { type: 'button', class: 'bib-card' + (later ? ' is-later' : ''), 'data-id': e.id });
+          b.appendChild(el('span', { class: 'bib-card__name', text: e.name }));
+          b.appendChild(el('span', { class: 'bib-card__kurz', text: e.kurz }));
+          var meta = el('span', { class: 'bib-card__meta' }, [L.ampelChip(e.ampel), el('span', { class: 'kb-chip', text: e.eingefuehrt })]);
+          if (later) meta.appendChild(el('span', { class: 'kb-chip kb-chip--later', text: 'kommt in ' + e.eingefuehrt }));
+          b.appendChild(meta);
+          b.addEventListener('click', function () { state.open = e.id; history.replaceState(null, '', '#' + e.id); render(); window.scrollTo(0, 0); });
+          ul.appendChild(el('li', null, [b]));
+        });
+        view.appendChild(ul);
+        if (!items.length) view.appendChild(el('p', { class: 'kb-note', text: 'Nichts gefunden. Versuche ein anderes Stichwort.' }));
+        count.textContent = items.length + (items.length === 1 ? ' Eintrag' : ' Einträge') + (state.stand ? ' – spätere Themen sind markiert' : '');
+      }
+
+      function renderSheet(items) {
+        sheet.innerHTML = '';
+        var shown = items.filter(function (e) { return !state.stand || !L.isLater(e, state.stand) || e.stichwort; });
+        var head = state.stand ? 'Spickzettel Python bis ' + 'V0' + Math.min(9, state.stand) : 'Spickzettel Python – V01 bis V09';
+        sheet.appendChild(el('p', { class: 'bib-sheet-intro', text: head + ' · Informatik Maschinenbau, DHBW Stuttgart Campus Horb' }));
+        var byCat = {};
+        shown.forEach(function (e) {
+          if (state.stand && e.stichwort) return;      // Stichworte ab V10 nur im Gesamt-Spickzettel
+          (byCat[e.kategorie] = byCat[e.kategorie] || []).push(e);
+        });
+        cats.forEach(function (c) {
+          var list = byCat[c]; if (!list || !list.length) return;
+          var sec = el('section', { class: 'bib-sheet__cat' });
+          sec.appendChild(el('h2', { text: c }));
+          var tbl = el('table');
+          tbl.appendChild(el('thead', null, [el('tr', null, [el('th', { scope: 'col', text: 'Befehl' }), el('th', { scope: 'col', text: 'Schreibweise' }), el('th', { scope: 'col', text: 'Wofür' })])]));
+          var tb = el('tbody');
+          list.forEach(function (e) {
+            var tr = el('tr', state.stand && L.isLater(e, state.stand) ? { class: 'is-later' } : null);
+            var n = el('td', { class: 'n' }, [e.name, el('br'), el('span', { class: 'v', text: e.eingefuehrt })]);
+            var s = el('td'); s.appendChild(el('pre', { text: e.syntax }));
+            tr.appendChild(n); tr.appendChild(s); tr.appendChild(el('td', { text: e.kurz }));
+            tb.appendChild(tr);
+          });
+          tbl.appendChild(tb); sec.appendChild(tbl); sheet.appendChild(sec);
+        });
+      }
+
+      function render() {
+        var items = filtered();
+        var cardsOn = state.mode === 'cards';
+        view.hidden = !cardsOn;
+        if (cardsOn) renderCards(items);
+        else count.textContent = items.length + ' Einträge im Spickzettel';
+        if (cardsOn) sheet.removeAttribute('data-active'); else sheet.setAttribute('data-active', '');
+        renderSheet(items);
+        $('bib-m-cards').setAttribute('aria-pressed', cardsOn ? 'true' : 'false');
+        $('bib-m-sheet').setAttribute('aria-pressed', cardsOn ? 'false' : 'true');
+      }
+
+      $('bib-q').addEventListener('input', function (ev) { state.q = ev.target.value; state.open = null; render(); });
+      sel.addEventListener('change', function () {
+        state.stand = sel.value === 'alle' ? null : parseInt(sel.value, 10);
+        try { window.localStorage.setItem(STAND_KEY, sel.value); } catch (e) {}
+        render();
+      });
+      $('bib-ampel').addEventListener('change', function (ev) { state.ampel = ev.target.value; state.open = null; render(); });
+      $('bib-m-cards').addEventListener('click', function () { state.mode = 'cards'; render(); });
+      $('bib-m-sheet').addEventListener('click', function () { state.mode = 'sheet'; state.open = null; render(); });
+      $('bib-print').addEventListener('click', function () { state.mode = 'sheet'; state.open = null; render(); window.print(); });
+
+      var h = decodeURIComponent((location.hash || '').slice(1));
+      if (h === 'spickzettel') state.mode = 'sheet';
+      else if (h && L.byId(h)) state.open = h;
+      render();
+    });
+  });
+  </script>
+</body>
+</html>

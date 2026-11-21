@@ -1,0 +1,9 @@
+node_modules/
+.venv/
+__pycache__/
+*.pyc
+video-src/**/out/
+.ipynb_checkpoints/
+.DS_Store
+Thumbs.db
+.claude/settings.local.json

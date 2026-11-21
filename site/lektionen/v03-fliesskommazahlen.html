@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>V03 Fließkommazahlen &amp; Datentypen · Lerneinheit · Informatik Maschinenbau</title>
+  <meta name="description" content="Warum 0.1 + 0.2 nicht 0.3 ist: Fließkommazahlen, Datentypen und Toleranzvergleiche für Ingenieure.">
+  <link rel="stylesheet" href="../assets/css/dhbw-base.css">
+  <link rel="stylesheet" href="../assets/css/kurs.css">
+  <link rel="stylesheet" href="../assets/css/aufgaben.css">
+  <link rel="stylesheet" href="../assets/css/editor.css">
+</head>
+<body data-lesson="V03" data-page="lerneinheit">
+  <a class="k-skip" href="#inhalt">Zum Inhalt springen</a>
+
+  <header class="dhbw-header k-header">
+    <div class="dhbw-header__inner">
+      <a class="k-logo" href="../index.html" aria-label="Zur Startseite">
+        <span class="k-logo__mark" aria-hidden="true">DHBW</span>
+        <span class="k-logo__text">Informatik Maschinenbau<small>Campus Horb · 2026/27</small></span>
+      </a>
+      <nav class="k-nav" aria-label="Hauptnavigation">
+        <a href="../index.html">Start</a>
+        <a href="../index.html#lernpfad">Lernpfad</a>
+        <a href="../bibliothek.html">Bibliothek</a>
+        <a href="v03-fliesskommazahlen.html" aria-current="page">V03 Lerneinheit</a>
+        <a href="v03-labor.html">V03 Labor</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="l-page">
+    <nav class="k-toc" aria-label="Inhalt dieser Lerneinheit">
+      <p class="k-toc__title">Lerneinheit V03</p>
+      <ol class="k-toc__list">
+        <li><a href="#warum"><span class="k-toc__n">1</span>Warum?</a></li>
+        <li><a href="#theorie"><span class="k-toc__n">2</span>Theorie</a></li>
+        <li><a href="#ausprobieren"><span class="k-toc__n">3</span>Ausprobieren</a></li>
+        <li><a href="#selbstcheck"><span class="k-toc__n">4</span>Selbstcheck</a></li>
+        <li><a href="#deepdive"><span class="k-toc__n">5</span>Deep Dive</a></li>
+      </ol>
+      <div class="k-progress" data-progress-for="V03">
+        <span class="k-progress__bar"><span class="k-progress__fill"></span></span>
+        <span class="k-progress__text">0 von 5 Abschnitten</span>
+      </div>
+      <a class="k-toc__lab" href="v03-labor.html">Weiter ins Programmierlabor →</a>
+    </nav>
+
+    <main id="inhalt" class="l-content">
+
+      <header class="k-title">
+        <p class="k-title__label">V03 · Phase 1 Fundament · Lerneinheit</p>
+        <h1 id="h-titel">Fließkommazahlen &amp; Datentypen</h1>
+        <p class="k-title__lead">Warum 0.1 + 0.2 nicht 0.3 ist, und warum das in der Toleranzkette und in der SPS zählt.</p>
+        <p class="k-title__goals">Nach dieser Lerneinheit kannst du:</p>
+        <ul class="k-title__list">
+          <li>erklären, warum Rundungsfehler entstehen,</li>
+          <li>Floats mit Toleranz vergleichen,</li>
+          <li>den IEEE-754-Aufbau lesen,</li>
+          <li>KI-Code auf Float-Fallen prüfen.</li>
+        </ul>
+        <p class="k-small k-muted">Das Schreiben von Python-Code (<code class="k-i">float</code>, <code class="k-i">input</code>, f-Strings, <code class="k-i">math</code>) übst du danach im <a href="v03-labor.html">Programmierlabor</a>.</p>
+      </header>
+
+      <!-- 1 ───────────── WARUM ───────────── -->
+      <section class="k-section" id="warum" data-section="warum" aria-labelledby="h-warum">
+        <h2 class="k-section__title" id="h-warum"><span class="k-section__num" aria-hidden="true">1</span> Warum?</h2>
+
+        <p>Zwei Szenen aus dem Ingenieuralltag. Beide enden mit einem Ergebnis, das „irgendwie stimmt“, aber nicht stimmt.</p>
+
+        <figure class="k-figure">
+          <picture>
+            <source srcset="../assets/img/v03-hook.webp" type="image/webp">
+            <img src="../assets/img/v03-hook.png" alt="Illustration: Achsposition in der SPS, die bei großen Verfahrwegen an Auflösung verliert" width="1600" height="900" loading="lazy" onerror="this.closest('figure').hidden=true">
+          </picture>
+        </figure>
+
+        <h3>Szene 1: Die Achse, die stehen bleibt</h3>
+        <p>Eine Portalachse mit 20 m Verfahrweg. Die SPS speichert die Position als <code class="k-i">REAL</code> in Mikrometern. <code class="k-i">REAL</code> ist ein 32-Bit-Float. Ab 16 777 216 µm (knapp 16,8 m) kann er nicht mehr jeden µm-Schritt darstellen: Die Zahl 16 777 217 gibt es in float32 schlicht nicht. Die Achse meldet „+1 µm“, die Position ändert sich nicht.</p>
+
+        <h3>Szene 2: Die Toleranzkette</h3>
+        <p>Du addierst die Teiltoleranzen 0.1 mm und 0.2 mm und prüfst, ob die Summe 0.3 mm ergibt. Python sagt: <code class="k-i">False</code>. Dein Prüfprogramm verwirft Teile, die laut Zeichnung in Ordnung sind.</p>
+
+        <div class="k-try" aria-labelledby="t-hook">
+          <h3 id="t-hook">Selbst sehen: float32 in Python simulieren</h3>
+          <p class="k-small k-muted">Mit dem Modul <code class="k-i">struct</code> rechnen wir eine Zahl in echtes 32-Bit-Float um und zurück. Drück „Ausführen“ (beim ersten Mal lädt Python einmalig nach).</p>
+          <div class="k-runner" data-timeout="8000">
+<textarea class="k-runner__code py-editor" data-lesson="V03" aria-label="Python-Code: float32 simulieren">import struct
+
+def f32(x):
+    """Rundet x auf float32 (wie eine SPS-REAL)."""
+    return struct.unpack('f', struct.pack('f', x))[0]
+
+print(f32(16777216.0))
+print(f32(16777217.0))      # Was kommt hier heraus?
+print(f32(16777218.0))
+print(f32(0.1 + 0.2) == f32(0.3))</textarea>
+          </div>
+        </div>
+
+        <h3>Wissens-Ampel für V03</h3>
+        <ul class="k-ampel-list" aria-label="Wissens-Ampel zu V03">
+          <li><span class="k-ampel k-ampel--kopf">🧠 Im Kopf</span><span>Dass und warum Rundungsfehler entstehen. Floats vergleicht man mit Toleranz, nie mit <code class="k-i">==</code>.</span></li>
+          <li><span class="k-ampel k-ampel--lesen">📖 Lesen &amp; erkennen</span><span>Der IEEE-754-Aufbau: Vorzeichen, Exponent, Mantisse. Du erkennst, was float32 und float64 unterscheidet.</span></li>
+          <li><span class="k-ampel k-ampel--deleg">🤖 Delegieren</span><span>Bitmuster von Hand in Dezimalzahlen umrechnen. Das kann die KI (oder die Float-Lupe unten). Du musst nur wissen, dass es geht.</span></li>
+        </ul>
+
+        <div class="hinweis hinweis--warum"><strong class="hinweis__title">Warum muss ich das wissen?</strong><p>Weil die KI dir Code liefert, der auf dem Papier richtig aussieht und trotzdem an der Grenze falsch entscheidet. Prüfprogramme, Zähler und Toleranzrechnungen sind genau die Stellen, an denen Float-Fehler Geld und Sicherheit kosten. Wer das Prinzip im Kopf hat, erkennt die Falle in Sekunden. In der Klausur kommt das als „Was gibt der Code aus?“ dran.</p></div>
+      </section>
+
+      <!-- 2 ───────────── THEORIE ───────────── -->
+      <section class="k-section" id="theorie" data-section="theorie" aria-labelledby="h-theorie">
+        <h2 class="k-section__title" id="h-theorie"><span class="k-section__num" aria-hidden="true">2</span> Theorie</h2>
+
+    <h3>Erklärvideo (ca. 3 Min)</h3>
+    <figure class="k-video">
+      <video controls preload="metadata" poster="../assets/video/v03-poster.png" aria-label="Erklärvideo Fließkommazahlen">
+        <source src="../assets/video/v03-erklaervideo.mp4" type="video/mp4">
+        <track kind="subtitles" srclang="de" label="Deutsch" src="../assets/video/v03.vtt" default>
+        Dein Browser kann dieses Video nicht abspielen.
+      </video>
+      <div class="k-video__missing" hidden>Video folgt. Bis dahin: die beiden Explorables und der Lesetext unten decken alles ab.</div>
+      <figcaption>Untertitel sind eingeschaltet (Deutsch).</figcaption>
+    </figure>
+
+          <div class="k-explorable">
+      <h3>Float-Lupe</h3>
+      <p class="k-explorable__lead">Gib eine Zahl ein und sieh, was der Rechner wirklich speichert. Klick auf einzelne Bits, um sie zu kippen. Probiere: <strong>0.5</strong> (warum so wenige Einsen?), <strong>0.1</strong> (warum so viele?), <strong>16777217</strong> in float32.</p>
+      <div data-explorable="lupe"></div>
+      <noscript><p>Für die Float-Lupe wird JavaScript benötigt.</p></noscript>
+    </div>
+
+    <div class="k-explorable">
+      <h3>Fehler-Akkumulator</h3>
+      <p class="k-explorable__lead">Wir addieren n-mal 0.1 und vergleichen mit dem exakten n/10. Schieberegler nach rechts: Was passiert mit der Abweichung? Wie groß ist der Unterschied zwischen float32 und float64?</p>
+      <div data-explorable="akku"></div>
+      <noscript><p>Für den Akkumulator wird JavaScript benötigt.</p></noscript>
+      <p class="k-small k-muted">Beobachtung: Der Fehler ist kein Zufall, er wächst mit n. In float32 liegt er rund 10^8- bis 10^9-mal höher als in float64. Deshalb zählt der Datentyp, wenn du viele Werte aufsummierst.</p>
+    </div>
+
+    <h3>Datentypen in Python</h3>
+    <div class="k-tablewrap">
+    <table class="k-types">
+      <thead><tr><th scope="col">Typ</th><th scope="col">Beispiel</th><th scope="col">Merkmal</th></tr></thead>
+      <tbody>
+        <tr><td><code class="k-i">int</code></td><td><code class="k-i">42</code>, <code class="k-i">2**100</code></td><td>Ganzzahl, in Python beliebig groß. Es gibt keinen Überlauf wie bei 16-Bit-<code class="k-i">INT</code> in der SPS.</td></tr>
+        <tr><td><code class="k-i">float</code></td><td><code class="k-i">0.1</code>, <code class="k-i">1e-3</code></td><td>64-Bit-Fließkomma nach IEEE 754, etwa 15 bis 17 gültige Dezimalstellen.</td></tr>
+        <tr><td><code class="k-i">str</code></td><td><code class="k-i">"42"</code></td><td>Text. <code class="k-i">"42" + 1</code> ist ein <code class="k-i">TypeError</code>.</td></tr>
+        <tr><td><code class="k-i">bool</code></td><td><code class="k-i">True</code></td><td>Wahrheitswert; zählt wie <code class="k-i">int</code> (<code class="k-i">True + True == 2</code>).</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p><code class="k-i">type(x)</code> verrät den Typ. Umwandeln mit <code class="k-i">int("42")</code>, <code class="k-i">float("3.5")</code>, <code class="k-i">str(3)</code>. Achtung: <code class="k-i">int(3.9)</code> schneidet ab (Ergebnis 3), es rundet nicht. Und <code class="k-i">/</code> liefert immer einen float (<code class="k-i">7 / 2 = 3.5</code>), <code class="k-i">//</code> teilt ganzzahlig (<code class="k-i">7 // 2 = 3</code>).</p>
+
+    <h3>IEEE 754 in Kurzform</h3>
+    <p>Ein Float besteht aus drei Teilen: <span class="k-term">Vorzeichen</span>, <span class="k-term">Exponent</span> und <span class="k-term">Mantisse</span>.</p>
+    <div class="k-formula">Wert = (−1)^s × 1.m × 2^(e − bias)</div>
+    <div class="k-tablewrap">
+    <table class="k-types">
+      <thead><tr><th scope="col">Format</th><th scope="col">Bits</th><th scope="col">Vorzeichen / Exponent / Mantisse</th><th scope="col">Gültige Dezimalstellen</th></tr></thead>
+      <tbody>
+        <tr><td>float32 (SPS <code class="k-i">REAL</code>)</td><td>32</td><td>1 / 8 / 23</td><td>ca. 7</td></tr>
+        <tr><td>float64 (Python <code class="k-i">float</code>)</td><td>64</td><td>1 / 11 / 52</td><td>ca. 15 bis 16</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>Weil die Mantisse endlich ist, kann nicht jede Zahl exakt vorkommen. Dezimalbrüche wie 0.1 haben in Binärdarstellung unendlich viele Stellen (wie 1/3 im Dezimalsystem) und werden gerundet. Der Abstand zwischen benachbarten Zahlen wächst mit der Größe der Zahl: In float32 ist er ab 2^24 = 16 777 216 gleich 2. Daher kann der Zähler aus Szene 1 nicht weiterzählen.</p>
+    <p>Sonderwerte: <code class="k-i">inf</code> (Überlauf, z. B. <code class="k-i">1e308 * 10</code>) und <code class="k-i">nan</code> („keine Zahl“; <code class="k-i">nan == nan</code> ist <code class="k-i">False</code>).</p>
+
+    <h3>Vergleichen: nie mit <code class="k-i">==</code></h3>
+    <p>Prüfe, ob der Abstand klein genug ist: <code class="k-i">abs(a - b) &lt;= tol</code>, oder fertig mit <code class="k-i">math.isclose(a, b)</code>. Standardmäßig ist <code class="k-i">rel_tol=1e-9</code> und <code class="k-i">abs_tol=0.0</code>. Wähle die Toleranz aus dem Kontext (Messauflösung, Fertigungstoleranz), nicht „irgendwie klein“.</p>
+    <div class="hinweis hinweis--achtung"><strong class="hinweis__title">Achtung</strong><p>Vergleiche gegen 0 brauchen ein <code class="k-i">abs_tol</code>. Sonst liefert <code class="k-i">math.isclose(1e-12, 0.0)</code> <code class="k-i">False</code>, denn die Standard-Toleranz ist relativ zur Größe der Zahlen.</p></div>
+
+    <h3>Runden</h3>
+    <p><code class="k-i">round(x)</code> rundet in Python auf die nächste <em>gerade</em> Zahl, wenn genau in der Mitte (Banker's Rounding): <code class="k-i">round(0.5) = 0</code>, <code class="k-i">round(1.5) = 2</code>, <code class="k-i">round(2.5) = 2</code>. Und <code class="k-i">round(2.675, 2)</code> ergibt 2.67, weil 2.675 intern knapp unter 2.675 liegt. Runde erst für die Anzeige, nicht mittendrin.</p>
+
+    <h3>Exakt rechnen mit <code class="k-i">decimal</code></h3>
+    <p>Für Geldbeträge oder exakte Dezimalstellen gibt es das Modul <code class="k-i">decimal</code>: <code class="k-i">Decimal("0.1") + Decimal("0.2") == Decimal("0.3")</code> ist <code class="k-i">True</code>. Wichtig: den Text übergeben, nicht den Float. Das ist ein Werkzeug zum Wiedererkennen (Stufe „Lesen &amp; erkennen“), nicht für jede Rechnung.</p>
+
+    <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke</strong><p>Floats sind gerundete Näherungen. Vergleiche mit Toleranz, summiere mit Verstand, wähle den Typ passend zur Größenordnung.</p></div>
+      </section>
+
+      <!-- 3 ───────────── AUSPROBIEREN ───────────── -->
+      <section class="k-section" id="ausprobieren" data-section="ausprobieren" aria-labelledby="h-aus">
+        <h2 class="k-section__title" id="h-aus"><span class="k-section__num" aria-hidden="true">3</span> Ausprobieren</h2>
+
+        <p>Python läuft direkt hier im Browser. Erst tippen, was herauskommt, dann ausführen. Das Tippen ist der Lernmoment. Du kannst den Code ändern und mit „Zurücksetzen“ das Original holen (Strg+Enter führt aus).</p>
+
+      <div class="k-try">
+        <h3>Der Klassiker</h3>
+        <div class="k-predict">
+          <p class="k-predict__q">Was gibt <code class="k-i">print(a == 0.3)</code> aus?</p>
+          <div class="k-predict__opts"><button type="button">True</button><button type="button" data-correct>False</button><button type="button">Fehler</button></div>
+          <div class="k-predict__result"></div>
+          <div class="k-predict__expl" hidden>0.1 und 0.2 sind beide gerundet; ihre Summe liegt eine Rundungsstufe neben dem gerundeten 0.3. Das ist kein Python-Fehler, sondern IEEE 754.</div>
+        </div>
+        <div class="k-runner">
+<textarea class="k-runner__code py-editor" data-lesson="V03" aria-label="Python-Code 1">a = 0.1 + 0.2
+print(a)
+print(a == 0.3)
+print(a - 0.3)</textarea>
+        </div>
+      </div>
+      <div class="k-try">
+        <h3>Mit Toleranz vergleichen</h3>
+        <div class="k-predict">
+          <p class="k-predict__q">Was gibt <code class="k-i">math.isclose(1e-12, 0.0)</code> aus?</p>
+          <div class="k-predict__opts"><button type="button">True</button><button type="button" data-correct>False</button></div>
+          <div class="k-predict__result"></div>
+          <div class="k-predict__expl" hidden>Die Standard-Toleranz ist relativ (<code>rel_tol=1e-9</code>): relativ zu 0 ist jeder Abstand unendlich groß. Für Vergleiche mit 0 brauchst du <code>abs_tol</code>, wie in der letzten Zeile.</div>
+        </div>
+        <div class="k-runner">
+<textarea class="k-runner__code py-editor" data-lesson="V03" aria-label="Python-Code 2">import math
+
+print(math.isclose(0.1 + 0.2, 0.3))
+print(abs(0.1 + 0.2 - 0.3) &lt; 1e-9)
+print(math.isclose(1e-12, 0.0))
+print(math.isclose(1e-12, 0.0, abs_tol=1e-9))</textarea>
+        </div>
+      </div>
+      <div class="k-try">
+        <h3>Aufsummieren: Schleife gegen fsum</h3>
+        <div class="k-predict">
+          <p class="k-predict__q">Zehnmal 0.1 in einer Schleife addiert: Kommt exakt <code class="k-i">1.0</code> heraus?</p>
+          <div class="k-predict__opts"><button type="button">Ja, 1.0</button><button type="button" data-correct>Nein</button></div>
+          <div class="k-predict__result"></div>
+          <div class="k-predict__expl" hidden>Es kommt 0.9999999999999999 heraus. <code>math.fsum</code> rechnet intern genauer und liefert 1.0. Überraschung: Auch <code>sum()</code> liefert seit Python 3.12 hier 1.0, weil es intern kompensiert summiert. Verlass dich bei Schleifen trotzdem nicht darauf.</div>
+        </div>
+        <div class="k-runner">
+<textarea class="k-runner__code py-editor" data-lesson="V03" aria-label="Python-Code 3">import math
+
+s = 0.0
+for _ in range(10):
+    s += 0.1
+print(s, s == 1.0)
+
+print(math.fsum([0.1] * 10))
+print(sum([0.1] * 10))     # ab Python 3.12 kompensiert</textarea>
+        </div>
+      </div>
+      <div class="k-try">
+        <h3>Runden: Python ist da eigen</h3>
+        <div class="k-predict">
+          <p class="k-predict__q">Was gibt <code class="k-i">round(2.5)</code> aus?</p>
+          <div class="k-predict__opts"><button type="button">2</button><button type="button">3</button></div>
+          <div class="k-predict__result"></div>
+          <div class="k-predict__expl" hidden>Auf 2. Bei genau .5 rundet Python zur nächsten geraden Zahl (Banker's Rounding): 0.5 → 0, 1.5 → 2, 2.5 → 2, 3.5 → 4. Das vermeidet, dass sich bei vielen Werten alle Fehler in dieselbe Richtung addieren. Und <code>round(2.675, 2)</code> gibt 2.67, weil der gespeicherte Wert knapp darunter liegt.</div>
+        </div>
+        <div class="k-runner">
+<textarea class="k-runner__code py-editor" data-lesson="V03" aria-label="Python-Code 4">print(round(0.5), round(1.5), round(2.5), round(3.5))
+print(round(2.675, 2))
+print(f"{2.675:.20f}")</textarea>
+        </div>
+      </div>
+      <div class="k-try">
+        <h3>Ganzzahlen und Umwandlungen</h3>
+        <div class="k-predict">
+          <p class="k-predict__q">Was passiert bei <code class="k-i">2**100</code>?</p>
+          <div class="k-predict__opts"><button type="button">Überlauf oder Fehler</button><button type="button" data-correct>Exakte 31-stellige Zahl</button></div>
+          <div class="k-predict__result"></div>
+          <div class="k-predict__expl" hidden>Python-<code>int</code> wächst mit. Die SPS hätte längst überlaufen. Gleichzeitig zeigt die letzte Zeile: <code>"42" + 1</code> geht nicht, <code>int("42") + 1</code> schon.</div>
+        </div>
+        <div class="k-runner">
+<textarea class="k-runner__code py-editor" data-lesson="V03" aria-label="Python-Code 5">print(2**100)
+print(type(2**100))
+print(int("42") + 1)
+print(float("42") + 1)
+print(int(3.9), int(-3.9))
+# print("42" + 1)   # Kommentarzeichen entfernen: Was passiert?</textarea>
+        </div>
+      </div>
+      </section>
+
+      <!-- 4 ───────────── SELBSTCHECK ───────────── -->
+      <section class="k-section" id="selbstcheck" data-section="selbstcheck" aria-labelledby="h-sc">
+        <h2 class="k-section__title" id="h-sc"><span class="k-section__num" aria-hidden="true">4</span> Selbstcheck</h2>
+
+        <p>Acht Quizaufgaben im Stil der Probeklausur (22 Punkte) und eine Code-Schreib-Aufgabe (6 Punkte, T9). Plane etwa 15 Minuten für das Quiz und 10 Minuten für T9 ein, ohne Hilfsmittel. Quiz-Punkte gibt es für den ersten Versuch; danach darfst du es nochmal probieren.</p>
+
+      <div class="k-quiz" data-quiz="v03">
+
+        <div class="k-q" data-type="output" data-points="2" data-id="t1" data-answer="False">
+          <div class="k-q__head"><span class="k-q__title">T1 · Programmausgabe</span><span class="k-q__pts">2 Punkte</span></div>
+          <div class="k-q__text">Was gibt das Programm aus?<pre class="k-code">a = 0.1 + 0.2
+print(a == 0.3)</pre></div>
+          <div class="k-q__expl">Die Summe ist 0.30000000000000004, nicht 0.3. Ausgabe: <code>False</code>.</div>
+        </div>
+
+        <div class="k-q" data-type="num" data-points="2" data-id="t2" data-answer="23" data-tol="0">
+          <div class="k-q__head"><span class="k-q__title">T2 · IEEE 754</span><span class="k-q__pts">2 Punkte</span></div>
+          <div class="k-q__text">Wie viele Bits hat die Mantisse eines float32 (gespeicherte Bits, ohne das „versteckte“ Bit)?</div>
+          <div class="k-q__expl">float32: 1 Bit Vorzeichen, 8 Bit Exponent, 23 Bit Mantisse = 32 Bit. Zusammen mit der versteckten 1 ergeben sich 24 signifikante Bits.</div>
+        </div>
+
+        <div class="k-q" data-type="output" data-points="3" data-id="t3" data-answer="0 2 2">
+          <div class="k-q__head"><span class="k-q__title">T3 · Programmausgabe</span><span class="k-q__pts">3 Punkte</span></div>
+          <div class="k-q__text">Was gibt das Programm aus (eine Zeile, Werte durch Leerzeichen)?<pre class="k-code">print(round(0.5), round(1.5), round(2.5))</pre></div>
+          <div class="k-q__expl">Python rundet bei genau .5 auf die nächste gerade Zahl (Banker's Rounding): 0, 2, 2.</div>
+        </div>
+
+        <div class="k-q" data-type="mc" data-points="2" data-id="t4">
+          <div class="k-q__head"><span class="k-q__title">T4 · Vergleichen</span><span class="k-q__pts">2 Punkte</span></div>
+          <div class="k-q__text">Welcher Ausdruck ist der robuste Weg, um zu prüfen, ob zwei gemessene Float-Werte <code>a</code> und <code>b</code> im Sinne der Anwendung „gleich“ sind?</div>
+          <ul class="k-q__options">
+            <li><code>a == b</code></li>
+            <li><code>a - b == 0</code></li>
+            <li data-correct><code>abs(a - b) &lt;= tol</code> mit einer aus der Anwendung gewählten Toleranz <code>tol</code></li>
+            <li><code>round(a) == round(b)</code></li>
+          </ul>
+          <div class="k-q__expl">Der Abstand wird mit einer sinnvollen Toleranz verglichen. <code>==</code> und <code>a - b == 0</code> sind dasselbe Problem. <code>round(a) == round(b)</code> versagt an Rundungsgrenzen (2.4 und 1.6 wären „gleich“, 2.4999 und 2.5001 „ungleich“).</div>
+        </div>
+
+        <div class="k-q" data-type="mc" data-points="4" data-id="t5">
+          <div class="k-q__head"><span class="k-q__title">T5 · Aussagen zu Floats (mehrere richtig)</span><span class="k-q__pts">4 Punkte</span></div>
+          <div class="k-q__text">Welche Aussagen sind richtig? Alle richtigen ankreuzen.</div>
+          <ul class="k-q__options">
+            <li data-correct>Ein float64 hat 52 Mantissen-Bits.</li>
+            <li data-correct>0.1 ist im Binärsystem nicht endlich darstellbar und wird deshalb gerundet.</li>
+            <li>Ein float32 kann jede ganze Zahl bis 2 Milliarden exakt speichern.</li>
+            <li>Ein float64 rechnet mit unbegrenzter Genauigkeit.</li>
+            <li data-correct>Rundungsfehler können sich bei vielen Additionen aufsummieren.</li>
+          </ul>
+          <div class="k-q__expl">Exakt sind in float32 nur ganze Zahlen bis 2^24 = 16 777 216. float64 hat endliche Genauigkeit (ca. 16 Stellen). Die anderen drei Aussagen stimmen.</div>
+        </div>
+
+        <div class="k-q" data-type="num" data-points="3" data-id="t6" data-answer="16777216" data-tol="0">
+          <div class="k-q__head"><span class="k-q__title">T6 · SPS-Zähler</span><span class="k-q__pts">3 Punkte</span></div>
+          <div class="k-q__text">Ein Zähler als <code>REAL</code> (float32) startet bei 0 und addiert in jedem Takt 1.0. Bei welchem Zählerstand bleibt er stehen?</div>
+          <div class="k-q__expl">Bei 2^24 = 16 777 216. Dort beträgt der Abstand benachbarter float32-Zahlen 2; 16 777 216 + 1 liegt genau zwischen zwei Zahlen und wird auf 16 777 216 gerundet (zur geraden Mantisse).</div>
+        </div>
+
+        <div class="k-q" data-type="output" data-points="3" data-id="t7" data-answer="3.5 3 &lt;class 'float'&gt;">
+          <div class="k-q__head"><span class="k-q__title">T7 · Datentypen</span><span class="k-q__pts">3 Punkte</span></div>
+          <div class="k-q__text">Was gibt das Programm aus (eine Zeile)?<pre class="k-code">x = 7 / 2
+y = 7 // 2
+print(x, y, type(x))</pre></div>
+          <div class="k-q__expl"><code>/</code> liefert immer einen float (3.5), <code>//</code> teilt ganzzahlig (3). Ausgabe: <code>3.5 3 &lt;class 'float'&gt;</code>.</div>
+        </div>
+
+        <div class="k-q" data-type="mc" data-points="3" data-id="t8">
+          <div class="k-q__head"><span class="k-q__title">T8 · KI-Code freigeben?</span><span class="k-q__pts">3 Punkte</span></div>
+          <div class="k-q__text">Die KI liefert:<pre class="k-code">x = 0.0
+while x != 1.0:
+    x += 0.1
+print("fertig")</pre>Würdest du das freigeben?</div>
+          <ul class="k-q__options">
+            <li>Ja, es gibt „fertig“ aus, sobald x 1.0 erreicht.</li>
+            <li data-correct>Nein, die Schleife endet nie, weil x den Wert 1.0 durch Rundungsfehler nicht exakt trifft.</li>
+            <li>Nein, <code>+=</code> ist bei Floats nicht erlaubt.</li>
+            <li>Nein, nach der Schleife steht ein Syntaxfehler.</li>
+          </ul>
+          <div class="k-q__expl">x läuft über 0.9999999999999999 zu 1.0999999999999999 und überspringt 1.0. Besser: <code>while x &lt; 1.0 - 1e-9</code> oder mit <code>for</code> und Schrittzahl arbeiten.</div>
+        </div>
+
+        <div class="k-score" data-score aria-live="polite"></div>
+      </div>
+
+        <h3>Code schreiben im Klausurstil</h3>
+        <p class="k-small k-muted">Wie in der Klausur: erst von Hand schreiben, ohne Ausführen und ohne Auto-Vervollständigung. Dann abgeben, die Tests laufen lassen und dich selbst nach dem Punkteschema bewerten. Richtzeit 10 Minuten.</p>
+      <div class="a-task" data-a="klausur" data-id="sc-klausur" data-mode="programm" data-minutes="10">
+        <div class="a-task__head"><span class="a-task__title">T9 · Schnittgeschwindigkeit</span><span class="a-pts">6 Punkte</span></div>
+        <div class="a-task__text">
+          <p>Beim Drehen gilt für die Schnittgeschwindigkeit v<sub>c</sub> = π · d · n / 1000 (v<sub>c</sub> in m/min, Durchmesser <em>d</em> in mm, Drehzahl <em>n</em> in 1/min). Schreibe ein Programm, das <em>d</em> und dann <em>n</em> einliest und v<sub>c</sub> mit zwei Nachkommastellen ausgibt.</p>
+          <div class="a-spec"><strong>Ausgabe genau so (Beispiel d = 60, n = 1000):</strong><pre>vc = 188.50 m/min</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V03" data-assist="off" aria-label="Python-Code von Hand schreiben, ohne Ausführen"></textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _vc(d, n):
+    return math.pi * d * n / 1000
+
+def test_beispiel():
+    """Beispiel d = 60 mm, n = 1000 1/min"""
+    z = zeilen(run_program(["60", "1000"]))
+    assert "vc = 188.50 m/min" in z, "Erwartet wird die Zeile 'vc = 188.50 m/min'. Dein Programm gibt aus: %r" % z
+
+def test_zweites():
+    """Beispiel d = 25 mm, n = 3500 1/min"""
+    soll = "vc = %.2f m/min" % _vc(25, 3500)
+    z = zeilen(run_program(["25", "3500"]))
+    assert soll in z, "Erwartet wird die Zeile %r. Dein Programm gibt aus: %r" % (soll, z)
+
+def test_kommazahl():
+    """Kommazahl-Eingabe: d = 12.5 mm, n = 8000 1/min"""
+    soll = "vc = %.2f m/min" % _vc(12.5, 8000)
+    z = zeilen(run_program(["12.5", "8000"]))
+    assert soll in z, "Erwartet wird die Zeile %r. Dein Programm gibt aus: %r" % (soll, z)
+        </script>
+        <script type="text/x-python" data-role="solution">
+import math
+
+d = float(input("Durchmesser d in mm: "))
+n = float(input("Drehzahl n in 1/min: "))
+vc = math.pi * d * n / 1000
+print(f"vc = {vc:.2f} m/min")
+        </script>
+        <script type="application/json" data-role="scheme">[
+{"p":1,"t":"d und n werden mit input() eingelesen"},
+{"p":1,"t":"Beide Eingaben werden in Zahlen umgewandelt (float() oder int())"},
+{"p":1,"t":"import math steht im Programm und math.pi wird benutzt"},
+{"p":1,"t":"Formel stimmt: π · d · n / 1000 (Einheit durch 1000 geteilt)"},
+{"p":1,"t":"Ausgabe mit f-String und Format :.2f"},
+{"p":1,"t":"Text „vc =“ und Einheit „m/min“ stehen in der Ausgabe"}
+]</script>
+      </div>
+      </section>
+
+      <!-- 5 ───────────── DEEP DIVE ───────────── -->
+      <section class="k-section" id="deepdive" data-section="deepdive" aria-labelledby="h-dd">
+        <h2 class="k-section__title" id="h-dd"><span class="k-section__num" aria-hidden="true">5</span> Deep Dive <span class="k-muted">(freiwillig)</span></h2>
+
+        <p>Für Neugierige. Nichts davon kommt in der Klausur dran.</p>
+
+      <details class="k-deep">
+        <summary>0.1 von Hand in IEEE 754 umrechnen</summary>
+        <div class="k-deep__body">
+          <ol>
+            <li><strong>Binärbruch:</strong> Mehrfach mit 2 multiplizieren, die Ziffer vor dem Komma notieren: 0.1 → 0.2 (0) → 0.4 (0) → 0.8 (0) → 1.6 (1) → 1.2 (1) → 0.4 (0) → 0.8 (0) → 1.6 (1) … Es wiederholt sich: 0.1 = 0.0001 1001 1001 1001 …₂.</li>
+            <li><strong>Normieren:</strong> 1.1001 1001 …₂ × 2^−4.</li>
+            <li><strong>Exponent:</strong> −4 + Bias 1023 = 1019 = 0x3FB (bei float32: −4 + 127 = 123 = 0x7B).</li>
+            <li><strong>Mantisse:</strong> die Stellen nach dem Komma, 52 Bit: <code class="k-i">1001 1001 … 1001 1001</code>. Die nächsten Bits (1001 …) liegen über der Hälfte, also wird aufgerundet: letzte Hex-Ziffer 9 → A.</li>
+            <li><strong>Ergebnis:</strong> <code class="k-i">0x3FB999999999999A</code> (float32: <code class="k-i">0x3DCCCCCD</code>). Zum Gegenprüfen: Float-Lupe oben.</li>
+          </ol>
+          <p>Gespeichert ist 0.1000000000000000055511151231257827…, also etwas <em>mehr</em> als 0.1.</p>
+        </div>
+      </details>
+
+      <details class="k-deep">
+        <summary>Kahan-Summation: Fehler beim Aufsummieren einfangen</summary>
+        <div class="k-deep__body">
+          <p>Die Idee: Den bei jeder Addition verlorenen Rest (<code class="k-i">c</code>) merken und beim nächsten Summanden wieder dazugeben. Eine Million Mal 0.1 in float64 aufsummiert ergibt 100000.00000133288 (Fehler 1.3 × 10^−6). Mit Kahan: 100000.0.</p>
+          <div class="k-runner" data-timeout="15000">
+<textarea class="k-runner__code py-editor" data-lesson="V03" aria-label="Kahan-Summation">import math
+
+def kahan(werte):
+    s = 0.0
+    c = 0.0                 # verlorener Rest
+    for x in werte:
+        y = x - c
+        t = s + y
+        c = (t - s) - y     # was beim Addieren verloren ging
+        s = t
+    return s
+
+xs = [0.1] * 1_000_000
+naiv = 0.0
+for x in xs:
+    naiv += x
+print("naiv ", naiv)
+print("kahan", kahan(xs))
+print("fsum ", math.fsum(xs))</textarea>
+          </div>
+        </div>
+      </details>
+
+      <details class="k-deep">
+        <summary>float16 und bfloat16 in KI-Modellen (Brücke zu V10)</summary>
+        <div class="k-deep__body">
+          <p>Neuronale Netze haben Milliarden Gewichte. Weniger Bits heißt weniger Speicher und schnellere Rechnung. Deshalb nutzt man kleine Formate:</p>
+          <div class="k-tablewrap"><table class="k-types">
+            <thead><tr><th scope="col">Format</th><th scope="col">Bits (V/E/M)</th><th scope="col">größter Wert</th><th scope="col">Stellen</th></tr></thead>
+            <tbody>
+              <tr><td>float32</td><td>1 / 8 / 23</td><td>ca. 3.4 × 10^38</td><td>ca. 7</td></tr>
+              <tr><td>float16</td><td>1 / 5 / 10</td><td>65 504</td><td>ca. 3</td></tr>
+              <tr><td>bfloat16</td><td>1 / 8 / 7</td><td>ca. 3.4 × 10^38</td><td>ca. 2 bis 3</td></tr>
+            </tbody>
+          </table></div>
+          <p>bfloat16 opfert Genauigkeit für den großen Wertebereich von float32: Beim Training ist es schlimmer, wenn ein Wert überläuft (inf, nan), als wenn er etwas ungenau ist. Aufsummiert wird trotzdem oft in float32, genau wegen des Effekts aus dem Fehler-Akkumulator. Mehr dazu in V10.</p>
+        </div>
+      </details>
+      </section>
+
+      <!-- Übergang -->
+      <section class="k-next" aria-labelledby="h-next">
+        <h2 id="h-next">Wie geht es weiter?</h2>
+        <p>Verstanden ist noch nicht geschrieben. Im Programmierlabor tippst du den Code selbst: erst mit Hilfen (Werkzeugkasten, Beispiel, Lückencode), dann allein. Zu Hause folgt das Training mit acht automatisch geprüften Aufgaben (ca. 60 Min).</p>
+        <p><a class="k-btn" href="v03-labor.html">Weiter ins Programmierlabor →</a></p>
+      </section>
+
+      <!-- Für Dozierende -->
+      <section class="k-section k-section--dozent" aria-labelledby="h-doz">
+        <h2 id="h-doz" class="k-sr">Für Dozierende</h2>
+      <details class="k-dozent">
+        <summary>Für Dozierende: Ablaufplan 135 Minuten Präsenz + 60 Minuten zu Hause</summary>
+        <div class="k-dozent__body">
+          <p class="k-small k-muted">Ein Termin besteht aus zwei Seiten: dieser <strong>Lerneinheit</strong> (verstehen) und dem <a href="v03-labor.html">Programmierlabor</a> (selbst programmieren). Die Tabelle sagt, wo welche Phase stattfindet.</p>
+          <div class="k-tablewrap"><table class="k-plan">
+            <thead><tr><th scope="col">Minuten</th><th scope="col">Wo</th><th scope="col">Was zu tun ist</th></tr></thead>
+            <tbody>
+              <tr><td>0–10</td><td>Lerneinheit 3<br>Ausprobieren</td><td><strong>Warm-up.</strong> Vorhersagequiz per Handzeichen: <code>0.1 + 0.2 == 0.3</code>? <code>2**100</code>? <code>round(2.5)</code>? Jeweils erst abstimmen, dann im Runner ausführen. Dazu Wiederholung V02: <code>7 // 2</code>, <code>7 % 2</code>, <code>2 ** 10</code> im Kopf.</td></tr>
+              <tr><td>10–35</td><td>Lerneinheit 1 und 2<br>Warum, Theorie</td><td><strong>Informatik-Theorie mit Explorable.</strong> Szene 1 (Achse 16 777 217 µm) und float32-Runner aus Abschnitt 1, Float-Lupe live (0.5, 0.1, 16777217 in float32), Fehler-Akkumulator (n = 1000, dann 10 000). Ampel-Diskussion: Karten „Rundungsfehler erklären“, „IEEE-Aufbau“, „Bitmuster umrechnen“ den drei Stufen zuordnen lassen (Kopf / Lesen / Delegieren).</td></tr>
+              <tr><td>35–80</td><td>Labor Teil A<br>Aufgaben 1 bis 6</td><td><strong>Python-Werkstatt, Teil 1 (ca. 45 Min).</strong> Werkzeugkasten kurz überfliegen (5), Toleranzrechner vormachen und Zeile für Zeile erklären (10), Ablauf verfolgen allein, dann Auflösung (5), beide Parsons in Paaren (8), Lückencode (7), Zugstab als erste eigene Aufgabe (10). Rundgang; typische Fehler: <code>float()</code> vergessen, Komma statt Punkt, <code>:.2f</code> mit Doppelpunkt vergessen.</td></tr>
+              <tr><td>80–90</td><td>–</td><td><strong>Pause.</strong> Runner vorab einmal ausführen lassen (lädt ca. 10 MB von jsDelivr; im Hörsaal-WLAN sonst zäh).</td></tr>
+              <tr><td>90–120</td><td>Labor Teil A<br>Aufgaben 7 und 8</td><td><strong>Python-Werkstatt, Teil 2.</strong> Code-Review (KI-Spiegel) gemeinsam am Beamer: Studierende markieren in Paaren, Auflösung, Runner mit Endlosschleife (3-s-Abbruch), korrigierte Version (20). Danach typische Fehlermeldungen ausführen und lesen lassen (5). Reserve (5): Lerneinheit, Abschnitt 3 „Ausprobieren“.</td></tr>
+              <tr><td>120–135</td><td>Lerneinheit 4<br>Selbstcheck</td><td><strong>Selbstcheck, Exit-Ticket, Auftrag.</strong> Exit-Ticket: Quiz T1, T4, T6 (je 1 Min. tippen, dann auflösen). T9 (Code schreiben) als Hausaufgabe oder auf Papier. Auftrag: Labor Teil B, Fälligkeit bis zum nächsten Termin. Deep-Dive-Teaser: Kahan-Summation und bfloat16 (Brücke zu V10). Ausblick V04: Logik und Verzweigungen.</td></tr>
+              <tr><td>zu Hause (ca. 60)</td><td>Labor Teil B<br>Aufgaben 1 bis 8</td><td><strong>Training.</strong> Acht Code-Aufgaben mit automatischen Tests, darunter Wiederholungsaufgabe zu V01/V02 und Klausur-Modus (ca. 50 Min). Danach nach Wahl: Notebook, Deep Dive. Der Fortschritt bleibt im Browser der Studierenden; er ist für dich nicht einsehbar, also bei Bedarf zu Beginn des nächsten Termins abfragen.</td></tr>
+            </tbody>
+          </table></div>
+          <p class="k-small k-muted">Material: Beamer, Handzeichen-Karten, stabiles WLAN. Das Notebook (Codespaces) ist Vertiefung im Training, nicht Pflicht in der Präsenzzeit.</p>
+        </div>
+      </details>
+      </section>
+
+    </main>
+  </div>
+
+  <footer class="dhbw-footer k-footer">
+    <div class="dhbw-footer__inner">
+      <span><span class="dhbw-footer__brand">DHBW Stuttgart</span> · Campus Horb</span>
+      <span><a href="../index.html">Zurück zum Lernpfad</a> · V03 Fließkommazahlen &amp; Datentypen · Lerneinheit</span>
+    </div>
+  </footer>
+
+  <script src="../assets/js/editor.js" defer></script>
+  <script src="../assets/js/explorables.js"></script>
+  <script src="../assets/js/kurs.js"></script>
+  <script src="../assets/js/aufgaben.js"></script>
+</body>
+</html>
