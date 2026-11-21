@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>V07 Programmierlabor · Informatik Maschinenbau</title>
+  <meta name="description" content="Programmierlabor V07: Funktionen mit def, Parameter, return, Default-Werten und lokalen Variablen; Unterprogramme im PAP. Arbeitsumgebung mit Aufgabenliste, Editor und Befehls-Bibliothek. Teil A im Labor, Teil B Training zu Hause.">
+  <link rel="stylesheet" href="../assets/css/dhbw-base.css">
+  <link rel="stylesheet" href="../assets/css/kurs.css">
+  <link rel="stylesheet" href="../assets/css/aufgaben.css">
+  <link rel="stylesheet" href="../assets/css/editor.css">
+  <link rel="stylesheet" href="../assets/css/labor.css">
+  <link rel="stylesheet" href="../assets/css/v05.css">
+  <link rel="stylesheet" href="../assets/css/v07.css">
+</head>
+<body data-lesson="V07" data-page="labor">
+  <a class="k-skip" href="#inhalt">Zum Inhalt springen</a>
+
+  <header class="dhbw-header k-header">
+    <div class="dhbw-header__inner">
+      <a class="k-logo" href="../index.html" aria-label="Zur Startseite">
+        <span class="k-logo__mark" aria-hidden="true">DHBW</span>
+        <span class="k-logo__text">Informatik Maschinenbau<small>Campus Horb · 2026/27</small></span>
+      </a>
+      <nav class="k-nav" aria-label="Hauptnavigation">
+        <a href="../index.html">Start</a>
+        <a href="../index.html#lernpfad">Lernpfad</a>
+        <a href="../bibliothek.html">Bibliothek</a>
+        <a href="../pap-editor.html">PAP-Editor</a>
+        <a href="v07-funktionen.html">V07 Lerneinheit</a>
+        <a href="v07-labor.html" aria-current="page">V07 Labor</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="lab" data-lab>
+
+    <nav class="lab__list" aria-label="Aufgabenliste">
+      <div class="lab__listhead">
+        <p class="lab__title">Programmierlabor V07</p>
+        <a class="lab__back" href="v07-funktionen.html">← Lerneinheit</a>
+      </div>
+      <div class="a-progress" data-a-progress>
+        <span class="a-progress__bar"><span class="a-progress__fill"></span></span>
+        <span class="a-progress__text">0 von 17 Aufgaben gelöst</span>
+      </div>
+      <p class="lab__legend k-small k-muted"><span><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-circle"/></svg> offen</span><span><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-half"/></svg> begonnen</span><span><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-done"/></svg> gelöst</span></p>
+      <div data-lab-items></div>
+    </nav>
+
+    <main id="inhalt" class="lab__main" tabindex="-1">
+      <div class="lab__bar">
+        <div class="lab__select">
+          <label for="lab-select">Aufgabe</label>
+          <select id="lab-select"></select>
+        </div>
+        <button type="button" class="k-btn k-btn--ghost k-btn--small" id="lab-toolbox-btn" aria-expanded="false" aria-controls="lab-drawer">Werkzeugkasten</button>
+      </div>
+      <section class="lab__drawer" id="lab-drawer" aria-label="Werkzeugkasten" hidden></section>
+
+    <section class="l-task" id="a-werkzeugkasten" data-title="Werkzeugkasten" data-part="A" data-stars="" data-min="5" data-extra="" aria-labelledby="h-a-werkzeugkasten" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-werkzeugkasten" tabindex="-1">Werkzeugkasten</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Heute neu in Python: eigene <abbr class="k-begriff" data-erklaerung="Eine Funktion ist ein benannter Baustein: Du gibst ihr Werte, sie rechnet und gibt ein Ergebnis zurück, wie ein Bauteil mit Datenblatt.">Funktion</abbr> mit <code class="k-i">def</code>. Du gibst ihnen <abbr class="k-begriff" data-erklaerung="Ein Parameter ist ein Platzhalter-Name in der Klammer der Funktion, zum Beispiel d in def widerstandsmoment(d).">Parameter</abbr>, sie geben ihr Ergebnis mit <code class="k-i">return</code> zurück. Sieben Karten zeigen alles, was du dafür brauchst. Jedes Beispiel ist ausführbar: Probiere es aus, ändere etwas und beobachte mit „Schritt für Schritt“ den Aufrufstapel.</p>
+      <figure class="k-video">
+        <video controls preload="metadata" poster="../assets/video/v07-python-poster.png" aria-label="Python-Werkstatt: def, Parameter, return, Default-Werte, lokale Variablen (ca. 3 Min)">
+          <source src="../assets/video/v07-python.mp4" type="video/mp4">
+          <track kind="subtitles" srclang="de" label="Deutsch" src="../assets/video/v07-python.vtt" default>
+          Dein Browser kann dieses Video nicht abspielen.
+        </video>
+        <div class="k-video__missing" hidden>Video folgt. Bis dahin: Lies den Code unten Zeile für Zeile und probiere ihn aus.</div>
+        <figcaption>Python-Werkstatt: def, Parameter, return, Default-Werte, lokale Variablen (ca. 3 Min). Untertitel sind eingeschaltet (Deutsch).</figcaption>
+      </figure>
+      <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke</strong><p>Diese sieben <abbr class="k-begriff" data-erklaerung="Die Syntax ist die Schreibweise einer Programmiersprache, wie die Grammatik einer Sprache: Reihenfolge, Klammern, Doppelpunkt. Ein Tippfehler dort heißt Syntaxfehler.">Syntax</abbr>-Karten sind dein Werkzeugkasten. Du blendest sie bei jeder Aufgabe über den Knopf „Werkzeugkasten“ oben ein. Das Wichtigste in einem Satz: <strong>def</strong> legt an, der Aufruf führt aus, <strong>return</strong> gibt zurück, und alles in der Funktion ist lokal.</p></div>
+      <div class="lab__toolbox" id="lab-toolbox">
+<div class="a-syntax-list">
+  <article class="a-syntax" aria-labelledby="sk-def">
+    <span class="a-syntax__label">Syntax-Karte 1</span>
+    <h4 id="sk-def">def und Aufruf: eine Funktion anlegen und benutzen</h4>
+<pre><code>import math
+
+def widerstandsmoment(d):
+    return math.pi * d ** 3 / 16
+
+w = widerstandsmoment(30)
+print(w)
+print(widerstandsmoment(40) / widerstandsmoment(20))</code></pre>
+    <ul>
+      <li>Der <strong>Kopf</strong>: <code class="k-i">def</code>, der Name, die Parameter in Klammern und ein <strong>Doppelpunkt</strong>. Der <abbr class="k-begriff" data-erklaerung="Der Rumpf ist der eingerückte Block unter def. Er läuft erst, wenn die Funktion aufgerufen wird.">Rumpf</abbr> steht <strong>eingerückt</strong> (4 Leerzeichen). Was nicht mehr eingerückt ist, gehört zum Hauptprogramm.</li>
+      <li><code class="k-i">def</code> führt nichts aus, es legt die Funktion nur an. Probiere es: Lösche die drei Zeilen darunter, dann gibt es keine Ausgabe. Der Rumpf läuft erst beim <abbr class="k-begriff" data-erklaerung="Ein Aufruf führt eine Funktion aus: Name und in Klammern die Argumente, zum Beispiel tau(98.8, 30).">Aufruf</abbr> <code class="k-i">widerstandsmoment(30)</code>.</li>
+      <li>Der Aufruf ist ein Ausdruck: Sein Wert steht dort, wo du ihn schreibst, in einer Zuweisung (<code class="k-i">w = ...</code>), in <code class="k-i">print</code> oder mitten in einer Rechnung. Die letzte Zeile zeigt das: doppelter Durchmesser, achtfaches Widerstandsmoment (d hoch drei).</li>
+      <li>Die Funktion muss <strong>vor</strong> dem Aufruf definiert sein. Namen wählst du wie bei Variablen (V01): klein, mit Unterstrich, am besten eine Größe oder ein Verb.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-param">
+    <span class="a-syntax__label">Syntax-Karte 2</span>
+    <h4 id="sk-param">Parameter und Argumente: positionell und mit Namen</h4>
+<pre><code>def tau(T, d):
+    return T * 1000 / (3.1416 * d ** 3 / 16)
+
+print(tau(98.8, 30))
+print(tau(d=30, T=98.8))
+print(tau(98.8, d=30))
+print(tau(30, 98.8))</code></pre>
+    <ul>
+      <li>Ein <abbr class="k-begriff" data-erklaerung="Ein Parameter ist ein Platzhalter-Name in der Klammer der Funktion, zum Beispiel d in def widerstandsmoment(d).">Parameter</abbr> steht in der Klammer bei <code class="k-i">def</code> (<code class="k-i">T</code>, <code class="k-i">d</code>), ein <abbr class="k-begriff" data-erklaerung="Ein Argument ist der konkrete Wert beim Aufruf, zum Beispiel 30 in widerstandsmoment(30). Er landet im Parameter.">Argument</abbr> ist der Wert beim Aufruf (<code class="k-i">98.8</code>, <code class="k-i">30</code>).</li>
+      <li><strong>Positionell</strong>: Das erste Argument geht an den ersten Parameter, das zweite an den zweiten. <strong>Mit Namen</strong>: <code class="k-i">d=30</code> sagt selbst, wohin der Wert gehört, die Reihenfolge ist dann egal. Beides darf gemischt werden, die positionellen kommen zuerst.</li>
+      <li>Die letzte Zeile hat die Argumente vertauscht: <code class="k-i">T = 30</code> und <code class="k-i">d = 98.8</code>. Python meldet <strong>nichts</strong>, es sind ja zwei Zahlen. Das Ergebnis ist trotzdem falsch (0.16 MPa statt 18.6, schon ein Überschlag zeigt, dass das nicht stimmen kann). Bei mehreren Parametern lohnt sich der Aufruf mit Namen.</li>
+      <li>Zu wenige oder zu viele Argumente gibt einen <code class="k-i">TypeError</code> (siehe „Typische Fehlermeldungen“).</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-return">
+    <span class="a-syntax__label">Syntax-Karte 3</span>
+    <h4 id="sk-return">return und print: zurückgeben oder nur anzeigen</h4>
+<pre><code>def verdopple_a(x):
+    print(2 * x)
+
+def verdopple_b(x):
+    return 2 * x
+
+a = verdopple_a(5)
+b = verdopple_b(5)
+print("a =", a, " b =", b)
+print(b + 1)</code></pre>
+    <ul>
+      <li><code class="k-i">return</code> gibt den Wert an den Aufrufer zurück und <strong>beendet die Funktion sofort</strong>. Zeilen danach im Rumpf laufen nicht mehr. <code class="k-i">print</code> zeigt den Wert nur auf dem Bildschirm an.</li>
+      <li>Die erste Funktion zeigt 10 an, gibt aber nichts zurück. Darum ist <code class="k-i">a</code> gleich <abbr class="k-begriff" data-erklaerung="None ist der Python-Wert für „nichts“. Eine Funktion ohne return gibt None zurück.">None</abbr>, der Python-Wert für „nichts“. Rechne mit <code class="k-i">a + 1</code>, dann kommt ein <code class="k-i">TypeError</code>. Das ist der häufigste Anfängerfehler und ein klassischer KI-Fehler.</li>
+      <li>Faustregel: <strong>Funktionen rechnen und geben zurück, das Hauptprogramm gibt aus.</strong> Dann kannst du jede Funktion in anderen Rechnungen weiterverwenden.</li>
+      <li>Mit <code class="k-i">if</code> und <code class="k-i">else</code> braucht <strong>jeder Weg</strong> ein <code class="k-i">return</code>. Läuft eine Funktion ans Ende, ohne dass ein <code class="k-i">return</code> erreicht wurde, gibt sie still <code class="k-i">None</code> zurück.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-default">
+    <span class="a-syntax__label">Syntax-Karte 4</span>
+    <h4 id="sk-default">Default-Werte: Standardwert für einen Parameter</h4>
+<pre><code>def pruefe(tau_vorh, tau_zul=40.0):
+    if tau_vorh &lt;= tau_zul:
+        return "ok"
+    else:
+        return "zu hoch"
+
+print(pruefe(30))
+print(pruefe(30, 25.0))
+print(pruefe(30, tau_zul=35.0))</code></pre>
+    <ul>
+      <li>Mit <code class="k-i">tau_zul=40.0</code> im Kopf legst du einen <abbr class="k-begriff" data-erklaerung="Ein Default-Wert ist ein Standardwert für einen Parameter. Wird beim Aufruf nichts angegeben, gilt er.">Default-Wert</abbr> fest. Beim Aufruf <code class="k-i">pruefe(30)</code> fehlt das zweite Argument, dann gilt 40.0. Wer es angibt, überschreibt den Standard, nur für diesen Aufruf.</li>
+      <li>Parameter <strong>mit</strong> Default-Wert stehen immer <strong>hinter</strong> den Parametern ohne: <code class="k-i">def f(a, b=1)</code> geht, <code class="k-i">def f(a=1, b)</code> ist ein <code class="k-i">SyntaxError</code>.</li>
+      <li>Sinnvoll sind Defaults für Werte, die fast immer gleich sind: ein Grenzwert, eine Dichte, ein Sicherheitsbeiwert. Wer sie ändern will, nennt den Parameter beim Aufruf: <code class="k-i">tau_zul=35.0</code>.</li>
+      <li>Default-Werte sind Zahlen, Texte oder Wahrheitswerte. Listen als Default kommen nicht vor (Listen lernst du in V08).</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-doc">
+    <span class="a-syntax__label">Syntax-Karte 5</span>
+    <h4 id="sk-doc">Docstring und Typ-Hinweise: das Datenblatt (Hinweise nur lesen)</h4>
+<pre><code>def tau(T: float, d: float) -&gt; float:
+    """Torsionsspannung in MPa aus Moment T in N·m und Durchmesser d in mm."""
+    return T * 1000 / (3.14159 * d ** 3 / 16)
+
+help(tau)
+print(tau(98.8, 30))</code></pre>
+    <ul>
+      <li>Der <abbr class="k-begriff" data-erklaerung="Ein Docstring ist ein Text in dreifachen Anführungszeichen direkt unter der def-Zeile: das Datenblatt der Funktion mit Einheiten.">Docstring</abbr> steht direkt unter dem <code class="k-i">def</code> in dreifachen Anführungszeichen. Er sagt, <strong>was</strong> die Funktion tut und in <strong>welchen Einheiten</strong>. Einheitenfehler (kW statt W) fallen so früher auf. <code class="k-i">help(tau)</code> zeigt ihn an.</li>
+      <li>Die Zeichen <code class="k-i">T: float</code> und <code class="k-i">-&gt; float</code> heißen <strong>Typ-Hinweise</strong>: T und d sind Kommazahlen, das Ergebnis auch. Python prüft sie beim Ausführen <strong>nicht</strong>. Du musst sie nur <strong>lesen</strong> können: KI-Code ist voll davon. In den Aufgaben schreibst du sie nicht.</li>
+      <li>Ein Kommentar mit <code class="k-i">#</code> erklärt eine Zeile, ein Docstring beschreibt die ganze Funktion.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-lokal">
+    <span class="a-syntax__label">Syntax-Karte 6</span>
+    <h4 id="sk-lokal">Lokale Variablen und Gültigkeitsbereich</h4>
+<pre><code>def quadrat(x):
+    ergebnis = x * x
+    return ergebnis
+
+x = 3
+a = quadrat(7)
+print(a, x)
+print(ergebnis)</code></pre>
+    <ul>
+      <li><code class="k-i">x</code> und <code class="k-i">ergebnis</code> in der Funktion sind <abbr class="k-begriff" data-erklaerung="Lokal heißt: nur innerhalb der Funktion bekannt. Nach dem Aufruf sind lokale Variablen weg.">lokal</abbr>: Sie entstehen beim Aufruf und sind danach weg. Das <code class="k-i">x = 3</code> im Hauptprogramm ist eine <em>andere</em> Variable mit demselben Namen: <code class="k-i">print(a, x)</code> zeigt 49 und 3.</li>
+      <li>Die letzte Zeile gibt einen <code class="k-i">NameError</code>, denn das Hauptprogramm kennt <code class="k-i">ergebnis</code> nicht. Wer den Wert braucht, nimmt den Rückgabewert (<code class="k-i">a</code>).</li>
+      <li>Gewöhnung: Eine Funktion bekommt <strong>alles, was sie braucht, als Parameter</strong> und gibt <strong>ihr Ergebnis mit return</strong> ab. Dann kannst du sie ohne Nebenwirkungen überall benutzen und einzeln prüfen.</li>
+      <li>Der Visualisierer („Schritt für Schritt“) zeigt jeden Aufruf als eigenen Frame mit seinen Variablen. Beobachte, wie die Frames beim <code class="k-i">return</code> verschwinden.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-stapel">
+    <span class="a-syntax__label">Syntax-Karte 7</span>
+    <h4 id="sk-stapel">Funktion ruft Funktion: der Aufrufstapel</h4>
+<pre><code>import math
+
+def widerstandsmoment(d):
+    return math.pi * d ** 3 / 16
+
+def tau(T, d):
+    return T * 1000 / widerstandsmoment(d)
+
+spannung = tau(98.8, 30)
+print(f"{spannung:.1f} MPa")</code></pre>
+    <ul>
+      <li><code class="k-i">tau</code> ruft <code class="k-i">widerstandsmoment</code> auf. Beim Aufruf von <code class="k-i">tau</code> liegt ein Frame auf dem <abbr class="k-begriff" data-erklaerung="Der Aufrufstapel merkt sich, welche Funktion gerade läuft und von wem sie aufgerufen wurde.">Aufrufstapel</abbr>, beim Aufruf von <code class="k-i">widerstandsmoment</code> ein zweiter darauf. Mit „Schritt für Schritt“ siehst du den Stapel wachsen und schrumpfen.</li>
+      <li>So baust du große Programme aus kleinen Bausteinen: Jede Funktion hat eine Aufgabe, die übergeordnete verknüpft sie. Das Hauptprogramm erzählt dann die Geschichte in wenigen Zeilen.</li>
+      <li>Jede Funktion prüfst du <strong>einzeln</strong> mit einem Wert, den du von Hand nachrechnen kannst: <code class="k-i">widerstandsmoment(30)</code> muss 5301.4 sein, <code class="k-i">tau(98.8, 30)</code> muss 18.6 sein. Erst dann vertraust du dem Zusammenspiel.</li>
+    </ul>
+  </article>
+</div>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-vorgemacht" data-title="Vorgerechnetes Beispiel: Wellen-Rechner aus Bausteinen" data-part="A" data-stars="" data-min="10" data-extra="" aria-labelledby="h-a-vorgemacht" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-vorgemacht" tabindex="-1">Vorgerechnetes Beispiel: Wellen-Rechner aus Bausteinen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Aufgabe: Ein Motor mit 15 kW treibt bei 1450 1/min eine Getriebewelle an. Welches <abbr class="k-begriff" data-erklaerung="Das Torsionsmoment ist das Drehmoment, das eine Welle verdrillt. Es folgt aus der Leistung und der Drehzahl: T = P / ω.">Torsionsmoment</abbr> liegt an, und hält die Welle bei 20, 25 und 30 mm Durchmesser eine Torsionsspannung von 40 MPa aus? Statt eines langen Skripts schreibst du vier kleine <abbr class="k-begriff" data-erklaerung="Eine Funktion ist ein benannter Baustein: Du gibst ihr Werte, sie rechnet und gibt ein Ergebnis zurück, wie ein Bauteil mit Datenblatt.">Funktion</abbr> und ein kurzes <abbr class="k-begriff" data-erklaerung="Das Hauptprogramm sind die Zeilen ohne Einrückung, die Python von oben nach unten ausführt.">Hauptprogramm</abbr>. Lies den Code Zeile für Zeile, führe ihn aus und folge dem Aufrufstapel mit „Schritt für Schritt“.</p>
+      <figure class="k-video">
+          <video controls preload="metadata" poster="../assets/video/v07-beispiel-poster.png" aria-label="Vorgerechnet: Wellen-Rechner aus vier Funktionen Schritt für Schritt (ca. 3 Min)">
+            <source src="../assets/video/v07-beispiel.mp4" type="video/mp4">
+            <track kind="subtitles" srclang="de" label="Deutsch" src="../assets/video/v07-beispiel.vtt" default>
+            Dein Browser kann dieses Video nicht abspielen.
+          </video>
+          <div class="k-video__missing" hidden>Video folgt. Bis dahin: Lies den Code unten Zeile für Zeile und probiere ihn aus.</div>
+          <figcaption>Vorgerechnet: Wellen-Rechner aus vier Funktionen Schritt für Schritt (ca. 3 Min). Untertitel sind eingeschaltet (Deutsch).</figcaption>
+        </figure>
+      <div class="a-task" data-a="run" data-id="w-vorgemacht" data-count="0" data-mode="programm" data-timeout="5000">
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V07" aria-label="Python-Code: Wellen-Rechner aus Bausteinen"># Wellen-Rechner aus Bausteinen: Torsionsspannung einer Getriebewelle
+# (vereinfachte Lehr-Rechnung, nur Torsion, keine Normauslegung)
+# (V07: def, Parameter, return, Default-Werte, Docstring, lokale Variablen)
+
+import math
+
+
+def torsionsmoment(P, n):
+    """Torsionsmoment in N·m aus Leistung P in kW und Drehzahl n in 1/min."""
+    omega = 2 * math.pi * n / 60      # Winkelgeschwindigkeit in 1/s
+    return P * 1000 / omega           # kW -&gt; W, dann T = P / omega
+
+
+def widerstandsmoment(d):
+    """Polares Widerstandsmoment in mm³ für eine Vollwelle mit Durchmesser d in mm."""
+    return math.pi * d ** 3 / 16
+
+
+def tau(T, d):
+    """Torsionsspannung in N/mm² (= MPa) aus Moment T in N·m und Durchmesser d in mm."""
+    return T * 1000 / widerstandsmoment(d)    # N·m -&gt; N·mm
+
+
+def pruefe(tau_vorh, tau_zul=40.0):
+    """Gibt 'ok' oder 'zu hoch' zurück. tau_zul in MPa, Standard 40 MPa."""
+    if tau_vorh &lt;= tau_zul:
+        return "ok"
+    else:
+        return "zu hoch"
+
+
+T = torsionsmoment(15.0, 1450)        # Motor: 15 kW bei 1450 1/min
+print(f"Torsionsmoment: {T:.1f} N·m")
+
+for d in range(20, 35, 5):          # 20, 25, 30 mm
+    t = tau(T, d)
+    print(f"d = {d} mm: tau = {t:.1f} MPa -&gt; {pruefe(t)}")
+
+print("Mit tau_zul = 25 MPa:", pruefe(tau(T, 25), tau_zul=25.0))</textarea></div>
+      </div>
+      <ol class="a-explain">
+        <li><strong>Zeilen 8 bis 11, torsionsmoment:</strong> Die erste Funktion hat zwei Parameter, <code class="k-i">P</code> in kW und <code class="k-i">n</code> in 1/min. Der Docstring in Zeile 9 nennt die Einheiten. <code class="k-i">omega</code> ist die Winkelgeschwindigkeit in 1/s und eine <strong>lokale Variable</strong>: Außerhalb der Funktion gibt es sie nicht. Die Zeile mit <code class="k-i">return</code> rechnet <code class="k-i">P * 1000 / omega</code>: Das <code class="k-i">* 1000</code> macht aus kW Watt (genau der Faktor, der in KI-Code gern fehlt).</li>
+        <li><strong>Zeilen 14 bis 16, widerstandsmoment:</strong> Ein Parameter, eine Zeile. Das polare Widerstandsmoment einer Vollwelle ist π · d³ / 16 in mm³. Weil die Funktion nur das tut, lässt sie sich mit einem Wert prüfen: <code class="k-i">widerstandsmoment(30)</code> ergibt 5301.4.</li>
+        <li><strong>Zeilen 19 bis 21, tau:</strong> Die dritte Funktion <strong>ruft die zweite auf</strong>. <code class="k-i">T * 1000</code> rechnet N·m in N·mm um, dann geteilt durch das Widerstandsmoment: N/mm², also MPa. Beim Aufruf liegen zwei Frames auf dem Aufrufstapel (probiere „Schritt für Schritt“).</li>
+        <li><strong>Zeilen 24 bis 29, pruefe:</strong> Die vierte Funktion hat einen <strong>Default-Wert</strong>: <code class="k-i">tau_zul=40.0</code>. Beide Zweige der Verzweigung enden mit <code class="k-i">return</code>: Jeder Weg liefert ein Ergebnis, sonst käme <code class="k-i">None</code> heraus. Die Funktion gibt nichts aus, sie bewertet nur.</li>
+        <li><strong>Zeilen 32 und 33, Hauptprogramm:</strong> <code class="k-i">T = torsionsmoment(15.0, 1450)</code> ruft die erste Funktion mit den Motordaten auf: 98.8 N·m. Rechne zur Probe von Hand: 15 000 W / (2π · 1450 / 60) = 98.8 N·m. Die Ausgabe passiert hier, nicht in der Funktion.</li>
+        <li><strong>Zeilen 35 bis 37, die Schleife:</strong> <code class="k-i">range(20, 35, 5)</code> liefert 20, 25 und 30 (V06). Für jeden Durchmesser rechnet <code class="k-i">tau(T, d)</code> die Spannung, <code class="k-i">pruefe(t)</code> bewertet sie. Ergebnis: 20 mm ist mit 62.9 MPa zu hoch, 25 mm (32.2 MPa) und 30 mm (18.6 MPa) sind ok. Plausibel: Mehr Durchmesser, weniger Spannung.</li>
+        <li><strong>Zeile 39, Aufruf mit Namen:</strong> <code class="k-i">pruefe(tau(T, 25), tau_zul=25.0)</code> überschreibt den Default-Wert nur für diesen Aufruf. Aus „ok“ wird „zu hoch“: Dieselbe Funktion, anderer Grenzwert.</li>
+        <li><strong>Selbsterklärung:</strong> Entferne in Zeile 11 das <code class="k-i">* 1000</code> und führe aus. Was erwartest du? (Das Moment fällt auf 0.1 N·m, alle Spannungen werden winzig, und alles meldet „ok“. Das Programm läuft fehlerfrei und liefert falsche Ergebnisse.) Dann ändere in Zeile 27 <code class="k-i">return</code> in <code class="k-i">print</code>: Welche Fehlermeldung kommt, und warum?</li>
+      </ol>
+
+    </section>
+
+    <section class="l-task" id="a-ablauf" data-title="Ablauf verfolgen" data-part="A" data-stars="" data-min="7" data-extra="" aria-labelledby="h-a-ablauf" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-ablauf" tabindex="-1">Ablauf verfolgen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Bevor du Funktionen schreibst, musst du sie lesen können. Führe das Programm im Kopf aus, <strong>Zeile für Zeile, so wie Python es tut</strong>. Die Zeilen mit <code class="k-i">def</code> übergehst du: Sie legen die Funktion nur an. Bei einem Aufruf springst du in die Funktion, rechnest dort und kehrst zur Aufrufzeile zurück. In der Tabelle stehen die Variablen des Hauptprogramms <em>und</em> die der Funktion (ihr Frame). Die Zeile mit dem Aufruf kommt zweimal vor: beim Hineinspringen und beim Zuweisen des Rückgabewerts.</p>
+      <div class="a-task" data-a="trace" data-id="w-trace">
+        <script type="application/json">{"code":["def verdopple(x):","    y = 2 * x","    return y","a = 5","b = verdopple(a)","print(a, b)"],
+"vars":["a","b","x","y"],
+"steps":[
+{"line":4,"set":{"a":"5"},"hint":"Die Zeilen 1 bis 3 legen die Funktion nur an, der Rumpf läuft noch nicht. Das Programm beginnt bei Zeile 4: a bekommt den Wert 5."},
+{"line":5,"set":{"x":"5"},"hint":"Aufruf verdopple(a): Python legt einen neuen Frame an. Das Argument ist der Wert von a, also 5, und landet im Parameter x. Der Frame hat sein eigenes x."},
+{"line":2,"set":{"y":"10"},"hint":"Im Rumpf: y = 2 * x = 2 * 5 = 10. y ist lokal und gehört nur zu diesem Frame."},
+{"line":5,"set":{"b":"10"},"hint":"return y (Zeile 3) gibt 10 zurück und beendet die Funktion. Der Frame mit x und y wird abgebaut. Zurück in Zeile 5 wird der Rückgabewert der Variablen b zugewiesen."},
+{"line":6,"out":"5 10","hint":"print gibt a und b aus. a ist unverändert 5: Die Funktion hat nur ihre eigene Kopie x verändert."}
+]}</script>
+      </div>
+      <p class="l-task__intro">Zweiter Ablauf: <strong>Eine Funktion ruft eine andere auf.</strong> Jetzt liegen zwei Frames gleichzeitig auf dem Aufrufstapel. Die Parameter heißen <code class="k-i">u</code> (in <code class="k-i">f</code>) und <code class="k-i">v</code> (in <code class="k-i">g</code>), damit die Spalten eindeutig bleiben.</p>
+      <div class="a-task" data-a="trace" data-id="w-trace2">
+        <script type="application/json">{"code":["def f(u):","    return u + 1","def g(v):","    y = f(v) * 2","    return y","r = g(3)","print(r)"],
+"vars":["r","v","u","y"],
+"steps":[
+{"line":6,"set":{"v":"3"},"hint":"Die Zeilen 1 bis 5 legen die beiden Funktionen nur an. Zeile 6 ruft g(3) auf: neuer Frame, das Argument 3 landet im Parameter v."},
+{"line":4,"set":{"u":"3"},"hint":"In g steht f(v): Ein zweiter Frame kommt obendrauf. Das Argument ist der Wert von v, also 3, und landet im Parameter u von f. Jetzt liegen drei Frames auf dem Stapel (Hauptprogramm, g, f)."},
+{"line":4,"set":{"y":"8"},"hint":"f gibt u + 1 = 4 zurück (Zeile 2), sein Frame verschwindet. Zurück in Zeile 4: y = 4 * 2 = 8."},
+{"line":6,"set":{"r":"8"},"hint":"return y (Zeile 5) gibt 8 zurück, auch der Frame von g wird abgebaut. In Zeile 6 bekommt r den Wert 8."},
+{"line":7,"out":"8","hint":"print gibt 8 aus. Die Variablen u, v und y existieren nach den Aufrufen nicht mehr."}
+]}</script>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-zeilen" data-title="Zeilen ordnen" data-part="A" data-stars="" data-min="8" data-extra="" aria-labelledby="h-a-zeilen" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-zeilen" tabindex="-1">Zeilen ordnen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Alle Zeilen sind da, aber durcheinander. Bring sie in die richtige Reihenfolge <strong>und rücke die Zeilen im Rumpf der Funktion ein</strong> (Pfeil nach rechts oder Mausziehen). Manche Zeilen sind <strong>Ablenker</strong>: Sie gehören nicht ins Programm.</p>
+      <div class="a-task" data-a="parsons" data-id="w-parsons1">
+        <div class="a-task__head"><h3 class="a-task__title">Volumen eines Zylinders als Funktion</h3></div>
+        <p>Die Funktion <code class="k-i">volumen_zylinder(d, h)</code> berechnet das Volumen in mm³ (Durchmesser und Höhe in mm). Danach wird sie mit d = 30 und h = 100 aufgerufen und das Ergebnis ausgegeben. Überlege: Wo steht <code class="k-i">import</code>, was ist Rumpf, was Hauptprogramm?</p>
+        <script type="application/json">{"solution": ["import math", "def volumen_zylinder(d, h):", "    return math.pi * d ** 2 / 4 * h", "v = volumen_zylinder(30, 100)", "print(f'{v:.1f} mm³')"], "distractors": ["    print(math.pi * d ** 2 / 4 * h)", "v = volumen_zylinder(30)"], "alts": [["def volumen_zylinder(d, h):", "    return math.pi * d ** 2 / 4 * h", "import math", "v = volumen_zylinder(30, 100)", "print(f'{v:.1f} mm³')"]]}</script>
+      </div>
+
+      <div class="a-task" data-a="parsons" data-id="w-parsons2">
+        <div class="a-task__head"><h3 class="a-task__title">Bewerten mit Default-Wert</h3></div>
+        <p>Die Funktion <code class="k-i">pruefe</code> gibt <code class="k-i">'ok'</code> zurück, wenn die vorhandene Spannung nicht über der zulässigen liegt, sonst <code class="k-i">'zu hoch'</code>. Die zulässige Spannung hat den Default-Wert 40.0. Zum Schluss wird <code class="k-i">pruefe(18.6)</code> ausgegeben. Beide Zweige brauchen ein <code class="k-i">return</code>.</p>
+        <script type="application/json">{"solution": ["def pruefe(tau_vorh, tau_zul=40.0):", "    if tau_vorh <= tau_zul:", "        return 'ok'", "    else:", "        return 'zu hoch'", "print(pruefe(18.6))"], "distractors": ["        print('ok')", "def pruefe(tau_vorh, tau_zul):"], "alts": []}</script>
+      </div>
+
+
+    </section>
+
+    <section class="l-task" id="a-luecken" data-title="Lücken füllen" data-part="A" data-stars="" data-min="5" data-extra="" aria-labelledby="h-a-luecken" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-luecken" tabindex="-1">Lücken füllen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Jetzt tippst du Teile selbst. Ergänze die vier Lücken, sodass die Funktion <code class="k-i">torsionsmoment</code> angelegt, mit <code class="k-i">return</code> ein Ergebnis zurückgibt und aufgerufen wird. Geprüft wird nicht nur dein Wortlaut, sondern ob das Programm das richtige Moment (98.8 N·m) ausgibt.</p>
+      <div class="a-task" data-a="gap" data-id="w-luecken" data-mode="programm">
+        <pre class="a-gap__src">import math
+
+@@def@@ torsionsmoment(P, n):
+    omega = 2 * math.pi * n / 60
+    @@return@@ P * @@1000@@ / omega
+
+T = @@torsionsmoment@@(15.0, 1450)
+print(f"Moment: {T:.1f} N·m")</pre>
+        <script type="text/x-python" data-role="tests">
+def test_beispiel():
+    """Ausgabe: 'Moment: 98.8 N·m'"""
+    z = zeilen(run_program([]))
+    assert "Moment: 98.8 N·m" in z, "Erwartet wird die Zeile 'Moment: 98.8 N·m'. Dein Programm gibt aus: %r" % z
+        </script>
+        <ol class="a-hints">
+          <li>Lücke 1: Welches Wort legt eine Funktion an?</li>
+          <li>Lücke 2: Das Ergebnis soll zum Aufrufer zurück, nicht nur angezeigt werden. Welches Wort?</li>
+          <li>Lücke 3: Leistung in kW, die Formel braucht Watt. Welcher Faktor macht aus kW Watt?</li>
+          <li>Lücke 4: Wie heißt die Funktion, die oben angelegt wurde? Sie wird hier aufgerufen.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-tabelle" data-title="Erste eigene Aufgabe: Schnittgeschwindigkeit als Funktion" data-part="A" data-stars="1" data-min="10" data-extra="" aria-labelledby="h-a-tabelle" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-tabelle" tabindex="-1">Erste eigene Aufgabe: Schnittgeschwindigkeit als Funktion</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Jetzt schreibst du die Funktion selbst, mit <abbr class="k-begriff" data-erklaerung="Ein Test ist ein kleines Prüfprogramm. Es ruft deine Funktion mit festen Werten auf und vergleicht den Rückgabewert mit dem erwarteten Ergebnis.">Tests</abbr> als Sicherheitsnetz. Die Tests rufen deine Funktion mit mehreren Werten auf, auch mit solchen, die du nicht siehst. Die Schnittgeschwindigkeit kennst du aus V03 und V06: Dort stand die Formel in einer Schleife, jetzt wird sie ein wiederverwendbarer Baustein.</p>
+      <div class="a-task" data-a="code" data-id="w-tabelle" data-mode="funktion">
+        <div class="a-task__text">
+          <p>Schreibe die Funktion <code class="k-i">schnittgeschwindigkeit(d, n)</code>. Sie bekommt den Durchmesser <em>d</em> in mm und die Drehzahl <em>n</em> in 1/min und <strong>gibt</strong> die Schnittgeschwindigkeit v<sub>c</sub> = π · d · n / 1000 in m/min <strong>zurück</strong> (kein <code class="k-i">print</code> in der Funktion). Probiere sie danach mit einer eigenen <code class="k-i">print</code>-Zeile im Hauptprogramm aus.</p>
+          <div class="a-spec"><strong>Erwartet (Rückgabewerte)</strong><pre data-run="no">schnittgeschwindigkeit(60, 1000)  -&gt;  188.4956 (m/min)
+schnittgeschwindigkeit(25, 2000)  -&gt;  157.0796 (m/min)</pre></div>
+          <p class="k-small k-muted">Von Hand nachgerechnet: d = 60 mm, n = 1000 1/min ergibt π · 60 · 1000 / 1000 = 188.50 m/min.</p>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V07" aria-label="Python-Code: Schnittgeschwindigkeit als Funktion"># Schnittgeschwindigkeit als Funktion
+import math
+
+# Schreibe die Funktion schnittgeschwindigkeit(d, n):
+#   d = Durchmesser in mm, n = Drehzahl in 1/min
+#   Rückgabe: vc in m/min  (vc = pi * d * n / 1000)
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _fn():
+    assert "schnittgeschwindigkeit" in globals(), "Die Funktion schnittgeschwindigkeit ist nicht definiert. Beginne mit: def schnittgeschwindigkeit(d, n):"
+    return globals()["schnittgeschwindigkeit"]
+
+def _pruefe(d, n):
+    f = _fn()
+    erg = f(d, n)
+    assert erg is not None, "Die Funktion gibt None zurück. Steht im Rumpf ein return? (Ein print gibt den Wert nur aus, zurückgegeben wird dabei nichts.)"
+    soll = math.pi * d * n / 1000
+    assert abs(erg - soll) < 0.01, "schnittgeschwindigkeit(%s, %s) soll %.2f liefern, deine Funktion liefert %r" % (d, n, soll, erg)
+
+def test_beispiel():
+    """schnittgeschwindigkeit(60, 1000) = 188.50 m/min"""
+    _pruefe(60, 1000)
+
+def test_zweites():
+    """Anderer Wert: schnittgeschwindigkeit(25, 2000) = 157.08 m/min"""
+    _pruefe(25, 2000)
+
+def test_kommazahl():
+    """Kommazahl: schnittgeschwindigkeit(12.5, 800) = 31.42 m/min"""
+    _pruefe(12.5, 800)
+
+def test_namen():
+    """Aufruf mit Namen: schnittgeschwindigkeit(n=500, d=40) = 62.83 m/min"""
+    f = _fn()
+    erg = f(n=500, d=40)
+    assert erg is not None and abs(erg - math.pi * 40 * 500 / 1000) < 0.01, "Mit Namen aufgerufen (n=500, d=40) soll 62.83 herauskommen. Heißen deine Parameter genau d und n?"
+        </script>
+        <script type="text/x-python" data-role="solution">
+import math
+
+def schnittgeschwindigkeit(d, n):
+    """Schnittgeschwindigkeit in m/min aus Durchmesser d in mm und Drehzahl n in 1/min."""
+    return math.pi * d * n / 1000
+
+print(schnittgeschwindigkeit(60, 1000))
+        </script>
+        <ol class="a-hints">
+          <li>Der Kopf: <code>def schnittgeschwindigkeit(d, n):</code> mit Doppelpunkt (Syntax-Karte 1).</li>
+          <li>Im Rumpf, eingerückt: <code>return math.pi * d * n / 1000</code>. Das <code>import math</code> steht schon oben.</li>
+          <li>Steht dein Ergebnis im Test als <code>None</code>? Dann hast du <code>print</code> statt <code>return</code> geschrieben (Syntax-Karte 3).</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-papluecke" data-title="PAP mit Unterprogramm ergänzen: Code gegeben" data-part="A" data-stars="" data-min="10" data-extra="" aria-labelledby="h-a-papluecke" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-papluecke" tabindex="-1">PAP mit Unterprogramm ergänzen: Code gegeben</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Die Funktionen sind geschrieben, jetzt zeichnest du sie. In dieser Aufgabe ist der Python-Code gegeben und im <abbr class="k-begriff" data-erklaerung="Ein Programmablaufplan (PAP) zeichnet den Ablauf eines Programms als genormte Symbole, die durch Pfeile verbunden sind (V05).">Programmablaufplan</abbr> fehlen Symbole. Wähle für jede Lücke die <strong>Symbolart</strong> und trage den <strong>Text</strong> ein, so wie er im Symbol stehen würde. Neu ist das <abbr class="k-begriff" data-erklaerung="Ein Unterprogramm ist ein eigener Baustein mit eigenem Ablauf, den das Hauptprogramm aufruft. In Python ist das eine Funktion.">Unterprogramm</abbr>: ein <strong>Rechteck mit zwei senkrechten Doppellinien</strong> für den Aufruf einer eigenen Funktion. Der Plan eines Unterprogramms trägt im Start seinen Namen, und jedes <code class="k-i">return</code> endet in einer Grenzstelle (Oval) mit der Rückgabe. Im PAP darfst du „oder“ und „≤“ schreiben, du darfst aber auch <code class="k-i">or</code> und <code class="k-i">&lt;=</code> tippen.</p>
+      <div class="a-task" data-a="pap" data-id="w-papluecke1">
+        <div class="a-task__head"><h3 class="a-task__title">Das Hauptprogramm des Wellen-Rechners</h3></div>
+        <p>Das Hauptprogramm liest die Daten ein und ruft drei Funktionen auf. Vier Symbole fehlen im PAP: Wähle bei den Aufrufen das Unterprogramm-Symbol.</p>
+        <div data-paplueck="welle"></div>
+      </div>
+      <div class="a-task" data-a="pap" data-id="w-papluecke2">
+        <div class="a-task__head"><h3 class="a-task__title">Der Plan von pruefe</h3></div>
+        <p>Jetzt der Plan <em>in</em> einem Unterprogramm: Der Start trägt den Funktionsnamen, jeder <code class="k-i">return</code> ist ein Ende mit Rückgabe. Drei Symbole fehlen.</p>
+        <div data-paplueck="pruefe"></div>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-review" data-seen="manual" data-title="Code-Review: KI-Code prüfen" data-part="A" data-stars="" data-min="20" data-extra="" aria-labelledby="h-a-review" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-review" tabindex="-1">Code-Review: KI-Code prüfen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Eine KI hat Code geliefert. Er sieht sauber aus, hat Funktionen, Namen und läuft los. Würdest du ihn freigeben? Klick die Zeilen an, die du für fehlerhaft hältst, dann lass auflösen.</p>
+      <figure class="k-figure">
+        <picture>
+          <source srcset="../assets/img/ki-spiegel.webp" type="image/webp">
+          <img src="../assets/img/ki-spiegel.png" alt="Illustration: KI-Code wird von einem Ingenieur geprüft" width="1600" height="901" loading="lazy" onerror="this.closest('figure').hidden=true">
+        </picture>
+      </figure>
+
+      <div class="k-mirror">
+        <h3>Szenario: Wellen-Rechner aus Funktionen</h3>
+        <p class="k-prompt__who">Prompt eines Studierenden</p>
+        <blockquote class="k-prompt">Schreib mir Python-Funktionen für eine Getriebewelle: Torsionsmoment aus Leistung in kW und Drehzahl in 1/min, Torsionsspannung aus Moment in N·m und Durchmesser in mm, und eine Bewertung gegen 40 MPa mit „ok“, „kritisch“ (bis 20 % darüber) und „zu hoch“. Dann eine Ausgabe für d = 20, 25 und 30 mm bei 15 kW und 1450 1/min.</blockquote>
+        <p class="k-prompt__who">KI-Antwort (Python)</p>
+          <ol class="k-codelines" aria-label="Code der KI, Zeilen anklickbar">
+            <li><button type="button" class="k-line">import math</button></li>
+            <li><button type="button" class="k-line"> </button></li>
+            <li><button type="button" class="k-line">def torsionsmoment(P, n):</button></li>
+            <li><button type="button" class="k-line">    omega = 2 * math.pi * n / 60</button></li>
+            <li><button type="button" class="k-line" data-bug="a">    return P / omega</button></li>
+            <li><button type="button" class="k-line"> </button></li>
+            <li><button type="button" class="k-line">def widerstandsmoment(d):</button></li>
+            <li><button type="button" class="k-line">    return math.pi * d ** 3 / 16</button></li>
+            <li><button type="button" class="k-line"> </button></li>
+            <li><button type="button" class="k-line">def tau(T, d):</button></li>
+            <li><button type="button" class="k-line">    return T * 1000 / widerstandsmoment(d)</button></li>
+            <li><button type="button" class="k-line"> </button></li>
+            <li><button type="button" class="k-line">def bewerte(tau_vorh, tau_zul=40.0):</button></li>
+            <li><button type="button" class="k-line">    if tau_vorh &lt;= tau_zul:</button></li>
+            <li><button type="button" class="k-line">        return &quot;ok&quot;</button></li>
+            <li><button type="button" class="k-line" data-bug="c">    elif tau_vorh &lt;= 1.2 * tau_zul:</button></li>
+            <li><button type="button" class="k-line">        return &quot;kritisch&quot;</button></li>
+            <li><button type="button" class="k-line"> </button></li>
+            <li><button type="button" class="k-line">T = torsionsmoment(15.0, 1450)</button></li>
+            <li><button type="button" class="k-line">for d in range(20, 35, 5):</button></li>
+            <li><button type="button" class="k-line" data-bug="b">    t = tau(d, T)</button></li>
+            <li><button type="button" class="k-line">    print(f&quot;d = {d} mm: tau = {t:.1f} MPa -&gt; {bewerte(t)}&quot;)</button></li>
+          </ol>
+        <p class="k-small k-muted">Tipp: Es sind drei Fehler eingebaut. Nicht jede Zeile ist falsch. Überschlag: Welche Spannung erwartest du bei 30 mm? Etwa 19 MPa. Was würdest du bei 1e8 MPa denken?</p>
+
+        <div class="k-mirror__task">
+          <p><strong>Würdest du das freigeben?</strong> Markiere die fehlerhaften Zeilen, dann lass auflösen.</p>
+          <button type="button" class="k-btn" data-mirror-check>Auflösen</button>
+          <p class="k-verdict" role="status" hidden></p>
+
+          <div data-mirror-after hidden>
+            <h3>Die drei Fehler</h3>
+            <h4>Fehler 1: kW statt W, es fehlt * 1000 (Zeile 5)</h4>
+            <p><code class="k-i">return P / omega</code> teilt die Leistung in <em>Kilowatt</em> durch die Winkelgeschwindigkeit. Das Moment in N·m braucht aber Watt: <code class="k-i">P * 1000 / omega</code>. Ohne den Faktor ist das Moment um den Faktor 1000 zu klein (0.1 statt 98.8 N·m). Das Programm läuft fehlerfrei: Einheitenfehler findest du nur durch Überschlag und mit dem Docstring (Einheiten hineinschreiben!).</p>
+            <h4>Fehler 2: Argumente vertauscht (Zeile 21)</h4>
+            <p><code class="k-i">tau(d, T)</code> übergibt den Durchmesser als Moment und das Moment als Durchmesser, denn die Funktion erwartet <code class="k-i">tau(T, d)</code>. Beides sind Zahlen, Python meldet nichts. Heraus kommen absurde Spannungen. Gegenmittel: Aufruf mit Namen (<code class="k-i">tau(T=T, d=d)</code>) und den Überschlag im Kopf. Hier hängen die zwei Fehler zusammen: Weil beide Werte falsch sind, sehen die Ergebnisse noch unsinniger aus, und trotzdem läuft alles durch.</p>
+            <h4>Fehler 3: Zweig ohne return (Zeilen 16 und 17)</h4>
+            <p>Die Funktion <code class="k-i">bewerte</code> kennt „ok“ und „kritisch“, aber für alles darüber (also „zu hoch“) gibt es keinen Zweig. Python erreicht das Ende der Funktion ohne <code class="k-i">return</code> und gibt still <code class="k-i">None</code> zurück: In der Ausgabe steht „-&gt; None“. Lösung: ein <code class="k-i">else:</code> mit <code class="k-i">return "zu hoch"</code>. Jeder Weg durch die Funktion braucht ein <code class="k-i">return</code>.</p>
+
+            <h3>Die KI-Version zum Ausprobieren</h3>
+            <p class="k-small k-muted">Alle drei Ausgaben sind falsch: Spannungen im Bereich von 1e8 MPa und „None“ statt eines Urteils.</p>
+<pre><code>import math
+
+def torsionsmoment(P, n):
+    omega = 2 * math.pi * n / 60
+    return P / omega
+
+def widerstandsmoment(d):
+    return math.pi * d ** 3 / 16
+
+def tau(T, d):
+    return T * 1000 / widerstandsmoment(d)
+
+def bewerte(tau_vorh, tau_zul=40.0):
+    if tau_vorh &lt;= tau_zul:
+        return "ok"
+    elif tau_vorh &lt;= 1.2 * tau_zul:
+        return "kritisch"
+
+T = torsionsmoment(15.0, 1450)
+for d in range(20, 35, 5):
+    t = tau(d, T)
+    print(f"d = {d} mm: tau = {t:.1f} MPa -&gt; {bewerte(t)}")</code></pre>
+
+            <h3>Korrigierte Version</h3>
+            <p class="k-small k-muted">Mit den drei Korrekturen stimmt die Ausgabe mit dem vorgerechneten Beispiel überein.</p>
+<pre><code>import math
+
+def torsionsmoment(P, n):
+    omega = 2 * math.pi * n / 60
+    return P * 1000 / omega
+
+def widerstandsmoment(d):
+    return math.pi * d ** 3 / 16
+
+def tau(T, d):
+    return T * 1000 / widerstandsmoment(d)
+
+def bewerte(tau_vorh, tau_zul=40.0):
+    if tau_vorh &lt;= tau_zul:
+        return "ok"
+    elif tau_vorh &lt;= 1.2 * tau_zul:
+        return "kritisch"
+    else:
+        return "zu hoch"
+
+T = torsionsmoment(15.0, 1450)
+for d in range(20, 35, 5):
+    t = tau(T, d)
+    print(f"d = {d} mm: tau = {t:.1f} MPa -&gt; {bewerte(t)}")</code></pre>
+            <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke</strong><p>Bei KI-Funktionen prüfst du vier Dinge: <strong>Einheiten</strong> (Docstring lesen, Faktoren nachrechnen), <strong>Reihenfolge der Argumente</strong> (am besten mit Namen aufrufen), <strong>jeder Weg ein return</strong> und <strong>einzeln testen</strong> mit einem Wert, den du von Hand nachgerechnet hast. Wer nur prüft, ob das Programm läuft, übersieht alle drei Fehler.</p></div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-fehler" data-title="Typische Fehlermeldungen" data-part="A" data-stars="" data-min="5" data-extra="" aria-labelledby="h-a-fehler" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-fehler" tabindex="-1">Typische Fehlermeldungen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Fehlermeldungen sind keine Strafe, sondern ein Wegweiser. Bei Funktionen gibt es allerdings auch Fehler, die <em>keine</em> Meldung auslösen. Diese sechs siehst du garantiert. Jedes Beispiel lässt sich ausführen: Schau dir die echte Meldung an und lies den <abbr class="k-begriff" data-erklaerung="Ein Traceback ist die Fehlermeldung von Python: Sie zeigt von oben nach unten, welche Zeilen zum Fehler geführt haben. Die letzte Zeile nennt die Art des Fehlers.">Traceback</abbr> von unten nach oben. Die letzte Zeile nennt die Art des Fehlers.</p>
+      <div class="a-errors">
+        <div class="a-error">
+          <h3><code class="k-i">TypeError</code>: ein Argument fehlt</h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="5000">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V07" aria-label="Fehlerbeispiel: TypeError: ein Argument fehlt">def tau(T, d):
+    return T * 1000 / (3.1416 * d ** 3 / 16)
+
+print(tau(98.8))</textarea></div>
+          </div>
+          <p>Meldung: <code class="k-i">TypeError: tau() missing 1 required positional argument: 'd'</code>. Die Funktion verlangt zwei Argumente, beim Aufruf steht nur eins. Die Meldung nennt den fehlenden Parameter. Gib beide an, oder gib dem Parameter einen Default-Wert (<code>d=30</code>), wenn es einen sinnvollen Standard gibt. Zu <em>viele</em> Argumente melden: <code>takes 2 positional arguments but 3 were given</code>.</p>
+        </div>
+        <div class="a-error">
+          <h3><code class="k-i">TypeError</code>: <code class="k-i">None</code> in der Rechnung</h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="5000">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V07" aria-label="Fehlerbeispiel: TypeError: None in der Rechnung">def verdopple(x):
+    print(2 * x)
+
+y = verdopple(5)
+print(y + 1)</textarea></div>
+          </div>
+          <p>Meldung: <code class="k-i">TypeError: unsupported operand type(s) for +: 'NoneType' and 'int'</code>. <code>NoneType</code> ist der Typ von <code>None</code>. Die Funktion hat <code>print</code> statt <code>return</code> benutzt, <code>y</code> ist deshalb <code>None</code>, und mit <code>None</code> kann man nicht rechnen. Hinweis auf das Muster: Die Ausgabe zeigt zuerst 10 (von <code>print</code>), dann kommt der Fehler. Ersetze <code>print(2 * x)</code> durch <code>return 2 * x</code>.</p>
+        </div>
+        <div class="a-error">
+          <h3><code class="k-i">NameError</code>: lokale Variable von außen</h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="5000">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V07" aria-label="Fehlerbeispiel: NameError: lokale Variable von außen">def quadrat(x):
+    ergebnis = x * x
+    return ergebnis
+
+print(quadrat(7))
+print(ergebnis)</textarea></div>
+          </div>
+          <p>Meldung: <code class="k-i">NameError: name 'ergebnis' is not defined</code>. <code>ergebnis</code> ist lokal in <code>quadrat</code> und nach dem Aufruf weg. Nimm den Rückgabewert: <code>e = quadrat(7)</code>, dann <code>print(e)</code>. Dieselbe Meldung kommt, wenn du eine Funktion <em>aufrufst, bevor sie definiert ist</em>, oder den Funktionsnamen falsch schreibst.</p>
+        </div>
+        <div class="a-error">
+          <h3><code class="k-i">SyntaxError</code>: Doppelpunkt vergessen</h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="5000">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V07" aria-label="Fehlerbeispiel: SyntaxError: Doppelpunkt vergessen">def tau(T, d)
+    return T * 1000 / (3.1416 * d ** 3 / 16)
+
+print(tau(98.8, 30))</textarea></div>
+          </div>
+          <p>Meldung: <code class="k-i">SyntaxError: expected ':'</code> in Zeile 1. Der Kopf der Funktion endet mit einem Doppelpunkt. Ebenso bei <code>if</code>, <code>else</code> und <code>while</code>. Fehlt die Einrückung des Rumpfs, meldet Python einen <code>IndentationError: expected an indented block after function definition</code>.</p>
+        </div>
+        <div class="a-error">
+          <h3>Keine Ausgabe: Funktion nie aufgerufen</h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="5000">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V07" aria-label="Fehlerbeispiel: Keine Ausgabe: Funktion nie aufgerufen">def tau(T, d):
+    return T * 1000 / (3.1416 * d ** 3 / 16)
+
+tau(98.8, 30)</textarea></div>
+          </div>
+          <p>Das Programm läuft ohne Fehler und zeigt <strong>nichts</strong> an. Der Aufruf <code>tau(98.8, 30)</code> in der letzten Zeile berechnet 18.6, aber das Ergebnis wird nirgends hingeschrieben, in einem Programm (Datei) wird es verworfen. Gib den Wert mit <code>print(tau(98.8, 30))</code> aus oder speichere ihn mit einer Zuweisung (<code>t = tau(98.8, 30)</code>), dann siehst du ihn. Der Editor merkt es sich und sagt: „keine Ausgabe – hast du print() benutzt?“</p>
+        </div>
+        <div class="a-error">
+          <h3>Falsches Ergebnis ohne Meldung: Argumente vertauscht</h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="5000">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V07" aria-label="Fehlerbeispiel: Falsches Ergebnis ohne Meldung: Argumente vertauscht">def tau(T, d):
+    return T * 1000 / (3.1416 * d ** 3 / 16)
+
+print(f"{tau(30, 98.8):.2f} MPa")</textarea></div>
+          </div>
+          <p>Ausgabe: <code class="k-i">0.16 MPa</code>. Python meldet nichts, denn <code>30</code> und <code>98.8</code> sind beide Zahlen. Gemeint war <code>tau(98.8, 30)</code> mit 18.6 MPa. Solche Fehler fängst du nur mit einer <strong>Gegenprobe von Hand</strong> (Überschlag!) und mit dem Aufruf per Namen: <code>tau(T=98.8, d=30)</code>.</p>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-1" data-title="Masse eines Zylinders mit Default-Wert" data-part="B" data-stars="1" data-min="5" data-extra="" aria-labelledby="h-t-1" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-1" tabindex="-1">Masse eines Zylinders mit Default-Wert</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Programmieren lernst du mit den Fingern, nicht mit den Augen. Das Training ist ein fester Teil jedes Termins und gehört zum Selbststudium. Du musst nicht alles an einem Stück machen, aber alles bis zum nächsten Termin. Die Aufgaben laufen komplett im Browser und werden automatisch geprüft.</p>
+      <div class="hinweis hinweis--achtung"><strong class="hinweis__title">Achtung</strong><p>Phase 1: <abbr class="k-begriff" data-erklaerung="GitHub Copilot ist ein KI-Assistent, der in der Entwicklungsumgebung Programmcode vorschlägt oder erklärt.">Copilot</abbr> nur als Erklärer. Erlaubt: „Erkläre mir diese Fehlermeldung“, „Was macht Zeile 3?“, „Warum liefert meine Funktion None?“. Nicht erlaubt: „Schreib mir die Funktion“. Du tippst den Code selbst, denn nur dann lernst du, ihn zu prüfen. Ab V10 darf die KI Code erzeugen, und du prüfst.</p></div>
+      <div class="a-task" data-a="code" data-id="tr-1" data-mode="funktion">
+        <div class="a-task__text">
+          <p>Schreibe die Funktion <code class="k-i">masse_zylinder(d, l, rho=7.85)</code>. Sie bekommt Durchmesser <em>d</em> und Länge <em>l</em> in mm und die Dichte <em>rho</em> in kg/dm³ (Standard: Stahl mit 7.85) und <strong>gibt</strong> die Masse in kg <strong>zurück</strong>. Das Volumen in dm³ ist π · d² / 4 · l / 1 000 000.</p>
+          <div class="a-spec"><strong>Erwartet (Rückgabewerte)</strong><pre data-run="no">masse_zylinder(30, 200)        -&gt;  1.1098 (kg, Stahl)
+masse_zylinder(30, 200, 2.7)   -&gt;  0.3817 (kg, Aluminium)</pre></div>
+          <p class="k-small k-muted">Gegenprobe von Hand: d = 30 mm, l = 200 mm: V = 0.1414 dm³, mal 7.85 ergibt 1.11 kg.</p>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V07" aria-label="Python-Code Aufgabe 1"># Masse eines Stahlzylinders
+import math
+
+# Schreibe masse_zylinder(d, l, rho=7.85):
+#   d = Durchmesser in mm, l = Länge in mm, rho = Dichte in kg/dm³ (Standard: Stahl, 7.85)
+#   Rückgabe: Masse in kg.   Volumen in dm³ = pi * d**2 / 4 * l / 1e6
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _fn():
+    assert "masse_zylinder" in globals(), "Die Funktion masse_zylinder ist nicht definiert."
+    return globals()["masse_zylinder"]
+
+def _soll(d, l, rho=7.85):
+    return math.pi * d ** 2 / 4 * l / 1e6 * rho
+
+def test_beispiel():
+    """masse_zylinder(30, 200) = 1.11 kg (Stahl)"""
+    erg = _fn()(30, 200)
+    assert erg is not None, "Die Funktion gibt None zurück: return statt print?"
+    assert abs(erg - _soll(30, 200)) < 0.001, "masse_zylinder(30, 200) soll %.3f liefern, deine Funktion liefert %r" % (_soll(30, 200), erg)
+
+def test_default():
+    """Ohne rho gilt 7.85, mit rho=2.7 (Aluminium) kommt weniger heraus"""
+    f = _fn()
+    erg = f(30, 200, 2.7)
+    assert erg is not None and abs(erg - _soll(30, 200, 2.7)) < 0.001, "masse_zylinder(30, 200, 2.7) soll %.3f liefern, deine Funktion liefert %r" % (_soll(30, 200, 2.7), erg)
+
+def test_namen():
+    """Aufruf mit Namen: masse_zylinder(l=100, d=50, rho=2.7)"""
+    erg = _fn()(l=100, d=50, rho=2.7)
+    assert erg is not None and abs(erg - _soll(50, 100, 2.7)) < 0.001, "Mit Namen soll %.3f herauskommen, deine Funktion liefert %r" % (_soll(50, 100, 2.7), erg)
+
+def test_ausgabe():
+    """Die Funktion gibt selbst nichts aus (nur return)"""
+    erg = _fn()(10, 10)
+    assert isinstance(erg, float), "Die Funktion soll eine Kommazahl zurückgeben, nicht %r" % (erg,)
+        </script>
+        <script type="text/x-python" data-role="solution">
+import math
+
+def masse_zylinder(d, l, rho=7.85):
+    volumen = math.pi * d ** 2 / 4 * l / 1e6
+    return volumen * rho
+
+print(masse_zylinder(30, 200))
+        </script>
+        <ol class="a-hints">
+          <li>Der Kopf: <code>def masse_zylinder(d, l, rho=7.85):</code>. Der Default-Wert steht hinten (Syntax-Karte 4).</li>
+          <li>Erst das Volumen in einer lokalen Variablen: <code>volumen = math.pi * d ** 2 / 4 * l / 1e6</code>.</li>
+          <li>Dann <code>return volumen * rho</code>. Kein <code>print</code> in der Funktion.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-2" data-title="Fehler finden: print statt return" data-part="B" data-stars="1" data-min="5" data-extra="" aria-labelledby="h-t-2" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-2" tabindex="-1">Fehler finden: print statt return</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="code" data-id="tr-2" data-mode="funktion" data-timeout="6000">
+        <div class="a-task__text">
+          <p>Dieses Programm bricht mit einer Fehlermeldung ab. Die Funktion <code class="k-i">kreisflaeche</code> soll die Kreisfläche in mm² <strong>zurückgeben</strong>, <code class="k-i">druckkraft</code> rechnet damit die Kolbenkraft in N. Finde den Fehler und behebe ihn. Es ist genau <em>eine</em> Zeile.</p>
+          <div class="a-spec"><strong>Erwartet (nach der Reparatur)</strong><pre data-run="no">1178.0971...</pre></div>
+          <p class="k-small k-muted">Tipp: Lies die Meldung von unten nach oben. Was ist <code class="k-i">NoneType</code>? Drück auf „Schritt für Schritt“ und achte darauf, was <code class="k-i">kreisflaeche(d)</code> zurückgibt.</p>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V07" aria-label="Python-Code Aufgabe 2">import math
+
+def kreisflaeche(d):
+    """Kreisfläche in mm² aus Durchmesser d in mm."""
+    print(math.pi * d ** 2 / 4)
+
+def druckkraft(p, d):
+    """Kolbenkraft in N aus Druck p in bar und Kolbendurchmesser d in mm (1 bar = 0.1 N/mm²)."""
+    return p * 0.1 * kreisflaeche(d)
+
+print(druckkraft(6, 50))
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def test_flaeche():
+    """kreisflaeche(10) = 78.54 mm²"""
+    erg = kreisflaeche(10)
+    assert erg is not None, "kreisflaeche gibt None zurück: print zeigt den Wert nur an. Was muss stattdessen im Rumpf stehen?"
+    assert abs(erg - 78.5398) < 0.01, "kreisflaeche(10) soll 78.54 liefern, bei dir kommt %r heraus" % (erg,)
+
+def test_kraft():
+    """druckkraft(6, 50) = 1178.1 N"""
+    erg = druckkraft(6, 50)
+    assert erg is not None and abs(erg - 1178.097) < 0.01, "druckkraft(6, 50) soll 1178.1 liefern, bei dir kommt %r heraus" % (erg,)
+
+def test_kraft2():
+    """druckkraft(10, 20) = 314.16 N"""
+    erg = druckkraft(10, 20)
+    assert erg is not None and abs(erg - 314.159) < 0.01, "druckkraft(10, 20) soll 314.16 liefern, bei dir kommt %r heraus" % (erg,)
+        </script>
+        <script type="text/x-python" data-role="solution">
+import math
+
+def kreisflaeche(d):
+    """Kreisfläche in mm² aus Durchmesser d in mm."""
+    return math.pi * d ** 2 / 4
+
+def druckkraft(p, d):
+    """Kolbenkraft in N aus Druck p in bar und Kolbendurchmesser d in mm (1 bar = 0.1 N/mm²)."""
+    return p * 0.1 * kreisflaeche(d)
+
+print(druckkraft(6, 50))
+        </script>
+        <ol class="a-hints">
+          <li>Die Meldung <code>unsupported operand type(s) for *: 'float' and 'NoneType'</code> sagt: In der Rechnung steht <code>None</code>. Welche Funktion liefert es?</li>
+          <li><code>kreisflaeche</code> benutzt <code>print</code>: Der Wert wird angezeigt, aber nicht zurückgegeben.</li>
+          <li>Ersetze in <code>kreisflaeche</code> das <code>print(...)</code> durch <code>return ...</code>.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-3" data-title="Toleranzprüfung als Funktion" data-part="B" data-stars="2" data-min="8" data-extra="Wiederholung V03/V04" aria-labelledby="h-t-3" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-3" tabindex="-1">Toleranzprüfung als Funktion</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="code" data-id="tr-3" data-mode="funktion">
+        <div class="a-task__text">
+          <p>Wiederholung V03 bis V04: Ein Maß liegt in Toleranz, wenn es höchstens <em>tol</em> vom Nennmaß abweicht. Schreibe die Funktion <code class="k-i">toleranz_ok(mass, nenn, tol)</code>, die <code class="k-i">True</code> oder <code class="k-i">False</code> zurückgibt (Wahrheitswert, kein Text). Nutze <code class="k-i">abs</code> für die Abweichung und ein <code class="k-i">if</code> oder direkt den Vergleich.</p>
+          <div class="a-spec"><strong>Erwartet (Rückgabewerte)</strong><pre data-run="no">toleranz_ok(25.03, 25.0, 0.05)  -&gt;  True
+toleranz_ok(25.1, 25.0, 0.05)   -&gt;  False
+toleranz_ok(24.9, 25.0, 0.05)   -&gt;  False</pre></div>
+          <p class="k-small k-muted">Beide Richtungen zählen: 25.03 und 24.96 sind bei Nennmaß 25 und tol 0.05 in Toleranz, 25.1 und 24.9 nicht.</p>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V07" aria-label="Python-Code Aufgabe 3"># Wiederholung V03/V04: Vergleiche, bool und if
+
+# Schreibe toleranz_ok(mass, nenn, tol):
+#   True, wenn mass höchstens tol vom Nennmaß abweicht, sonst False.
+#   Beispiel: toleranz_ok(25.03, 25.0, 0.05) ist True, toleranz_ok(25.1, 25.0, 0.05) ist False.
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _fn():
+    assert "toleranz_ok" in globals(), "Die Funktion toleranz_ok ist nicht definiert."
+    return globals()["toleranz_ok"]
+
+def _ist(mass, nenn, tol, soll):
+    erg = _fn()(mass, nenn, tol)
+    assert erg is not None, "toleranz_ok gibt None zurück. Jeder Zweig braucht ein return."
+    assert erg == soll and isinstance(erg, bool), "toleranz_ok(%s, %s, %s) soll %s liefern, deine Funktion liefert %r" % (mass, nenn, tol, soll, erg)
+
+def test_gut():
+    """25.03 liegt in der Toleranz: True"""
+    _ist(25.03, 25.0, 0.05, True)
+
+def test_zu_gross():
+    """25.1 ist zu groß: False"""
+    _ist(25.1, 25.0, 0.05, False)
+
+def test_zu_klein():
+    """24.9 ist zu klein: False (auch die untere Grenze zählt)"""
+    _ist(24.9, 25.0, 0.05, False)
+
+def test_unten_gut():
+    """24.96 liegt knapp unter dem Nennmaß, aber in Toleranz: True"""
+    _ist(24.96, 25.0, 0.05, True)
+
+def test_andere_werte():
+    """Anderes Nennmaß: 40.2 bei 40 mit tol 0.1 ist False, 40.05 ist True"""
+    _ist(40.2, 40.0, 0.1, False)
+    _ist(40.05, 40.0, 0.1, True)
+        </script>
+        <script type="text/x-python" data-role="solution">
+def toleranz_ok(mass, nenn, tol):
+    if abs(mass - nenn) <= tol:
+        return True
+    else:
+        return False
+
+print(toleranz_ok(25.03, 25.0, 0.05))
+        </script>
+        <ol class="a-hints">
+          <li>Die Abweichung ist <code>abs(mass - nenn)</code>: Der Betrag deckt beide Richtungen ab (V03).</li>
+          <li>Mit <code>if abs(mass - nenn) &lt;= tol:</code> dann <code>return True</code>, sonst <code>return False</code>. Jeder Weg braucht ein <code>return</code>.</li>
+          <li>Kürzer: <code>return abs(mass - nenn) &lt;= tol</code>. Der Vergleich ergibt schon einen Wahrheitswert (V04).</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-4" data-title="Aufräumen: kopierte Formel in eine Funktion" data-part="B" data-stars="2" data-min="8" data-extra="" aria-labelledby="h-t-4" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-4" tabindex="-1">Aufräumen: kopierte Formel in eine Funktion</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="code" data-id="tr-4" data-mode="funktion">
+        <div class="a-task__text">
+          <p>Dieses Programm rechnet aus Schnittgeschwindigkeit und Durchmesser die Drehzahl <em>n</em> = v<sub>c</sub> · 1000 / (π · d), und zwar <strong>dreimal kopiert</strong> (DRY!). Schreibe die Funktion <code class="k-i">drehzahl(vc, d)</code> und ersetze die drei Rechenzeilen durch Aufrufe. Das nennt man <abbr class="k-begriff" data-erklaerung="Refactoring heißt, ein laufendes Programm umzubauen, ohne dass es etwas anderes tut, zum Beispiel kopierten Code in Funktionen verpacken.">Refactoring</abbr>. Die Ausgabe darf sich <strong>nicht</strong> ändern.</p>
+          <div class="a-spec"><strong>Ausgabe unverändert</strong><pre data-run="no">d = 30.0 mm, vc = 120.0 m/min: n = 1273.2 1/min
+d = 50.0 mm, vc = 120.0 m/min: n = 763.9 1/min
+d = 80.0 mm, vc = 200.0 m/min: n = 795.8 1/min</pre></div>
+          <p class="k-small k-muted">Der Test prüft, ob <code class="k-i">drehzahl(120, 30)</code> 1273.2 liefert und ob die Ausgabe von vorher bleibt. Die Formel soll am Ende nur noch <em>einmal</em> im Programm stehen.</p>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V07" aria-label="Python-Code Aufgabe 4"># Drehzahl aus Schnittgeschwindigkeit: die Rechnung steht dreimal da (kopiert).
+# Aufräumen: Schreibe die Funktion drehzahl(vc, d) und ersetze die drei Kopien durch Aufrufe.
+# Die Ausgabe darf sich nicht ändern.
+import math
+
+vc1 = 120.0
+d1 = 30.0
+n1 = vc1 * 1000 / (math.pi * d1)
+print(f"d = {d1} mm, vc = {vc1} m/min: n = {n1:.1f} 1/min")
+
+vc2 = 120.0
+d2 = 50.0
+n2 = vc2 * 1000 / (math.pi * d2)
+print(f"d = {d2} mm, vc = {vc2} m/min: n = {n2:.1f} 1/min")
+
+vc3 = 200.0
+d3 = 80.0
+n3 = vc3 * 1000 / (math.pi * d3)
+print(f"d = {d3} mm, vc = {vc3} m/min: n = {n3:.1f} 1/min")
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+SOLL = ["d = 30.0 mm, vc = 120.0 m/min: n = 1273.2 1/min",
+        "d = 50.0 mm, vc = 120.0 m/min: n = 763.9 1/min",
+        "d = 80.0 mm, vc = 200.0 m/min: n = 795.8 1/min"]
+
+def test_funktion():
+    """Die Funktion drehzahl(vc, d) ist definiert und rechnet: drehzahl(120, 30) = 1273.2"""
+    assert "drehzahl" in globals(), "Die Funktion drehzahl ist nicht definiert. Beginne mit: def drehzahl(vc, d):"
+    erg = drehzahl(120, 30)
+    assert erg is not None, "drehzahl gibt None zurück: return statt print?"
+    assert abs(erg - 1273.24) < 0.01, "drehzahl(120, 30) soll 1273.24 liefern, deine Funktion liefert %r" % (erg,)
+
+def test_namen():
+    """Aufruf mit Namen: drehzahl(d=50, vc=120) = 763.9"""
+    assert "drehzahl" in globals(), "Die Funktion drehzahl ist nicht definiert."
+    erg = drehzahl(d=50, vc=120)
+    assert erg is not None and abs(erg - 763.94) < 0.01, "drehzahl(d=50, vc=120) soll 763.94 liefern, deine Funktion liefert %r" % (erg,)
+
+def test_ausgabe():
+    """Die Ausgabe des Programms bleibt unverändert (drei Zeilen)"""
+    z = zeilen(AUSGABE)
+    assert z == SOLL, "Die Ausgabe soll unverändert bleiben:\n%s\nDein Programm gibt aus: %r" % ("\n".join(SOLL), z)
+        </script>
+        <script type="text/x-python" data-role="solution">
+import math
+
+def drehzahl(vc, d):
+    """Drehzahl in 1/min aus Schnittgeschwindigkeit in m/min und Durchmesser in mm."""
+    return vc * 1000 / (math.pi * d)
+
+vc1 = 120.0
+d1 = 30.0
+n1 = drehzahl(vc1, d1)
+print(f"d = {d1} mm, vc = {vc1} m/min: n = {n1:.1f} 1/min")
+
+vc2 = 120.0
+d2 = 50.0
+n2 = drehzahl(vc2, d2)
+print(f"d = {d2} mm, vc = {vc2} m/min: n = {n2:.1f} 1/min")
+
+vc3 = 200.0
+d3 = 80.0
+n3 = drehzahl(vc3, d3)
+print(f"d = {d3} mm, vc = {vc3} m/min: n = {n3:.1f} 1/min")
+        </script>
+        <ol class="a-hints">
+          <li>Der Kopf: <code>def drehzahl(vc, d):</code>, im Rumpf <code>return vc * 1000 / (math.pi * d)</code>. Die Funktion steht <em>vor</em> den Aufrufen.</li>
+          <li>Ersetze <code>n1 = vc1 * 1000 / (math.pi * d1)</code> durch <code>n1 = drehzahl(vc1, d1)</code>, ebenso bei 2 und 3.</li>
+          <li>Die <code>print</code>-Zeilen bleiben unverändert: Die Funktion gibt nichts aus, das Hauptprogramm schon.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-5" data-title="PAP und Funktion: zeichnen, dann umsetzen" data-part="B" data-stars="3" data-min="12" data-extra="" aria-labelledby="h-t-5" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-5" tabindex="-1">PAP und Funktion: zeichnen, dann umsetzen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="pap" data-id="tr-5a">
+        <div class="a-task__head"><h3 class="a-task__title">a) PAP zeichnen: bewerte_vc</h3></div>
+        <div class="a-task__text">
+          <p>In der Klausur zeichnest du PAPs von Hand. Nimm <strong>Papier und Stift</strong> und zeichne den Plan dieses Unterprogramms. Erst danach klappst du die Musterlösung auf und vergleichst. Dein Plan muss nicht gleich aussehen, aber dieselben Pfade, Fragen und Rückgaben haben.</p>
+<pre><code>def bewerte_vc(vc):
+    if vc &lt; 80:
+        return "zu langsam"
+    elif vc &gt; 250:
+        return "zu schnell"
+    else:
+        return "ok"
+
+print(bewerte_vc(60))
+print(bewerte_vc(150))
+print(bewerte_vc(300))</code></pre>
+          <ol class="a-explain">
+            <li>Der Start trägt den Funktionsnamen mit Parameter: <code class="k-i">bewerte_vc(vc)</code>.</li>
+            <li>Jedes <code class="k-i">elif</code> ist eine neue Raute im Weg „nein“ der vorigen. Das letzte <code class="k-i">else</code> ist der letzte Weg „nein“ ohne eigene Raute.</li>
+            <li>Jedes <code class="k-i">return</code> ist ein <strong>eigenes Ende</strong> mit der Rückgabe („Rückgabe: ...“), nicht ein gemeinsames.</li>
+          </ol>
+          <div data-explorable="papzeichnen" data-pap="bewerte"></div>
+        </div>
+      </div>
+      <div class="a-task" data-a="code" data-id="tr-5b" data-mode="programm" data-inputs="60|1000">
+        <div class="a-task__text">
+          <p><strong>b) PAP gegeben → Code.</strong> Setze diesen Plan um. Die Funktion <code class="k-i">schnittgeschwindigkeit</code> steht schon im Editor (du hast sie in Station 6 geschrieben). Schreibe das Hauptprogramm darunter: Das Unterprogramm-Symbol ist ein <strong>Aufruf</strong>.</p>
+          <div data-explorable="pap" data-pap="vc"></div>
+          <div class="a-spec"><strong>Ausgabe (Beispiel d = 60, n = 1000)</strong><pre data-run="no">vc = 188.50 m/min</pre></div>
+          <p class="k-small k-muted">Eingabe d = 60, n = 1000: <code class="k-i">vc = 188.50 m/min</code>. Eingabe d = 100, n = 1000: <code class="k-i">zu schnell</code>.</p>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V07" aria-label="Python-Code Aufgabe 5b">import math
+
+def schnittgeschwindigkeit(d, n):
+    """vc in m/min aus Durchmesser d in mm und Drehzahl n in 1/min."""
+    return math.pi * d * n / 1000
+
+# Hauptprogramm nach dem PAP:
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _pruefe(d, n):
+    vc = math.pi * d * n / 1000
+    soll = "Ausgabe: zu schnell" if vc > 250 else "vc = %.2f m/min" % vc
+    z = zeilen(run_program([str(d), str(n)]))
+    assert soll in z or soll.replace("Ausgabe: ", "") in z, "Bei d = %s und n = %s wird die Zeile %r erwartet. Dein Programm gibt aus: %r" % (d, n, soll.replace("Ausgabe: ", ""), z)
+
+def test_beispiel():
+    """d = 60, n = 1000: vc = 188.50 m/min"""
+    _pruefe(60, 1000)
+
+def test_schnell():
+    """d = 100, n = 1000: vc = 314.16, also 'zu schnell'"""
+    _pruefe(100, 1000)
+
+def test_grenze_nah():
+    """d = 80, n = 1000: vc = 251.33, knapp zu schnell"""
+    _pruefe(80, 1000)
+
+def test_langsam():
+    """d = 20, n = 500: vc = 31.42 m/min"""
+    _pruefe(20, 500)
+        </script>
+        <script type="text/x-python" data-role="solution">
+import math
+
+def schnittgeschwindigkeit(d, n):
+    """vc in m/min aus Durchmesser d in mm und Drehzahl n in 1/min."""
+    return math.pi * d * n / 1000
+
+d = float(input("d in mm: "))
+n = float(input("n in 1/min: "))
+vc = schnittgeschwindigkeit(d, n)
+if vc > 250:
+    print("zu schnell")
+else:
+    print(f"vc = {vc:.2f} m/min")
+        </script>
+        <ol class="a-hints">
+          <li>Zwei Eingaben mit <code>float(input(...))</code>, dann <code>vc = schnittgeschwindigkeit(d, n)</code>: Das Rechteck mit Doppellinien ist ein Aufruf.</li>
+          <li>Die Raute <code>vc &gt; 250?</code> ist ein <code>if</code>. Bei „ja“ <code>print("zu schnell")</code>, bei „nein“ gibst du <code>vc</code> mit zwei Nachkommastellen aus.</li>
+          <li>Format: <code>print(f"vc = {vc:.2f} m/min")</code> (V03).</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-6" data-title="Funktion ruft Funktionen: Wellenprüfung" data-part="B" data-stars="3" data-min="10" data-extra="" aria-labelledby="h-t-6" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-6" tabindex="-1">Funktion ruft Funktionen: Wellenprüfung</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="code" data-id="tr-6" data-mode="funktion">
+        <div class="a-task__text">
+          <p>Im Editor stehen die vier Funktionen des Vorgerechneten Beispiels. Schreibe die fünfte: <code class="k-i">wellenpruefung(P, n, d, tau_zul=40.0)</code>. Sie ruft <code class="k-i">torsionsmoment</code>, <code class="k-i">tau</code> und <code class="k-i">pruefe</code> auf und <strong>gibt einen Text zurück</strong>: die Spannung mit einer Nachkommastelle, ein Doppelpunkt, das Urteil. Der Grenzwert <code class="k-i">tau_zul</code> wird an <code class="k-i">pruefe</code> weitergereicht.</p>
+          <div class="a-spec"><strong>Erwartet (Rückgabewerte)</strong><pre data-run="no">wellenpruefung(15, 1450, 30)                  -&gt;  "18.6 MPa: ok"
+wellenpruefung(15, 1450, 20)                  -&gt;  "62.9 MPa: zu hoch"
+wellenpruefung(15, 1450, 25, tau_zul=25.0)    -&gt;  "32.2 MPa: zu hoch"</pre></div>
+          <p class="k-small k-muted">Schreibe die Spannung in eine <em>lokale Variable</em>, du brauchst sie zweimal (im Text und für die Prüfung).</p>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V07" aria-label="Python-Code Aufgabe 6">import math
+
+def torsionsmoment(P, n):
+    """Moment in N·m aus Leistung P in kW und Drehzahl n in 1/min."""
+    return P * 1000 / (2 * math.pi * n / 60)
+
+def widerstandsmoment(d):
+    """Polares Widerstandsmoment in mm³ einer Vollwelle."""
+    return math.pi * d ** 3 / 16
+
+def tau(T, d):
+    """Torsionsspannung in MPa aus Moment in N·m und Durchmesser in mm."""
+    return T * 1000 / widerstandsmoment(d)
+
+def pruefe(tau_vorh, tau_zul=40.0):
+    """Gibt 'ok' oder 'zu hoch' zurück."""
+    if tau_vorh &lt;= tau_zul:
+        return "ok"
+    else:
+        return "zu hoch"
+
+# Schreibe wellenpruefung(P, n, d, tau_zul=40.0). Sie benutzt die vier Funktionen oben
+# und gibt EINEN Text zurück, zum Beispiel "18.6 MPa: ok" (Spannung mit einer Nachkommastelle).
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _fn():
+    assert "wellenpruefung" in globals(), "Die Funktion wellenpruefung ist nicht definiert."
+    return globals()["wellenpruefung"]
+
+def _ist(args, kw, soll):
+    erg = _fn()(*args, **kw)
+    assert erg is not None, "wellenpruefung gibt None zurück: Fehlt das return, oder steht ein print?"
+    assert erg == soll, "wellenpruefung%s soll %r liefern, deine Funktion liefert %r" % (args if not kw else (args, kw), soll, erg)
+
+def test_ok():
+    """wellenpruefung(15, 1450, 30) = '18.6 MPa: ok'"""
+    _ist((15, 1450, 30), {}, "18.6 MPa: ok")
+
+def test_zu_hoch():
+    """wellenpruefung(15, 1450, 20) = '62.9 MPa: zu hoch'"""
+    _ist((15, 1450, 20), {}, "62.9 MPa: zu hoch")
+
+def test_grenzwert():
+    """Eigener Grenzwert: wellenpruefung(15, 1450, 25, tau_zul=25.0) = '32.2 MPa: zu hoch'"""
+    _ist((15, 1450, 25), {"tau_zul": 25.0}, "32.2 MPa: zu hoch")
+
+def test_default():
+    """Ohne tau_zul gilt 40: wellenpruefung(22, 1450, 40) = '11.5 MPa: ok'"""
+    _ist((22, 1450, 40), {}, "11.5 MPa: ok")
+        </script>
+        <script type="text/x-python" data-role="solution">
+import math
+
+def torsionsmoment(P, n):
+    """Moment in N·m aus Leistung P in kW und Drehzahl n in 1/min."""
+    return P * 1000 / (2 * math.pi * n / 60)
+
+def widerstandsmoment(d):
+    """Polares Widerstandsmoment in mm³ einer Vollwelle."""
+    return math.pi * d ** 3 / 16
+
+def tau(T, d):
+    """Torsionsspannung in MPa aus Moment in N·m und Durchmesser in mm."""
+    return T * 1000 / widerstandsmoment(d)
+
+def pruefe(tau_vorh, tau_zul=40.0):
+    """Gibt 'ok' oder 'zu hoch' zurück."""
+    if tau_vorh <= tau_zul:
+        return "ok"
+    else:
+        return "zu hoch"
+
+def wellenpruefung(P, n, d, tau_zul=40.0):
+    t = tau(torsionsmoment(P, n), d)
+    return f"{t:.1f} MPa: {pruefe(t, tau_zul)}"
+
+print(wellenpruefung(15, 1450, 30))
+        </script>
+        <ol class="a-hints">
+          <li>Der Kopf: <code>def wellenpruefung(P, n, d, tau_zul=40.0):</code>.</li>
+          <li>Erst <code>t = tau(torsionsmoment(P, n), d)</code>: ein Aufruf, der das Ergebnis eines anderen als Argument nimmt.</li>
+          <li>Dann <code>return f"{t:.1f} MPa: {pruefe(t, tau_zul)}"</code>. Den Grenzwert gibst du an <code>pruefe</code> weiter.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-7" data-title="Knobelaufgabe: Newton als Funktion" data-part="B" data-stars="4" data-min="Zusatz" data-extra="Wiederholung V06" aria-labelledby="h-t-7" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-7" tabindex="-1">Knobelaufgabe: Newton als Funktion</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="code" data-id="tr-7" data-mode="funktion">
+        <div class="a-task__text">
+          <p>Wiederholung V06 mit Funktionen: Das Newton-Verfahren für die Quadratwurzel wird ein Baustein. Schreibe <code class="k-i">wurzel(a, tol=1e-9)</code> mit einer <code class="k-i">while</code>-Schleife: Starte mit <code class="k-i">x = a</code> und wiederhole <code class="k-i">x = (x + a / x) / 2</code>, <strong>solange</strong> <code class="k-i">abs(x * x - a)</code> größer als <em>tol</em> ist. Die Funktion <strong>gibt die Wurzel zurück</strong> (nicht die Zahl der Schritte, und kein <code class="k-i">print</code>).</p>
+          <div class="a-spec"><strong>Erwartet (Rückgabewerte)</strong><pre data-run="no">wurzel(2)     -&gt;  1.414213562373...
+wurzel(9)     -&gt;  3.0000000000...
+wurzel(0.25)  -&gt;  0.5000000000...</pre></div>
+          <p class="k-small k-muted">Das <code class="k-i">return</code> steht <em>nach</em> der Schleife (nicht eingerückt): Steht es im Rumpf, endet die Funktion nach dem ersten Durchlauf.</p>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V07" aria-label="Python-Code Aufgabe 7"># Wiederholung V06: Newton-Verfahren als Funktion
+
+# Schreibe wurzel(a, tol=1e-9): Quadratwurzel von a (a &gt; 0) nach Newton.
+#   Start x = a, wiederhole x = (x + a / x) / 2, solange abs(x * x - a) größer als tol ist.
+#   Rückgabe: die Wurzel (nicht die Schrittzahl).
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _fn():
+    assert "wurzel" in globals(), "Die Funktion wurzel ist nicht definiert."
+    return globals()["wurzel"]
+
+def test_zwei():
+    """wurzel(2) = 1.41421356"""
+    erg = _fn()(2)
+    assert erg is not None, "wurzel gibt None zurück: return nach der Schleife (nicht in der Schleife!)?"
+    assert abs(erg - 2 ** 0.5) < 1e-8, "wurzel(2) soll 1.41421356 liefern, deine Funktion liefert %r" % (erg,)
+
+def test_neun():
+    """wurzel(9) = 3.0"""
+    erg = _fn()(9)
+    assert erg is not None and abs(erg - 3.0) < 1e-8, "wurzel(9) soll 3.0 liefern, deine Funktion liefert %r" % (erg,)
+
+def test_klein():
+    """Eine Zahl kleiner als 1: wurzel(0.25) = 0.5"""
+    erg = _fn()(0.25)
+    assert erg is not None and abs(erg - 0.5) < 1e-8, "wurzel(0.25) soll 0.5 liefern, deine Funktion liefert %r" % (erg,)
+
+def test_toleranz():
+    """Mit grober Toleranz: Der Rest |x*x - a| ist höchstens tol (wurzel(10, 0.01))"""
+    erg = _fn()(10, 0.01)
+    assert erg is not None and abs(erg * erg - 10) <= 0.01, "Mit tol = 0.01 muss abs(x * x - 10) höchstens 0.01 sein. Deine Funktion liefert %r" % (erg,)
+
+def test_toleranz_namen():
+    """tol beim Namen: wurzel(2, tol=1e-12)"""
+    erg = _fn()(2, tol=1e-12)
+    assert erg is not None and abs(erg * erg - 2) <= 1e-12, "Mit tol = 1e-12 muss abs(x * x - 2) höchstens 1e-12 sein. Deine Funktion liefert %r" % (erg,)
+        </script>
+        <script type="text/x-python" data-role="solution">
+def wurzel(a, tol=1e-9):
+    x = a
+    while abs(x * x - a) > tol:
+        x = (x + a / x) / 2
+    return x
+
+print(wurzel(2))
+        </script>
+        <ol class="a-hints">
+          <li>Beginne mit dem Kopf <code>def wurzel(a, tol=1e-9):</code> und <code>x = a</code> im Rumpf.</li>
+          <li>Die Schleife: <code>while abs(x * x - a) &gt; tol:</code>, darin <code>x = (x + a / x) / 2</code>.</li>
+          <li><code>return x</code> steht nach der Schleife auf der Ebene von <code>while</code>, nicht im Rumpf der Schleife.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-8" data-title="Klausur-Modus: Wellenprüfung als Programm" data-part="B" data-stars="4" data-min="15" data-extra="8 Punkte" aria-labelledby="h-t-8" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-8" tabindex="-1">Klausur-Modus: Wellenprüfung als Programm</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="klausur" data-id="tr-8" data-mode="programm" data-inputs="15|1450|30" data-minutes="15">
+        <div class="a-task__text">
+          <p><strong>So wie in der Klausur:</strong> Schreibe den Code ohne Ausführen und ohne <abbr class="k-begriff" data-erklaerung="Die Auto-Vervollständigung schlägt dir beim Tippen passende Wörter vor. In der Klausur gibt es sie nicht.">Auto-Vervollständigung</abbr>, wenn möglich zuerst auf Papier. Erst danach „Abgeben und prüfen“, dann bewertest du dich selbst.</p>
+          <p>Schreibe ein Programm für die Welle eines Motors. Es liest <em>P</em> in kW, <em>n</em> in 1/min und <em>d</em> in mm (Kommazahlen, in dieser Reihenfolge) ein. Das Programm besteht aus <strong>drei Funktionen</strong> und einem Hauptprogramm: eine Funktion für das Torsionsmoment in N·m, eine für die Torsionsspannung in MPa (aus Moment und Durchmesser, Moment in N·m umrechnen) und eine für das Urteil „ok“ oder „zu hoch“ mit dem Default-Wert 40.0 MPa für die zulässige Spannung. Das Hauptprogramm gibt drei Zeilen aus, Zahlen mit einer Nachkommastelle:</p>
+          <div class="a-spec"><strong>Ausgabe genau so (P = 15, n = 1450, d = 30)</strong><pre data-run="no">Moment: 98.8 N·m
+Spannung: 18.6 MPa
+Urteil: ok</pre></div>
+          <p class="k-small k-muted">Formeln: ω = 2π · n / 60, T = P · 1000 / ω, W<sub>p</sub> = π · d³ / 16, τ = T · 1000 / W<sub>p</sub>. Funktionen rechnen und geben zurück, das Hauptprogramm gibt aus.</p>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V07" data-assist="off" aria-label=""></textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _soll(P, n, d):
+    T = P * 1000 / (2 * math.pi * n / 60)
+    t = T * 1000 / (math.pi * d ** 3 / 16)
+    return ["Moment: %.1f N·m" % T, "Spannung: %.1f MPa" % t, "Urteil: " + ("ok" if t <= 40.0 else "zu hoch")]
+
+def _pruefe(P, n, d):
+    z = zeilen(run_program([str(P), str(n), str(d)]))
+    for s in _soll(P, n, d):
+        assert s in z, "Bei P = %s, n = %s, d = %s wird die Zeile %r erwartet. Dein Programm gibt aus: %r" % (P, n, d, s, z)
+
+def test_beispiel():
+    """Beispiel P = 15, n = 1450, d = 30: ok"""
+    _pruefe(15, 1450, 30)
+
+def test_zu_hoch():
+    """d = 20 mm: Urteil zu hoch"""
+    _pruefe(15, 1450, 20)
+
+def test_anders():
+    """Anderer Motor: P = 7.5, n = 960, d = 35"""
+    _pruefe(7.5, 960, 35)
+
+def test_grosse_welle():
+    """P = 55, n = 1480, d = 45"""
+    _pruefe(55, 1480, 45)
+        </script>
+        <script type="text/x-python" data-role="solution">
+import math
+
+def moment(P, n):
+    return P * 1000 / (2 * math.pi * n / 60)
+
+def spannung(T, d):
+    return T * 1000 / (math.pi * d ** 3 / 16)
+
+def urteil(tau_vorh, tau_zul=40.0):
+    if tau_vorh <= tau_zul:
+        return "ok"
+    else:
+        return "zu hoch"
+
+P = float(input("Leistung P in kW: "))
+n = float(input("Drehzahl n in 1/min: "))
+d = float(input("Durchmesser d in mm: "))
+T = moment(P, n)
+t = spannung(T, d)
+print(f"Moment: {T:.1f} N·m")
+print(f"Spannung: {t:.1f} MPa")
+print(f"Urteil: {urteil(t)}")
+        </script>
+        <script type="application/json" data-role="scheme">[
+{"p":1,"t":"Funktion für das Moment mit def, zwei Parametern (Leistung, Drehzahl) und return (kein print in der Funktion)"},
+{"p":1,"t":"Funktion für die Spannung mit zwei Parametern (Moment, Durchmesser) und return"},
+{"p":1,"t":"Funktion für das Urteil mit Parameter und Default-Wert tau_zul=40.0"},
+{"p":1,"t":"Das Urteil hat in beiden Zweigen ein return (ok / zu hoch), die Grenze gehört zu „ok“ (<=)"},
+{"p":1,"t":"Einheiten stimmen: Leistung * 1000 (kW zu W), Moment * 1000 (N·m zu N·mm), omega = 2 * math.pi * n / 60"},
+{"p":1,"t":"Hauptprogramm liest P, n und d in dieser Reihenfolge mit input() und wandelt sie mit float() um"},
+{"p":1,"t":"Hauptprogramm ruft die Funktionen auf und speichert das Moment und die Spannung in Variablen (jeder Wert wird nur einmal berechnet)"},
+{"p":1,"t":"Alle drei Zeilen werden mit Text und Einheit ausgegeben: „Moment: ... N·m“, „Spannung: ... MPa“ (je eine Nachkommastelle), „Urteil: ...“"}
+]</script>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-notebook" data-title="Notebook und Deep Dive" data-part="B" data-stars="" data-min="" data-extra="ohne Wertung" aria-labelledby="h-t-notebook" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-notebook" tabindex="-1">Notebook und Deep Dive</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Mehr üben mit Wellen, Schnittgeschwindigkeit, Newton und Toleranzen als Funktionen. Das Notebook nutzt nur Python aus V01 bis V07. Es hat drei Stufen (Aufwärmen, Anwenden, Knobeln), keine Lösungen, dafür Selbsttests.</p>
+      <p><a class="k-btn k-btn--ghost" href="../notebooks/V07-Funktionen.ipynb" download>V07-Funktionen.ipynb herunterladen</a></p>
+      <ol class="k-steps">
+        <li><strong>In Codespaces öffnen:</strong> Im Kurs-Repository auf GitHub „Code“ → „Codespaces“ → „Create codespace“. Die Umgebung (Python 3.12, NumPy, Matplotlib, Jupyter) ist vorbereitet. Dann <code class="k-i">notebooks/V07-Funktionen.ipynb</code> öffnen.</li>
+        <li><strong>Oder lokal:</strong> <code class="k-i">pip install numpy matplotlib jupyter</code>, dann <code class="k-i">jupyter lab</code>.</li>
+        <li>Immer erst die Vorhersage-Zellen ausfüllen, dann ausführen. Die Selbsttests am Ende jeder Aufgabe rufen deine Funktion mit festen Werten auf: Gerade jetzt, wo du weißt, wie Funktionen arbeiten, verstehst du auch die Werkzeug-Zelle ganz oben.</li>
+      </ol>
+      <h3>Danach</h3>
+      <p><a href="v07-funktionen.html#deepdive">Zum Deep Dive</a> (freiwillig): Typ-Hinweise, Docstring und help(), Aufruf vor dem def, Rekursion, Funktionen in der SPS. Oder zurück zur <a href="v07-funktionen.html">Lerneinheit</a>, um etwas nachzulesen.</p>
+
+    </section>
+      <nav class="lab__pager" aria-label="Zwischen Aufgaben wechseln">
+        <a class="k-btn k-btn--ghost" id="lab-prev" href="#a-werkzeugkasten">← Zurück</a>
+        <a class="k-btn k-btn--ghost" id="lab-next" href="#a-vorgemacht">Weiter →</a>
+      </nav>
+    </main>
+
+    <div class="lab__dock" data-library-dock data-state="off"></div>
+  </div>
+
+  <footer class="dhbw-footer k-footer">
+    <div class="dhbw-footer__inner">
+      <span><span class="dhbw-footer__brand">DHBW Stuttgart</span> · Campus Horb</span>
+      <span><a href="../index.html">Zurück zum Lernpfad</a> · V07 Programmierlabor</span>
+    </div>
+  </footer>
+
+  <script src="../assets/js/speicher.js"></script>
+  <script src="../assets/js/icons.js"></script>
+  <script src="../assets/js/editor.js" defer></script>
+  <script src="../assets/js/pap-engine.js"></script>
+  <script src="../assets/js/explorables-v07.js"></script>
+  <script src="../assets/js/kurs.js"></script>
+  <script src="../assets/js/aufgaben.js"></script>
+  <script src="../assets/js/labor.js"></script>
+</body>
+</html>

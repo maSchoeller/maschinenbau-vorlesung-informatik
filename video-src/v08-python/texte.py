@@ -1,0 +1,37 @@
+"""Sprechertext V08 Python (Quelltext mit Markup)."""
+SRC = [
+ ["Eine Liste legst du mit eckigen Klammern an, die Werte stehen durch Kommas getrennt.",
+  "Mit dem Index in eckigen Klammern greifst du auf ein Element zu. Der Index beginnt bei 0.",
+  "`temperaturen[0]` ist das erste Element, `temperaturen[-1]` das letzte.",
+  "`len` liefert die Anzahl der Elemente. Bei fünf Elementen ist der größte Index 4, nicht 5.",
+  "Ein Index außerhalb der Liste ist ein IndexError."],
+ ["Ein Slice schneidet einen Ausschnitt heraus: `temperaturen[1:3]` liefert die Elemente mit Index 1 und 2.",
+  "Der Endwert gehört nicht dazu, genau wie bei `range`.",
+  "Lässt du den Anfang weg, beginnt der Slice vorn, lässt du das Ende weg, geht er bis zum Ende.",
+  "`temperaturen[-2:]` liefert also die letzten zwei Elemente."],
+ ["Mit `append` hängst du hinten einen Wert an. Die Liste wird dabei selbst verändert.",
+  "Typisch ist: Du legst eine leere Liste an und füllst sie in einer Schleife.",
+  "`in` fragt, ob ein Wert enthalten ist. `sum`, `min` und `max` rechnen über die ganze Liste.",
+  "So ist der Mittelwert einfach `sum(liste) / len(liste)`."],
+ ["Über eine Liste läufst du mit `for d in messungen:`. Die Variable `d` nimmt nacheinander jeden Wert an.",
+  "Ein if im Rumpf wählt Werte aus, und `append` sammelt sie in einer zweiten Liste: das Filter-Muster.",
+  "Brauchst du die Position, nimm `for i in range(len(liste))`.",
+  "Achte dann auf den Fehler eins daneben: `range(1, len(liste))` lässt das erste Element weg."],
+ ["Ein Tupel schreibst du mit runden Klammern. Index, Slice und len funktionieren wie bei Listen.",
+  "Aber ein Tupel ist unveränderlich: Eine Zuweisung an ein Element ergibt einen TypeError.",
+  "Nimm es für Werte, die zusammengehören und fest bleiben, etwa die Toleranz oder ein Punkt aus x und y."],
+ ["Ein Dictionary schreibst du mit geschweiften Klammern: Schlüssel, Doppelpunkt, Wert.",
+  "Mit dem Schlüssel in eckigen Klammern liest du einen Wert. Dieselbe Schreibweise ändert einen Eintrag oder fügt einen neuen ein.",
+  "`in` prüft die Schlüssel. Ein unbekannter Schlüssel beim Lesen ist ein KeyError.",
+  "Mit `.items()` läufst du über alle Paare aus Schlüssel und Wert.",
+  "Und noch eine Falle: `b = a` kopiert eine Liste nicht. Eine echte Kopie ist `a[:]`."],
+]
+
+SZENEN = [
+ "Editor mit der Liste temperaturen. Unter der Liste die Kästchenreihe mit den Indizes 0 bis 4 und den negativen Indizes. Marken zeigen auf temperaturen[0] und temperaturen[-1], len wird eingeblendet. Zuletzt ein roter IndexError für Index 5.",
+ "Dieselbe Kästchenreihe. Der Slice temperaturen[1:3] färbt zwei Kästchen blau, ein Klammersymbol zeigt: Ende offen. Danach drei weitere Beispiele nebeneinander: [:2], [3:], [-2:].",
+ "Code-Ausschnitt: werte = [], dreimal werte.append(...), die Kästchenreihe wächst rechts. Danach Zeilen mit in, sum, min, max; die Ergebnisse stehen neben dem Code.",
+ "Code der Schleife mit Filter-Muster; Kästchen leuchten nacheinander, die Verletzer wandern in die Liste ausserhalb. Daneben ein roter Hinweis: range(1, len(liste)) lässt das erste Element weg.",
+ "Code mit toleranz = (12.000, 12.018) und Zugriff über Index. Dann die Zeile toleranz[1] = 12.020 mit rotem TypeError. Daneben ein Punkt (x, y) in einem Koordinatenkreuz.",
+ "Code eines Dictionarys stueckliste mit Nachschlagen, Ändern, Einfügen, in und .items(). Die Tabelle Schlüssel zu Wert wächst dabei um eine Zeile. Zum Schluss zwei Schilder a und b mit Pfeilen auf eine Liste und der Hinweis a[:] für eine Kopie.",
+]

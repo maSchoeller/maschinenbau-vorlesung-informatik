@@ -1,0 +1,37 @@
+"""Sprechertext V07 Beispiel (Quelltext mit Markup)."""
+SRC = [
+ ["Ein Motor mit 15 kW treibt bei 1450 Umdrehungen pro Minute eine Welle an.",
+  "Wir wollen wissen: Welches Torsionsmoment liegt an, und hält die Welle bei 20, 25 und 30 Millimetern Durchmesser eine Spannung von 40 MPa aus?",
+  "Statt eines langen Skripts schreiben wir vier kleine Funktionen.",
+  "Wir gehen den Code Abschnitt für Abschnitt durch."],
+ ["Die erste Funktion: `torsionsmoment(P, n)`.",
+  "Im Docstring steht: Moment in Newtonmeter aus Leistung in Kilowatt und Drehzahl in Umdrehungen pro Minute.",
+  "Erst die Winkelgeschwindigkeit: [[2 * math.pi * n / 60|zwei mal pi mal n durch sechzig]], in eins pro Sekunde.",
+  "Dann das Moment: Leistung mal tausend, denn Kilowatt wird zu Watt, geteilt durch omega.",
+  "Die Variable `omega` ist lokal. Außerhalb der Funktion gibt es sie nicht."],
+ ["Die zweite Funktion: `widerstandsmoment(d)` für die Vollwelle.",
+  "Pi mal d hoch drei durch sechzehn, in Kubikmillimetern.",
+  "Die dritte: `tau(T, d)`. Sie rechnet das Moment mit mal tausend von Newtonmeter in Newtonmillimeter um.",
+  "Und teilt durch das Widerstandsmoment. Dafür ruft sie die zweite Funktion auf: eine Funktion nutzt die andere."],
+ ["Die vierte Funktion: `pruefe(tau_vorh, tau_zul=40.0)`.",
+  "Der Parameter `tau_zul` hat einen Default-Wert: 40 MPa.",
+  "Ist die vorhandene Spannung kleiner oder gleich der zulässigen, kommt der Text ok zurück, sonst zu hoch.",
+  "In beiden Zweigen steht ein `return`. Das ist wichtig, sonst käme `None` zurück."],
+ ["Das Hauptprogramm: Zeile für Zeile.",
+  "`T = torsionsmoment(15.0, 1450)` ergibt [[98.8|achtundneunzig Komma acht]] Newtonmeter.",
+  "Die Schleife läuft für d gleich 20, 25 und 30 und ruft `tau` und `pruefe` auf.",
+  "Bei 20 Millimetern sind es [[62.9|zweiundsechzig Komma neun]] MPa: zu hoch. Bei 25 Millimetern [[32.2|zweiunddreißig Komma zwei]] MPa: ok. Bei 30 Millimetern [[18.6|achtzehn Komma sechs]] MPa: ok."],
+ ["Zum Schluss ein Aufruf mit Namen: `pruefe(tau(T, 25), tau_zul=25.0)`.",
+  "Mit dem strengeren Grenzwert 25 wird aus ok das Ergebnis zu hoch.",
+  "Plausibel? Mehr Durchmesser heißt weniger Spannung, das stimmt.",
+  "Und jede Funktion kannst du einzeln mit einem Wert von Hand nachrechnen. Das ist der Vorteil der Zerlegung."],
+]
+
+SZENEN = [
+ "Titel mit Motor-Welle-Skizze, Werte 15 kW, 1450 1/min, d = 20, 25, 30 mm; Hinweis auf vier Funktionen.",
+ "Code torsionsmoment(P, n) mit Docstring, Zeilen nacheinander hervorgehoben, Variable omega als lokal markiert.",
+ "Code widerstandsmoment(d) und tau(T, d); Pfeil von tau zu widerstandsmoment (Aufruf in der Funktion).",
+ "Code pruefe(tau_vorh, tau_zul=40.0), beide return farbig markiert.",
+ "Hauptprogramm mit Schleife; Ausgabe Zeile für Zeile eingeblendet (98.8 N·m, 62.9, 32.2, 18.6 MPa).",
+ "Letzte Zeile mit tau_zul=25.0; Ausgabe zu hoch; Plausibilitätsprüfung und Fazit.",
+]

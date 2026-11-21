@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>V08 Programmierlabor · Informatik Maschinenbau</title>
+  <meta name="description" content="Programmierlabor V08: Arbeitsumgebung mit Aufgabenliste, Editor und Befehls-Bibliothek. Teil A im Labor, Teil B Training zu Hause. Listen, Tupel und Dictionaries.">
+  <link rel="stylesheet" href="../assets/css/dhbw-base.css">
+  <link rel="stylesheet" href="../assets/css/kurs.css">
+  <link rel="stylesheet" href="../assets/css/aufgaben.css">
+  <link rel="stylesheet" href="../assets/css/editor.css">
+  <link rel="stylesheet" href="../assets/css/labor.css">
+  <link rel="stylesheet" href="../assets/css/v05.css">
+  <link rel="stylesheet" href="../assets/css/v08.css">
+</head>
+<body data-lesson="V08" data-page="labor">
+  <a class="k-skip" href="#inhalt">Zum Inhalt springen</a>
+
+  <header class="dhbw-header k-header">
+    <div class="dhbw-header__inner">
+      <a class="k-logo" href="../index.html" aria-label="Zur Startseite">
+        <span class="k-logo__mark" aria-hidden="true">DHBW</span>
+        <span class="k-logo__text">Informatik Maschinenbau<small>Campus Horb · 2026/27</small></span>
+      </a>
+      <nav class="k-nav" aria-label="Hauptnavigation">
+        <a href="../index.html">Start</a>
+        <a href="../index.html#lernpfad">Lernpfad</a>
+        <a href="../bibliothek.html">Bibliothek</a>
+        <a href="../pap-editor.html">PAP-Editor</a>
+        <a href="v08-datenstrukturen.html">V08 Lerneinheit</a>
+        <a href="v08-labor.html" aria-current="page">V08 Labor</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="lab" data-lab>
+
+    <nav class="lab__list" aria-label="Aufgabenliste">
+      <div class="lab__listhead">
+        <p class="lab__title">Programmierlabor V08</p>
+        <a class="lab__back" href="v08-datenstrukturen.html">← Lerneinheit</a>
+      </div>
+      <div class="a-progress" data-a-progress>
+        <span class="a-progress__bar"><span class="a-progress__fill"></span></span>
+        <span class="a-progress__text">0 von 15 Aufgaben gelöst</span>
+      </div>
+      <p class="lab__legend k-small k-muted"><span><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-circle"/></svg> offen</span><span><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-half"/></svg> begonnen</span><span><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-done"/></svg> gelöst</span></p>
+      <div data-lab-items></div>
+    </nav>
+
+    <main id="inhalt" class="lab__main" tabindex="-1">
+      <div class="lab__bar">
+        <div class="lab__select">
+          <label for="lab-select">Aufgabe</label>
+          <select id="lab-select"></select>
+        </div>
+        <button type="button" class="k-btn k-btn--ghost k-btn--small" id="lab-toolbox-btn" aria-expanded="false" aria-controls="lab-drawer">Werkzeugkasten</button>
+      </div>
+      <section class="lab__drawer" id="lab-drawer" aria-label="Werkzeugkasten" hidden></section>
+
+    <section class="l-task" id="a-werkzeugkasten" data-title="Werkzeugkasten" data-part="A" data-stars="" data-min="5" data-extra="" aria-labelledby="h-a-werkzeugkasten" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-werkzeugkasten" tabindex="-1">Werkzeugkasten</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Heute neu in Python: <abbr class="k-begriff" data-erklaerung="Eine Liste ist eine geordnete Reihe von Werten unter einem Namen, zum Beispiel acht Messwerte. Sie ist veränderbar: Du kannst Werte hinzufügen und ersetzen."><strong>Listen</strong></abbr> mit <abbr class="k-begriff" data-erklaerung="Der Index ist die Nummer eines Elements in der Liste. Er beginnt bei 0: Das erste Element hat den Index 0, wie die Nullmarke an einer Messschiene.">Index</abbr> und <abbr class="k-begriff" data-erklaerung="Slicing heißt „Scheibe schneiden“: liste[a:b] liefert eine neue Liste mit den Elementen ab Index a bis vor Index b. Lässt man a oder b weg, geht es bis zum Anfang beziehungsweise Ende.">Slicing</abbr>, <code class="k-i">append</code>, <code class="k-i">len</code>, <code class="k-i">in</code>, <code class="k-i">sum</code>, <code class="k-i">min</code> und <code class="k-i">max</code>, <code class="k-i">for</code> über eine Liste, <abbr class="k-begriff" data-erklaerung="Ein Tupel ist wie eine Liste, aber unveränderlich: Nach dem Anlegen lässt sich kein Wert mehr ersetzen. Gut für Werte, die zusammengehören und fest bleiben sollen, etwa eine Toleranz (min, max)."><strong>Tupel</strong></abbr> und <abbr class="k-begriff" data-erklaerung="Ein Dictionary (Wörterbuch) ordnet jedem Schlüssel einen Wert zu, wie eine Stückliste jeder Teilenummer eine Menge. Man schlägt nach dem Schlüssel nach, nicht nach der Position."><strong>Dictionaries</strong></abbr>. Aus V06 setzen wir <code class="k-i">for</code>, <code class="k-i">range</code>, <code class="k-i">if</code> in der Schleife und Zähler/Summen voraus, aus V03 f-Strings mit Format, aus V01 <code class="k-i">print</code>, <code class="k-i">input</code> und Variablen. Eigene Funktionen (V07) brauchst du heute nicht. Die Klausur verlangt, dass du Code von Hand schreibst. Darum gehen wir in kleinen Schritten vom Vormachen zum Selberschreiben, und die Hilfen werden dabei weniger.</p>
+      <figure class="k-video">
+        <video controls preload="metadata" poster="../assets/video/v08-python-poster.png" aria-label="Python-Werkstatt: Listen, Tupel und Dictionaries (ca. 3 Min)">
+          <source src="../assets/video/v08-python.mp4" type="video/mp4">
+          <track kind="subtitles" srclang="de" label="Deutsch" src="../assets/video/v08-python.vtt" default>
+          Dein Browser kann dieses Video nicht abspielen.
+        </video>
+        <div class="k-video__missing" hidden>Video folgt. Bis dahin: Lies den Code unten Zeile für Zeile und probiere ihn aus.</div>
+        <figcaption>Python-Werkstatt: Listen, Tupel und Dictionaries (ca. 3 Min). Untertitel sind eingeschaltet (Deutsch).</figcaption>
+      </figure>
+      <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke</strong><p>Diese sieben <abbr class="k-begriff" data-erklaerung="Die Syntax ist die Schreibweise einer Programmiersprache, wie die Grammatik einer Sprache: Reihenfolge, Klammern, Anführungszeichen. Ein Tippfehler dort heißt Syntaxfehler.">Syntax</abbr>-Karten sind dein Spickzettel, bis es sitzt. Du erreichst sie in jeder Aufgabe über den Knopf „Werkzeugkasten“ oben. Alle Befehle des Kurses stehen außerdem rechts in der Befehls-Bibliothek. Führe jede Karte aus und drück bei den Listen auf „Schritt für Schritt“: Dort siehst du die Kästchen mit Index und bei Karte 7 die Pfeile von den Namen auf die Listen.</p></div>
+      <div class="lab__toolbox" id="lab-toolbox">
+<div class="a-syntax-list">
+  <article class="a-syntax" aria-labelledby="sk-index">
+    <span class="a-syntax__label">Syntax-Karte 1</span>
+    <h4 id="sk-index">Liste anlegen, Index und Slicing</h4>
+<pre><code>temperaturen = [20.5, 22.0, 23.5, 25.0, 26.5]
+print(temperaturen[0])        # erstes Element: Index 0
+print(temperaturen[-1])       # letztes Element: Index -1
+print(temperaturen[1:3])      # Index 1 und 2 (die 3 gehört nicht mehr dazu)
+print(temperaturen[:2])       # die ersten zwei
+print(temperaturen[-2:])      # die letzten zwei
+print(len(temperaturen))      # Anzahl der Elemente: 5</code></pre>
+    <ul>
+      <li>Eckige Klammern, Werte durch Kommas getrennt. Eine leere Liste ist <code class="k-i">[]</code>.</li>
+      <li>Der Index beginnt bei <strong>0</strong>. Bei fünf Elementen sind die Indizes 0 bis 4. <code class="k-i">liste[len(liste)]</code> ist ein <code class="k-i">IndexError</code>.</li>
+      <li><strong>Negativer Index</strong> zählt von hinten: <code class="k-i">-1</code> ist das letzte, <code class="k-i">-2</code> das vorletzte Element.</li>
+      <li>Ein Slice <code class="k-i">liste[a:b]</code> geht von Index <code class="k-i">a</code> bis vor <code class="k-i">b</code>. Der Endwert gehört <strong>nicht</strong> dazu, wie bei <code class="k-i">range</code>. Die Länge ist <code class="k-i">b - a</code>. Fehlt <code class="k-i">a</code>, beginnt er vorn, fehlt <code class="k-i">b</code>, geht er bis zum Ende. Ein Slice ist eine <em>neue</em> Liste und wirft nie einen <code class="k-i">IndexError</code>.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-append">
+    <span class="a-syntax__label">Syntax-Karte 2</span>
+    <h4 id="sk-append">append, len, in, sum, min und max</h4>
+<pre><code>werte = []
+werte.append(12.004)
+werte.append(11.998)
+werte.append(12.011)
+print(werte, len(werte))
+print(11.998 in werte, 12.5 in werte)
+print(f"Summe: {sum(werte):.3f}, min: {min(werte)}, max: {max(werte)}")
+werte[0] = 12.005             # Element ersetzen
+print(werte)</code></pre>
+    <ul>
+      <li><code class="k-i">liste.append(x)</code> hängt <code class="k-i">x</code> hinten an und <strong>verändert die Liste</strong>. Es gibt nichts zurück: <code class="k-i">liste = liste.append(x)</code> überschreibt deine Liste mit <code class="k-i">None</code>.</li>
+      <li><code class="k-i">x in liste</code> ist <code class="k-i">True</code> oder <code class="k-i">False</code>. Kommazahlen werden genau verglichen (V03).</li>
+      <li><code class="k-i">sum</code>, <code class="k-i">min</code>, <code class="k-i">max</code> und <code class="k-i">len</code> rechnen über die ganze Liste. Der Mittelwert ist <code class="k-i">sum(liste) / len(liste)</code>. Bei einer leeren Liste ist <code class="k-i">len</code> gleich 0: Das gibt eine Division durch null, und <code class="k-i">min([])</code> einen <code class="k-i">ValueError</code>.</li>
+      <li>Mit <code class="k-i">liste[i] = wert</code> ersetzt du ein vorhandenes Element. Der Index muss schon existieren, sonst gibt es einen <code class="k-i">IndexError</code>. Neue Elemente kommen mit <code class="k-i">append</code> dazu.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-schleife">
+    <span class="a-syntax__label">Syntax-Karte 3</span>
+    <h4 id="sk-schleife">for über eine Liste: Summe, Zähler, Filter</h4>
+<pre><code>messungen = [12.004, 12.011, 11.998, 12.007]
+summe = 0.0
+zu_klein = []
+for d in messungen:
+    summe = summe + d
+    if d &lt; 12.000:
+        zu_klein.append(d)
+print(f"Mittelwert: {summe / len(messungen):.4f}")
+print("Zu klein:", zu_klein)</code></pre>
+<pre><code>messungen = [12.004, 12.011, 11.998, 12.007]
+for i in range(len(messungen)):
+    print("Position", i, "->", messungen[i])</code></pre>
+    <ul>
+      <li><code class="k-i">for d in messungen:</code> setzt <code class="k-i">d</code> nacheinander auf jedes Element. Kein Index, kein Zähler, kein Endwert, an dem du dich verzählen kannst. Das ist die bevorzugte Form.</li>
+      <li>Das <strong>Filter-Muster</strong>: vor der Schleife eine leere Liste anlegen, im <code class="k-i">if</code> die passenden Werte mit <code class="k-i">append</code> hineingeben. Summe und Zähler funktionieren wie in V06.</li>
+      <li>Brauchst du die <em>Position</em> (zum Beispiel für die Ausgabe „Messung 3“), nimm <code class="k-i">for i in range(len(liste)):</code> und lies <code class="k-i">liste[i]</code>. Hier lauert der Fehler „eins daneben“: <code class="k-i">range(1, len(liste))</code> lässt das erste Element weg.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-tupel">
+    <span class="a-syntax__label">Syntax-Karte 4</span>
+    <h4 id="sk-tupel">Tupel: fest und zusammengehörig</h4>
+<pre><code>toleranz = (12.000, 12.018)     # (untere Grenze, obere Grenze) in mm
+punkt = (35.0, 12.5)            # (x, y) in mm
+print(toleranz[0], toleranz[1])
+print(len(punkt), punkt[-1], 12.018 in toleranz)
+messwert = 12.011
+print("in Toleranz:", toleranz[0] &lt;= messwert &lt;= toleranz[1])</code></pre>
+<pre><code>toleranz = (12.000, 12.018)
+toleranz[1] = 12.020</code></pre>
+    <ul>
+      <li>Runde Klammern, sonst wie eine Liste: Index, negativer Index, Slicing, <code class="k-i">len</code> und <code class="k-i">in</code> gehen. Ein Tupel mit einem Element braucht ein Komma: <code class="k-i">(5,)</code>.</li>
+      <li>Ein Tupel ist <strong>unveränderlich</strong>: Das zweite Beispiel endet mit <code class="k-i">TypeError: 'tuple' object does not support item assignment</code>. Auch <code class="k-i">append</code> gibt es nicht (<code class="k-i">AttributeError</code>).</li>
+      <li>Nimm ein Tupel für Werte, die zusammengehören und fest bleiben: Toleranz (min, max), Koordinaten (x, y), (Menge, Gewicht) in der Stückliste. Brauchst du neue Werte, legst du ein neues Tupel an.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-dict">
+    <span class="a-syntax__label">Syntax-Karte 5</span>
+    <h4 id="sk-dict">Dictionary: nachschlagen, ändern, einfügen</h4>
+<pre><code>stueckliste = {"W-100": (1, 2.40), "L-6205": (2, 0.13)}
+print(stueckliste["L-6205"])               # nachschlagen
+print(stueckliste["L-6205"][0])            # Menge: erstes Element des Tupels
+stueckliste["D-35"] = (2, 0.02)            # neuer Schlüssel: einfügen
+stueckliste["L-6205"] = (4, 0.13)          # vorhandener Schlüssel: ändern
+print(len(stueckliste))
+print("L-6205" in stueckliste, "X-1" in stueckliste)
+print(stueckliste)</code></pre>
+<pre data-stdin="L-6025"><code>stueckliste = {"W-100": (1, 2.40), "L-6205": (2, 0.13)}
+nummer = input("Teilenummer: ")
+if nummer in stueckliste:
+    print("Menge:", stueckliste[nummer][0])
+else:
+    print("Teil", nummer, "gibt es nicht")</code></pre>
+    <ul>
+      <li>Geschweifte Klammern, Paare <code class="k-i">schlüssel: wert</code> durch Kommas getrennt. Der Schlüssel steht bei Zugriff in eckigen Klammern. Ein Schlüssel kommt nur <strong>einmal</strong> vor.</li>
+      <li><code class="k-i">d[schlüssel] = wert</code> legt den Eintrag an, wenn es den Schlüssel noch nicht gibt, und <em>überschreibt</em> ihn, wenn es ihn gibt.</li>
+      <li><code class="k-i">schlüssel in d</code> prüft die <strong>Schlüssel</strong> (nicht die Werte). Ein unbekannter Schlüssel beim Lesen ist ein <code class="k-i">KeyError</code>. Frag deshalb vor dem Zugriff mit <code class="k-i">in</code> (zweites Beispiel, die Teilenummer mit Zahlendreher ist vorbelegt). Ein Schlüssel muss <em>exakt</em> stimmen: <code class="k-i">"l-6205"</code> ist ein anderer Schlüssel als <code class="k-i">"L-6205"</code>.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-items">
+    <span class="a-syntax__label">Syntax-Karte 6</span>
+    <h4 id="sk-items">Dictionary durchlaufen mit .items()</h4>
+<pre><code>stueckliste = {"W-100": (1, 2.40), "L-6205": (2, 0.13), "D-35": (2, 0.02)}
+gesamt = 0.0
+for teil, werte in stueckliste.items():
+    menge = werte[0]
+    gewicht = werte[1]
+    gesamt = gesamt + menge * gewicht
+    print(f"{teil:8} {menge:2} x {gewicht:.2f} kg")
+print(f"Gesamtgewicht: {gesamt:.2f} kg")</code></pre>
+    <ul>
+      <li><code class="k-i">.items()</code> liefert nacheinander alle <strong>Paare</strong> (Schlüssel, Wert). Der Schleifenkopf <code class="k-i">for teil, werte in ...</code> legt beide Teile jedes Paars gleich unter zwei Namen ab. Die Reihenfolge ist die, in der du die Einträge angelegt hast.</li>
+      <li>Der Wert ist hier ein Tupel: <code class="k-i">werte[0]</code> ist die Menge, <code class="k-i">werte[1]</code> das Gewicht. Gesamtgewicht ist Summe aus Menge mal Gewicht (Akkumulator wie in V06).</li>
+      <li>Im Format heißt <code class="k-i">:8</code> „mindestens 8 Zeichen breit“ (Text linksbündig, Zahlen rechtsbündig). So stehen die Spalten untereinander.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-alias">
+    <span class="a-syntax__label">Syntax-Karte 7</span>
+    <h4 id="sk-alias">Zwei Namen, eine Liste: Aliasing und Kopie</h4>
+<pre><code>a = [20.5, 21.0, 19.8]
+b = a                 # kein Duplikat: zweiter Name für dieselbe Liste
+b.append(22.4)
+print(a)
+print(b)</code></pre>
+<pre><code>a = [20.5, 21.0, 19.8]
+c = a[:]              # Kopie: neue Liste mit denselben Elementen
+c.append(22.4)
+print(a)
+print(c)</code></pre>
+    <ul>
+      <li><code class="k-i">b = a</code> kopiert <strong>nichts</strong>. Beide Namen zeigen auf <em>eine</em> Liste, jede Änderung über einen Namen ist über den anderen sichtbar. Der Visualisierer zeigt das als zwei Pfeile auf ein Kästchen.</li>
+      <li>Eine echte Kopie machst du mit <code class="k-i">a[:]</code> (Slice ohne Grenzen). Danach sind <code class="k-i">a</code> und <code class="k-i">c</code> unabhängig.</li>
+      <li>Das Problem betrifft nur veränderbare Dinge (Listen, Dictionaries). Zahlen, Texte und Tupel kannst du nicht verändern, dort gibt es keine Überraschung.</li>
+    </ul>
+  </article>
+</div>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-vorgemacht" data-title="Vorgerechnetes Beispiel: Messreihe und Stückliste" data-part="A" data-stars="" data-min="10" data-extra="" aria-labelledby="h-a-vorgemacht" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-vorgemacht" tabindex="-1">Vorgerechnetes Beispiel: Messreihe und Stückliste</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Aufgabe: Acht Messungen einer Bohrung Ø 12 H7 (Toleranz 12,000 bis 12,018 mm) und die Stückliste einer Getriebewelle. Das <abbr class="k-begriff" data-erklaerung="Ein Programm ist eine Liste von Anweisungen, die Python von oben nach unten Zeile für Zeile abarbeitet.">Programm</abbr> berechnet Mittelwert und Spannweite, sammelt die Werte außerhalb der Toleranz, gibt die letzten drei Messungen aus und rechnet danach das Gesamtgewicht der Stückliste. Lies den Code Zeile für Zeile, dann führe ihn aus. Drück danach auf „Schritt für Schritt“ und beobachte, wie die Liste <code class="k-i">ausserhalb</code> wächst und wie das Dictionary mit der nachträglich ergänzten Passfeder aussieht.</p>
+      <figure class="k-video">
+        <video controls preload="metadata" poster="../assets/video/v08-beispiel-poster.png" aria-label="Vorgerechnet: Messreihe und Stückliste Schritt für Schritt (ca. 3 Min)">
+          <source src="../assets/video/v08-beispiel.mp4" type="video/mp4">
+          <track kind="subtitles" srclang="de" label="Deutsch" src="../assets/video/v08-beispiel.vtt" default>
+          Dein Browser kann dieses Video nicht abspielen.
+        </video>
+        <div class="k-video__missing" hidden>Video folgt. Bis dahin: Lies den Code unten Zeile für Zeile und probiere ihn aus.</div>
+        <figcaption>Vorgerechnet: Messreihe und Stückliste Schritt für Schritt (ca. 3 Min). Untertitel sind eingeschaltet (Deutsch).</figcaption>
+      </figure>
+      <div class="a-task" data-a="run" data-id="w-vorgemacht" data-count="0" data-mode="programm" data-timeout="5000">
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V08" aria-label="Python-Code: Messreihe und Stückliste"># Messreihe Bohrungsdurchmesser und Stückliste
+# (V08: Listen, Index, Slicing, append, len, in, for über Listen, sum/min/max, Tupel, Dictionaries)
+
+# --- Teil 1: Messreihe einer Bohrung, Soll 12,00 mm H7 (+0,018 / 0) ---
+messungen = [12.004, 12.011, 11.998, 12.007, 12.019, 12.002, 12.015, 12.009]
+toleranz = (12.000, 12.018)           # Tupel: (untere Grenze, obere Grenze) in mm
+
+mittelwert = sum(messungen) / len(messungen)
+spannweite = max(messungen) - min(messungen)
+
+ausserhalb = []
+for d in messungen:
+    if d &lt; toleranz[0] or d &gt; toleranz[1]:
+        ausserhalb.append(d)
+
+print(f"Anzahl Messungen: {len(messungen)}")
+print(f"Mittelwert: {mittelwert:.4f} mm, Spannweite: {spannweite:.3f} mm")
+print(f"Außerhalb Toleranz: {len(ausserhalb)} -&gt; {ausserhalb}")
+print("Letzte drei Messungen:", messungen[-3:])
+
+# --- Teil 2: Stückliste (Teilenummer -&gt; (Menge, Gewicht je Stück in kg)) ---
+stueckliste = {
+    "W-100": (1, 2.40),     # Welle
+    "L-6205": (2, 0.13),    # Rillenkugellager
+    "D-35": (2, 0.02),      # Wellendichtring
+}
+stueckliste["P-8x7"] = (1, 0.01)    # Passfeder nachträglich ergänzt
+
+gesamt = 0.0
+for teil, werte in stueckliste.items():
+    menge = werte[0]
+    gewicht = werte[1]
+    gesamt = gesamt + menge * gewicht
+    print(f"{teil:8} {menge:2} x {gewicht:.2f} kg")
+print(f"Gesamtgewicht: {gesamt:.2f} kg")
+
+if "L-6205" in stueckliste:
+    print("Lager L-6205 ist in der Stückliste:", stueckliste["L-6205"][0], "Stück")</textarea></div>
+      </div>
+      <p class="k-small k-muted">Der Programmablaufplan zu Teil 1 zeigt dieselbe Schleife wie der Code (Zeilen 11 bis 14): Die Raute fragt, ob noch ein Wert übrig ist, der Rumpf holt den nächsten Wert, eine zweite Raute prüft die Toleranz, und beide Wege laufen zurück vor die erste Raute.</p>
+      <div class="pap-wrap"><svg class="pap" xmlns="http://www.w3.org/2000/svg" viewBox="-198 -14 374 978" role="img" aria-label="Programmablaufplan der Messreihe: Liste und Toleranz setzen, Mittelwert und Spannweite berechnen, leere Liste ausserhalb anlegen, Schleife über jeden Wert mit Prüfung gegen die Toleranz, bei Verletzung anhängen, am Ende ausgeben." style="--pap-min:292px;--pap-max:374px"><g class="pap-e" data-from="start" data-to="p2" data-lab=""><path class="pap-hit" d="M0 34L0 62"/><path class="pap-line" d="M0 34L0 62"/><path class="pap-ah" d="M0 62L-4.6 53L4.6 53Z"/></g><g class="pap-e" data-from="p2" data-to="p3" data-lab=""><path class="pap-hit" d="M0 148L0 176"/><path class="pap-line" d="M0 148L0 176"/><path class="pap-ah" d="M0 176L-4.6 167L4.6 167Z"/></g><g class="pap-e" data-from="p3" data-to="p4" data-lab=""><path class="pap-hit" d="M0 296L0 324"/><path class="pap-line" d="M0 296L0 324"/><path class="pap-ah" d="M0 324L-4.6 315L4.6 315Z"/></g><g class="pap-e" data-from="p4" data-to="p8" data-lab=""><path class="pap-hit" d="M0 376L0 404"/><path class="pap-line" d="M0 376L0 404"/><path class="pap-ah" d="M0 404L-4.6 395L4.6 395Z"/></g><g class="pap-e" data-from="p8" data-to="p5" data-lab="ja"><path class="pap-hit" d="M0 492L0 520"/><path class="pap-line" d="M0 492L0 520"/><path class="pap-ah" d="M0 520L-4.6 511L4.6 511Z"/><text class="pap-lab" x="12" y="505" text-anchor="start">ja</text></g><g class="pap-e" data-from="p5" data-to="p7" data-lab=""><path class="pap-hit" d="M0 572L0 600"/><path class="pap-line" d="M0 572L0 600"/><path class="pap-ah" d="M0 600L-4.6 591L4.6 591Z"/></g><g class="pap-e" data-from="p7" data-to="p6" data-lab="ja"><path class="pap-hit" d="M-92.5 663L-92.5 711.7"/><path class="pap-line" d="M-92.5 663L-92.5 711.7"/><path class="pap-ah" d="M-92.5 711.7L-97.1 702.7L-87.9 702.7Z"/><text class="pap-lab" x="-98.5" y="657" text-anchor="end">ja</text></g><g class="pap-e" data-from="p6" data-to="p8" data-lab=""><path class="pap-hit" d="M-92.5 763.7L-92.5 779.1L-184 779.1L-184 392L0 392"/><path class="pap-line" d="M-92.5 763.7L-92.5 779.1L-184 779.1L-184 392L0 392"/><path class="pap-ah" d="M0 392L-9 396.6L-9 387.4Z"/></g><g class="pap-e" data-from="p7" data-to="p8" data-lab="nein"><path class="pap-hit" d="M92.5 663L92.5 779.1L-184 779.1L-184 392L0 392"/><path class="pap-line" d="M92.5 663L92.5 779.1L-184 779.1L-184 392L0 392"/><path class="pap-ah" d="M0 392L-9 396.6L-9 387.4Z"/><text class="pap-lab" x="98.5" y="657" text-anchor="start">nein</text></g><g class="pap-e" data-from="p8" data-to="p9" data-lab="nein"><path class="pap-hit" d="M116 448L162 448L162 794.5L0 794.5L0 819.1"/><path class="pap-line" d="M116 448L162 448L162 794.5L0 794.5L0 819.1"/><path class="pap-ah" d="M0 819.1L-4.6 810.1L4.6 810.1Z"/><text class="pap-lab" x="122" y="442" text-anchor="start">nein</text></g><g class="pap-e" data-from="p9" data-to="p10" data-lab=""><path class="pap-hit" d="M0 888.1L0 916.1"/><path class="pap-line" d="M0 888.1L0 916.1"/><path class="pap-ah" d="M0 916.1L-4.6 907.1L4.6 907.1Z"/></g><g class="pap-n pap-n--start" data-id="start" data-bid="start"><rect class="pap-shape" x="-48" y="0" width="96" height="34" rx="17"/><text class="pap-t" x="0" y="21.6" text-anchor="middle">Start</text></g><g class="pap-n pap-n--op" data-id="p2" data-bid="p2"><rect class="pap-shape" x="-77" y="62" width="154" height="86"/><text class="pap-t" x="0" y="84.1" text-anchor="middle">messungen = [12.004,</text><text class="pap-t" x="0" y="101.1" text-anchor="middle">11.998, …, 12.009]</text><text class="pap-t" x="0" y="118.1" text-anchor="middle">toleranz = (12.000,</text><text class="pap-t" x="0" y="135.1" text-anchor="middle">12.018)</text></g><g class="pap-n pap-n--op" data-id="p3" data-bid="p3"><rect class="pap-shape" x="-64.5" y="176" width="129" height="120"/><text class="pap-t" x="0" y="198.1" text-anchor="middle">mittelwert =</text><text class="pap-t" x="0" y="215.1" text-anchor="middle">sum(messungen) /</text><text class="pap-t" x="0" y="232.1" text-anchor="middle">len(messungen)</text><text class="pap-t" x="0" y="249.1" text-anchor="middle">spannweite =</text><text class="pap-t" x="0" y="266.1" text-anchor="middle">max(messungen) −</text><text class="pap-t" x="0" y="283.1" text-anchor="middle">min(messungen)</text></g><g class="pap-n pap-n--op" data-id="p4" data-bid="p4"><rect class="pap-shape" x="-64.5" y="324" width="129" height="52"/><text class="pap-t" x="0" y="346.1" text-anchor="middle">ausserhalb = [ ]</text><text class="pap-t" x="0" y="363.1" text-anchor="middle">(leere Liste)</text></g><g class="pap-n pap-n--while" data-id="p8" data-bid="p8"><path class="pap-shape" d="M0 404L116 448L0 492L-116 448Z"/><text class="pap-t" x="0" y="444.1" text-anchor="middle">noch ein Wert</text><text class="pap-t" x="0" y="461.1" text-anchor="middle">in messungen übrig?</text></g><g class="pap-n pap-n--op" data-id="p5" data-bid="p5"><rect class="pap-shape" x="-68" y="520" width="136" height="52"/><text class="pap-t" x="0" y="542.1" text-anchor="middle">d = nächster Wert</text><text class="pap-t" x="0" y="559.1" text-anchor="middle">aus messungen</text></g><g class="pap-n pap-n--if" data-id="p7" data-bid="p7"><path class="pap-shape" d="M0 600L92.5 663L0 726L-92.5 663Z"/><text class="pap-t" x="0" y="650.6" text-anchor="middle">d &lt; toleranz[0]</text><text class="pap-t" x="0" y="667.6" text-anchor="middle">oder d &gt;</text><text class="pap-t" x="0" y="684.6" text-anchor="middle">toleranz[1]?</text></g><g class="pap-n pap-n--op" data-id="p6" data-bid="p6"><rect class="pap-shape" x="-154" y="711.7" width="123" height="52"/><text class="pap-t" x="-92.5" y="733.8" text-anchor="middle">d an ausserhalb</text><text class="pap-t" x="-92.5" y="750.8" text-anchor="middle">anhängen</text></g><g class="pap-n pap-n--io" data-id="p9" data-bid="p9"><path class="pap-shape" d="M-83.5 819.1H97.5L83.5 888.1H-97.5Z"/><text class="pap-t" x="0" y="841.2" text-anchor="middle">Ausgabe: Anzahl,</text><text class="pap-t" x="0" y="858.2" text-anchor="middle">Mittelwert,</text><text class="pap-t" x="0" y="875.2" text-anchor="middle">Spannweite, ausserhalb</text></g><g class="pap-n pap-n--end" data-id="p10" data-bid="p10"><rect class="pap-shape" x="-48" y="916.1" width="96" height="34" rx="17"/><text class="pap-t" x="0" y="937.7" text-anchor="middle">Ende</text></g></svg></div>
+      <ol class="a-explain">
+        <li><strong>Zeilen 5 und 6:</strong> <code class="k-i">messungen</code> ist eine <strong>Liste</strong> mit acht Kommazahlen (eckige Klammern), <code class="k-i">toleranz</code> ein <strong>Tupel</strong> (runde Klammern): <code class="k-i">toleranz[0]</code> ist die untere, <code class="k-i">toleranz[1]</code> die obere Grenze. Ein Tupel, weil sich die Toleranz im Programm nicht ändern soll.</li>
+        <li><strong>Zeilen 8 und 9:</strong> <code class="k-i">sum</code>, <code class="k-i">len</code>, <code class="k-i">max</code> und <code class="k-i">min</code> rechnen über die ganze Liste, ohne Schleife. Mittelwert = Summe durch Anzahl, Spannweite = größter minus kleinster Wert.</li>
+        <li><strong>Zeilen 11 bis 14:</strong> Das Filter-Muster. <code class="k-i">ausserhalb = []</code> legt <em>vor</em> der Schleife eine leere Liste an. <code class="k-i">for d in messungen:</code> nimmt nacheinander jeden Wert, das <code class="k-i">if</code> prüft beide Grenzen (<code class="k-i">or</code>, V04), und <code class="k-i">append</code> hängt Verletzer hinten an. Hier landen 11.998 und 12.019.</li>
+        <li><strong>Zeilen 16 bis 19:</strong> <code class="k-i">len(ausserhalb)</code> ist die Zahl der Elemente der Filterliste: 2. <code class="k-i">messungen[-3:]</code> ist ein Slice vom drittletzten Element bis zum Ende, also die letzten drei Messungen. Die Zahlen werden mit <code class="k-i">:.4f</code> und <code class="k-i">:.3f</code> formatiert (V03).</li>
+        <li><strong>Zeilen 22 bis 27:</strong> Das <strong>Dictionary</strong> ordnet jeder Teilenummer ein Tupel (Menge, Gewicht je Stück) zu. Die Passfeder kommt mit <code class="k-i">stueckliste["P-8x7"] = (1, 0.01)</code> dazu: Der Schlüssel ist neu, also wird eingefügt.</li>
+        <li><strong>Zeilen 29 bis 35:</strong> <code class="k-i">.items()</code> liefert die Paare, der Schleifenkopf legt Schlüssel in <code class="k-i">teil</code> und Wert in <code class="k-i">werte</code> ab. <code class="k-i">werte[0]</code> ist die Menge, <code class="k-i">werte[1]</code> das Gewicht. Der Akkumulator <code class="k-i">gesamt</code> sammelt Menge mal Gewicht (V06): 2,40 + 0,26 + 0,04 + 0,01 = 2,71 kg. <code class="k-i">{teil:8}</code> macht die Teilenummern 8 Zeichen breit, damit die Spalten fluchten.</li>
+        <li><strong>Zeilen 37 und 38:</strong> <code class="k-i">in</code> prüft beim Dictionary die Schlüssel. So fragst du ab, <em>bevor</em> du zugreifst, und vermeidest den <code class="k-i">KeyError</code>.</li>
+        <li><strong>Selbsterklärung:</strong> Ändere in Zeile 6 die obere Grenze auf <code class="k-i">12.020</code> und führe aus: Wie viele Werte liegen außerhalb, und welcher? Dann schreib <code class="k-i">"W-10"</code> statt <code class="k-i">"W-100"</code> in den Schlüssel der Welle und prüfe, ob die Stückliste noch stimmt. Zuletzt: Was druckt <code class="k-i">messungen[8]</code>?</li>
+      </ol>
+    </section>
+
+    <section class="l-task" id="a-ablauf" data-title="Ablauf verfolgen" data-part="A" data-stars="" data-min="7" data-extra="" aria-labelledby="h-a-ablauf" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-ablauf" tabindex="-1">Ablauf verfolgen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Bevor du Listen und Dictionaries schreibst, musst du sie lesen können. Führe das Programm im Kopf aus, <strong>Zeile für Zeile, so wie Python es tut</strong>. Trage ein, was danach in den hervorgehobenen Variablen steht. Listen schreibst du so, wie Python sie ausgibt, zum Beispiel <code class="k-i">[11.998]</code>. Die Zeile mit <code class="k-i">for</code> ist ein Schritt je Durchlauf (die Laufvariable ändert sich), eine <code class="k-i">if</code>-Zeile bekommt keinen eigenen Schritt. Wenn du unsicher bist, lass den Code vorher im „Vorgerechneten Beispiel“ oder in Karte 3 mit „Schritt für Schritt“ laufen.</p>
+      <div class="a-task" data-a="trace" data-id="w-trace">
+        <script type="application/json">{"code":["werte = [12.004, 11.998, 12.021]","ausserhalb = []","for d in werte:","    if d < 12.000 or d > 12.018:","        ausserhalb.append(d)","print(len(ausserhalb), ausserhalb)"],
+"vars":["werte","d","ausserhalb"],
+"steps":[
+{"line":1,"set":{"werte":"[12.004, 11.998, 12.021]"},"hint":"Eine Liste mit drei Elementen, in eckigen Klammern, durch Kommas getrennt. Python gibt sie genau so aus."},
+{"line":2,"set":{"ausserhalb":"[]"},"hint":"Eine leere Liste, geschrieben []. Sie wird vor der Schleife angelegt, damit sie im Rumpf wachsen kann."},
+{"line":3,"set":{"d":"12.004"},"hint":"Erster Durchlauf: d bekommt das erste Element der Liste. Die Bedingung in Zeile 4: 12.004 < 12.000 ist falsch, 12.004 > 12.018 ist falsch, also ist das if falsch und Zeile 5 entfällt."},
+{"line":3,"set":{"d":"11.998"},"hint":"Zweiter Durchlauf: d ist das zweite Element, 11.998. Es ist kleiner als 12.000, das if ist wahr."},
+{"line":5,"set":{"ausserhalb":"[11.998]"},"hint":"append hängt d hinten an die Liste: Sie hat jetzt ein Element."},
+{"line":3,"set":{"d":"12.021"},"hint":"Dritter Durchlauf: d ist 12.021. Es ist größer als 12.018, das if ist wahr."},
+{"line":5,"set":{"ausserhalb":"[11.998, 12.021]"},"hint":"Die Liste wächst hinten: erst 11.998, dann 12.021. Die Reihenfolge bleibt erhalten."},
+{"line":6,"out":"2 [11.998, 12.021]","hint":"Die Schleife ist zu Ende (kein Element mehr übrig). len(ausserhalb) ist 2, print gibt die Zahl und die Liste aus, getrennt durch ein Leerzeichen."}
+]}</script>
+      </div>
+      <p class="l-task__intro">Zweiter Ablauf: ein Dictionary, das sich ändert. Zeile 2 <em>ändert</em> einen vorhandenen Schlüssel, Zeile 3 <em>fügt</em> einen neuen ein. Dictionaries schreibst du so, wie Python sie ausgibt: <code class="k-i">{'A-1': 10, 'B-2': 4}</code> (einfache oder doppelte Anführungszeichen sind egal).</p>
+      <div class="a-task" data-a="trace" data-id="w-trace2">
+        <script type="application/json">{"code":["bestand = {\"A-1\": 10, \"B-2\": 4}","bestand[\"B-2\"] = bestand[\"B-2\"] + 6","bestand[\"C-3\"] = 7","gesamt = 0","for teil, menge in bestand.items():","    gesamt = gesamt + menge","print(len(bestand), gesamt)"],
+"vars":["bestand","gesamt","teil","menge"],
+"steps":[
+{"line":1,"set":{"bestand":"{'A-1': 10, 'B-2': 4}"},"hint":"Ein Dictionary mit zwei Einträgen. Python gibt es mit einfachen Anführungszeichen aus."},
+{"line":2,"set":{"bestand":"{'A-1': 10, 'B-2': 10}"},"hint":"Rechts wird der alte Wert benutzt (4 + 6 = 10), dann unter demselben Schlüssel gespeichert. Der Schlüssel B-2 existiert schon, also wird geändert, nicht eingefügt."},
+{"line":3,"set":{"bestand":"{'A-1': 10, 'B-2': 10, 'C-3': 7}"},"hint":"C-3 gibt es noch nicht: Der Eintrag wird hinten eingefügt."},
+{"line":4,"set":{"gesamt":"0"},"hint":"Startwert des Akkumulators."},
+{"line":5,"set":{"teil":"'A-1'","menge":"10"},"hint":"Erster Durchlauf: .items() liefert das erste Paar. teil ist der Schlüssel (ein Text, also mit Anführungszeichen), menge der Wert."},
+{"line":6,"set":{"gesamt":"10"},"hint":"0 + 10."},
+{"line":5,"set":{"teil":"'B-2'","menge":"10"},"hint":"Zweites Paar, in der Reihenfolge des Anlegens."},
+{"line":6,"set":{"gesamt":"20"},"hint":"10 + 10."},
+{"line":5,"set":{"teil":"'C-3'","menge":"7"},"hint":"Drittes und letztes Paar."},
+{"line":6,"set":{"gesamt":"27"},"hint":"20 + 7."},
+{"line":7,"out":"3 27","hint":"len(bestand) zählt die Einträge (Schlüssel): 3. gesamt ist 27."}
+]}</script>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-zeilen" data-title="Zeilen ordnen" data-part="A" data-stars="" data-min="8" data-extra="" aria-labelledby="h-a-zeilen" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-zeilen" tabindex="-1">Zeilen ordnen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Alle Zeilen sind da, aber durcheinander. Bring sie in die richtige Reihenfolge <strong>und rücke die Zeilen im Schleifenrumpf ein</strong> (Pfeil nach rechts oder Mausziehen). Manche Zeilen sind <strong>Ablenker</strong>: Sie gehören nicht ins Programm.</p>
+      <div class="a-task" data-a="parsons" data-id="w-parsons1">
+        <div class="a-task__head"><h3 class="a-task__title">Messwerte einlesen und mitteln</h3></div>
+        <p>Das Programm liest die Zahl der Messwerte ein, dann jeden Wert, und gibt den Mittelwert aus. Überlege vorher: Wo wird die Liste angelegt, und wie kommt jeder Wert hinein?</p>
+        <script type="application/json">{"solution":["n = int(input('n: '))","messungen = []","for i in range(n):","    messungen.append(float(input('Wert: ')))","print(f'Mittelwert: {sum(messungen) / len(messungen):.3f}')"],
+"distractors":["messungen = 0","    messungen = messungen.append(float(input('Wert: ')))"],
+"alts":[["messungen = []","n = int(input('n: '))","for i in range(n):","    messungen.append(float(input('Wert: ')))","print(f'Mittelwert: {sum(messungen) / len(messungen):.3f}')"]]}</script>
+      </div>
+
+      <div class="a-task" data-a="parsons" data-id="w-parsons2">
+        <div class="a-task__head"><h3 class="a-task__title">Gesamtgewicht einer Stückliste</h3></div>
+        <p>Das Programm legt eine kleine Stückliste an, summiert Menge mal Gewicht über alle Einträge und gibt das Gesamtgewicht aus. Die Ausgabe gehört erst nach die Schleife.</p>
+        <script type="application/json">{"solution":["stueckliste = {'W-100': (1, 2.40), 'D-35': (2, 0.02)}","gesamt = 0.0","for teil, werte in stueckliste.items():","    gesamt = gesamt + werte[0] * werte[1]","print(f'Gesamtgewicht: {gesamt:.2f} kg')"],
+"distractors":["for teil in stueckliste.items:","    gesamt = werte[0] * werte[1]"],
+"alts":[["gesamt = 0.0","stueckliste = {'W-100': (1, 2.40), 'D-35': (2, 0.02)}","for teil, werte in stueckliste.items():","    gesamt = gesamt + werte[0] * werte[1]","print(f'Gesamtgewicht: {gesamt:.2f} kg')"]]}</script>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-luecken" data-title="Lücken füllen" data-part="A" data-stars="" data-min="5" data-extra="" aria-labelledby="h-a-luecken" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-luecken" tabindex="-1">Lücken füllen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Jetzt tippst du Teile selbst. Ergänze die fünf Lücken, sodass das Programm das letzte Element der Messreihe holt, den Mittelwert bildet, die Teilenummer sicher nachschlägt und sonst eine Meldung gibt. Geprüft wird nicht nur dein Wortlaut, sondern ob das Programm das Richtige tut, auch bei einer Teilenummer, die es nicht gibt.</p>
+      <div class="a-task" data-a="gap" data-id="w-luecken" data-mode="programm">
+        <pre class="a-gap__src">messungen = [12.004, 12.011, 11.998, 12.007]
+stueckliste = {"W-100": (1, 2.40), "L-6205": (2, 0.13)}
+letzter = messungen@@[-1]|[3]@@
+mittel = @@sum@@(messungen) / @@len@@(messungen)
+nummer = input("Teilenummer: ")
+if nummer @@in@@ stueckliste:
+    print(f"Menge: {stueckliste[nummer][0]}")
+@@else@@:
+    print(f"Teil {nummer} gibt es nicht")
+print(f"Letzter: {letzter}, Mittelwert: {mittel:.4f}")</pre>
+        <script type="text/x-python" data-role="tests">
+def _lauf(nummer):
+    return zeilen(run_program([nummer]))
+
+def test_bekannt():
+    """Teilenummer L-6205: Menge 2"""
+    z = _lauf("L-6205")
+    assert "Menge: 2" in z, "Für L-6205 wird die Zeile 'Menge: 2' erwartet. Dein Programm gibt aus: %r" % z
+
+def test_unbekannt():
+    """Teilenummer X-9 (gibt es nicht): Meldung statt Absturz"""
+    z = _lauf("X-9")
+    assert "Teil X-9 gibt es nicht" in z, "Für eine unbekannte Nummer wird 'Teil X-9 gibt es nicht' erwartet. Dein Programm gibt aus: %r" % z
+
+def test_mittel():
+    """Letzter Wert 12.007, Mittelwert 12.0050"""
+    z = _lauf("W-100")
+    assert "Letzter: 12.007, Mittelwert: 12.0050" in z, "Erwartet wird die Zeile 'Letzter: 12.007, Mittelwert: 12.0050'. Dein Programm gibt aus: %r" % z
+        </script>
+        <ol class="a-hints">
+          <li>Lücke 1: Das letzte Element holst du mit einem negativen Index in eckigen Klammern (Syntax-Karte 1).</li>
+          <li>Lücke 2 und 3: Der Mittelwert ist die Summe durch die Anzahl der Elemente, beides rechnet je ein Befehl über die ganze Liste (Karte 2).</li>
+          <li>Lücke 4 und 5: Vor dem Zugriff fragst du, ob der Schlüssel im Dictionary steht. Das Wort dafür kennst du von den Listen (Karte 2) und es prüft hier die Schlüssel; der andere Zweig heißt <code>else</code> (Karte 5).</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-messreihe" data-title="Erste eigene Aufgabe: Messreihe auswerten" data-part="A" data-stars="1" data-min="10" data-extra="" aria-labelledby="h-a-messreihe" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-messreihe" tabindex="-1">Erste eigene Aufgabe: Messreihe auswerten</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Jetzt schreibst du die Auswertung selbst, mit <abbr class="k-begriff" data-erklaerung="Ein Test ist ein kleines Prüfprogramm. Es startet dein Programm mit festen Eingaben und vergleicht die Ausgabe mit dem erwarteten Ergebnis.">Tests</abbr> als Sicherheitsnetz. Die Tests laufen mit mehreren Eingaben, auch mit solchen, die du nicht siehst.</p>
+      <div class="a-task" data-a="code" data-id="w-messreihe" data-mode="programm" data-inputs="5|12.004|12.011|11.998|12.007|12.019">
+        <div class="a-task__text">
+          <p>Das Programm liest zuerst die Anzahl <em>n</em> der Messwerte (ganze Zahl) und danach n Durchmesser in mm (Kommazahlen, je ein <code class="k-i">input()</code>). Hänge jeden Wert mit <code class="k-i">append</code> an die Liste <code class="k-i">messungen</code> an. Danach gibt es vier Zeilen aus: die Anzahl, den Mittelwert (vier Nachkommastellen), die Spannweite (drei Nachkommastellen) und den letzten Messwert (drei Nachkommastellen, über den negativen Index).</p>
+          <div class="a-spec"><strong>Ausgabe genau so (Eingabe n = 5, Werte 12.004, 12.011, 11.998, 12.007, 12.019):</strong><pre data-run="no">Anzahl: 5
+Mittelwert: 12.0078 mm
+Spannweite: 0.021 mm
+Letzter Wert: 12.019 mm</pre></div>
+          <p class="k-small k-muted">Gegenprobe von Hand: Die Spannweite ist 12.019 − 11.998 = 0.021.</p>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V08" aria-label="Python-Code: Messreihe auswerten"># Messreihe einlesen und auswerten
+n = int(input("Anzahl Messwerte: "))
+messungen = []
+# lies n Werte ein und hänge sie an messungen an
+
+# Ausgabe: Anzahl, Mittelwert, Spannweite, letzter Wert
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _pruefe(werte):
+    soll = ["Anzahl: %d" % len(werte),
+            "Mittelwert: %.4f mm" % (sum(werte) / len(werte)),
+            "Spannweite: %.3f mm" % (max(werte) - min(werte)),
+            "Letzter Wert: %.3f mm" % werte[-1]]
+    z = zeilen(run_program([str(len(werte))] + [str(w) for w in werte]))
+    for t in soll:
+        assert t in z, "Bei %r wird die Zeile %r erwartet. Dein Programm gibt aus: %r" % (werte, t, z)
+
+def test_beispiel():
+    """Beispiel n = 5: 12.004 bis 12.019"""
+    _pruefe([12.004, 12.011, 11.998, 12.007, 12.019])
+
+def test_zweites():
+    """Anderes Beispiel n = 3: 25.0, 25.02, 24.99"""
+    _pruefe([25.0, 25.02, 24.99])
+
+def test_einer():
+    """Genau ein Messwert: Spannweite 0.000"""
+    _pruefe([12.5])
+
+def test_letzter():
+    """Der letzte Wert ist nicht der größte: 30.5, 31.0, 29.0"""
+    _pruefe([30.5, 31.0, 29.0])
+        </script>
+        <script type="text/x-python" data-role="solution">
+n = int(input("Anzahl Messwerte: "))
+messungen = []
+for i in range(n):
+    messungen.append(float(input(f"Messwert {i + 1}: ")))
+print(f"Anzahl: {len(messungen)}")
+print(f"Mittelwert: {sum(messungen) / len(messungen):.4f} mm")
+print(f"Spannweite: {max(messungen) - min(messungen):.3f} mm")
+print(f"Letzter Wert: {messungen[-1]:.3f} mm")
+        </script>
+        <ol class="a-hints">
+          <li>Eine Schleife mit <code>for i in range(n):</code> liest einen Wert pro Durchlauf. Im Rumpf: <code>messungen.append(float(input(...)))</code>.</li>
+          <li><code>len(messungen)</code> ist die Anzahl, <code>sum(messungen) / len(messungen)</code> der Mittelwert, <code>max(messungen) - min(messungen)</code> die Spannweite.</li>
+          <li>Der letzte Wert: <code>messungen[-1]</code>. Alle Ausgaben stehen <em>nach</em> der Schleife (nicht eingerückt), mit <code>:.4f</code> beziehungsweise <code>:.3f</code>.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-review" data-seen="manual" data-title="Code-Review: KI-Code prüfen" data-part="A" data-stars="" data-min="20" data-extra="" aria-labelledby="h-a-review" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-review" tabindex="-1">Code-Review: KI-Code prüfen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Eine KI hat Code geliefert. Er sieht sauber aus und läuft los. Würdest du ihn freigeben? Klick die Zeilen an, die du für fehlerhaft hältst, dann lass auflösen.</p>
+      <figure class="k-figure">
+        <picture>
+          <source srcset="../assets/img/ki-spiegel.webp" type="image/webp">
+          <img src="../assets/img/ki-spiegel.png" alt="Illustration: KI-Code wird von einem Ingenieur geprüft" width="1600" height="901" loading="lazy" onerror="this.closest('figure').hidden=true">
+        </picture>
+      </figure>
+
+      <div class="k-mirror">
+        <h3>Szenario: Auswertung für die Qualitätssicherung</h3>
+        <p class="k-prompt__who">Prompt eines Studierenden</p>
+        <blockquote class="k-prompt">Schreib mir ein kleines Python-Programm mit drei Teilen. (1) Mittelwert einer Messreihe von fünf Durchmessern (12.004, 12.011, 11.998, 12.007, 12.019). (2) Für die Auswertung soll eine Arbeitskopie der Messreihe entstehen, in die ich eine Nachmessung (12.030) eintrage, ohne das Original zu verändern; gib danach aus, wie viele Messungen das Original hat. (3) Eine Stückliste als Dictionary: Der Nutzer gibt eine Teilenummer ein, das Programm gibt die Menge aus.</blockquote>
+        <p class="k-prompt__who">KI-Antwort (Python)</p>
+          <ol class="k-codelines" aria-label="Code der KI, Zeilen anklickbar">
+            <li><button type="button" class="k-line">messungen = [12.004, 12.011, 11.998, 12.007, 12.019]</button></li>
+            <li><button type="button" class="k-line"> </button></li>
+            <li><button type="button" class="k-line">summe = 0.0</button></li>
+            <li><button type="button" class="k-line" data-bug="a">for i in range(1, len(messungen)):</button></li>
+            <li><button type="button" class="k-line">    summe = summe + messungen[i]</button></li>
+            <li><button type="button" class="k-line">print(f&quot;Mittelwert: {summe / len(messungen):.4f} mm&quot;)</button></li>
+            <li><button type="button" class="k-line"> </button></li>
+            <li><button type="button" class="k-line" data-bug="b">arbeit = messungen</button></li>
+            <li><button type="button" class="k-line">arbeit.append(12.030)</button></li>
+            <li><button type="button" class="k-line">print(f&quot;Messungen im Original: {len(messungen)}&quot;)</button></li>
+            <li><button type="button" class="k-line"> </button></li>
+            <li><button type="button" class="k-line">stueckliste = {&quot;W-100&quot;: (1, 2.40), &quot;L-6205&quot;: (2, 0.13), &quot;D-35&quot;: (2, 0.02)}</button></li>
+            <li><button type="button" class="k-line">nummer = input(&quot;Teilenummer: &quot;)</button></li>
+            <li><button type="button" class="k-line" data-bug="c">print(f&quot;Menge: {stueckliste[nummer][0]}&quot;)</button></li>
+          </ol>
+        <p class="k-small k-muted">Tipp: Es sind drei Fehler eingebaut, einer je Teilaufgabe. Nicht jede Zeile ist falsch.</p>
+
+        <div class="k-mirror__task">
+          <p><strong>Würdest du das freigeben?</strong> Markiere die fehlerhaften Zeilen, dann lass auflösen.</p>
+          <button type="button" class="k-btn" data-mirror-check>Auflösen</button>
+          <p class="k-verdict" role="status" hidden></p>
+
+          <div data-mirror-after hidden>
+            <h3>Die drei Fehler</h3>
+            <h4>Fehler 1: eins daneben (Zeile 4)</h4>
+            <p><code class="k-i">range(1, len(messungen))</code> beginnt bei Index 1 und lässt das erste Element (12.004) weg. Die Summe enthält nur vier Werte, geteilt wird aber durch fünf: Es kommt 9.6070 statt 12.0078 heraus. Das Programm läuft ohne Fehlermeldung. Gegenprobe von Hand: Der Mittelwert muss zwischen kleinstem und größtem Wert liegen. Lösung: <code class="k-i">for d in messungen:</code> (dann entfällt die Indexrechnung ganz) oder <code class="k-i">range(len(messungen))</code>.</p>
+            <h4>Fehler 2: Aliasing statt Kopie (Zeile 8)</h4>
+            <p><code class="k-i">arbeit = messungen</code> legt <strong>keine</strong> neue Liste an, sondern einen zweiten Namen für dieselbe. Das <code class="k-i">append</code> verändert damit auch das Original: Es hat danach 6 statt 5 Messungen, und die Nachmessung steckt in den Originaldaten. Wieder keine Fehlermeldung, aber verfälschte Daten. Lösung: <code class="k-i">arbeit = messungen[:]</code>.</p>
+            <h4>Fehler 3: KeyError bei unbekannter Teilenummer (Zeile 14)</h4>
+            <p>Der Zugriff <code class="k-i">stueckliste[nummer]</code> setzt voraus, dass der Schlüssel existiert. Bei einem Zahlendreher wie <code class="k-i">L-6025</code> bricht das Programm mit <code class="k-i">KeyError: 'L-6025'</code> ab. Lösung: vorher mit <code class="k-i">if nummer in stueckliste:</code> prüfen und im <code class="k-i">else</code>-Zweig eine Meldung ausgeben. Diesen Fehler siehst du erst bei einer falschen Eingabe, nie beim Lesen des Codes mit dem richtigen Beispiel.</p>
+
+            <h3>Die KI-Version zum Ausprobieren</h3>
+            <p class="k-small k-muted">Die ersten beiden Ausgaben sind falsch (9.6070 statt 12.0078, und 6 statt 5 Messungen). Danach bricht das Programm bei der vorbelegten Teilenummer mit dem Zahlendreher mit einem KeyError ab.</p>
+            <pre data-stdin="L-6025"><code>messungen = [12.004, 12.011, 11.998, 12.007, 12.019]
+
+summe = 0.0
+for i in range(1, len(messungen)):
+    summe = summe + messungen[i]
+print(f"Mittelwert: {summe / len(messungen):.4f} mm")
+
+arbeit = messungen
+arbeit.append(12.030)
+print(f"Messungen im Original: {len(messungen)}")
+
+stueckliste = {"W-100": (1, 2.40), "L-6205": (2, 0.13), "D-35": (2, 0.02)}
+nummer = input("Teilenummer: ")
+print(f"Menge: {stueckliste[nummer][0]}")</code></pre>
+
+            <h3>Korrigierte Version</h3>
+            <pre data-stdin="L-6025"><code>messungen = [12.004, 12.011, 11.998, 12.007, 12.019]
+
+summe = 0.0
+for d in messungen:
+    summe = summe + d
+print(f"Mittelwert: {summe / len(messungen):.4f} mm")
+
+arbeit = messungen[:]
+arbeit.append(12.030)
+print(f"Messungen im Original: {len(messungen)}")
+
+stueckliste = {"W-100": (1, 2.40), "L-6205": (2, 0.13), "D-35": (2, 0.02)}
+nummer = input("Teilenummer: ")
+if nummer in stueckliste:
+    print(f"Menge: {stueckliste[nummer][0]}")
+else:
+    print(f"Teil {nummer} gibt es nicht")</code></pre>
+            <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke</strong><p>Bei Listen prüfst du immer die Ränder von Hand: erstes und letztes Element, die Zahl der Elemente und ob eine „Kopie“ wirklich eine ist. Bei Dictionaries fragst du: „Was passiert bei einem Schlüssel, den es nicht gibt?“ Die KI liefert den Fall aus dem Beispiel, nicht den aus deiner Anlage. Deine Testfälle (leere Liste, ein Element, falsche Teilenummer) schreibst du vorher von Hand auf.</p></div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-fehler" data-title="Typische Fehlermeldungen" data-part="A" data-stars="" data-min="5" data-extra="" aria-labelledby="h-a-fehler" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-fehler" tabindex="-1">Typische Fehlermeldungen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Fehlermeldungen sind keine Strafe, sondern ein Wegweiser. Bei Listen und Dictionaries gibt es allerdings auch Fehler, die <em>keine</em> Meldung auslösen. Diese fünf siehst du garantiert. Jedes Beispiel lässt sich ausführen: Schau dir die echte Meldung an und lies sie von unten nach oben (zuerst die letzte Zeile).</p>
+      <div class="a-errors">
+        <div class="a-error">
+          <h3><code class="k-i">IndexError</code>: Index außerhalb der Liste</h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="5000">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V08" aria-label="Fehlerbeispiel IndexError">messungen = [12.004, 12.011, 11.998]
+for i in range(1, 4):
+    print(i, messungen[i])</textarea></div>
+          </div>
+          <p>Meldung: <code class="k-i">IndexError: list index out of range</code>. Die Liste hat drei Elemente mit den Indizes 0, 1, 2. <code>range(1, 4)</code> läuft aber bis 3. Das passiert, wenn du den Endwert von <code>range</code> mit der Länge der Liste verwechselst. Gegenprobe: größter gültiger Index ist <code>len(liste) - 1</code>. Besser: <code>for d in messungen:</code>, dann gibt es keinen Index zum Verrechnen.</p>
+        </div>
+        <div class="a-error">
+          <h3><code class="k-i">KeyError</code>: Schlüssel nicht im Dictionary</h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="5000">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V08" aria-label="Fehlerbeispiel KeyError">stueckliste = {"W-100": (1, 2.40), "L-6205": (2, 0.13)}
+print(stueckliste["l-6205"])</textarea></div>
+          </div>
+          <p>Meldung: <code class="k-i">KeyError: 'l-6205'</code>. Die Meldung nennt den Schlüssel, den Python nicht gefunden hat: Hier steht ein kleines „l“, im Dictionary ein großes „L“. Schlüssel müssen exakt stimmen (Groß- und Kleinschreibung, Leerzeichen am Ende). Prüfe vorher mit <code>if schlüssel in stueckliste:</code>.</p>
+        </div>
+        <div class="a-error">
+          <h3><code class="k-i">TypeError</code>: Tupel lässt sich nicht ändern</h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="5000">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V08" aria-label="Fehlerbeispiel TypeError beim Tupel">toleranz = (12.000, 12.018)
+toleranz[0] = 11.990
+print(toleranz)</textarea></div>
+          </div>
+          <p>Meldung: <code class="k-i">TypeError: 'tuple' object does not support item assignment</code>. Ein Tupel ist unveränderlich. Wenn du die Grenze wirklich ändern willst, lege ein neues Tupel an: <code>toleranz = (11.990, 12.018)</code>. Mit <code>toleranz.append(...)</code> käme dagegen ein <code>AttributeError</code>: Tupel haben kein <code>append</code>.</p>
+        </div>
+        <div class="a-error">
+          <h3><code class="k-i">ZeroDivisionError</code>: Mittelwert einer leeren Liste</h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="5000">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V08" aria-label="Fehlerbeispiel ZeroDivisionError">messungen = []
+mittelwert = sum(messungen) / len(messungen)
+print(mittelwert)</textarea></div>
+          </div>
+          <p>Meldung: <code class="k-i">ZeroDivisionError: division by zero</code>. Bei einer leeren Liste ist <code>len</code> gleich 0. Das passiert, wenn die Schleife, die die Liste füllt, nie läuft (zum Beispiel weil <code>n = 0</code> eingegeben wurde). Frag vorher <code>if len(messungen) &gt; 0:</code> oder <code>if messungen:</code> (eine leere Liste zählt als falsch). Auch <code>max([])</code> und <code>min([])</code> sind bei leerer Liste ein <code>ValueError</code>.</p>
+        </div>
+        <div class="a-error">
+          <h3>Falsches Ergebnis ohne Meldung: die „Kopie“ ist keine</h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="5000">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V08" aria-label="Beispiel Aliasing">original = [12.004, 12.011, 11.998]
+kopie = original
+kopie.append(0.0)
+print("Original:", original)
+print("Mittelwert Original:", sum(original) / len(original))</textarea></div>
+          </div>
+          <p>Ausgabe: das Original enthält plötzlich die 0.0, und der Mittelwert ist falsch. Python meldet nichts, denn das Programm tut genau, was dasteht: <code>kopie = original</code> ist nur ein zweiter Name. Drück „Schritt für Schritt“, dann siehst du beide Namen auf <em>eine</em> Liste zeigen. Eine echte Kopie ist <code>original[:]</code>. Solche Fehler fängst du nur mit einer Gegenprobe der Ausgangsdaten.</p>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-1" data-title="Indizes und Slices" data-part="B" data-stars="1" data-min="5" data-extra="" aria-labelledby="h-t-1" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-1" tabindex="-1">Indizes und Slices</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Programmieren lernst du mit den Fingern, nicht mit den Augen. Das Training ist ein fester Teil jedes Termins und gehört zum Selbststudium. Du musst nicht alles an einem Stück machen, aber alles bis zum nächsten Termin. Die Aufgaben laufen komplett im Browser und werden automatisch geprüft.</p>
+      <div class="hinweis hinweis--achtung"><strong class="hinweis__title">Achtung</strong><p>Phase 1: <abbr class="k-begriff" data-erklaerung="GitHub Copilot ist ein KI-Assistent, der in der Entwicklungsumgebung Programmcode vorschlägt oder erklärt.">Copilot</abbr> nur als Erklärer. Erlaubt: „Erkläre mir diese Fehlermeldung“, „Was macht Zeile 3?“, „Warum ändert sich meine Liste?“. Nicht erlaubt: „Schreib mir die Auswertung“. Du tippst den Code selbst, denn nur dann lernst du, ihn zu prüfen. Ab V10 darf die KI Code erzeugen, und du prüfst.</p></div>
+
+      <div class="a-task" data-a="code" data-id="tr-1" data-mode="code">
+        <div class="a-task__text">
+          <p>Ein Ofen meldet acht Temperaturen. Hol mit Index und Slicing die gesuchten Teile aus der Liste und weise sie den Variablen zu. Benutze für <code class="k-i">letzte</code> und <code class="k-i">letzte_drei</code> <strong>negative Indizes</strong> und für <code class="k-i">anzahl</code> den Befehl <code class="k-i">len</code>, nicht die Zahl 8 (der Ofen kann später mehr melden).</p>
+          <div class="a-spec"><strong>Ausgabe genau so:</strong><pre data-run="no">20.5 31.0 [23.5, 25.0, 26.5] [28.0, 29.5, 31.0] 8</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V08" aria-label="Python-Code Aufgabe 1">temperaturen = [20.5, 22.0, 23.5, 25.0, 26.5, 28.0, 29.5, 31.0]
+erste = None          # erstes Element
+letzte = None         # letztes Element (negativer Index)
+mitte = None          # die Elemente mit Index 2, 3 und 4 (Slice)
+letzte_drei = None    # die letzten drei Elemente (Slice mit negativem Index)
+anzahl = None         # Anzahl der Elemente
+print(erste, letzte, mitte, letzte_drei, anzahl)
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def test_erste():
+    """erste ist 20.5"""
+    assert erste == 20.5, "erste ist %r, erwartet 20.5. Das erste Element hat den Index 0." % (erste,)
+
+def test_letzte():
+    """letzte ist 31.0"""
+    assert letzte == 31.0, "letzte ist %r, erwartet 31.0. Das letzte Element hat den Index -1." % (letzte,)
+
+def test_mitte():
+    """mitte ist [23.5, 25.0, 26.5]"""
+    assert mitte == [23.5, 25.0, 26.5], "mitte ist %r, erwartet [23.5, 25.0, 26.5]. Index 2 bis 4: Der Endwert 5 des Slices gehört nicht mehr dazu." % (mitte,)
+
+def test_letzte_drei():
+    """letzte_drei ist [28.0, 29.5, 31.0]"""
+    assert letzte_drei == [28.0, 29.5, 31.0], "letzte_drei ist %r, erwartet [28.0, 29.5, 31.0]. Tipp: temperaturen[-3:]" % (letzte_drei,)
+
+def test_anzahl():
+    """anzahl ist 8 und die Liste unverändert"""
+    assert anzahl == 8, "anzahl ist %r, erwartet 8." % (anzahl,)
+    assert len(temperaturen) == 8, "Die Liste temperaturen darf nicht verändert werden."
+
+def test_ausgabe():
+    """Ausgabe: '20.5 31.0 [23.5, 25.0, 26.5] [28.0, 29.5, 31.0] 8'"""
+    z = zeilen(AUSGABE)
+    assert "20.5 31.0 [23.5, 25.0, 26.5] [28.0, 29.5, 31.0] 8" in z, "Erwartet wird die Zeile '20.5 31.0 [23.5, 25.0, 26.5] [28.0, 29.5, 31.0] 8'. Dein Programm gibt aus: %r" % z
+        </script>
+        <script type="text/x-python" data-role="solution">
+temperaturen = [20.5, 22.0, 23.5, 25.0, 26.5, 28.0, 29.5, 31.0]
+erste = temperaturen[0]
+letzte = temperaturen[-1]
+mitte = temperaturen[2:5]
+letzte_drei = temperaturen[-3:]
+anzahl = len(temperaturen)
+print(erste, letzte, mitte, letzte_drei, anzahl)
+        </script>
+        <ol class="a-hints">
+          <li>Das erste Element hat den Index 0, das letzte den Index -1 (Syntax-Karte 1).</li>
+          <li>Index 2, 3 und 4 sind <code>temperaturen[2:5]</code>: Der Endwert gehört nicht mehr dazu.</li>
+          <li>Die letzten drei: <code>temperaturen[-3:]</code> (kein Endwert heißt: bis zum Ende). Die Anzahl: <code>len(temperaturen)</code>.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-2" data-title="Stückliste: Menge nachschlagen" data-part="B" data-stars="1" data-min="6" data-extra="" aria-labelledby="h-t-2" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-2" tabindex="-1">Stückliste: Menge nachschlagen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="code" data-id="tr-2" data-mode="programm" data-inputs="L-6205">
+        <div class="a-task__text">
+          <p>Das Programm liest eine Teilenummer ein und gibt die <strong>Menge</strong> aus der Stückliste aus. Steht die Nummer <strong>nicht</strong> in der Stückliste, soll es <em>keinen</em> Abbruch geben, sondern eine Meldung. Die Menge ist das erste Element des Tupels.</p>
+          <div class="a-spec"><strong>Ausgabe genau so (Eingabe L-6205, danach Eingabe X-9):</strong><pre data-run="no">Menge: 2
+Teil X-9 gibt es nicht</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V08" aria-label="Python-Code Aufgabe 2">stueckliste = {"W-100": (1, 2.40), "L-6205": (2, 0.13), "D-35": (2, 0.02), "P-8x7": (1, 0.01)}
+nummer = input("Teilenummer: ")
+# gib "Menge: ..." aus, wenn die Nummer vorkommt, sonst die Meldung
+
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _lauf(nummer):
+    return zeilen(run_program([nummer]))
+
+def test_lager():
+    """L-6205: Menge 2"""
+    z = _lauf("L-6205")
+    assert "Menge: 2" in z, "Erwartet wird die Zeile 'Menge: 2'. Dein Programm gibt aus: %r" % z
+
+def test_welle():
+    """W-100: Menge 1"""
+    z = _lauf("W-100")
+    assert "Menge: 1" in z, "Erwartet wird die Zeile 'Menge: 1'. Dein Programm gibt aus: %r" % z
+
+def test_unbekannt():
+    """X-9 gibt es nicht: Meldung ohne Abbruch"""
+    z = _lauf("X-9")
+    assert "Teil X-9 gibt es nicht" in z, "Erwartet wird die Zeile 'Teil X-9 gibt es nicht'. Dein Programm gibt aus: %r" % z
+
+def test_schreibweise():
+    """l-6205 (klein geschrieben) ist ein anderer Schlüssel"""
+    z = _lauf("l-6205")
+    assert "Teil l-6205 gibt es nicht" in z, "Schlüssel müssen exakt stimmen: 'l-6205' gibt es nicht. Dein Programm gibt aus: %r" % z
+        </script>
+        <script type="text/x-python" data-role="solution">
+stueckliste = {"W-100": (1, 2.40), "L-6205": (2, 0.13), "D-35": (2, 0.02), "P-8x7": (1, 0.01)}
+nummer = input("Teilenummer: ")
+if nummer in stueckliste:
+    print(f"Menge: {stueckliste[nummer][0]}")
+else:
+    print(f"Teil {nummer} gibt es nicht")
+        </script>
+        <ol class="a-hints">
+          <li>Vor dem Zugriff fragst du mit <code>in</code>, ob der Schlüssel im Dictionary steht (Syntax-Karte 5).</li>
+          <li><code>stueckliste[nummer]</code> ist das Tupel (Menge, Gewicht). Die Menge ist das Element mit Index 0.</li>
+          <li><code>if nummer in stueckliste:</code> mit der Ausgabe im Rumpf, <code>else:</code> mit der Meldung.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-3" data-title="Fehler finden: die falsche Kopie" data-part="B" data-stars="2" data-min="6" data-extra="" aria-labelledby="h-t-3" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-3" tabindex="-1">Fehler finden: die falsche Kopie</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="code" data-id="tr-3" data-mode="code">
+        <div class="a-task__text">
+          <p>Die Rohdaten einer Messreihe dürfen nie verändert werden. Zwei Nachmessungen sollen nur in die Arbeitsliste <code class="k-i">bereinigt</code> eingetragen werden. Das Programm läuft ohne Fehlermeldung, aber die Ausgabe stimmt nicht: Die Rohdaten sind verändert. Finde den Fehler und repariere ihn mit <strong>einer</strong> Änderung.</p>
+          <div class="a-spec"><strong>Ausgabe genau so:</strong><pre data-run="no">roh: 4 bereinigt: 6</pre></div>
+          <p class="k-small k-muted">Tipp: Drück „Schritt für Schritt“ und achte darauf, wie viele Listen es im Bild gibt.</p>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V08" aria-label="Python-Code Aufgabe 3">roh = [12.004, 12.011, 11.998, 12.007]
+bereinigt = roh
+bereinigt.append(12.030)     # Nachmessung nur in die Arbeitsliste eintragen
+bereinigt.append(12.012)
+print("roh:", len(roh), "bereinigt:", len(bereinigt))
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def test_roh_unveraendert():
+    """Die Rohdaten haben weiterhin vier Messungen"""
+    assert roh == [12.004, 12.011, 11.998, 12.007], "roh ist jetzt %r. Die Rohdaten müssen [12.004, 12.011, 11.998, 12.007] bleiben." % (roh,)
+
+def test_bereinigt():
+    """bereinigt hat sechs Elemente, die zwei Nachmessungen stehen hinten"""
+    assert len(bereinigt) == 6 and bereinigt[-2:] == [12.030, 12.012], "bereinigt ist %r, erwartet vier Originalwerte und hinten 12.030 und 12.012." % (bereinigt,)
+
+def test_zwei_listen():
+    """roh und bereinigt sind zwei getrennte Listen"""
+    assert bereinigt is not roh, "roh und bereinigt sind noch dieselbe Liste: b = a legt keine Kopie an. Für eine Kopie: roh[:]"
+
+def test_ausgabe():
+    """Ausgabe: 'roh: 4 bereinigt: 6'"""
+    z = zeilen(AUSGABE)
+    assert "roh: 4 bereinigt: 6" in z, "Erwartet wird die Zeile 'roh: 4 bereinigt: 6'. Dein Programm gibt aus: %r" % z
+        </script>
+        <script type="text/x-python" data-role="solution">
+roh = [12.004, 12.011, 11.998, 12.007]
+bereinigt = roh[:]
+bereinigt.append(12.030)
+bereinigt.append(12.012)
+print("roh:", len(roh), "bereinigt:", len(bereinigt))
+        </script>
+        <ol class="a-hints">
+          <li>Wie viele Listen gibt es nach <code>bereinigt = roh</code>? Zwei Namen, aber nur ... (Syntax-Karte 7).</li>
+          <li>Eine echte Kopie legt eine neue Liste mit denselben Elementen an.</li>
+          <li>Ändere nur Zeile 2: <code>bereinigt = roh[:]</code>.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-4" data-title="Punkte als Tupel: Abstand und Mittelpunkt" data-part="B" data-stars="2" data-min="8" data-extra="Wiederholung V03" aria-labelledby="h-t-4" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-4" tabindex="-1">Punkte als Tupel: Abstand und Mittelpunkt</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="code" data-id="tr-4" data-mode="programm" data-inputs="0|0|3|4">
+        <div class="a-task__text">
+          <p>Wiederholung V03 (<code class="k-i">math</code>, Formatierung) und neu: Tupel. Zwei Bohrungsmittelpunkte liegen in einer Platte bei den Koordinaten (x1, y1) und (x2, y2) in mm. Lies <em>x1, y1, x2, y2</em> in dieser Reihenfolge ein (Kommazahlen) und lege zwei Tupel <code class="k-i">p1 = (x1, y1)</code> und <code class="k-i">p2 = (x2, y2)</code> an. Berechne den Abstand zwischen den Punkten (Satz des Pythagoras mit <code class="k-i">math.sqrt</code>) und den Mittelpunkt der Strecke. Greife in der Rechnung über den Index auf die Tupel zu.</p>
+          <div class="a-spec"><strong>Ausgabe genau so (Beispiel (0, 0) und (3, 4)):</strong><pre data-run="no">Abstand: 5.00 mm
+Mittelpunkt: (1.50, 2.00)</pre></div>
+          <p class="k-small k-muted">Abstand = √((x2 − x1)² + (y2 − y1)²), Mittelpunkt = ((x1 + x2) / 2, (y1 + y2) / 2).</p>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V08" aria-label="Python-Code Aufgabe 4">import math
+
+x1 = float(input("x1 in mm: "))
+y1 = float(input("y1 in mm: "))
+x2 = float(input("x2 in mm: "))
+y2 = float(input("y2 in mm: "))
+# lege die Tupel p1 und p2 an, berechne Abstand und Mittelpunkt
+
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _pruefe(x1, y1, x2, y2):
+    d = math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+    soll = ["Abstand: %.2f mm" % d, "Mittelpunkt: (%.2f, %.2f)" % ((x1 + x2) / 2, (y1 + y2) / 2)]
+    z = zeilen(run_program([str(x1), str(y1), str(x2), str(y2)]))
+    for t in soll:
+        assert t in z, "Bei (%s, %s) und (%s, %s) wird die Zeile %r erwartet. Dein Programm gibt aus: %r" % (x1, y1, x2, y2, t, z)
+
+def test_beispiel():
+    """Beispiel (0, 0) und (3, 4): Abstand 5.00"""
+    _pruefe(0, 0, 3, 4)
+
+def test_versetzt():
+    """Versetzte Punkte (1.5, 2) und (4.5, 6)"""
+    _pruefe(1.5, 2, 4.5, 6)
+
+def test_negativ():
+    """Negative Koordinaten (-2, 1) und (1, 5)"""
+    _pruefe(-2, 1, 1, 5)
+
+def test_gleich():
+    """Zwei gleiche Punkte: Abstand 0.00"""
+    _pruefe(10, 10, 10, 10)
+
+def test_diagonale():
+    """Diagonale (0, 0) und (1, 1): Abstand 1.41"""
+    _pruefe(0, 0, 1, 1)
+        </script>
+        <script type="text/x-python" data-role="solution">
+import math
+
+x1 = float(input("x1 in mm: "))
+y1 = float(input("y1 in mm: "))
+x2 = float(input("x2 in mm: "))
+y2 = float(input("y2 in mm: "))
+p1 = (x1, y1)
+p2 = (x2, y2)
+dx = p2[0] - p1[0]
+dy = p2[1] - p1[1]
+abstand = math.sqrt(dx ** 2 + dy ** 2)
+mitte = ((p1[0] + p2[0]) / 2, (p1[1] + p2[1]) / 2)
+print(f"Abstand: {abstand:.2f} mm")
+print(f"Mittelpunkt: ({mitte[0]:.2f}, {mitte[1]:.2f})")
+        </script>
+        <ol class="a-hints">
+          <li><code>p1 = (x1, y1)</code> legt das Tupel an, <code>p1[0]</code> ist die x-Koordinate, <code>p1[1]</code> die y-Koordinate (Syntax-Karte 4).</li>
+          <li>Differenzen: <code>dx = p2[0] - p1[0]</code>, entsprechend <code>dy</code>. Dann <code>math.sqrt(dx ** 2 + dy ** 2)</code> (V02, V03).</li>
+          <li>Der Mittelpunkt ist wieder ein Tupel: <code>((p1[0] + p2[0]) / 2, (p1[1] + p2[1]) / 2)</code>. Ausgabe mit <code>:.2f</code>.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-zeichnen" data-title="PAP zeichnen: Schleife über eine Liste" data-part="B" data-stars="2" data-min="8" data-extra="mit Papier" aria-labelledby="h-t-zeichnen" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-zeichnen" tabindex="-1">PAP zeichnen: Schleife über eine Liste</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="pap" data-id="tr-zeichnen">
+        <div class="a-task__head"><h3 class="a-task__title">Temperaturen über dem Grenzwert zählen</h3></div>
+        <div class="a-task__text">
+          <p>In der Klausur zeichnest du PAPs von Hand. Nimm <strong>Papier und Stift</strong> (oder ein Tablet) und zeichne den Programmablaufplan zu diesem Code. Erst danach klappst du die Musterlösung auf und vergleichst. Dein PAP muss nicht gleich aussehen, aber dieselben Fragen, Wege und Texte haben. Tipp: Eine Schleife über eine Liste ist eine Raute „noch ein Wert übrig?“ mit Rückführlinie, im Rumpf steht eine zweite Raute für das <code class="k-i">if</code>.</p>
+<pre><code>temperaturen = [78.5, 81.2, 79.9, 85.0, 83.1]
+grenze = 80.0
+zaehler = 0
+for t in temperaturen:
+    if t &gt; grenze:
+        zaehler = zaehler + 1
+print("Über dem Grenzwert:", zaehler)</code></pre>
+          <ol class="a-explain">
+            <li>Zeichne Start, die beiden Zuweisungen vor der Schleife (Rechteck) und dann die Schleifenraute „noch ein Wert in temperaturen übrig?“.</li>
+            <li>Bei „ja“ geht es in den Rumpf: Wert holen, dann die Raute „t &gt; grenze?“. Bei „ja“ wird der Zähler erhöht.</li>
+            <li>Beide Wege der inneren Raute führen <strong>zurück</strong> vor die Schleifenraute. Nur der Weg „nein“ der Schleifenraute führt zur Ausgabe und zum Ende.</li>
+          </ol>
+          <details class="k-deep">
+            <summary>Musterlösung aufklappen (erst nach deinem Versuch)</summary>
+            <div class="k-deep__body">
+              <div class="pap-wrap"><svg class="pap" xmlns="http://www.w3.org/2000/svg" viewBox="-216 -14 369 806" role="img" aria-label="Programmablaufplan zur Zählschleife über die Liste temperaturen: Start, Liste und Grenze setzen, Zähler auf null, Schleife über jeden Wert mit der Frage t größer grenze, bei ja Zähler um eins erhöhen, nach der Schleife Ausgabe des Zählers, Ende." style="--pap-min:288px;--pap-max:369px"><g class="pap-e" data-from="start" data-to="p12" data-lab=""><path class="pap-hit" d="M0 34L0 62"/><path class="pap-line" d="M0 34L0 62"/><path class="pap-ah" d="M0 62L-4.6 53L4.6 53Z"/></g><g class="pap-e" data-from="p12" data-to="p13" data-lab=""><path class="pap-hit" d="M0 148L0 176"/><path class="pap-line" d="M0 148L0 176"/><path class="pap-ah" d="M0 176L-4.6 167L4.6 167Z"/></g><g class="pap-e" data-from="p13" data-to="p17" data-lab=""><path class="pap-hit" d="M0 214L0 242"/><path class="pap-line" d="M0 214L0 242"/><path class="pap-ah" d="M0 242L-4.6 233L4.6 233Z"/></g><g class="pap-e" data-from="p17" data-to="p14" data-lab="ja"><path class="pap-hit" d="M0 368L0 396"/><path class="pap-line" d="M0 368L0 396"/><path class="pap-ah" d="M0 396L-4.6 387L4.6 387Z"/><text class="pap-lab" x="12" y="381" text-anchor="start">ja</text></g><g class="pap-e" data-from="p14" data-to="p16" data-lab=""><path class="pap-hit" d="M0 448L0 476"/><path class="pap-line" d="M0 448L0 476"/><path class="pap-ah" d="M0 476L-4.6 467L4.6 467Z"/></g><g class="pap-e" data-from="p16" data-to="p15" data-lab="ja"><path class="pap-hit" d="M-69.5 515L-91.5 515L-91.5 553.4"/><path class="pap-line" d="M-69.5 515L-91.5 515L-91.5 553.4"/><path class="pap-ah" d="M-91.5 553.4L-96.1 544.4L-86.9 544.4Z"/><text class="pap-lab" x="-75.5" y="509" text-anchor="end">ja</text></g><g class="pap-e" data-from="p15" data-to="p17" data-lab=""><path class="pap-hit" d="M-91.5 591.4L-91.5 606.8L-202 606.8L-202 230L0 230"/><path class="pap-line" d="M-91.5 591.4L-91.5 606.8L-202 606.8L-202 230L0 230"/><path class="pap-ah" d="M0 230L-9 234.6L-9 225.4Z"/></g><g class="pap-e" data-from="p16" data-to="p17" data-lab="nein"><path class="pap-hit" d="M69.5 515L69.5 606.8L-202 606.8L-202 230L0 230"/><path class="pap-line" d="M69.5 515L69.5 606.8L-202 606.8L-202 230L0 230"/><path class="pap-ah" d="M0 230L-9 234.6L-9 225.4Z"/><text class="pap-lab" x="75.5" y="509" text-anchor="start">nein</text></g><g class="pap-e" data-from="p17" data-to="p18" data-lab="nein"><path class="pap-hit" d="M92.5 305L138.5 305L138.5 622.2L0 622.2L0 646.8"/><path class="pap-line" d="M92.5 305L138.5 305L138.5 622.2L0 622.2L0 646.8"/><path class="pap-ah" d="M0 646.8L-4.6 637.8L4.6 637.8Z"/><text class="pap-lab" x="98.5" y="299" text-anchor="start">nein</text></g><g class="pap-e" data-from="p18" data-to="p19" data-lab=""><path class="pap-hit" d="M0 715.8L0 743.8"/><path class="pap-line" d="M0 715.8L0 743.8"/><path class="pap-ah" d="M0 743.8L-4.6 734.8L4.6 734.8Z"/></g><g class="pap-n pap-n--start" data-id="start" data-bid="start"><rect class="pap-shape" x="-48" y="0" width="96" height="34" rx="17"/><text class="pap-t" x="0" y="21.6" text-anchor="middle">Start</text></g><g class="pap-n pap-n--op" data-id="p12" data-bid="p12"><rect class="pap-shape" x="-80.5" y="62" width="161" height="86"/><text class="pap-t" x="0" y="84.1" text-anchor="middle">temperaturen = [78.5,</text><text class="pap-t" x="0" y="101.1" text-anchor="middle">81.2, 79.9, 85.0,</text><text class="pap-t" x="0" y="118.1" text-anchor="middle">83.1]</text><text class="pap-t" x="0" y="135.1" text-anchor="middle">grenze = 80.0</text></g><g class="pap-n pap-n--op" data-id="p13" data-bid="p13"><rect class="pap-shape" x="-49" y="176" width="98" height="38"/><text class="pap-t" x="0" y="199.6" text-anchor="middle">zaehler = 0</text></g><g class="pap-n pap-n--while" data-id="p17" data-bid="p17"><path class="pap-shape" d="M0 242L92.5 305L0 368L-92.5 305Z"/><text class="pap-t" x="0" y="292.6" text-anchor="middle">noch ein Wert</text><text class="pap-t" x="0" y="309.6" text-anchor="middle">in temperaturen</text><text class="pap-t" x="0" y="326.6" text-anchor="middle">übrig?</text></g><g class="pap-n pap-n--op" data-id="p14" data-bid="p14"><rect class="pap-shape" x="-68" y="396" width="136" height="52"/><text class="pap-t" x="0" y="418.1" text-anchor="middle">t = nächster Wert</text><text class="pap-t" x="0" y="435.1" text-anchor="middle">aus temperaturen</text></g><g class="pap-n pap-n--if" data-id="p16" data-bid="p16"><path class="pap-shape" d="M0 476L69.5 515L0 554L-69.5 515Z"/><text class="pap-t" x="0" y="519.6" text-anchor="middle">t &gt; grenze?</text></g><g class="pap-n pap-n--op" data-id="p15" data-bid="p15"><rect class="pap-shape" x="-172" y="553.4" width="161" height="38"/><text class="pap-t" x="-91.5" y="577" text-anchor="middle">zaehler = zaehler + 1</text></g><g class="pap-n pap-n--io" data-id="p18" data-bid="p18"><path class="pap-shape" d="M-68 646.8H82L68 715.8H-82Z"/><text class="pap-t" x="0" y="668.9" text-anchor="middle">Ausgabe: Über dem</text><text class="pap-t" x="0" y="685.9" text-anchor="middle">Grenzwert:</text><text class="pap-t" x="0" y="702.9" text-anchor="middle">zaehler</text></g><g class="pap-n pap-n--end" data-id="p19" data-bid="p19"><rect class="pap-shape" x="-48" y="743.8" width="96" height="34" rx="17"/><text class="pap-t" x="0" y="765.4" text-anchor="middle">Ende</text></g></svg></div>
+              <p class="k-small k-muted">Zwei Testfälle: Bei der Liste oben kommt 3 heraus (81.2, 85.0, 83.1). Ist die Liste leer, läuft der Rumpf nie, und es wird 0 ausgegeben. Der Rand: Genau 80.0 ist <em>nicht</em> größer als 80.0.</p>
+              <p><strong>Prüfliste:</strong> Genau ein Start? Beide Rauten mit „ja“ und „nein“ beschriftet? Jede Rückführung führt vor die Schleifenraute (nicht ans Ende des Plans)? Eingabe/Ausgabe als Parallelogramm? Alle Pfeile mit Spitze?</p>
+            </div>
+          </details>
+        </div>
+        <div data-explorable="check"><label class="v05-check"><input type="checkbox"> Ich habe meinen PAP gezeichnet, mit der Musterlösung verglichen und Abweichungen notiert.</label></div>
+      </div>
+    </section>
+
+    <section class="l-task" id="t-6" data-title="Stückliste auswerten und ändern" data-part="B" data-stars="3" data-min="10" data-extra="" aria-labelledby="h-t-6" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-6" tabindex="-1">Stückliste auswerten und ändern</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="code" data-id="tr-6" data-mode="programm" data-inputs="L-6205|4">
+        <div class="a-task__text">
+          <p>Bei einer Änderung der Konstruktion wird die Menge eines Teils angepasst. Das Programm liest eine Teilenummer und eine neue Menge (ganze Zahl). Gibt es die Teilenummer, ersetzt es im Dictionary die Menge und <strong>behält das Gewicht je Stück</strong>, und es gibt „Menge von … geändert auf …“ aus. Gibt es sie nicht, gibt es „Teil … gibt es nicht“ aus und ändert nichts. In beiden Fällen berechnet es danach mit <code class="k-i">.items()</code> das Gesamtgewicht der Stückliste (Menge mal Gewicht, Summe).</p>
+          <div class="a-spec"><strong>Ausgabe genau so (Eingabe L-6205 und 4):</strong><pre data-run="no">Menge von L-6205 geändert auf 4
+Gesamtgewicht: 2.97 kg</pre><p class="k-small k-muted">Bei einer unbekannten Teilenummer (X-9): „Teil X-9 gibt es nicht“ und unverändert „Gesamtgewicht: 2.71 kg“.</p></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V08" aria-label="Python-Code Aufgabe 6">stueckliste = {"W-100": (1, 2.40), "L-6205": (2, 0.13), "D-35": (2, 0.02), "P-8x7": (1, 0.01)}
+nummer = input("Teilenummer: ")
+neue_menge = int(input("Neue Menge: "))
+# Menge ändern (Gewicht behalten) oder melden, dass es das Teil nicht gibt
+
+# Gesamtgewicht mit .items() berechnen und ausgeben
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+S = {"W-100": (1, 2.40), "L-6205": (2, 0.13), "D-35": (2, 0.02), "P-8x7": (1, 0.01)}
+
+def _ref(nummer, menge):
+    s = dict(S)
+    if nummer in s:
+        s[nummer] = (menge, s[nummer][1])
+        melde = "Menge von %s geändert auf %d" % (nummer, menge)
+    else:
+        melde = "Teil %s gibt es nicht" % nummer
+    g = 0.0
+    for t, w in s.items():
+        g = g + w[0] * w[1]
+    return melde, "Gesamtgewicht: %.2f kg" % g
+
+def _pruefe(nummer, menge):
+    melde, gesamt = _ref(nummer, menge)
+    z = zeilen(run_program([nummer, str(menge)]))
+    assert melde in z, "Bei %s und %d wird die Zeile %r erwartet. Dein Programm gibt aus: %r" % (nummer, menge, melde, z)
+    assert gesamt in z, "Bei %s und %d wird die Zeile %r erwartet. Dein Programm gibt aus: %r" % (nummer, menge, gesamt, z)
+
+def test_beispiel():
+    """L-6205 auf 4: Gesamtgewicht 2.97 kg"""
+    _pruefe("L-6205", 4)
+
+def test_welle():
+    """W-100 auf 3: das Gewicht 2.40 bleibt erhalten"""
+    _pruefe("W-100", 3)
+
+def test_unbekannt():
+    """X-9: Meldung, Gesamtgewicht unverändert 2.71 kg"""
+    _pruefe("X-9", 5)
+
+def test_null():
+    """Menge 0 ist erlaubt: P-8x7 auf 0"""
+    _pruefe("P-8x7", 0)
+        </script>
+        <script type="text/x-python" data-role="solution">
+stueckliste = {"W-100": (1, 2.40), "L-6205": (2, 0.13), "D-35": (2, 0.02), "P-8x7": (1, 0.01)}
+nummer = input("Teilenummer: ")
+neue_menge = int(input("Neue Menge: "))
+if nummer in stueckliste:
+    gewicht = stueckliste[nummer][1]
+    stueckliste[nummer] = (neue_menge, gewicht)
+    print(f"Menge von {nummer} geändert auf {neue_menge}")
+else:
+    print(f"Teil {nummer} gibt es nicht")
+
+gesamt = 0.0
+for teil, werte in stueckliste.items():
+    gesamt = gesamt + werte[0] * werte[1]
+print(f"Gesamtgewicht: {gesamt:.2f} kg")
+        </script>
+        <ol class="a-hints">
+          <li>Das Gewicht steht im Tupel auf Index 1. Hol es dir, <em>bevor</em> du das Tupel ersetzt: <code>gewicht = stueckliste[nummer][1]</code>.</li>
+          <li>Ein Tupel kannst du nicht ändern. Lege deshalb ein neues an und weise es dem Schlüssel zu: <code>stueckliste[nummer] = (neue_menge, gewicht)</code>.</li>
+          <li>Das Gesamtgewicht steht <em>nach</em> dem <code>if</code>/<code>else</code> (nicht eingerückt), damit es in beiden Fällen läuft: <code>for teil, werte in stueckliste.items():</code>.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-7" data-title="Knobelaufgabe: Häufigkeitstabelle mit Dictionary" data-part="B" data-stars="4" data-min="Zusatz" data-extra="" aria-labelledby="h-t-7" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-7" tabindex="-1">Knobelaufgabe: Häufigkeitstabelle mit Dictionary</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="code" data-id="tr-7" data-mode="programm" data-inputs="6|A|B|A|C|A|B">
+        <div class="a-task__text">
+          <p>Die Qualitätskontrolle vergibt je Bauteil eine Güteklasse als Buchstabe (A, B, C …). Das Programm liest die Zahl <em>n</em> der Bauteile und danach n Güteklassen (je ein <code class="k-i">input()</code>) ein und zählt, wie oft jede Güteklasse vorkommt. Benutze ein <strong>Dictionary</strong>: Die Güteklasse ist der Schlüssel, die Häufigkeit der Wert. Gib danach je eine Zeile pro vorkommender Klasse aus, <strong>in der Reihenfolge des ersten Auftretens</strong>, und zum Schluss die Zahl der verschiedenen Klassen.</p>
+          <div class="a-spec"><strong>Ausgabe genau so (Eingabe n = 6 mit A, B, A, C, A, B):</strong><pre data-run="no">A: 3
+B: 2
+C: 1
+Verschiedene Klassen: 3</pre></div>
+          <p class="k-small k-muted">Das Muster: Kommt ein Schlüssel schon vor, erhöhe seinen Wert um 1, sonst lege ihn mit dem Wert 1 neu an. Das <code class="k-i">in</code> aus Karte 5 entscheidet.</p>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V08" aria-label="Python-Code Aufgabe 7"># Häufigkeit der Güteklassen
+n = int(input("Anzahl Bauteile: "))
+haeufigkeit = {}
+# lies n Güteklassen ein und zähle sie im Dictionary
+
+# Ausgabe: je Klasse eine Zeile, dann die Zahl der verschiedenen Klassen
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _ref(codes):
+    d = {}
+    for c in codes:
+        if c in d:
+            d[c] = d[c] + 1
+        else:
+            d[c] = 1
+    return ["%s: %d" % (k, v) for k, v in d.items()], "Verschiedene Klassen: %d" % len(d)
+
+def _pruefe(codes):
+    import re
+    zeilen_soll, summe = _ref(codes)
+    z = zeilen(run_program([str(len(codes))] + list(codes)))
+    zk = [l for l in z if re.match(r"^[A-Z]: \d+$", l)]
+    assert zk == zeilen_soll, "Bei %r werden diese Zeilen (in der Reihenfolge des ersten Auftretens) erwartet: %r. Dein Programm gibt aus: %r" % (codes, zeilen_soll, z)
+    assert summe in z, "Bei %r wird die Zeile %r erwartet. Dein Programm gibt aus: %r" % (codes, summe, z)
+
+def test_beispiel():
+    """Beispiel A, B, A, C, A, B"""
+    _pruefe(["A", "B", "A", "C", "A", "B"])
+
+def test_reihenfolge():
+    """Reihenfolge des ersten Auftretens: C, A, C, B"""
+    _pruefe(["C", "A", "C", "B"])
+
+def test_alle_gleich():
+    """Alle gleich: B, B, B"""
+    _pruefe(["B", "B", "B"])
+
+def test_einer():
+    """Ein einziges Bauteil: A"""
+    _pruefe(["A"])
+        </script>
+        <script type="text/x-python" data-role="solution">
+n = int(input("Anzahl Bauteile: "))
+haeufigkeit = {}
+for i in range(n):
+    klasse = input(f"Klasse {i + 1}: ")
+    if klasse in haeufigkeit:
+        haeufigkeit[klasse] = haeufigkeit[klasse] + 1
+    else:
+        haeufigkeit[klasse] = 1
+for klasse, anzahl in haeufigkeit.items():
+    print(f"{klasse}: {anzahl}")
+print(f"Verschiedene Klassen: {len(haeufigkeit)}")
+        </script>
+        <ol class="a-hints">
+          <li>In der Einleseschleife: <code>klasse = input(...)</code>. Dann <code>if klasse in haeufigkeit:</code>.</li>
+          <li>Vorhandener Schlüssel: <code>haeufigkeit[klasse] = haeufigkeit[klasse] + 1</code>. Sonst: <code>haeufigkeit[klasse] = 1</code>.</li>
+          <li>Die Ausgabe steht nach der Einleseschleife: <code>for klasse, anzahl in haeufigkeit.items():</code>. Die Zahl der verschiedenen Klassen ist <code>len(haeufigkeit)</code>.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-8" data-title="Klausur-Modus: Temperaturlogger auswerten" data-part="B" data-stars="4" data-min="15" data-extra="8 Punkte" aria-labelledby="h-t-8" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-8" tabindex="-1">Klausur-Modus: Temperaturlogger auswerten</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="klausur" data-id="tr-8" data-mode="programm" data-minutes="15">
+        <div class="a-task__text">
+          <p><strong>So wie in der Klausur:</strong> Schreibe den Code ohne Ausführen und ohne <abbr class="k-begriff" data-erklaerung="Die Auto-Vervollständigung schlägt dir beim Tippen passende Wörter vor. In der Klausur gibt es sie nicht.">Auto-Vervollständigung</abbr>, wenn möglich zuerst auf Papier. Erst danach „Abgeben und prüfen“, dann bewertest du dich selbst.</p>
+          <p>Ein Datenlogger misst die Öltemperatur einer Getriebeprüfung. Schreibe ein Programm, das zuerst die Anzahl <em>n</em> der Messwerte (ganze Zahl, mindestens 3) und danach n Temperaturen in °C (Kommazahlen) einliest und in einer <strong>Liste</strong> sammelt. Gib danach vier Zeilen aus:</p>
+          <ul>
+            <li>den <strong>letzten</strong> Messwert (eine Nachkommastelle),</li>
+            <li>das <strong>Maximum</strong> (eine Nachkommastelle),</li>
+            <li>wie viele Werte <strong>über dem Grenzwert 80,0 °C</strong> liegen (genau 80,0 zählt nicht),</li>
+            <li>den Mittelwert der <strong>letzten drei</strong> Messwerte (zwei Nachkommastellen, per Slice).</li>
+          </ul>
+          <div class="a-spec"><strong>Ausgabe genau so (n = 5, Werte 78.5, 81.2, 79.9, 85.0, 83.1):</strong><pre data-run="no">Letzter Wert: 83.1 °C
+Maximum: 85.0 °C
+Über 80.0 °C: 3 von 5
+Mittelwert der letzten drei: 82.67 °C</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V08" data-assist="off" aria-label="Python-Code von Hand schreiben, ohne Ausführen"></textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _pruefe(w):
+    soll = ["Letzter Wert: %.1f °C" % w[-1],
+            "Maximum: %.1f °C" % max(w),
+            "Über 80.0 °C: %d von %d" % (sum(1 for x in w if x > 80.0), len(w)),
+            "Mittelwert der letzten drei: %.2f °C" % (sum(w[-3:]) / 3)]
+    z = zeilen(run_program([str(len(w))] + [str(x) for x in w]))
+    for s in soll:
+        assert s in z, "Bei %r wird die Zeile %r erwartet. Dein Programm gibt aus: %r" % (w, s, z)
+
+def test_beispiel():
+    """Beispiel n = 5: 78.5, 81.2, 79.9, 85.0, 83.1"""
+    _pruefe([78.5, 81.2, 79.9, 85.0, 83.1])
+
+def test_genau_drei():
+    """Genau drei Werte: 60.0, 70.5, 90.0"""
+    _pruefe([60.0, 70.5, 90.0])
+
+def test_grenze():
+    """80.0 zählt nicht als über dem Grenzwert: 80.0, 80.1, 79.9, 80.0"""
+    _pruefe([80.0, 80.1, 79.9, 80.0])
+
+def test_maximum_vorn():
+    """Das Maximum steht vorn: 95.5, 60.0, 61.5, 62.0, 63.5"""
+    _pruefe([95.5, 60.0, 61.5, 62.0, 63.5])
+        </script>
+        <script type="text/x-python" data-role="solution">
+n = int(input("Anzahl Messwerte: "))
+werte = []
+for i in range(n):
+    werte.append(float(input(f"Messwert {i + 1}: ")))
+ueber = 0
+for t in werte:
+    if t > 80.0:
+        ueber = ueber + 1
+letzte_drei = werte[-3:]
+print(f"Letzter Wert: {werte[-1]:.1f} °C")
+print(f"Maximum: {max(werte):.1f} °C")
+print(f"Über 80.0 °C: {ueber} von {len(werte)}")
+print(f"Mittelwert der letzten drei: {sum(letzte_drei) / 3:.2f} °C")
+        </script>
+        <script type="application/json" data-role="scheme">[
+{"p":1,"t":"n wird mit input() gelesen und mit int() umgewandelt"},
+{"p":1,"t":"Die Werte werden in einer Schleife mit input() gelesen, mit float() umgewandelt und mit append an eine Liste gehängt (Liste vor der Schleife angelegt)"},
+{"p":1,"t":"Letzter Wert über den negativen Index [-1] (oder len - 1), Ausgabe mit :.1f"},
+{"p":1,"t":"Maximum mit max(liste) oder mit Schleife, Ausgabe mit :.1f"},
+{"p":2,"t":"Zählt die Werte über 80.0 mit einer for-Schleife über die Liste und if t > 80.0 (nicht >=), Zähler vor der Schleife bei 0 und im Rumpf erhöht"},
+{"p":1,"t":"Mittelwert der letzten drei per Slice [-3:] mit sum und Division durch 3 (oder len des Slices), Ausgabe mit :.2f"},
+{"p":1,"t":"Die vier Ausgaben haben den richtigen Text, die richtige Einheit °C und stehen nach den Schleifen"}
+]</script>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-phyphox" data-nonumber="1" data-title="Hausauftrag für V09: eigene Messung mit phyphox" data-part="B" data-stars="" data-min="20" data-extra="nicht automatisch geprüft" aria-labelledby="h-t-phyphox" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-phyphox" tabindex="-1">Hausauftrag für V09: eigene Messung mit phyphox</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Im nächsten Termin (V09) lesen wir Messdaten aus Dateien ein. Dafür brauchst du <strong>deine eigene Messung</strong> als CSV-Datei. Dein Smartphone ist ein vollwertiges Messgerät: Die kostenlose App <abbr class="k-begriff" data-erklaerung="phyphox ist eine kostenlose App der RWTH Aachen, die die Sensoren deines Smartphones (Beschleunigung, Drehrate, Lautstärke und mehr) als Messgerät nutzt und die Messdaten als Datei exportiert.">phyphox</abbr> zeichnet die Beschleunigung auf und exportiert sie als <abbr class="k-begriff" data-erklaerung="CSV (Comma Separated Values) ist eine einfache Textdatei, in der jede Zeile ein Messwert-Satz ist und die Spalten durch ein Trennzeichen getrennt sind. Jede Tabellenkalkulation und jedes Programm kann sie lesen.">CSV</abbr>. Such dir eine Messung aus: <strong>Bremsen mit dem Fahrrad</strong> oder die <strong>Vibration der Waschmaschine beim Schleudern</strong>.</p>
+      <ol class="k-steps">
+        <li><strong>App installieren:</strong> „phyphox“ im Play Store (Android) oder App Store (iOS). Kostenlos, ohne Konto.</li>
+        <li><strong>Experiment wählen:</strong> <strong>„Beschleunigung (ohne g)“</strong> öffnen (je nach App-Version unter „Roh-Sensoren“). „Ohne g“ heißt: Die Erdbeschleunigung wird herausgerechnet.</li>
+        <li><strong>Handy fest fixieren:</strong> Beim Rad in einer Halterung am Lenker oder fest in einer geschlossenen Jackentasche, bei der Waschmaschine flach auf den Deckel (rutschfeste Unterlage). Es darf während der Messung nicht verrutschen.</li>
+        <li><strong>Messen:</strong> Play-Taste drücken, bremsen (mehrmals) beziehungsweise Schleudern abwarten (etwa eine Minute), mit der Pause-Taste stoppen.</li>
+        <li><strong>Exportieren:</strong> Drei-Punkte-Menü oben rechts, <strong>„Messdaten exportieren“</strong>, Format <strong>„CSV (Comma, decimal point)“</strong> oder <strong>„CSV (Semicolon, decimal comma)“</strong> (beides ist in Ordnung).</li>
+        <li><strong>Datei an dich selbst senden</strong> (E-Mail an dich, Cloud oder Kabel) und zur nächsten Vorlesung mitbringen.</li>
+      </ol>
+      <div class="hinweis hinweis--achtung"><strong class="hinweis__title">Achtung: Sicherheit</strong><p>Beim Radfahren schaust du <strong>nicht</strong> aufs Handy: Starte die Messung vor der Fahrt, verstaue das Handy sicher und lies die Ergebnisse erst nach dem Anhalten. Brems nur auf einer übersichtlichen, verkehrsarmen Strecke oder einem leeren Parkplatz, nie im Straßenverkehr zum Test, und trag einen Helm. Die Waschmaschine lässt du nicht aus den Augen und hältst das Handy nicht fest.</p></div>
+      <div class="hinweis hinweis--merke"><strong class="hinweis__title">Datensparsamkeit</strong><p>Beschleunigungsdaten enthalten keine personenbezogenen Daten, nur Zeit und Messwerte. Teile trotzdem nur die Messdaten selbst: kein GPS-Experiment, keine Screenshots mit deinem Namen oder Konto. Wer kein Smartphone nutzen kann oder will, bekommt in V09 Beispieldateien.</p></div>
+      <p class="k-small k-muted">Die ausführliche Anleitung steht auch am Ende der <a href="v08-datenstrukturen.html#hausauftrag">Lerneinheit</a>.</p>
+
+    </section>
+
+    <section class="l-task" id="t-notebook" data-nonumber="1" data-title="Notebook und Deep Dive" data-part="B" data-stars="" data-min="" data-extra="ohne Wertung" aria-labelledby="h-t-notebook" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-notebook" tabindex="-1">Notebook und Deep Dive</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Mehr üben mit Messreihen, Stücklisten, Slices und der Aliasing-Falle. Das Notebook nutzt nur Python aus V01 bis V08. Es hat drei Stufen (Aufwärmen, Anwenden, Knobeln), keine Lösungen, dafür Selbsttests.</p>
+      <p><a class="k-btn k-btn--ghost" href="../notebooks/V08-Datenstrukturen.ipynb" download>V08-Datenstrukturen.ipynb herunterladen</a></p>
+      <ol class="k-steps">
+        <li><strong>In Codespaces öffnen:</strong> Im Kurs-Repository auf GitHub „Code“ → „Codespaces“ → „Create codespace“. Die Umgebung (Python 3.12, NumPy, Matplotlib, Jupyter) ist vorbereitet. Dann <code class="k-i">notebooks/V08-Datenstrukturen.ipynb</code> öffnen.</li>
+        <li><strong>Oder lokal:</strong> <code class="k-i">pip install numpy matplotlib jupyter</code>, dann <code class="k-i">jupyter lab</code>.</li>
+        <li>Immer erst die Vorhersage-Zellen ausfüllen, dann ausführen.</li>
+      </ol>
+      <h3>Danach</h3>
+      <p><a href="v08-datenstrukturen.html#deepdive">Zum Deep Dive</a> (freiwillig): Namen und Objekte, Hash-Tabellen, Felder in der SPS. Oder zurück zur <a href="v08-datenstrukturen.html">Lerneinheit</a>, um etwas nachzulesen.</p>
+
+    </section>
+
+      <nav class="lab__pager" aria-label="Zwischen Aufgaben wechseln">
+        <a class="k-btn k-btn--ghost" id="lab-prev" href="#a-werkzeugkasten">← Zurück</a>
+        <a class="k-btn k-btn--ghost" id="lab-next" href="#a-vorgemacht">Weiter →</a>
+      </nav>
+    </main>
+
+    <div class="lab__dock" data-library-dock data-state="off"></div>
+  </div>
+
+  <footer class="dhbw-footer k-footer">
+    <div class="dhbw-footer__inner">
+      <span><span class="dhbw-footer__brand">DHBW Stuttgart</span> · Campus Horb</span>
+      <span><a href="../index.html">Zurück zum Lernpfad</a> · V08 Programmierlabor</span>
+    </div>
+  </footer>
+
+  <script src="../assets/js/speicher.js"></script>
+  <script src="../assets/js/icons.js"></script>
+  <script src="../assets/js/editor.js" defer></script>
+  <script src="../assets/js/explorables-v08.js"></script>
+  <script src="../assets/js/kurs.js"></script>
+  <script src="../assets/js/aufgaben.js"></script>
+  <script src="../assets/js/labor.js"></script>
+</body>
+</html>

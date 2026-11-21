@@ -1,0 +1,81 @@
+/* =============================================================
+   v07.css – Lektion V07 (Zerlegung und Funktionen): Explorables Zerlegung, Baum, Blackbox, Aufrufstapel.
+   Baut auf kurs.css und v05.css auf (Code-Anzeige .v05-code, PAP-Stile, .v05-ex, .v05-bar, .v05-msg, .c0–.c5).
+   Präfix v07- = diese Lektion.
+   ============================================================= */
+
+/* ── Zerlegung: Markierung und Etiketten ── */
+.v05-line.v07-bug { background: rgba(255, 90, 90, .45); border-left-color: #FF8A8A; }
+.v05-line.v07-bug .v05-ln { background: #fff; color: #9B1213; }
+.v05-line.v07-bug .v05-tx::after { content: "   ← d ** 2 statt d ** 3"; color: #FFC9C9; font-weight: 700; }
+.v07-tags { display: flex; flex-wrap: wrap; gap: var(--sp-2); margin: var(--sp-3) 0 0; }
+.v07-tag { display: inline-block; font-size: var(--fs-sm); font-weight: 700; letter-spacing: .06em; padding: 2px 12px; border: 2px solid var(--red-dark); color: var(--red-dark); border-radius: 999px; }
+
+/* ── Baum: Problem, Teilprobleme, Bausteine ── */
+.v07-tree { overflow-x: auto; padding: 2px 2px var(--sp-3); }
+.v07-tl { list-style: none; margin: 0; padding: 0; display: flex; gap: var(--sp-4); align-items: flex-start; justify-content: center; max-width: none !important; }
+.v07-tl--root { justify-content: flex-start; }
+.v07-tn { list-style: none; display: grid; justify-items: center; gap: var(--sp-3); position: relative; min-width: 0; }
+.v07-tn > .v07-tl { padding-top: var(--sp-3); border-top: 2px solid var(--k-line); position: relative; }
+.v07-tn.is-hidden { display: none; }
+.v07-tn.is-new { animation: v07-in .35s ease-out; }
+@keyframes v07-in { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
+.v07-nodebtn { display: grid; gap: 2px; text-align: center; font: inherit; color: var(--text); background: #fff; border: 2px solid #6B7280; border-radius: var(--r-base); padding: var(--sp-2) var(--sp-3); min-height: 44px; min-width: 9rem; max-width: 15rem; cursor: pointer; }
+.v07-nodebtn:hover { border-color: var(--red-dark); }
+.v07-nodebtn.is-sel { border-color: var(--red-dark); box-shadow: inset 4px 0 0 var(--red-dark); background: var(--red-tint); }
+.v07-nodebtn.is-code { background: var(--code-bg); color: var(--code-text); border-color: var(--code-bg); }
+.v07-nodebtn.is-code.is-sel { border-color: var(--red); box-shadow: inset 4px 0 0 var(--red); }
+.v07-nodesub { font-size: var(--fs-xs); font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--k-muted); }
+.v07-nodebtn.is-code .v07-nodesub { color: #B8C9D8; }
+.v07-nodelab { font-size: var(--fs-sm); font-weight: 600; overflow-wrap: anywhere; }
+.v07-nodebtn.is-code .v07-nodelab { font-family: var(--dhbw-font-mono); font-weight: 500; }
+@media (max-width: 760px) {
+  .v07-tl { flex-direction: column; align-items: stretch; gap: var(--sp-3); }
+  .v07-tn { justify-items: stretch; }
+  .v07-tn > .v07-tl { border-top: 0; border-left: 2px solid var(--k-line); padding-top: 0; padding-left: var(--sp-3); margin-left: var(--sp-3); }
+  .v07-nodebtn { max-width: none; width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) { .v07-tn.is-new { animation: none; } }
+
+/* ── Blackbox ── */
+.v07-bb { display: grid; grid-template-columns: minmax(0, 1fr) 40px minmax(0, 1.25fr) 40px minmax(0, .9fr); gap: var(--sp-3); align-items: center; }
+.v07-bb > * { min-width: 0; }
+.v07-bb__h { margin: 0 0 var(--sp-2); font-size: var(--fs-xs); font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--k-muted); max-width: none; }
+.v07-bb__in { display: grid; gap: var(--sp-2); }
+.v07-bb__box { background: #2B3138; color: #F2F5F8; border-radius: var(--r-base); padding: var(--sp-4); min-height: 8.5rem; display: grid; align-content: center; gap: var(--sp-2); border: 3px solid #1A1A1A; }
+.v07-bb__box.is-open { background: var(--code-bg); }
+.v07-bb__name { margin: 0; font-family: var(--dhbw-font-mono); font-weight: 700; font-size: var(--fs-sm); color: #fff; overflow-wrap: anywhere; max-width: none; }
+.v07-bb__lid { margin: 0; font-size: var(--fs-sm); color: #C9D3DC; max-width: none; }
+.v07-bb__code { margin: 0; padding: 0; background: transparent; color: var(--code-text); font-family: var(--dhbw-font-mono); font-size: var(--fs-xs); line-height: 1.5; white-space: pre; overflow-x: auto; }
+.v07-bb__out { display: grid; gap: var(--sp-2); }
+.v07-bb__val { margin: 0; padding: var(--sp-3); border: 2px solid var(--k-ok); background: var(--k-ok-bg); font-family: var(--dhbw-font-mono); font-weight: 700; font-size: var(--fs-md); overflow-wrap: anywhere; max-width: none; }
+.v07-bb__val.is-none { border-color: var(--k-bad); background: var(--k-bad-bg); color: var(--k-bad); }
+.v07-bb__con { margin: 0; font-family: var(--dhbw-font-mono); font-size: var(--fs-xs); color: var(--k-muted); overflow-wrap: anywhere; max-width: none; }
+.v07-arrow { width: 40px; height: 24px; color: var(--k-muted); }
+@media (max-width: 860px) {
+  .v07-bb { grid-template-columns: minmax(0, 1fr); }
+  .v07-arrow { justify-self: center; transform: rotate(90deg); }
+}
+
+/* ── Aufrufstapel ── */
+.v07-stack { display: grid; gap: var(--sp-2); align-content: start; min-height: 8rem; }
+.v07-frame { border: 2px solid #6B7280; border-radius: var(--r-base); background: #fff; padding: var(--sp-2) var(--sp-3); }
+.v07-frame.is-top { border-color: var(--red-dark); background: var(--red-tint); }
+.v07-frame.is-new { animation: v07-push .4s ease-out; }
+@keyframes v07-push { from { opacity: 0; transform: translateY(-14px); } to { opacity: 1; transform: none; } }
+.v07-frame__h { display: flex; justify-content: space-between; gap: var(--sp-3); flex-wrap: wrap; font-size: var(--fs-sm); margin-bottom: 2px; }
+.v07-frame__h strong { font-family: var(--dhbw-font-mono); }
+.v07-frame__v { margin: 0; font-family: var(--dhbw-font-mono); font-size: var(--fs-sm); max-width: none; }
+.v07-var { font-weight: 700; }
+.v07-ret { margin: 0; padding: var(--sp-2) var(--sp-3); border-left: 4px solid var(--k-ok); background: var(--k-ok-bg); font-family: var(--dhbw-font-mono); font-size: var(--fs-sm); max-width: none; }
+@media (prefers-reduced-motion: reduce) { .v07-frame.is-new { animation: none; } }
+
+/* ── Seitenlayout: nebeneinander stehende PAPs ── */
+.v07-paps { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--sp-5); align-items: start; max-width: none !important; }
+.v07-paps > figure { margin: 0; display: grid; gap: var(--sp-2); align-content: start; min-width: 0; }
+.v07-paps figcaption { font-size: var(--fs-sm); color: var(--k-muted); }
+.v07-paps .pap-wrap { margin: 0; }
+
+/* ── Segment-Schalter: auf schmalen Bildschirmen scrollbar statt abgeschnitten ── */
+.v05-bar .k-seg { max-width: 100%; overflow-x: auto; }
+.v05-bar .k-seg button { flex: none; white-space: nowrap; }

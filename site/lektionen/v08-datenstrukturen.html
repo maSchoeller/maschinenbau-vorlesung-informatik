@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>V08 Datenstrukturen (Basis): Listen, Tupel, Dictionaries · Lerneinheit · Informatik Maschinenbau</title>
+  <meta name="description" content="Acht Messwerte und eine Stückliste: Wie speichert ein Programm viele zusammengehörige Werte? Listen mit Index und Slicing, Tupel, Dictionaries, Schleife über eine Liste und die Aliasing-Falle für Ingenieure.">
+  <link rel="stylesheet" href="../assets/css/dhbw-base.css">
+  <link rel="stylesheet" href="../assets/css/kurs.css">
+  <link rel="stylesheet" href="../assets/css/aufgaben.css">
+  <link rel="stylesheet" href="../assets/css/editor.css">
+  <link rel="stylesheet" href="../assets/css/v05.css">
+  <link rel="stylesheet" href="../assets/css/v08.css">
+</head>
+<body data-lesson="V08" data-page="lerneinheit">
+  <a class="k-skip" href="#inhalt">Zum Inhalt springen</a>
+
+  <header class="dhbw-header k-header">
+    <div class="dhbw-header__inner">
+      <a class="k-logo" href="../index.html" aria-label="Zur Startseite">
+        <span class="k-logo__mark" aria-hidden="true">DHBW</span>
+        <span class="k-logo__text">Informatik Maschinenbau<small>Campus Horb · 2026/27</small></span>
+      </a>
+      <nav class="k-nav" aria-label="Hauptnavigation">
+        <a href="../index.html">Start</a>
+        <a href="../index.html#lernpfad">Lernpfad</a>
+        <a href="../bibliothek.html">Bibliothek</a>
+        <a href="../pap-editor.html">PAP-Editor</a>
+        <a href="v08-datenstrukturen.html" aria-current="page">V08 Lerneinheit</a>
+        <a href="v08-labor.html">V08 Labor</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="l-page">
+    <nav class="k-toc" aria-label="Inhalt dieser Lerneinheit">
+      <p class="k-toc__title">Lerneinheit V08</p>
+      <ol class="k-toc__list">
+        <li><a href="#warum"><span class="k-toc__n">1</span>Warum?</a></li>
+        <li><a href="#theorie"><span class="k-toc__n">2</span>Theorie</a></li>
+        <li><a href="#ausprobieren"><span class="k-toc__n">3</span>Ausprobieren</a></li>
+        <li><a href="#selbstcheck"><span class="k-toc__n">4</span>Selbstcheck</a></li>
+        <li><a href="#deepdive"><span class="k-toc__n">5</span>Deep Dive</a></li>
+      </ol>
+      <div class="k-progress" data-progress-for="V08">
+        <span class="k-progress__bar"><span class="k-progress__fill"></span></span>
+        <span class="k-progress__text">0 von 5 Abschnitten</span>
+      </div>
+      <a class="k-toc__lab" href="v08-labor.html">Weiter ins Programmierlabor →</a>
+    </nav>
+
+    <main id="inhalt" class="l-content">
+
+      <header class="k-title">
+        <p class="k-title__label">V08 · Phase 1 Fundament · Lerneinheit</p>
+        <h1 id="h-titel">Datenstrukturen (Basis): Listen, Tupel, Dictionaries</h1>
+        <p class="k-title__lead">Acht Messwerte einer Bohrung, eine Stückliste mit Teilenummern: Bisher hatte jeder Wert einen eigenen Namen. Eine <abbr class="k-begriff" data-erklaerung="Eine Datenstruktur ist eine Ordnung, in der ein Programm viele zusammengehörige Werte ablegt, wie ein Regal mit nummerierten Fächern oder ein Karteikasten mit Beschriftung.">Datenstruktur</abbr> legt viele Werte unter einem einzigen Namen ab.</p>
+        <p class="k-title__goals">Nach dieser Lerneinheit kannst du:</p>
+        <ul class="k-title__list">
+          <li>eine <abbr class="k-begriff" data-erklaerung="Eine Liste ist eine geordnete Reihe von Werten unter einem Namen, zum Beispiel acht Messwerte. Sie ist veränderbar: Du kannst Werte hinzufügen und ersetzen.">Liste</abbr> als Kästchenreihe im Speicher beschreiben und Elemente über den <abbr class="k-begriff" data-erklaerung="Der Index ist die Nummer eines Elements in der Liste. Er beginnt bei 0: Das erste Element hat den Index 0, wie die Nullmarke an einer Messschiene.">Index</abbr> (auch den negativen) und per Slicing ansprechen,</li>
+          <li>mit <code class="k-i">append</code>, <code class="k-i">len</code>, <code class="k-i">in</code>, <code class="k-i">sum</code>, <code class="k-i">min</code> und <code class="k-i">max</code> eine Messreihe auswerten und mit <code class="k-i">for</code> über eine Liste laufen (auch im Programmablaufplan),</li>
+          <li>erklären, warum zwei Namen auf <em>dieselbe</em> Liste zeigen können (<abbr class="k-begriff" data-erklaerung="Aliasing heißt: Zwei Namen zeigen auf dasselbe Objekt im Speicher. Ändert man es über den einen Namen, sieht man die Änderung auch über den anderen.">Aliasing</abbr>) und wie du eine Kopie machst,</li>
+          <li>ein <abbr class="k-begriff" data-erklaerung="Ein Tupel ist wie eine Liste, aber unveränderlich: Nach dem Anlegen lässt sich kein Wert mehr ersetzen. Gut für Werte, die zusammengehören und fest bleiben sollen, etwa eine Toleranz (min, max).">Tupel</abbr> von einer Liste unterscheiden,</li>
+          <li>ein <abbr class="k-begriff" data-erklaerung="Ein Dictionary (Wörterbuch) ordnet jedem Schlüssel einen Wert zu, wie eine Stückliste jeder Teilenummer eine Menge. Man schlägt nach dem Schlüssel nach, nicht nach der Position.">Dictionary</abbr> als Schlüssel-Wert-Tabelle lesen, ändern und mit <code class="k-i">in</code> absichern.</li>
+        </ul>
+        <p class="k-small k-muted">Das Schreiben dieser Python-Bausteine übst du danach im <a href="v08-labor.html">Programmierlabor</a>. Funktionen (V07) und Schleifen (V06) setzen wir voraus.</p>
+      </header>
+
+      <!-- 1 ───────────── WARUM ───────────── -->
+      <section class="k-section" id="warum" data-section="warum" aria-labelledby="h-warum">
+        <h2 class="k-section__title" id="h-warum"><span class="k-section__num" aria-hidden="true">1</span> Warum?</h2>
+
+        <p>Zwei Szenen aus Qualitätssicherung und Konstruktion. In beiden hängen viele Werte zusammen, und ein Programm muss sie als Einheit behandeln.</p>
+
+        <figure class="k-figure">
+          <picture>
+            <source srcset="../assets/img/v08-hook.webp" type="image/webp">
+            <img src="../assets/img/v08-hook.png" alt="Illustration: Messreihe einer Bohrung als Punkte zwischen zwei Toleranzgrenzen neben einer Stückliste mit Teilenummern" width="1600" height="900" loading="lazy" onerror="this.closest('figure').hidden=true">
+          </picture>
+        </figure>
+
+        <h3>Szene 1: Messreihe einer Bohrung</h3>
+        <p>Eine Bohrung mit Nenndurchmesser 12 mm und der <abbr class="k-begriff" data-erklaerung="H7 ist eine Toleranzklasse für Bohrungen: Das Maß darf zwischen dem Nennmaß und 18 Mikrometer darüber liegen. Bei Ø 12 H7 sind das 12,000 bis 12,018 mm.">Toleranzklasse H7</abbr> darf zwischen 12,000 und 12,018 mm liegen. Am Koordinatenmessgerät werden acht Bohrungen derselben Serie gemessen. Gefragt sind der <abbr class="k-begriff" data-erklaerung="Der Mittelwert ist die Summe aller Messwerte geteilt durch ihre Anzahl. Er sagt, um welchen Wert die Messungen im Schnitt liegen.">Mittelwert</abbr>, die <abbr class="k-begriff" data-erklaerung="Die Spannweite ist der Abstand zwischen größtem und kleinstem Messwert. Sie zeigt, wie stark die Messungen streuen.">Spannweite</abbr> (größter minus kleinster Wert) und die Zahl der Werte außerhalb der Toleranz. Mit dem Wissen aus V01 bis V07 würdest du acht Variablen <code class="k-i">m1</code> bis <code class="k-i">m8</code> anlegen und jede einzeln hinschreiben. Bei 80 Werten wäre das unbrauchbar, und eine Schleife kann nicht „die nächste Variable“ ansprechen.</p>
+
+        <h3>Szene 2: Stückliste einer Baugruppe</h3>
+        <p>Eine <abbr class="k-begriff" data-erklaerung="Eine Stückliste ist die Aufstellung aller Teile einer Baugruppe mit Teilenummer, Menge und oft weiteren Angaben wie dem Gewicht.">Stückliste</abbr> der Getriebewelle hat vier Positionen: Welle (1 Stück), Rillenkugellager (2), Wellendichtring (2) und Passfeder (1). Zu jeder Teilenummer gehören Menge und Einzelgewicht. Das Programm soll das Gesamtgewicht berechnen und auf Zuruf sagen, wie viele Lager von Typ 6205 verbaut sind. Das ist keine Reihe „erstes, zweites, drittes“, sondern eine Zuordnung: Teilenummer, dann Menge und Gewicht. Auch dafür gibt es eine passende Struktur.</p>
+
+        <div class="k-try" aria-labelledby="t-hook">
+          <h3 id="t-hook">Selbst sehen: wie viele Messwerte sind außerhalb?</h3>
+          <p class="k-small k-muted">Neu in Python sind nur drei Dinge. Die <strong>eckigen Klammern</strong> <code class="k-i">[ ]</code> legen viele Werte unter einem Namen ab. <code class="k-i">for d in messungen:</code> heißt „für jeden Wert <code class="k-i">d</code> in der Liste“: Die Schleife nimmt nacheinander jeden Wert. Und <code class="k-i">toleranz[0]</code> greift mit der Nummer 0 auf den ersten Wert zu. Sag erst voraus, dann drück „Ausführen“ (beim ersten Mal lädt Python einmalig nach).</p>
+          <div class="k-predict">
+            <p class="k-predict__q">Wie viele der acht Messwerte liegen außerhalb der Toleranz 12,000 bis 12,018 mm?</p>
+            <div class="k-predict__opts"><button type="button">keiner</button><button type="button" data-correct>zwei</button><button type="button">vier</button></div>
+            <div class="k-predict__result"></div>
+            <div class="k-predict__expl" hidden>Zwei: 11,998 liegt unter der unteren Grenze, 12,019 knapp über der oberen. Alle anderen liegen dazwischen. Das Programm hat dafür nur eine Schleife gebraucht, egal ob acht oder achtzigtausend Werte in der Liste stehen.</div>
+          </div>
+          <p class="k-small k-muted">Drück danach auf „Schritt für Schritt“. Der Visualisierer zeigt die Liste als Kästchenreihe mit Index, und du siehst, wie <code class="k-i">d</code> nacheinander jeden Wert annimmt.</p>
+          <pre><code>messungen = [12.004, 12.011, 11.998, 12.007, 12.019, 12.002, 12.015, 12.009]
+toleranz = (12.000, 12.018)
+ausserhalb = 0
+for d in messungen:
+    if d &lt; toleranz[0] or d &gt; toleranz[1]:
+        ausserhalb = ausserhalb + 1
+print(ausserhalb, "von", len(messungen), "Werten außerhalb")</code></pre>
+        </div>
+
+        <h3>Wissens-Ampel für V08</h3>
+        <ul class="k-ampel-list" aria-label="Wissens-Ampel zu V08">
+          <li><span class="k-ampel k-ampel--kopf"><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-head"/></svg> Im Kopf</span><span>Eine Liste zählt ab 0, <code class="k-i">liste[-1]</code> ist das letzte Element, der Endwert eines Slices gehört nicht mehr dazu. Zwei Namen können auf <em>dieselbe</em> Liste zeigen. Ein Dictionary schlägt man mit dem Schlüssel nach, ein fehlender Schlüssel ist ein <code class="k-i">KeyError</code>.</span></li>
+          <li><span class="k-ampel k-ampel--lesen"><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-book"/></svg> Lesen &amp; erkennen</span><span>Tupel (unveränderlich, Klammern statt eckiger Klammern), <code class="k-i">.items()</code> in einer Schleife, die Schleife über eine Liste im Programmablaufplan.</span></li>
+          <li><span class="k-ampel k-ampel--deleg"><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-handover"/></svg> Delegieren</span><span>Große Tabellen, Sortieren und Auswerten ganzer Messreihen: Dafür gibt es später NumPy und pandas (V13 und V15). Du musst wissen, dass Listen und Dictionaries ihre Grundlage sind.</span></li>
+        </ul>
+
+        <div class="hinweis hinweis--warum"><strong class="hinweis__title">Warum muss ich das wissen?</strong><p>Fast jedes Ingenieurprogramm verarbeitet viele Werte: Messreihen, Stücklisten, Sensorwerte, Koordinaten. KI-Code ist voller Listen und Dictionaries, und die typischen Fehler sind unauffällig: ein Index, der um eins daneben liegt, eine „Kopie“, die gar keine ist, ein Schlüssel mit Tippfehler. Wer die Speicherbilder im Kopf hat, findet sie beim Lesen. In der Klausur kommt das als „Was gibt der Code aus?“ mit Index, Slice oder Dictionary.</p></div>
+      </section>
+
+      <!-- 2 ───────────── THEORIE ───────────── -->
+      <section class="k-section" id="theorie" data-section="theorie" aria-labelledby="h-theorie">
+        <h2 class="k-section__title" id="h-theorie"><span class="k-section__num" aria-hidden="true">2</span> Theorie</h2>
+
+        <h3>Erklärvideo (ca. 3 Min)</h3>
+        <figure class="k-video" id="video-theorie">
+          <video controls preload="metadata" poster="../assets/video/v08-theorie-poster.png" aria-label="Erklärvideo Datenstrukturen: Liste, Index, Tupel, Dictionary, zwei Namen für eine Liste">
+            <source src="../assets/video/v08-theorie.mp4" type="video/mp4">
+            <track kind="subtitles" srclang="de" label="Deutsch" src="../assets/video/v08-theorie.vtt" default>
+            Dein Browser kann dieses Video nicht abspielen.
+          </video>
+          <div class="k-video__missing" hidden>Video folgt. Bis dahin: die vier Explorables und der Lesetext unten decken alles ab.</div>
+          <figcaption>Untertitel sind eingeschaltet (Deutsch).</figcaption>
+        </figure>
+
+        <h3>Ein Name, viele Werte: die Liste</h3>
+        <p>Eine <abbr class="k-begriff" data-erklaerung="Eine Liste ist eine geordnete Reihe von Werten unter einem Namen, zum Beispiel acht Messwerte. Sie ist veränderbar: Du kannst Werte hinzufügen und ersetzen.">Liste</abbr> stellst du dir am besten als <strong>Reihe nummerierter Kästchen im Speicher</strong> vor (V02: Speicher). Jedes Kästchen enthält einen Wert, das <abbr class="k-begriff" data-erklaerung="Ein Element ist ein einzelner Wert in einer Liste, zum Beispiel die dritte Messung.">Element</abbr>. Der ganze Kasten trägt einen Namen, und die einzelnen Kästchen erreichst du über ihre Nummer, den <abbr class="k-begriff" data-erklaerung="Der Index ist die Nummer eines Elements in der Liste. Er beginnt bei 0: Das erste Element hat den Index 0, wie die Nullmarke an einer Messschiene.">Index</abbr>. Wichtig: Gezählt wird ab <strong>0</strong>. Eine Liste mit fünf Elementen hat die Indizes 0 bis 4. Zusätzlich darfst du von hinten zählen: Der <abbr class="k-begriff" data-erklaerung="Ein negativer Index zählt von hinten: -1 ist das letzte Element, -2 das vorletzte. Praktisch, wenn man das Ende einer Liste braucht, ohne ihre Länge zu kennen.">negative Index</abbr> <code class="k-i">-1</code> meint das letzte Element, <code class="k-i">-2</code> das vorletzte.</p>
+
+        <div class="k-explorable">
+          <h3>Liste im Speicher</h3>
+          <p class="k-explorable__lead">Hier siehst du die Liste <code class="k-i">messungen</code> als Kästchenreihe. Über jedem Kästchen steht der negative Index (grau), darunter der normale (schwarz). Probiere: Welches Element liefert Index <code class="k-i">0</code>, welches <code class="k-i">-1</code>? Was passiert bei Index <code class="k-i">5</code> oder <code class="k-i">-6</code>? Bei den Slices markiert Blau den Ausschnitt: Der Endwert gehört <em>nicht</em> mehr dazu, genau wie bei <code class="k-i">range</code> aus V06. Hänge dann mit <code class="k-i">append</code> neue Werte hinten an und beobachte, wie die Liste wächst.</p>
+          <div data-explorable="liste"></div>
+          <noscript><p>Für das Explorable „Liste im Speicher“ wird JavaScript benötigt.</p></noscript>
+          <p class="k-small k-muted">Beobachtung: Das letzte Element hat immer den Index <code class="k-i">len(messungen) - 1</code> und den Index <code class="k-i">-1</code>. Ein Index außerhalb der Liste ist kein „leerer Wert“, sondern der Fehler <code class="k-i">IndexError</code>. Ein Slice dagegen schneidet still ab und wirft nie einen Fehler.</p>
+        </div>
+
+        <h3>Listen in Python in Kürze</h3>
+        <p>Neu sind die eckigen Klammern und ein paar Befehle. Alles andere kennst du aus V01 bis V07. Lass dir die Ausgabe vor dem Ausführen im Kopf vorhersagen:</p>
+        <pre><code>messungen = [12.004, 12.011, 11.998, 12.007, 12.019]
+print(messungen[0])        # erstes Element, Index 0
+print(messungen[2])        # drittes Element
+print(messungen[-1])       # letztes Element
+print(messungen[1:4])      # Index 1, 2 und 3 (die 4 gehört nicht mehr dazu)
+print(messungen[:2], messungen[-2:])   # die ersten zwei, die letzten zwei
+print(len(messungen))      # Anzahl der Elemente</code></pre>
+        <p>Das <abbr class="k-begriff" data-erklaerung="Slicing heißt „Scheibe schneiden“: liste[a:b] liefert eine neue Liste mit den Elementen ab Index a bis vor Index b. Lässt man a oder b weg, geht es bis zum Anfang beziehungsweise Ende.">Slicing</abbr> <code class="k-i">liste[a:b]</code> liefert eine <em>neue</em> Liste mit den Elementen von Index <code class="k-i">a</code> bis vor Index <code class="k-i">b</code>. Lässt du <code class="k-i">a</code> weg, beginnt es vorn. Lässt du <code class="k-i">b</code> weg, geht es bis zum Ende. Die Länge des Ausschnitts ist <code class="k-i">b - a</code>, genau wie die Zahl der Durchläufe bei <code class="k-i">range(a, b)</code>.</p>
+        <p>Eine Liste ist <strong>veränderbar</strong>. Du hängst Werte hinten an und ersetzt einzelne Elemente. Mit <code class="k-i">len</code> zählst du, mit <code class="k-i">in</code> fragst du, ob ein Wert enthalten ist, und <code class="k-i">sum</code>, <code class="k-i">min</code> und <code class="k-i">max</code> rechnen über die ganze Liste:</p>
+        <pre><code>messungen = [12.004, 12.011, 11.998, 12.007, 12.019]
+messungen.append(12.012)             # hinten anhängen
+print(len(messungen), 12.012 in messungen, 12.5 in messungen)
+print(f"Mittelwert: {sum(messungen) / len(messungen):.4f} mm")
+print(f"Spannweite: {max(messungen) - min(messungen):.3f} mm")
+messungen[0] = 12.005                # erstes Element ersetzen
+print(messungen)</code></pre>
+        <div class="hinweis hinweis--achtung"><strong class="hinweis__title">Achtung</strong><p><code class="k-i">messungen.append(x)</code> <em>verändert</em> die Liste und gibt selbst nichts zurück. Wer <code class="k-i">messungen = messungen.append(x)</code> schreibt, überschreibt seine Liste mit dem Wert <code class="k-i">None</code> („nichts“). Und die Zahl der Elemente ist <code class="k-i">len(messungen)</code>, aber der größte erlaubte Index ist <code class="k-i">len(messungen) - 1</code>: <code class="k-i">messungen[len(messungen)]</code> ist ein <code class="k-i">IndexError</code>.</p></div>
+
+        <h3>Schleife über eine Liste</h3>
+        <p>Mit <code class="k-i">for d in messungen:</code> aus der Hook-Szene durchläufst du jedes Element genau einmal, ohne selbst zu zählen: Die Variable <code class="k-i">d</code> nimmt nacheinander jeden Wert der Liste an. Das ist die Zählschleife aus V06, nur dass die Liste die Werte liefert statt <code class="k-i">range</code>. Alle Muster aus V06 funktionieren hier weiter: Summe (<abbr class="k-begriff" data-erklaerung="Ein Akkumulator ist eine Variable, in die man bei jedem Durchlauf etwas dazugibt, zum Beispiel eine Summe. Er sammelt wie ein Zählwerk, das mitläuft.">Akkumulator</abbr>), Zähler, Maximum. Neu ist ein Muster: das <strong>Filtern</strong>. Du legst vor der Schleife eine leere Liste an (<code class="k-i">ausserhalb = []</code>) und hängst im <code class="k-i">if</code> alle Werte an, die eine Bedingung erfüllen.</p>
+
+        <div class="k-explorable">
+          <h3>Schleife über die Messreihe, Schritt für Schritt</h3>
+          <p class="k-explorable__lead">Links siehst du die Schleife als <abbr class="k-begriff" data-erklaerung="Ein Programmablaufplan (PAP) zeichnet den Ablauf eines Programms als Symbole, die durch Pfeile verbunden sind (aus V05). Er ist sprachunabhängig, so wie eine Fertigungszeichnung kein bestimmtes CAD-Programm braucht.">Programmablaufplan</abbr>: Eine Raute fragt „noch ein Wert übrig?“, bei „ja“ holt der Rumpf den nächsten Wert, eine zweite Raute prüft die Toleranz, und die Rückführlinie führt wieder vor die erste Raute. Rechts läuft derselbe Ablauf als Python-Code (aktive Zeile rot), darüber die Messwerte als Kästchen und darunter der Zustand der Variablen. Ändere die obere Grenze: Bei 12,020 sollte nur noch ein Wert außerhalb liegen.</p>
+          <div data-explorable="listenschleife"></div>
+          <noscript><p>Für das Explorable „Schleife über die Messreihe“ werden JavaScript und die PAP-Engine benötigt.</p></noscript>
+          <p class="k-small k-muted">Beobachtung: Die Schleife hat <em>keinen</em> eigenen Zähler. Die Liste bestimmt, wie oft der Rumpf läuft: so oft, wie sie Elemente hat. Die Rückführlinie des PAP ist dieselbe wie bei <code class="k-i">for i in range(...)</code> in V06. Nur die Frage der ersten Raute klingt anders.</p>
+        </div>
+
+        <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke</strong><p>Im Programmablaufplan ist eine Schleife über eine Liste eine Zählschleife: Die Raute fragt „noch ein Element übrig?“, der Rumpf holt das nächste, die Rückführlinie führt vor die Raute. Zeichne die Verzweigung für das Filtern <em>im</em> Rumpf, vor der Rückführlinie: Auch der Weg „nein“ (Wert nicht anhängen) läuft zurück zur Schleifenraute.</p></div>
+
+        <h3>Zwei Namen, eine Liste: Aliasing</h3>
+        <p>Jetzt der Mechanismus, den fast alle zum ersten Mal falsch erwarten. Ein Name wie <code class="k-i">a</code> <em>enthält</em> die Liste nicht, er <em>zeigt auf</em> sie, wie ein Schild mit Pfeil auf ein Objekt im Speicher (V01: Variable als Name). Schreibst du <code class="k-i">b = a</code>, legt Python <strong>keine neue Liste</strong> an. Es hängt nur ein zweites Schild an dieselbe Liste. Ändert man sie über <code class="k-i">b</code>, sieht man die Änderung auch über <code class="k-i">a</code>: Das nennt man <abbr class="k-begriff" data-erklaerung="Aliasing heißt: Zwei Namen zeigen auf dasselbe Objekt im Speicher. Ändert man es über den einen Namen, sieht man die Änderung auch über den anderen.">Aliasing</abbr> („Zweitname“). Bei Zahlen fällt das nie auf, weil sich eine Zahl nicht verändern lässt. Bei Listen schon.</p>
+
+        <div class="k-explorable">
+          <h3>Namen und Objekte im Speicher</h3>
+          <p class="k-explorable__lead">Führe die vier Zeilen Schritt für Schritt aus und beobachte die roten Pfeile. Zeile 2 kannst du umschalten: <code class="k-i">b = a</code> (zweiter Name) oder <code class="k-i">b = a[:]</code> (Kopie: Der Slice ohne Grenzen schneidet <em>alle</em> Elemente aus und baut daraus eine neue Liste). Was druckt <code class="k-i">print(a)</code> in beiden Fällen?</p>
+          <div data-explorable="alias"></div>
+          <noscript><p>Für das Explorable „Namen und Objekte im Speicher“ wird JavaScript benötigt.</p></noscript>
+        </div>
+
+        <div class="hinweis hinweis--achtung"><strong class="hinweis__title">Achtung</strong><p>Wer eine <em>Arbeitskopie</em> einer Messreihe braucht (zum Beispiel, um eine Nachmessung einzutragen, ohne das Original zu verändern), schreibt <code class="k-i">kopie = original[:]</code>, nicht <code class="k-i">kopie = original</code>. Der Fehler wirft keine Meldung: Das Programm läuft durch und rechnet mit verfälschten Daten. KI-Code enthält das öfter, als man denkt. Bei einzelnen Zahlen und Texten gibt es das Problem nicht, sie sind unveränderlich.</p></div>
+
+        <h3>Tupel: Werte, die zusammengehören und fest bleiben</h3>
+        <p>Ein <abbr class="k-begriff" data-erklaerung="Ein Tupel ist wie eine Liste, aber unveränderlich: Nach dem Anlegen lässt sich kein Wert mehr ersetzen. Gut für Werte, die zusammengehören und fest bleiben sollen, etwa eine Toleranz (min, max).">Tupel</abbr> sieht aus wie eine Liste, hat aber runde Klammern und ist <abbr class="k-begriff" data-erklaerung="Unveränderlich (englisch immutable) heißt: Ein Objekt lässt sich nach dem Anlegen nicht mehr ändern. Ein Versuch löst einen Fehler aus.">unveränderlich</abbr>. Index, Slicing, <code class="k-i">len</code> und <code class="k-i">in</code> funktionieren wie bei der Liste. Es gibt aber kein <code class="k-i">append</code>, und ein Element lässt sich nicht ersetzen. Das ist Absicht: Eine Toleranz <code class="k-i">(12.000, 12.018)</code> oder ein Punkt <code class="k-i">(35.0, 12.5)</code> in mm soll sich nicht versehentlich ändern. Das Programm bricht dann sofort mit einem <code class="k-i">TypeError</code> ab, statt später mit falschen Grenzen zu rechnen.</p>
+        <pre><code>toleranz = (12.000, 12.018)      # (untere Grenze, obere Grenze) in mm
+punkt = (35.0, 12.5)             # (x, y) in mm
+print(toleranz[0], toleranz[1])
+print("x =", punkt[0], "mm, y =", punkt[1], "mm")
+print(len(punkt), 12.018 in toleranz)</code></pre>
+        <pre><code>toleranz = (12.000, 12.018)
+toleranz[1] = 12.020             # Fehler: Tupel lassen sich nicht ändern
+print(toleranz)</code></pre>
+
+        <h3>Dictionary: nachschlagen statt zählen</h3>
+        <p>Eine Liste ordnet nach Position. Bei der Stückliste ist die Position egal, wichtig ist die <strong>Teilenummer</strong>. Dafür gibt es das <abbr class="k-begriff" data-erklaerung="Ein Dictionary (Wörterbuch) ordnet jedem Schlüssel einen Wert zu, wie eine Stückliste jeder Teilenummer eine Menge. Man schlägt nach dem Schlüssel nach, nicht nach der Position.">Dictionary</abbr>: eine Tabelle aus Paaren <abbr class="k-begriff" data-erklaerung="Der Schlüssel ist die Beschriftung eines Eintrags im Dictionary, zum Beispiel die Teilenummer. Jeder Schlüssel kommt nur einmal vor.">Schlüssel</abbr> und <abbr class="k-begriff" data-erklaerung="Der Wert ist das, was zu einem Schlüssel gehört, zum Beispiel Menge und Gewicht eines Teils. Er kann eine Zahl, ein Text, ein Tupel oder eine Liste sein.">Wert</abbr>. Du schreibst es mit geschweiften Klammern und Doppelpunkten, und mit dem Schlüssel in eckigen Klammern liest, änderst oder fügst du einen Eintrag ein. Ein Schlüssel kommt nur einmal vor: Wer einen vorhandenen Schlüssel schreibt, überschreibt seinen Wert.</p>
+
+        <div class="k-explorable">
+          <h3>Stückliste als Schlüssel-Wert-Tabelle</h3>
+          <p class="k-explorable__lead">Schlag Teile nach, prüfe mit <code class="k-i">in</code> und trage neue Einträge ein. Probiere den Tippfehler: Die Teilenummer <code class="k-i">L-6025</code> gibt es nicht, und Python rät nicht, sondern meldet einen <abbr class="k-begriff" data-erklaerung="Ein KeyError tritt auf, wenn man im Dictionary einen Schlüssel nachschlägt, den es nicht gibt. Das Programm bricht ab, statt einen Wert zu raten.">KeyError</abbr>. Trage danach einen vorhandenen Schlüssel erneut ein (wird geändert) und einen neuen (wird eingefügt).</p>
+          <div data-explorable="dict"></div>
+          <noscript><p>Für das Explorable „Stückliste als Schlüssel-Wert-Tabelle“ wird JavaScript benötigt.</p></noscript>
+        </div>
+
+        <pre><code>stueckliste = {"W-100": (1, 2.40), "L-6205": (2, 0.13)}   # Teilenummer: (Menge, Gewicht in kg)
+print(stueckliste["L-6205"])               # nachschlagen
+stueckliste["D-35"] = (2, 0.02)            # neuer Schlüssel: einfügen
+stueckliste["L-6205"] = (4, 0.13)          # vorhandener Schlüssel: ändern
+print(len(stueckliste), "L-6205" in stueckliste, "X-1" in stueckliste)
+for teil, werte in stueckliste.items():
+    print(teil, "->", werte)</code></pre>
+        <p><code class="k-i">in</code> prüft bei einem Dictionary die <em>Schlüssel</em>, nicht die Werte. <code class="k-i">.items()</code> liefert nacheinander alle Paare (Schlüssel, Wert), und der Schleifenkopf <code class="k-i">for teil, werte in ...</code> legt beide Teile jedes Paars gleich unter zwei Namen ab. Mehr Tupel-Auspacken brauchst du in diesem Kurs vorerst nicht: Die Werte holst du mit Index, zum Beispiel <code class="k-i">werte[0]</code> für die Menge. Wer vorher wissen will, ob ein Schlüssel existiert, fragt mit <code class="k-i">in</code>, statt den <code class="k-i">KeyError</code> zu riskieren.</p>
+
+        <h3>Welche Struktur wofür?</h3>
+        <div class="k-tablewrap">
+        <table class="k-types">
+          <thead><tr><th scope="col">Struktur</th><th scope="col">Schreibweise</th><th scope="col">Zugriff über</th><th scope="col">veränderbar?</th><th scope="col">Typisch</th></tr></thead>
+          <tbody>
+            <tr><td>Liste</td><td><code class="k-i">[12.004, 12.011]</code></td><td>Position (Index ab 0)</td><td>ja (<code class="k-i">append</code>, Element ersetzen)</td><td>Messreihe, Werte, die wachsen</td></tr>
+            <tr><td>Tupel</td><td><code class="k-i">(12.000, 12.018)</code></td><td>Position (Index ab 0)</td><td>nein</td><td>Toleranz (min, max), Punkt (x, y)</td></tr>
+            <tr><td>Dictionary</td><td><code class="k-i">{"W-100": (1, 2.40)}</code></td><td>Schlüssel</td><td>ja (Eintrag ändern oder einfügen)</td><td>Stückliste, Parameter nach Namen</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke</strong><p>Liste und Tupel zählen nach Position (ab 0, hinten mit −1), das Dictionary schlägt nach Schlüsseln nach. Der Endwert eines Slices gehört nicht dazu. <code class="k-i">b = a</code> macht keine Kopie, <code class="k-i">b = a[:]</code> schon. Ein Dictionary-Zugriff mit unbekanntem Schlüssel ist ein <code class="k-i">KeyError</code>, ein Listenzugriff außerhalb ein <code class="k-i">IndexError</code>, eine Änderung am Tupel ein <code class="k-i">TypeError</code>. Alle drei Fehler wollen dir etwas sagen: Prüfe Länge, Schlüssel oder Typ.</p></div>
+        <p>Das Schreiben, die Fehlermeldungen und die Muster dazu übst du im <a href="v08-labor.html#a-werkzeugkasten">Werkzeugkasten im Labor</a>. Das schauen wir uns dort genauer an →</p>
+      </section>
+
+      <!-- 3 ───────────── AUSPROBIEREN ───────────── -->
+      <section class="k-section" id="ausprobieren" data-section="ausprobieren" aria-labelledby="h-aus">
+        <h2 class="k-section__title" id="h-aus"><span class="k-section__num" aria-hidden="true">3</span> Ausprobieren</h2>
+
+        <p>Python läuft direkt hier im Browser. Jeder Codeblock hat einen Editor: Du kannst ihn ändern, ausführen, zurücksetzen und mit „Schritt für Schritt“ verfolgen. Bei Listen lohnt sich das besonders: Der Visualisierer zeichnet die Kästchen mit Index, und bei zwei Namen für eine Liste siehst du die Pfeile auf <em>dasselbe</em> Objekt. Erst tippen, was herauskommt, dann ausführen. Das Tippen ist der Lernmoment. Mit „Zurücksetzen“ holst du das Original (Strg+Enter führt aus).</p>
+
+      <div class="k-try">
+        <h3>Index, negativer Index und Slice</h3>
+        <div class="k-predict">
+          <p class="k-predict__q">Was gibt <code class="k-i">print(temperaturen[-2])</code> aus?</p>
+          <div class="k-predict__opts"><button type="button">22.0</button><button type="button" data-correct>26.5</button><button type="button">29.5</button></div>
+          <div class="k-predict__result"></div>
+          <div class="k-predict__expl" hidden>26.5. <code>-1</code> ist das letzte Element (29.5), <code>-2</code> das vorletzte (26.5). Der Slice <code>temperaturen[1:4]</code> liefert die Indizes 1, 2 und 3, also drei Werte: 22.0, 23.5 und 25.0. Die 4 gehört nicht mehr dazu.</div>
+        </div>
+        <pre><code>temperaturen = [20.5, 22.0, 23.5, 25.0, 26.5, 29.5]
+print(temperaturen[-2])
+print(temperaturen[1:4])
+print(temperaturen[-3:])
+print(temperaturen[:2])
+print(len(temperaturen[1:4]))</code></pre>
+        <p class="k-small k-muted">Probier danach <code class="k-i">temperaturen[6]</code> aus (sechs Elemente, größter Index 5) und <code class="k-i">temperaturen[2:100]</code>. Was ist der Unterschied?</p>
+      </div>
+
+      <div class="k-try">
+        <h3>append wächst, len zählt</h3>
+        <div class="k-predict">
+          <p class="k-predict__q">Wie viele Elemente hat <code class="k-i">werte</code> am Ende?</p>
+          <div class="k-predict__opts"><button type="button">3</button><button type="button">4</button><button type="button" data-correct>5</button></div>
+          <div class="k-predict__result"></div>
+          <div class="k-predict__expl" hidden>5. Die Liste startet mit zwei Elementen. Jeder <code>append</code> hängt eins an, und die Schleife läuft dreimal: 2 + 3 = 5. Ein <code>append</code> in der Schleife ist das übliche Muster, eine Liste aufzubauen.</div>
+        </div>
+        <pre><code>werte = [10.0, 20.0]
+for i in range(3):
+    werte.append(werte[-1] + 5)
+    print(len(werte), werte)</code></pre>
+      </div>
+
+      <div class="k-try">
+        <h3>Mittelwert und Spannweite mit sum, min und max</h3>
+        <div class="k-predict">
+          <p class="k-predict__q">Wie groß ist die Spannweite der Liste (größter minus kleinster Wert)?</p>
+          <div class="k-predict__opts"><button type="button">0.019</button><button type="button" data-correct>0.021</button><button type="button">12.0081</button></div>
+          <div class="k-predict__result"></div>
+          <div class="k-predict__expl" hidden>0.021: größter Wert 12.019, kleinster 11.998, Differenz 0.021 (die 0.019 wäre der Abstand zum Nennmaß 12.000 nach oben, falsch gerechnet). 12.0081 ist der Mittelwert. Beides berechnen <code>sum</code>, <code>len</code>, <code>min</code> und <code>max</code> in je einer Zeile, ohne Schleife.</div>
+        </div>
+        <pre><code>messungen = [12.004, 12.011, 11.998, 12.007, 12.019, 12.002, 12.015, 12.009]
+print(f"Mittelwert: {sum(messungen) / len(messungen):.4f} mm")
+print(f"Spannweite: {max(messungen) - min(messungen):.3f} mm")
+print("Kleinster Wert:", min(messungen), "größter Wert:", max(messungen))</code></pre>
+        <p class="k-small k-muted">Probier danach: Was liefert <code class="k-i">min(messungen[:4])</code>? Und was passiert bei <code class="k-i">sum([]) / len([])</code> mit einer leeren Liste?</p>
+      </div>
+
+      <div class="k-try">
+        <h3>Zwei Namen, eine Liste</h3>
+        <div class="k-predict">
+          <p class="k-predict__q">Was gibt <code class="k-i">print(a)</code> aus?</p>
+          <div class="k-predict__opts"><button type="button">[20.5, 21.0, 19.8]</button><button type="button" data-correct>[20.5, 21.0, 19.8, 22.4]</button><button type="button">ein Fehler</button></div>
+          <div class="k-predict__result"></div>
+          <div class="k-predict__expl" hidden>[20.5, 21.0, 19.8, 22.4]. <code>b = a</code> hat keine neue Liste angelegt: a und b sind zwei Namen für dieselbe Liste. Das <code>append</code> über b ist auch über a zu sehen. Mit <code>b = a[:]</code> (Kopie) bliebe a unverändert.</div>
+        </div>
+        <p class="k-small k-muted">Drück auf „Schritt für Schritt“: Im Bild zeigen die Namen a und b mit Pfeilen auf <em>ein</em> Listenobjekt. Ersetze danach <code class="k-i">b = a</code> durch <code class="k-i">b = a[:]</code> und beobachte, wie ein zweites Objekt entsteht.</p>
+        <pre><code>a = [20.5, 21.0, 19.8]
+b = a
+b.append(22.4)
+print(a)
+print(b)</code></pre>
+      </div>
+
+      <div class="k-try">
+        <h3>Tupel lassen sich nicht ändern</h3>
+        <div class="k-predict">
+          <p class="k-predict__q">Was passiert beim Ausführen?</p>
+          <div class="k-predict__opts"><button type="button">Die obere Grenze wird 12.020, das Programm druckt sie.</button><button type="button" data-correct>Python bricht mit einem TypeError ab, und es wird nichts gedruckt.</button><button type="button">Python legt stillschweigend ein neues Tupel an.</button></div>
+          <div class="k-predict__result"></div>
+          <div class="k-predict__expl" hidden>Das Programm bricht in Zeile 2 mit <code>TypeError: 'tuple' object does not support item assignment</code> ab. Das ist gewollt: Eine Toleranz soll sich nicht unbemerkt ändern. Wer eine neue Grenze braucht, legt ein neues Tupel an: <code>toleranz = (12.000, 12.020)</code>.</div>
+        </div>
+        <pre><code>toleranz = (12.000, 12.018)
+toleranz[1] = 12.020
+print(toleranz)</code></pre>
+        <p class="k-small k-muted">Repariere den Code, indem du in Zeile 2 ein neues Tupel zuweist. Und was passiert bei <code class="k-i">toleranz.append(12.5)</code>?</p>
+      </div>
+
+      <div class="k-try">
+        <h3>Dictionary: in und KeyError</h3>
+        <div class="k-predict">
+          <p class="k-predict__q">Welche Ausgabe erwartest du für die Teilenummer <code class="k-i">L-6025</code> (Zahlendreher)?</p>
+          <div class="k-predict__opts"><button type="button">0 Stück</button><button type="button" data-correct>Teil L-6025 gibt es nicht</button><button type="button">KeyError und Programmabbruch</button></div>
+          <div class="k-predict__result"></div>
+          <div class="k-predict__expl" hidden>„Teil L-6025 gibt es nicht“: Das <code>if ... in stueckliste</code> fängt den unbekannten Schlüssel ab, der <code>else</code>-Zweig meldet es. Ohne diese Prüfung (<code>stueckliste[nummer]</code> direkt) bricht das Programm mit <code>KeyError: 'L-6025'</code> ab. Probier es aus: Lösch die Prüfung und führe nochmal aus.</div>
+        </div>
+        <pre><code>stueckliste = {"W-100": (1, 2.40), "L-6205": (2, 0.13), "D-35": (2, 0.02)}
+nummer = "L-6025"
+if nummer in stueckliste:
+    print("Menge:", stueckliste[nummer][0])
+else:
+    print("Teil", nummer, "gibt es nicht")</code></pre>
+      </div>
+      </section>
+
+      <!-- 4 ───────────── SELBSTCHECK ───────────── -->
+      <section class="k-section" id="selbstcheck" data-section="selbstcheck" aria-labelledby="h-sc">
+        <h2 class="k-section__title" id="h-sc"><span class="k-section__num" aria-hidden="true">4</span> Selbstcheck</h2>
+
+        <p>Acht Quizaufgaben im Stil der Probeklausur (22 Punkte) und eine Code-Schreib-Aufgabe (6 Punkte, T9). Plane etwa 15 Minuten für das Quiz und 10 Minuten für T9 ein, ohne Hilfsmittel. Quiz-Punkte gibt es für den ersten Versuch; danach darfst du es nochmal probieren.</p>
+
+      <div class="k-quiz" data-quiz="v08">
+
+        <div class="k-q" data-type="output" data-points="2" data-id="t1" data-answer="[8, 15, 16]">
+          <div class="k-q__head"><span class="k-q__title">T1 · Slicing</span><span class="k-q__pts">2 Punkte</span></div>
+          <div class="k-q__text">Was gibt das Programm aus?<pre class="k-code" data-run="nach-antwort"><code>w = [4, 8, 15, 16, 23, 42]
+print(w[1:4])</code></pre></div>
+          <div class="k-q__expl"><code>w[1:4]</code> enthält die Indizes 1, 2 und 3: 8, 15 und 16. Der Endwert 4 gehört nicht mehr dazu (wie bei <code>range</code>). Die Ausgabe ist wieder eine Liste, also mit eckigen Klammern.</div>
+        </div>
+
+        <div class="k-q" data-type="num" data-points="2" data-id="t2" data-answer="23" data-tol="0">
+          <div class="k-q__head"><span class="k-q__title">T2 · Negativer Index</span><span class="k-q__pts">2 Punkte</span></div>
+          <div class="k-q__text">Welchen Wert hat <code>w[-2]</code>, wenn <code>w = [4, 8, 15, 16, 23, 42]</code> ist?</div>
+          <div class="k-q__expl"><code>-1</code> ist das letzte Element (42), <code>-2</code> das vorletzte: 23. Von vorn wäre das der Index 4 (<code>len(w) - 2</code>).</div>
+        </div>
+
+        <div class="k-q" data-type="output" data-points="3" data-id="t3" data-answer="5 5">
+          <div class="k-q__head"><span class="k-q__title">T3 · Zwei Namen</span><span class="k-q__pts">3 Punkte</span></div>
+          <div class="k-q__text">Was gibt das Programm aus?<pre class="k-code" data-run="nach-antwort"><code>a = [1, 2, 3]
+b = a
+b.append(4)
+a.append(5)
+print(len(a), len(b))</code></pre></div>
+          <div class="k-q__expl"><code>b = a</code> legt keine Kopie an: a und b sind zwei Namen für <em>eine</em> Liste. Beide <code>append</code>-Aufrufe verändern diese eine Liste, sie hat am Ende fünf Elemente: [1, 2, 3, 4, 5]. Beide <code>len</code> liefern 5.</div>
+        </div>
+
+        <div class="k-q" data-type="mc" data-points="2" data-id="t4">
+          <div class="k-q__head"><span class="k-q__title">T4 · Tupel</span><span class="k-q__pts">2 Punkte</span></div>
+          <div class="k-q__text">Ein Programm hält die Toleranz einer Bohrung als <code>toleranz = (12.000, 12.018)</code> fest. Wofür ist ein Tupel hier besser geeignet als eine Liste?</div>
+          <ul class="k-q__options">
+            <li>Ein Tupel braucht weniger Schreibarbeit, weil man kein <code>append</code> braucht.</li>
+            <li data-correct>Ein Tupel ist unveränderlich: Die Grenzen können nicht versehentlich im Programm überschrieben werden.</li>
+            <li>Auf ein Tupel kann man nur mit negativem Index zugreifen.</li>
+            <li>Ein Tupel darf als einziges Zahlen mit Nachkommastellen enthalten.</li>
+          </ul>
+          <div class="k-q__expl">Der Vorteil ist die Unveränderlichkeit: Versucht jemand später, eine Grenze zu überschreiben, bricht das Programm mit einem <code>TypeError</code> ab, statt mit falschen Grenzen zu rechnen. Index und Slicing funktionieren wie bei Listen, und auch Listen dürfen Kommazahlen enthalten.</div>
+        </div>
+
+        <div class="k-q" data-type="mc" data-points="4" data-id="t5">
+          <div class="k-q__head"><span class="k-q__title">T5 · Aussagen (mehrere richtig)</span><span class="k-q__pts">4 Punkte</span></div>
+          <div class="k-q__text">Welche Aussagen sind richtig? Alle richtigen ankreuzen.</div>
+          <ul class="k-q__options">
+            <li><code>liste[len(liste)]</code> liefert das letzte Element.</li>
+            <li data-correct><code>liste[-1]</code> liefert das letzte Element.</li>
+            <li>An ein Tupel kann man mit <code>append</code> einen Wert anhängen.</li>
+            <li data-correct><code>"W-100" in stueckliste</code> prüft, ob es diesen Schlüssel im Dictionary gibt.</li>
+            <li>Ein unbekannter Schlüssel liefert bei <code>stueckliste["X-1"]</code> den Wert 0.</li>
+          </ul>
+          <div class="k-q__expl">Der größte gültige Index ist <code>len(liste) - 1</code>: <code>liste[len(liste)]</code> ist ein <code>IndexError</code>. Ein Tupel hat kein <code>append</code>. Ein unbekannter Schlüssel ist ein <code>KeyError</code>, kein stiller Ersatzwert. Die beiden anderen Aussagen stimmen.</div>
+        </div>
+
+        <div class="k-q" data-type="num" data-points="3" data-id="t6" data-answer="14" data-tol="0">
+          <div class="k-q__head"><span class="k-q__title">T6 · Dictionary von Hand</span><span class="k-q__pts">3 Punkte</span></div>
+          <div class="k-q__text">Welche Zahl gibt das Programm aus?<pre class="k-code" data-run="nach-antwort"><code>s = {"A": 3, "B": 5}
+s["C"] = 2
+s["A"] = s["A"] + 4
+print(s["A"] + s["B"] + s["C"])</code></pre></div>
+          <div class="k-q__expl"><code>s["C"] = 2</code> fügt einen neuen Schlüssel ein, <code>s["A"] = s["A"] + 4</code> ändert den vorhandenen von 3 auf 7. Ausgabe: 7 + 5 + 2 = 14.</div>
+        </div>
+
+        <div class="k-q" data-type="mc" data-points="3" data-id="t7">
+          <div class="k-q__head"><span class="k-q__title">T7 · KeyError vermeiden</span><span class="k-q__pts">3 Punkte</span></div>
+          <div class="k-q__text">Das Programm bricht ab, wenn die Teilenummer nicht in der Stückliste steht. Wie vermeidest du den Absturz?<pre class="k-code" data-run="no"><code>nummer = input("Teilenummer: ")
+print("Menge:", stueckliste[nummer][0])</code></pre></div>
+          <ul class="k-q__options">
+            <li>Mit <code>stueckliste.append(nummer)</code> vor der Ausgabe.</li>
+            <li data-correct>Mit <code>if nummer in stueckliste:</code> vor dem Zugriff und einer Meldung im <code>else</code>-Zweig.</li>
+            <li>Mit <code>stueckliste[nummer] = 0</code> nach der Ausgabe.</li>
+            <li>Mit <code>len(stueckliste)</code> vor der Ausgabe.</li>
+          </ul>
+          <div class="k-q__expl">Die Prüfung mit <code>in</code> kommt <em>vor</em> den Zugriff. Ein Dictionary hat kein <code>append</code>, und die anderen Zeilen laufen erst, wenn der Absturz schon passiert ist (oder ändern die Daten falsch).</div>
+        </div>
+
+        <div class="k-q" data-type="mc" data-points="3" data-id="t8">
+          <div class="k-q__head"><span class="k-q__title">T8 · KI-Code freigeben?</span><span class="k-q__pts">3 Punkte</span></div>
+          <div class="k-q__text">Die KI soll den Mittelwert der vier Messwerte ausgeben (richtig wäre 12.0050 mm) und liefert:<pre class="k-code" data-run="nach-antwort"><code>werte = [12.004, 12.011, 11.998, 12.007]
+summe = 0.0
+for i in range(1, len(werte)):
+    summe = summe + werte[i]
+print(f"Mittelwert: {summe / len(werte):.4f} mm")</code></pre>Würdest du das freigeben?</div>
+          <ul class="k-q__options">
+            <li>Ja, die Schleife läuft ohne Fehler durch, also stimmt das Ergebnis.</li>
+            <li data-correct>Nein, <code>range(1, len(werte))</code> beginnt bei Index 1 und lässt das erste Element weg. Richtig wäre <code>range(len(werte))</code> oder <code>for d in werte</code>.</li>
+            <li>Nein, <code>len(werte)</code> darf nicht in <code>range</code> stehen.</li>
+            <li>Nein, <code>summe</code> hätte bei 1 starten müssen.</li>
+          </ul>
+          <div class="k-q__expl">Das Programm läuft ohne Fehlermeldung, rechnet aber mit drei statt vier Werten und teilt trotzdem durch vier: Es kommt 9.0040 heraus statt 12.0050. Fehler „eins daneben“ sieht man nur mit einer Gegenprobe von Hand. Die Form <code>for d in werte:</code> macht den Fehler gar nicht erst möglich.</div>
+        </div>
+
+        <div class="k-score" data-score aria-live="polite"></div>
+      </div>
+
+        <h3>Code schreiben im Klausurstil</h3>
+        <p class="k-small k-muted">Wie in der Klausur: erst von Hand schreiben, ohne Ausführen und ohne Auto-Vervollständigung. Dann abgeben, die Tests laufen lassen und dich selbst nach dem Punkteschema bewerten. Richtzeit 10 Minuten.</p>
+      <div class="a-task" data-a="klausur" data-id="sc-klausur" data-mode="programm" data-minutes="10">
+        <div class="a-task__head"><span class="a-task__title">T9 · Messreihe auf Toleranz prüfen</span><span class="a-pts">6 Punkte</span></div>
+        <div class="a-task__text">
+          <p>Eine Welle hat den Nenndurchmesser 25 mm. Erlaubt sind 24,98 bis 25,02 mm, die Grenzen gehören dazu. Lege diese Toleranz als <strong>Tupel</strong> <code>toleranz = (24.98, 25.02)</code> an. Schreibe ein Programm, das zuerst die Anzahl <em>n</em> (ganze Zahl) und danach n Durchmesser in mm (Kommazahlen, jeweils mit eigenem <code>input()</code>) einliest und in einer <strong>Liste</strong> sammelt. Danach gibt es die Zahl der Werte außerhalb der Toleranz und den Mittelwert mit drei Nachkommastellen aus. Es gibt mindestens einen Messwert.</p>
+          <div class="a-spec"><strong>Ausgabe genau so (Beispiel n = 5, Werte 25.00, 24.97, 25.03, 25.01, 24.99):</strong><pre data-run="no">Außerhalb Toleranz: 2 von 5
+Mittelwert: 25.000 mm</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V08" data-assist="off" aria-label="Python-Code von Hand schreiben, ohne Ausführen"></textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _soll(werte):
+    aus = sum(1 for w in werte if w < 24.98 or w > 25.02)
+    return "Außerhalb Toleranz: %d von %d" % (aus, len(werte)), "Mittelwert: %.3f mm" % (sum(werte) / len(werte))
+
+def _pruefe(werte):
+    a, b = _soll(werte)
+    z = zeilen(run_program([str(len(werte))] + [str(w) for w in werte]))
+    assert a in z, "Bei %r wird die Zeile %r erwartet. Dein Programm gibt aus: %r" % (werte, a, z)
+    assert b in z, "Bei %r wird die Zeile %r erwartet. Dein Programm gibt aus: %r" % (werte, b, z)
+
+def test_beispiel():
+    """Beispiel n = 5: 25.00, 24.97, 25.03, 25.01, 24.99"""
+    _pruefe([25.00, 24.97, 25.03, 25.01, 24.99])
+
+def test_alle_gut():
+    """Alle Werte in Toleranz: 25.0, 25.01, 24.99"""
+    _pruefe([25.0, 25.01, 24.99])
+
+def test_grenzen():
+    """Die Grenzen 24.98 und 25.02 gehören zur Toleranz"""
+    _pruefe([24.98, 25.02, 25.0])
+
+def test_einer():
+    """Genau ein Messwert, außerhalb: n = 1"""
+    _pruefe([25.5])
+        </script>
+        <script type="text/x-python" data-role="solution">
+toleranz = (24.98, 25.02)
+n = int(input("Anzahl Messwerte: "))
+messungen = []
+for i in range(n):
+    messungen.append(float(input(f"Messwert {i + 1}: ")))
+ausserhalb = 0
+for d in messungen:
+    if d < toleranz[0] or d > toleranz[1]:
+        ausserhalb = ausserhalb + 1
+print(f"Außerhalb Toleranz: {ausserhalb} von {n}")
+print(f"Mittelwert: {sum(messungen) / len(messungen):.3f} mm")
+        </script>
+        <script type="application/json" data-role="scheme">[
+{"p":1,"t":"n wird mit input() gelesen und mit int() umgewandelt"},
+{"p":1,"t":"Die Werte werden in einer Schleife mit input() gelesen, mit float() umgewandelt und mit append in einer Liste gesammelt"},
+{"p":1,"t":"Die Toleranz ist ein Tupel (24.98, 25.02), die Grenzen werden mit Index [0] und [1] benutzt"},
+{"p":1,"t":"Eine Schleife läuft über die Liste (for d in messungen) und zählt mit if und or die Werte außerhalb, der Zähler startet vor der Schleife bei 0"},
+{"p":1,"t":"Mittelwert = sum(messungen) / len(messungen) (oder eine Summe mit Schleife) nach der Schleife"},
+{"p":1,"t":"Beide Ausgaben mit dem richtigen Text und Format (:.3f, Einheit mm)"}
+]</script>
+      </div>
+      </section>
+
+      <!-- 5 ───────────── DEEP DIVE ───────────── -->
+      <section class="k-section" id="deepdive" data-section="deepdive" aria-labelledby="h-dd">
+        <h2 class="k-section__title" id="h-dd"><span class="k-section__num" aria-hidden="true">5</span> Deep Dive <span class="k-muted">(freiwillig)</span></h2>
+
+        <p>Für Neugierige. Nichts davon kommt in der Klausur dran.</p>
+
+      <details class="k-deep">
+        <summary>Namen, Objekte und die Frage „Ist das dasselbe?“</summary>
+        <div class="k-deep__body">
+          <p>Python unterscheidet zwei Fragen. <code class="k-i">a == b</code> fragt: „Haben a und b den gleichen <em>Inhalt</em>?“ <code class="k-i">a is b</code> fragt: „Sind das <em>dasselbe Objekt</em>?“ Zwei getrennte Listen mit gleichem Inhalt sind gleich, aber nicht identisch. Zwei Namen für eine Liste sind beides. Zahlen und Texte sind unveränderlich, darum merkst du bei ihnen nie, ob zwei Namen dasselbe Objekt meinen. Bei Listen und Dictionaries (veränderbar) macht es einen Unterschied.</p>
+          <pre><code>a = [1, 2, 3]
+b = a            # zweiter Name
+c = a[:]         # Kopie
+print(a == b, a is b)
+print(a == c, a is c)</code></pre>
+          <p>Auch ein Funktionsaufruf (V07) erzeugt Aliasing: Übergibst du eine Liste als Argument, bekommt die Funktion keine Kopie, sondern einen weiteren Namen für dieselbe Liste. Eine Funktion kann deine Liste also verändern.</p>
+        </div>
+      </details>
+
+      <details class="k-deep">
+        <summary>Warum ist ein Dictionary so schnell? Hash-Tabellen in vier Sätzen</summary>
+        <div class="k-deep__body">
+          <p>Würde Python bei jedem Zugriff alle Schlüssel nacheinander mit deinem vergleichen, würde es bei einer Million Teilenummern lange dauern. Stattdessen rechnet es aus dem Schlüssel mit einer Formel (der <em>Hash-Funktion</em>) direkt eine Fachnummer aus und schaut nur dort nach. So dauert das Nachschlagen praktisch immer gleich lang, ob 10 oder 10 Millionen Einträge im Dictionary stehen. Der Preis: Schlüssel müssen unveränderlich sein (Zahlen, Texte, Tupel, aber keine Listen), und das Dictionary braucht mehr Speicher als eine Liste. Mehr dazu im Kurs bei V13 (Laufzeit-Intuition).</p>
+        </div>
+      </details>
+
+      <details class="k-deep">
+        <summary>Listen und Felder in der SPS und in C</summary>
+        <div class="k-deep__body">
+          <p class="k-small k-muted">Hinweis: Das ist keine Python-Syntax, sondern Structured Text nach IEC 61131-3. Nur zum Wiedererkennen.</p>
+          <pre data-run="no"><code>VAR
+    messwert : ARRAY[1..8] OF REAL;
+    summe    : REAL := 0.0;
+    i        : INT;
+END_VAR
+
+FOR i := 1 TO 8 DO
+    summe := summe + messwert[i];
+END_FOR;</code></pre>
+          <p>Ein <code class="k-i">ARRAY</code> (Feld) ist die feste Form der Liste: Länge und Datentyp stehen vorab fest, ein <code class="k-i">append</code> gibt es nicht. Beachte die <strong>Indexgrenzen</strong>: In diesem Beispiel zählt der erste Wert als 1, in C und Python als 0. Wer Code zwischen Welten überträgt, macht hier den klassischen Fehler „eins daneben“. Auch bei Python-Listen steht jedes Element hintereinander im Speicher, nur dass die Liste selbst wachsen darf.</p>
+        </div>
+      </details>
+
+      <details class="k-deep">
+        <summary>Was du noch nicht brauchst</summary>
+        <div class="k-deep__body">
+          <p>Nach V08 liegt die Basis. Bewusst noch nicht dabei: Messwerte <em>sortieren</em> (<code class="k-i">sorted</code>), Listen von Datensätzen (zum Beispiel eine Liste von Dictionaries, wie sie später Tabellen darstellen) und List Comprehensions, die eine Liste in einer Zeile aufbauen (V10). Wenn die KI dir solchen Code liefert, erkennst du jetzt, woraus er besteht: aus Listen, Tupeln, Dictionaries und Schleifen.</p>
+        </div>
+      </details>
+      </section>
+
+      <!-- Videos zur Nachbereitung -->
+      <section class="k-section" id="videos" aria-labelledby="h-videos">
+        <h2 class="k-section__title" id="h-videos">Videos zur Nachbereitung</h2>
+        <p>Alle drei Erklärvideos zu V08 zum Wiederholen, jeweils mit deutschen Untertiteln.</p>
+        <ul class="k-video-list">
+          <li><a href="#video-theorie">Datenstrukturen: Liste, Index, Tupel, Dictionary und Aliasing erklärt</a> <span class="k-muted">(ca. 3 Min, Theorie, Abschnitt 2 dieser Lerneinheit)</span></li>
+          <li><a href="v08-labor.html#a-werkzeugkasten">Python-Werkstatt: Listen, Tupel und Dictionaries</a> <span class="k-muted">(ca. 3 Min, im Labor bei „Werkzeugkasten“)</span></li>
+          <li><a href="v08-labor.html#a-vorgemacht">Vorgerechnet: Messreihe und Stückliste Schritt für Schritt</a> <span class="k-muted">(ca. 3 Min, im Labor bei „Vorgerechnetes Beispiel“)</span></li>
+        </ul>
+      </section>
+
+      <!-- Hausauftrag für V09 -->
+      <section class="k-section" id="hausauftrag" aria-labelledby="h-haus">
+        <h2 class="k-section__title" id="h-haus">Hausauftrag für V09: deine eigene Messung mit phyphox</h2>
+        <p>Im nächsten Termin (V09) lesen wir Messdaten aus Dateien ein und werten sie mit Python aus. Am meisten lernst du an <strong>eigenen</strong> Daten. Dein Smartphone ist dafür ein vollwertiges Messgerät: Mit der kostenlosen App <abbr class="k-begriff" data-erklaerung="phyphox ist eine kostenlose App der RWTH Aachen, die die Sensoren deines Smartphones (Beschleunigung, Drehrate, Lautstärke und mehr) als Messgerät nutzt und die Messdaten als Datei exportiert.">phyphox</abbr> misst du Beschleunigung und exportierst die Messreihe als <abbr class="k-begriff" data-erklaerung="CSV (Comma Separated Values) ist eine einfache Textdatei, in der jede Zeile ein Messwert-Satz ist und die Spalten durch ein Trennzeichen getrennt sind. Jede Tabellenkalkulation und jedes Programm kann sie lesen.">CSV-Datei</abbr>. Bring sie zur nächsten Vorlesung mit.</p>
+        <p><strong>Zwei Vorschläge</strong> (such dir einen aus): Beschleunigung <em>beim Bremsen mit dem Fahrrad</em> oder die <em>Vibration der Waschmaschine beim Schleudern</em>. Beim Bremsen siehst du den Beschleunigungssprung deiner Bremsung, beim Schleudern eine fast gleichmäßige Schwingung mit der Drehzahl der Trommel.</p>
+        <ol class="k-steps">
+          <li><strong>App installieren:</strong> „phyphox“ im Play Store (Android) oder App Store (iOS) suchen und installieren. Sie ist kostenlos, ein Konto brauchst du nicht.</li>
+          <li><strong>Experiment wählen:</strong> In der Liste das Experiment <strong>„Beschleunigung (ohne g)“</strong> öffnen (je nach App-Version unter „Roh-Sensoren“). „Ohne g“ heißt: Die Erdbeschleunigung wird herausgerechnet, du misst nur die Bewegung.</li>
+          <li><strong>Handy fest fixieren:</strong> Es darf während der Messung nicht verrutschen. Beim Rad: in einer Halterung am Lenker oder fest in einer geschlossenen Jackentasche. Bei der Waschmaschine: flach auf den Deckel legen, am besten auf ein Tuch oder eine rutschfeste Matte.</li>
+          <li><strong>Messen:</strong> Mit der Play-Taste starten, dann bremsen (mehrmals, aus gleichbleibender Geschwindigkeit) beziehungsweise das Schleudern abwarten (etwa eine Minute). Mit der Pause-Taste stoppen.</li>
+          <li><strong>Exportieren:</strong> Oben rechts das Drei-Punkte-Menü öffnen, <strong>„Messdaten exportieren“</strong> wählen und als Format <strong>„CSV (Comma, decimal point)“</strong> oder <strong>„CSV (Semicolon, decimal comma)“</strong> nehmen. Beides ist in Ordnung, wir behandeln in V09 beide Varianten.</li>
+          <li><strong>Datei an dich selbst senden:</strong> zum Beispiel per E-Mail an dich, in deine Cloud oder per Kabel auf den Laptop. Bring sie zur nächsten Vorlesung so mit, dass du sie dort öffnen kannst.</li>
+        </ol>
+        <div class="hinweis hinweis--achtung"><strong class="hinweis__title">Achtung: Sicherheit</strong><p>Beim Radfahren schaust du <strong>nicht</strong> aufs Handy. Starte die Messung vor der Fahrt, verstaue das Handy sicher (Halterung oder Tasche) und prüfe die Ergebnisse erst nach dem Anhalten. Brems nur auf einer übersichtlichen, verkehrsarmen Strecke oder einem leeren Parkplatz, nie im Straßenverkehr „zum Test“, und trag einen Helm. Bei der Waschmaschine bleibst du in der Nähe und hältst das Handy nicht fest.</p></div>
+        <div class="hinweis hinweis--merke"><strong class="hinweis__title">Datensparsamkeit</strong><p>Eine Beschleunigungsmessung enthält keine personenbezogenen Daten, nur Zeit und Messwerte. Teile trotzdem nur die Messdaten selbst: keine Standortdaten (wähle kein GPS-Experiment), keine Screenshots mit Name oder Konto und keine zusätzlichen Dateien. Wer kein Smartphone benutzen kann oder will, bekommt in V09 Beispieldateien und arbeitet damit.</p></div>
+      </section>
+
+      <!-- Übergang -->
+      <section class="k-next" aria-labelledby="h-next">
+        <h2 id="h-next">Wie geht es weiter?</h2>
+        <p>Verstanden ist noch nicht geschrieben. Im Programmierlabor tippst du den Code selbst: erst mit Hilfen (Werkzeugkasten, Beispiel, Lückencode), dann allein. Zu Hause folgt das Training mit acht automatisch geprüften Aufgaben (ca. 60 Min), darunter das Zeichnen eines Programmablaufplans, und am Ende die Anleitung für deine phyphox-Messung.</p>
+        <p><a class="k-btn" href="v08-labor.html">Weiter ins Programmierlabor →</a></p>
+      </section>
+
+      <!-- Für Dozierende -->
+      <section class="k-section k-section--dozent" aria-labelledby="h-doz">
+        <h2 id="h-doz" class="k-sr">Für Dozierende</h2>
+      <details class="k-dozent">
+        <summary>Für Dozierende: Ablaufplan 135 Minuten Präsenz + 60 Minuten zu Hause</summary>
+        <div class="k-dozent__body">
+          <p class="k-small k-muted">Ein Termin besteht aus zwei Seiten: dieser <strong>Lerneinheit</strong> (verstehen) und dem <a href="v08-labor.html">Programmierlabor</a> (selbst programmieren). Die Tabelle sagt, wo welche Phase stattfindet.</p>
+          <div class="k-tablewrap"><table class="k-plan">
+            <thead><tr><th scope="col">Minuten</th><th scope="col">Wo</th><th scope="col">Was zu tun ist</th></tr></thead>
+            <tbody>
+              <tr><td>0–10</td><td>Lerneinheit 3<br>Ausprobieren</td><td><strong>Warm-up.</strong> Wiederholung V06/V07 per Handzeichen: Wie oft läuft <code>for i in range(2, 7)</code>? Was liefert eine Funktion ohne <code>return</code>? Dann Vorhersage: „Wie viele der acht Bohrungsmessungen liegen außerhalb der Toleranz?“ (keiner, zwei oder vier), erst abstimmen, dann im Runner ausführen (Hook in Abschnitt 1).</td></tr>
+              <tr><td>10–35</td><td>Lerneinheit 1 und 2<br>Warum, Theorie</td><td><strong>Informatik-Theorie mit Explorables.</strong> Szene 1 und 2 kurz erzählen. „Liste im Speicher“: Index 0, −1, 5 (IndexError), Slice 1:4, dann append. „Schleife über die Messreihe“: PAP lesen (Raute „noch ein Wert übrig?“, zweite Raute im Rumpf), obere Grenze auf 12,020 ändern. „Namen und Objekte“: erst <code>b = a</code> vorhersagen lassen, dann beide Varianten zeigen. Tupel und Dictionary (KeyError mit „L-6025“) in zehn Minuten. Ampel-Diskussion: „Index ab 0 verstehen“, „.items() lesen“, „Tabellen sortieren und auswerten“ den drei Stufen zuordnen lassen.</td></tr>
+              <tr><td>35–80</td><td>Labor Teil A<br>Aufgaben 1 bis 6</td><td><strong>Python-Werkstatt, Teil 1 (ca. 45 Min).</strong> Werkzeugkasten kurz überfliegen (5), Messreihe und Stückliste vormachen (10), Ablauf verfolgen allein, dann Auflösung (7), beide Parsons in Paaren (8), Lückencode (5), Messreihe auswerten als erste eigene Aufgabe (10). Rundgang; typische Fehler: Index um eins daneben, <code>append</code> vergessen, Startwert der Summe, Schleifenvariable und Liste verwechselt.</td></tr>
+              <tr><td>80–90</td><td>–</td><td><strong>Pause.</strong> Runner vorab einmal ausführen lassen (lädt ca. 10 MB von jsDelivr; im Hörsaal-WLAN sonst zäh).</td></tr>
+              <tr><td>90–120</td><td>Labor Teil A<br>Aufgaben 7 und 8</td><td><strong>Python-Werkstatt, Teil 2.</strong> Code-Review (KI-Spiegel) gemeinsam am Beamer: Studierende markieren in Paaren, Auflösung, Original-Code ausführen (falscher Mittelwert, falsche Länge durch Aliasing, dann KeyError), korrigierte Version (20). Danach typische Fehlermeldungen ausführen und lesen lassen (5). Reserve (5): Lerneinheit, Abschnitt 3 „Ausprobieren“.</td></tr>
+              <tr><td>120–135</td><td>Lerneinheit 4<br>Selbstcheck</td><td><strong>Selbstcheck, Exit-Ticket, Auftrag.</strong> Exit-Ticket: Quiz T1, T3, T8 (je 1 Min. tippen, dann auflösen). T9 (Code schreiben) als Hausaufgabe oder auf Papier. <strong>Hausauftrag für V09</strong> (2 Min): Aufgabenblatt „phyphox-Messung“ am Ende der Lerneinheit zeigen, Sicherheitshinweis betonen, Fälligkeit: nächster Termin (CSV mitbringen). Auftrag: Labor Teil B. Ausblick V09: Dateien und Fehler.</td></tr>
+              <tr><td>zu Hause (ca. 60)</td><td>Labor Teil B<br>Aufgaben 1 bis 8</td><td><strong>Training.</strong> Sieben Code-Aufgaben mit automatischen Tests und ein Programmablaufplan zum Zeichnen, darunter Wiederholungsaufgabe (Punkte als Tupel, <code>math</code> aus V03), eine Fehlersuche (Aliasing) und Klausur-Modus (ca. 50 Min). Danach die phyphox-Messung (nicht automatisch geprüft), nach Wahl Notebook und Deep Dive. Der Fortschritt bleibt im Browser der Studierenden; er ist für dich nicht einsehbar, also bei Bedarf zu Beginn des nächsten Termins abfragen.</td></tr>
+            </tbody>
+          </table></div>
+          <p class="k-small k-muted">Material: Beamer, Handzeichen-Karten, stabiles WLAN. Für die Hausaufgabe: Falls Studierende kein Smartphone haben, stellt V09 Beispieldateien bereit. Das Notebook (Codespaces) ist Vertiefung im Training, nicht Pflicht in der Präsenzzeit.</p>
+        </div>
+      </details>
+      </section>
+
+    </main>
+  </div>
+
+  <footer class="dhbw-footer k-footer">
+    <div class="dhbw-footer__inner">
+      <span><span class="dhbw-footer__brand">DHBW Stuttgart</span> · Campus Horb</span>
+      <span><a href="../index.html">Zurück zum Lernpfad</a> · V08 Datenstrukturen (Basis) · Lerneinheit</span>
+    </div>
+  </footer>
+
+  <script src="../assets/js/speicher.js"></script>
+  <script src="../assets/js/icons.js"></script>
+  <script src="../assets/js/editor.js" defer></script>
+  <script src="../assets/js/pap-engine.js"></script>
+  <script src="../assets/js/explorables-v08.js"></script>
+  <script src="../assets/js/kurs.js"></script>
+  <script src="../assets/js/aufgaben.js"></script>
+</body>
+</html>

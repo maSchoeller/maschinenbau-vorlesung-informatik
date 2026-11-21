@@ -87,6 +87,18 @@ def _hint(e):
         return "Syntaxfehler: Klammern, Anführungszeichen und Doppelpunkte prüfen. Dezimalzahlen schreibt Python mit Punkt, nicht mit Komma."
     if isinstance(e, NameError):
         return "Dieser Name ist unbekannt. Tippfehler? Groß-/Kleinschreibung? Oder die Variable wird erst weiter unten definiert?"
+    if isinstance(e, TypeError) and ("positional argument" in m or "unexpected keyword" in m):
+        return "Anzahl oder Namen der Argumente beim Aufruf prüfen: Passen sie zu den Parametern im def?"
+    if isinstance(e, TypeError) and "NoneType" in m:
+        return "Ein Wert ist None (nichts). Fehlt in der Funktion ein return? print() zeigt nur an, gibt aber nichts zurück."
+    if isinstance(e, TypeError) and "not subscriptable" in m:
+        return "Mit [ ] kann man nur in Listen, Tupel, Strings oder Dictionaries greifen. Welcher Wert ist hier gar keine Sammlung?"
+    if isinstance(e, KeyError):
+        return "Diesen Schlüssel gibt es im Dictionary nicht. Tippfehler? Mit  if schluessel in d:  vorher prüfen."
+    if isinstance(e, IndexError):
+        return "Index außerhalb der Liste. Eine Liste mit n Elementen hat die Indizes 0 bis n-1."
+    if isinstance(e, FileNotFoundError):
+        return "Datei nicht gefunden. Stimmen Name, Endung und Ordner? Groß-/Kleinschreibung beachten."
     if isinstance(e, TypeError):
         return "Die Typen passen nicht zusammen. input() liefert immer Text (str): mit float() oder int() in eine Zahl umwandeln, bevor du rechnest."
     if isinstance(e, ValueError):

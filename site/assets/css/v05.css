@@ -205,3 +205,4 @@
   .v05-dockstate { display: none; }
 }
 .v05-lexbtn .pap { max-width: 150px; }
+.pap__cap { font-family: var(--dhbw-font); font-size: var(--fs-sm); font-weight: 600; color: var(--k-muted); margin: 0 0 var(--sp-2); }
