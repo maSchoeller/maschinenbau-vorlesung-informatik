@@ -205,7 +205,12 @@ def _main(kind, src, inputs, tests_src, mode):
         if err:
             raise AssertionError("Dein Programm bricht bei den Eingaben %s ab:\n%s%s" % (list(eingaben), err[0], ("\nHinweis: " + err[1]) if err[1] else ""))
         return out
-    ns.update(run_program=run_program, zeilen=zeilen, zahlen=zahlen)
+    # Hilfsfunktionen für Tests: immer unter _zeilen/_zahlen/_run_program; die kurzen Namen nur,
+    # wenn der Studierendencode sie nicht selbst belegt (sonst würde z. B. eine Liste "zahlen" überschrieben)
+    ns.update(_run_program=run_program, _zeilen=zeilen, _zahlen=zahlen)
+    ns.setdefault("run_program", run_program)
+    ns.setdefault("zeilen", zeilen)
+    ns.setdefault("zahlen", zahlen)
     ns.setdefault("math", math)
     before = set(ns)
     exec(compile(tests_src, "<tests>", "exec"), ns)
