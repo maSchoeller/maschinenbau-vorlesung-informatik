@@ -479,9 +479,9 @@ Quelle: `video-src/v03-toleranzrechner/` – render.py, Liste SECS (Untertitel =
 
 ### v03-toleranzrechner · Absatz 2
 
-**Original:** Bevor du Code schreibst, zerlegst du die Aufgabe, ähnlich wie in einem Struktogramm. Eingabe: drei Zahlen, nämlich Nennmaß, Abmaß und Messwert. Verarbeitung: Untermaß und Obermaß berechnen und prüfen, ob der Messwert passt. Ausgabe: die Grenzmaße und das Ergebnis der Prüfung. Jeder dieser Kästen wird später ein Abschnitt im Code.
+**Original:** Bevor du Code schreibst, zerlegst du die Aufgabe, ähnlich wie in einem Programmablaufplan. Eingabe: drei Zahlen, nämlich Nennmaß, Abmaß und Messwert. Verarbeitung: Untermaß und Obermaß berechnen und prüfen, ob der Messwert passt. Ausgabe: die Grenzmaße und das Ergebnis der Prüfung. Jeder dieser Kästen wird später ein Abschnitt im Code.
 
-**Sprechfassung:** Bevor du Code schreibst, zerlegst du die Aufgabe, ähnlich wie in einem Struktogramm. Eingabe: drei Zahlen, nämlich Nennmaß, Abmaß und Messwert. Verarbeitung: Untermaß und Obermaß berechnen und prüfen, ob der Messwert passt. Ausgabe: die Grenzmaße und das Ergebnis der Prüfung. Jeder dieser Kästen wird später ein Abschnitt im Code.
+**Sprechfassung:** Bevor du Code schreibst, zerlegst du die Aufgabe, ähnlich wie in einem Programmablaufplan. Eingabe: drei Zahlen, nämlich Nennmaß, Abmaß und Messwert. Verarbeitung: Untermaß und Obermaß berechnen und prüfen, ob der Messwert passt. Ausgabe: die Grenzmaße und das Ergebnis der Prüfung. Jeder dieser Kästen wird später ein Abschnitt im Code.
 
 **bisher:** Bevor du Code schreibst, zerlegst du die Aufgabe, ähnlich wie in einem Struktogramm. Eingabe: drei Zahlen, nämlich Nennmaß, Abmaß und Messwert. Verarbeitung: Untermaß und Obermaß berechnen und prüfen, ob der Messwert passt. Ausgabe: die Grenzmaße und das Ergebnis der Prüfung. Jeder dieser Kästen wird später ein Abschnitt im Code.
 

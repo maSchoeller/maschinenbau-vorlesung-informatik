@@ -1,1 +1,1 @@
-Zeile dreiundzwanzig gibt den Werkstoff aus, eingerückt wie im Struktogramm. Probelauf eins: hundertachtzig Megapascal bei zwanzig Grad Celsius ergibt C fünfundvierzig E. Probelauf zwei: zweihundertfünfzig Megapascal bei zwanzig Grad Celsius ergibt zweiundvierzig C R M O vier, vergütet.
+Zeile dreiundzwanzig ist das letzte Parallelogramm: Dort laufen alle Zweige zusammen, und der Werkstoff wird ausgegeben.

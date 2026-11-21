@@ -1,6 +1,6 @@
-# Werkstoffvorschlag für eine Welle nach einem Struktogramm
+# Werkstoffvorschlag für eine Welle nach einem Programmablaufplan (PAP)
 # (vereinfachte Lehr-Regel, keine Normauslegung)
-# (V05: Struktogramm -> Code, verschachtelte Verzweigungen, Eingabe prüfen)
+# (V05: PAP -> Code, verschachtelte Verzweigungen, Eingabe prüfen)
 
 spannung = float(input("Maximale Spannung in MPa: "))
 temperatur = float(input("Betriebstemperatur in °C: "))

@@ -37,3 +37,9 @@ Lokal noch nicht committet: V04–V06 (Seiten, Notebooks, explorables-v04/05/06,
 - ElevenLabs: max. ~3 gleichzeitige Anfragen über alle Agenten → TTS strikt nacheinander; nur über `sprechen.tts` (eleven_v3, Stimme Theo Teacher, Sprechfassung mit `[[Anzeige|Sprechweise]]`). Videos: nach einer Exception keine weitere Ausgabe, keine Codezeile außerhalb des Kastens, nur bis dahin eingeführte Python-Konstrukte.
 - Bilder: ChatGPT über Claude in Chrome (Nutzer ist dort angemeldet), flacher Vektorstil, nur DHBW-Farben, kein Text im Bild.
 - Laufende lokale Python-Testserver ließen sich nicht beenden (Rechteprüfung) – stören nicht.
+
+## Stand 2026-11-21 spät (nach PAP-Umstellung)
+- Erledigt, noch nicht committet: V05 neu als PAP (`v05-programmablaufplan.html`, Labor, `V05-Programmablaufplan.ipynb`, explorables-v05.js, v05.css; Vorgabe `briefing/v05-pap-konzept.md`), V06 auf PAP-Schleifen, KONZEPT/DESIGN/index/V01/V04/Bibliothek auf PAP, Videos v05-theorie/-python/-beispiel neu, v06-theorie und v03-toleranzrechner (je Szene 2) neu vertont, PAP-Zeichenhilfe `video-src/v05-common/pap.py`, Hook-Bilder V04–V06.
+- Geprüft (Browser 1600/375 px, Konsole, Code-Aufgaben, Parsons, Schritt für Schritt, Popover, nach-antwort): ok.
+- Offen: OK des Dozenten, dann committen, nach `main` mergen, pushen, Deploy online prüfen. Danach V07–V09.
+- Bekannte Kleinigkeiten: in v05-beispiel-Video angeschnittene Linienstummel am Ausschnittrand; auf 375 px ist das Bedienfeld des Ablauf-Explorables in V05 recht groß.

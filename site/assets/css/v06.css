@@ -1,32 +1,27 @@
 /* =============================================================
-   v06.css – Lektion V06 (Schleifen): Struktogramme mit Schleifen und die beiden Explorables
+   v06.css – Lektion V06 (Schleifen): Programmablaufpläne mit Schleifen und die beiden Explorables
    (Abkühlkurve live, Newton-Treppe). Baut auf kurs.css auf (.k-controls, .k-field, .k-seg, .k-chart, .k-readout).
-   Präfix nsd = Nassi-Shneiderman-Diagramm (Struktogramm), v06- = Explorables.
+   Präfix pap = Programmablaufplan (SVG), v06- = Explorables.
    ============================================================= */
 
-/* ── Struktogramm (reines HTML/CSS, statisch oder vom Explorable gefüllt) ── */
-.nsd {
-  font-family: var(--dhbw-font-mono); font-size: var(--fs-sm); line-height: 1.45;
-  border: 1.5px solid var(--text); background: #fff; color: var(--text);
-  max-width: 34rem; width: 100%;
-}
-.nsd__row, .nsd__head, .nsd__foot { padding: 6px 12px; overflow-wrap: anywhere; }
-.nsd > * + *, .nsd__body > * + * { border-top: 1.5px solid var(--text); }
-.nsd__loop { display: block; }
-.nsd__head { background: var(--canvas); font-weight: 600; border-bottom: 1.5px solid var(--text); }
-.nsd__body { margin-left: 22px; border-left: 1.5px solid var(--text); }
-.nsd__body > .nsd__row:first-child { border-top: 0; }
-.nsd__foot { background: var(--canvas); font-weight: 600; border-top: 1.5px solid var(--text); }
-.nsd__loop--foot > .nsd__body { border-bottom: 0; }
-.nsd .is-cur { background: var(--red-tint); box-shadow: inset 4px 0 0 var(--red-dark); }
-.nsd__cap { font-family: var(--dhbw-font); font-size: var(--fs-sm); font-weight: 600; color: var(--k-muted); margin: 0 0 var(--sp-2); }
+/* ── Programmablaufplan (PAP, DIN 66001) als inline-SVG, statisch oder vom Explorable gesteuert ── */
+.pap { display: block; width: 100%; height: auto; max-width: 440px; }
+.pap-n > rect, .pap-n > polygon { fill: #fff; stroke: #374151; stroke-width: 1.75; stroke-linejoin: round; }
+.pap-n text { font-family: var(--dhbw-font-mono); font-size: 13px; fill: var(--text); }
+.pap-e polyline { fill: none; stroke: #374151; stroke-width: 1.75; stroke-linejoin: round; stroke-linecap: round; }
+.pap-e polygon { fill: #374151; stroke: none; }
+.pap-lbl { font-family: var(--dhbw-font); font-size: 12px; font-weight: 600; fill: var(--k-muted); }
+.pap-n.is-cur > rect, .pap-n.is-cur > polygon { fill: var(--red-tint); stroke: #E2001A; stroke-width: 3; }
+.pap-e.is-cur polyline { stroke: #E2001A; stroke-width: 3; }
+.pap-e.is-cur polygon { fill: #E2001A; }
+.pap-marker { fill: #E2001A; stroke: #fff; stroke-width: 2.5; }
+.pap__cap { font-family: var(--dhbw-font); font-size: var(--fs-sm); font-weight: 600; color: var(--k-muted); margin: 0 0 var(--sp-2); }
 
-/* Struktogramm-Reihe: drei Schleifenformen nebeneinander */
+/* PAP-Reihe: drei Schleifenformen nebeneinander */
 .v06-forms { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sp-5); align-items: start; max-width: none !important; }
 .v06-forms figure { margin: 0; display: grid; gap: var(--sp-2); align-content: start; }
 .v06-forms figcaption { font-size: var(--fs-sm); color: var(--k-muted); }
-.v06-forms .nsd { max-width: none; }
-@media (max-width: 1000px) { .v06-forms { grid-template-columns: minmax(0, 1fr); } .v06-forms .nsd { max-width: 34rem; } }
+@media (max-width: 1000px) { .v06-forms { grid-template-columns: minmax(0, 1fr); } }
 
 /* ── Explorables ── */
 .v06-bar { margin: 0 0 var(--sp-3); align-items: center; }
@@ -34,7 +29,7 @@
 .v06-grid { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.4fr); gap: var(--sp-5); align-items: start; margin-bottom: var(--sp-3); }
 @media (max-width: 900px) { .v06-grid { grid-template-columns: minmax(0, 1fr); } }
 .v06-left { display: grid; gap: var(--sp-3); }
-.v06-nsd { max-width: none; }
+.v06-pap { max-width: 440px; }
 .v06-verdict { margin: 0; padding: var(--sp-2) var(--sp-3); font-family: var(--dhbw-font-mono); font-size: var(--fs-sm); border-left: 3px solid var(--border); background: var(--canvas); min-height: 2.6em; max-width: none; }
 .v06-verdict.is-go { border-color: var(--k-ok); background: var(--k-ok-bg); }
 .v06-verdict.is-end { border-color: var(--k-info); background: var(--k-info-bg); }
@@ -47,7 +42,6 @@
 .v06-tab tr.is-cur td, .v06-tab tr.is-cur th { background: var(--red-tint); font-weight: 600; }
 .k-field output { font-family: var(--dhbw-font-mono); color: var(--red-dark); }
 @media (max-width: 480px) {
-  .nsd { font-size: var(--fs-xs); }
   .v06-bar .k-btn { flex: 1 1 auto; }
 }
 

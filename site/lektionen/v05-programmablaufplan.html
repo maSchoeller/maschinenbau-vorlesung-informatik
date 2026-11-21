@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>V05 Problemanalyse &amp; Programmablaufplan · Lerneinheit · Informatik Maschinenbau</title>
+  <meta name="description" content="Vom vagen Wunsch zum prüfbaren Programm: Problemanalyse, Algorithmus, Programmablaufplan (PAP) nach DIN 66001 und der Weg zum Python-Code. Der PAP wird zum Prompt.">
+  <link rel="stylesheet" href="../assets/css/dhbw-base.css">
+  <link rel="stylesheet" href="../assets/css/kurs.css">
+  <link rel="stylesheet" href="../assets/css/aufgaben.css">
+  <link rel="stylesheet" href="../assets/css/editor.css">
+  <link rel="stylesheet" href="../assets/css/v05.css">
+</head>
+<body data-lesson="V05" data-page="lerneinheit">
+  <a class="k-skip" href="#inhalt">Zum Inhalt springen</a>
+
+  <header class="dhbw-header k-header">
+    <div class="dhbw-header__inner">
+      <a class="k-logo" href="../index.html" aria-label="Zur Startseite">
+        <span class="k-logo__mark" aria-hidden="true">DHBW</span>
+        <span class="k-logo__text">Informatik Maschinenbau<small>Campus Horb · 2026/27</small></span>
+      </a>
+      <nav class="k-nav" aria-label="Hauptnavigation">
+        <a href="../index.html">Start</a>
+        <a href="../index.html#lernpfad">Lernpfad</a>
+        <a href="../bibliothek.html">Bibliothek</a>
+        <a href="v05-programmablaufplan.html" aria-current="page">V05 Lerneinheit</a>
+        <a href="v05-labor.html">V05 Labor</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="l-page">
+    <nav class="k-toc" aria-label="Inhalt dieser Lerneinheit">
+      <p class="k-toc__title">Lerneinheit V05</p>
+      <ol class="k-toc__list">
+        <li><a href="#warum"><span class="k-toc__n">1</span>Warum?</a></li>
+        <li><a href="#theorie"><span class="k-toc__n">2</span>Theorie</a></li>
+        <li><a href="#ausprobieren"><span class="k-toc__n">3</span>Ausprobieren</a></li>
+        <li><a href="#selbstcheck"><span class="k-toc__n">4</span>Selbstcheck</a></li>
+        <li><a href="#deepdive"><span class="k-toc__n">5</span>Deep Dive</a></li>
+      </ol>
+      <div class="k-progress" data-progress-for="V05">
+        <span class="k-progress__bar"><span class="k-progress__fill"></span></span>
+        <span class="k-progress__text">0 von 5 Abschnitten</span>
+      </div>
+      <a class="k-toc__lab" href="v05-labor.html">Weiter ins Programmierlabor →</a>
+    </nav>
+
+    <main id="inhalt" class="l-content">
+
+      <header class="k-title">
+        <p class="k-title__label">V05 · Phase 1 Fundament · Lerneinheit</p>
+        <h1 id="h-titel">Problemanalyse &amp; Programmablaufplan</h1>
+        <p class="k-title__lead">Wer ein Problem sauber zerlegt, bekommt von einer KI brauchbaren Code. Wer vage fragt, bekommt Unsinn. Der <abbr class="k-begriff" data-erklaerung="Programmablaufplan, kurz PAP: ein Bild für einen Ablauf aus genormten Symbolen und Pfeilen (DIN 66001). Ovale für Start und Ende, Rechtecke für Rechnungen, Parallelogramme für Ein- und Ausgabe, Rauten für Ja/Nein-Fragen. Wie ein Fließbild, nur für ein Programm.">Programmablaufplan</abbr> ist dafür das beste Werkzeug: erst zeichnen, dann programmieren, dann prüfen.</p>
+        <p class="k-title__goals">Nach dieser Lerneinheit kannst du:</p>
+        <ul class="k-title__list">
+          <li>ein Problem nach <abbr class="k-begriff" data-erklaerung="EVA heißt Eingabe, Verarbeitung, Ausgabe: das Grundmuster jedes Programms. Erst kommt etwas herein, dann wird gerechnet oder entschieden, dann kommt etwas heraus.">Eingabe, Verarbeitung, Ausgabe</abbr> zerlegen und <abbr class="k-begriff" data-erklaerung="Randfälle sind Eingaben genau an einer Grenze oder außerhalb des Sinnvollen, zum Beispiel genau 140 bei der Grenze „≤ 140“ oder eine negative Spannung. Dort stecken die meisten Fehler.">Randfälle</abbr> und <abbr class="k-begriff" data-erklaerung="Annahmen sind Festlegungen, die du triffst, weil sie in der Aufgabe nicht stehen, zum Beispiel „Grenzwerte gehören zur niedrigeren Stufe“. Gute Annahmen schreibst du auf.">Annahmen</abbr> aufschreiben,</li>
+          <li>erklären, was ein <abbr class="k-begriff" data-erklaerung="Eine Schritt-für-Schritt-Anleitung, die ein Problem löst und so genau ist, dass auch ein Rechner sie ausführen kann. Wie eine Montageanleitung, bei der jeder Handgriff festgelegt ist.">Algorithmus</abbr> ist und woran du ihn erkennst,</li>
+          <li>die Symbole des PAP nach <abbr class="k-begriff" data-erklaerung="Das Deutsche Institut für Normung. Eine DIN-Norm legt fest, wie etwas einheitlich gemacht wird, zum Beispiel wie ein Programmablaufplan gezeichnet wird. DIN 66001 entspricht der internationalen Norm ISO 5807.">DIN</abbr> 66001 benennen, einen PAP lesen und mit den Zeichenregeln selbst zeichnen,</li>
+          <li>einen PAP in Python übersetzen (Raute zu <code class="k-i">if</code>/<code class="k-i">else</code>/<code class="k-i">elif</code>) und daraus <abbr class="k-begriff" data-erklaerung="Testfälle sind feste Sätze von Eingaben mit der Ausgabe, die du vorher aus dem PAP abgelesen hast. Passt die Ausgabe nicht, steckt ein Fehler im Programm.">Testfälle</abbr> ableiten (jeden <abbr class="k-begriff" data-erklaerung="Ein Pfad ist ein Weg durch den PAP von Start bis Ende. Jede Raute teilt den Weg in zwei: ja oder nein.">Pfad</abbr> einmal),</li>
+          <li>KI-Code gegen einen PAP prüfen.</li>
+        </ul>
+        <p class="k-small k-muted">Das Schreiben des Python-Codes (verschachteltes <code class="k-i">if</code>, <code class="k-i">elif</code>, Eingabe prüfen) übst du danach im <a href="v05-labor.html">Programmierlabor</a>. Hier brauchst du nur, was du aus V01 bis V04 kennst: <code class="k-i">print</code>, <code class="k-i">input</code>, Variablen, Zahlen, Vergleiche, <code class="k-i">and</code>/<code class="k-i">or</code>/<code class="k-i">not</code> und <code class="k-i">if</code>/<code class="k-i">elif</code>/<code class="k-i">else</code>.</p>
+      </header>
+
+      <!-- 1 ───────────── WARUM ───────────── -->
+      <section class="k-section" id="warum" data-section="warum" aria-labelledby="h-warum">
+        <h2 class="k-section__title" id="h-warum"><span class="k-section__num" aria-hidden="true">1</span> Warum?</h2>
+
+        <p>Du bittest eine KI um ein Programm. Zwei Versionen derselben Bitte, zwei sehr verschiedene Ergebnisse. Die Antworten unten sind zwei <strong>vorab erzeugte Beispiele</strong>, so oder ähnlich liefern KI-Assistenten tatsächlich. Hier läuft keine Live-KI.</p>
+
+        <figure class="k-figure">
+          <picture>
+            <source srcset="../assets/img/v05-hook.webp" type="image/webp">
+            <img src="../assets/img/v05-hook.png" alt="Illustration: ein Programmablaufplan wird zum Prompt für eine KI, die daraus Programmcode erzeugt" width="1600" height="900" loading="lazy" onerror="this.closest('figure').hidden=true">
+          </picture>
+        </figure>
+
+        <h3>Der PAP wird zum Prompt</h3>
+        <p>Die Aufgabe: Ein Programm soll für eine Welle einen Werkstoff vorschlagen. Links die vage Bitte, rechts die Bitte mit Programmablaufplan. Der Plan hängt als Bild an der Bitte (weiter unten in Abschnitt 2 groß), hier steht er als Text.</p>
+
+        <div class="v05-pair">
+          <div>
+            <span class="v05-tag">Prompt A: vage</span>
+            <blockquote class="k-prompt">Schreib mir ein Python-Programm, das einen Werkstoff für meine Welle vorschlägt.</blockquote>
+            <div class="v05-ai"><strong>Beispiel für eine KI-Antwort (vorab erzeugt, keine Live-KI)</strong>Hier ist ein einfaches Beispiel. Passe die Grenzwerte an deinen Fall an.</div>
+            <pre data-stdin="-5"><code># Werkstoffempfehlung für eine Welle (einfaches Beispiel)
+last = float(input("Last in kN: "))
+
+if last &lt; 10:
+    print("Empfehlung: S235JR")
+else:
+    print("Empfehlung: 42CrMo4")</code></pre>
+            <p class="k-small k-muted">Das Beispiel läuft ohne Fehler. Probiere die Eingabe <code class="k-i">-5</code> (eine „negative Last“) und <code class="k-i">10</code> (genau auf der Grenze).</p>
+          </div>
+          <div>
+            <span class="v05-tag">Prompt B: mit Programmablaufplan</span>
+            <blockquote class="k-prompt">Schreibe ein Python-Programm nach diesem Programmablaufplan (Bild, hier als Text). Eingaben mit input(): spannung in MPa, temperatur in °C (beide float). Erlaubt: print, input, float, if/elif/else. Grenzwerte gehören zur niedrigeren Stufe (&lt;=).</blockquote>
+<pre class="v05-pseudo" data-run="no"><code>Start
+Eingabe: spannung einlesen
+Eingabe: temperatur einlesen
+Raute: spannung ≤ 0 oder temperatur &lt; −50 oder temperatur &gt; 600?
+  ja:   Ausgabe "Eingabe unplausibel - bitte Werte prüfen" → Ende
+  nein: Raute: temperatur &gt; 300?
+          ja:   Raute: spannung ≤ 200?
+                  ja:   werkstoff = "16Mo3 (warmfest)"
+                  nein: werkstoff = "Sonderwerkstoff - Rücksprache Konstruktion"
+          nein: Raute: spannung ≤ 140?
+                  ja:   werkstoff = "S235JR"
+                  nein: Raute: spannung ≤ 220?
+                          ja:   werkstoff = "C45E"
+                          nein: werkstoff = "42CrMo4 (vergütet)"
+        alle Wege laufen zusammen:
+        Ausgabe "Empfohlener Werkstoff:", werkstoff → Ende</code></pre>
+            <div class="v05-ai"><strong>Beispiel für eine KI-Antwort (vorab erzeugt, keine Live-KI)</strong>Hier ist das Programm. Die Einrückung folgt dem Plan Weg für Weg.</div>
+            <pre data-stdin="180&#10;20"><code>spannung = float(input("Maximale Spannung in MPa: "))
+temperatur = float(input("Betriebstemperatur in °C: "))
+
+if spannung &lt;= 0 or temperatur &lt; -50 or temperatur &gt; 600:
+    print("Eingabe unplausibel - bitte Werte prüfen")
+else:
+    if temperatur &gt; 300:
+        if spannung &lt;= 200:
+            werkstoff = "16Mo3 (warmfest)"
+        else:
+            werkstoff = "Sonderwerkstoff - Rücksprache Konstruktion"
+    else:
+        if spannung &lt;= 140:
+            werkstoff = "S235JR"
+        elif spannung &lt;= 220:
+            werkstoff = "C45E"
+        else:
+            werkstoff = "42CrMo4 (vergütet)"
+    print("Empfohlener Werkstoff:", werkstoff)</code></pre>
+          </div>
+        </div>
+
+        <h3>Was ist der Unterschied?</h3>
+        <ul>
+          <li><strong>Antwort A rät.</strong> Sie erfindet eine „Last in kN“, die nichts mit Spannung und Temperatur zu tun hat. Die Temperatur fehlt ganz, die Grenze 10 ist willkürlich, und eine negative Last wird ohne Murren als „S235JR“ empfohlen.</li>
+          <li><strong>Antwort B setzt um.</strong> Jede Entscheidung stand im Prompt. Du kannst jede <abbr class="k-begriff" data-erklaerung="Eine Raute im PAP stellt eine Ja/Nein-Frage. Aus ihr führen zwei Wege, der Weg „ja“ und der Weg „nein“. Zusammen mit den Linien dahinter nennt man das einen Zweig.">Raute</abbr> gegen den Code abhaken und für jeden <abbr class="k-begriff" data-erklaerung="Ein Pfad ist ein Weg durch den PAP von Start bis Ende. Jede Raute teilt den Weg in zwei: ja oder nein.">Pfad</abbr> einen <abbr class="k-begriff" data-erklaerung="Ein Testfall ist ein fester Satz Eingaben mit der Ausgabe, die du vorher aus dem PAP abgelesen hast. Passt die Ausgabe nicht, steckt ein Fehler im Programm.">Testfall</abbr> bauen.</li>
+          <li>Beide Programme laufen. Nur das zweite tut, was du gemeint hast. Das siehst du aber nur, wenn du weißt, was du gemeint hast, also <strong>bevor</strong> du fragst.</li>
+        </ul>
+
+        <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke</strong><p>Eine KI verstärkt, was du ihr gibst. Gibst du ihr einen unscharfen Wunsch, bekommst du eine glatte Vermutung. Gibst du ihr eine saubere Zerlegung, bekommst du Code, den du abhaken kannst. Ein sauberer PAP ist eine eindeutige Spezifikation: für dich, für Kollegen und für die KI. Heute lernst du, wie er aussieht.</p></div>
+
+        <h3>Wissens-Ampel für V05</h3>
+        <ul class="k-ampel-list" aria-label="Wissens-Ampel zu V05">
+          <li><span class="k-ampel k-ampel--kopf"><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-head"/></svg> Im Kopf</span><span>Ein Problem in Eingabe, Verarbeitung, Ausgabe, Randfälle und Annahmen zerlegen. Die Symbole des PAP und die Zeichenregeln. Wie eine Raute zu <code class="k-i">if</code>/<code class="k-i">else</code>/<code class="k-i">elif</code> wird. Pro Pfad einen Testfall.</span></li>
+          <li><span class="k-ampel k-ampel--lesen"><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-book"/></svg> Lesen &amp; erkennen</span><span>Einen fremden PAP lesen, auch mit mehreren Rauten hintereinander. Rücksprünge (Schleifen) und die Übergangsstelle wiedererkennen (Schleifen folgen in V06).</span></li>
+          <li><span class="k-ampel k-ampel--deleg"><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-handover"/></svg> Delegieren</span><span>Das saubere Zeichnen eines großen PAP am Rechner und das Ausschreiben der Codezeilen daraus kann später die KI (ab V10). Die Zerlegung und die Abnahme gegen den PAP bleiben bei dir.</span></li>
+        </ul>
+
+        <div class="hinweis hinweis--warum"><strong class="hinweis__title">Warum muss ich das wissen?</strong><p>Weil in der Praxis nicht das Tippen von Code der Engpass ist, sondern die Frage, <em>was</em> das Programm genau tun soll. Wer das klärt, bevor er fragt, bekommt von Copilot und Co. brauchbaren Code und kann ihn prüfen. In der Klausur kommt das als „PAP gegeben, Code schreiben“ und als „PAP lesen oder zeichnen“ dran.</p></div>
+      </section>
+
+      <!-- 2 ───────────── THEORIE ───────────── -->
+      <section class="k-section" id="theorie" data-section="theorie" aria-labelledby="h-theorie">
+        <h2 class="k-section__title" id="h-theorie"><span class="k-section__num" aria-hidden="true">2</span> Theorie</h2>
+
+    <h3>Erklärvideo (ca. 3 Min)</h3>
+    <figure class="k-video" id="video-theorie">
+      <video controls preload="metadata" poster="../assets/video/v05-theorie-poster.png" aria-label="Erklärvideo Problemanalyse und Programmablaufplan">
+        <source src="../assets/video/v05-theorie.mp4" type="video/mp4">
+        <track kind="subtitles" srclang="de" label="Deutsch" src="../assets/video/v05-theorie.vtt" default>
+        Dein Browser kann dieses Video nicht abspielen.
+      </video>
+      <div class="k-video__missing" hidden>Video folgt. Bis dahin: die Explorables und der Lesetext unten decken alles ab.</div>
+      <figcaption>Untertitel sind eingeschaltet (Deutsch).</figcaption>
+    </figure>
+
+    <h3>Schritt 1: Das Problem analysieren</h3>
+    <p>Bevor du programmierst, machst du eine <abbr class="k-begriff" data-erklaerung="Bevor du programmierst, klärst du: Was geht rein, was soll herauskommen, was gilt an den Grenzen? Wie die Anforderungsliste, bevor konstruiert wird.">Problemanalyse</abbr>. Das ist die Anforderungsliste vor der Konstruktion. Sie besteht aus fünf Fragen, und die Antworten schreibst du auf:</p>
+    <div class="k-tablewrap">
+    <table class="k-types">
+      <thead><tr><th scope="col">Frage</th><th scope="col">Beispiel: Werkstoffvorschlag für eine Welle</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Eingabe: Was kommt rein?</th><td>Die größte Spannung in MPa und die Betriebstemperatur in °C, beides Kommazahlen (<code class="k-i">float</code>).</td></tr>
+        <tr><th scope="row">Verarbeitung: Was passiert damit?</th><td>Erst prüfen, ob die Werte sinnvoll sind. Dann nach Temperatur und Spannung einen Werkstoff auswählen.</td></tr>
+        <tr><th scope="row">Ausgabe: Was kommt raus?</th><td>Ein Text mit dem Werkstoff, oder eine Fehlermeldung bei unsinnigen Eingaben.</td></tr>
+        <tr><th scope="row">Randfälle: Was ist an den Grenzen?</th><td>Genau 140 MPa, genau 300 °C, Spannung 0 oder negativ, Temperatur unter −50 °C. Wohin gehört der Grenzwert selbst?</td></tr>
+        <tr><th scope="row">Annahmen: Was legst du fest?</th><td>„Grenzwerte gehören zur niedrigeren Stufe.“ „Die Regel ist eine vereinfachte Lehr-Regel, keine Normauslegung.“ „Die Spannung ist die größte Vergleichsspannung.“</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>Dieses Muster heißt <abbr class="k-begriff" data-erklaerung="EVA heißt Eingabe, Verarbeitung, Ausgabe: das Grundmuster jedes Programms. Erst kommt etwas herein, dann wird gerechnet oder entschieden, dann kommt etwas heraus.">EVA</abbr>: Eingabe, Verarbeitung, Ausgabe. Jedes Programm in diesem Kurs folgt ihm. Die Randfälle und Annahmen sind der Teil, den die KI nicht erraten kann: Sie stehen in deinem Kopf, nicht in deinem Satz „Schlag mir einen Werkstoff vor“. Schreibst du sie nicht auf, entscheidet die KI für dich, siehe Prompt A.</p>
+
+    <h3>Schritt 2: Was ist ein Algorithmus?</h3>
+    <p>Ein <abbr class="k-begriff" data-erklaerung="Eine Schritt-für-Schritt-Anleitung, die ein Problem löst und so genau ist, dass auch ein Rechner sie ausführen kann. Wie eine Montageanleitung, bei der jeder Handgriff festgelegt ist.">Algorithmus</abbr> ist eine Vorschrift, die ein Problem Schritt für Schritt löst. Die Montageanleitung für ein Getriebe ist einer, ein Kochrezept auch. Damit ein Rechner sie ausführen kann, muss sie vier Dinge erfüllen:</p>
+    <ul>
+      <li><strong>Eindeutig:</strong> Jeder Schritt ist genau festgelegt. „Etwas anziehen“ reicht nicht, „mit 25 Nm anziehen“ schon.</li>
+      <li><strong>Ausführbar:</strong> Jeder Schritt ist wirklich machbar, ohne Raten.</li>
+      <li><strong>Endlich:</strong> Nach endlich vielen Schritten ist Schluss. Es gibt ein Ergebnis.</li>
+      <li><strong>Allgemein:</strong> Er löst nicht nur einen Fall, sondern eine ganze Klasse von Fällen: jede Spannung, jede Temperatur.</li>
+    </ul>
+    <p>Ein Programm ist ein Algorithmus, aufgeschrieben in einer Programmiersprache. Der Programmablaufplan ist derselbe Algorithmus, aufgeschrieben als Bild. Er steht dazwischen: genau genug für den Rechner, noch nicht an Python-Schreibweise gebunden.</p>
+
+    <h3>Schritt 3: Der Programmablaufplan (PAP)</h3>
+    <p>Ein <abbr class="k-begriff" data-erklaerung="Programmablaufplan, kurz PAP: ein Bild für einen Ablauf aus genormten Symbolen und Pfeilen (DIN 66001). Wie ein Fließbild in der Verfahrenstechnik, nur für ein Programm.">Programmablaufplan</abbr> zeichnet den Ablauf als Symbole, die durch Pfeile verbunden sind. Du liest ihn von oben nach unten und folgst den Pfeilen. Die Zeichenregeln stehen in <abbr class="k-begriff" data-erklaerung="Das Deutsche Institut für Normung. DIN 66001 legt fest, welche Symbole ein Programmablaufplan hat. Sie entspricht der internationalen Norm ISO 5807, ein PAP wird also weltweit gleich gelesen.">DIN</abbr> 66001 (international ISO 5807). Sechs Symbole genügen für fast alles. Klicke sie an: Du siehst, was sie bedeuten und welche Python-Zeile dazu passt.</p>
+
+    <div class="k-explorable">
+      <h3>Symbol-Lexikon</h3>
+      <p class="k-explorable__lead">Wähle ein Symbol. Rechts steht seine Bedeutung und die passende Python-Zeile, mit „Im Editor ausprobieren“ kannst du sie sofort ausführen. Probiere die Raute: Ändere im Editor die Spannung von 180 auf 100 und sieh, welcher Weg läuft.</p>
+      <div data-explorable="lexikon"></div>
+      <noscript><p>Für das Symbol-Lexikon wird JavaScript benötigt.</p></noscript>
+    </div>
+
+    <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke: Zeichenregeln</strong>
+      <ul>
+        <li>Genau <strong>ein Start</strong>, mindestens ein Ende.</li>
+        <li>Jede Raute hat <strong>einen Eingang</strong> und <strong>beschriftete Ausgänge</strong> („ja“ und „nein“). Die Bedingung steht als Frage in der Raute: „spannung ≤ 140?“.</li>
+        <li>Zweige laufen <strong>wieder zusammen</strong>: Die Linie mündet mit Pfeil in eine andere Linie.</li>
+        <li>Linien <strong>kreuzen sich nicht</strong>. Geht es nicht anders, benutze eine Übergangsstelle.</li>
+        <li>Text im Symbol <strong>kurz und eindeutig</strong>. Er darf in Worten oder Pseudocode stehen, muss aber nicht schon Python sein.</li>
+        <li><strong>Pfeile immer zeichnen.</strong> Vorzugsrichtung: oben nach unten, links nach rechts.</li>
+      </ul>
+    </div>
+
+    <p>Hier das vollständige Beispiel, das du im Labor in Code verwandelst: der Werkstoffvorschlag für eine Welle. Es enthält alle Bausteine: Start und Ende, Ein- und Ausgabe, Rechtecke für die Festlegung des Werkstoffs und fünf Rauten, davon zwei hintereinander im Weg „nein“.</p>
+    <figure class="v05-fig">
+      <div class="pap-wrap"><svg class="pap" xmlns="http://www.w3.org/2000/svg" viewBox="-206.5 -14 1094 776" role="img" aria-label="Programmablaufplan: Start, dann spannung einlesen (MPa), dann temperatur einlesen (°C), dann Verzweigung „spannung ≤ 0 oder temperatur &lt; −50 oder temperatur &gt; 600?“: bei ja Ausgabe: Eingabe unplausibel – bitte Werte prüfen, dann Ende; bei nein Verzweigung „temperatur &gt; 300?“: bei ja Verzweigung „spannung ≤ 200?“: bei ja werkstoff = &quot;16Mo3 (warmfest)&quot;; bei nein werkstoff = &quot;Sonderwerkstoff – Rücksprache Konstruktion&quot;; bei nein Verzweigung „spannung ≤ 140?“: bei ja werkstoff = &quot;S235JR&quot;; bei nein Verzweigung „spannung ≤ 220?“: bei ja werkstoff = &quot;C45E&quot;; bei nein werkstoff = &quot;42CrMo4 (vergütet)&quot;, dann Ausgabe: &quot;Empfohlener Werkstoff:&quot;, werkstoff, dann Ende." style="--pap-min:853px;--pap-max:1094px"><g class="pap-e" data-from="n0" data-to="n1" data-lab=""><path class="pap-hit" d="M0 34L0 62"/><path class="pap-line" d="M0 34L0 62"/><path class="pap-ah" d="M0 62L-4.6 53L4.6 53Z"/></g><g class="pap-e" data-from="n1" data-to="n2" data-lab=""><path class="pap-hit" d="M0 114L0 142"/><path class="pap-line" d="M0 114L0 142"/><path class="pap-ah" d="M0 142L-4.6 133L4.6 133Z"/></g><g class="pap-e" data-from="n2" data-to="n3" data-lab=""><path class="pap-hit" d="M0 194L0 222"/><path class="pap-line" d="M0 194L0 222"/><path class="pap-ah" d="M0 222L-4.6 213L4.6 213Z"/></g><g class="pap-e" data-from="n3" data-to="n4" data-lab="ja"><path class="pap-hit" d="M-104.5 304.5L-104.5 381.9"/><path class="pap-line" d="M-104.5 304.5L-104.5 381.9"/><path class="pap-ah" d="M-104.5 381.9L-109.1 372.9L-99.9 372.9Z"/><text class="pap-lab" x="-110.5" y="298.5" text-anchor="end">ja</text></g><g class="pap-e" data-from="n4" data-to="n4e" data-lab=""><path class="pap-hit" d="M-104.5 450.9L-104.5 478.9"/><path class="pap-line" d="M-104.5 450.9L-104.5 478.9"/><path class="pap-ah" d="M-104.5 478.9L-109.1 469.9L-99.9 469.9Z"/></g><g class="pap-e" data-from="n3" data-to="n5" data-lab="nein"><path class="pap-hit" d="M104.5 304.5L349 304.5L349 332.5"/><path class="pap-line" d="M104.5 304.5L349 304.5L349 332.5"/><path class="pap-ah" d="M349 332.5L344.4 323.5L353.6 323.5Z"/><text class="pap-lab" x="110.5" y="298.5" text-anchor="start">nein</text></g><g class="pap-e" data-from="n5" data-to="n6" data-lab="ja"><path class="pap-hit" d="M244.5 371.5L174.5 371.5L174.5 399.5"/><path class="pap-line" d="M244.5 371.5L174.5 371.5L174.5 399.5"/><path class="pap-ah" d="M174.5 399.5L169.9 390.5L179.1 390.5Z"/><text class="pap-lab" x="238.5" y="365.5" text-anchor="end">ja</text></g><g class="pap-e" data-from="n6" data-to="n7" data-lab="ja"><path class="pap-hit" d="M82 438.5L82 472.7"/><path class="pap-line" d="M82 438.5L82 472.7"/><path class="pap-ah" d="M82 472.7L77.4 463.7L86.6 463.7Z"/><text class="pap-lab" x="76" y="432.5" text-anchor="end">ja</text></g><g class="pap-e" data-from="n6" data-to="n8" data-lab="nein"><path class="pap-hit" d="M267 438.5L267 472.7"/><path class="pap-line" d="M267 438.5L267 472.7"/><path class="pap-ah" d="M267 472.7L262.4 463.7L271.6 463.7Z"/><text class="pap-lab" x="273" y="432.5" text-anchor="start">nein</text></g><g class="pap-e" data-from="n5" data-to="n9" data-lab="nein"><path class="pap-hit" d="M453.5 371.5L529.5 371.5L529.5 399.5"/><path class="pap-line" d="M453.5 371.5L529.5 371.5L529.5 399.5"/><path class="pap-ah" d="M529.5 399.5L524.9 390.5L534.1 390.5Z"/><text class="pap-lab" x="459.5" y="365.5" text-anchor="start">nein</text></g><g class="pap-e" data-from="n9" data-to="n10" data-lab="ja"><path class="pap-hit" d="M437 438.5L437 475.2"/><path class="pap-line" d="M437 438.5L437 475.2"/><path class="pap-ah" d="M437 475.2L432.4 466.2L441.6 466.2Z"/><text class="pap-lab" x="431" y="432.5" text-anchor="end">ja</text></g><g class="pap-e" data-from="n9" data-to="n9b" data-lab="nein"><path class="pap-hit" d="M622 438.5L704 438.5L704 466.5"/><path class="pap-line" d="M622 438.5L704 438.5L704 466.5"/><path class="pap-ah" d="M704 466.5L699.4 457.5L708.6 457.5Z"/><text class="pap-lab" x="628" y="432.5" text-anchor="start">nein</text></g><g class="pap-e" data-from="n9b" data-to="n11" data-lab="ja"><path class="pap-hit" d="M611.5 505.5L611.5 539.7"/><path class="pap-line" d="M611.5 505.5L611.5 539.7"/><path class="pap-ah" d="M611.5 539.7L606.9 530.7L616.1 530.7Z"/><text class="pap-lab" x="605.5" y="499.5" text-anchor="end">ja</text></g><g class="pap-e" data-from="n9b" data-to="n12" data-lab="nein"><path class="pap-hit" d="M796.5 505.5L796.5 542.2"/><path class="pap-line" d="M796.5 505.5L796.5 542.2"/><path class="pap-ah" d="M796.5 542.2L791.9 533.2L801.1 533.2Z"/><text class="pap-lab" x="802.5" y="499.5" text-anchor="start">nein</text></g><g class="pap-e" data-from="n7" data-to="n13" data-lab=""><path class="pap-hit" d="M82 524.7L82 609.6L349 609.6L349 634.2"/><path class="pap-line" d="M82 524.7L82 609.6L349 609.6L349 634.2"/><path class="pap-ah" d="M349 634.2L344.4 625.2L353.6 625.2Z"/></g><g class="pap-e" data-from="n8" data-to="n13" data-lab=""><path class="pap-hit" d="M267 558.7L267 609.6L349 609.6L349 634.2"/><path class="pap-line" d="M267 558.7L267 609.6L349 609.6L349 634.2"/><path class="pap-ah" d="M349 634.2L344.4 625.2L353.6 625.2Z"/></g><g class="pap-e" data-from="n10" data-to="n13" data-lab=""><path class="pap-hit" d="M437 513.2L437 609.6L349 609.6L349 634.2"/><path class="pap-line" d="M437 513.2L437 609.6L349 609.6L349 634.2"/><path class="pap-ah" d="M349 634.2L344.4 625.2L353.6 625.2Z"/></g><g class="pap-e" data-from="n11" data-to="n13" data-lab=""><path class="pap-hit" d="M611.5 577.7L611.5 609.6L349 609.6L349 634.2"/><path class="pap-line" d="M611.5 577.7L611.5 609.6L349 609.6L349 634.2"/><path class="pap-ah" d="M349 634.2L344.4 625.2L353.6 625.2Z"/></g><g class="pap-e" data-from="n12" data-to="n13" data-lab=""><path class="pap-hit" d="M796.5 594.2L796.5 609.6L349 609.6L349 634.2"/><path class="pap-line" d="M796.5 594.2L796.5 609.6L349 609.6L349 634.2"/><path class="pap-ah" d="M349 634.2L344.4 625.2L353.6 625.2Z"/></g><g class="pap-e" data-from="n13" data-to="n13e" data-lab=""><path class="pap-hit" d="M349 686.2L349 714.2"/><path class="pap-line" d="M349 686.2L349 714.2"/><path class="pap-ah" d="M349 714.2L344.4 705.2L353.6 705.2Z"/></g><g class="pap-n pap-n--start" data-id="n0" data-bid="n0"><rect class="pap-shape" x="-48" y="0" width="96" height="34" rx="17"/><text class="pap-t" x="0" y="21.6" text-anchor="middle">Start</text></g><g class="pap-n pap-n--io" data-id="n1" data-bid="n1"><path class="pap-shape" d="M-68 62H82L68 114H-82Z"/><text class="pap-t" x="0" y="84.1" text-anchor="middle">spannung einlesen</text><text class="pap-t" x="0" y="101.1" text-anchor="middle">(MPa)</text></g><g class="pap-n pap-n--io" data-id="n2" data-bid="n2"><path class="pap-shape" d="M-74 142H88L74 194H-88Z"/><text class="pap-t" x="0" y="164.1" text-anchor="middle">temperatur einlesen</text><text class="pap-t" x="0" y="181.1" text-anchor="middle">(°C)</text></g><g class="pap-n pap-n--if" data-id="n3" data-bid="n3"><path class="pap-shape" d="M0 222L104.5 304.5L0 387L-104.5 304.5Z"/><text class="pap-t" x="0" y="283.6" text-anchor="middle">spannung ≤ 0 oder</text><text class="pap-t" x="0" y="300.6" text-anchor="middle">temperatur &lt; −50</text><text class="pap-t" x="0" y="317.6" text-anchor="middle">oder temperatur &gt;</text><text class="pap-t" x="0" y="334.6" text-anchor="middle">600?</text></g><g class="pap-n pap-n--io" data-id="n4" data-bid="n4"><path class="pap-shape" d="M-178.5 381.9H-16.5L-30.5 450.9H-192.5Z"/><text class="pap-t" x="-104.5" y="404" text-anchor="middle">Ausgabe: Eingabe</text><text class="pap-t" x="-104.5" y="421" text-anchor="middle">unplausibel – bitte</text><text class="pap-t" x="-104.5" y="438" text-anchor="middle">Werte prüfen</text></g><g class="pap-n pap-n--end" data-id="n4e" data-bid="n4e"><rect class="pap-shape" x="-152.5" y="478.9" width="96" height="34" rx="17"/><text class="pap-t" x="-104.5" y="500.5" text-anchor="middle">Ende</text></g><g class="pap-n pap-n--if" data-id="n5" data-bid="n5"><path class="pap-shape" d="M349 332.5L453.5 371.5L349 410.5L244.5 371.5Z"/><text class="pap-t" x="349" y="376.1" text-anchor="middle">temperatur &gt; 300?</text></g><g class="pap-n pap-n--if" data-id="n6" data-bid="n6"><path class="pap-shape" d="M174.5 399.5L267 438.5L174.5 477.5L82 438.5Z"/><text class="pap-t" x="174.5" y="443.1" text-anchor="middle">spannung ≤ 200?</text></g><g class="pap-n pap-n--op" data-id="n7" data-bid="n7"><rect class="pap-shape" x="11" y="472.7" width="142" height="52"/><text class="pap-t" x="82" y="494.8" text-anchor="middle">werkstoff = &quot;16Mo3</text><text class="pap-t" x="82" y="511.8" text-anchor="middle">(warmfest)&quot;</text></g><g class="pap-n pap-n--op" data-id="n8" data-bid="n8"><rect class="pap-shape" x="196" y="472.7" width="142" height="86"/><text class="pap-t" x="267" y="494.8" text-anchor="middle">werkstoff =</text><text class="pap-t" x="267" y="511.8" text-anchor="middle">&quot;Sonderwerkstoff –</text><text class="pap-t" x="267" y="528.8" text-anchor="middle">Rücksprache</text><text class="pap-t" x="267" y="545.8" text-anchor="middle">Konstruktion&quot;</text></g><g class="pap-n pap-n--if" data-id="n9" data-bid="n9"><path class="pap-shape" d="M529.5 399.5L622 438.5L529.5 477.5L437 438.5Z"/><text class="pap-t" x="529.5" y="443.1" text-anchor="middle">spannung ≤ 140?</text></g><g class="pap-n pap-n--op" data-id="n10" data-bid="n10"><rect class="pap-shape" x="360" y="475.2" width="154" height="38"/><text class="pap-t" x="437" y="498.8" text-anchor="middle">werkstoff = &quot;S235JR&quot;</text></g><g class="pap-n pap-n--if" data-id="n9b" data-bid="n9b"><path class="pap-shape" d="M704 466.5L796.5 505.5L704 544.5L611.5 505.5Z"/><text class="pap-t" x="704" y="510.1" text-anchor="middle">spannung ≤ 220?</text></g><g class="pap-n pap-n--op" data-id="n11" data-bid="n11"><rect class="pap-shape" x="540.5" y="539.7" width="142" height="38"/><text class="pap-t" x="611.5" y="563.3" text-anchor="middle">werkstoff = &quot;C45E&quot;</text></g><g class="pap-n pap-n--op" data-id="n12" data-bid="n12"><rect class="pap-shape" x="719.5" y="542.2" width="154" height="52"/><text class="pap-t" x="796.5" y="564.3" text-anchor="middle">werkstoff = &quot;42CrMo4</text><text class="pap-t" x="796.5" y="581.3" text-anchor="middle">(vergütet)&quot;</text></g><g class="pap-n pap-n--io" data-id="n13" data-bid="n13"><path class="pap-shape" d="M265.5 634.2H446.5L432.5 686.2H251.5Z"/><text class="pap-t" x="349" y="656.3" text-anchor="middle">Ausgabe: &quot;Empfohlener</text><text class="pap-t" x="349" y="673.3" text-anchor="middle">Werkstoff:&quot;, werkstoff</text></g><g class="pap-n pap-n--end" data-id="n13e" data-bid="n13e"><rect class="pap-shape" x="301" y="714.2" width="96" height="34" rx="17"/><text class="pap-t" x="349" y="735.8" text-anchor="middle">Ende</text></g></svg></div>
+      <figcaption>Werkstoffvorschlag für eine Welle (vereinfachte Lehr-Regel, keine Normauslegung). Der linke Pfad endet nach der Warnung sofort im Ende. Alle anderen Wege laufen vor der Ausgabe zusammen.</figcaption>
+    </figure>
+
+    <p>Ein siebtes Symbol, das <strong>Unterprogramm</strong> (Rechteck mit doppelten senkrechten Seitenlinien), erwähnen wir nur: Es steht für einen ausgelagerten Teil des Ablaufs und gehört zu V07, wenn du eigene Funktionen mit <code class="k-i">def</code> baust. Auch <strong>Schleifen</strong> haben im PAP keine eigenen Symbole: Eine Linie führt einfach zurück nach oben. Sie kommen erst in V06 dran (Ausblick im Deep Dive).</p>
+
+    <div class="k-explorable">
+      <h3>Der PAP läuft ab</h3>
+      <p class="k-explorable__lead">Wähle Eingabewerte und lass den Plan ablaufen. Eine rote Marke wandert entlang der Ablauflinien. Das rote Symbol ist das, was Python gerade ausführt, grün sind schon durchlaufene Symbole und Linien. Daneben leuchtet die passende Python-Zeile. Probiere: <strong>180 / 20</strong>, dann <strong>250 / 400</strong> (anderer Weg!) und <strong>−5 / 20</strong> (kurzer Weg über die Eingabeprüfung). Setze danach die Spannung auf genau 140 und beobachte, welche Seite der Grenze gewinnt.</p>
+      <div data-explorable="ablauf"></div>
+      <noscript><p>Für die Ablauf-Animation wird JavaScript benötigt.</p></noscript>
+    </div>
+
+    <h3>Schritt 4: Vom PAP zum Python-Code</h3>
+    <p>Die Übersetzung ist mechanisch. Du folgst den Linien von oben nach unten und schreibst für jedes Symbol genau eine Form:</p>
+    <div class="k-tablewrap">
+    <table class="k-types">
+      <thead><tr><th scope="col">Im PAP</th><th scope="col">In Python</th></tr></thead>
+      <tbody>
+        <tr><td>Parallelogramm „spannung einlesen“</td><td><code class="k-i">spannung = float(input("…"))</code>, eine Zeile</td></tr>
+        <tr><td>Parallelogramm „Ausgabe: werkstoff“</td><td><code class="k-i">print(werkstoff)</code></td></tr>
+        <tr><td>Rechteck „werkstoff = …“</td><td>eine Zuweisung oder Rechnung, eine Zeile</td></tr>
+        <tr><td>Symbole untereinander</td><td>Zeilen untereinander, gleich weit eingerückt</td></tr>
+        <tr><td>Raute mit Bedingung B, Weg „ja“</td><td><code class="k-i">if B:</code>, darunter der Weg „ja“, <strong>eingerückt</strong></td></tr>
+        <tr><td>Weg „nein“</td><td><code class="k-i">else:</code> auf der Höhe des <code class="k-i">if</code>, darunter der Weg „nein“, eingerückt</td></tr>
+        <tr><td>Raute <em>direkt</em> im Weg „nein“ einer Raute</td><td><code class="k-i">elif B2:</code> statt <code class="k-i">else:</code> und einem neuen <code class="k-i">if</code></td></tr>
+        <tr><td>Raute <em>innerhalb</em> eines Zweigs</td><td>verschachteltes <code class="k-i">if</code>, noch eine Stufe tiefer eingerückt</td></tr>
+        <tr><td>Linien laufen wieder zusammen</td><td><strong>Ende der Einrückung</strong>: Das nächste Symbol steht wieder auf der Höhe des <code class="k-i">if</code></td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>Die <abbr class="k-begriff" data-erklaerung="Der Abstand am Zeilenanfang. In Python sind es 4 Leerzeichen pro Stufe. Er zeigt, welche Zeilen zu einem Zweig gehören.">Einrückung</abbr> ist in Python das, was im PAP die Linien sind: Sie sagt, welche Zeilen zu welchem <abbr class="k-begriff" data-erklaerung="Mehrere Zeilen, die zusammengehören, zum Beispiel alle Zeilen unter einem if. In Python erkennst du einen Block an der gleichen Einrückung.">Block</abbr> gehören. Dass die Linien wieder zusammenlaufen, erkennst du im Code daran, dass die Einrückung endet. Das ist die häufigste Fehlerquelle, du siehst es gleich bei „Ausprobieren“. Vier kleine Muster, jeweils PAP und Code nebeneinander:</p>
+
+    <div class="v05-pair">
+      <figure class="v05-fig">
+        <div class="pap-wrap"><svg class="pap" xmlns="http://www.w3.org/2000/svg" viewBox="-74 -14 148 322" role="img" aria-label="Programmablaufplan: Start, dann d einlesen, dann A = π · d² / 4, dann Ausgabe: A, dann Ende." style="--pap-min:115px;--pap-max:148px"><g class="pap-e" data-from="start" data-to="p19" data-lab=""><path class="pap-hit" d="M0 34L0 62"/><path class="pap-line" d="M0 34L0 62"/><path class="pap-ah" d="M0 62L-4.6 53L4.6 53Z"/></g><g class="pap-e" data-from="p19" data-to="p20" data-lab=""><path class="pap-hit" d="M0 100L0 128"/><path class="pap-line" d="M0 100L0 128"/><path class="pap-ah" d="M0 128L-4.6 119L4.6 119Z"/></g><g class="pap-e" data-from="p20" data-to="p21" data-lab=""><path class="pap-hit" d="M0 166L0 194"/><path class="pap-line" d="M0 166L0 194"/><path class="pap-ah" d="M0 194L-4.6 185L4.6 185Z"/></g><g class="pap-e" data-from="p21" data-to="p22" data-lab=""><path class="pap-hit" d="M0 232L0 260"/><path class="pap-line" d="M0 232L0 260"/><path class="pap-ah" d="M0 260L-4.6 251L4.6 251Z"/></g><g class="pap-n pap-n--start" data-id="start" data-bid="start"><rect class="pap-shape" x="-48" y="0" width="96" height="34" rx="17"/><text class="pap-t" x="0" y="21.6" text-anchor="middle">Start</text></g><g class="pap-n pap-n--io" data-id="p19" data-bid="p19"><path class="pap-shape" d="M-46 62H60L46 100H-60Z"/><text class="pap-t" x="0" y="85.6" text-anchor="middle">d einlesen</text></g><g class="pap-n pap-n--op" data-id="p20" data-bid="p20"><rect class="pap-shape" x="-58.5" y="128" width="117" height="38"/><text class="pap-t" x="0" y="151.6" text-anchor="middle">A = π · d² / 4</text></g><g class="pap-n pap-n--io" data-id="p21" data-bid="p21"><path class="pap-shape" d="M-46 194H60L46 232H-60Z"/><text class="pap-t" x="0" y="217.6" text-anchor="middle">Ausgabe: A</text></g><g class="pap-n pap-n--end" data-id="p22" data-bid="p22"><rect class="pap-shape" x="-48" y="260" width="96" height="34" rx="17"/><text class="pap-t" x="0" y="281.6" text-anchor="middle">Ende</text></g></svg></div>
+        <figcaption><strong>Sequenz:</strong> Symbole untereinander, Zeilen untereinander.</figcaption>
+      </figure>
+<pre data-stdin="20"><code>import math
+d = float(input("Durchmesser d in mm: "))
+A = math.pi * d ** 2 / 4
+print(A)</code></pre>
+    </div>
+    <div class="v05-pair">
+      <figure class="v05-fig">
+        <div class="pap-wrap"><svg class="pap" xmlns="http://www.w3.org/2000/svg" viewBox="-131 -14 262 407" role="img" aria-label="Programmablaufplan: Start, dann x einlesen, dann Verzweigung „x &lt; 0?“: bei ja betrag = −x; bei nein betrag = x, dann Ausgabe: betrag, dann Ende." style="--pap-min:204px;--pap-max:262px"><g class="pap-e" data-from="start" data-to="p24" data-lab=""><path class="pap-hit" d="M0 34L0 62"/><path class="pap-line" d="M0 34L0 62"/><path class="pap-ah" d="M0 62L-4.6 53L4.6 53Z"/></g><g class="pap-e" data-from="p24" data-to="p27" data-lab=""><path class="pap-hit" d="M0 100L0 128"/><path class="pap-line" d="M0 100L0 128"/><path class="pap-ah" d="M0 128L-4.6 119L4.6 119Z"/></g><g class="pap-e" data-from="p27" data-to="p25" data-lab="ja"><path class="pap-hit" d="M-68 167L-68 200.8"/><path class="pap-line" d="M-68 167L-68 200.8"/><path class="pap-ah" d="M-68 200.8L-72.6 191.8L-63.4 191.8Z"/><text class="pap-lab" x="-74" y="161" text-anchor="end">ja</text></g><g class="pap-e" data-from="p27" data-to="p26" data-lab="nein"><path class="pap-hit" d="M68 167L68 200.8"/><path class="pap-line" d="M68 167L68 200.8"/><path class="pap-ah" d="M68 200.8L63.4 191.8L72.6 191.8Z"/><text class="pap-lab" x="74" y="161" text-anchor="start">nein</text></g><g class="pap-e" data-from="p25" data-to="p28" data-lab=""><path class="pap-hit" d="M-68 238.8L-68 254.2L0 254.2L0 278.8"/><path class="pap-line" d="M-68 238.8L-68 254.2L0 254.2L0 278.8"/><path class="pap-ah" d="M0 278.8L-4.6 269.8L4.6 269.8Z"/></g><g class="pap-e" data-from="p26" data-to="p28" data-lab=""><path class="pap-hit" d="M68 238.8L68 254.2L0 254.2L0 278.8"/><path class="pap-line" d="M68 238.8L68 254.2L0 254.2L0 278.8"/><path class="pap-ah" d="M0 278.8L-4.6 269.8L4.6 269.8Z"/></g><g class="pap-e" data-from="p28" data-to="p29" data-lab=""><path class="pap-hit" d="M0 316.8L0 344.8"/><path class="pap-line" d="M0 316.8L0 344.8"/><path class="pap-ah" d="M0 344.8L-4.6 335.8L4.6 335.8Z"/></g><g class="pap-n pap-n--start" data-id="start" data-bid="start"><rect class="pap-shape" x="-48" y="0" width="96" height="34" rx="17"/><text class="pap-t" x="0" y="21.6" text-anchor="middle">Start</text></g><g class="pap-n pap-n--io" data-id="p24" data-bid="p24"><path class="pap-shape" d="M-46 62H60L46 100H-60Z"/><text class="pap-t" x="0" y="85.6" text-anchor="middle">x einlesen</text></g><g class="pap-n pap-n--if" data-id="p27" data-bid="p27"><path class="pap-shape" d="M0 128L68 167L0 206L-68 167Z"/><text class="pap-t" x="0" y="171.6" text-anchor="middle">x &lt; 0?</text></g><g class="pap-n pap-n--op" data-id="p25" data-bid="p25"><rect class="pap-shape" x="-117" y="200.8" width="98" height="38"/><text class="pap-t" x="-68" y="224.4" text-anchor="middle">betrag = −x</text></g><g class="pap-n pap-n--op" data-id="p26" data-bid="p26"><rect class="pap-shape" x="19" y="200.8" width="98" height="38"/><text class="pap-t" x="68" y="224.4" text-anchor="middle">betrag = x</text></g><g class="pap-n pap-n--io" data-id="p28" data-bid="p28"><path class="pap-shape" d="M-61.5 278.8H75.5L61.5 316.8H-75.5Z"/><text class="pap-t" x="0" y="302.4" text-anchor="middle">Ausgabe: betrag</text></g><g class="pap-n pap-n--end" data-id="p29" data-bid="p29"><rect class="pap-shape" x="-48" y="344.8" width="96" height="34" rx="17"/><text class="pap-t" x="0" y="366.4" text-anchor="middle">Ende</text></g></svg></div>
+        <figcaption><strong>Verzweigung mit „ja“ und „nein“:</strong> Beide Wege laufen danach wieder zusammen. Die Ausgabe steht darum <em>nach</em> dem <code class="k-i">else</code>-Block, ganz links.</figcaption>
+      </figure>
+<pre data-stdin="-3"><code>x = float(input("x: "))
+if x &lt; 0:
+    betrag = -x
+else:
+    betrag = x
+print(betrag)</code></pre>
+    </div>
+    <div class="v05-pair">
+      <figure class="v05-fig">
+        <div class="pap-wrap"><svg class="pap" xmlns="http://www.w3.org/2000/svg" viewBox="-182 -14 304 411" role="img" aria-label="Programmablaufplan: Start, dann x einlesen, dann Verzweigung „x &lt; 0?“: bei ja Ausgabe: negativ; bei nein weiter, dann Ausgabe: fertig, dann Ende." style="--pap-min:237px;--pap-max:304px"><g class="pap-e" data-from="start" data-to="p31" data-lab=""><path class="pap-hit" d="M0 34L0 62"/><path class="pap-line" d="M0 34L0 62"/><path class="pap-ah" d="M0 62L-4.6 53L4.6 53Z"/></g><g class="pap-e" data-from="p31" data-to="p33" data-lab=""><path class="pap-hit" d="M0 100L0 128"/><path class="pap-line" d="M0 100L0 128"/><path class="pap-ah" d="M0 128L-4.6 119L4.6 119Z"/></g><g class="pap-e" data-from="p33" data-to="p32" data-lab="ja"><path class="pap-hit" d="M-68 167L-89.5 167L-89.5 205.4"/><path class="pap-line" d="M-68 167L-89.5 167L-89.5 205.4"/><path class="pap-ah" d="M-89.5 205.4L-94.1 196.4L-84.9 196.4Z"/><text class="pap-lab" x="-74" y="161" text-anchor="end">ja</text></g><g class="pap-e" data-from="p32" data-to="p34" data-lab=""><path class="pap-hit" d="M-89.5 243.4L-89.5 258.8L0 258.8L0 283.4"/><path class="pap-line" d="M-89.5 243.4L-89.5 258.8L0 258.8L0 283.4"/><path class="pap-ah" d="M0 283.4L-4.6 274.4L4.6 274.4Z"/></g><g class="pap-e" data-from="p33" data-to="p34" data-lab="nein"><path class="pap-hit" d="M68 167L68 258.8L0 258.8L0 283.4"/><path class="pap-line" d="M68 167L68 258.8L0 258.8L0 283.4"/><path class="pap-ah" d="M0 283.4L-4.6 274.4L4.6 274.4Z"/><text class="pap-lab" x="74" y="161" text-anchor="start">nein</text></g><g class="pap-e" data-from="p34" data-to="p35" data-lab=""><path class="pap-hit" d="M0 321.4L0 349.4"/><path class="pap-line" d="M0 321.4L0 349.4"/><path class="pap-ah" d="M0 349.4L-4.6 340.4L4.6 340.4Z"/></g><g class="pap-n pap-n--start" data-id="start" data-bid="start"><rect class="pap-shape" x="-48" y="0" width="96" height="34" rx="17"/><text class="pap-t" x="0" y="21.6" text-anchor="middle">Start</text></g><g class="pap-n pap-n--io" data-id="p31" data-bid="p31"><path class="pap-shape" d="M-46 62H60L46 100H-60Z"/><text class="pap-t" x="0" y="85.6" text-anchor="middle">x einlesen</text></g><g class="pap-n pap-n--if" data-id="p33" data-bid="p33"><path class="pap-shape" d="M0 128L68 167L0 206L-68 167Z"/><text class="pap-t" x="0" y="171.6" text-anchor="middle">x &lt; 0?</text></g><g class="pap-n pap-n--io" data-id="p32" data-bid="p32"><path class="pap-shape" d="M-154 205.4H-11L-25 243.4H-168Z"/><text class="pap-t" x="-89.5" y="229" text-anchor="middle">Ausgabe: negativ</text></g><g class="pap-n pap-n--io" data-id="p34" data-bid="p34"><path class="pap-shape" d="M-61.5 283.4H75.5L61.5 321.4H-75.5Z"/><text class="pap-t" x="0" y="307" text-anchor="middle">Ausgabe: fertig</text></g><g class="pap-n pap-n--end" data-id="p35" data-bid="p35"><rect class="pap-shape" x="-48" y="349.4" width="96" height="34" rx="17"/><text class="pap-t" x="0" y="371" text-anchor="middle">Ende</text></g></svg></div>
+        <figcaption><strong>Einfache Verzweigung:</strong> Der Weg „nein“ führt direkt weiter, ohne Symbol. In Python entfällt das <code class="k-i">else</code>.</figcaption>
+      </figure>
+<pre data-stdin="-3"><code>x = float(input("x: "))
+if x &lt; 0:
+    print("negativ")
+print("fertig")</code></pre>
+    </div>
+    <div class="v05-pair">
+      <figure class="v05-fig">
+        <div class="pap-wrap"><svg class="pap" xmlns="http://www.w3.org/2000/svg" viewBox="-176 -14 532 412" role="img" aria-label="Programmablaufplan: Start, dann s einlesen, dann Verzweigung „s ≥ 1,5?“: bei ja Ausgabe: sicher; bei nein Verzweigung „s ≥ 1,0?“: bei ja Ausgabe: knapp; bei nein Ausgabe: Versagen, dann Ende." style="--pap-min:415px;--pap-max:532px"><g class="pap-e" data-from="start" data-to="p37" data-lab=""><path class="pap-hit" d="M0 34L0 62"/><path class="pap-line" d="M0 34L0 62"/><path class="pap-ah" d="M0 62L-4.6 53L4.6 53Z"/></g><g class="pap-e" data-from="p37" data-to="p42" data-lab=""><path class="pap-hit" d="M0 100L0 128"/><path class="pap-line" d="M0 100L0 128"/><path class="pap-ah" d="M0 128L-4.6 119L4.6 119Z"/></g><g class="pap-e" data-from="p42" data-to="p38" data-lab="ja"><path class="pap-hit" d="M-68 167L-86.5 167L-86.5 205.4"/><path class="pap-line" d="M-68 167L-86.5 167L-86.5 205.4"/><path class="pap-ah" d="M-86.5 205.4L-91.1 196.4L-81.9 196.4Z"/><text class="pap-lab" x="-74" y="161" text-anchor="end">ja</text></g><g class="pap-e" data-from="p42" data-to="p41" data-lab="nein"><path class="pap-hit" d="M68 167L167 167L167 195"/><path class="pap-line" d="M68 167L167 167L167 195"/><path class="pap-ah" d="M167 195L162.4 186L171.6 186Z"/><text class="pap-lab" x="74" y="161" text-anchor="start">nein</text></g><g class="pap-e" data-from="p41" data-to="p39" data-lab="ja"><path class="pap-hit" d="M99 234L83.5 234L83.5 272.4"/><path class="pap-line" d="M99 234L83.5 234L83.5 272.4"/><path class="pap-ah" d="M83.5 272.4L78.9 263.4L88.1 263.4Z"/><text class="pap-lab" x="93" y="228" text-anchor="end">ja</text></g><g class="pap-e" data-from="p41" data-to="p40" data-lab="nein"><path class="pap-hit" d="M235 234L260 234L260 272.4"/><path class="pap-line" d="M235 234L260 234L260 272.4"/><path class="pap-ah" d="M260 272.4L255.4 263.4L264.6 263.4Z"/><text class="pap-lab" x="241" y="228" text-anchor="start">nein</text></g><g class="pap-e" data-from="p38" data-to="p43" data-lab=""><path class="pap-hit" d="M-86.5 243.4L-86.5 325.8L0 325.8L0 350.4"/><path class="pap-line" d="M-86.5 243.4L-86.5 325.8L0 325.8L0 350.4"/><path class="pap-ah" d="M0 350.4L-4.6 341.4L4.6 341.4Z"/></g><g class="pap-e" data-from="p39" data-to="p43" data-lab=""><path class="pap-hit" d="M83.5 310.4L83.5 325.8L0 325.8L0 350.4"/><path class="pap-line" d="M83.5 310.4L83.5 325.8L0 325.8L0 350.4"/><path class="pap-ah" d="M0 350.4L-4.6 341.4L4.6 341.4Z"/></g><g class="pap-e" data-from="p40" data-to="p43" data-lab=""><path class="pap-hit" d="M260 310.4L260 325.8L0 325.8L0 350.4"/><path class="pap-line" d="M260 310.4L260 325.8L0 325.8L0 350.4"/><path class="pap-ah" d="M0 350.4L-4.6 341.4L4.6 341.4Z"/></g><g class="pap-n pap-n--start" data-id="start" data-bid="start"><rect class="pap-shape" x="-48" y="0" width="96" height="34" rx="17"/><text class="pap-t" x="0" y="21.6" text-anchor="middle">Start</text></g><g class="pap-n pap-n--io" data-id="p37" data-bid="p37"><path class="pap-shape" d="M-46 62H60L46 100H-60Z"/><text class="pap-t" x="0" y="85.6" text-anchor="middle">s einlesen</text></g><g class="pap-n pap-n--if" data-id="p42" data-bid="p42"><path class="pap-shape" d="M0 128L68 167L0 206L-68 167Z"/><text class="pap-t" x="0" y="171.6" text-anchor="middle">s ≥ 1,5?</text></g><g class="pap-n pap-n--io" data-id="p38" data-bid="p38"><path class="pap-shape" d="M-148 205.4H-11L-25 243.4H-162Z"/><text class="pap-t" x="-86.5" y="229" text-anchor="middle">Ausgabe: sicher</text></g><g class="pap-n pap-n--if" data-id="p41" data-bid="p41"><path class="pap-shape" d="M167 195L235 234L167 273L99 234Z"/><text class="pap-t" x="167" y="238.6" text-anchor="middle">s ≥ 1,0?</text></g><g class="pap-n pap-n--io" data-id="p39" data-bid="p39"><path class="pap-shape" d="M25 272.4H156L142 310.4H11Z"/><text class="pap-t" x="83.5" y="296" text-anchor="middle">Ausgabe: knapp</text></g><g class="pap-n pap-n--io" data-id="p40" data-bid="p40"><path class="pap-shape" d="M192 272.4H342L328 310.4H178Z"/><text class="pap-t" x="260" y="296" text-anchor="middle">Ausgabe: Versagen</text></g><g class="pap-n pap-n--end" data-id="p43" data-bid="p43"><rect class="pap-shape" x="-48" y="350.4" width="96" height="34" rx="17"/><text class="pap-t" x="0" y="372" text-anchor="middle">Ende</text></g></svg></div>
+        <figcaption><strong>Kette von Rauten:</strong> Jede weitere Raute hängt im Weg „nein“ der vorigen. In Python wird daraus <code class="k-i">elif</code>.</figcaption>
+      </figure>
+<pre data-stdin="1.2"><code>s = float(input("Sicherheitsfaktor s: "))
+if s &gt;= 1.5:
+    print("sicher")
+elif s &gt;= 1.0:
+    print("knapp")
+else:
+    print("Versagen")</code></pre>
+    </div>
+
+    <div class="k-explorable">
+      <h3>PAP-Baukasten</h3>
+      <p class="k-explorable__lead">Stelle den PAP zusammen und sieh, wie daneben der Python-Code entsteht. Beim Start ist ein Gerüst mit Lücken geladen: Wähle die Symbolart, trage den Text ein (Beispiel: Variable <code class="k-i">drehzahl</code>, Bedingung <code class="k-i">drehzahl &gt; 12000</code>, Ausgaben <code class="k-i">"zu hoch"</code> und <code class="k-i">"ok"</code>). Jedes Symbol hat eine Nummer und eine Farbe, dieselbe Nummer und Farbe stehen vor den Codezeilen. Fahre über ein Symbol oder eine Zeile, dann leuchtet das Gegenstück auf. Umgekehrt geht es auch: Wechsle auf „Code baut PAP“. Probiere: <strong>Verschachtelt</strong> und <strong>Kette (elif)</strong> laden und die Einrückung im Code ansehen.</p>
+      <div data-explorable="baukasten"></div>
+      <noscript><p>Für den Baukasten wird JavaScript benötigt.</p></noscript>
+    </div>
+
+    <h3>Schritt 5: Verschachteln oder <code class="k-i">elif</code>?</h3>
+    <p>Mehrere Rauten kannst du auf zwei Arten schreiben. Beide liefern dasselbe, aber eine ist besser lesbar:</p>
+    <ul>
+      <li><strong><code class="k-i">elif</code>, wenn die Fälle gleichrangig sind.</strong> Alle Rauten fragen dieselbe Größe ab (hier die Spannung): „≤ 140?“, „≤ 220?“, sonst. Jede steht im Weg „nein“ der vorigen: eine Kette, flach geschrieben.</li>
+      <li><strong>Verschachteln, wenn die zweite Frage nur in einem Zweig Sinn hat.</strong> Die Grenze „Spannung ≤ 200“ gilt nur im warmen Bereich. Erst fragst du die Temperatur, dann im Weg „ja“ die Spannung.</li>
+      <li><strong>Faustregel:</strong> nicht tiefer als drei Ebenen. Wird es tiefer, fasse Bedingungen mit <code class="k-i">and</code> zusammen oder zerlege das Problem (mehr dazu in V07).</li>
+    </ul>
+    <figure class="v05-fig">
+      <div class="pap-wrap"><svg class="pap" xmlns="http://www.w3.org/2000/svg" viewBox="-362 -14 551 426" role="img" aria-label="Programmablaufplan: Start, dann t einlesen, dann Verzweigung „t &gt; 100?“: bei ja Verzweigung „t &gt; 300?“: bei ja Ausgabe: Sonderwerkstoff; bei nein Ausgabe: warmfest; bei nein Ausgabe: Standardwerkstoff, dann Ende." style="--pap-min:430px;--pap-max:551px"><g class="pap-e" data-from="start" data-to="p45" data-lab=""><path class="pap-hit" d="M0 34L0 62"/><path class="pap-line" d="M0 34L0 62"/><path class="pap-ah" d="M0 62L-4.6 53L4.6 53Z"/></g><g class="pap-e" data-from="p45" data-to="p50" data-lab=""><path class="pap-hit" d="M0 100L0 128"/><path class="pap-line" d="M0 100L0 128"/><path class="pap-ah" d="M0 128L-4.6 119L4.6 119Z"/></g><g class="pap-e" data-from="p50" data-to="p48" data-lab="ja"><path class="pap-hit" d="M-68 167L-186 167L-186 195"/><path class="pap-line" d="M-68 167L-186 167L-186 195"/><path class="pap-ah" d="M-186 195L-190.6 186L-181.4 186Z"/><text class="pap-lab" x="-74" y="161" text-anchor="end">ja</text></g><g class="pap-e" data-from="p48" data-to="p46" data-lab="ja"><path class="pap-hit" d="M-254 234L-272.5 234L-272.5 272.4"/><path class="pap-line" d="M-254 234L-272.5 234L-272.5 272.4"/><path class="pap-ah" d="M-272.5 272.4L-277.1 263.4L-267.9 263.4Z"/><text class="pap-lab" x="-260" y="228" text-anchor="end">ja</text></g><g class="pap-e" data-from="p48" data-to="p47" data-lab="nein"><path class="pap-hit" d="M-118 234L-93 234L-93 272.4"/><path class="pap-line" d="M-118 234L-93 234L-93 272.4"/><path class="pap-ah" d="M-93 272.4L-97.6 263.4L-88.4 263.4Z"/><text class="pap-lab" x="-112" y="228" text-anchor="start">nein</text></g><g class="pap-e" data-from="p50" data-to="p49" data-lab="nein"><path class="pap-hit" d="M68 167L93 167L93 205.4"/><path class="pap-line" d="M68 167L93 167L93 205.4"/><path class="pap-ah" d="M93 205.4L88.4 196.4L97.6 196.4Z"/><text class="pap-lab" x="74" y="161" text-anchor="start">nein</text></g><g class="pap-e" data-from="p46" data-to="p51" data-lab=""><path class="pap-hit" d="M-272.5 324.4L-272.5 339.8L0 339.8L0 364.4"/><path class="pap-line" d="M-272.5 324.4L-272.5 339.8L0 339.8L0 364.4"/><path class="pap-ah" d="M0 364.4L-4.6 355.4L4.6 355.4Z"/></g><g class="pap-e" data-from="p47" data-to="p51" data-lab=""><path class="pap-hit" d="M-93 310.4L-93 339.8L0 339.8L0 364.4"/><path class="pap-line" d="M-93 310.4L-93 339.8L0 339.8L0 364.4"/><path class="pap-ah" d="M0 364.4L-4.6 355.4L4.6 355.4Z"/></g><g class="pap-e" data-from="p49" data-to="p51" data-lab=""><path class="pap-hit" d="M93 257.4L93 339.8L0 339.8L0 364.4"/><path class="pap-line" d="M93 257.4L93 339.8L0 339.8L0 364.4"/><path class="pap-ah" d="M0 364.4L-4.6 355.4L4.6 355.4Z"/></g><g class="pap-n pap-n--start" data-id="start" data-bid="start"><rect class="pap-shape" x="-48" y="0" width="96" height="34" rx="17"/><text class="pap-t" x="0" y="21.6" text-anchor="middle">Start</text></g><g class="pap-n pap-n--io" data-id="p45" data-bid="p45"><path class="pap-shape" d="M-46 62H60L46 100H-60Z"/><text class="pap-t" x="0" y="85.6" text-anchor="middle">t einlesen</text></g><g class="pap-n pap-n--if" data-id="p50" data-bid="p50"><path class="pap-shape" d="M0 128L68 167L0 206L-68 167Z"/><text class="pap-t" x="0" y="171.6" text-anchor="middle">t &gt; 100?</text></g><g class="pap-n pap-n--if" data-id="p48" data-bid="p48"><path class="pap-shape" d="M-186 195L-118 234L-186 273L-254 234Z"/><text class="pap-t" x="-186" y="238.6" text-anchor="middle">t &gt; 300?</text></g><g class="pap-n pap-n--io" data-id="p46" data-bid="p46"><path class="pap-shape" d="M-334 272.4H-197L-211 324.4H-348Z"/><text class="pap-t" x="-272.5" y="294.5" text-anchor="middle">Ausgabe:</text><text class="pap-t" x="-272.5" y="311.5" text-anchor="middle">Sonderwerkstoff</text></g><g class="pap-n pap-n--io" data-id="p47" data-bid="p47"><path class="pap-shape" d="M-161 272.4H-11L-25 310.4H-175Z"/><text class="pap-t" x="-93" y="296" text-anchor="middle">Ausgabe: warmfest</text></g><g class="pap-n pap-n--io" data-id="p49" data-bid="p49"><path class="pap-shape" d="M25 205.4H175L161 257.4H11Z"/><text class="pap-t" x="93" y="227.5" text-anchor="middle">Ausgabe:</text><text class="pap-t" x="93" y="244.5" text-anchor="middle">Standardwerkstoff</text></g><g class="pap-n pap-n--end" data-id="p51" data-bid="p51"><rect class="pap-shape" x="-48" y="364.4" width="96" height="34" rx="17"/><text class="pap-t" x="0" y="386" text-anchor="middle">Ende</text></g></svg></div>
+      <figcaption>Verschachtelt: Die zweite Raute steckt im Weg „ja“ der ersten. Im Code steht ihr <code class="k-i">if</code> eine Stufe tiefer.</figcaption>
+    </figure>
+
+    <h3>Schritt 6: Eingaben auf Plausibilität prüfen</h3>
+    <p>Ein Programm rechnet mit dem, was der Mensch eintippt. Eine <abbr class="k-begriff" data-erklaerung="Ein Check, ob ein eingegebener Wert überhaupt sinnvoll sein kann, zum Beispiel eine Temperatur nicht unter −273 °C. Wie der Blick auf die Anzeige: „Das kann nicht stimmen.“">Plausibilitätsprüfung</abbr> steht deshalb <strong>ganz am Anfang der Verarbeitung</strong>: Liegt der Wert in einem sinnvollen Bereich? Wenn nicht, gibt es eine klare Meldung und keine Rechnung. Im PAP ist das die erste Raute: im Weg „ja“ nur die Meldung und das Ende, im Weg „nein“ der eigentliche Ablauf. Die Bedingung baust du aus Vergleichen und <code class="k-i">or</code>: <code class="k-i">spannung &lt;= 0 or temperatur &gt; 600</code> heißt „mindestens einer der beiden Werte ist unsinnig“.</p>
+    <div class="hinweis hinweis--achtung"><strong class="hinweis__title">Achtung</strong><p>Die Prüfung fängt <em>unsinnige Zahlen</em> ab, keinen <em>Text</em>. Tippt jemand „abc“ statt einer Zahl, bricht <code class="k-i">float()</code> trotzdem mit einem <code class="k-i">ValueError</code> ab. Wie ein Programm das abfängt, lernst du in V09 (<code class="k-i">try</code>/<code class="k-i">except</code>). Bis dahin gehen wir davon aus, dass Zahlen eingegeben werden.</p></div>
+
+    <h3>Schritt 7: Testfälle je Pfad</h3>
+    <p>Ein <abbr class="k-begriff" data-erklaerung="Ein Testfall ist ein fester Satz Eingaben mit der Ausgabe, die du vorher aus dem PAP abgelesen hast. Passt die Ausgabe nicht, steckt ein Fehler im Programm.">Testfall</abbr> ist ein Satz Eingaben mit der Ausgabe, die du <em>vorher</em> aus dem PAP abgelesen hast. Die Regel dafür: <strong>jeder Pfad von Start bis Ende wenigstens einmal</strong>, und zusätzlich die Werte genau auf den Grenzen jeder Raute. Wie viele Pfade gibt es? Jede Raute teilt einen Weg in zwei, also gilt: Anzahl der Rauten plus eins. Der Werkstoff-PAP hat fünf Rauten und damit sechs Pfade, also mindestens sechs Testfälle:</p>
+    <div class="k-tablewrap">
+    <table class="k-types">
+      <thead><tr><th scope="col">Nr</th><th scope="col">Spannung</th><th scope="col">Temperatur</th><th scope="col">Pfad im PAP</th><th scope="col">Erwartete Ausgabe</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>180</td><td>20</td><td>Pfad 1: ≤ 300 °C, Spannung zwischen 140 und 220</td><td>C45E</td></tr>
+        <tr><td>2</td><td>100</td><td>20</td><td>Pfad 2: ≤ 300 °C, Spannung ≤ 140</td><td>S235JR</td></tr>
+        <tr><td>3</td><td>250</td><td>20</td><td>Pfad 3: ≤ 300 °C, Spannung &gt; 220</td><td>42CrMo4 (vergütet)</td></tr>
+        <tr><td>4</td><td>150</td><td>400</td><td>Pfad 4: &gt; 300 °C, Spannung ≤ 200</td><td>16Mo3 (warmfest)</td></tr>
+        <tr><td>5</td><td>250</td><td>400</td><td>Pfad 5: &gt; 300 °C, Spannung &gt; 200</td><td>Sonderwerkstoff, Rücksprache Konstruktion</td></tr>
+        <tr><td>6</td><td>−5</td><td>20</td><td>Pfad 6: Eingabe unplausibel (direkt zum Ende)</td><td>Eingabe unplausibel – bitte Werte prüfen</td></tr>
+        <tr><td>7</td><td>140</td><td>20</td><td>Grenzwert an der Raute „spannung ≤ 140?“: gehört zu „ja“</td><td>S235JR</td></tr>
+        <tr><td>8</td><td>100</td><td>300</td><td>Grenzwert an der Raute „temperatur &gt; 300?“: gehört <em>nicht</em> zu „ja“</td><td>S235JR</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>Die Zeilen 7 und 8 sind <strong>Grenzfälle</strong>. Dort scheitert ein Programm am häufigsten: Wer <code class="k-i">&lt;</code> statt <code class="k-i">&lt;=</code> schreibt, fällt nur bei genau 140 durch, und nur dieser Testfall merkt es. Die Tabelle schreibst du <em>vor</em> dem Programmieren auf. Dann testest du das Programm gegen deine Erwartung und nicht gegen das, was es zufällig ausgibt.</p>
+
+    <h3>Der PAP als Prompt</h3>
+    <p>Aus Abschnitt 1 weißt du: Ein PAP ist ein guter Prompt, weil er keinen Spielraum für Vermutungen lässt. Ein brauchbarer Prompt besteht aus fünf Teilen:</p>
+    <ol>
+      <li><strong>Ziel in einem Satz:</strong> „Werkstoffvorschlag für eine Welle (vereinfachte Lehr-Regel).“</li>
+      <li><strong>Eingaben mit Typ und Einheit:</strong> „spannung in MPa, temperatur in °C, beide float.“</li>
+      <li><strong>Der PAP</strong> als Bild oder als Text, mit allen Wegen.</li>
+      <li><strong>Randfälle und Annahmen:</strong> „Grenzwerte gehören zur niedrigeren Stufe.“</li>
+      <li><strong>Ausgabeformat und Grenzen:</strong> „Genau diese Texte. Nur print, input, float, if/elif/else.“</li>
+    </ol>
+    <p>In Phase 1 schreibst du den Code noch selbst. Die Prompt-Übung hat trotzdem sofort einen Nutzen: Wer den PAP sauber zeichnen kann, kann auch den Code schreiben, und wer beides kann, erkennt sofort, ob der Code einer KI stimmt. Ab V10 darf die KI den Code erzeugen, du prüfst ihn gegen deine Testfälle.</p>
+
+    <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke</strong><p>Erst die Problemanalyse (Eingabe, Verarbeitung, Ausgabe, Randfälle, Annahmen), dann der PAP, dann der Code, dann die Testfälle aus dem PAP. Jeder Pfad bekommt mindestens einen Testfall, jeder Grenzwert einen eigenen.</p></div>
+      </section>
+
+      <!-- 3 ───────────── AUSPROBIEREN ───────────── -->
+      <section class="k-section" id="ausprobieren" data-section="ausprobieren" aria-labelledby="h-aus">
+        <h2 class="k-section__title" id="h-aus"><span class="k-section__num" aria-hidden="true">3</span> Ausprobieren</h2>
+
+        <p>Zuerst prüfst du dein Auge für Zeichenfehler, danach läuft Python direkt hier im Browser. Jeder Codeblock hat einen Editor: Du kannst ihn ändern, ausführen, zurücksetzen und mit „Schritt für Schritt“ Zeile für Zeile verfolgen. Wenn der Code <code class="k-i">input()</code> aufruft, stehen die Eingaben im Feld unter dem Code, die kannst du ändern. Erst tippen, was herauskommt, dann ausführen (Strg+Enter führt aus).</p>
+
+      <div class="k-explorable">
+        <h3>Fehler im PAP finden</h3>
+        <p class="k-explorable__lead">In diesem Plan stecken <strong>vier typische Zeichenfehler</strong>. Er soll eine Drehzahl einlesen und bei Werten über 12000 „zu hoch“, sonst „ok“ ausgeben. Klicke ein Symbol oder eine Linie an, die du für falsch hältst. Mit der Tab-Taste und Enter geht es auch ohne Maus. Die Zeichenregeln aus Abschnitt 2 helfen.</p>
+        <div data-explorable="fehler"></div>
+        <noscript><p>Für diese Übung wird JavaScript benötigt.</p></noscript>
+        <details class="k-deep">
+          <summary>So sieht der korrekte Plan aus</summary>
+          <div class="k-deep__body"><div class="pap-wrap"><svg class="pap" xmlns="http://www.w3.org/2000/svg" viewBox="-209.5 -14 419 359" role="img" aria-label="Programmablaufplan: Start, dann drehzahl einlesen, dann Verzweigung „drehzahl &gt; 12000?“: bei ja Ausgabe: Drehzahl zu hoch; bei nein Ausgabe: Drehzahl ok, dann Ende." style="--pap-min:327px;--pap-max:419px"><g class="pap-e" data-from="start" data-to="p53" data-lab=""><path class="pap-hit" d="M0 34L0 62"/><path class="pap-line" d="M0 34L0 62"/><path class="pap-ah" d="M0 62L-4.6 53L4.6 53Z"/></g><g class="pap-e" data-from="p53" data-to="p56" data-lab=""><path class="pap-hit" d="M0 100L0 128"/><path class="pap-line" d="M0 100L0 128"/><path class="pap-ah" d="M0 128L-4.6 119L4.6 119Z"/></g><g class="pap-e" data-from="p56" data-to="p54" data-lab="ja"><path class="pap-hit" d="M-104.5 167L-104.5 204.7"/><path class="pap-line" d="M-104.5 167L-104.5 204.7"/><path class="pap-ah" d="M-104.5 204.7L-109.1 195.7L-99.9 195.7Z"/><text class="pap-lab" x="-110.5" y="161" text-anchor="end">ja</text></g><g class="pap-e" data-from="p56" data-to="p55" data-lab="nein"><path class="pap-hit" d="M104.5 167L104.5 204.7"/><path class="pap-line" d="M104.5 167L104.5 204.7"/><path class="pap-ah" d="M104.5 204.7L99.9 195.7L109.1 195.7Z"/><text class="pap-lab" x="110.5" y="161" text-anchor="start">nein</text></g><g class="pap-e" data-from="p54" data-to="p57" data-lab=""><path class="pap-hit" d="M-104.5 256.7L-104.5 272.1L0 272.1L0 296.7"/><path class="pap-line" d="M-104.5 256.7L-104.5 272.1L0 272.1L0 296.7"/><path class="pap-ah" d="M0 296.7L-4.6 287.7L4.6 287.7Z"/></g><g class="pap-e" data-from="p55" data-to="p57" data-lab=""><path class="pap-hit" d="M104.5 242.7L104.5 272.1L0 272.1L0 296.7"/><path class="pap-line" d="M104.5 242.7L104.5 272.1L0 272.1L0 296.7"/><path class="pap-ah" d="M0 296.7L-4.6 287.7L4.6 287.7Z"/></g><g class="pap-n pap-n--start" data-id="start" data-bid="start"><rect class="pap-shape" x="-48" y="0" width="96" height="34" rx="17"/><text class="pap-t" x="0" y="21.6" text-anchor="middle">Start</text></g><g class="pap-n pap-n--io" data-id="p53" data-bid="p53"><path class="pap-shape" d="M-68 62H82L68 100H-82Z"/><text class="pap-t" x="0" y="85.6" text-anchor="middle">drehzahl einlesen</text></g><g class="pap-n pap-n--if" data-id="p56" data-bid="p56"><path class="pap-shape" d="M0 128L104.5 167L0 206L-104.5 167Z"/><text class="pap-t" x="0" y="171.6" text-anchor="middle">drehzahl &gt; 12000?</text></g><g class="pap-n pap-n--io" data-id="p54" data-bid="p54"><path class="pap-shape" d="M-181.5 204.7H-13.5L-27.5 256.7H-195.5Z"/><text class="pap-t" x="-104.5" y="226.8" text-anchor="middle">Ausgabe: Drehzahl zu</text><text class="pap-t" x="-104.5" y="243.8" text-anchor="middle">hoch</text></g><g class="pap-n pap-n--io" data-id="p55" data-bid="p55"><path class="pap-shape" d="M27.5 204.7H195.5L181.5 242.7H13.5Z"/><text class="pap-t" x="104.5" y="228.3" text-anchor="middle">Ausgabe: Drehzahl ok</text></g><g class="pap-n pap-n--end" data-id="p57" data-bid="p57"><rect class="pap-shape" x="-48" y="296.7" width="96" height="34" rx="17"/><text class="pap-t" x="0" y="318.3" text-anchor="middle">Ende</text></g></svg></div></div>
+        </details>
+      </div>
+
+      <div class="k-try">
+        <h3>Welcher Weg läuft?</h3>
+        <div class="k-predict">
+          <p class="k-predict__q">Was gibt das Programm für die Spannung 140 und die Temperatur 20 aus?</p>
+          <div class="k-predict__opts"><button type="button" data-correct>Empfohlener Werkstoff: S235JR</button><button type="button">Empfohlener Werkstoff: C45E</button><button type="button">Eingabe unplausibel</button></div>
+          <div class="k-predict__result"></div>
+          <div class="k-predict__expl" hidden>Der Grenzwert 140 gehört zu „spannung &lt;= 140“. Das Kleiner-gleich entscheidet: Im PAP nimmt der Grenzwert den Weg „ja“. Mit einem einfachen <code>&lt;</code> käme C45E heraus. Setze im Feld 140.1 ein: Jetzt gewinnt der nächste Weg.</div>
+        </div>
+        <pre data-stdin="140&#10;20"><code>spannung = float(input("Maximale Spannung in MPa: "))
+temperatur = float(input("Betriebstemperatur in °C: "))
+
+if spannung &lt;= 0 or temperatur &lt; -50 or temperatur &gt; 600:
+    print("Eingabe unplausibel - bitte Werte prüfen")
+else:
+    if temperatur &gt; 300:
+        if spannung &lt;= 200:
+            werkstoff = "16Mo3 (warmfest)"
+        else:
+            werkstoff = "Sonderwerkstoff - Rücksprache Konstruktion"
+    else:
+        if spannung &lt;= 140:
+            werkstoff = "S235JR"
+        elif spannung &lt;= 220:
+            werkstoff = "C45E"
+        else:
+            werkstoff = "42CrMo4 (vergütet)"
+    print("Empfohlener Werkstoff:", werkstoff)</code></pre>
+        <p class="k-small k-muted">Drück auf „Schritt für Schritt“ und sieh, welche Zeilen Python überspringt. Dann tippe die Testfälle 1 bis 8 aus der Tabelle in die Eingabefelder und vergleiche mit der Spalte „Erwartete Ausgabe“.</p>
+      </div>
+
+      <div class="k-try">
+        <h3>Eingabe prüfen: Grenzwert 600</h3>
+        <div class="k-predict">
+          <p class="k-predict__q">Was gibt das Programm bei der Eingabe 600 aus?</p>
+          <div class="k-predict__opts"><button type="button">unplausibel</button><button type="button" data-correct>ok: 600.0</button><button type="button">ok: 600</button></div>
+          <div class="k-predict__result"></div>
+          <div class="k-predict__expl" hidden>Die Prüfung lautet „größer als 600“. 600 selbst ist also noch erlaubt. Und <code>float()</code> macht aus der Eingabe eine Kommazahl, die als <code>600.0</code> ausgegeben wird.</div>
+        </div>
+        <pre data-stdin="600"><code>temperatur = float(input("Temperatur in °C: "))
+if temperatur &lt; -50 or temperatur &gt; 600:
+    print("unplausibel")
+else:
+    print("ok:", temperatur)</code></pre>
+      </div>
+
+      <div class="k-try">
+        <h3>Die Einrückung entscheidet</h3>
+        <div class="k-predict">
+          <p class="k-predict__q">Beide Programme bekommen die Eingabe −5. Wie oft erscheint „fertig“?</p>
+          <div class="k-predict__opts"><button type="button">Beide Male</button><button type="button" data-correct>Nur im linken (oberen) Programm</button><button type="button">In keinem</button></div>
+          <div class="k-predict__result"></div>
+          <div class="k-predict__expl" hidden>Im ersten Programm steht <code>print("fertig")</code> ganz links: Es kommt <em>nach</em> der Verzweigung und läuft immer. Im zweiten ist es eingerückt und gehört zum <code>else</code>-Zweig: Bei −5 läuft nur der <code>if</code>-Zweig, „fertig“ erscheint nicht. Im PAP ist das der Unterschied, ob die Linien vor oder nach dem Symbol „Ausgabe: fertig“ zusammenlaufen.</div>
+        </div>
+        <pre data-stdin="-5"><code>x = float(input("Wert: "))
+if x &lt; 0:
+    print("negativ")
+else:
+    print("nicht negativ")
+print("fertig")</code></pre>
+        <pre data-stdin="-5"><code>x = float(input("Wert: "))
+if x &lt; 0:
+    print("negativ")
+else:
+    print("nicht negativ")
+    print("fertig")</code></pre>
+      </div>
+
+      <div class="k-try">
+        <h3>elif oder drei if?</h3>
+        <div class="k-predict">
+          <p class="k-predict__q">Was gibt das mittlere Programm für S = 1.6 aus?</p>
+          <div class="k-predict__opts"><button type="button">sicher</button><button type="button" data-correct>sicher, knapp (zwei Zeilen)</button><button type="button">sicher, knapp, Versagen</button></div>
+          <div class="k-predict__result"></div>
+          <div class="k-predict__expl" hidden>Jedes alleinstehende <code>if</code> wird für sich geprüft. 1.6 ist ≥ 1.5 <em>und</em> ≥ 1.0, also laufen beide. Das <code>else</code> gehört nur zum letzten <code>if</code>. Mit <code>elif</code> endet die Prüfung beim ersten Treffer. Im PAP hängt die zweite Raute im Weg „nein“ der ersten: Wer „ja“ nimmt, kommt an ihr gar nicht vorbei.</div>
+        </div>
+        <p class="k-small k-muted">Drei Varianten mit derselben Eingabe 1.6. Oben verschachtelt, in der Mitte drei <code class="k-i">if</code> (Fehler), unten mit <code class="k-i">elif</code>.</p>
+        <pre data-stdin="1.6"><code>s = float(input("Sicherheitsfaktor S: "))
+if s &gt;= 1.5:
+    print("sicher")
+else:
+    if s &gt;= 1.0:
+        print("knapp")
+    else:
+        print("Versagen")</code></pre>
+        <pre data-stdin="1.6"><code>s = float(input("Sicherheitsfaktor S: "))
+if s &gt;= 1.5:
+    print("sicher")
+if s &gt;= 1.0:
+    print("knapp")
+else:
+    print("Versagen")</code></pre>
+        <pre data-stdin="1.6"><code>s = float(input("Sicherheitsfaktor S: "))
+if s &gt;= 1.5:
+    print("sicher")
+elif s &gt;= 1.0:
+    print("knapp")
+else:
+    print("Versagen")</code></pre>
+      </div>
+
+      <div class="k-try">
+        <h3>Ein Zweig, der nichts festlegt</h3>
+        <div class="k-predict">
+          <p class="k-predict__q">Das Programm bekommt 20 °C. Was passiert?</p>
+          <div class="k-predict__opts"><button type="button">Werkstoff: None</button><button type="button" data-correct>Fehlermeldung (NameError)</button><button type="button">Werkstoff: 16Mo3</button></div>
+          <div class="k-predict__result"></div>
+          <div class="k-predict__expl" hidden>Die Variable <code>werkstoff</code> wird nur im Zweig „ja“ angelegt. Bei 20 °C läuft er nicht, also gibt es <code>werkstoff</code> nicht, und <code>print</code> bricht mit einem <code>NameError</code> ab. Im PAP fehlt im Weg „nein“ ein Rechteck. Faustregel: Jeder Zweig muss alle Variablen festlegen, die danach gebraucht werden.</div>
+        </div>
+        <pre data-stdin="20"><code>temperatur = float(input("Temperatur in °C: "))
+if temperatur &gt; 300:
+    werkstoff = "16Mo3"
+print("Werkstoff:", werkstoff)</code></pre>
+      </div>
+      </section>
+
+      <!-- 4 ───────────── SELBSTCHECK ───────────── -->
+      <section class="k-section" id="selbstcheck" data-section="selbstcheck" aria-labelledby="h-sc">
+        <h2 class="k-section__title" id="h-sc"><span class="k-section__num" aria-hidden="true">4</span> Selbstcheck</h2>
+
+        <p>Acht Quizaufgaben im Stil der Probeklausur (23 Punkte) und eine Code-Schreib-Aufgabe (6 Punkte, T9) mit gegebenem Programmablaufplan. Plane etwa 15 Minuten für das Quiz und 10 Minuten für T9 ein, ohne Hilfsmittel. Quiz-Punkte gibt es für den ersten Versuch; danach darfst du es nochmal probieren.</p>
+
+      <div class="k-quiz" data-quiz="v05">
+
+        <div class="k-q" data-type="output" data-points="2" data-id="t1" data-answer="1">
+          <div class="k-q__head"><span class="k-q__title">T1 · Programmausgabe</span><span class="k-q__pts">2 Punkte</span></div>
+          <div class="k-q__text">Was gibt das Programm aus?<pre class="k-code" data-run="nach-antwort"><code>p = 5
+if p &gt; 10:
+    stufe = 3
+elif p &gt; 5:
+    stufe = 2
+else:
+    stufe = 1
+print(stufe)</code></pre></div>
+          <div class="k-q__expl">p = 5 ist nicht größer als 10 und nicht größer als 5 (5 &gt; 5 ist falsch). Es läuft das <code>else</code>. Ausgabe: <code>1</code>.</div>
+        </div>
+
+        <div class="k-q" data-type="mc" data-points="2" data-id="t2">
+          <div class="k-q__head"><span class="k-q__title">T2 · Algorithmus</span><span class="k-q__pts">2 Punkte</span></div>
+          <div class="k-q__text">Welche Aussage gehört <strong>nicht</strong> zu den Eigenschaften eines Algorithmus?</div>
+          <ul class="k-q__options">
+            <li>Er ist eindeutig: Jeder Schritt ist genau festgelegt.</li>
+            <li>Er ist endlich: Er hört nach endlich vielen Schritten auf.</li>
+            <li data-correct>Er liefert immer die schnellstmögliche Lösung.</li>
+            <li>Er ist ausführbar: Jeder Schritt ist wirklich machbar.</li>
+          </ul>
+          <div class="k-q__expl">Ein Algorithmus muss eindeutig, ausführbar, endlich und allgemein sein. Ob er auch der schnellste ist, ist eine ganz andere Frage (Effizienz), keine Eigenschaft der Definition.</div>
+        </div>
+
+        <div class="k-q" data-type="mc" data-points="3" data-id="t3">
+          <div class="k-q__head"><span class="k-q__title">T3 · PAP lesen</span><span class="k-q__pts">3 Punkte</span></div>
+          <div class="k-q__text">Welches Programm setzt diesen Programmablaufplan um?
+            <div class="pap-wrap"><svg class="pap" xmlns="http://www.w3.org/2000/svg" viewBox="-201 -14 408 425" role="img" aria-label="Programmablaufplan: Start, dann t einlesen (°C), dann Verzweigung „t &gt; 90?“: bei ja Ausgabe: Kühlung an; bei nein Ausgabe: Kühlung aus, dann Ausgabe: Prüfung beendet, dann Ende." style="--pap-min:318px;--pap-max:408px"><g class="pap-e" data-from="start" data-to="p59" data-lab=""><path class="pap-hit" d="M0 34L0 62"/><path class="pap-line" d="M0 34L0 62"/><path class="pap-ah" d="M0 62L-4.6 53L4.6 53Z"/></g><g class="pap-e" data-from="p59" data-to="p62" data-lab=""><path class="pap-hit" d="M0 100L0 128"/><path class="pap-line" d="M0 100L0 128"/><path class="pap-ah" d="M0 128L-4.6 119L4.6 119Z"/></g><g class="pap-e" data-from="p62" data-to="p60" data-lab="ja"><path class="pap-hit" d="M-68 167L-99 167L-99 205.4"/><path class="pap-line" d="M-68 167L-99 167L-99 205.4"/><path class="pap-ah" d="M-99 205.4L-103.6 196.4L-94.4 196.4Z"/><text class="pap-lab" x="-74" y="161" text-anchor="end">ja</text></g><g class="pap-e" data-from="p62" data-to="p61" data-lab="nein"><path class="pap-hit" d="M68 167L102 167L102 205.4"/><path class="pap-line" d="M68 167L102 167L102 205.4"/><path class="pap-ah" d="M102 205.4L97.4 196.4L106.6 196.4Z"/><text class="pap-lab" x="74" y="161" text-anchor="start">nein</text></g><g class="pap-e" data-from="p60" data-to="p63" data-lab=""><path class="pap-hit" d="M-99 243.4L-99 258.8L0 258.8L0 283.4"/><path class="pap-line" d="M-99 243.4L-99 258.8L0 258.8L0 283.4"/><path class="pap-ah" d="M0 283.4L-4.6 274.4L4.6 274.4Z"/></g><g class="pap-e" data-from="p61" data-to="p63" data-lab=""><path class="pap-hit" d="M102 243.4L102 258.8L0 258.8L0 283.4"/><path class="pap-line" d="M102 243.4L102 258.8L0 258.8L0 283.4"/><path class="pap-ah" d="M0 283.4L-4.6 274.4L4.6 274.4Z"/></g><g class="pap-e" data-from="p63" data-to="p64" data-lab=""><path class="pap-hit" d="M0 335.4L0 363.4"/><path class="pap-line" d="M0 335.4L0 363.4"/><path class="pap-ah" d="M0 363.4L-4.6 354.4L4.6 354.4Z"/></g><g class="pap-n pap-n--start" data-id="start" data-bid="start"><rect class="pap-shape" x="-48" y="0" width="96" height="34" rx="17"/><text class="pap-t" x="0" y="21.6" text-anchor="middle">Start</text></g><g class="pap-n pap-n--io" data-id="p59" data-bid="p59"><path class="pap-shape" d="M-61.5 62H75.5L61.5 100H-75.5Z"/><text class="pap-t" x="0" y="85.6" text-anchor="middle">t einlesen (°C)</text></g><g class="pap-n pap-n--if" data-id="p62" data-bid="p62"><path class="pap-shape" d="M0 128L68 167L0 206L-68 167Z"/><text class="pap-t" x="0" y="171.6" text-anchor="middle">t &gt; 90?</text></g><g class="pap-n pap-n--io" data-id="p60" data-bid="p60"><path class="pap-shape" d="M-173 205.4H-11L-25 243.4H-187Z"/><text class="pap-t" x="-99" y="229" text-anchor="middle">Ausgabe: Kühlung an</text></g><g class="pap-n pap-n--io" data-id="p61" data-bid="p61"><path class="pap-shape" d="M25 205.4H193L179 243.4H11Z"/><text class="pap-t" x="102" y="229" text-anchor="middle">Ausgabe: Kühlung aus</text></g><g class="pap-n pap-n--io" data-id="p63" data-bid="p63"><path class="pap-shape" d="M-64.5 283.4H78.5L64.5 335.4H-78.5Z"/><text class="pap-t" x="0" y="305.5" text-anchor="middle">Ausgabe: Prüfung</text><text class="pap-t" x="0" y="322.5" text-anchor="middle">beendet</text></g><g class="pap-n pap-n--end" data-id="p64" data-bid="p64"><rect class="pap-shape" x="-48" y="363.4" width="96" height="34" rx="17"/><text class="pap-t" x="0" y="385" text-anchor="middle">Ende</text></g></svg></div>
+          </div>
+          <ul class="k-q__options">
+            <li data-correct><code class="v05-ml">t = float(input("t: "))
+if t > 90:
+    print("Kühlung an")
+else:
+    print("Kühlung aus")
+print("Prüfung beendet")</code></li>
+            <li><code class="v05-ml">t = float(input("t: "))
+if t > 90:
+    print("Kühlung an")
+else:
+    print("Kühlung aus")
+    print("Prüfung beendet")</code></li>
+            <li><code class="v05-ml">t = float(input("t: "))
+if t > 90:
+    print("Kühlung an")
+print("Kühlung aus")
+print("Prüfung beendet")</code></li>
+            <li><code class="v05-ml">t = float(input("t: "))
+if t &lt; 90:
+    print("Kühlung an")
+else:
+    print("Kühlung aus")
+print("Prüfung beendet")</code></li>
+          </ul>
+          <div class="k-q__expl">Die Linien laufen <em>vor</em> „Ausgabe: Prüfung beendet“ wieder zusammen. Das Symbol kommt also nach der Verzweigung: im Code ganz links. In Variante 2 gehört es zum <code>else</code>, in Variante 3 fehlt das <code>else</code> (es gäbe immer „Kühlung aus“), in Variante 4 sind die Seiten der Bedingung vertauscht.</div>
+        </div>
+
+        <div class="k-q" data-type="num" data-points="3" data-id="t4" data-answer="6" data-tol="0">
+          <div class="k-q__head"><span class="k-q__title">T4 · Testfälle je Pfad</span><span class="k-q__pts">3 Punkte</span></div>
+          <div class="k-q__text">Wie viele Testfälle brauchst du mindestens, damit im Werkstoff-PAP aus Abschnitt 2 jeder Pfad von Start bis Ende einmal durchlaufen wird?</div>
+          <div class="k-q__expl">Sechs: unplausible Eingabe (1), warmer Bereich mit Spannung ≤ 200 (2) und &gt; 200 (3), kühler Bereich mit den drei Wegen der Raute-Kette (4, 5, 6). Als Faustregel: Anzahl der Rauten plus eins, hier 5 + 1.</div>
+        </div>
+
+        <div class="k-q" data-type="mc" data-points="4" data-id="t5">
+          <div class="k-q__head"><span class="k-q__title">T5 · Aussagen zum PAP (mehrere richtig)</span><span class="k-q__pts">4 Punkte</span></div>
+          <div class="k-q__text">Welche Aussagen sind richtig? Alle richtigen ankreuzen.</div>
+          <ul class="k-q__options">
+            <li data-correct>Ein PAP hat genau einen Start und mindestens ein Ende.</li>
+            <li data-correct>Aus einer Raute führen zwei Ausgänge, die mit „ja“ und „nein“ beschriftet sind.</li>
+            <li>Ein Eingabeschritt wie „spannung einlesen“ wird als Rechteck gezeichnet.</li>
+            <li>Der Text in den Symbolen muss gültiger Python-Code sein.</li>
+            <li data-correct>Grenzwerte und Annahmen gehören schon in die Problemanalyse, bevor der PAP gezeichnet wird.</li>
+          </ul>
+          <div class="k-q__expl">Eingabe und Ausgabe zeichnest du als Parallelogramm, das Rechteck ist für Rechnungen und Zuweisungen. Der Text im Symbol darf in Worten oder Pseudocode stehen, er muss nur eindeutig sein. Die anderen drei Aussagen stimmen.</div>
+        </div>
+
+        <div class="k-q" data-type="output" data-points="3" data-id="t6" data-answer="B">
+          <div class="k-q__head"><span class="k-q__title">T6 · Programmausgabe</span><span class="k-q__pts">3 Punkte</span></div>
+          <div class="k-q__text">Was gibt das Programm aus?<pre class="k-code" data-run="nach-antwort"><code>t = 350
+s = 250
+if t &gt; 300:
+    if s &lt;= 200:
+        w = "A"
+    else:
+        w = "B"
+else:
+    w = "C"
+print(w)</code></pre></div>
+          <div class="k-q__expl">t = 350 ist größer als 300: Es läuft der Weg „ja“ der äußeren Raute. Dort ist s = 250 nicht ≤ 200, also läuft der <code>else</code> der inneren. Ausgabe: <code>B</code>.</div>
+        </div>
+
+        <div class="k-q" data-type="mc" data-points="3" data-id="t7">
+          <div class="k-q__head"><span class="k-q__title">T7 · Grenzfall finden</span><span class="k-q__pts">3 Punkte</span></div>
+          <div class="k-q__text">Im PAP steht die Raute „spannung ≤ 140?“. Ein Programm hat versehentlich <code>spannung &lt; 140</code> geschrieben. Mit welchem Testwert für die Spannung (bei 20 °C) fällt der Fehler auf?</div>
+          <ul class="k-q__options">
+            <li>100</li>
+            <li data-correct>140</li>
+            <li>180</li>
+            <li>300</li>
+          </ul>
+          <div class="k-q__expl">Nur bei genau 140 gehen <code>&lt;=</code> und <code>&lt;</code> verschiedene Wege. 100 liegt weit darunter und 180, 300 weit darüber: Dort liefern beide Schreibweisen dasselbe. Darum gehören Grenzwerte als eigene Testfälle in die Tabelle.</div>
+        </div>
+
+        <div class="k-q" data-type="mc" data-points="3" data-id="t8">
+          <div class="k-q__head"><span class="k-q__title">T8 · KI-Code freigeben?</span><span class="k-q__pts">3 Punkte</span></div>
+          <div class="k-q__text">Die KI soll diesen Programmablaufplan umsetzen und liefert:
+            <div class="pap-wrap"><svg class="pap" xmlns="http://www.w3.org/2000/svg" viewBox="-182 -14 396 359" role="img" aria-label="Programmablaufplan: Start, dann d einlesen (mm), dann Verzweigung „d ≤ 0?“: bei ja Ausgabe: Eingabe unplausibel; bei nein Ausgabe: Fläche = π · d² / 4, dann Ende." style="--pap-min:309px;--pap-max:396px"><g class="pap-e" data-from="start" data-to="p66" data-lab=""><path class="pap-hit" d="M0 34L0 62"/><path class="pap-line" d="M0 34L0 62"/><path class="pap-ah" d="M0 62L-4.6 53L4.6 53Z"/></g><g class="pap-e" data-from="p66" data-to="p69" data-lab=""><path class="pap-hit" d="M0 100L0 128"/><path class="pap-line" d="M0 100L0 128"/><path class="pap-ah" d="M0 128L-4.6 119L4.6 119Z"/></g><g class="pap-e" data-from="p69" data-to="p67" data-lab="ja"><path class="pap-hit" d="M-68 167L-89.5 167L-89.5 205.4"/><path class="pap-line" d="M-68 167L-89.5 167L-89.5 205.4"/><path class="pap-ah" d="M-89.5 205.4L-94.1 196.4L-84.9 196.4Z"/><text class="pap-lab" x="-74" y="161" text-anchor="end">ja</text></g><g class="pap-e" data-from="p69" data-to="p68" data-lab="nein"><path class="pap-hit" d="M68 167L105.5 167L105.5 205.4"/><path class="pap-line" d="M68 167L105.5 167L105.5 205.4"/><path class="pap-ah" d="M105.5 205.4L100.9 196.4L110.1 196.4Z"/><text class="pap-lab" x="74" y="161" text-anchor="start">nein</text></g><g class="pap-e" data-from="p67" data-to="p70" data-lab=""><path class="pap-hit" d="M-89.5 257.4L-89.5 272.8L0 272.8L0 297.4"/><path class="pap-line" d="M-89.5 257.4L-89.5 272.8L0 272.8L0 297.4"/><path class="pap-ah" d="M0 297.4L-4.6 288.4L4.6 288.4Z"/></g><g class="pap-e" data-from="p68" data-to="p70" data-lab=""><path class="pap-hit" d="M105.5 257.4L105.5 272.8L0 272.8L0 297.4"/><path class="pap-line" d="M105.5 257.4L105.5 272.8L0 272.8L0 297.4"/><path class="pap-ah" d="M0 297.4L-4.6 288.4L4.6 288.4Z"/></g><g class="pap-n pap-n--start" data-id="start" data-bid="start"><rect class="pap-shape" x="-48" y="0" width="96" height="34" rx="17"/><text class="pap-t" x="0" y="21.6" text-anchor="middle">Start</text></g><g class="pap-n pap-n--io" data-id="p66" data-bid="p66"><path class="pap-shape" d="M-61.5 62H75.5L61.5 100H-75.5Z"/><text class="pap-t" x="0" y="85.6" text-anchor="middle">d einlesen (mm)</text></g><g class="pap-n pap-n--if" data-id="p69" data-bid="p69"><path class="pap-shape" d="M0 128L68 167L0 206L-68 167Z"/><text class="pap-t" x="0" y="171.6" text-anchor="middle">d ≤ 0?</text></g><g class="pap-n pap-n--io" data-id="p67" data-bid="p67"><path class="pap-shape" d="M-154 205.4H-11L-25 257.4H-168Z"/><text class="pap-t" x="-89.5" y="227.5" text-anchor="middle">Ausgabe: Eingabe</text><text class="pap-t" x="-89.5" y="244.5" text-anchor="middle">unplausibel</text></g><g class="pap-n pap-n--io" data-id="p68" data-bid="p68"><path class="pap-shape" d="M25 205.4H200L186 257.4H11Z"/><text class="pap-t" x="105.5" y="227.5" text-anchor="middle">Ausgabe: Fläche = π ·</text><text class="pap-t" x="105.5" y="244.5" text-anchor="middle">d² / 4</text></g><g class="pap-n pap-n--end" data-id="p70" data-bid="p70"><rect class="pap-shape" x="-48" y="297.4" width="96" height="34" rx="17"/><text class="pap-t" x="0" y="319" text-anchor="middle">Ende</text></g></svg></div>
+            <pre class="k-code" data-run="nach-antwort" data-stdin="0"><code>import math
+d = float(input("Durchmesser in mm: "))
+if d &lt; 0:
+    print("Eingabe unplausibel")
+else:
+    print(f"Fläche: {math.pi * d ** 2 / 4:.2f} mm²")</code></pre>Würdest du das freigeben?</div>
+          <ul class="k-q__options">
+            <li>Ja, das Programm läuft ohne Fehler und die Formel stimmt.</li>
+            <li data-correct>Nein, bei <code>d = 0</code> gibt das Programm „Fläche: 0.00 mm²“ aus, der PAP verlangt aber „Eingabe unplausibel“ (Grenzfall: <code>&lt;=</code> statt <code>&lt;</code>).</li>
+            <li>Nein, ein <code>else</code> ist bei einer Raute mit „ja“ und „nein“ nicht erlaubt.</li>
+            <li>Nein, <code>math.pi</code> darf man in einem f-String nicht benutzen.</li>
+          </ul>
+          <div class="k-q__expl">Das Programm läuft, aber es entscheidet an der Grenze anders als der PAP: <code>d &lt; 0</code> lässt 0 durch. Richtig ist <code>d &lt;= 0</code>. Solche Fehler findest du nur, wenn du Grenzwerte testest. Lass dir von der KI den Code zeigen, aber vergleiche ihn Pfad für Pfad mit dem PAP.</div>
+        </div>
+
+        <div class="k-score" data-score aria-live="polite"></div>
+      </div>
+
+        <h3>Code schreiben im Klausurstil: PAP gegeben</h3>
+        <p class="k-small k-muted">Wie in der Klausur: erst von Hand schreiben, ohne Ausführen und ohne Auto-Vervollständigung. Dann abgeben, die Tests laufen lassen und dich selbst nach dem Punkteschema bewerten. Richtzeit 10 Minuten.</p>
+      <div class="a-task" data-a="klausur" data-id="sc-klausur" data-mode="programm" data-minutes="10">
+        <div class="a-task__head"><span class="a-task__title">T9 · Strömungsart</span><span class="a-pts">6 Punkte</span></div>
+        <div class="a-task__text">
+          <p>Ob eine Rohrströmung laminar oder turbulent ist, hängt von der Reynolds-Zahl <em>Re</em> ab (hier vereinfachte Lehr-Grenzen). Setze diesen Programmablaufplan in ein Python-Programm um.</p>
+          <div class="pap-wrap"><svg class="pap" xmlns="http://www.w3.org/2000/svg" viewBox="-182 -14 761 493" role="img" aria-label="Programmablaufplan: Start, dann Re einlesen, dann Verzweigung „Re ≤ 0?“: bei ja Ausgabe: Eingabe unplausibel; bei nein Verzweigung „Re &lt; 2300?“: bei ja Ausgabe: Strömung: laminar; bei nein Verzweigung „Re ≤ 4000?“: bei ja Ausgabe: Strömung: Übergangsbereich; bei nein Ausgabe: Strömung: turbulent, dann Ende." style="--pap-min:594px;--pap-max:761px"><g class="pap-e" data-from="start" data-to="p72" data-lab=""><path class="pap-hit" d="M0 34L0 62"/><path class="pap-line" d="M0 34L0 62"/><path class="pap-ah" d="M0 62L-4.6 53L4.6 53Z"/></g><g class="pap-e" data-from="p72" data-to="p79" data-lab=""><path class="pap-hit" d="M0 100L0 128"/><path class="pap-line" d="M0 100L0 128"/><path class="pap-ah" d="M0 128L-4.6 119L4.6 119Z"/></g><g class="pap-e" data-from="p79" data-to="p73" data-lab="ja"><path class="pap-hit" d="M-68 167L-89.5 167L-89.5 205.4"/><path class="pap-line" d="M-68 167L-89.5 167L-89.5 205.4"/><path class="pap-ah" d="M-89.5 205.4L-94.1 196.4L-84.9 196.4Z"/><text class="pap-lab" x="-74" y="161" text-anchor="end">ja</text></g><g class="pap-e" data-from="p79" data-to="p78" data-lab="nein"><path class="pap-hit" d="M68 167L192 167L192 195"/><path class="pap-line" d="M68 167L192 167L192 195"/><path class="pap-ah" d="M192 195L187.4 186L196.6 186Z"/><text class="pap-lab" x="74" y="161" text-anchor="start">nein</text></g><g class="pap-e" data-from="p78" data-to="p74" data-lab="ja"><path class="pap-hit" d="M124 234L96 234L96 272.4"/><path class="pap-line" d="M124 234L96 234L96 272.4"/><path class="pap-ah" d="M96 272.4L91.4 263.4L100.6 263.4Z"/><text class="pap-lab" x="118" y="228" text-anchor="end">ja</text></g><g class="pap-e" data-from="p78" data-to="p77" data-lab="nein"><path class="pap-hit" d="M260 234L384 234L384 262"/><path class="pap-line" d="M260 234L384 234L384 262"/><path class="pap-ah" d="M384 262L379.4 253L388.6 253Z"/><text class="pap-lab" x="266" y="228" text-anchor="start">nein</text></g><g class="pap-e" data-from="p77" data-to="p75" data-lab="ja"><path class="pap-hit" d="M316 301L288 301L288 339.4"/><path class="pap-line" d="M316 301L288 301L288 339.4"/><path class="pap-ah" d="M288 339.4L283.4 330.4L292.6 330.4Z"/><text class="pap-lab" x="310" y="295" text-anchor="end">ja</text></g><g class="pap-e" data-from="p77" data-to="p76" data-lab="nein"><path class="pap-hit" d="M452 301L480 301L480 339.4"/><path class="pap-line" d="M452 301L480 301L480 339.4"/><path class="pap-ah" d="M480 339.4L475.4 330.4L484.6 330.4Z"/><text class="pap-lab" x="458" y="295" text-anchor="start">nein</text></g><g class="pap-e" data-from="p73" data-to="p80" data-lab=""><path class="pap-hit" d="M-89.5 257.4L-89.5 406.8L0 406.8L0 431.4"/><path class="pap-line" d="M-89.5 257.4L-89.5 406.8L0 406.8L0 431.4"/><path class="pap-ah" d="M0 431.4L-4.6 422.4L4.6 422.4Z"/></g><g class="pap-e" data-from="p74" data-to="p80" data-lab=""><path class="pap-hit" d="M96 324.4L96 406.8L0 406.8L0 431.4"/><path class="pap-line" d="M96 324.4L96 406.8L0 406.8L0 431.4"/><path class="pap-ah" d="M0 431.4L-4.6 422.4L4.6 422.4Z"/></g><g class="pap-e" data-from="p75" data-to="p80" data-lab=""><path class="pap-hit" d="M288 391.4L288 406.8L0 406.8L0 431.4"/><path class="pap-line" d="M288 391.4L288 406.8L0 406.8L0 431.4"/><path class="pap-ah" d="M0 431.4L-4.6 422.4L4.6 422.4Z"/></g><g class="pap-e" data-from="p76" data-to="p80" data-lab=""><path class="pap-hit" d="M480 391.4L480 406.8L0 406.8L0 431.4"/><path class="pap-line" d="M480 391.4L480 406.8L0 406.8L0 431.4"/><path class="pap-ah" d="M0 431.4L-4.6 422.4L4.6 422.4Z"/></g><g class="pap-n pap-n--start" data-id="start" data-bid="start"><rect class="pap-shape" x="-48" y="0" width="96" height="34" rx="17"/><text class="pap-t" x="0" y="21.6" text-anchor="middle">Start</text></g><g class="pap-n pap-n--io" data-id="p72" data-bid="p72"><path class="pap-shape" d="M-49 62H63L49 100H-63Z"/><text class="pap-t" x="0" y="85.6" text-anchor="middle">Re einlesen</text></g><g class="pap-n pap-n--if" data-id="p79" data-bid="p79"><path class="pap-shape" d="M0 128L68 167L0 206L-68 167Z"/><text class="pap-t" x="0" y="171.6" text-anchor="middle">Re ≤ 0?</text></g><g class="pap-n pap-n--io" data-id="p73" data-bid="p73"><path class="pap-shape" d="M-154 205.4H-11L-25 257.4H-168Z"/><text class="pap-t" x="-89.5" y="227.5" text-anchor="middle">Ausgabe: Eingabe</text><text class="pap-t" x="-89.5" y="244.5" text-anchor="middle">unplausibel</text></g><g class="pap-n pap-n--if" data-id="p78" data-bid="p78"><path class="pap-shape" d="M192 195L260 234L192 273L124 234Z"/><text class="pap-t" x="192" y="238.6" text-anchor="middle">Re &lt; 2300?</text></g><g class="pap-n pap-n--io" data-id="p74" data-bid="p74"><path class="pap-shape" d="M25 272.4H181L167 324.4H11Z"/><text class="pap-t" x="96" y="294.5" text-anchor="middle">Ausgabe: Strömung:</text><text class="pap-t" x="96" y="311.5" text-anchor="middle">laminar</text></g><g class="pap-n pap-n--if" data-id="p77" data-bid="p77"><path class="pap-shape" d="M384 262L452 301L384 340L316 301Z"/><text class="pap-t" x="384" y="305.6" text-anchor="middle">Re ≤ 4000?</text></g><g class="pap-n pap-n--io" data-id="p75" data-bid="p75"><path class="pap-shape" d="M217 339.4H373L359 391.4H203Z"/><text class="pap-t" x="288" y="361.5" text-anchor="middle">Ausgabe: Strömung:</text><text class="pap-t" x="288" y="378.5" text-anchor="middle">Übergangsbereich</text></g><g class="pap-n pap-n--io" data-id="p76" data-bid="p76"><path class="pap-shape" d="M409 339.4H565L551 391.4H395Z"/><text class="pap-t" x="480" y="361.5" text-anchor="middle">Ausgabe: Strömung:</text><text class="pap-t" x="480" y="378.5" text-anchor="middle">turbulent</text></g><g class="pap-n pap-n--end" data-id="p80" data-bid="p80"><rect class="pap-shape" x="-48" y="431.4" width="96" height="34" rx="17"/><text class="pap-t" x="0" y="453" text-anchor="middle">Ende</text></g></svg></div>
+          <div class="a-spec"><strong>Ausgaben genau so:</strong><pre data-run="no">Eingabe unplausibel
+Strömung: laminar
+Strömung: Übergangsbereich
+Strömung: turbulent</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V05" data-assist="off" aria-label="Python-Code von Hand schreiben, ohne Ausführen"></textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _soll(re_zahl):
+    if re_zahl <= 0:
+        return "Eingabe unplausibel"
+    if re_zahl < 2300:
+        return "Strömung: laminar"
+    if re_zahl <= 4000:
+        return "Strömung: Übergangsbereich"
+    return "Strömung: turbulent"
+
+def _pruefe(w):
+    soll = _soll(w)
+    z = zeilen(run_program([str(w)]))
+    gefunden = [l for l in z if l.startswith("Strömung") or "unplausibel" in l]
+    assert gefunden == [soll], "Bei Re = %s wird genau die Zeile %r erwartet. Dein Programm gibt aus: %r" % (w, soll, z)
+
+def test_laminar():
+    """Re = 1200: laminar"""
+    _pruefe(1200)
+
+def test_uebergang():
+    """Re = 3000: Übergangsbereich"""
+    _pruefe(3000)
+
+def test_turbulent():
+    """Re = 50000: turbulent"""
+    _pruefe(50000)
+
+def test_unplausibel():
+    """Re = 0 und Re = -5: Eingabe unplausibel"""
+    _pruefe(0)
+    _pruefe(-5)
+
+def test_grenze_2300():
+    """Grenzfall Re = 2300: schon Übergangsbereich"""
+    _pruefe(2300)
+    _pruefe(2299.9)
+
+def test_grenze_4000():
+    """Grenzfall Re = 4000: noch Übergangsbereich"""
+    _pruefe(4000)
+    _pruefe(4000.1)
+        </script>
+        <script type="text/x-python" data-role="solution">
+re_zahl = float(input("Reynolds-Zahl: "))
+
+if re_zahl <= 0:
+    print("Eingabe unplausibel")
+elif re_zahl < 2300:
+    print("Strömung: laminar")
+elif re_zahl <= 4000:
+    print("Strömung: Übergangsbereich")
+else:
+    print("Strömung: turbulent")
+        </script>
+        <script type="application/json" data-role="scheme">[
+{"p":1,"t":"Re wird mit input() eingelesen und mit float() in eine Zahl umgewandelt"},
+{"p":1,"t":"Plausibilitätsprüfung Re ≤ 0 als erste Raute, mit der Ausgabe „Eingabe unplausibel“"},
+{"p":1,"t":"Die weiteren Rauten hängen im Weg „nein“ (else oder elif-Kette), nicht als lose if-Anweisungen"},
+{"p":1,"t":"Kette mit den Grenzen 2300 und 4000 (if/elif/else)"},
+{"p":1,"t":"Grenzwerte richtig: unter 2300 laminar, 2300 bis einschließlich 4000 Übergangsbereich"},
+{"p":1,"t":"Ausgaben mit genau dem vorgegebenen Text"}
+]</script>
+      </div>
+      </section>
+
+      <!-- 5 ───────────── DEEP DIVE ───────────── -->
+      <section class="k-section" id="deepdive" data-section="deepdive" aria-labelledby="h-dd">
+        <h2 class="k-section__title" id="h-dd"><span class="k-section__num" aria-hidden="true">5</span> Deep Dive <span class="k-muted">(freiwillig)</span></h2>
+
+        <p>Für Neugierige. Nichts davon kommt in der Klausur dran.</p>
+
+      <details class="k-deep">
+        <summary>Sprünge und strukturierte Programmierung</summary>
+        <div class="k-deep__body">
+          <p>Der PAP erlaubt Linien, die an beliebige Stellen springen. Frühe Programme sprangen genauso mit „gehe zu Zeile 120“ hin und her. Das Ergebnis nannte man Spaghetti-Code: Niemand konnte mehr nachvollziehen, wie das Programm an eine Stelle gekommen war. Edsger Dijkstra schrieb 1968 den berühmten Brief „Go To Statement Considered Harmful“. Kurz darauf zeigten Böhm und Jacopini, dass drei Bausteine genügen, um <em>jeden</em> Algorithmus zu schreiben: <strong>Sequenz, Verzweigung und Wiederholung</strong>. Ein gut gezeichneter PAP nutzt nur diese drei: Symbole untereinander, Rauten, deren Zweige wieder zusammenlaufen, und Rücksprünge, die immer zu einer Raute zurückführen (Schleife). Dann lässt er sich Zeile für Zeile in Python übersetzen.</p>
+        </div>
+      </details>
+
+      <details class="k-deep">
+        <summary>Wie viele Testfälle braucht ein Programm mindestens? Die zyklomatische Komplexität</summary>
+        <div class="k-deep__body">
+          <p>Eine Raute teilt den Ablauf in zwei Wege. Wenn du die Rauten im PAP zählst und eins addierst, erhältst du die Zahl der unabhängigen Pfade durch das Programm: die <em>zyklomatische Komplexität</em> nach McCabe. Der Werkstoff-PAP hat fünf Rauten (Plausibilität, Temperatur, Spannung ≤ 200 sowie zwei in der Kette), also sechs Pfade und damit mindestens sechs Testfälle. Das passt zu Aufgabe T4. Je mehr Rauten, desto mehr Testaufwand: ein weiterer Grund, Verschachtelung klein zu halten.</p>
+        </div>
+      </details>
+
+      <details class="k-deep">
+        <summary>Schleifen im PAP: ein Ausblick auf V06</summary>
+        <div class="k-deep__body">
+          <p class="k-small k-muted">Hinweis: Dieses Beispiel nutzt <code class="k-i">while</code> (Schleifen, kommt in V06). Du musst es jetzt nicht verstehen, nur ausführen: Es zeigt, wie ein <strong>Rücksprung</strong> im PAP zu Python wird.</p>
+          <p>Im PAP führt eine Linie von unten zurück zur Raute: <em>solange</em> T größer als 25 ist, wird der Wert um 10 Prozent kleiner (Abkühlen). Erst wenn die Frage mit „nein“ beantwortet wird, geht es zum Ende. In Python ist der eingerückte Block unter <code class="k-i">while</code> genau das, was im PAP zwischen Raute und Rücksprung liegt.</p>
+          <div class="v05-pair">
+            <figure class="v05-fig">
+              <div class="pap-wrap"><svg class="pap" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 330 330" role="img" aria-label="Programmablaufplan mit Rücksprung: Start, T = 100, Raute T größer 25. Bei ja: T = T mal 0,9 und Ausgabe T, dann Linie zurück zur Raute. Bei nein: Ende" style="--pap-min:260px;--pap-max:330px">
+  <rect class="pap-shape" x="95" y="6" width="100" height="30" rx="15"/><text x="145" y="26" text-anchor="middle">Start</text>
+  <path class="pap-line" d="M145 36 V60"/><path class="pap-ah" d="M145 68 L140.4 59 L149.6 59 Z"/>
+  <rect class="pap-shape" x="85" y="68" width="120" height="34"/><text x="145" y="90" text-anchor="middle">T = 100,0</text>
+  <path class="pap-line" d="M145 102 V126"/><path class="pap-ah" d="M145 134 L140.4 125 L149.6 125 Z"/>
+  <path class="pap-shape" d="M145 134 L215 174 L145 214 L75 174 Z"/><text x="145" y="179" text-anchor="middle">T &gt; 25?</text>
+  <path class="pap-line" d="M145 214 V244"/><path class="pap-ah" d="M145 252 L140.4 243 L149.6 243 Z"/>
+  <text class="pap-lab" x="153" y="236">ja</text>
+  <rect class="pap-shape" x="70" y="252" width="150" height="50"/><text x="145" y="273" text-anchor="middle">T = T · 0,9</text><text x="145" y="291" text-anchor="middle">Ausgabe: T</text>
+  <path class="pap-line" d="M70 277 H28 V174 H67"/><path class="pap-ah" d="M75 174 L66 169.4 L66 178.6 Z"/>
+  <path class="pap-line" d="M215 174 H270 V250"/><path class="pap-ah" d="M270 258 L265.4 249 L274.6 249 Z"/>
+  <text class="pap-lab" x="222" y="166">nein</text>
+  <rect class="pap-shape" x="228" y="258" width="84" height="30" rx="15"/><text x="270" y="278" text-anchor="middle">Ende</text>
+</svg></div>
+              <figcaption>Rücksprung: Die Linie führt zurück zur Raute.</figcaption>
+            </figure>
+<pre><code>T = 100.0
+while T &gt; 25:
+    T = T * 0.9
+    print(round(T, 1))</code></pre>
+          </div>
+        </div>
+      </details>
+
+      <details class="k-deep">
+        <summary>PAP und Struktogramm im Vergleich</summary>
+        <div class="k-deep__body">
+          <p>Daneben gibt es das <abbr class="k-begriff" data-erklaerung="Ein Bild für einen Ablauf aus übereinander gestapelten Kästchen, von oben nach unten gelesen. Es heißt auch Nassi-Shneiderman-Diagramm nach seinen Erfindern (1973) und ist in DIN 66261 genormt.">Struktogramm</abbr> nach Nassi und Shneiderman (DIN 66261). Beide zeigen denselben Algorithmus. Das Struktogramm besteht aus ineinandergeschachtelten Kästchen ohne Pfeile, es kennt keine Sprünge und passt deshalb sehr direkt zur Einrückung in Python. Der PAP ist leichter von Hand zu zeichnen, auch über mehrere Seiten, und wird in der Klausur und in der Praxis häufiger gefordert. In diesem Kurs arbeitest du deshalb mit dem PAP. Ein Struktogramm erkennst du, wenn du es siehst: Hier derselbe Ausschnitt „Wenn x &lt; 0, dann Ausgabe negativ“ in beiden Schreibweisen.</p>
+          <div class="v05-pair">
+            <figure class="v05-fig">
+              <div class="pap-wrap"><svg class="pap" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 170" role="img" aria-label="Struktogramm: Frage x kleiner 0 im Dreieck, links bei Ja die Ausgabe negativ, rechts bei Nein ein leeres Feld" style="--pap-min:260px;--pap-max:320px">
+  <rect class="pap-shape" x="10" y="10" width="300" height="150"/>
+  <path class="pap-line" d="M10 10 L160 80 L310 10 M10 80 H310 M160 80 V160"/>
+  <text x="160" y="36" text-anchor="middle">x &lt; 0?</text>
+  <text x="26" y="72" font-weight="700" style="font-size:12.5px">Ja</text><text x="294" y="72" text-anchor="end" font-weight="700" style="font-size:12.5px">Nein</text>
+  <text x="85" y="125" text-anchor="middle">Ausgabe: negativ</text>
+</svg></div>
+              <figcaption>Struktogramm: Die Raute wird zum Dreieck im Kopf, die Zweige stehen nebeneinander.</figcaption>
+            </figure>
+            <figure class="v05-fig">
+              <div class="pap-wrap"><svg class="pap" xmlns="http://www.w3.org/2000/svg" viewBox="-182 -14 304 411" role="img" aria-label="Programmablaufplan: Start, dann x einlesen, dann Verzweigung „x &lt; 0?“: bei ja Ausgabe: negativ; bei nein weiter, dann Ausgabe: fertig, dann Ende." style="--pap-min:237px;--pap-max:304px"><g class="pap-e" data-from="start" data-to="p82" data-lab=""><path class="pap-hit" d="M0 34L0 62"/><path class="pap-line" d="M0 34L0 62"/><path class="pap-ah" d="M0 62L-4.6 53L4.6 53Z"/></g><g class="pap-e" data-from="p82" data-to="p84" data-lab=""><path class="pap-hit" d="M0 100L0 128"/><path class="pap-line" d="M0 100L0 128"/><path class="pap-ah" d="M0 128L-4.6 119L4.6 119Z"/></g><g class="pap-e" data-from="p84" data-to="p83" data-lab="ja"><path class="pap-hit" d="M-68 167L-89.5 167L-89.5 205.4"/><path class="pap-line" d="M-68 167L-89.5 167L-89.5 205.4"/><path class="pap-ah" d="M-89.5 205.4L-94.1 196.4L-84.9 196.4Z"/><text class="pap-lab" x="-74" y="161" text-anchor="end">ja</text></g><g class="pap-e" data-from="p83" data-to="p85" data-lab=""><path class="pap-hit" d="M-89.5 243.4L-89.5 258.8L0 258.8L0 283.4"/><path class="pap-line" d="M-89.5 243.4L-89.5 258.8L0 258.8L0 283.4"/><path class="pap-ah" d="M0 283.4L-4.6 274.4L4.6 274.4Z"/></g><g class="pap-e" data-from="p84" data-to="p85" data-lab="nein"><path class="pap-hit" d="M68 167L68 258.8L0 258.8L0 283.4"/><path class="pap-line" d="M68 167L68 258.8L0 258.8L0 283.4"/><path class="pap-ah" d="M0 283.4L-4.6 274.4L4.6 274.4Z"/><text class="pap-lab" x="74" y="161" text-anchor="start">nein</text></g><g class="pap-e" data-from="p85" data-to="p86" data-lab=""><path class="pap-hit" d="M0 321.4L0 349.4"/><path class="pap-line" d="M0 321.4L0 349.4"/><path class="pap-ah" d="M0 349.4L-4.6 340.4L4.6 340.4Z"/></g><g class="pap-n pap-n--start" data-id="start" data-bid="start"><rect class="pap-shape" x="-48" y="0" width="96" height="34" rx="17"/><text class="pap-t" x="0" y="21.6" text-anchor="middle">Start</text></g><g class="pap-n pap-n--io" data-id="p82" data-bid="p82"><path class="pap-shape" d="M-46 62H60L46 100H-60Z"/><text class="pap-t" x="0" y="85.6" text-anchor="middle">x einlesen</text></g><g class="pap-n pap-n--if" data-id="p84" data-bid="p84"><path class="pap-shape" d="M0 128L68 167L0 206L-68 167Z"/><text class="pap-t" x="0" y="171.6" text-anchor="middle">x &lt; 0?</text></g><g class="pap-n pap-n--io" data-id="p83" data-bid="p83"><path class="pap-shape" d="M-154 205.4H-11L-25 243.4H-168Z"/><text class="pap-t" x="-89.5" y="229" text-anchor="middle">Ausgabe: negativ</text></g><g class="pap-n pap-n--io" data-id="p85" data-bid="p85"><path class="pap-shape" d="M-61.5 283.4H75.5L61.5 321.4H-75.5Z"/><text class="pap-t" x="0" y="307" text-anchor="middle">Ausgabe: fertig</text></g><g class="pap-n pap-n--end" data-id="p86" data-bid="p86"><rect class="pap-shape" x="-48" y="349.4" width="96" height="34" rx="17"/><text class="pap-t" x="0" y="371" text-anchor="middle">Ende</text></g></svg></div>
+              <figcaption>Programmablaufplan: Symbole mit Pfeilen.</figcaption>
+            </figure>
+          </div>
+        </div>
+      </details>
+
+      <details class="k-deep">
+        <summary>PAP in der Industrie: SPS und Dokumentation</summary>
+        <div class="k-deep__body">
+          <p>In der SPS-Programmierung (Norm IEC 61131-3) gibt es den „Ablaufplan“ (Sequential Function Chart) und die „Ablaufsprache“, die dem Programmablaufplan ähneln. In Pflichtenheften, Prozessbeschreibungen und Prüfungsunterlagen findest du PAPs, weil man mit ihnen einen Algorithmus eindeutig und ohne Programmiersprache beschreiben kann, auch für Menschen, die nicht programmieren. Im Entwicklungsalltag ersetzt oft ein kurzer, sauberer Pseudocode oder ein Zustandsdiagramm das Zeichnen. Das Prinzip bleibt: erst die Struktur klären, dann codieren.</p>
+        </div>
+      </details>
+      </section>
+
+      <!-- Videos zur Nachbereitung -->
+      <section class="k-section" id="videos" aria-labelledby="h-videos">
+        <h2 class="k-section__title" id="h-videos">Videos zur Nachbereitung</h2>
+        <p>Alle drei Erklärvideos zu V05 zum Wiederholen, jeweils mit deutschen Untertiteln.</p>
+        <ul class="k-video-list">
+          <li><a href="#video-theorie">Problemanalyse und Programmablaufplan erklärt</a> <span class="k-muted">(ca. 3 Min, Theorie, Abschnitt 2 dieser Lerneinheit)</span></li>
+          <li><a href="v05-labor.html#a-werkzeugkasten">Python-Werkstatt: PAP in Code übersetzen</a> <span class="k-muted">(ca. 3 Min, im Labor bei „Werkzeugkasten“)</span></li>
+          <li><a href="v05-labor.html#a-vorgemacht">Vorgerechnet: Werkstoffvorschlag nach PAP</a> <span class="k-muted">(ca. 3 Min, im Labor bei „Vorgerechnetes Beispiel“)</span></li>
+        </ul>
+      </section>
+
+      <!-- Übergang -->
+      <section class="k-next" aria-labelledby="h-next">
+        <h2 id="h-next">Wie geht es weiter?</h2>
+        <p>Verstanden ist noch nicht geschrieben. Im Programmierlabor übersetzt du Programmablaufpläne selbst in Code und ergänzt fehlende PAP-Symbole zu gegebenem Code: erst mit Hilfen (Werkzeugkasten, Beispiel, Lückencode), dann allein. Zu Hause folgt das Training mit neun Aufgaben (ca. 60 Min), darunter einen PAP auf Papier zeichnen und eine Klausur-Aufgabe „PAP gegeben, Code schreiben“.</p>
+        <p><a class="k-btn" href="v05-labor.html">Weiter ins Programmierlabor →</a></p>
+      </section>
+
+      <!-- Für Dozierende -->
+      <section class="k-section k-section--dozent" aria-labelledby="h-doz">
+        <h2 id="h-doz" class="k-sr">Für Dozierende</h2>
+      <details class="k-dozent">
+        <summary>Für Dozierende: Ablaufplan 135 Minuten Präsenz + 60 Minuten zu Hause</summary>
+        <div class="k-dozent__body">
+          <p class="k-small k-muted">Ein Termin besteht aus zwei Seiten: dieser <strong>Lerneinheit</strong> (verstehen) und dem <a href="v05-labor.html">Programmierlabor</a> (selbst programmieren). Die Tabelle sagt, wo welche Phase stattfindet.</p>
+          <div class="k-tablewrap"><table class="k-plan">
+            <thead><tr><th scope="col">Minuten</th><th scope="col">Wo</th><th scope="col">Was zu tun ist</th></tr></thead>
+            <tbody>
+              <tr><td>0–10</td><td>Lerneinheit 3<br>Ausprobieren</td><td><strong>Warm-up.</strong> Wiederholung V04 per Handzeichen: <code>5 &gt; 3 and not 2 &gt; 4</code>? <code>140 &lt; 140</code>? Dann „Eingabe prüfen: Grenzwert 600“ aus Abschnitt 3 tippen lassen, erst abstimmen, dann ausführen.</td></tr>
+              <tr><td>10–35</td><td>Lerneinheit 1 und 2<br>Warum, Theorie</td><td><strong>Informatik-Theorie mit Explorable.</strong> Hook: die beiden KI-Antworten (A und B) mit −5 laufen lassen, Diskussion „was fehlt in A?“ (5). Problemanalyse-Tabelle und Algorithmus-Eigenschaften (5). Symbol-Lexikon am Beamer, Zeichenregeln vorlesen (5). Werkstoff-PAP: „Der PAP läuft ab“ mit 180 / 20, 250 / 400, −5 / 20, 140 / 20 (7). PAP-Baukasten: Lücken-Gerüst gemeinsam füllen, dann „Code baut PAP“ mit drei Zeilen aus dem Publikum (3).</td></tr>
+              <tr><td>35–80</td><td>Labor Teil A<br>Aufgaben 1 bis 7</td><td><strong>Python-Werkstatt, Teil 1 (ca. 45 Min).</strong> Werkzeugkasten überfliegen (5), Werkstoff-Beispiel vormachen und Zeile für Zeile am PAP erklären, Testfälle durchtippen (10), Ablauf verfolgen (5), beide Parsons in Paaren (8), Lückencode (7), PAP ergänzen (5), Füllstand als erste eigene Aufgabe (5). Rundgang; typische Fehler: Doppelpunkt vergessen, <code>&lt;</code> statt <code>&lt;=</code>, <code>if</code> statt <code>elif</code>, Einrückung, Zusammenlauf der Linien übersehen.</td></tr>
+              <tr><td>80–90</td><td>–</td><td><strong>Pause.</strong> Runner vorab einmal ausführen lassen (lädt ca. 10 MB von jsDelivr; im Hörsaal-WLAN sonst zäh).</td></tr>
+              <tr><td>90–120</td><td>Labor Teil A<br>Aufgaben 8 und 9</td><td><strong>Python-Werkstatt, Teil 2.</strong> Code-Review (KI-Spiegel) gemeinsam am Beamer: Studierende markieren in Paaren, Auflösung, KI-Version mit drei Eingaben laufen lassen (zuerst falsche Passungsart, dann NameError), korrigierte Version (20). Danach typische Fehlermeldungen ausführen und lesen lassen (5). Reserve (5): Abschnitt 3 „Fehler im PAP finden“.</td></tr>
+              <tr><td>120–135</td><td>Lerneinheit 4<br>Selbstcheck</td><td><strong>Selbstcheck, Exit-Ticket, Auftrag.</strong> Exit-Ticket: Quiz T3, T4, T7 (je 1 Min. tippen, dann auflösen). T9 (PAP gegeben, Code schreiben) als Hausaufgabe oder auf Papier. Auftrag: Labor Teil B, Fälligkeit bis zum nächsten Termin. Deep-Dive-Teaser: Rücksprung im PAP als Schleife. Ausblick V06: Wiederholung mit <code>while</code> und <code>for</code>.</td></tr>
+              <tr><td>zu Hause (ca. 60)</td><td>Labor Teil B<br>Aufgaben 1 bis 9</td><td><strong>Training.</strong> Neun Aufgaben mit automatischen Tests bzw. Selbstkontrolle, darunter Wiederholung zu V04 (Aufgabe 1), „Testfälle je Pfad“ (Aufgabe 6), „PAP zeichnen und vergleichen“ (Aufgabe 7, Papier) und Klausur-Modus „PAP gegeben“ (Aufgabe 9). Danach nach Wahl: Notebook, Deep Dive. Der Fortschritt bleibt im Browser der Studierenden; er ist für dich nicht einsehbar, also bei Bedarf zu Beginn des nächsten Termins abfragen.</td></tr>
+            </tbody>
+          </table></div>
+          <p class="k-small k-muted">Material: Beamer, Handzeichen-Karten, Papier zum PAP-Zeichnen (Lineal, Schablone, Bleistift), stabiles WLAN. Das Notebook (Codespaces) ist Vertiefung im Training, nicht Pflicht in der Präsenzzeit.</p>
+        </div>
+      </details>
+      </section>
+
+    </main>
+  </div>
+
+  <footer class="dhbw-footer k-footer">
+    <div class="dhbw-footer__inner">
+      <span><span class="dhbw-footer__brand">DHBW Stuttgart</span> · Campus Horb</span>
+      <span><a href="../index.html">Zurück zum Lernpfad</a> · V05 Problemanalyse &amp; Programmablaufplan · Lerneinheit</span>
+    </div>
+  </footer>
+
+  <script src="../assets/js/icons.js"></script>
+  <script src="../assets/js/editor.js" defer></script>
+  <script src="../assets/js/explorables-v05.js"></script>
+  <script src="../assets/js/kurs.js"></script>
+  <script src="../assets/js/aufgaben.js"></script>
+</body>
+</html>

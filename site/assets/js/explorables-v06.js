@@ -1,7 +1,7 @@
 /* =============================================================
    explorables-v06.js – interaktive Bausteine für V06 (reines JS, kein Framework)
-   (A) Abkühlkurve live: eine while-Schleife läuft Schritt für Schritt (Zähler, Temperatur,
-       Bedingung), Parameter k und Ziel veränderbar; Ziel = Umgebung zeigt die Endlosschleife
+   (A) Abkühlkurve live: eine while-Schleife läuft als Programmablaufplan Schritt für Schritt (Marke auf der
+       Ablauflinie, aktive Symbole rot; Zähler, Temperatur, Bedingung), Parameter k und Ziel veränderbar; Ziel = Umgebung zeigt die Endlosschleife
        und den Watchdog.
    (B) Newton-Treppe: Tangenten-Schritte zur Wurzel, Anzahl Iterationen bis zur Toleranz.
    Der Rechenkern ist ohne DOM per node testbar (siehe module.exports).
@@ -38,7 +38,102 @@
     return Math.ceil(n / 100) * 100;
   }
 
-  var api = { coolingSeries: coolingSeries, newtonSeries: newtonSeries, py: py, niceMax: niceMax };
+  /* ── Programmablaufplan (DIN 66001) als SVG-Text ───────────────
+     Eine Funktion zeichnet die PAPs der Lerneinheit (statisch, per Node erzeugt und eingefügt)
+     und den PAP im Explorable (zur Laufzeit, mit Marke und roten aktiven Elementen).
+     Knoten: oval (Grenzstelle), rect (Operation), para (Ein-/Ausgabe), dia (Verzweigung/Raute).
+     Kanten: Linienzug mit Pfeilspitze am letzten Punkt. Farben und Strichstärken stehen in v06.css. */
+  var PAPW = 420, PAPCX = 200;
+  function xesc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function papNode(n) {
+    var cx = PAPCX, x = cx - n.w / 2, y = n.y, w = n.w, h = n.h, shape;
+    if (n.t === 'oval') shape = '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="' + h / 2 + '"/>';
+    else if (n.t === 'rect') shape = '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '"/>';
+    else if (n.t === 'para') { var sk = 14; shape = '<polygon points="' + [x + sk, y, x + w, y, x + w - sk, y + h, x, y + h].join(' ') + '"/>'; }
+    else shape = '<polygon points="' + [cx, y, cx + w / 2, y + h / 2, cx, y + h, cx - w / 2, y + h / 2].join(' ') + '"/>';
+    var lines = n.lines, lh = 16, y0 = y + h / 2 - (lines.length - 1) * lh / 2 + 4.5;
+    var txt = '<text x="' + cx + '" y="' + y0 + '" text-anchor="middle">' + lines.map(function (l, i) { return '<tspan x="' + cx + '" dy="' + (i ? lh : 0) + '">' + xesc(l) + '</tspan>'; }).join('') + '</text>';
+    return '<g class="pap-n" data-n="' + n.id + '">' + shape + txt + '</g>';
+  }
+  function papEdge(e) {
+    var p = e.pts, a = p[p.length - 2], b = p[p.length - 1];
+    var dx = b[0] - a[0], dy = b[1] - a[1], d = Math.sqrt(dx * dx + dy * dy); dx /= d; dy /= d;
+    var bx = b[0] - 9 * dx, by = b[1] - 9 * dy, qx = -dy * 4.5, qy = dx * 4.5;
+    var head = [b[0], b[1], bx + qx, by + qy, bx - qx, by - qy].map(function (v) { return Math.round(v * 10) / 10; }).join(' ');
+    var out = '<g class="pap-e" data-e="' + e.id + '"><polyline points="' + p.map(function (q) { return q.join(','); }).join(' ') + '"/><polygon points="' + head + '"/></g>';
+    if (e.label) out += '<text class="pap-lbl" x="' + e.label[1] + '" y="' + e.label[2] + '">' + xesc(e.label[0]) + '</text>';
+    return out;
+  }
+  function papSvg(spec) {
+    return '<svg class="pap" viewBox="0 0 ' + PAPW + ' ' + spec.h + '" role="img" aria-label="' + xesc(spec.aria) + '" focusable="false">' +
+      spec.edges.map(papEdge).join('') + spec.nodes.map(papNode).join('') + '</svg>';
+  }
+  /* Kopfgesteuerte Schleife (Abkühlung). v = { aria, init: [2 Zeilen], cond, rechne: [2 Zeilen] } */
+  function papKopf(v) {
+    return { h: 534, aria: v.aria, nodes: [
+      { id: 'start', t: 'oval', y: 8, h: 32, w: 100, lines: ['Start'] },
+      { id: 'init', t: 'rect', y: 62, h: 46, w: 272, lines: v.init },
+      { id: 'dia', t: 'dia', y: 144, h: 84, w: 232, lines: [v.cond] },
+      { id: 'op1', t: 'rect', y: 258, h: 46, w: 272, lines: v.rechne },
+      { id: 'op2', t: 'rect', y: 326, h: 32, w: 200, lines: ['minuten = minuten + 1'] },
+      { id: 'out', t: 'para', y: 436, h: 36, w: 272, lines: ['Ausgabe: minuten, temperatur'] },
+      { id: 'ende', t: 'oval', y: 494, h: 32, w: 100, lines: ['Ende'] }
+    ], edges: [
+      { id: 'start', pts: [[200, 40], [200, 62]] },
+      { id: 'init', pts: [[200, 108], [200, 144]] },
+      { id: 'ja', pts: [[200, 228], [200, 258]], label: ['ja', 208, 247] },
+      { id: 'e12', pts: [[200, 304], [200, 326]] },
+      { id: 'loop', pts: [[200, 358], [200, 376], [16, 376], [16, 126], [200, 126]] },
+      { id: 'nein', pts: [[316, 186], [392, 186], [392, 414], [200, 414], [200, 436]], label: ['nein', 324, 178] },
+      { id: 'eout', pts: [[200, 472], [200, 494]] }
+    ] };
+  }
+  var PAPK = { dC: 186, op1C: 281, mid: 315, op2C: 342, outC: 454, endC: 489 };
+  /* Fußgesteuerte Schleife: erst Rumpf (Eingabe), dann die Raute, bei „nein“ zurück vor den Rumpf */
+  function papFuss() {
+    return { h: 404, aria: 'Programmablaufplan fußgesteuerte Schleife: Start; Ausgabe Messwert eingeben; Eingabe wert einlesen; Verzweigung wert größer null; bei nein zurück vor das Einlesen, bei ja weiterrechnen mit wert; Ende', nodes: [
+      { id: 'start', t: 'oval', y: 8, h: 32, w: 100, lines: ['Start'] },
+      { id: 'a', t: 'para', y: 62, h: 36, w: 272, lines: ['Ausgabe: Messwert eingeben'] },
+      { id: 'b', t: 'para', y: 140, h: 36, w: 200, lines: ['wert einlesen'] },
+      { id: 'dia', t: 'dia', y: 198, h: 80, w: 232, lines: ['wert > 0?'] },
+      { id: 'c', t: 'rect', y: 308, h: 36, w: 240, lines: ['weiterrechnen mit wert'] },
+      { id: 'ende', t: 'oval', y: 364, h: 32, w: 100, lines: ['Ende'] }
+    ], edges: [
+      { id: 's1', pts: [[200, 40], [200, 62]] },
+      { id: 's2', pts: [[200, 98], [200, 140]] },
+      { id: 's3', pts: [[200, 176], [200, 198]] },
+      { id: 'ja', pts: [[200, 278], [200, 308]], label: ['ja', 208, 298] },
+      { id: 's4', pts: [[200, 344], [200, 364]] },
+      { id: 'nein', pts: [[316, 238], [392, 238], [392, 120], [200, 120]], label: ['nein', 324, 230] }
+    ] };
+  }
+  /* Zählschleife: Initialisierung, Raute (Zähler ≤ Ende?), Rumpf, Zähler erhöhen, Rückführung */
+  function papZaehl() {
+    return { h: 530, aria: 'Programmablaufplan Zählschleife: Start; summe gleich null und minute gleich eins setzen; Verzweigung minute kleiner gleich fünf; bei ja temperatur neu berechnen, zur summe addieren, minute um eins erhöhen und zurück vor die Verzweigung; bei nein Ausgabe summe geteilt durch fünf; Ende', nodes: [
+      { id: 'start', t: 'oval', y: 8, h: 32, w: 100, lines: ['Start'] },
+      { id: 'init', t: 'rect', y: 62, h: 32, w: 240, lines: ['summe = 0; minute = 1'] },
+      { id: 'dia', t: 'dia', y: 134, h: 80, w: 232, lines: ['minute ≤ 5?'] },
+      { id: 'op1', t: 'rect', y: 242, h: 32, w: 240, lines: ['temperatur neu berechnen'] },
+      { id: 'op2', t: 'rect', y: 292, h: 32, w: 272, lines: ['summe = summe + temperatur'] },
+      { id: 'op3', t: 'rect', y: 342, h: 32, w: 220, lines: ['minute = minute + 1'] },
+      { id: 'out', t: 'para', y: 436, h: 36, w: 240, lines: ['Ausgabe: summe / 5'] },
+      { id: 'ende', t: 'oval', y: 490, h: 32, w: 100, lines: ['Ende'] }
+    ], edges: [
+      { id: 's1', pts: [[200, 40], [200, 62]] },
+      { id: 's2', pts: [[200, 94], [200, 134]] },
+      { id: 'ja', pts: [[200, 214], [200, 242]], label: ['ja', 208, 233] },
+      { id: 'e12', pts: [[200, 274], [200, 292]] },
+      { id: 'e23', pts: [[200, 324], [200, 342]] },
+      { id: 'loop', pts: [[200, 374], [200, 392], [16, 392], [16, 116], [200, 116]] },
+      { id: 'nein', pts: [[316, 174], [392, 174], [392, 414], [200, 414], [200, 436]], label: ['nein', 324, 166] },
+      { id: 'eout', pts: [[200, 472], [200, 490]] }
+    ] };
+  }
+  var PAPKOPF_STATIC = papKopf({ aria: 'Programmablaufplan kopfgesteuerte Schleife: Start; temperatur, umgebung und minuten vorbelegen; Verzweigung temperatur größer ziel; bei ja temperatur neu berechnen, minuten um eins erhöhen und zurück vor die Verzweigung; bei nein Ausgabe minuten und temperatur; Ende',
+    init: ['temperatur = 850.0; minuten = 0', 'umgebung = 20.0'], cond: 'temperatur > ziel?', rechne: ['temperatur = temperatur −', 'k · (temperatur − umgebung)'] });
+
+
+  var api = { papSvg: papSvg, papKopf: papKopf, papFuss: papFuss, papZaehl: papZaehl, papStaticKopf: PAPKOPF_STATIC, coolingSeries: coolingSeries, newtonSeries: newtonSeries, py: py, niceMax: niceMax };
   if (typeof module !== 'undefined' && module.exports) { module.exports = api; }
   if (typeof document === 'undefined') return;
 
@@ -111,18 +206,10 @@
     var barHost = el('div');
     host.appendChild(barHost);
     var grid = el('div', { class: 'v06-grid' });
-    var nsd = el('div', { class: 'nsd v06-nsd', role: 'group', 'aria-label': 'Ablauf der Schleife als Struktogramm' });
-    var rowInit = el('div', { class: 'nsd__row' });
-    var head = el('div', { class: 'nsd__head' });
-    var b1 = el('div', { class: 'nsd__row' });
-    var b2 = el('div', { class: 'nsd__row' });
-    var rowOut = el('div', { class: 'nsd__row' });
-    var body = el('div', { class: 'nsd__body' }, [b1, b2]);
-    nsd.appendChild(rowInit);
-    nsd.appendChild(el('div', { class: 'nsd__loop' }, [head, body]));
-    nsd.appendChild(rowOut);
+    var papHost = el('div', { class: 'v06-pap' });
+    var marker = null, anim = 0, mpos = [200, PAPK.dC];
     var verdict = el('p', { class: 'v06-verdict', 'aria-hidden': 'true' });
-    var left = el('div', { class: 'v06-left' }, [nsd, verdict]);
+    var left = el('div', { class: 'v06-left' }, [papHost, verdict]);
     var svg = S('svg', { viewBox: '0 0 640 310', class: 'k-chart', role: 'img' });
     grid.appendChild(left); grid.appendChild(el('div', { class: 'v06-right' }, [svg]));
     host.appendChild(grid);
@@ -138,33 +225,86 @@
     host.appendChild(out);
 
     pl = player(barHost,
-      function (auto) { if (s < total - 1) s++; draw(!auto); },
+      function (auto) { if (s < total - 1) s++; draw(!auto, auto); },
       function () { s = 0; draw(true); },
       function () { s = total - 1; draw(true); },
       function () { return s >= total - 1; },
       function () { return Math.max(15, Math.min(260, Math.round(6000 / total))); });
+
+    var lastS = 0, lastAuto = false;
+    function buildPap() {
+      var spec = api.papKopf({
+        aria: 'Programmablaufplan der Schleife',
+        init: ['temperatur = ' + py(T0) + '; minuten = 0', 'umgebung = ' + py(TU)],
+        cond: 'temperatur > ' + py(ziel) + '?',
+        rechne: ['temperatur = temperatur −', de(k, 2) + ' · (temperatur − umgebung)']
+      });
+      papHost.innerHTML = api.papSvg(spec);
+      var svgEl = papHost.firstChild;
+      marker = S('circle', { r: 8, class: 'pap-marker', cx: mpos[0], cy: mpos[1] });
+      svgEl.appendChild(marker);
+      lastS = 0;
+    }
+    function setActive(nodes, edges) {
+      Array.prototype.forEach.call(papHost.querySelectorAll('.pap-n'), function (g) { g.classList.toggle('is-cur', nodes.indexOf(g.getAttribute('data-n')) >= 0); });
+      Array.prototype.forEach.call(papHost.querySelectorAll('.pap-e'), function (g) { g.classList.toggle('is-cur', edges.indexOf(g.getAttribute('data-e')) >= 0); });
+    }
+    /* Marke: entlang der Ablauflinie laufen (route) oder direkt springen */
+    function moveMarker(target, route, auto) {
+      var myAnim = ++anim;
+      function put(p) { mpos = p; marker.setAttribute('cx', p[0]); marker.setAttribute('cy', p[1]); }
+      var reduce = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var interval = auto ? Math.max(15, Math.min(260, Math.round(6000 / total))) : 0;
+      if (!route || reduce || (auto && interval < 70)) { put(target); return; }
+      var lens = [0], tot = 0, i;
+      for (i = 1; i < route.length; i++) { tot += Math.hypot(route[i][0] - route[i - 1][0], route[i][1] - route[i - 1][1]); lens.push(tot); }
+      var dur = auto ? Math.min(interval * 0.85, 600) : Math.min(1100, 250 + tot * 2.2), t0 = null;
+      put(route[0]);
+      function frame(ts) {
+        if (myAnim !== anim) return;
+        if (t0 === null) t0 = ts;
+        var f = Math.min(1, (ts - t0) / dur), d = f * tot, j = 1;
+        while (j < lens.length - 1 && lens[j] < d) j++;
+        var seg = lens[j] - lens[j - 1] || 1, u = (d - lens[j - 1]) / seg;
+        put([route[j - 1][0] + (route[j][0] - route[j - 1][0]) * u, route[j - 1][1] + (route[j][1] - route[j - 1][1]) * u]);
+        if (f < 1) requestAnimationFrame(frame); else put(target);
+      }
+      requestAnimationFrame(frame);
+    }
 
     function recompute() {
       pl.stop();
       ser = api.coolingSeries(T0, TU, k, ziel, MAXN);
       total = 2 * ser.n + 1;
       s = 0;
+      buildPap();
       draw(true);
     }
 
-    function draw(announce) {
+    function draw(announce, auto) {
+      lastAuto = !!auto;
       var c = Math.ceil(s / 2), phase = s % 2 === 0 ? 'check' : 'body', t = ser.temps[c];
       var last = s === total - 1;
       var cond = t > ziel;
-      rowInit.textContent = 'temperatur = ' + py(T0) + ';  umgebung = ' + py(TU) + ';  minuten = 0';
-      head.textContent = 'solange temperatur > ziel   (ziel = ' + py(ziel) + ')';
-      b1.textContent = 'temperatur = temperatur − ' + de(k, 2) + ' · (temperatur − umgebung)';
-      b2.textContent = 'minuten = minuten + 1';
-      rowOut.textContent = 'Ausgabe: minuten und temperatur';
-      head.className = 'nsd__head' + (phase === 'check' ? ' is-cur' : '');
-      b1.className = 'nsd__row' + (phase === 'body' ? ' is-cur' : '');
-      b2.className = 'nsd__row' + (phase === 'body' ? ' is-cur' : '');
-      rowOut.className = 'nsd__row' + (last && ser.reached ? ' is-cur' : '');
+      var prev = lastS; lastS = s;
+      var reachedEnd = last && ser.reached;
+      var nodes = [], edges = [], target, route = null;
+      if (phase === 'check') {
+        nodes = ['dia']; target = [200, PAPK.dC];
+        edges = c === 0 ? ['start', 'init'] : ['loop'];
+        if (reachedEnd) { nodes = ['dia', 'out', 'ende']; edges = ['nein', 'eout']; target = [200, PAPK.endC]; }
+        if (prev === s - 1 && s > 0) {
+          route = reachedEnd
+            ? [[200, PAPK.op2C], [200, 358], [200, 376], [16, 376], [16, 126], [200, 126], [200, PAPK.dC], [316, PAPK.dC], [392, PAPK.dC], [392, 414], [200, 414], [200, PAPK.outC], [200, PAPK.endC]]
+            : [[200, PAPK.mid], [200, PAPK.op2C], [200, 358], [200, 376], [16, 376], [16, 126], [200, 126], [200, PAPK.dC]];
+        }
+      } else {
+        nodes = ['op1', 'op2']; edges = ['ja', 'e12']; target = [200, PAPK.mid];
+        if (prev === s - 1) route = [[200, PAPK.dC], [200, PAPK.op1C], [200, PAPK.mid]];
+      }
+      setActive(nodes, edges);
+      moveMarker(target, route, lastAuto);
+      papHost.firstChild.setAttribute('aria-label', 'Programmablaufplan der Schleife. ' + (phase === 'check' ? 'Aktiv: die Raute, die Bedingung temperatur größer ziel wird geprüft.' : 'Aktiv: der Schleifenrumpf mit der Berechnung der Temperatur und dem Zähler.') + (last ? (ser.reached ? ' Die Schleife ist verlassen, die Ausgabe ist erreicht.' : ' Watchdog: Die Raute antwortet immer ja.') : ''));
       var vtxt;
       if (phase === 'check') vtxt = 'Bedingung prüfen: ' + t.toFixed(1) + ' > ' + py(ziel) + ' ist ' + (cond ? 'wahr' : 'falsch') + (last ? (ser.reached ? '  →  Schleife endet' : '  →  Watchdog greift') : '  →  Rumpf läuft');
       else vtxt = 'Rumpf ausgeführt: Durchlauf ' + c + ' ist fertig';

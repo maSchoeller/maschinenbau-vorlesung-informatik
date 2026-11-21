@@ -21,93 +21,93 @@ Das Bauteil darf also zwischen 24,95 und 25,05 mm messen.
 Unser Messwert liegt genau auf der Grenze: 25,05 mm. Ist das noch in Ordnung?
 
 6
-00:00:35.270 --> 00:00:40.750
-Bevor du Code schreibst, zerlegst du die Aufgabe, ähnlich wie in einem Struktogramm.
+00:00:35.270 --> 00:00:40.005
+Bevor du Code schreibst, zerlegst du die Aufgabe, ähnlich wie in einem Programmablaufplan.
 
 7
-00:00:40.908 --> 00:00:44.603
+00:00:40.680 --> 00:00:45.121
 Eingabe: drei Zahlen, nämlich Nennmaß, Abmaß und Messwert.
 
 8
-00:00:44.825 --> 00:00:50.543
+00:00:45.673 --> 00:00:50.751
 Verarbeitung: Untermaß und Obermaß berechnen und prüfen, ob der Messwert passt.
 
 9
-00:00:50.990 --> 00:00:54.777
+00:00:51.468 --> 00:00:54.836
 Ausgabe: die Grenzmaße und das Ergebnis der Prüfung.
 
 10
-00:00:55.182 --> 00:00:58.600
+00:00:55.584 --> 00:00:58.360
 Jeder dieser Kästen wird später ein Abschnitt im Code.
 
 11
-00:00:59.500 --> 00:01:06.112
+00:00:59.260 --> 00:01:05.872
 Abschnitt 1 liest die Eingaben. input() liefert Text, deshalb steht float() drumherum.
 
 12
-00:01:06.210 --> 00:01:09.862
+00:01:05.970 --> 00:01:09.622
 Ohne float() bricht schon die Subtraktion mit einem TypeError ab.
 
 13
-00:01:11.183 --> 00:01:19.006
+00:01:10.943 --> 00:01:18.766
 Abschnitt 2 rechnet: Untermaß ist Nennmaß minus Abmaß, Obermaß ist Nennmaß plus Abmaß.
 
 14
-00:01:20.335 --> 00:01:27.630
+00:01:20.095 --> 00:01:27.390
 Abschnitt 3 gibt die Grenzmaße aus. Der f-String mit :.2f zeigt zwei Nachkommastellen.
 
 15
-00:01:28.530 --> 00:01:30.844
+00:01:28.290 --> 00:01:30.604
 Abschnitt 4 ist der Kern der Aufgabe.
 
 16
-00:01:30.905 --> 00:01:36.835
+00:01:30.665 --> 00:01:36.595
 math.isclose prüft, ob der Messwert höchstens ein Abmaß vom Nennmaß entfernt liegt.
 
 17
-00:01:37.453 --> 00:01:43.405
+00:01:37.213 --> 00:01:43.165
 rel_tol ist null, damit nur die absolute Toleranz zählt. abs_tol ist das Abmaß.
 
 18
-00:01:43.699 --> 00:01:47.700
+00:01:43.459 --> 00:01:47.460
 Der kleine Zuschlag von 1e-9 fängt Rundungsfehler ab.
 
 19
-00:01:48.600 --> 00:01:55.606
+00:01:48.360 --> 00:01:55.366
 Jetzt der Probelauf mit den Eingaben 25, 0.05 und 25.05.
 
 20
-00:01:57.213 --> 00:02:03.552
+00:01:56.973 --> 00:02:03.312
 Die Grenzmaße lauten 24.95 und 25.05.
 
 21
-00:02:04.815 --> 00:02:08.725
+00:02:04.575 --> 00:02:08.485
 Der Messwert liegt genau auf der Grenze, also erwarten wir True.
 
 22
-00:02:09.709 --> 00:02:23.534
+00:02:09.469 --> 00:02:23.294
 Aber 25.05 minus 25 ergibt in Python 0.05000000000000071, also minimal mehr als 0.05.
 
 23
-00:02:24.433 --> 00:02:32.570
+00:02:24.193 --> 00:02:32.330
 Ohne Zuschlag fiele der Grenzwert fälschlich durch. Bei 25.06 ist False dagegen richtig.
 
 24
-00:02:33.470 --> 00:02:37.310
+00:02:33.230 --> 00:02:37.070
 Zum Schluss: Vergleiche deine Lösung mit einem KI-Vorschlag.
 
 25
-00:02:37.554 --> 00:02:39.022
+00:02:37.314 --> 00:02:38.782
 Steht float() um input()?
 
 26
-00:02:39.755 --> 00:02:43.230
+00:02:39.515 --> 00:02:42.990
 Werden Floats irgendwo mit == verglichen?
 
 27
-00:02:43.891 --> 00:02:49.363
+00:02:43.651 --> 00:02:49.123
 Und teste immer die Grenzfälle: genau auf der Grenze, knapp darüber und knapp darunter.
 
 28
-00:02:49.423 --> 00:02:52.640
+00:02:49.183 --> 00:02:52.400
 Dann weißt du, ob du den Code wirklich verstanden hast.

@@ -162,9 +162,9 @@ E("einrueckung", "Einrückung", BE, "V04", "kopf",
 
 # ───────────── V05 ─────────────
 E("verschachtelte-if", "Verschachtelte Verzweigung", BE, "V05", "kopf",
-  "Eine Entscheidung innerhalb einer anderen – so setzt du Struktogramme um.",
+  "Eine Entscheidung innerhalb einer anderen – so setzt du Programmablaufpläne um.",
   "if a:\n    if b:\n        ...\n    else:\n        ...\nelse:\n    ...",
-  "Ein if darf in einem anderen if stehen. Jede Ebene wird einmal weiter eingerückt. Das übersetzt ein verschachteltes Struktogramm Zeile für Zeile. Prüfe zuerst die Bedingung, die alles andere erst sinnvoll macht, zum Beispiel ob die Eingabe überhaupt gültig ist.",
+  "Ein if darf in einem anderen if stehen. Jede Ebene wird einmal weiter eingerückt. Das übersetzt einen Programmablaufplan mit einer Raute innerhalb eines Zweigs Zeile für Zeile. Prüfe zuerst die Bedingung, die alles andere erst sinnvoll macht, zum Beispiel ob die Eingabe überhaupt gültig ist.",
   '''
   drehzahl = 2800
   oeltemp = 105

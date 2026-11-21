@@ -16,7 +16,7 @@ SRC = [
   "Unser Beispiel: Nennmaß 25 mm, Abmaß ± 0,05 mm.",
   "Das Bauteil darf also zwischen 24,95 und 25,05 mm messen.",
   "Unser Messwert liegt genau auf der Grenze: 25,05 mm. Ist das noch in Ordnung?"],
- ["Bevor du Code schreibst, zerlegst du die Aufgabe, ähnlich wie in einem Struktogramm.",
+ ["Bevor du Code schreibst, zerlegst du die Aufgabe, ähnlich wie in einem Programmablaufplan.",
   "Eingabe: drei Zahlen, nämlich Nennmaß, Abmaß und Messwert.",
   "Verarbeitung: Untermaß und Obermaß berechnen und prüfen, ob der Messwert passt.",
   "Ausgabe: die Grenzmaße und das Ergebnis der Prüfung.",
@@ -136,27 +136,39 @@ def sc1(f, t, ct):
         T(d, x, y - 58, "?", F(34, 700), WHITE, "mm")
     f.el(ap(t, ct(4) + 0.5, 0.5), pin, dy=int((1 - ap(t, ct(4) + 0.5, 0.5)) * -10))
 
+import core as _c0
+_orig_sb = _c0.sentence_bounds
+sys.path.insert(0, os.path.join(HERE, "..", "v05-common"))
+from pap import Dia, pap_view, NL
+_c0.sentence_bounds = _orig_sb          # Satzgrenzen wie bisher
+
+def zerleg_pap():
+    D = Dia(23)
+    D.stack([("s", "term", "Start"), ("e", "io", "Nennmaß, Abmaß und Messwert" + NL + "einlesen (als Zahlen)"),
+             ("v", "proc", "Untermaß = Nennmaß − Abmaß" + NL + "Obermaß = Nennmaß + Abmaß" + NL + "Messwert in der Toleranz? Prüfen"),
+             ("a", "io", "Grenzmaße ausgeben" + NL + "Ergebnis der Prüfung ausgeben"), ("z", "term", "Ende")], 450, 6, gap=24)
+    return D
+ZD = zerleg_pap()
+
 def sc2(f, t, ct):
-    heading(f, t, "Zerlegen wie im Struktogramm")
-    X0, X1 = 140, 1140
-    rows = [("Eingabe", RED, ["Nennmaß, Abmaß und Messwert einlesen", "(als Zahlen)"], 130, 120, ct(1), "1"),
-            ("Verarbeitung", DARK, ["Untermaß = Nennmaß − Abmaß", "Obermaß = Nennmaß + Abmaß", "Messwert in der Toleranz? Prüfen"], 262, 170, ct(2), "2 · 4"),
-            ("Ausgabe", GREEN, ["Grenzmaße ausgeben", "Ergebnis der Prüfung ausgeben"], 444, 140, ct(3), "3 · 4")]
-    f.el(ap(t, ct(0) + 0.3, 0.5), lambda d, dy: d.rectangle((X0 - 2, 128 + dy, X1 + 2, 586 + dy), outline=DARK, width=3))
-    for lab, col, body, y, h, ti, num in rows:
-        def fn(d, dy, lab=lab, col=col, body=body, y=y, h=h, num=num):
-            d.rectangle((X0, y + dy, X1, y + h + dy), fill=WHITE, outline=DARK, width=2)
-            d.rectangle((X0, y + dy, X0 + 220, y + h + dy), fill=col)
-            T(d, X0 + 110, y + h / 2 + dy, lab, F(32, 700), WHITE, "mm")
-            yy = y + (h - 36 * len(body)) / 2 + dy
-            for ln in body:
-                T(d, X0 + 250, yy, ln, F(30, 400), DARK); yy += 36
-            if t > ct(4) + 0.3:
-                k = ap(t, ct(4) + 0.3, 0.5)
-                T(d, X1 - 110, y + h / 2 + dy, "Abschnitt", F(22, 400), GREY, "mm")
-                d.ellipse((X1 - 70, y + h / 2 - 22 + dy, X1 - 14, y + h / 2 + 22 + dy), fill=RED) if len(num) == 1 else d.rounded_rectangle((X1 - 90, y + h / 2 - 22 + dy, X1 - 8, y + h / 2 + 22 + dy), 22, fill=RED)
-                T(d, X1 - (42 if len(num) == 1 else 49), y + h / 2 + dy, num, F(28, 700), WHITE, "mm")
+    heading(f, t, "Zerlegen wie im Programmablaufplan")
+    tm = {"s": ct(0) + 0.3, "z": ct(0) + 0.6, "s-e": ct(1) - 0.1, "e": ct(1), "e-v": ct(2) - 0.1, "v": ct(2), "v-a": ct(3) - 0.1, "a": ct(3), "a-z": ct(3) + 0.3}
+    hl = {}
+    for k, ti in (("e", ct(1)), ("v", ct(2)), ("a", ct(3))):
+        if ti < t < ti + 4.0: hl[k] = RED
+    pap_view(f, ap(t, ct(0) + 0.2, 0.4), ZD, (100, 120, 900, 540), (94, 0), zoom=1.1, vis=lambda k: ap(t, tm[k], 0.45) if k in tm else 1.0, hl=hl)
+    for lab, col, k, ti, num in (("Eingabe", RED, "e", ct(1), "1"), ("Verarbeitung", DARK, "v", ct(2), "2 · 4"), ("Ausgabe", GREEN, "a", ct(3), "3 · 4")):
+        nd = ZD.nodes[k]; y = 120 + nd.cy * 1.1
+        def fn(d, dy, lab=lab, col=col, y=y, nd=nd):
+            d.rounded_rectangle((110, y - 22 + dy, 270, y + 22 + dy), 22, fill=col); T(d, 190, y + dy, lab, F(24, 700), WHITE, "mm")
         f.el(ap(t, ti, 0.5), fn, dy=int((1 - ap(t, ti, 0.5)) * 12))
+        if t > ct(4) + 0.3:
+            def bd(d, dy, y=y, nd=nd, num=num):
+                x = 100 + (nd.bbox()[2] - 94) * 1.1 + 36
+                T(d, x + 20, y - 34 + dy, "Abschnitt", F(22, 400), GREY, "mm")
+                w_ = 44 if len(num) == 1 else 82
+                d.rounded_rectangle((x - 2, y - 18 + dy, x - 2 + w_ + 4, y + 26 + dy), 22, fill=RED); T(d, x - 2 + (w_ + 4) / 2, y + 4 + dy, num, F(28, 700), WHITE, "mm")
+            f.el(ap(t, ct(4) + 0.3, 0.5), bd)
 
 def sc3(f, t, ct):
     heading(f, t, "Der Code, Abschnitt für Abschnitt")

@@ -52,50 +52,69 @@ def sc1(f, t, ct):
     f.el(ap(t, ct(2) + 0.2, 0.5), card2, dy=int((1 - ap(t, ct(2) + 0.2, 0.5)) * 12))
     pill(f, t, ct(4) + 0.2, 130, 648, 640, 46, "Immer wieder anwenden = Iteration = Schleife", size=26)
 
-# ---------------------------------------------------------------- 2 Struktogramme
-def ns(d, x, y, kind, hl=0.0):
-    W_, HB = 360, 84
-    h = 60 + 2 * HB + 2
-    d.rectangle((x, y, x + W_, y + h), fill=WHITE, outline=DARK, width=3)
-    hc = mix(WHITE, (255, 214, 220), hl)
-    def blocks(y0):
-        for k, txt in enumerate(BL[kind]):
-            yy = y0 + k * HB
-            d.rectangle((x + 36, yy, x + W_, yy + HB), fill=WHITE, outline=DARK, width=2)
-            T2(d, x + 36 + (W_ - 36) / 2, yy + HB / 2, txt, F(24, 400), DARK, "mm")
-        d.rectangle((x, y0, x + 36, y0 + 2 * HB), fill=(222, 226, 232), outline=DARK, width=2)
-    if kind == "foot":
-        blocks(y + 2)
-        yy = y + 2 + 2 * HB
-        d.rectangle((x, yy, x + W_, yy + 60), fill=hc, outline=DARK, width=3); T2(d, x + W_ / 2, yy + 30, HD[kind], F(23, 700), DARK, "mm")
+# ---------------------------------------------------------------- 2 Schleifen im Programmablaufplan
+import core as _c0
+_orig_sb = _c0.sentence_bounds
+sys.path.insert(0, os.path.join(HERE, "..", "v05-common"))
+from pap import Dia, pap_view, NL
+_c0.sentence_bounds = _orig_sb          # Satzgrenzen wie bisher (V06 unveraendert)
+
+def loop_dia(kind):
+    """PAP der drei Schleifenarten (Planraum ca. 360 breit). Rueckfuehrlinie muendet mit Pfeil vor die Raute (bzw. vor den Block)."""
+    D = Dia(18); N_ = D.node; cx = 200; xl = 40; xr = 350
+    def blocks(keys_txt, y):
+        ks = []
+        for k, tx in keys_txt:
+            n = N_(k, "proc", tx, cx, 0, minw=250); n.cy = y + n.h / 2; y = n.cy + n.h / 2 + 18; ks.append(k)
+        for a, b in zip(ks, ks[1:]): D.edge(f"{a}-{b}", a, "b", b, "t")
+        return ks, y
+    if kind == "head":
+        jy = 26; d = N_("d", "dec", "Temperatur > 60 °C ?", cx, 0); d.cy = jy + 20 + d.h / 2
+        ks, y = blocks([("b1", "Temperatur neu berechnen"), ("b2", "Minuten um 1 erhöhen")], d.cy + d.h / 2 + 24)
+        w = N_("w", "term", "weiter", xr, y + 30)
+        D.edge("in", (cx, 0), None, "d", "t"); D.edge("d-b1", "d", "b", "b1", "t", label="ja")
+        D.edge("back", "b2", "l", (cx, jy), None, via=[(xl, D.nodes["b2"].cy), (xl, jy)])
+        D.edge("d-w", "d", "r", "w", "t", label="nein", via=[(xr, d.cy)])
+    elif kind == "foot":
+        jy = 26; ks, y = blocks([("b1", "Temperatur neu berechnen"), ("b2", "Minuten um 1 erhöhen")], jy + 22)
+        d = N_("d", "dec", "Temperatur ≤ 60 °C ?", cx, 0); d.cy = y + 4 + d.h / 2
+        w = N_("w", "term", "weiter", cx, d.cy + d.h / 2 + 52)
+        D.edge("in", (cx, 0), None, "b1", "t"); D.edge("b2-d", "b2", "b", "d", "t")
+        D.edge("back", "d", "l", (cx, jy), None, via=[(xl, d.cy), (xl, jy)], label="nein", lab=(-8, -5, "rs") if False else None)
+        D.edge("d-w", "d", "b", "w", "t", label="ja")
     else:
-        d.rectangle((x, y, x + W_, y + 60), fill=hc, outline=DARK, width=3); T2(d, x + W_ / 2, y + 30, HD[kind], F(23, 700), DARK, "mm")
-        blocks(y + 60)
-BL = {"head": ["Temperatur neu berechnen", "Minuten um 1 erhöhen"], "foot": ["Temperatur neu berechnen", "Minuten um 1 erhöhen"], "count": ["Temperatur neu berechnen", "Wert zur Summe addieren"]}
-HD = {"head": "solange Temperatur > 60 °C", "foot": "bis Temperatur ≤ 60 °C", "count": "für Minute von 1 bis 5"}
+        p = N_("p", "proc", "minute = 1", cx, 0, minw=250); p.cy = 20 + p.h / 2
+        d = N_("d", "dec", "minute ≤ 5 ?", cx, 0); d.cy = p.cy + p.h / 2 + 46 + d.h / 2; jy = p.cy + p.h / 2 + 22
+        ks, y = blocks([("b1", "Temperatur neu berechnen"), ("b2", "Wert zur Summe addieren"), ("b3", "minute = minute + 1")], d.cy + d.h / 2 + 24)
+        w = N_("w", "term", "weiter", xr, y + 30)
+        D.edge("in", (cx, 0), None, "p", "t"); D.edge("p-d", "p", "b", "d", "t"); D.edge("d-b1", "d", "b", "b1", "t", label="ja")
+        D.edge("back", "b3", "l", (cx, jy), None, via=[(xl, D.nodes["b3"].cy), (xl, jy)])
+        D.edge("d-w", "d", "r", "w", "t", label="nein", via=[(xr, d.cy)])
+    return D
+LOOPS = {k: loop_dia(k) for k in ("head", "foot", "count")}
 CAP = {"head": ("kopfgesteuert", "Bedingung oben: erst prüfen, dann ausführen"), "foot": ("fußgesteuert", "Bedingung unten: mindestens ein Durchlauf"),
        "count": ("Zählschleife", "feste Anzahl von Durchläufen")}
 
 def sc2(f, t, ct):
-    heading(f, t, "Wiederholung im Struktogramm")
-    xs = {"head": 70, "foot": 460, "count": 850}; y = 160
-    def loopicon(d, dy):
-        d.rounded_rectangle((520, 640 + dy - 546, 760, 700 + dy - 546), 14, fill=WHITE, outline=DARK, width=3)
+    heading(f, t, "Wiederholung im Programmablaufplan")
+    xs = {"head": 70, "foot": 460, "count": 850}
     for kind, tin, tid in (("head", ct(1) + 0.3, ct(2) + 0.3), ("foot", ct(1) + 0.6, ct(3) + 0.3), ("count", ct(1) + 0.9, ct(4) + 0.3)):
-        hl = ap(t, tid, 0.4) * (1 - ap(t, tid + 5.5, 0.5))
-        f.el(ap(t, tin, 0.5), lambda d, dy, kind=kind, hl=hl: ns(d, xs[kind], y + dy, kind, hl), dy=int((1 - ap(t, tin, 0.5)) * 12))
+        hl_on = ap(t, tid, 0.4) * (1 - ap(t, tid + 5.5, 0.5)) > 0.5
+        D = LOOPS[kind]
+        hl = {"d": (226, 0, 26)} if hl_on else {}
+        if hl_on and kind != "count": hl["back"] = (226, 0, 26)
+        pap_view(f, ap(t, tin, 0.5), D, (xs[kind], 214, 380, 420), (0, -4), hl=hl, zoom=0.92)
         def cap(d, dy, kind=kind):
-            T2(d, xs[kind] + 180, y + 266 + dy, CAP[kind][0], F(30, 700), DARK, "ma")
+            T2(d, xs[kind] + 180, 140 + dy, CAP[kind][0], F(30, 700), DARK, "ma")
             sz = 22
             while F(sz, 400).getlength(CAP[kind][1]) > 350 and sz > 16: sz -= 1
-            T2(d, xs[kind] + 180, y + 308 + dy, CAP[kind][1], F(sz, 400), GREY, "ma")
+            T2(d, xs[kind] + 180, 178 + dy, CAP[kind][1], F(sz, 400), GREY, "ma")
         f.el(ap(t, tid, 0.4), cap)
-    # Schleifen-Rahmen als Idee: Block im Rahmen
     def idea(d, dy):
-        T2(d, 640, 520 + dy, "Eine Schleife = ein Rahmen um den Block, der wiederholt wird", F(28, 600), DARK, "ma")
-    f.el(ap(t, ct(0) + 0.5, 0.5) * (1 - ap(t, ct(2), 0.4)), idea)
-    pill(f, t, ct(5) + 0.4, 170, 560, 160, 54, "while", fill=DARK, size=32)
-    pill(f, t, ct(5) + 1.0, 950, 560, 160, 54, "for", fill=DARK, size=32)
+        T2(d, 640, 300 + dy, "Eine Schleife = eine Linie, die zurück vor die Bedingung führt", F(30, 600), DARK, "ma")
+    f.el(ap(t, ct(0) + 0.5, 0.5) * (1 - ap(t, ct(1) + 0.2, 0.4)), idea)
+    pill(f, t, ct(5) + 0.4, 170, 650, 160, 44, "while", fill=DARK, size=28)
+    pill(f, t, ct(5) + 1.0, 950, 650, 160, 44, "for", fill=DARK, size=28)
 
 # ---------------------------------------------------------------- 3 Abbruch, Endlosschleife, Watchdog
 def path_pos(pts, dist):
@@ -111,23 +130,23 @@ def sc3(f, t, ct):
     heading(f, t, "Abbruchbedingung und Endlosschleife")
     endless = ap(t, ct(3), 0.5)
     ax, ay, bx, by = 110, 160, 110, 330
-    loop = [(260, ay + 80), (260, by), (260, by + 100), (520, by + 50), (520, ay + 40), (410, ay + 40)]
+    loop = [(260, ay + 80), (260, by), (260, by + 100), (520, by + 50), (520, 124), (260, 124)]
     def flow(d, dy):
-        d.rounded_rectangle((ax, ay + dy, ax + 300, ay + 80 + dy), 14, fill=WHITE, outline=DARK, width=3)
-        T2(d, ax + 150, ay + 40 + dy, "Bedingung wahr?", F(28, 700), DARK, "mm")
+        d.polygon([(ax + 150, ay + dy), (ax + 300, ay + 40 + dy), (ax + 150, ay + 80 + dy), (ax, ay + 40 + dy)], fill=WHITE, outline=DARK, width=3)
+        T2(d, ax + 150, ay + 40 + dy, "Bedingung wahr?", F(21, 700), DARK, "mm")
         bcol = mix((230, 247, 238), (255, 226, 230), endless)
         d.rounded_rectangle((bx, by + dy, bx + 300, by + 100 + dy), 14, fill=bcol, outline=DARK, width=3)
         T2(d, bx + 150, by + 28 + dy, "Block ausführen", F(28, 700), DARK, "mm")
         d.rounded_rectangle((110, 500 + dy, 410, 570 + dy), 14, fill=WHITE, outline=DARK, width=3)
         T2(d, 260, 535 + dy, "Ende", F(28, 700), DARK, "mm")
         arrow(d, 260, ay + 80 + dy, 260, by + dy, DARK, 4); T2(d, 275, ay + 118 + dy, "ja", F(22, 700), GREEN, "lm")
-        d.line((410, by + 50 + dy, 520, by + 50 + dy), fill=DARK, width=4); d.line((520, by + 50 + dy, 520, ay + 40 + dy), fill=DARK, width=4)
-        arrow(d, 520, ay + 40 + dy, 410, ay + 40 + dy, DARK, 4)
+        d.line((410, by + 50 + dy, 520, by + 50 + dy), fill=DARK, width=4); d.line((520, by + 50 + dy, 520, 124 + dy), fill=DARK, width=4)
+        d.line((260, 108 + dy, 260, ay + dy - 4), fill=DARK, width=4); arrow(d, 520, 124 + dy, 262, 124 + dy, DARK, 4)
         d.line((110, ay + 40 + dy, 80, ay + 40 + dy), fill=DARK, width=4); d.line((80, ay + 40 + dy, 80, 535 + dy), fill=DARK, width=4)
         arrow(d, 80, 535 + dy, 110, 535 + dy, DARK, 4); T2(d, 72, 360 + dy, "nein", F(22, 700), RED, "rm")
     f.el(ap(t, ct(0) + 0.2, 0.5), flow)
     # Wanderpunkt
-    P = [(ax + 150, ay + 80), (ax + 150, by), (ax + 150, by + 50), (520, by + 50), (520, ay + 40), (410, ay + 40), (ax + 300, ay + 40), (ax + 150, ay + 40), (ax + 150, ay + 80)]
+    P = [(ax + 150, ay + 80), (ax + 150, by), (ax + 150, by + 50), (520, by + 50), (520, 124), (260, 124), (260, ay + 40), (ax + 150, ay + 80)]
     speed = lerp(150, 330, endless); dist = (t - ct(0)) * speed
     lap = int(max(0, t - ct(0)) * 150 / sum(math.dist(P[i], P[i + 1]) for i in range(len(P) - 1)))
     x, y = path_pos(P, dist)
@@ -299,12 +318,9 @@ def poster(path):
         P.hline(d, 0, ZIEL, RED, "Ziel 60 °C", lx=560)
         for i in range(4):
             x = 900 + i * 0; y = 450 + i * 50
-        d.rounded_rectangle((880, 450, 1200, 520), 12, fill=WHITE, outline=DARK, width=3); T2(d, 1040, 485, "solange Temperatur > 60 °C", F(24, 700), DARK, "mm")
-        d.rectangle((880, 520, 910, 640), fill=(222, 226, 232), outline=DARK, width=2); d.rectangle((910, 520, 1200, 580), fill=WHITE, outline=DARK, width=2)
-        d.rectangle((910, 580, 1200, 640), fill=WHITE, outline=DARK, width=2)
-        T2(d, 1055, 550, "Temperatur neu berechnen", F(22, 400), DARK, "mm"); T2(d, 1055, 610, "Minuten um 1 erhöhen", F(22, 400), DARK, "mm")
         T2(d, 1220, 694, LABEL, F(16, 400), GREY, "ra")
-    f.el(1, fn); f.img.save(path)
+    f.el(1, fn)
+    f.img.paste(LOOPS['head'].render((380, 330), (0, -4), zoom=0.92), (840, 380)); f.img.save(path)
 
 if __name__ == "__main__":
     dispatch(HERE, SRC, SECS, SCENES, LABEL, poster, NAME)

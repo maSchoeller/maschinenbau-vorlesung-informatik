@@ -6,7 +6,7 @@ SRC = [
   "Punkt für Punkt wächst so die Abkühlkurve.",
   "Eine Rechnung immer wieder auf das letzte Ergebnis anzuwenden, nennt man Iteration, und im Programm schreibst du sie als Schleife."],
  ["Eine Schleife wiederholt einen Block von Anweisungen.",
-  "Im Struktogramm, dem genormten Ablaufdiagramm aus Kästchen, zeichnest du sie als Rahmen um den Block.",
+  "Im Programmablaufplan zeichnest du sie als Rückweg: Eine Linie führt vom Ende des Blocks zurück vor die Bedingung.",
   "Bei der kopfgesteuerten Schleife steht die Bedingung oben: Sie wird vor jedem Durchlauf geprüft, der Block läuft vielleicht gar nicht.",
   "Bei der fußgesteuerten Schleife steht die Bedingung unten: Der Block läuft mindestens einmal.",
   "Und die Zählschleife wiederholt den Block genau so oft, wie du vorher festlegst.",

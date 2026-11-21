@@ -8,7 +8,7 @@ KI-Zugang: Studierende können GitHub Copilot über die DHBW bekommen (GitHub Ed
 „KI schreibt Code – Ingenieure spezifizieren, prüfen und verantworten.“
 Vier Argumente, warum man trotzdem programmieren lernt:
 1. Was man nicht lesen kann, kann man nicht prüfen (Haftung liegt beim Menschen).
-2. KI verstärkt, was man ihr gibt – ein Struktogramm ist ein sehr guter Prompt.
+2. KI verstärkt, was man ihr gibt – ein sauberer Programmablaufplan ist ein sehr guter Prompt.
 3. Überschlagen > Rechnen: 0.1+0.2, Überlauf, mm/m-Verwechslung erkennen.
 4. Im Betrieb ist KI oft nicht erlaubt (CAD-Daten, Kundendaten, SPS).
 
@@ -34,13 +34,13 @@ Jeder Termin hat einen **Informatik-Strang** (Theorie) und einen **Python-Strang
 | V02 | Bits, Binär, Hex, Zweierkomplement | int, int(text) für Eingaben, Rechenoperatoren (+ - * / // % **), Operatorrangfolge, bin()/hex()/int(x, 2) | Encoder-Zähler läuft über | 1 |
 | V03 | Fließkommazahlen & Datentypen | float, type(), Typumwandlung int()/float()/str(), input → Zahl, f-Strings mit Format (:.2f), math-Modul, math.isclose | 0.1+0.2, Toleranzen addieren | 1 |
 | V04 | Boolesche Logik | bool, Vergleichsoperatoren, and/or/not, if / elif / else, Einrückung | Zweihand-Sicherheitsschaltung | 1 |
-| V05 | Problemanalyse & Struktogramm | Struktogramm → Code, verschachtelte Verzweigungen, Eingabe prüfen | Struktogramm wird zum Prompt | 1 |
+| V05 | Problemanalyse & Programmablaufplan | PAP → Code, verschachtelte Verzweigungen, Eingabe prüfen | Der PAP wird zum Prompt | 1 |
 | V06 | Algorithmen mit Wiederholung | while, for, range, break/continue, Zähler & Summen | Abkühlkurve, Newton-Verfahren | 1 |
 | V07 | Zerlegung, KISS/DRY/SRP | def, Parameter, return, Default-Werte, Docstring, lokale Variablen | Wellen-Rechner aus Bausteinen | 1 |
 | V08 | Datenstrukturen | Listen (Index, Slicing, append, len), for über Listen, Tupel, Dictionaries | Stückliste, Messreihe | 1 |
 | V09 | Dateien & Fehler | Strings (split, strip), with open, csv-Modul, try/except | eigene Smartphone-Messdaten (phyphox) | 1 |
 | V10 | Wie funktioniert KI? Tokens, Training, Halluzination | String-Methoden vertieft, List Comprehension, einfacher Tokenizer | warum KI selbstbewusst falsch liegt | 2 |
-| V11 | Programmieren mit Copilot: spezifizieren, generieren, prüfen | import, Module & pip, Codespaces/VS Code, Copilot-Workflow | Prompt A vs. Struktogramm als Prompt | 2 |
+| V11 | Programmieren mit Copilot: spezifizieren, generieren, prüfen | import, Module & pip, Codespaces/VS Code, Copilot-Workflow | Prompt A vs. PAP als Prompt | 2 |
 | V12 | Testen & Debuggen | assert, Testfälle schreiben, Tracebacks lesen, Debugger | Testfälle von Hand, Grenzwerte | 2 |
 | V13 | Laufzeit-Intuition | NumPy-Arrays, Vektorisierung, Zeit messen | 1 Mio. Messpunkte: Schleife vs. Vektor | 2 |
 | V14 | Visualisierung | matplotlib (plot, Achsen, Einheiten, Subplots) | Diagramme, die täuschen – Projekt-Kickoff | 3 |

@@ -1,1 +1,1 @@
-Zeile acht ist die erste Verzweigung: or verknüpft drei Bedingungen, eine wahre genügt. Zeile neun ist die Meldung: der ja-Zweig. Mit else in Zeile zehn beginnt der nein-Zweig: Alles Eingerückte läuft nur bei plausiblen Eingaben.
+Zeile acht ist die erste Raute: or verknüpft drei Bedingungen, eine wahre genügt. Zeile neun ist der ja-Zweig, die Meldung. Mit else in Zeile zehn beginnt der nein-Zweig: Alles Eingerückte läuft nur bei plausiblen Eingaben.

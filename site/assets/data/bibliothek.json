@@ -1522,9 +1522,9 @@
    "kategorie": "Bedingungen",
    "eingefuehrt": "V05",
    "ampel": "kopf",
-   "kurz": "Eine Entscheidung innerhalb einer anderen – so setzt du Struktogramme um.",
+   "kurz": "Eine Entscheidung innerhalb einer anderen – so setzt du Programmablaufpläne um.",
    "syntax": "if a:\n    if b:\n        ...\n    else:\n        ...\nelse:\n    ...",
-   "erklaerung": "Ein if darf in einem anderen if stehen. Jede Ebene wird einmal weiter eingerückt. Das übersetzt ein verschachteltes Struktogramm Zeile für Zeile. Prüfe zuerst die Bedingung, die alles andere erst sinnvoll macht, zum Beispiel ob die Eingabe überhaupt gültig ist.",
+   "erklaerung": "Ein if darf in einem anderen if stehen. Jede Ebene wird einmal weiter eingerückt. Das übersetzt einen Programmablaufplan mit einer Raute innerhalb eines Zweigs Zeile für Zeile. Prüfe zuerst die Bedingung, die alles andere erst sinnvoll macht, zum Beispiel ob die Eingabe überhaupt gültig ist.",
    "beispiel": "drehzahl = 2800\noeltemp = 105\nif drehzahl > 2500:\n    if oeltemp > 100:\n        print(\"Drehzahl begrenzen\")\n    else:\n        print(\"Hohe Drehzahl, Temperatur ok\")\nelse:\n    print(\"Normalbetrieb\")",
    "wann_nutzen": "Wenn eine zweite Frage nur Sinn hat, nachdem die erste mit Ja beantwortet wurde.",
    "transfer": [
