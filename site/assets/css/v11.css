@@ -1,0 +1,127 @@
+/* =============================================================
+   v11.css – Lektion V11 (Programmieren mit Copilot): vier Explorables (import-Namen, pip-Ablauf, Prompt-Bewerter,
+   Passungs-PAP), Vergleich Prompt A / PAP als Prompt, Anleitung mit schematischen Skizzen, Arbeitsablauf.
+   Baut auf kurs.css und v05.css (PAP-Stile .pap, .pap--run) auf. Präfix v11-. Rot nur für den aktiven Zustand.
+   ============================================================= */
+
+.v11-lbl { font-size: var(--fs-sm); font-weight: 600; }
+.v11-bar { align-items: center; margin: 0 0 var(--sp-3); }
+.v11-bar .k-btn { min-height: 44px; }
+.v11-count { margin-left: var(--sp-2); }
+.v11-seg { flex-wrap: wrap; max-width: 100%; }
+.v11-seg button { font-family: var(--dhbw-font-mono); font-size: var(--fs-sm); }
+.v11-box__t { margin: 0 0 var(--sp-2); font-weight: 600; max-width: none; }
+
+/* (A) import-Namen */
+.v11-two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-5); margin-bottom: var(--sp-4); max-width: none; }
+@media (max-width: 800px) { .v11-two { grid-template-columns: minmax(0, 1fr); } }
+.v11-mine, .v11-mod { padding: var(--sp-3) var(--sp-4); border-left: 3px solid var(--border); background: var(--canvas); }
+.v11-mine { border-left-color: var(--red-dark, #B00014); }
+.v11-name { margin: 0 0 var(--sp-2); max-width: none; font-size: var(--fs-sm); }
+.v11-chips { display: flex; flex-wrap: wrap; gap: var(--sp-2); list-style: none; margin: 0 0 var(--sp-2); padding: 0; max-width: none; }
+.v11-chips li { font-family: var(--dhbw-font-mono); font-size: var(--fs-sm); padding: 4px 10px; border: 1px solid #374151; background: #fff; }
+.v11-out { margin: var(--sp-3) 0 0; padding: var(--sp-3) var(--sp-4); min-height: 3.4em; font-family: var(--dhbw-font-mono); font-size: var(--fs-sm); border-left: 3px solid var(--border); background: var(--canvas); white-space: pre-wrap; word-break: break-word; max-width: none; }
+.v11-out.is-ok { border-color: var(--k-ok); background: var(--k-ok-bg); }
+.v11-out.is-bad { border-color: var(--k-bad); background: var(--k-bad-bg); color: var(--k-bad); }
+
+/* (B) pip */
+.v11-msg { min-height: 3.6em; margin: 0 0 var(--sp-3); font-weight: 600; max-width: var(--k-measure); }
+.v11-msg.is-on { padding: var(--sp-3) var(--sp-4); border-left: 3px solid var(--k-info); background: var(--k-info-bg); }
+.v11-msg.is-on.is-ok { border-color: var(--k-ok); background: var(--k-ok-bg); }
+.v11-cmd { margin: 0 0 var(--sp-4); padding: var(--sp-3) var(--sp-4); background: var(--code-bg); color: var(--code-text); font-family: var(--dhbw-font-mono); font-size: var(--fs-sm); border-radius: var(--r-base); white-space: pre-wrap; word-break: break-word; max-width: none; }
+.v11-cmd.is-bad { border-left: 4px solid #FF5A6E; }
+.v11-orte { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--sp-3); max-width: none; }
+@media (max-width: 1000px) { .v11-orte { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .v11-orte { grid-template-columns: minmax(0, 1fr); } }
+.v11-ort { padding: var(--sp-3); border: 2px solid var(--border); background: #fff; transition: border-color .2s, background .2s; }
+.v11-ort__t { margin: 0 0 var(--sp-1); font-weight: 600; max-width: none; }
+.v11-ort p { max-width: none; }
+.v11-ort.is-active { border-color: #E2001A; background: var(--red-tint); }
+.v11-ort.is-bad { border-color: var(--k-bad); background: var(--k-bad-bg); }
+
+/* (C) Prompt-Bewerter */
+.v11-ta { width: 100%; max-width: 760px; min-height: 12em; padding: var(--sp-3); font-family: var(--dhbw-font-mono); font-size: var(--fs-sm); line-height: 1.5; border: 2px solid var(--border); border-radius: var(--r-base); resize: vertical; }
+.v11-ta:focus { outline: 3px solid #E2001A; outline-offset: 1px; }
+.v11-sum { margin: var(--sp-3) 0; font-weight: 600; max-width: none; }
+.v11-krit { list-style: none; margin: 0 0 var(--sp-3); padding: 0; display: grid; gap: var(--sp-2); max-width: 760px; }
+.v11-krit li { display: grid; grid-template-columns: auto 1fr; gap: var(--sp-3); align-items: start; padding: var(--sp-2) var(--sp-3); border-left: 3px solid var(--border); background: var(--canvas); }
+.v11-krit li.is-ok { border-color: var(--k-ok); background: var(--k-ok-bg); }
+.v11-krit li.is-bad { border-color: var(--k-bad); background: var(--k-bad-bg); }
+.v11-krit .k-ic { margin-top: 3px; }
+
+/* (D) Passung-PAP */
+.v11-grid { display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); gap: var(--sp-5); align-items: start; margin-bottom: var(--sp-3); max-width: none; }
+@media (max-width: 900px) { .v11-grid { grid-template-columns: minmax(0, 1fr); } }
+.v11-pap { margin: 0; }
+.v11-pap .pap { max-width: 440px; }
+.v11-tab { border-collapse: collapse; width: 100%; max-width: 560px; }
+.v11-tab th, .v11-tab td { padding: var(--sp-2) var(--sp-3); border: 1px solid var(--border); text-align: left; font-size: var(--fs-sm); }
+.v11-tab th { background: var(--canvas); font-family: var(--dhbw-font-mono); font-weight: 600; }
+.v11-tab td { font-family: var(--dhbw-font-mono); }
+
+/* Hook: Prompt A gegen PAP als Prompt */
+.v11-vergleich { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-5); align-items: start; max-width: none; }
+@media (max-width: 1000px) { .v11-vergleich { grid-template-columns: minmax(0, 1fr); } }
+.v11-spalte { min-width: 0; }
+.v11-spalte h4 { margin: 0 0 var(--sp-2); }
+.v11-label { display: inline-block; margin: 0 0 var(--sp-2); padding: 2px 10px; font-size: var(--fs-sm); font-weight: 600; border: 1px solid var(--border); background: var(--canvas); max-width: none; }
+.v11-prompt { margin: 0 0 var(--sp-3); padding: var(--sp-3) var(--sp-4); border-left: 3px solid var(--border); background: var(--canvas); white-space: pre-wrap; font-size: var(--fs-sm); max-width: none; }
+
+/* Arbeitsablauf (Spezifizieren – Testen – Generieren – Prüfen) */
+.v11-fluss { width: 100%; max-width: 980px; height: auto; display: block; }
+.v11-fluss rect { fill: #fff; stroke: #374151; stroke-width: 2; }
+.v11-fluss rect.hot { fill: var(--red-tint); stroke: #E2001A; stroke-width: 2.6; }
+.v11-fluss text { font-family: var(--dhbw-font); font-size: 15px; fill: var(--text); }
+.v11-fluss text.k { font-weight: 700; }
+.v11-fluss text.s { font-size: 13px; fill: var(--k-muted); }
+.v11-fluss path { stroke: #374151; stroke-width: 2; fill: none; }
+.v11-fluss path.back { stroke: #E2001A; stroke-dasharray: 6 5; }
+.v11-fluss polygon { fill: #374151; }
+.v11-fluss polygon.back { fill: #E2001A; }
+
+/* Anleitung: Schritte mit Skizzen */
+.v11-anleitung { counter-reset: v11step; list-style: none; margin: 0; padding: 0; display: grid; gap: var(--sp-6, 40px); max-width: none; }
+.v11-anleitung > li { counter-increment: v11step; display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: var(--sp-5); align-items: start; padding-top: var(--sp-4); border-top: 1px solid var(--border); }
+.v11-anleitung > li:first-child { border-top: 0; padding-top: 0; }
+@media (max-width: 1000px) { .v11-anleitung > li { grid-template-columns: minmax(0, 1fr); } }
+.v11-anleitung h4 { margin: 0 0 var(--sp-2); }
+.v11-anleitung h4::before { content: counter(v11step); display: inline-grid; place-items: center; width: 1.9em; height: 1.9em; margin-right: .6em; background: #E2001A; color: #fff; border-radius: 50%; font-size: .9em; font-weight: 700; }
+.v11-anleitung p, .v11-anleitung ul { max-width: none; }
+.v11-anleitung figure { margin: 0; }
+.v11-anleitung figcaption { margin-top: var(--sp-2); font-size: var(--fs-sm); color: var(--k-muted); max-width: none; }
+.v11-skizze { width: 100%; height: auto; display: block; border: 1px solid var(--border); background: #fff; }
+.v11-skizze .fenster { fill: #fff; stroke: #374151; stroke-width: 2; }
+.v11-skizze .leiste { fill: #E5E7EB; stroke: #374151; stroke-width: 2; }
+.v11-skizze .feld { fill: #fff; stroke: #6B7280; stroke-width: 1.6; }
+.v11-skizze .flaeche { fill: #F3F4F6; stroke: #9CA3AF; stroke-width: 1.2; }
+.v11-skizze .dunkel { fill: #1F2937; stroke: #1F2937; stroke-width: 1.2; }
+.v11-skizze .knopf { fill: #fff; stroke: #374151; stroke-width: 2; }
+.v11-skizze .knopf-rot { fill: #E2001A; stroke: #9B1213; stroke-width: 2; }
+.v11-skizze .knopf-gruen { fill: #1F7A3E; stroke: #14532B; stroke-width: 2; }
+.v11-skizze .rahmen-rot { fill: none; stroke: #E2001A; stroke-width: 3; stroke-dasharray: 7 5; }
+.v11-skizze .linie { stroke: #374151; stroke-width: 2; fill: none; }
+.v11-skizze .pfeil { stroke: #E2001A; stroke-width: 2.6; fill: none; }
+.v11-skizze .pfeilkopf { fill: #E2001A; }
+.v11-skizze .geist { fill: #9CA3AF; }
+.v11-skizze .code { font-family: var(--dhbw-font-mono); font-size: 13px; fill: #E5E7EB; }
+.v11-skizze .t { font-family: var(--dhbw-font); font-size: 14px; fill: #111827; }
+.v11-skizze .tk { font-family: var(--dhbw-font); font-size: 12px; fill: #4B5563; }
+.v11-skizze .tb { font-family: var(--dhbw-font); font-size: 14px; font-weight: 700; fill: #111827; }
+.v11-skizze .tw { font-family: var(--dhbw-font); font-size: 14px; font-weight: 700; fill: #fff; }
+.v11-skizze .tg { font-family: var(--dhbw-font-mono); font-size: 13px; fill: #9CA3AF; }
+.v11-skizze .tm { font-family: var(--dhbw-font-mono); font-size: 13px; fill: #111827; }
+.v11-skizze .nr { fill: #E2001A; }
+.v11-skizze .nrt { font-family: var(--dhbw-font); font-size: 13px; font-weight: 700; fill: #fff; }
+
+.v11-hinweisliste { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-5); max-width: none !important; }
+@media (max-width: 1000px) { .v11-hinweisliste { grid-template-columns: minmax(0, 1fr); } }
+.v11-hinweisliste > div > h4 { margin-top: 0; }
+
+.v11-ampelzeile { max-width: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .v11-ort { transition: none; }
+}
+
+/* Nicht ausführbare Codeblöcke (Terminal-Befehle, Texte) dürfen auf dem Handy seitlich scrollen */
+pre[data-run="no"] { max-width: 100%; overflow-x: auto; }

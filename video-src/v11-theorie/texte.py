@@ -1,0 +1,37 @@
+"""Sprechertext V11 Theorie (Quelltext mit Markup)."""
+SRC = [
+ ["Eine Konstrukteurin braucht ein Programm für Passungen. Sie fragt die KI zweimal.",
+  "Einmal mit einem Satz: Schreib mir was für Passungen.",
+  "Und einmal mit ihrem Programmablaufplan.",
+  "Beide Antworten sehen gut aus. Nur eine hat einen Fehler, und der steckt genau an der Grenze."],
+ ["Der erste Prompt lässt viel offen. Die KI muss raten: Welche Maße, welche Einheit, was gilt bei Gleichheit?",
+  "Sie füllt die Lücken mit dem, was am häufigsten vorkommt, und erfindet sogar Toleranzwerte.",
+  "Der zweite Prompt ist der Programmablaufplan in Sätzen: zwei Rauten, drei Ausgaben, dazu Einheit und ein Beispiel.",
+  "Fünf Fragen helfen vor dem Abschicken: Eingaben, Ausgaben, Einheiten, Grenzfälle, Beispiele."],
+ ["Der wichtigste Schritt kommt vor dem Prompt: Du schreibst die Testfälle von Hand.",
+  "Je ein Fall pro Zweig, und ein Fall genau auf der Grenze. Hier: Das Spiel ist genau null.",
+  "Dann lässt du die KI den Code erzeugen und führst deine Tests aus.",
+  "Die erste Antwort scheitert am Grenzfall: größer statt größer-gleich. Ohne den Test wäre der Fehler nie aufgefallen."],
+ ["Zum Auswerten brauchst du fertige Bausteine. Ein Modul ist eine Python-Datei mit Funktionen.",
+  "Mit `import math` holst du das ganze Modul und schreibst `math.sqrt`.",
+  "Mit `from math import sqrt` holst du nur die Funktion, ohne Modulnamen.",
+  "Mit `import math as m` vergibst du einen Kurznamen. Danach gibt es nur `m`, der Name `math` existiert nicht.",
+  "Die Standardbibliothek bringt `math`, `statistics` und `random` mit. Ein eigenes Modul ist einfach eine eigene Datei."],
+ ["Was nicht zur Standardbibliothek gehört, ist ein Paket. Das holt das Programm pip aus dem Paketindex.",
+  "Fehlt ein Paket, meldet Python ModuleNotFoundError. Du installierst es im Terminal mit `pip install`, nicht im Programm.",
+  "Aber Vorsicht: KI erfindet manchmal Paketnamen. Wer sie blind installiert, kann sich ein Schadpaket holen.",
+  "Erst prüfen, ob es das Paket gibt, wie bekannt es ist und wer es pflegt."],
+ ["Mit GitHub Copilot arbeitest du im Editor: graue Vorschläge mit Tab annehmen, mit Escape ablehnen, dazu ein Chat.",
+  "Das Tippen übernimmt die KI. Spezifizieren, Testen und Freigeben bleibt bei dir.",
+  "Keine Firmen- oder Kundendaten in Prompts.",
+  "Ablauf: spezifizieren, Testfälle von Hand, generieren, prüfen, verantworten."],
+]
+
+SZENEN = [
+ "Eine Konstrukteurin am Schreibtisch; zwei Sprechblasen: links ein kurzer Satz, rechts ein kleiner Programmablaufplan mit zwei Rauten. Daneben zwei Codefenster, beide sehen gleich ordentlich aus; am Ende blinkt ein rotes Fragezeichen an einem Vergleichszeichen.",
+ "Links der vage Prompt mit fünf Fragezeichen (Maße, Einheit, Gleichheit, Ausgabe, Beispiel). Rechts der Passungs-PAP wird Zeile für Zeile zu einem Prompt-Text; fünf Haken erscheinen für Eingaben, Ausgaben, Einheiten, Grenzfälle, Beispiele.",
+ "Tabelle mit vier Testfällen (g6, r6, k6, h6); der vierte ist als Grenzfall markiert. Dann Codefenster mit der KI-Antwort A: Testschleife läuft, drei grüne Haken, ein rotes FEHLER beim Grenzfall; der Operator > wird rot umkreist und durch >= ersetzt.",
+ "Werkzeugkiste math öffnet sich. Drei Karten nacheinander: import math (Namensschild math.sqrt), from math import sqrt (Schild sqrt), import math as m (Schild m; math durchgestrichen mit NameError). Dann drei Module math, statistics, random als Kisten und eine Datei passungen.py.",
+ "Schema: Dein Programm sucht in Standardbibliothek und installierten Paketen, findet nichts, rote Meldung ModuleNotFoundError. Danach ein Terminal mit pip install und ein Pfeil zum Paketindex PyPI. Zum Schluss ein Warnschild an einem erfundenen Paketnamen.",
+ "Ausschnitt eines Editors mit grauem Vorschlag; Tab-Taste und Esc-Taste leuchten. Seitenfenster Chat. Dann die fünf Schritte als Reihe (Spezifizieren, Testfälle, Generieren, Prüfen, Verantworten) mit Pfeil zurück bei roten Tests.",
+]

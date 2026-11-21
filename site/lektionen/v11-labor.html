@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>V11 Programmierlabor · Informatik Maschinenbau</title>
+  <meta name="description" content="Programmierlabor V11: Arbeitsumgebung mit Aufgabenliste, Editor und Befehls-Bibliothek. Teil A im Labor, Teil B Training zu Hause. import, Module der Standardbibliothek, eigenes Modul, pip-Konzept, Prompt-Qualität und KI-Code prüfen.">
+  <link rel="stylesheet" href="../assets/css/dhbw-base.css">
+  <link rel="stylesheet" href="../assets/css/kurs.css">
+  <link rel="stylesheet" href="../assets/css/aufgaben.css">
+  <link rel="stylesheet" href="../assets/css/editor.css">
+  <link rel="stylesheet" href="../assets/css/labor.css">
+  <link rel="stylesheet" href="../assets/css/v05.css">
+  <link rel="stylesheet" href="../assets/css/pap-editor.css">
+  <link rel="stylesheet" href="../assets/css/v11.css">
+</head>
+<body data-lesson="V11" data-page="labor">
+  <a class="k-skip" href="#inhalt">Zum Inhalt springen</a>
+
+  <header class="dhbw-header k-header">
+    <div class="dhbw-header__inner">
+      <a class="k-logo" href="../index.html" aria-label="Zur Startseite">
+        <span class="k-logo__mark" aria-hidden="true">DHBW</span>
+        <span class="k-logo__text">Informatik Maschinenbau<small>Campus Horb · 2026/27</small></span>
+      </a>
+      <nav class="k-nav" aria-label="Hauptnavigation">
+        <a href="../index.html">Start</a>
+        <a href="../index.html#lernpfad">Lernpfad</a>
+        <a href="../bibliothek.html">Bibliothek</a>
+        <a href="../pap-editor.html">PAP-Editor</a>
+        <a href="v11-copilot.html">V11 Lerneinheit</a>
+        <a href="v11-labor.html" aria-current="page">V11 Labor</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="lab" data-lab>
+
+    <nav class="lab__list" aria-label="Aufgabenliste">
+      <div class="lab__listhead">
+        <p class="lab__title">Programmierlabor V11</p>
+        <a class="lab__back" href="v11-copilot.html">← Lerneinheit</a>
+      </div>
+      <div class="a-progress" data-a-progress>
+        <span class="a-progress__bar"><span class="a-progress__fill"></span></span>
+        <span class="a-progress__text">0 von 14 Aufgaben gelöst</span>
+      </div>
+      <p class="lab__legend k-small k-muted"><span><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-circle"/></svg> offen</span><span><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-half"/></svg> begonnen</span><span><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-done"/></svg> gelöst</span></p>
+      <div data-lab-items></div>
+    </nav>
+
+    <main id="inhalt" class="lab__main" tabindex="-1">
+      <div class="lab__bar">
+        <div class="lab__select">
+          <label for="lab-select">Aufgabe</label>
+          <select id="lab-select"></select>
+        </div>
+        <button type="button" class="k-btn k-btn--ghost k-btn--small" id="lab-toolbox-btn" aria-expanded="false" aria-controls="lab-drawer">Werkzeugkasten</button>
+      </div>
+      <section class="lab__drawer" id="lab-drawer" aria-label="Werkzeugkasten" hidden></section>
+
+    <section class="l-task" id="a-werkzeugkasten" data-title="Werkzeugkasten" data-part="A" data-stars="" data-min="5" data-extra="" aria-labelledby="h-a-werkzeugkasten" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-werkzeugkasten" tabindex="-1">Werkzeugkasten</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Heute neu in Python: <abbr class="k-begriff" data-erklaerung="Ein Modul ist eine Python-Datei mit fertigen Funktionen und Werten, die du in dein Programm holen kannst, wie eine Werkzeugkiste, die du aus dem Regal nimmst, statt jedes Werkzeug selbst zu bauen."><strong>Module</strong></abbr> mit <code class="k-i">import</code> in drei Schreibweisen (<code class="k-i">import x</code>, <code class="k-i">from x import y</code>, <code class="k-i">import x as y</code>), die <abbr class="k-begriff" data-erklaerung="Die Standardbibliothek ist die Sammlung von Modulen, die mit jedem Python mitgeliefert wird, zum Beispiel math, statistics und random. Man muss sie nicht installieren, nur importieren."><strong>Standardbibliothek</strong></abbr> (<code class="k-i">math</code>, <code class="k-i">statistics</code>, <code class="k-i">random</code>), ein <strong>eigenes Modul</strong> und das Konzept von <abbr class="k-begriff" data-erklaerung="pip ist das Installationsprogramm für Python-Pakete. Mit „pip install name“ lädt es ein Paket aus dem Paketindex und legt es auf deinem Rechner ab."><code class="k-i">pip</code></abbr>. Dazu kommen die Prompt-Checkliste und die Tasten von Copilot. Das Konzept <code class="k-i">pip</code> ist Lesestoff: Im Browser kannst du es nicht ausführen.</p>
+      <figure class="k-video">
+        <video controls preload="metadata" poster="../assets/video/v11-python-poster.png" aria-label="Python-Werkstatt: import, Module der Standardbibliothek und eigenes Modul (ca. 3 Min)">
+          <source src="../assets/video/v11-python.mp4" type="video/mp4">
+          <track kind="subtitles" srclang="de" label="Deutsch" src="../assets/video/v11-python.vtt" default>
+          Dein Browser kann dieses Video nicht abspielen.
+        </video>
+        <div class="k-video__missing" hidden>Video folgt. Bis dahin: Lies den Code unten Zeile für Zeile und probiere ihn aus.</div>
+        <figcaption>Python-Werkstatt: import, Module der Standardbibliothek und eigenes Modul (ca. 3 Min). Untertitel sind eingeschaltet (Deutsch).</figcaption>
+      </figure>
+      <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke</strong><p>Diese sechs <abbr class="k-begriff" data-erklaerung="Die Syntax ist die Schreibweise einer Programmiersprache, wie die Grammatik einer Sprache: Reihenfolge, Klammern, Anführungszeichen. Ein Tippfehler dort heißt Syntaxfehler.">Syntax</abbr>-Karten sind dein Spickzettel, bis es sitzt. Du erreichst sie in jeder Aufgabe über den Knopf „Werkzeugkasten“ oben. Alle Befehle des Kurses stehen außerdem rechts in der Befehls-Bibliothek. Führe jede Python-Karte aus und lies die Ausgabe. Karte 4 und 5 sind Textkarten ohne Ausführen.</p></div>
+      <div class="lab__toolbox" id="lab-toolbox">
+<div class="a-syntax-list">
+  <article class="a-syntax" aria-labelledby="sk-import">
+    <span class="a-syntax__label">Syntax-Karte 1</span>
+    <h4 id="sk-import">import: drei Schreibweisen</h4>
+<pre><code>import math
+from math import sqrt
+import math as m
+print(math.sqrt(16))     # Modulname, Punkt, Funktion
+print(sqrt(16))          # nur die Funktion geholt: ohne Modulname
+print(m.sqrt(16))        # Zweitname m für das Modul</code></pre>
+<pre><code>import math as m
+print(m.pi)
+print(math.pi)           # NameError: nach "import math as m" gibt es nur den Namen m</code></pre>
+    <ul>
+      <li><code class="k-i">import math</code> holt das ganze Modul: Du schreibst immer <code class="k-i">math.</code> davor. Man sieht sofort, woher eine Funktion kommt.</li>
+      <li><code class="k-i">from math import sqrt</code> holt nur diese Funktion: Du schreibst <code class="k-i">sqrt(...)</code> ohne Modulnamen. Mehrere Namen: <code class="k-i">from math import sqrt, pi</code>.</li>
+      <li><code class="k-i">import math as m</code> vergibt einen Zweitnamen. Danach heißt das Modul <code class="k-i">m</code>, der Name <code class="k-i">math</code> existiert <strong>nicht</strong> (<code class="k-i">NameError</code>). Üblich bei langen Namen, zum Beispiel <code class="k-i">import numpy as np</code> (V13).</li>
+      <li><code class="k-i">import</code> steht am Programmanfang. Ein Name, den es im Modul nicht gibt, ist ein <code class="k-i">ImportError</code> (bei <code class="k-i">from</code>) oder <code class="k-i">AttributeError</code> (bei <code class="k-i">math.name</code>). <code class="k-i">from math import *</code> schreibt man nicht.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-stdlib">
+    <span class="a-syntax__label">Syntax-Karte 2</span>
+    <h4 id="sk-stdlib">Standardbibliothek: math, statistics, random</h4>
+<pre><code>import math
+import statistics
+import random
+
+print(math.pi, math.sqrt(2), math.isclose(0.1 + 0.2, 0.3))
+werte = [12.004, 12.011, 11.998, 12.007, 12.019]
+print(statistics.mean(werte), statistics.median(werte))
+print(round(statistics.stdev(werte), 4))
+
+random.seed(1)                       # fester Startwert: gleiche Folge bei jedem Lauf
+print(random.randint(1, 6))          # ganze Zahl von 1 bis 6, beide Grenzen gehören dazu
+print(round(random.uniform(-0.01, 0.01), 4))   # Kommazahl zwischen -0,01 und 0,01</code></pre>
+    <ul>
+      <li><code class="k-i">math</code>: <code class="k-i">sqrt</code>, <code class="k-i">pi</code>, <code class="k-i">sin</code>, <code class="k-i">cos</code>, <code class="k-i">radians</code>, <code class="k-i">isclose</code> (V03). Winkel immer im Bogenmaß.</li>
+      <li><code class="k-i">statistics</code>: <code class="k-i">mean</code> (Mittelwert), <code class="k-i">median</code> (mittlerer Wert der sortierten Reihe), <code class="k-i">stdev</code> (Stichproben-Standardabweichung, braucht mindestens zwei Werte), <code class="k-i">pstdev</code> (Grundgesamtheit).</li>
+      <li><code class="k-i">random</code>: <code class="k-i">random()</code> (0 bis 1), <code class="k-i">uniform(a, b)</code>, <code class="k-i">randint(a, b)</code> (<strong>beide</strong> Grenzen gehören dazu, anders als bei <code class="k-i">range</code>), <code class="k-i">choice(liste)</code>, <code class="k-i">seed(zahl)</code>. Ohne <code class="k-i">seed</code> kommt bei jedem Lauf etwas anderes heraus.</li>
+      <li>Unbekannte Funktion? In der Python-Dokumentation nachschlagen, nicht raten. Gibt es sie nicht, bekommst du einen <code class="k-i">AttributeError</code>.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-eigen">
+    <span class="a-syntax__label">Syntax-Karte 3</span>
+    <h4 id="sk-eigen">Ein eigenes Modul benutzen</h4>
+<pre data-files="../assets/data/v11/passungen.py"><code>import passungen                       # Datei passungen.py im selben Ordner
+
+art = passungen.passungsart(25.000, 25.021, 24.980, 24.993)
+print(art)
+print(passungen.hoechstspiel(25.021, 24.980), "mm")
+print(passungen.GRENZMASSE_25["H7"])      # auch Werte stehen im Modul</code></pre>
+<pre data-files="../assets/data/v11/passungen.py"><code>from passungen import passungsart as art_von
+print(art_von(25.000, 25.021, 25.028, 25.041))</code></pre>
+    <ul>
+      <li>Jede Python-Datei ist ein Modul. Du importierst sie mit ihrem Dateinamen <strong>ohne</strong> <code class="k-i">.py</code>. Sie muss im selben Ordner liegen wie dein Programm (oder dort, wo Python sucht).</li>
+      <li>Im Labor liefert der Ordner <code class="k-i">passungen.py</code> mit (Funktionen <code class="k-i">passungsart</code>, <code class="k-i">hoechstspiel</code>, <code class="k-i">mindestspiel</code> und das Dictionary <code class="k-i">GRENZMASSE_25</code>). In Codespaces legst du die Datei selbst an.</li>
+      <li><strong>Nenne eigene Dateien nie wie ein Modul der Standardbibliothek</strong>: Eine eigene <code class="k-i">math.py</code> verdeckt das echte <code class="k-i">math</code>.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-pip">
+    <span class="a-syntax__label">Syntax-Karte 4</span>
+    <h4 id="sk-pip">pip: Pakete installieren (nur lesen)</h4>
+<pre class="k-code" data-run="no"><code>pip install numpy                # Paket aus dem Paketindex PyPI holen
+pip install numpy==2.0.0         # genau diese Version
+pip list                         # installierte Pakete mit Versionen
+pip freeze &gt; requirements.txt    # Stand festhalten
+pip install -r requirements.txt  # denselben Stand auf einem anderen Rechner herstellen</code></pre>
+<pre class="k-code" data-run="no"><code>ModuleNotFoundError: No module named 'numpy'
+# Bedeutung: Das Paket ist nicht installiert (oder der Name ist falsch geschrieben oder erfunden).</code></pre>
+    <ul>
+      <li><strong>Ampel: Delegieren.</strong> <code class="k-i">pip</code> läuft im <strong>Terminal</strong>, nicht im Python-Programm, und im Browser-Labor geht es nicht. Du musst wissen, was es tut: Es fragt den Paketindex PyPI, holt Paket und Abhängigkeiten in der passenden Version und legt sie auf dem Rechner ab.</li>
+      <li>Die Versionsnummer festzuhalten (<code class="k-i">==</code> oder <code class="k-i">requirements.txt</code>) sorgt dafür, dass das Programm später und woanders noch läuft.</li>
+      <li><strong>Nie blind installieren</strong>, was KI-Code importiert: Der Name kann erfunden sein, und ein Angreifer kann ihn besetzt haben. Erst prüfen (Gibt es das Paket? Wie bekannt, wie alt, wer pflegt es?).</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-prompt">
+    <span class="a-syntax__label">Syntax-Karte 5</span>
+    <h4 id="sk-prompt">Prompt-Checkliste: fünf Fragen</h4>
+<pre class="k-code" data-run="no"><code>Aufgabe:    ein Satz, was die Funktion leisten soll
+Eingaben:   name(param1, param2), Datentypen
+Ausgaben:   Rückgabewert (kein print), Typ und Format
+Einheiten:  alle Maße in mm, Kräfte in N, Spannungen in MPa
+Ablauf:     1. Wenn ...  2. Sonst, wenn ...  3. Sonst ...   (aus dem PAP)
+Grenzfälle: was gilt bei &gt;= / &lt;, bei 0, bei ungültiger Eingabe
+Beispiele:  name(25.000, 24.980) -&gt; "Spielpassung"
+Nicht:      keine Tabellen erfinden, keine Eingabe, kein print</code></pre>
+    <ul>
+      <li>Eingaben, Ausgaben, Einheiten, Grenzfälle, Beispiele: Was fehlt, rät die KI, und sie rät oft das Häufige statt das Richtige.</li>
+      <li>Ein <strong>PAP</strong> liefert „Ablauf“ und „Grenzfälle“ fast fertig: Jede Raute wird zu „Wenn …“, jedes „gleich“ im Zeichen (<code class="k-i">&gt;=</code>) wird zu einem Satz.</li>
+      <li><strong>Testfälle zuerst:</strong> Schreibe sie von Hand, bevor du die KI fragst, mit je einem Fall pro Zweig und einem auf jeder Grenze.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-copilot">
+    <span class="a-syntax__label">Syntax-Karte 6</span>
+    <h4 id="sk-copilot">Copilot in Codespaces: Tasten und Ablauf</h4>
+<pre class="k-code" data-run="no"><code>Tab            grauen Vorschlag annehmen
+Esc            Vorschlag ablehnen
+Alt + ]        nächster Vorschlag      (Alt + [ vorheriger)
+Strg + S       Datei speichern
+Chat           Aufgabe beschreiben, Code erklären lassen, Fehler deuten
+Terminal       python meine_datei.py   (Programm starten)</code></pre>
+    <ul>
+      <li>Ablauf in fünf Schritten: <strong>Spezifizieren, Testfälle von Hand, Generieren, Prüfen, Verantworten.</strong></li>
+      <li>Tasten sind die Standardbelegung und können abweichen. Die Einrichtung steht Schritt für Schritt in der <a href="v11-copilot.html#anleitung">Lerneinheit, Abschnitt 3</a>.</li>
+      <li>Keine Firmen-, Kunden- oder Zugangsdaten in Prompts. Was Copilot liefert, gibst du frei, nicht Copilot.</li>
+    </ul>
+  </article>
+</div>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-vorgemacht" data-title="Vorgerechnetes Beispiel: Copilot-Ergebnis prüfen" data-part="A" data-stars="" data-min="10" data-extra="" aria-labelledby="h-a-vorgemacht" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-vorgemacht" tabindex="-1">Vorgerechnetes Beispiel: Copilot-Ergebnis prüfen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Aufgabe: Copilot hat nach einem PAP als Prompt die Funktion <code class="k-i">passungsart</code> geliefert (Spielpassung, Übermaßpassung, Übergangspassung für Maße in mm). Du prüfst sie mit vier Testfällen, die du <strong>vorher von Hand</strong> aufgeschrieben hast, darunter der Grenzfall „Spiel genau 0“. Danach werten zwei <abbr class="k-begriff" data-erklaerung="Ein Modul ist eine Python-Datei mit fertigen Funktionen und Werten, die du in dein Programm holen kannst, wie eine Werkzeugkiste, die du aus dem Regal nimmst, statt jedes Werkzeug selbst zu bauen.">Module</abbr> der Standardbibliothek (<code class="k-i">statistics</code> und <code class="k-i">math</code>) die Ergebnisse aus. Lies den Code Zeile für Zeile, dann führe ihn aus. Drück danach auf „Schritt für Schritt“ und beobachte, wie die Testschleife jeden Fall durchläuft.</p>
+      <figure class="k-video">
+        <video controls preload="metadata" poster="../assets/video/v11-beispiel-poster.png" aria-label="Vorgerechnet: Copilot-Ergebnis mit Testfällen prüfen (ca. 3 Min)">
+          <source src="../assets/video/v11-beispiel.mp4" type="video/mp4">
+          <track kind="subtitles" srclang="de" label="Deutsch" src="../assets/video/v11-beispiel.vtt" default>
+          Dein Browser kann dieses Video nicht abspielen.
+        </video>
+        <div class="k-video__missing" hidden>Video folgt. Bis dahin: Lies den Code unten Zeile für Zeile und probiere ihn aus.</div>
+        <figcaption>Vorgerechnet: Copilot-Ergebnis mit Testfällen prüfen (ca. 3 Min). Untertitel sind eingeschaltet (Deutsch).</figcaption>
+      </figure>
+      <div class="a-task" data-a="run" data-id="w-vorgemacht" data-count="0" data-mode="programm" data-timeout="5000">
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V11" aria-label="Python-Code: Copilot-Ergebnis mit Testfällen prüfen"># Copilot-Ergebnis prüfen: Passungsart einer Welle-Bohrung-Paarung
+# (V11: import-Varianten, Module der Standardbibliothek, KI-Code mit Testfällen prüfen)
+# Prompt war ein PAP: Spiel, wenn kleinste Bohrung &gt;= größte Welle;
+# Übermaß, wenn größte Bohrung &lt;= kleinste Welle; sonst Übergang.
+
+import statistics
+from math import isclose
+
+
+# --- von Copilot erzeugt (nach dem PAP als Prompt) ---
+def passungsart(bohrung_min, bohrung_max, welle_min, welle_max):
+    """Liefert 'Spielpassung', 'Übermaßpassung' oder 'Übergangspassung' (Maße in mm)."""
+    if bohrung_min &gt;= welle_max:
+        return "Spielpassung"
+    elif bohrung_max &lt;= welle_min:
+        return "Übermaßpassung"
+    else:
+        return "Übergangspassung"
+
+
+# --- Testfälle, VOR dem Generieren von Hand aufgeschrieben ---
+testfaelle = [
+    # (Bohrung min, max, Welle min, max, erwartet)          # Beispiel
+    (25.000, 25.021, 24.980, 24.993, "Spielpassung"),       # 25 H7/g6
+    (25.000, 25.021, 25.028, 25.041, "Übermaßpassung"),     # 25 H7/r6
+    (25.000, 25.021, 25.002, 25.015, "Übergangspassung"),   # 25 H7/k6
+    (25.000, 25.021, 24.987, 25.000, "Spielpassung"),       # Grenzfall: Spiel genau 0
+]
+
+fehler = 0
+for fall in testfaelle:
+    ergebnis = passungsart(fall[0], fall[1], fall[2], fall[3])
+    if ergebnis == fall[4]:
+        print("ok    ", fall[4])
+    else:
+        print("FEHLER", fall, "-&gt;", ergebnis)
+        fehler = fehler + 1
+print("Fehlgeschlagene Tests:", fehler)
+
+# Module helfen beim Auswerten: Höchstspiel und Mittelwert mehrerer Paarungen
+hoechstspiele = [round(f[1] - f[2], 3) for f in testfaelle]
+print("Höchstspiele in mm:", hoechstspiele)
+print("Mittel:", round(statistics.mean(hoechstspiele), 4), "mm")
+grenz = testfaelle[3]
+print("Mindestspiel im Grenzfall 0 mm?", isclose(grenz[0] - grenz[3], 0.0, abs_tol=1e-9))</textarea></div>
+      </div>
+      <p class="k-small k-muted">Der Programmablaufplan, der als Prompt diente, ist unten zu sehen. Wähle einen Testfall: Der Pfad leuchtet auf, genau wie die Zweige der Funktion in den Zeilen 13 bis 18 des Codes.</p>
+      <div data-explorable="passung-pap"></div>
+      <ol class="a-explain">
+        <li><strong>Zeilen 6 und 7:</strong> Zwei <code class="k-i">import</code>-Zeilen in zwei Schreibweisen. <code class="k-i">import statistics</code> holt das ganze Modul (später <code class="k-i">statistics.mean</code>), <code class="k-i">from math import isclose</code> nur die eine Funktion (später ohne Modulnamen).</li>
+        <li><strong>Zeilen 11 bis 18:</strong> Die Funktion, die Copilot geliefert hat. Sie setzt den PAP um: erste Raute <code class="k-i">bohrung_min &gt;= welle_max</code>, zweite Raute <code class="k-i">bohrung_max &lt;= welle_min</code>, sonst Übergang. Sie liefert einen Text zurück (<code class="k-i">return</code>) und druckt nichts.</li>
+        <li><strong>Zeilen 21 bis 28:</strong> Die Testfälle, <em>vor dem Prompt</em> von Hand geschrieben. Jedes Tupel hat vier Maße in mm und die erwartete Antwort. Sie decken jeden Zweig ab: Spiel (g6), Übermaß (r6), Übergang (k6) und die Grenze „Spiel genau 0“ (h6). Die Passungen 25 H7/g6, H7/r6, H7/k6 und H7/h6 mit ihren Grenzmaßen nach ISO 286 sind nachgeschlagen, nicht von der KI.</li>
+        <li><strong>Zeilen 30 bis 38:</strong> Die Testschleife ruft die Funktion für jeden Fall auf und vergleicht das Ergebnis mit der Erwartung (<code class="k-i">fall[4]</code>). Bei einer Abweichung wird <code class="k-i">FEHLER</code> gemeldet und ein Zähler erhöht. Nach dem Lauf steht „Fehlgeschlagene Tests: 0“. Das ist der Moment, in dem du dem Code vertraust: nicht weil er plausibel aussieht, sondern weil er <em>deine</em> Fälle besteht.</li>
+        <li><strong>Zeilen 41 bis 43:</strong> Die List Comprehension (V10) berechnet für jeden Testfall das Höchstspiel (größte Bohrung minus kleinste Welle). <code class="k-i">statistics.mean</code> bildet den Mittelwert, <code class="k-i">round(…, 4)</code> rundet. Negative Höchstspiele kennzeichnen Übermaß (hier −0,007 mm bei H7/r6).</li>
+        <li><strong>Zeilen 44 und 45:</strong> <code class="k-i">isclose</code> (V03) prüft, ob die Differenz im Grenzfall null ist. Kommazahlen vergleicht man nie mit <code class="k-i">==</code>, sondern mit einer Toleranz (<code class="k-i">abs_tol</code>). Der Test <code class="k-i">bohrung_min &gt;= welle_max</code> in der Funktion ist dagegen ein Vergleich zweier <em>gelesener</em> Maße, bei denen der Grenzfall genau gleiche Zahlen hat.</li>
+        <li><strong>Selbsterklärung:</strong> Ändere in Zeile 13 das <code class="k-i">&gt;=</code> in <code class="k-i">&gt;</code> und führe aus: Welcher Testfall schlägt fehl? Dann gib in den Testfällen die Welle 24.987 / 25.000 ein, aber erwarte „Übergangspassung“: Was meldet die Schleife? Zuletzt: Warum würde der Fehler ohne den vierten Testfall nie auffallen?</li>
+      </ol>
+    </section>
+
+    <section class="l-task" id="a-ablauf" data-title="Ablauf verfolgen" data-part="A" data-stars="" data-min="7" data-extra="" aria-labelledby="h-a-ablauf" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-ablauf" tabindex="-1">Ablauf verfolgen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Bevor du Module benutzt, musst du lesen können, welche Namen nach einem <code class="k-i">import</code> existieren. Führe das Programm im Kopf aus, <strong>Zeile für Zeile, so wie Python es tut</strong>. Trage ein, was danach in den hervorgehobenen Variablen steht. <code class="k-i">import</code>-Zeilen bekommen keinen eigenen Schritt (sie legen Namen an, aber keine Variablen), und eine <code class="k-i">if</code>-Zeile auch nicht. Kommazahlen schreibst du so, wie Python sie ausgibt, zum Beispiel <code class="k-i">4.0</code>. Wenn du unsicher bist, lass den Code vorher im „Vorgerechneten Beispiel“ mit „Schritt für Schritt“ laufen.</p>
+      <div class="a-task" data-a="trace" data-id="w-trace">
+        <script type="application/json">{"code":["import math","from math import sqrt as wurzel","a = math.sqrt(16)","b = wurzel(9)","c = a + b","print(a, b, c)"],
+"vars":["a","b","c"],
+"steps":[
+{"line":3,"set":{"a":"4.0"},"hint":"math.sqrt(16) ist die Quadratwurzel von 16. Die Funktion liefert immer eine Kommazahl, also 4.0 und nicht 4."},
+{"line":4,"set":{"b":"3.0"},"hint":"wurzel ist nur ein Zweitname für dieselbe Funktion sqrt (Zeile 2). Also wieder eine Wurzel: 3.0."},
+{"line":5,"set":{"c":"7.0"},"hint":"4.0 + 3.0 ergibt 7.0."},
+{"line":6,"out":"4.0 3.0 7.0","hint":"print gibt die drei Werte mit Leerzeichen dazwischen aus."}
+]}</script>
+      </div>
+      <p class="l-task__intro">Zweiter Ablauf: der Grenzfall aus dem Beispiel. Die Maße liegen genau aufeinander, das Spiel ist 0. Der Mittelwert kommt aus dem Modul <code class="k-i">statistics</code> (Maße in µm, damit die Zahlen glatt bleiben).</p>
+      <div class="a-task" data-a="trace" data-id="w-trace2">
+        <script type="application/json">{"code":["from statistics import mean","spiele = [41, -7, 19, 34]","mittel = mean(spiele)","bohrung_min = 25.0","welle_max = 25.0","if bohrung_min >= welle_max:","    art = \"Spielpassung\"","else:","    art = \"Übergangspassung\"","print(art, mittel)"],
+"vars":["spiele","mittel","bohrung_min","welle_max","art"],
+"steps":[
+{"line":2,"set":{"spiele":"[41, -7, 19, 34]"},"hint":"Eine Liste mit vier ganzen Zahlen (Höchstspiele in Mikrometer). Python gibt sie in eckigen Klammern aus."},
+{"line":3,"set":{"mittel":"21.75"},"hint":"(41 - 7 + 19 + 34) / 4 = 87 / 4 = 21.75. statistics.mean liefert eine Kommazahl, wenn das Ergebnis nicht ganzzahlig ist."},
+{"line":4,"set":{"bohrung_min":"25.0"},"hint":"Kleinste Bohrung 25,0 mm."},
+{"line":5,"set":{"welle_max":"25.0"},"hint":"Größte Welle ebenfalls 25,0 mm: Das Spiel ist genau 0."},
+{"line":7,"set":{"art":"'Spielpassung'"},"hint":"Die Bedingung in Zeile 6: 25.0 >= 25.0 ist wahr, weil >= auch die Gleichheit einschließt. Also läuft Zeile 7 (der else-Zweig entfällt). Mit > wäre die Bedingung falsch."},
+{"line":10,"out":"Spielpassung 21.75","hint":"print gibt den Text ohne Anführungszeichen und den Mittelwert aus, mit einem Leerzeichen dazwischen."}
+]}</script>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-zeilen" data-title="Zeilen ordnen" data-part="A" data-stars="" data-min="8" data-extra="" aria-labelledby="h-a-zeilen" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-zeilen" tabindex="-1">Zeilen ordnen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Alle Zeilen sind da, aber durcheinander. Bring sie in die richtige Reihenfolge <strong>und rücke die Zeilen im Schleifen- oder Funktionsrumpf ein</strong> (Pfeil nach rechts oder Mausziehen). Manche Zeilen sind <strong>Ablenker</strong>: Sie gehören nicht ins Programm.</p>
+      <div class="a-task" data-a="parsons" data-id="w-parsons1">
+        <div class="a-task__head"><h3 class="a-task__title">Median einer Messreihe mit dem Modul statistics</h3></div>
+        <p>Das Programm liest die Zahl der Messwerte ein, dann jeden Wert, und gibt den Median aus. Überlege vorher: Wo steht <code class="k-i">import</code>, und wie heißt die Funktion danach mit Modulnamen?</p>
+        <script type="application/json">{"solution":["import statistics","n = int(input('n: '))","werte = []","for i in range(n):","    werte.append(float(input('Wert: ')))","print(f'Median: {statistics.median(werte):.3f}')"],
+"distractors":["print(f'Median: {median(werte):.3f}')","import statistics()"],
+"alts":[["n = int(input('n: '))","import statistics","werte = []","for i in range(n):","    werte.append(float(input('Wert: ')))","print(f'Median: {statistics.median(werte):.3f}')"],["n = int(input('n: '))","werte = []","import statistics","for i in range(n):","    werte.append(float(input('Wert: ')))","print(f'Median: {statistics.median(werte):.3f}')"]]}</script>
+      </div>
+
+      <div class="a-task" data-a="parsons" data-id="w-parsons2">
+        <div class="a-task__head"><h3 class="a-task__title">KI-Funktion mit Testfall prüfen</h3></div>
+        <p>Die Funktion <code class="k-i">ist_spiel</code> kommt von Copilot. Das Programm legt zuerst die Erwartung fest, ruft die Funktion für den Grenzfall „Spiel genau 0“ auf und meldet <code class="k-i">ok</code> oder <code class="k-i">FEHLER</code>. Die richtige Bedingung steht im Prompt-PAP: Spiel, wenn kleinste Bohrung größer <em>oder gleich</em> größte Welle.</p>
+        <script type="application/json">{"solution":["def ist_spiel(bohrung_min, welle_max):","    return bohrung_min >= welle_max","erwartet = True","ergebnis = ist_spiel(25.000, 25.000)","if ergebnis == erwartet:","    print('ok')","else:","    print('FEHLER')"],
+"distractors":["    return bohrung_min > welle_max","erwartet = ergebnis"],
+"alts":[["erwartet = True","def ist_spiel(bohrung_min, welle_max):","    return bohrung_min >= welle_max","ergebnis = ist_spiel(25.000, 25.000)","if ergebnis == erwartet:","    print('ok')","else:","    print('FEHLER')"]]}</script>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-luecken" data-title="Lücken füllen" data-part="A" data-stars="" data-min="5" data-extra="" aria-labelledby="h-a-luecken" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-luecken" tabindex="-1">Lücken füllen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Jetzt tippst du Teile selbst. Ergänze die vier Lücken, sodass das Programm den Mittelwert dreier Messungen mit dem Modul <code class="k-i">statistics</code> bildet und mit <code class="k-i">isclose</code> prüft, ob er im Soll liegt. Geprüft wird nicht nur dein Wortlaut, sondern ob das Programm das Richtige tut, auch bei einem Mittelwert, der nicht im Soll ist.</p>
+      <div class="a-task" data-a="gap" data-id="w-luecken" data-mode="programm">
+        <pre class="a-gap__src">import @@statistics@@
+from math import @@isclose@@
+
+soll = float(input("Sollmaß in mm: "))
+m1 = float(input("Messung 1 in mm: "))
+m2 = float(input("Messung 2 in mm: "))
+m3 = float(input("Messung 3 in mm: "))
+mittel = statistics.@@mean@@([m1, m2, m3])
+if @@isclose@@(mittel, soll, abs_tol=0.005):
+    print(f"Mittel {mittel:.3f} mm: im Soll")
+else:
+    print(f"Mittel {mittel:.3f} mm: weicht ab")</pre>
+        <script type="text/x-python" data-role="tests">
+def _lauf(soll, m1, m2, m3):
+    return zeilen(run_program([str(soll), str(m1), str(m2), str(m3)]))
+
+def test_im_soll():
+    """Sollmaß 25.000, Messungen 25.002, 24.998, 25.001: im Soll"""
+    z = _lauf(25.000, 25.002, 24.998, 25.001)
+    assert "Mittel 25.000 mm: im Soll" in z, "Erwartet wird 'Mittel 25.000 mm: im Soll'. Dein Programm gibt aus: %r" % z
+
+def test_weicht_ab():
+    """Sollmaß 25.000, Messungen 25.010, 25.020, 25.030: weicht ab"""
+    z = _lauf(25.000, 25.010, 25.020, 25.030)
+    assert "Mittel 25.020 mm: weicht ab" in z, "Erwartet wird 'Mittel 25.020 mm: weicht ab'. Dein Programm gibt aus: %r" % z
+
+def test_unter_soll():
+    """Sollmaß 12.000, Messungen 11.980, 11.990, 11.985: weicht ab"""
+    z = _lauf(12.000, 11.980, 11.990, 11.985)
+    assert "Mittel 11.985 mm: weicht ab" in z, "Erwartet wird 'Mittel 11.985 mm: weicht ab'. Dein Programm gibt aus: %r" % z
+        </script>
+        <ol class="a-hints">
+          <li>Lücke 1: Der Modulname steht in der nächsten Zeile ausgeschrieben vor dem Punkt (<code>statistics.</code>). Du importierst also das ganze Modul.</li>
+          <li>Lücke 2 und 4: <code>from math import …</code> holt eine Funktion, die Kommazahlen mit Toleranz vergleicht (V03). Sie steht auch in der Bedingung.</li>
+          <li>Lücke 3: Der Mittelwert heißt in <code>statistics</code> wie in der Mathematik (Syntax-Karte 2).</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-messreihe" data-title="Erste eigene Aufgabe: Messreihe mit statistics auswerten" data-part="A" data-stars="1" data-min="10" data-extra="" aria-labelledby="h-a-messreihe" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-messreihe" tabindex="-1">Erste eigene Aufgabe: Messreihe mit statistics auswerten</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Jetzt schreibst du die Auswertung selbst, mit <abbr class="k-begriff" data-erklaerung="Ein Test ist ein kleines Prüfprogramm. Es startet dein Programm mit festen Eingaben und vergleicht die Ausgabe mit dem erwarteten Ergebnis.">Tests</abbr> als Sicherheitsnetz. Die Tests laufen mit mehreren Eingaben, auch mit solchen, die du nicht siehst.</p>
+      <div class="a-task" data-a="code" data-id="w-messreihe" data-mode="programm" data-inputs="5|12.004|12.011|11.998|12.007|12.019">
+        <div class="a-task__text">
+          <p>Das Programm liest zuerst die Anzahl <em>n</em> der Messwerte (ganze Zahl, mindestens 2) und danach n Durchmesser in mm (Kommazahlen, je ein <code class="k-i">input()</code>) in eine Liste. Mit dem Modul <code class="k-i">statistics</code> gibt es drei Zeilen aus: den Mittelwert (vier Nachkommastellen), den Median (drei Nachkommastellen) und die Standardabweichung der Stichprobe (vier Nachkommastellen).</p>
+          <div class="a-spec"><strong>Ausgabe genau so (Eingabe n = 5, Werte 12.004, 12.011, 11.998, 12.007, 12.019):</strong><pre data-run="no">Mittelwert: 12.0078 mm
+Median: 12.007 mm
+Standardabweichung: 0.0079 mm</pre></div>
+          <p class="k-small k-muted">Gegenprobe von Hand: Der Median ist der mittlere Wert der sortierten Reihe 11.998, 12.004, 12.007, 12.011, 12.019, also 12.007.</p>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V11" aria-label="Python-Code: Messreihe mit statistics auswerten"># Messreihe einlesen und mit dem Modul statistics auswerten
+# (Zeile für den import fehlt noch)
+n = int(input("Anzahl Messwerte: "))
+werte = []
+# lies n Werte ein und hänge sie an werte an
+
+# Ausgabe: Mittelwert, Median, Standardabweichung
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+import statistics as _st
+
+def _pruefe(w):
+    soll = ["Mittelwert: %.4f mm" % _st.mean(w),
+            "Median: %.3f mm" % _st.median(w),
+            "Standardabweichung: %.4f mm" % _st.stdev(w)]
+    z = zeilen(run_program([str(len(w))] + [str(x) for x in w]))
+    for t in soll:
+        assert t in z, "Bei %r wird die Zeile %r erwartet. Dein Programm gibt aus: %r" % (w, t, z)
+
+def test_beispiel():
+    """Beispiel n = 5: 12.004 bis 12.019"""
+    _pruefe([12.004, 12.011, 11.998, 12.007, 12.019])
+
+def test_gerade_anzahl():
+    """Gerade Anzahl, n = 4: der Median ist der Mittelwert der zwei mittleren Werte"""
+    _pruefe([25.0, 25.02, 24.99, 25.01])
+
+def test_zwei():
+    """Genau zwei Werte: n = 2"""
+    _pruefe([12.5, 12.7])
+
+def test_unsortiert():
+    """Unsortiert: 30.5, 31.0, 29.0, 30.0, 33.0"""
+    _pruefe([30.5, 31.0, 29.0, 30.0, 33.0])
+        </script>
+        <script type="text/x-python" data-role="solution">
+import statistics
+
+n = int(input("Anzahl Messwerte: "))
+werte = []
+for i in range(n):
+    werte.append(float(input(f"Messwert {i + 1}: ")))
+print(f"Mittelwert: {statistics.mean(werte):.4f} mm")
+print(f"Median: {statistics.median(werte):.3f} mm")
+print(f"Standardabweichung: {statistics.stdev(werte):.4f} mm")
+        </script>
+        <ol class="a-hints">
+          <li>Die erste Zeile des Programms ist <code>import statistics</code>. Danach heißen die Funktionen <code>statistics.mean</code>, <code>statistics.median</code> und <code>statistics.stdev</code> (Syntax-Karte 2).</li>
+          <li>Eine Schleife mit <code>for i in range(n):</code> liest einen Wert pro Durchlauf, im Rumpf <code>werte.append(float(input(...)))</code> (V08).</li>
+          <li>Die Formatierung: <code>:.4f</code> beziehungsweise <code>:.3f</code> hinter dem Ausdruck im f-String (V03). Alle Ausgaben stehen <em>nach</em> der Schleife.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-prompt" data-title="Prompt-Qualität bewerten" data-part="A" data-stars="" data-min="8" data-extra="" aria-labelledby="h-a-prompt" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-prompt" tabindex="-1">Prompt-Qualität bewerten</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Ein Prompt ist eine kleine Spezifikation. Mit fünf Fragen prüfst du, ob er vollständig ist: <strong>Eingaben, Ausgaben, Einheiten, Grenzfälle, Beispiele</strong>. Der Bewerter unten sucht dafür Stichwörter. Tipp: Lade den PAP-Prompt und lösche den Satz zum Grenzfall oder die Einheit „mm“: Welches Kriterium kippt?</p>
+      <div class="k-explorable">
+        <div data-explorable="prompt-bewerter"></div>
+        <noscript><p>Für den Prompt-Bewerter wird JavaScript benötigt.</p></noscript>
+      </div>
+      <h3>Zwei Prompts beurteilen</h3>
+      <p>Beide Prompts wollen dieselbe Funktion: Aus der Schnittgeschwindigkeit <em>v<sub>c</sub></em> in m/min und dem Durchmesser <em>d</em> in mm soll die Drehzahl <em>n</em> in 1/min folgen.</p>
+      <div class="k-try">
+        <p class="v11-prompt">Prompt X: Schreib eine Funktion, die die Drehzahl berechnet.</p>
+        <div class="k-predict">
+          <p class="k-predict__q">Welche fehlende Angabe führt bei diesem Prompt am ehesten zu einem Faktor-1000-Fehler?</p>
+          <div class="k-predict__opts"><button type="button">Die Rückgabe als Text.</button><button type="button" data-correct>Die Einheiten: m/min gegen m/s, mm gegen m.</button><button type="button">Das Beispiel.</button></div>
+          <div class="k-predict__result"></div>
+          <div class="k-predict__expl" hidden>Die Einheiten. Die Formel <code>n = vc * 1000 / (pi * d)</code> stimmt nur für vc in m/min und d in mm. Rechnet die KI mit d in m, ist das Ergebnis um den Faktor 1000 falsch, und das Programm läuft ohne Meldung. Dieser Prompt nennt auch weder Parameternamen noch Rückgabewert noch ein Beispiel: Alle fünf Kriterien fehlen.</div>
+        </div>
+      </div>
+      <div class="k-try">
+        <p class="v11-prompt">Prompt Y: Schreibe drehzahl(vc, d) für Python. vc in m/min, d in mm, Rückgabe n in 1/min als Kommazahl, n = vc * 1000 / (pi * d). Beispiel: drehzahl(120, 30) -> 1273.2 (gerundet). Nur Funktion, kein print.</p>
+        <div class="k-predict">
+          <p class="k-predict__q">Welches der fünf Kriterien ist hier <em>nicht</em> abgedeckt?</p>
+          <div class="k-predict__opts"><button type="button">Eingaben</button><button type="button">Einheiten</button><button type="button" data-correct>Grenzfälle (zum Beispiel d gleich 0)</button><button type="button">Beispiele</button></div>
+          <div class="k-predict__result"></div>
+          <div class="k-predict__expl" hidden>Grenzfälle. Bei <code>d = 0</code> wird durch null geteilt (ZeroDivisionError), bei negativem d kommt eine negative Drehzahl heraus. Der Prompt sagt nicht, was dann gelten soll: Fehler auslösen oder einen Hinweis liefern? Alles andere steht im Prompt.</div>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-review" data-seen="manual" data-title="Code-Review: KI-Code prüfen" data-part="A" data-stars="" data-min="20" data-extra="" aria-labelledby="h-a-review" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-review" tabindex="-1">Code-Review: KI-Code prüfen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Eine KI hat Code geliefert. Er sieht sauber aus, und die Funktion folgt dem PAP aus dem Prompt. Würdest du ihn freigeben? Klick die Zeilen an, die du für fehlerhaft hältst, dann lass auflösen.</p>
+      <figure class="k-figure">
+        <picture>
+          <source srcset="../assets/img/ki-spiegel.webp" type="image/webp">
+          <img src="../assets/img/ki-spiegel.png" alt="Illustration: KI-Code wird von einem Ingenieur geprüft" width="1600" height="901" loading="lazy" onerror="this.closest('figure').hidden=true">
+        </picture>
+      </figure>
+
+      <div class="k-mirror">
+        <h3>Szenario: Auswertung für die Passungsprüfung</h3>
+        <p class="k-prompt__who">Prompt eines Studierenden</p>
+        <blockquote class="k-prompt">Schreib mir ein kleines Python-Programm mit drei Teilen. (1) Eine Funktion passungsart(bohrung_min, bohrung_max, welle_min, welle_max) in mm: Spielpassung, wenn bohrung_min &gt;= welle_max; Übermaßpassung, wenn bohrung_max &lt;= welle_min; sonst Übergangspassung. (2) Aus der Liste der Höchstspiele [0.041, -0.007, 0.019, 0.034] den Mittelwert. (3) Prüfen, ob der Mittelwert im Soll 0.022 mm liegt (Toleranz 0.005 mm). Nutze nur die Standardbibliothek.</blockquote>
+        <p class="k-prompt__who">KI-Antwort (Python)</p>
+          <ol class="k-codelines" aria-label="Code der KI, Zeilen anklickbar">
+            <li><button type="button" class="k-line">import math</button></li>
+            <li><button type="button" class="k-line">import statistics</button></li>
+            <li><button type="button" class="k-line" data-bug="c">import passungstools</button></li>
+            <li><button type="button" class="k-line"> </button></li>
+            <li><button type="button" class="k-line">def passungsart(bohrung_min, bohrung_max, welle_min, welle_max):</button></li>
+            <li><button type="button" class="k-line" data-bug="a">    if bohrung_min &gt; welle_max:</button></li>
+            <li><button type="button" class="k-line">        return &quot;Spielpassung&quot;</button></li>
+            <li><button type="button" class="k-line">    elif bohrung_max &lt;= welle_min:</button></li>
+            <li><button type="button" class="k-line">        return &quot;Übermaßpassung&quot;</button></li>
+            <li><button type="button" class="k-line">    else:</button></li>
+            <li><button type="button" class="k-line">        return &quot;Übergangspassung&quot;</button></li>
+            <li><button type="button" class="k-line"> </button></li>
+            <li><button type="button" class="k-line">hoechstspiele = [0.041, -0.007, 0.019, 0.034]</button></li>
+            <li><button type="button" class="k-line">mittel = statistics.mean(hoechstspiele)</button></li>
+            <li><button type="button" class="k-line">print(f&quot;Mittel: {mittel:.4f} mm&quot;)</button></li>
+            <li><button type="button" class="k-line" data-bug="b">im_soll = math.tolerance(mittel, 0.022, 0.005)</button></li>
+            <li><button type="button" class="k-line">print(&quot;Mittleres Höchstspiel im Soll:&quot;, im_soll)</button></li>
+          </ol>
+        <p class="k-small k-muted">Tipp: Es sind drei Fehler eingebaut. Nicht jede Zeile ist falsch.</p>
+
+        <div class="k-mirror__task">
+          <p><strong>Würdest du das freigeben?</strong> Markiere die fehlerhaften Zeilen, dann lass auflösen.</p>
+          <button type="button" class="k-btn" data-mirror-check>Auflösen</button>
+          <p class="k-verdict" role="status" hidden></p>
+
+          <div data-mirror-after hidden>
+            <h3>Die drei Fehler</h3>
+            <h4>Fehler 1: größer statt größer-gleich an der Grenze (Zeile 6)</h4>
+            <p>Der Prompt verlangt <code class="k-i">bohrung_min &gt;= welle_max</code>, die KI schreibt <code class="k-i">&gt;</code>. Bei einem Spiel von <em>genau</em> 0 (zum Beispiel 25 H7/h6) ist die Bedingung falsch, und es kommt „Übergangspassung“ statt „Spielpassung“ heraus. Keine Fehlermeldung, nur ein falsches Ergebnis genau an der Stelle, die niemand beim Lesen sieht. Nur ein Testfall auf der Grenze fängt das ab. Lösung: <code class="k-i">&gt;=</code>.</p>
+            <h4>Fehler 2: erfundene Funktion (Zeile 16)</h4>
+            <p>Das Modul <code class="k-i">math</code> hat keine Funktion <code class="k-i">tolerance</code>. Beim Aufruf bricht das Programm mit <code class="k-i">AttributeError: module 'math' has no attribute 'tolerance'</code> ab. Die Zeile sieht plausibel aus, weil der Name zur Aufgabe passt: Die KI schreibt, was wahrscheinlich klingt, nicht, was existiert. Lösung: <code class="k-i">from math import isclose</code> und <code class="k-i">isclose(mittel, 0.022, abs_tol=0.005)</code> (V03). Neue Funktionen schlägt man in der Dokumentation nach.</p>
+            <h4>Fehler 3: nicht installiertes (erfundenes) Paket (Zeile 3)</h4>
+            <p>Der Prompt sagt „nur Standardbibliothek“, die KI importiert trotzdem <code class="k-i">passungstools</code>. Das Programm bricht schon in Zeile 3 mit <code class="k-i">ModuleNotFoundError: No module named 'passungstools'</code> ab. Dieser Name ist erfunden. Nicht <code class="k-i">pip install passungstools</code> eintippen: Wer einen erfundenen Namen blind installiert, riskiert ein Schadpaket. Prüfen, ob es das Paket gibt, und sonst die Zeile streichen (sie wird hier gar nicht benutzt).</p>
+
+            <h3>Die drei Fehler einzeln zum Ausprobieren</h3>
+            <p class="k-small k-muted">Wäre der Fehler 3 nicht schon in Zeile 3, würden die anderen beiden erst später auffallen. Darum hier einzeln: Der Grenzfall (falsches Ergebnis ohne Meldung), die erfundene Funktion (AttributeError) und der erfundene Import (ModuleNotFoundError).</p>
+            <pre><code>def passungsart(bohrung_min, bohrung_max, welle_min, welle_max):
+    if bohrung_min &gt; welle_max:
+        return "Spielpassung"
+    elif bohrung_max &lt;= welle_min:
+        return "Übermaßpassung"
+    else:
+        return "Übergangspassung"
+
+print(passungsart(25.000, 25.021, 24.987, 25.000))   # erwartet: Spielpassung</code></pre>
+            <pre><code>import math
+mittel = 0.02175
+im_soll = math.tolerance(mittel, 0.022, 0.005)
+print(im_soll)</code></pre>
+            <pre><code>import passungstools
+print("weiter")</code></pre>
+
+            <h3>Korrigierte Version</h3>
+            <pre><code>import statistics
+from math import isclose
+
+
+def passungsart(bohrung_min, bohrung_max, welle_min, welle_max):
+    if bohrung_min &gt;= welle_max:
+        return "Spielpassung"
+    elif bohrung_max &lt;= welle_min:
+        return "Übermaßpassung"
+    else:
+        return "Übergangspassung"
+
+
+hoechstspiele = [0.041, -0.007, 0.019, 0.034]
+mittel = statistics.mean(hoechstspiele)
+print(f"Mittel: {mittel:.4f} mm")
+print("Mittleres Höchstspiel im Soll:", isclose(mittel, 0.022, abs_tol=0.005))
+print(passungsart(25.000, 25.021, 24.987, 25.000))     # Grenzfall: Spielpassung</code></pre>
+            <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke</strong><p>Bei KI-Code prüfst du vier Dinge: die Grenzfälle (<code class="k-i">&gt;=</code> oder <code class="k-i">&gt;</code>?), jede fremde Funktion und jeden Import (gibt es sie wirklich?), jede Zahl, die nicht aus deinem Prompt stammt, und ob die Antwort deine Testfälle besteht. Die Testfälle schreibst du vorher von Hand, mit der Grenze dabei. Erst dann ist es dein Code.</p></div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-fehler" data-title="Typische Fehlermeldungen" data-part="A" data-stars="" data-min="5" data-extra="" aria-labelledby="h-a-fehler" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-fehler" tabindex="-1">Typische Fehlermeldungen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Mit <code class="k-i">import</code> kommen neue Fehlermeldungen. Dazu gibt es einen Fehler, der <em>keine</em> Meldung auslöst. Diese fünf siehst du garantiert. Jedes Beispiel lässt sich ausführen: Schau dir die echte Meldung an und lies sie von unten nach oben (zuerst die letzte Zeile).</p>
+      <div class="a-errors">
+        <div class="a-error">
+          <h3><code class="k-i">ModuleNotFoundError</code>: Modul nicht gefunden</h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="5000">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V11" aria-label="Fehlerbeispiel ModuleNotFoundError">import passungsrechner
+
+print(passungsrechner.passungsart(25.0, 25.021, 24.98, 24.993))</textarea></div>
+          </div>
+          <p>Meldung: <code class="k-i">ModuleNotFoundError: No module named 'passungsrechner'</code>. Python hat an beiden Suchorten (Standardbibliothek, installierte Pakete) nichts mit diesem Namen gefunden. Drei Ursachen: (1) Das Paket existiert, ist aber nicht installiert: dann <code>pip install</code> im Terminal. (2) Tippfehler im Namen. (3) Der Name ist von der KI erfunden: dann <strong>nichts installieren</strong>, sondern erst prüfen, ob es das Paket gibt.</p>
+        </div>
+        <div class="a-error">
+          <h3><code class="k-i">ImportError</code>: Name im Modul nicht vorhanden</h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="5000">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V11" aria-label="Fehlerbeispiel ImportError">from math import wurzel
+
+print(wurzel(16))</textarea></div>
+          </div>
+          <p>Meldung: <code class="k-i">ImportError: cannot import name 'wurzel' from 'math'</code>. Das Modul <code>math</code> wurde gefunden, aber es enthält keinen Namen <code>wurzel</code> (er heißt <code>sqrt</code>). Passiert bei <code>from … import …</code>. Schau nach: Welche Namen hat das Modul wirklich (<code>dir(math)</code> oder Dokumentation)?</p>
+        </div>
+        <div class="a-error">
+          <h3><code class="k-i">NameError</code>: Name nicht angelegt</h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="5000">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V11" aria-label="Fehlerbeispiel NameError">import math as m
+
+print(m.pi)
+print(math.pi)</textarea></div>
+          </div>
+          <p>Meldung: <code class="k-i">NameError: name 'math' is not defined</code>. Nach <code>import math as m</code> gibt es nur den Zweitnamen <code>m</code>. Dieselbe Meldung kommt, wenn der <code>import</code> ganz fehlt oder wenn du <code>from math import sqrt</code> schreibst und danach <code>math.sqrt</code> benutzt. Frag dich: Welchen Namen hat die import-Zeile angelegt?</p>
+        </div>
+        <div class="a-error">
+          <h3><code class="k-i">AttributeError</code>: erfundene Funktion</h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="5000">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V11" aria-label="Fehlerbeispiel AttributeError">import math
+
+print(math.sqrt(16))
+print(math.tolerance(25.0, 0.02))</textarea></div>
+          </div>
+          <p>Meldung: <code class="k-i">AttributeError: module 'math' has no attribute 'tolerance'</code>. Das Modul existiert, die Funktion nicht. Typisch für KI-Code: Der Name klingt plausibel, ist aber ausgedacht. Du erkennst den Fehler erst beim Ausführen der Zeile. Frag bei jeder fremden Funktion: Steht sie in der Dokumentation?</p>
+        </div>
+        <div class="a-error">
+          <h3>Falsches Ergebnis ohne Meldung: <code class="k-i">&gt;</code> statt <code class="k-i">&gt;=</code> an der Grenze</h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="5000">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V11" aria-label="Beispiel Grenzfall">def passungsart(bohrung_min, bohrung_max, welle_min, welle_max):
+    if bohrung_min &gt; welle_max:
+        return "Spielpassung"
+    elif bohrung_max &lt;= welle_min:
+        return "Übermaßpassung"
+    else:
+        return "Übergangspassung"
+
+
+print(passungsart(25.000, 25.021, 24.980, 24.993))
+print(passungsart(25.000, 25.021, 24.987, 25.000))</textarea></div>
+          </div>
+          <p>Ausgabe: Der erste Aufruf (Spiel 0,007 mm) ist richtig, der zweite (Spiel genau 0) liefert „Übergangspassung“, richtig wäre „Spielpassung“. Python meldet nichts: Das Programm tut genau, was dasteht. Solche Fehler an der Grenze findest du nur mit einem Testfall genau auf der Grenze, den du vorher von Hand aufgeschrieben hast.</p>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-1" data-title="Module einsetzen: drei Schreibweisen" data-part="B" data-stars="1" data-min="5" data-extra="" aria-labelledby="h-t-1" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-1" tabindex="-1">Module einsetzen: drei Schreibweisen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Programmieren lernst du mit den Fingern, nicht mit den Augen. Das Training ist ein fester Teil jedes Termins und gehört zum Selbststudium. Du musst nicht alles an einem Stück machen, aber alles bis zum nächsten Termin. Die Aufgaben laufen im Browser und werden automatisch geprüft. Drei Aufgaben (Prompt verbessern, PAP als Prompt, Testfälle zuerst) bearbeitest du zusätzlich in Codespaces mit Copilot.</p>
+      <div class="hinweis hinweis--achtung"><strong class="hinweis__title">Achtung</strong><p>Phase 2: <abbr class="k-begriff" data-erklaerung="GitHub Copilot ist ein KI-Assistent, der in der Entwicklungsumgebung Programmcode vorschlägt oder erklärt.">Copilot</abbr> darf jetzt Code erzeugen, und du prüfst. Reihenfolge immer: Testfälle von Hand, dann Prompt, dann Code lesen, dann Tests laufen lassen. Keine Firmen- oder Kundendaten in Prompts, keine Zugangsdaten in Dateien. Ohne Copilot-Zugang schreibst du den Code selbst, die Prüfung bleibt gleich.</p></div>
+
+      <div class="a-task" data-a="code" data-id="tr-1" data-mode="code">
+        <div class="a-task__text">
+          <p>Setze je ein Modul der Standardbibliothek in einer anderen Schreibweise ein. Schreibe die <code class="k-i">import</code>-Zeilen selbst. (a) <code class="k-i">import math</code>: <code class="k-i">umfang</code> ist der Umfang eines Kreises mit Radius 12,5 mm (2·π·r). (b) <code class="k-i">from statistics import mean</code>: <code class="k-i">mittel</code> ist der Mittelwert der vier Messwerte. (c) <code class="k-i">import random as zufall</code>: <code class="k-i">wurf</code> ist eine ganze Zahl von 1 bis 6.</p>
+          <div class="a-spec"><strong>Erwartet (Werte)</strong><pre data-run="no">umfang = 78.5398...   mittel = 25.0025   wurf: 1, 2, 3, 4, 5 oder 6</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V11" aria-label="Python-Code Aufgabe 1"># (a) import math         -&gt; umfang
+# (b) from statistics import mean   -&gt; mittel
+# (c) import random as zufall       -&gt; wurf
+radius = 12.5
+messwerte = [24.98, 25.02, 25.00, 25.01]
+umfang = None
+mittel = None
+wurf = None
+print(umfang, mittel, wurf)
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def test_umfang():
+    """umfang ist 2 * pi * 12.5 = 78.5398..."""
+    assert isinstance(umfang, float), "umfang ist %r, erwartet eine Kommazahl. Tipp: 2 * math.pi * radius" % (umfang,)
+    assert abs(umfang - 78.53981633974483) < 1e-9, "umfang ist %r, erwartet 78.5398... (2 * math.pi * radius)" % (umfang,)
+
+def test_mittel():
+    """mittel ist 25.0025, über mean (from-Import)"""
+    assert isinstance(mittel, float), "mittel ist %r, erwartet eine Kommazahl. Tipp: mean(messwerte)" % (mittel,)
+    assert abs(mittel - 25.0025) < 1e-9, "mittel ist %r, erwartet 25.0025" % (mittel,)
+    assert "mean" in globals(), "Der Name mean fehlt: from statistics import mean"
+
+def test_wurf():
+    """wurf ist eine ganze Zahl von 1 bis 6"""
+    assert isinstance(wurf, int) and 1 <= wurf <= 6, "wurf ist %r, erwartet eine ganze Zahl von 1 bis 6 (random.randint)." % (wurf,)
+
+def test_zweitname():
+    """random wurde mit dem Zweitnamen zufall importiert"""
+    assert "zufall" in globals(), "Der Name zufall fehlt: import random as zufall"
+    assert "random" not in globals(), "Mit import random as zufall heißt das Modul nur zufall. Der Name random existiert dann nicht."
+        </script>
+        <script type="text/x-python" data-role="solution">
+import math
+from statistics import mean
+import random as zufall
+
+radius = 12.5
+messwerte = [24.98, 25.02, 25.00, 25.01]
+umfang = 2 * math.pi * radius
+mittel = mean(messwerte)
+wurf = zufall.randint(1, 6)
+print(umfang, mittel, wurf)
+        </script>
+        <ol class="a-hints">
+          <li>Die drei import-Zeilen stehen ganz oben (Syntax-Karte 1). Das Modul <code>math</code> wird mit Modulnamen benutzt: <code>math.pi</code>.</li>
+          <li>Nach <code>from statistics import mean</code> schreibst du <code>mean(messwerte)</code> ohne Modulnamen.</li>
+          <li>Nach <code>import random as zufall</code> heißt das Modul <code>zufall</code>: <code>zufall.randint(1, 6)</code>. Beide Grenzen von <code>randint</code> gehören dazu.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-2" data-title="Eigenes Modul benutzen: passungen.py" data-part="B" data-stars="2" data-min="8" data-extra="" aria-labelledby="h-t-2" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-2" tabindex="-1">Eigenes Modul benutzen: passungen.py</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="code" data-id="tr-2" data-mode="programm" data-inputs="25.000|25.021|24.980|24.993" data-files="../assets/data/v11/passungen.py">
+        <div class="a-task__text">
+          <p>Im Ordner liegt das Modul <code class="k-i">passungen.py</code> (Datei <code class="k-i">passungen.py</code> mit den Funktionen <code class="k-i">passungsart</code>, <code class="k-i">hoechstspiel</code> und <code class="k-i">mindestspiel</code>, siehe Syntax-Karte 3). Schreibe ein Programm, das vier Maße in mm einliest (kleinste und größte Bohrung, kleinste und größte Welle) und mit den Funktionen des Moduls drei Zeilen ausgibt. <strong>Die Funktionen schreibst du nicht selbst, du importierst sie.</strong> Beachte die Parameter: <code class="k-i">hoechstspiel(bohrung_max, welle_min)</code> und <code class="k-i">mindestspiel(bohrung_min, welle_max)</code>.</p>
+          <div class="a-spec"><strong>Ausgabe genau so (Eingabe 25.000, 25.021, 24.980, 24.993):</strong><pre data-run="no">Passungsart: Spielpassung
+Höchstspiel: 0.041 mm
+Mindestspiel: 0.007 mm</pre></div>
+          <p class="k-small k-muted">Bei Übermaß sind die Werte negativ: Ein „negatives Spiel“ ist ein Übermaß.</p>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V11" aria-label="Python-Code Aufgabe 2"># Eigenes Modul passungen.py nutzen
+bohrung_min = float(input("Kleinste Bohrung in mm: "))
+bohrung_max = float(input("Größte Bohrung in mm: "))
+welle_min = float(input("Kleinste Welle in mm: "))
+welle_max = float(input("Größte Welle in mm: "))
+# import und Ausgabe ergänzen
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+import passungen as _p
+
+def _pruefe(bmin, bmax, wmin, wmax):
+    soll = ["Passungsart: " + _p.passungsart(bmin, bmax, wmin, wmax),
+            "Höchstspiel: %.3f mm" % _p.hoechstspiel(bmax, wmin),
+            "Mindestspiel: %.3f mm" % _p.mindestspiel(bmin, wmax)]
+    z = zeilen(run_program([str(bmin), str(bmax), str(wmin), str(wmax)]))
+    for t in soll:
+        assert t in z, "Bei %r wird die Zeile %r erwartet. Dein Programm gibt aus: %r" % ((bmin, bmax, wmin, wmax), t, z)
+
+def test_spiel():
+    """25 H7/g6: Spielpassung, Höchstspiel 0.041, Mindestspiel 0.007"""
+    _pruefe(25.000, 25.021, 24.980, 24.993)
+
+def test_uebermass():
+    """25 H7/r6: Übermaßpassung mit negativen Werten"""
+    _pruefe(25.000, 25.021, 25.028, 25.041)
+
+def test_uebergang():
+    """25 H7/k6: Übergangspassung"""
+    _pruefe(25.000, 25.021, 25.002, 25.015)
+
+def test_grenze():
+    """Grenzfall 25 H7/h6: Spiel genau 0, Spielpassung, Mindestspiel 0.000"""
+    _pruefe(25.000, 25.021, 24.987, 25.000)
+        </script>
+        <script type="text/x-python" data-role="solution">
+import passungen
+
+bohrung_min = float(input("Kleinste Bohrung in mm: "))
+bohrung_max = float(input("Größte Bohrung in mm: "))
+welle_min = float(input("Kleinste Welle in mm: "))
+welle_max = float(input("Größte Welle in mm: "))
+print("Passungsart:", passungen.passungsart(bohrung_min, bohrung_max, welle_min, welle_max))
+print(f"Höchstspiel: {passungen.hoechstspiel(bohrung_max, welle_min):.3f} mm")
+print(f"Mindestspiel: {passungen.mindestspiel(bohrung_min, welle_max):.3f} mm")
+        </script>
+        <ol class="a-hints">
+          <li>Ganz oben <code>import passungen</code> (ohne <code>.py</code>). Die Funktionen heißen dann <code>passungen.passungsart(...)</code> usw.</li>
+          <li><code>passungsart</code> bekommt alle vier Maße in der Reihenfolge Bohrung min, Bohrung max, Welle min, Welle max.</li>
+          <li>Für die Zahlen im f-String: <code>{passungen.hoechstspiel(bohrung_max, welle_min):.3f}</code> (V03).</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-3" data-title="Passung aus Toleranzfeldern: Dictionary und Funktion" data-part="B" data-stars="2" data-min="8" data-extra="Wiederholung V07/V08" aria-labelledby="h-t-3" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-3" tabindex="-1">Passung aus Toleranzfeldern: Dictionary und Funktion</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="code" data-id="tr-3" data-mode="funktion">
+        <div class="a-task__text">
+          <p>Wiederholung V07 und V08: Schreibe die Funktion <code class="k-i">passung_aus_feldern(bohrungsfeld, wellenfeld)</code>. Sie schlägt beide Toleranzfelder im Dictionary <code class="k-i">GRENZMASSE</code> nach (Schlüssel: Kurzzeichen wie <code class="k-i">"H7"</code>, Wert: Tupel aus unterem und oberem Grenzmaß in mm) und liefert die Passungsart als Text (<code class="k-i">"Spielpassung"</code>, <code class="k-i">"Übermaßpassung"</code> oder <code class="k-i">"Übergangspassung"</code>). Kennt <code class="k-i">GRENZMASSE</code> eines der beiden Kurzzeichen nicht, liefert sie <code class="k-i">"unbekanntes Toleranzfeld"</code>, statt mit einem <code class="k-i">KeyError</code> abzubrechen.</p>
+          <div class="a-spec"><strong>Erwartet (Rückgabewerte)</strong><pre data-run="no">passung_aus_feldern("H7", "g6")  -&gt;  "Spielpassung"
+passung_aus_feldern("H7", "k6")  -&gt;  "Übergangspassung"
+passung_aus_feldern("H7", "q9")  -&gt;  "unbekanntes Toleranzfeld"</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V11" aria-label="Python-Code Aufgabe 3"># Wiederholung V07/V08: Funktion, Dictionary, in-Prüfung
+GRENZMASSE = {                # Nennmaß 25 mm: (unteres, oberes Grenzmaß) in mm
+    "H7": (25.000, 25.021),
+    "g6": (24.980, 24.993),
+    "h6": (24.987, 25.000),
+    "k6": (25.002, 25.015),
+    "r6": (25.028, 25.041),
+}
+
+# Schreibe passung_aus_feldern(bohrungsfeld, wellenfeld):
+#   unbekannt  -&gt; "unbekanntes Toleranzfeld"
+#   sonst      -&gt; Spielpassung, Übermaßpassung oder Übergangspassung
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _fn():
+    assert "passung_aus_feldern" in globals(), "Die Funktion passung_aus_feldern ist nicht definiert."
+    return globals()["passung_aus_feldern"]
+
+def _ist(b, w, soll):
+    erg = _fn()(b, w)
+    assert erg is not None, "passung_aus_feldern gibt None zurück. Jeder Zweig braucht ein return."
+    assert erg == soll, "passung_aus_feldern(%r, %r) soll %r liefern, deine Funktion liefert %r" % (b, w, soll, erg)
+
+def test_spiel():
+    """H7/g6: Spielpassung"""
+    _ist("H7", "g6", "Spielpassung")
+
+def test_uebermass():
+    """H7/r6: Übermaßpassung"""
+    _ist("H7", "r6", "Übermaßpassung")
+
+def test_uebergang():
+    """H7/k6: Übergangspassung"""
+    _ist("H7", "k6", "Übergangspassung")
+
+def test_grenze():
+    """H7/h6: Spiel genau 0 ist Spielpassung"""
+    _ist("H7", "h6", "Spielpassung")
+
+def test_unbekannt():
+    """Unbekanntes Feld (Welle q9 oder Bohrung Z9): Meldung statt KeyError"""
+    _ist("H7", "q9", "unbekanntes Toleranzfeld")
+    _ist("Z9", "g6", "unbekanntes Toleranzfeld")
+        </script>
+        <script type="text/x-python" data-role="solution">
+GRENZMASSE = {
+    "H7": (25.000, 25.021),
+    "g6": (24.980, 24.993),
+    "h6": (24.987, 25.000),
+    "k6": (25.002, 25.015),
+    "r6": (25.028, 25.041),
+}
+
+
+def passung_aus_feldern(bohrungsfeld, wellenfeld):
+    if bohrungsfeld not in GRENZMASSE or wellenfeld not in GRENZMASSE:
+        return "unbekanntes Toleranzfeld"
+    bohrung_min, bohrung_max = GRENZMASSE[bohrungsfeld]
+    welle_min, welle_max = GRENZMASSE[wellenfeld]
+    if bohrung_min >= welle_max:
+        return "Spielpassung"
+    elif bohrung_max <= welle_min:
+        return "Übermaßpassung"
+    else:
+        return "Übergangspassung"
+
+
+print(passung_aus_feldern("H7", "g6"))
+        </script>
+        <ol class="a-hints">
+          <li>Zuerst absichern: <code>if bohrungsfeld not in GRENZMASSE or wellenfeld not in GRENZMASSE:</code> und <code>return "unbekanntes Toleranzfeld"</code> (V08: <code>in</code> prüft die Schlüssel).</li>
+          <li>Die Grenzen holst du mit Index aus dem Tupel: <code>GRENZMASSE[bohrungsfeld][0]</code> ist das untere Grenzmaß, <code>[1]</code> das obere.</li>
+          <li>Dann dieselben zwei Rauten wie im PAP: erst <code>&gt;=</code> mit größter Welle, dann <code>&lt;=</code> mit kleinster Welle, sonst Übergang. Jeder Weg hat ein <code>return</code>.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-4" data-title="PAP zeichnen: Passungsart" data-part="B" data-stars="2" data-min="8" data-extra="PAP zeichnen" aria-labelledby="h-t-4" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-4" tabindex="-1">PAP zeichnen: Passungsart</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Jetzt zeichnest du den PAP, den du später als Prompt benutzt. Die vier Eingaben stehen schon da. Ergänze die zwei Rauten und die drei Ausgaben: Zuerst fragst du, ob die kleinste Bohrung größer oder gleich der größten Welle ist (dann „Spielpassung“). Nur sonst fragst du, ob die größte Bohrung kleiner oder gleich der kleinsten Welle ist (dann „Übermaßpassung“), sonst „Übergangspassung“. Der Text einer Ausgabe steht in Anführungszeichen, zum Beispiel <code class="k-i">"Spielpassung"</code>. Die Prüfung erzeugt aus deinem PAP Python-Code und testet ihn, auch am Grenzfall.</p>
+      <div class="a-task k-pap-aufgabe" data-a="pap-zeichnen" data-id="v11-passungsart" data-timeout="8000" data-erlaubt="in,out,op,if">
+        <div class="a-task__head"><h3 class="a-task__title">Passungsart als PAP</h3></div>
+        <p>Zeichne einen PAP mit den vier Eingaben (Kommazahlen in mm), zwei Verzweigungen und den drei Ausgaben. Die Bedingungen schreibst du als Python-Ausdruck, zum Beispiel <code class="k-i">bohrung_min &gt;= welle_max</code>.</p>
+        <script type="application/json" data-role="start">{"baum":[{"k":"in","v":"bohrung_min","typ":"float"},{"k":"in","v":"bohrung_max","typ":"float"},{"k":"in","v":"welle_min","typ":"float"},{"k":"in","v":"welle_max","typ":"float"}]}</script>
+        <script type="text/x-python" data-role="tests">
+def _art(bmin, bmax, wmin, wmax):
+    return zeilen(run_program([str(bmin), str(bmax), str(wmin), str(wmax)]))
+
+def test_spiel():
+    """25 H7/g6: Spielpassung"""
+    z = _art(25.000, 25.021, 24.980, 24.993)
+    assert "Spielpassung" in z, "Erwartet wird die Ausgabe 'Spielpassung'. Dein PAP gibt aus: %r" % z
+
+def test_uebermass():
+    """25 H7/r6: Übermaßpassung"""
+    z = _art(25.000, 25.021, 25.028, 25.041)
+    assert "Übermaßpassung" in z, "Erwartet wird die Ausgabe 'Übermaßpassung'. Dein PAP gibt aus: %r" % z
+
+def test_uebergang():
+    """25 H7/k6: Übergangspassung"""
+    z = _art(25.000, 25.021, 25.002, 25.015)
+    assert "Übergangspassung" in z, "Erwartet wird die Ausgabe 'Übergangspassung'. Dein PAP gibt aus: %r" % z
+
+def test_grenze():
+    """Grenzfall 25 H7/h6: Spiel genau 0 gibt Spielpassung"""
+    z = _art(25.000, 25.021, 24.987, 25.000)
+    assert z.count("Spielpassung") == 1 and "Übergangspassung" not in z, "Bei Spiel genau 0 wird 'Spielpassung' erwartet (erste Raute mit >=). Dein PAP gibt aus: %r" % z
+
+def test_grenze_uebermass():
+    """Grenzfall: größte Bohrung gleich kleinste Welle gibt Übermaßpassung"""
+    z = _art(25.000, 25.021, 25.021, 25.040)
+    assert "Übermaßpassung" in z, "Bei größter Bohrung gleich kleinster Welle wird 'Übermaßpassung' erwartet (zweite Raute mit <=). Dein PAP gibt aus: %r" % z
+        </script>
+        <script type="application/json" data-role="solution">{"baum":[{"k":"in","v":"bohrung_min","typ":"float"},{"k":"in","v":"bohrung_max","typ":"float"},{"k":"in","v":"welle_min","typ":"float"},{"k":"in","v":"welle_max","typ":"float"},{"k":"if","v":"bohrung_min >= welle_max","yes":[{"k":"out","v":"\"Spielpassung\""}],"no":[{"k":"if","v":"bohrung_max <= welle_min","yes":[{"k":"out","v":"\"Übermaßpassung\""}],"no":[{"k":"out","v":"\"Übergangspassung\""}]}]}]}</script>
+        <ol class="a-hints">
+          <li>Nach den vier Eingaben fügst du eine Verzweigung ein. Ihre Bedingung: <code>bohrung_min &gt;= welle_max</code>. Im „ja“-Zweig steht eine Ausgabe mit dem Text <code>"Spielpassung"</code> (mit Anführungszeichen).</li>
+          <li>Im „nein“-Zweig kommt die zweite Verzweigung: <code>bohrung_max &lt;= welle_min</code>. „ja“: <code>"Übermaßpassung"</code>, „nein“: <code>"Übergangspassung"</code>.</li>
+          <li>Achte auf <code>&gt;=</code> und <code>&lt;=</code>: Die Grenze gehört jeweils dazu. Das testet der Grenzfall.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-5" data-title="Prompt verbessern: aus vage wird eine Spezifikation" data-part="B" data-stars="2" data-min="8" data-extra="in Codespaces bearbeiten" aria-labelledby="h-t-5" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-5" tabindex="-1">Prompt verbessern: aus vage wird eine Spezifikation</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Copilot-Aufgabe 1 von 3. Ein Kollege hat der KI den Prompt <em>„Mach mir was für die Festigkeit“</em> geschickt. Gemeint war: eine Funktion, die aus der Zugkraft <em>F</em> in N und dem Querschnitt <em>A</em> in mm² die Spannung <em>σ</em> = F / A in MPa berechnet und mit der Streckgrenze <em>R<sub>e</sub></em> in MPa die Sicherheit <em>S</em> = R<sub>e</sub> / σ bildet. <em>S</em> von 1,5 oder mehr gilt als „ausreichend“, sonst „nicht ausreichend“. Schreibe den Prompt, der dieselbe Aufgabe so genau beschreibt, dass die KI wenig raten muss.</p>
+      <p><a class="k-btn k-btn--ghost k-btn--small" href="v11-copilot.html#anleitung">In Codespaces bearbeiten: Anleitung</a> <span class="k-small k-muted">Probiere deinen Prompt zuerst im Copilot-Chat aus, verbessere ihn nach dem Ergebnis, und trage dann die endgültige Fassung unten ein. Ohne Copilot-Zugang formulierst du ihn trotzdem: Die Prüfung ist dieselbe.</span></p>
+      <div class="a-task" data-a="code" data-id="tr-5" data-mode="code">
+        <div class="a-task__text">
+          <p>Setze die Variable <code class="k-i">prompt</code> auf deinen Text (in dreifachen Anführungszeichen <code class="k-i">"""…"""</code> darf er über mehrere Zeilen gehen). Er soll die fünf Kriterien erfüllen: Eingaben (Funktionsname und Parameter), Ausgaben (Rückgabe), Einheiten (N, mm, MPa), Grenzfälle (S genau 1,5) und mindestens ein Beispiel mit Eingabe und erwartetem Ergebnis. Die Prüfung ist eine Stichwortsuche und ersetzt kein Nachdenken: Sie erkennt, ob die Angaben <em>erwähnt</em> sind, nicht ob sie stimmen.</p>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V11" aria-label="Python-Code Aufgabe 5">vager_prompt = "Mach mir was für die Festigkeit."
+
+# Schreibe hier deinen verbesserten Prompt:
+prompt = """
+"""
+
+print(prompt)
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+import re as _re
+
+def _p():
+    assert "prompt" in globals() and isinstance(prompt, str), "Die Variable prompt fehlt oder ist kein Text."
+    assert prompt.strip(), "Der Prompt ist leer."
+    return prompt
+
+def _has(muster):
+    return _re.search(muster, _p(), _re.I) is not None
+
+def test_laenge():
+    """Der Prompt ist ausführlich genug (mindestens 25 Wörter) und kein Roman (höchstens 250)"""
+    n = len(_p().split())
+    assert 25 <= n <= 250, "Dein Prompt hat %d Wörter, erwartet sind 25 bis 250." % n
+
+def test_eingaben():
+    """Eingaben: Funktionsname mit Parametern und die Streckgrenze"""
+    assert _has(r"\w+\(\s*\w+(?:\s*,\s*\w+)+\s*\)"), "Nenne den Funktionsnamen mit seinen Parametern, zum Beispiel sicherheit(kraft, querschnitt, streckgrenze)."
+    assert _has(r"streckgrenze|\bRe\b|\bR_e\b"), "Die Streckgrenze (Re) muss als Eingabe im Prompt vorkommen."
+
+def test_ausgaben():
+    """Ausgaben: Rückgabe beschrieben (Typ und Text)"""
+    assert _has(r"rückgabe|zurück|liefert|gibt|return"), "Sage, was die Funktion zurückgibt (Rückgabe, kein print)."
+    assert _has(r"ausreichend"), "Nenne die beiden Rückgabetexte: ausreichend und nicht ausreichend."
+
+def test_einheiten():
+    """Einheiten: N, mm und MPa kommen vor"""
+    assert _has(r"\bN\b"), "Die Einheit der Kraft (N) fehlt."
+    assert _has(r"mm"), "Die Einheit des Querschnitts (mm2 oder mm²) fehlt."
+    assert _has(r"MPa"), "Die Einheit der Spannung und der Streckgrenze (MPa) fehlt."
+
+def test_grenzfall():
+    """Grenzfälle: S genau 1,5 gilt als ausreichend"""
+    assert _has(r"1[.,]5"), "Nenne den Grenzwert 1,5 für die Sicherheit."
+    assert _has(r"genau|gleich|>=|<=|≥|≤|grenzfall"), "Sage ausdrücklich, was an der Grenze gilt (zum Beispiel: S genau 1,5 ist ausreichend)."
+
+def test_beispiel():
+    """Beispiel: Eingabe und erwartetes Ergebnis"""
+    assert _has(r"beispiel|testfall|erwartet|->|→"), "Gib mindestens ein Beispiel an (Wort Beispiel oder ein Pfeil ->)."
+    assert _has(r"\d"), "Ein Beispiel braucht konkrete Zahlen."
+        </script>
+        <script type="text/x-python" data-role="solution">
+vager_prompt = "Mach mir was für die Festigkeit."
+prompt = """Schreibe eine Python-Funktion sicherheit(kraft, querschnitt, streckgrenze).
+Eingaben: kraft in N, querschnitt in mm2, streckgrenze Re in MPa (alle Kommazahlen, Querschnitt größer 0).
+Ablauf: spannung = kraft / querschnitt (ergibt MPa, weil N/mm2 = MPa); S = streckgrenze / spannung.
+Rückgabe: der Text "ausreichend", wenn S >= 1.5, sonst "nicht ausreichend". Kein print, keine Eingabe.
+Grenzfall: S genau 1.5 gilt als ausreichend. Ist die Spannung 0, ist die Sicherheit unendlich: dann "ausreichend".
+Beispiel: sicherheit(20000, 100, 355) -> "ausreichend" (Spannung 200 MPa, S = 1.775).
+"""
+print(prompt)
+        </script>
+        <ol class="a-hints">
+          <li>Beginne mit dem Funktionsnamen und den Parametern: <code>sicherheit(kraft, querschnitt, streckgrenze)</code>. Danach alle Einheiten: Kraft in N, Querschnitt in mm², Streckgrenze in MPa.</li>
+          <li>Beschreibe die Rechnung (σ = F / A, S = Re / σ) und die Rückgabe: die Texte „ausreichend“ und „nicht ausreichend“, ohne <code>print</code>.</li>
+          <li>Der Grenzfall gehört in einen eigenen Satz: „S genau 1,5 ist ausreichend.“ Dazu ein Beispiel mit Zahlen: <code>sicherheit(20000, 100, 355) -&gt; "ausreichend"</code>. Rechne es vorher von Hand nach (20000 / 100 = 200 MPa, S = 1,775).</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-6" data-title="Copilot: PAP als Prompt, Ergebnis prüfen" data-part="B" data-stars="3" data-min="12" data-extra="in Codespaces bearbeiten" aria-labelledby="h-t-6" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-6" tabindex="-1">Copilot: PAP als Prompt, Ergebnis prüfen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Copilot-Aufgabe 2 von 3. Dieser PAP beschreibt eine Auslastungs-Ampel für ein Bauteil: Die Auslastung <em>a</em> ist die vorhandene Kraft geteilt durch die zulässige Kraft. Bei <em>a</em> bis einschließlich 0,8 zeigt die Ampel „gruen“, bei <em>a</em> bis einschließlich 1,0 „gelb“, darüber „rot“.</p>
+      <div class="pap-wrap v11-pap-ampel"><svg class="pap" xmlns="http://www.w3.org/2000/svg" viewBox="-189 -14 544 492" role="img" aria-label="Programmablaufplan Auslastungs-Ampel: f_ist und f_zul einlesen, a als Quotient berechnen; wenn a höchstens 0,8 gruen; sonst wenn a höchstens 1,0 gelb; sonst rot." style="--pap-min:424px;--pap-max:544px"><g class="pap-e" data-from="start" data-to="in" data-lab=""><path class="pap-hit" d="M0 34L0 62"/><path class="pap-line" d="M0 34L0 62"/><path class="pap-ah" d="M0 62L-4.6 53L4.6 53Z"/></g><g class="pap-e" data-from="in" data-to="op" data-lab=""><path class="pap-hit" d="M0 114L0 142"/><path class="pap-line" d="M0 114L0 142"/><path class="pap-ah" d="M0 142L-4.6 133L4.6 133Z"/></g><g class="pap-e" data-from="op" data-to="d1" data-lab=""><path class="pap-hit" d="M0 180L0 208"/><path class="pap-line" d="M0 180L0 208"/><path class="pap-ah" d="M0 208L-4.6 199L4.6 199Z"/></g><g class="pap-e" data-from="d1" data-to="g" data-lab="ja"><path class="pap-hit" d="M-68 247L-93 247L-93 285.4"/><path class="pap-line" d="M-68 247L-93 247L-93 285.4"/><path class="pap-ah" d="M-93 285.4L-97.6 276.4L-88.4 276.4Z"/><text class="pap-lab" x="-74" y="241" text-anchor="end">ja</text></g><g class="pap-e" data-from="d1" data-to="d2" data-lab="nein"><path class="pap-hit" d="M68 247L179 247L179 275"/><path class="pap-line" d="M68 247L179 247L179 275"/><path class="pap-ah" d="M179 275L174.4 266L183.6 266Z"/><text class="pap-lab" x="74" y="241" text-anchor="start">nein</text></g><g class="pap-e" data-from="d2" data-to="y" data-lab="ja"><path class="pap-hit" d="M111 314L89.5 314L89.5 352.4"/><path class="pap-line" d="M111 314L89.5 314L89.5 352.4"/><path class="pap-ah" d="M89.5 352.4L84.9 343.4L94.1 343.4Z"/><text class="pap-lab" x="105" y="308" text-anchor="end">ja</text></g><g class="pap-e" data-from="d2" data-to="r" data-lab="nein"><path class="pap-hit" d="M247 314L265.5 314L265.5 352.4"/><path class="pap-line" d="M247 314L265.5 314L265.5 352.4"/><path class="pap-ah" d="M265.5 352.4L260.9 343.4L270.1 343.4Z"/><text class="pap-lab" x="253" y="308" text-anchor="start">nein</text></g><g class="pap-e" data-from="g" data-to="end" data-lab=""><path class="pap-hit" d="M-93 323.4L-93 405.8L0 405.8L0 430.4"/><path class="pap-line" d="M-93 323.4L-93 405.8L0 405.8L0 430.4"/><path class="pap-ah" d="M0 430.4L-4.6 421.4L4.6 421.4Z"/></g><g class="pap-e" data-from="y" data-to="end" data-lab=""><path class="pap-hit" d="M89.5 390.4L89.5 405.8L0 405.8L0 430.4"/><path class="pap-line" d="M89.5 390.4L89.5 405.8L0 405.8L0 430.4"/><path class="pap-ah" d="M0 430.4L-4.6 421.4L4.6 421.4Z"/></g><g class="pap-e" data-from="r" data-to="end" data-lab=""><path class="pap-hit" d="M265.5 390.4L265.5 405.8L0 405.8L0 430.4"/><path class="pap-line" d="M265.5 390.4L265.5 405.8L0 405.8L0 430.4"/><path class="pap-ah" d="M0 430.4L-4.6 421.4L4.6 421.4Z"/></g><g class="pap-n pap-n--start" data-id="start" data-bid="start"><rect class="pap-shape" x="-48" y="0" width="96" height="34" rx="17"/><text class="pap-t" x="0" y="21.6" text-anchor="middle">Start</text></g><g class="pap-n pap-n--io" data-id="in" data-bid="in"><path class="pap-shape" d="M-80.5 62H94.5L80.5 114H-94.5Z"/><text class="pap-t" x="0" y="84.1" text-anchor="middle">Eingabe: f_ist, f_zul</text><text class="pap-t" x="0" y="101.1" text-anchor="middle">(in N)</text></g><g class="pap-n pap-n--op" data-id="op" data-bid="op"><rect class="pap-shape" x="-68" y="142" width="136" height="38"/><text class="pap-t" x="0" y="165.6" text-anchor="middle">a = f_ist / f_zul</text></g><g class="pap-n pap-n--if" data-id="d1" data-bid="d1"><path class="pap-shape" d="M0 208L68 247L0 286L-68 247Z"/><text class="pap-t" x="0" y="251.6" text-anchor="middle">a &lt;= 0.8?</text></g><g class="pap-n pap-n--io" data-id="g" data-bid="g"><path class="pap-shape" d="M-161 285.4H-11L-25 323.4H-175Z"/><text class="pap-t" x="-93" y="309" text-anchor="middle">Rückgabe: &quot;gruen&quot;</text></g><g class="pap-n pap-n--if" data-id="d2" data-bid="d2"><path class="pap-shape" d="M179 275L247 314L179 353L111 314Z"/><text class="pap-t" x="179" y="318.6" text-anchor="middle">a &lt;= 1.0?</text></g><g class="pap-n pap-n--io" data-id="y" data-bid="y"><path class="pap-shape" d="M25 352.4H168L154 390.4H11Z"/><text class="pap-t" x="89.5" y="376" text-anchor="middle">Rückgabe: &quot;gelb&quot;</text></g><g class="pap-n pap-n--io" data-id="r" data-bid="r"><path class="pap-shape" d="M204 352.4H341L327 390.4H190Z"/><text class="pap-t" x="265.5" y="376" text-anchor="middle">Rückgabe: &quot;rot&quot;</text></g><g class="pap-n pap-n--end" data-id="end" data-bid="end"><rect class="pap-shape" x="-48" y="430.4" width="96" height="34" rx="17"/><text class="pap-t" x="0" y="452" text-anchor="middle">Ende</text></g></svg></div>
+      <ol class="k-steps">
+        <li><strong>Codespace öffnen</strong> (<a href="v11-copilot.html#anleitung">Anleitung</a>) und eine Datei <code class="k-i">ampel.py</code> anlegen.</li>
+        <li><strong>Testfälle von Hand zuerst</strong> in diese Datei schreiben: mindestens fünf, je einer pro Zweig und beide Grenzen (a genau 0,8 und a genau 1,0).</li>
+        <li><strong>PAP in einen Prompt übersetzen</strong> (Syntax-Karte 5): Funktionsname <code class="k-i">auslastung_ampel(f_ist, f_zul)</code>, Einheit N, Rückgabetexte, Grenzfälle, ein Beispiel. Im Copilot-Chat abschicken.</li>
+        <li><strong>Den erzeugten Code lesen und mit deinen Testfällen laufen lassen.</strong> Schlägt ein Test fehl, verbessere den Prompt, nicht den Code planlos.</li>
+        <li><strong>Funktion hier einfügen</strong> und „Prüfen“ drücken: Die Prüfung hat eigene Testfälle, auch auf den Grenzen.</li>
+      </ol>
+      <p><a class="k-btn k-btn--ghost k-btn--small" href="v11-copilot.html#anleitung">In Codespaces bearbeiten: Anleitung</a> <span class="k-small k-muted">Ohne Copilot-Zugang schreibst du die Funktion selbst: Der Weg ist der Phase-1-Weg, die Prüfung bleibt gleich.</span></p>
+      <div class="a-task" data-a="code" data-id="tr-6" data-mode="funktion">
+        <div class="a-task__text">
+          <p>Füge die Funktion <code class="k-i">auslastung_ampel(f_ist, f_zul)</code> ein. Sie liefert den Text <code class="k-i">"gruen"</code>, <code class="k-i">"gelb"</code> oder <code class="k-i">"rot"</code> (Rückgabe, kein <code class="k-i">print</code>). Kräfte in N, <code class="k-i">f_zul</code> ist immer größer als 0.</p>
+          <div class="a-spec"><strong>Erwartet (Rückgabewerte)</strong><pre data-run="no">auslastung_ampel(40, 100)   -&gt;  "gruen"
+auslastung_ampel(90, 100)   -&gt;  "gelb"
+auslastung_ampel(120, 100)  -&gt;  "rot"</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V11" aria-label="Python-Code Aufgabe 6"># Hier die Funktion einfügen, die Copilot nach deinem PAP-Prompt erzeugt hat
+# (oder die du selbst geschrieben hast), und vorher gelesen und getestet.
+
+
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _fn():
+    assert "auslastung_ampel" in globals(), "Die Funktion auslastung_ampel ist nicht definiert."
+    return globals()["auslastung_ampel"]
+
+def _ist(f_ist, f_zul, soll):
+    erg = _fn()(f_ist, f_zul)
+    assert erg is not None, "auslastung_ampel gibt None zurück. Jeder Zweig braucht ein return (kein print)."
+    assert erg == soll, "auslastung_ampel(%s, %s) soll %r liefern, deine Funktion liefert %r" % (f_ist, f_zul, soll, erg)
+
+def test_gruen():
+    """Auslastung 0,4: gruen"""
+    _ist(40, 100, "gruen")
+
+def test_gelb():
+    """Auslastung 0,9: gelb"""
+    _ist(90, 100, "gelb")
+
+def test_rot():
+    """Auslastung 1,2: rot"""
+    _ist(120, 100, "rot")
+
+def test_grenze_gruen():
+    """Grenze: Auslastung genau 0,8 ist noch gruen"""
+    _ist(80, 100, "gruen")
+    _ist(4, 5, "gruen")
+
+def test_grenze_gelb():
+    """Grenze: Auslastung genau 1,0 ist noch gelb"""
+    _ist(100, 100, "gelb")
+    _ist(7.5, 7.5, "gelb")
+
+def test_null():
+    """Keine Last: Auslastung 0 ist gruen"""
+    _ist(0, 100, "gruen")
+        </script>
+        <script type="text/x-python" data-role="solution">
+def auslastung_ampel(f_ist, f_zul):
+    """Liefert 'gruen', 'gelb' oder 'rot' nach der Auslastung f_ist / f_zul (Kräfte in N)."""
+    a = f_ist / f_zul
+    if a <= 0.8:
+        return "gruen"
+    elif a <= 1.0:
+        return "gelb"
+    else:
+        return "rot"
+
+
+print(auslastung_ampel(80, 100))
+        </script>
+        <ol class="a-hints">
+          <li>Die Auslastung ist <code>a = f_ist / f_zul</code> (beide in N, das Verhältnis hat keine Einheit).</li>
+          <li>Zwei Rauten wie im PAP: <code>a &lt;= 0.8</code> gibt „gruen“, sonst <code>a &lt;= 1.0</code> gibt „gelb“, sonst „rot“.</li>
+          <li>Hat Copilot <code>&lt;</code> statt <code>&lt;=</code> geschrieben, scheitern die beiden Grenztests: Genau an dieser Stelle zeigen sich die Fehler, die du mit den Testfällen von Hand finden wolltest.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-7" data-title="Copilot: Testfälle von Hand schreiben, bevor die KI ran darf" data-part="B" data-stars="3" data-min="12" data-extra="in Codespaces bearbeiten" aria-labelledby="h-t-7" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-7" tabindex="-1">Copilot: Testfälle von Hand schreiben, bevor die KI ran darf</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Copilot-Aufgabe 3 von 3. Diesmal bekommst du keine Funktion, sondern schreibst nur die <strong>Testfälle</strong> für <code class="k-i">passungsart(bohrung_min, bohrung_max, welle_min, welle_max)</code>. Gute Testfälle erkennt man daran, dass sie falschen Code durchfallen lassen. Die Prüfung hier fährt deine Testfälle gegen die richtige Funktion und gegen vier absichtlich falsche Varianten, wie Copilot sie liefern könnte (zum Beispiel mit <code class="k-i">&gt;</code> statt <code class="k-i">&gt;=</code>). Fällt eine falsche Variante nicht durch, fehlt dir ein Testfall.</p>
+      <ol class="k-steps">
+        <li><strong>Spezifikation lesen:</strong> Spiel, wenn <code class="k-i">bohrung_min &gt;= welle_max</code>. Übermaß, wenn <code class="k-i">bohrung_max &lt;= welle_min</code>. Sonst Übergang. Maße in mm.</li>
+        <li><strong>Testfälle schreiben</strong> (hier im Editor und, wenn du Copilot benutzt, in Codespaces in die Datei <code class="k-i">test_passung.py</code>), <em>bevor</em> du Copilot fragst. Jedes Tupel: vier Maße und die erwartete Antwort.</li>
+        <li><strong>Optional in Codespaces:</strong> Lass Copilot die Funktion nach dem PAP-Prompt schreiben und jage sie durch deine Testfälle. Besteht sie alle? Wenn nicht, was war falsch: Prompt oder Code?</li>
+        <li><strong>Hier Prüfen:</strong> Deine Testfälle müssen für die richtige Funktion stimmen und jede falsche Variante entlarven.</li>
+      </ol>
+      <p><a class="k-btn k-btn--ghost k-btn--small" href="v11-copilot.html#anleitung">In Codespaces bearbeiten: Anleitung</a></p>
+      <div class="a-task" data-a="code" data-id="tr-7" data-mode="code">
+        <div class="a-task__text">
+          <p>Fülle die Liste <code class="k-i">testfaelle</code> mit Tupeln <code class="k-i">(bohrung_min, bohrung_max, welle_min, welle_max, erwartet)</code>. <code class="k-i">erwartet</code> ist <code class="k-i">"Spielpassung"</code>, <code class="k-i">"Übermaßpassung"</code> oder <code class="k-i">"Übergangspassung"</code>. Jede Bohrung und jede Welle hat ein kleinstes Maß, das nicht größer als das größte ist. Brauchst du <strong>mindestens vier Fälle</strong>, darunter beide Grenzen und alle drei Passungsarten.</p>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V11" aria-label="Python-Code Aufgabe 7"># Testfälle zuerst, von Hand, vor jedem Prompt
+# (bohrung_min, bohrung_max, welle_min, welle_max, erwartet)
+testfaelle = [
+    (25.000, 25.021, 24.980, 24.993, "Spielpassung"),     # H7/g6, ein Beispiel für Spiel
+]
+
+print(len(testfaelle), "Testfälle")
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _korrekt(a, b, c, d):
+    if a >= d:
+        return "Spielpassung"
+    elif b <= c:
+        return "Übermaßpassung"
+    return "Übergangspassung"
+
+def _m_spiel_streng(a, b, c, d):
+    if a > d:
+        return "Spielpassung"
+    elif b <= c:
+        return "Übermaßpassung"
+    return "Übergangspassung"
+
+def _m_uebermass_streng(a, b, c, d):
+    if a >= d:
+        return "Spielpassung"
+    elif b < c:
+        return "Übermaßpassung"
+    return "Übergangspassung"
+
+def _m_nie_uebergang(a, b, c, d):
+    if a >= d:
+        return "Spielpassung"
+    return "Übermaßpassung"
+
+def _m_falsche_maße(a, b, c, d):
+    if b >= c:
+        return "Spielpassung"
+    elif a <= d:
+        return "Übermaßpassung"
+    return "Übergangspassung"
+
+def _faelle():
+    assert "testfaelle" in globals() and isinstance(testfaelle, list), "Die Liste testfaelle fehlt."
+    for i, f in enumerate(testfaelle):
+        assert isinstance(f, (tuple, list)) and len(f) == 5, "Testfall %d hat nicht die Form (bohrung_min, bohrung_max, welle_min, welle_max, erwartet): %r" % (i + 1, f)
+        assert all(isinstance(x, (int, float)) for x in f[:4]), "Testfall %d: Die vier Maße müssen Zahlen sein: %r" % (i + 1, f)
+        assert f[0] <= f[1] and f[2] <= f[3], "Testfall %d: Das kleinste Maß darf nicht größer als das größte sein: %r" % (i + 1, f)
+    return testfaelle
+
+def test_form():
+    """Mindestens vier Testfälle in der richtigen Form"""
+    assert len(_faelle()) >= 4, "Du hast %d Testfälle, gebraucht werden mindestens vier." % len(testfaelle)
+
+def test_richtig():
+    """Deine Erwartungen stimmen mit der Spezifikation überein"""
+    for i, f in enumerate(_faelle()):
+        soll = _korrekt(*f[:4])
+        assert f[4] == soll, "Testfall %d %r: Nach der Spezifikation ist das %r, du erwartest %r." % (i + 1, f[:4], soll, f[4])
+
+def test_alle_arten():
+    """Alle drei Passungsarten kommen vor"""
+    arten = set(f[4] for f in _faelle())
+    for a in ("Spielpassung", "Übermaßpassung", "Übergangspassung"):
+        assert a in arten, "Es fehlt ein Testfall mit der Erwartung %r." % a
+
+def _entlarvt(mutant):
+    return any(mutant(*f[:4]) != f[4] for f in _faelle())
+
+def test_grenze_spiel():
+    """Grenze Spiel genau 0 (bohrung_min gleich welle_max) wird getestet"""
+    assert _entlarvt(_m_spiel_streng), "Eine Funktion mit > statt >= wird von deinen Testfällen nicht erkannt. Es fehlt der Grenzfall bohrung_min genau gleich welle_max."
+
+def test_grenze_uebermass():
+    """Grenze Übermaß (bohrung_max gleich welle_min) wird getestet"""
+    assert _entlarvt(_m_uebermass_streng), "Eine Funktion mit < statt <= wird von deinen Testfällen nicht erkannt. Es fehlt der Grenzfall bohrung_max genau gleich welle_min."
+
+def test_uebergang():
+    """Die Übergangspassung wird wirklich unterschieden"""
+    assert _entlarvt(_m_nie_uebergang), "Eine Funktion, die nie Übergangspassung liefert, wird nicht erkannt. Brauchst du einen Fall, in dem sich die Toleranzfelder überlappen."
+
+def test_vertauschte_maße():
+    """Vertauschte Maße (größte Bohrung gegen kleinste Welle) werden erkannt"""
+    assert _entlarvt(_m_falsche_maße), "Eine Funktion mit den falschen Maßen in der Bedingung wird nicht erkannt. Ein Übergangsfall oder ein Übermaßfall mit klar getrennten Feldern hilft."
+        </script>
+        <script type="text/x-python" data-role="solution">
+testfaelle = [
+    (25.000, 25.021, 24.980, 24.993, "Spielpassung"),       # H7/g6: eindeutig Spiel
+    (25.000, 25.021, 25.028, 25.041, "Übermaßpassung"),     # H7/r6: eindeutig Übermaß
+    (25.000, 25.021, 25.002, 25.015, "Übergangspassung"),   # H7/k6: Überlappung
+    (25.000, 25.021, 24.987, 25.000, "Spielpassung"),       # Grenze: bohrung_min == welle_max
+    (25.000, 25.021, 25.021, 25.040, "Übermaßpassung"),     # Grenze: bohrung_max == welle_min
+]
+print(len(testfaelle), "Testfälle")
+        </script>
+        <ol class="a-hints">
+          <li>Ein Fall je Zweig: eindeutig Spiel (Welle weit kleiner), eindeutig Übermaß (Welle weit größer), Überlappung (Übergang).</li>
+          <li>Dazu die Grenzen: Spiel genau 0 heißt <code>bohrung_min</code> gleich <code>welle_max</code> (zum Beispiel 25.000 und 25.000). Übermaß genau 0 heißt <code>bohrung_max</code> gleich <code>welle_min</code> (25.021 und 25.021).</li>
+          <li>Die Erwartung für die Grenzen steht in der Spezifikation: Spiel genau 0 ist Spielpassung, größte Bohrung gleich kleinste Welle ist Übermaßpassung. Du entscheidest es, nicht die KI.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-8" data-title="Klausur-Modus: Messreihe und Passungstest mit Modulen" data-part="B" data-stars="4" data-min="15" data-extra="8 Punkte" aria-labelledby="h-t-8" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-8" tabindex="-1">Klausur-Modus: Messreihe und Passungstest mit Modulen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="klausur" data-id="tr-8" data-mode="programm" data-minutes="15">
+        <div class="a-task__text">
+          <p><strong>So wie in der Klausur:</strong> Schreibe den Code ohne Ausführen und ohne <abbr class="k-begriff" data-erklaerung="Die Auto-Vervollständigung schlägt dir beim Tippen passende Wörter vor. In der Klausur gibt es sie nicht.">Auto-Vervollständigung</abbr>, wenn möglich zuerst auf Papier. Erst danach „Abgeben und prüfen“, dann bewertest du dich selbst.</p>
+          <p>Eine Welle hat das Nennmaß 25 mm. Schreibe ein Programm, das zuerst die Anzahl <em>n</em> der Messwerte (ganze Zahl, mindestens 2) und danach n Durchmesser in mm (Kommazahlen) einliest und in einer <strong>Liste</strong> sammelt. Benutze das Modul <code>statistics</code> (<code>import</code> am Programmanfang) und die Funktion <code>isclose</code> aus dem Modul <code>math</code> (<code>from math import isclose</code>). Gib danach drei Zeilen aus:</p>
+          <ul>
+            <li>den <strong>Mittelwert</strong> (drei Nachkommastellen),</li>
+            <li>die <strong>Standardabweichung der Stichprobe</strong> (vier Nachkommastellen),</li>
+            <li>ob der Mittelwert im Soll liegt: <code>ja</code>, wenn er höchstens 0,01 mm vom Nennmaß 25 abweicht (die Grenze gehört dazu), sonst <code>nein</code>. Benutze dafür <code>isclose</code> mit <code>abs_tol=0.01</code>.</li>
+          </ul>
+          <div class="a-spec"><strong>Ausgabe genau so (n = 4, Werte 25.00, 25.02, 24.99, 25.01):</strong><pre data-run="no">Mittelwert: 25.005 mm
+Standardabweichung: 0.0170 mm
+Mittelwert im Soll: ja</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V11" data-assist="off" aria-label="Python-Code von Hand schreiben, ohne Ausführen"></textarea></div>
+        <script type="text/x-python" data-role="tests">
+import statistics as _st
+import math as _m
+
+def _pruefe(w):
+    m = _st.mean(w)
+    soll = ["Mittelwert: %.3f mm" % m,
+            "Standardabweichung: %.4f mm" % _st.stdev(w),
+            "Mittelwert im Soll: " + ("ja" if abs(m - 25.0) <= 0.01 + 1e-12 else "nein")]
+    z = zeilen(run_program([str(len(w))] + [str(x) for x in w]))
+    for t in soll:
+        assert t in z, "Bei %r wird die Zeile %r erwartet. Dein Programm gibt aus: %r" % (w, t, z)
+
+def test_beispiel():
+    """Beispiel n = 4: 25.00, 25.02, 24.99, 25.01"""
+    _pruefe([25.00, 25.02, 24.99, 25.01])
+
+def test_nein():
+    """Mittelwert weicht ab: 25.05, 25.04, 25.06"""
+    _pruefe([25.05, 25.04, 25.06])
+
+def test_zwei():
+    """Genau zwei Werte: 24.995, 25.005"""
+    _pruefe([24.995, 25.005])
+
+def test_unter():
+    """Mittelwert unter dem Nennmaß, aber im Soll: 24.99, 24.995, 24.992"""
+    _pruefe([24.99, 24.995, 24.992])
+        </script>
+        <script type="text/x-python" data-role="solution">
+import statistics
+from math import isclose
+
+n = int(input("Anzahl Messwerte: "))
+werte = []
+for i in range(n):
+    werte.append(float(input(f"Messwert {i + 1}: ")))
+mittel = statistics.mean(werte)
+print(f"Mittelwert: {mittel:.3f} mm")
+print(f"Standardabweichung: {statistics.stdev(werte):.4f} mm")
+if isclose(mittel, 25.0, abs_tol=0.01):
+    print("Mittelwert im Soll: ja")
+else:
+    print("Mittelwert im Soll: nein")
+        </script>
+        <script type="application/json" data-role="scheme">[
+{"p":1,"t":"import statistics und from math import isclose stehen vor der ersten Benutzung (am Programmanfang)"},
+{"p":1,"t":"n wird mit input() gelesen und mit int() umgewandelt"},
+{"p":1,"t":"Die Werte werden in einer Schleife mit input() gelesen, mit float() umgewandelt und mit append an eine Liste gehängt (Liste vor der Schleife angelegt)"},
+{"p":1,"t":"Mittelwert mit statistics.mean (oder sum/len), Ausgabe mit :.3f und Einheit mm"},
+{"p":1,"t":"Standardabweichung der Stichprobe mit statistics.stdev (nicht pstdev), Ausgabe mit :.4f und Einheit mm"},
+{"p":2,"t":"isclose(mittel, 25.0, abs_tol=0.01) in einem if/else: Mit dem richtigen Aufruf (Mittelwert, Nennmaß, abs_tol), nicht mit ==, und beide Zweige geben ja beziehungsweise nein aus"},
+{"p":1,"t":"Die drei Ausgaben haben den richtigen Text und stehen nach der Schleife"}
+]</script>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-notebook" data-nonumber="1" data-title="Notebook und Deep Dive" data-part="B" data-stars="" data-min="" data-extra="ohne Wertung" aria-labelledby="h-t-notebook" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-notebook" tabindex="-1">Notebook und Deep Dive</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Mehr üben mit Modulen, Testfällen und dem Prüfen von KI-Code. Das Notebook nutzt Python aus V01 bis V11, hat drei Stufen (Aufwärmen, Anwenden, Knobeln), keine Lösungen, dafür Selbsttests, und ist für Codespaces gedacht: Dort kannst du die Aufgaben mit Copilot bearbeiten und deine Testfälle <em>vor</em> dem Prompt schreiben.</p>
+      <p><a class="k-btn k-btn--ghost" href="../notebooks/V11-Copilot.ipynb" download>V11-Copilot.ipynb herunterladen</a></p>
+      <ol class="k-steps">
+        <li><strong>In Codespaces öffnen:</strong> Im Kurs-Repository auf GitHub „Code“ → „Codespaces“ → „Create codespace“ (Schritt für Schritt in der <a href="v11-copilot.html#anleitung">Lerneinheit, Abschnitt 3</a>). Die Umgebung (Python 3.12, NumPy, Matplotlib, Jupyter, Copilot) ist vorbereitet. Dann <code class="k-i">notebooks/V11-Copilot.ipynb</code> öffnen.</li>
+        <li><strong>Oder lokal:</strong> <code class="k-i">pip install numpy matplotlib jupyter</code>, dann <code class="k-i">jupyter lab</code>. Das Notebook braucht für die ersten beiden Stufen nur die Standardbibliothek.</li>
+        <li>Immer erst die Testfälle von Hand, dann Copilot, dann prüfen.</li>
+      </ol>
+      <h3>Danach</h3>
+      <p><a href="v11-copilot.html#deepdive">Zum Deep Dive</a> (freiwillig): virtuelle Umgebungen, Lieferkette, Copilot-Betriebsarten, Rechte und Pflichten. Oder zurück zur <a href="v11-copilot.html">Lerneinheit</a>, um etwas nachzulesen.</p>
+
+    </section>
+
+      <nav class="lab__pager" aria-label="Zwischen Aufgaben wechseln">
+        <a class="k-btn k-btn--ghost" id="lab-prev" href="#a-werkzeugkasten">← Zurück</a>
+        <a class="k-btn k-btn--ghost" id="lab-next" href="#a-vorgemacht">Weiter →</a>
+      </nav>
+    </main>
+
+    <div class="lab__dock" data-library-dock data-state="off"></div>
+  </div>
+
+  <footer class="dhbw-footer k-footer">
+    <div class="dhbw-footer__inner">
+      <span><span class="dhbw-footer__brand">DHBW Stuttgart</span> · Campus Horb</span>
+      <span><a href="../index.html">Zurück zum Lernpfad</a> · V11 Programmierlabor</span>
+    </div>
+  </footer>
+
+  <script src="../assets/js/speicher.js"></script>
+  <script src="../assets/js/icons.js"></script>
+  <script src="../assets/js/editor.js" defer></script>
+  <script src="../assets/js/pap-engine.js"></script>
+  <script src="../assets/js/explorables-v11.js"></script>
+  <script src="../assets/js/kurs.js"></script>
+  <script src="../assets/js/aufgaben.js"></script>
+  <script src="../assets/js/pap-editor.js"></script>
+  <script src="../assets/js/labor.js"></script>
+</body>
+</html>

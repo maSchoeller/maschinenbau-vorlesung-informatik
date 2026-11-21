@@ -21,10 +21,10 @@ def passungsart(bohrung_min, bohrung_max, welle_min, welle_max):
 # --- Testfälle, VOR dem Generieren von Hand aufgeschrieben ---
 testfaelle = [
     # (Bohrung min, max, Welle min, max, erwartet)          # Beispiel
-    (25.000, 25.021, 24.980, 24.993, "Spielpassung"),       # 25 H7/f6
-    (25.000, 25.021, 25.028, 25.041, "Übermaßpassung"),     # 25 H7/s6
+    (25.000, 25.021, 24.980, 24.993, "Spielpassung"),       # 25 H7/g6
+    (25.000, 25.021, 25.028, 25.041, "Übermaßpassung"),     # 25 H7/r6
     (25.000, 25.021, 25.002, 25.015, "Übergangspassung"),   # 25 H7/k6
-    (25.000, 25.021, 24.987, 25.000, "Spielpassung"),       # Grenzfall: Spiel genau 0
+    (25.000, 25.021, 24.987, 25.000, "Spielpassung"),       # 25 H7/h6, Grenzfall: Spiel genau 0
 ]
 
 fehler = 0

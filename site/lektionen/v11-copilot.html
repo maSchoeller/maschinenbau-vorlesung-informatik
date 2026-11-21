@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>V11 Programmieren mit Copilot: spezifizieren, generieren, prüfen · Lerneinheit · Informatik Maschinenbau</title>
+  <meta name="description" content="Derselbe Auftrag, zwei Prompts: Warum ein Programmablaufplan ein guter Prompt ist, wie du KI-Code mit vorher von Hand geschriebenen Testfällen prüfst, was import und pip tun und wie du GitHub Copilot in Codespaces einrichtest.">
+  <link rel="stylesheet" href="../assets/css/dhbw-base.css">
+  <link rel="stylesheet" href="../assets/css/kurs.css">
+  <link rel="stylesheet" href="../assets/css/aufgaben.css">
+  <link rel="stylesheet" href="../assets/css/editor.css">
+  <link rel="stylesheet" href="../assets/css/v05.css">
+  <link rel="stylesheet" href="../assets/css/v11.css">
+</head>
+<body data-lesson="V11" data-page="lerneinheit">
+  <a class="k-skip" href="#inhalt">Zum Inhalt springen</a>
+
+  <header class="dhbw-header k-header">
+    <div class="dhbw-header__inner">
+      <a class="k-logo" href="../index.html" aria-label="Zur Startseite">
+        <span class="k-logo__mark" aria-hidden="true">DHBW</span>
+        <span class="k-logo__text">Informatik Maschinenbau<small>Campus Horb · 2026/27</small></span>
+      </a>
+      <nav class="k-nav" aria-label="Hauptnavigation">
+        <a href="../index.html">Start</a>
+        <a href="../index.html#lernpfad">Lernpfad</a>
+        <a href="../bibliothek.html">Bibliothek</a>
+        <a href="../pap-editor.html">PAP-Editor</a>
+        <a href="v11-copilot.html" aria-current="page">V11 Lerneinheit</a>
+        <a href="v11-labor.html">V11 Labor</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="l-page">
+    <nav class="k-toc" aria-label="Inhalt dieser Lerneinheit">
+      <p class="k-toc__title">Lerneinheit V11</p>
+      <ol class="k-toc__list">
+        <li><a href="#warum"><span class="k-toc__n">1</span>Warum?</a></li>
+        <li><a href="#theorie"><span class="k-toc__n">2</span>Theorie</a></li>
+        <li><a href="#anleitung"><span class="k-toc__n">3</span>Copilot einrichten</a></li>
+        <li><a href="#ausprobieren"><span class="k-toc__n">4</span>Ausprobieren</a></li>
+        <li><a href="#selbstcheck"><span class="k-toc__n">5</span>Selbstcheck</a></li>
+        <li><a href="#deepdive"><span class="k-toc__n">6</span>Deep Dive</a></li>
+      </ol>
+      <div class="k-progress" data-progress-for="V11">
+        <span class="k-progress__bar"><span class="k-progress__fill"></span></span>
+        <span class="k-progress__text">0 von 6 Abschnitten</span>
+      </div>
+      <a class="k-toc__lab" href="v11-labor.html">Weiter ins Programmierlabor →</a>
+    </nav>
+
+    <main id="inhalt" class="l-content">
+
+      <header class="k-title">
+        <p class="k-title__label">V11 · Phase 2 Werkzeug · Lerneinheit</p>
+        <h1 id="h-titel">Programmieren mit Copilot: spezifizieren, generieren, prüfen</h1>
+        <p class="k-title__lead">Ab jetzt darf die KI Code erzeugen. Deine Arbeit verschiebt sich: Du beschreibst den Auftrag so genau, dass die KI wenig raten muss, du schreibst die Testfälle <em>vorher</em> von Hand, und du prüfst, bevor du etwas übernimmst. Ein <abbr class="k-begriff" data-erklaerung="Ein Programmablaufplan (PAP) zeichnet den Ablauf eines Programms als Symbole, die durch Pfeile verbunden sind (aus V05). Er ist sprachunabhängig, so wie eine Fertigungszeichnung kein bestimmtes CAD-Programm braucht.">Programmablaufplan</abbr> ist dafür ein sehr guter Prompt.</p>
+        <p class="k-title__goals">Nach dieser Lerneinheit kannst du:</p>
+        <ul class="k-title__list">
+          <li>einen Auftrag als PAP und als <abbr class="k-begriff" data-erklaerung="Ein Prompt ist die Anweisung an eine KI, also der Text, den du ihr schickst. Je genauer er ist, desto weniger muss die KI raten.">Prompt</abbr> formulieren und mit den fünf Kriterien Eingaben, Ausgaben, Einheiten, Grenzfälle und Beispiele bewerten,</li>
+          <li>Testfälle vor dem Generieren von Hand aufschreiben und damit KI-Code prüfen (auch an der Grenze: <code class="k-i">&gt;=</code> oder <code class="k-i">&gt;</code>?),</li>
+          <li><code class="k-i">import</code> in drei Schreibweisen lesen, Module der <abbr class="k-begriff" data-erklaerung="Die Standardbibliothek ist die Sammlung von Modulen, die mit jedem Python mitgeliefert wird, zum Beispiel math, statistics und random. Man muss sie nicht installieren, nur importieren.">Standardbibliothek</abbr> und ein eigenes Modul benutzen,</li>
+          <li>erklären, was <abbr class="k-begriff" data-erklaerung="pip ist das Installationsprogramm für Python-Pakete. Mit „pip install name“ lädt es ein Paket aus dem Paketindex und legt es auf deinem Rechner ab.">pip</abbr> tut und warum ein erfundenes Paket in KI-Code gefährlich ist,</li>
+          <li>GitHub Copilot über den Studierendenzugang einrichten und in Codespaces benutzen.</li>
+        </ul>
+        <p class="k-small k-muted">Das Schreiben der Python-Bausteine übst du im <a href="v11-labor.html">Programmierlabor</a>. Vorausgesetzt sind V01 bis V10, auch Funktionen (V07), Listen (V08) und List Comprehension (V10).</p>
+        <div class="hinweis hinweis--merke"><strong class="hinweis__title">Heute schon beantragen</strong><p>Der Studierendenstatus bei GitHub kann Stunden bis mehrere Wochen dauern. Wenn du Copilot im Kurs selbst nutzen willst, stell den Antrag am besten noch heute: Die Anleitung steht in <a href="#anleitung">Abschnitt 3</a>. Alle Aufgaben lassen sich auch ohne Copilot lösen.</p></div>
+      </header>
+
+      <!-- 1 ───────────── WARUM ───────────── -->
+      <section class="k-section" id="warum" data-section="warum" aria-labelledby="h-warum">
+        <h2 class="k-section__title" id="h-warum"><span class="k-section__num" aria-hidden="true">1</span> Warum?</h2>
+
+        <p>Eine Konstrukteurin braucht ein kleines Programm, das für eine Welle-Bohrung-Paarung sagt, ob eine <abbr class="k-begriff" data-erklaerung="Eine Passung beschreibt, wie eine Welle in einer Bohrung sitzt: mit Spiel (Welle bleibt beweglich), mit Übermaß (Welle ist größer und wird eingepresst) oder dazwischen (Übergang).">Passung</abbr> Spiel, Übermaß oder Übergang ergibt. Sie fragt die KI, einmal mit einem Satz und einmal mit ihrem Programmablaufplan. Beide Antworten sehen professionell aus. Eine davon hat einen Fehler, der erst an der Grenze auffällt.</p>
+
+        <figure class="k-figure">
+          <picture>
+            <source srcset="../assets/img/v11-hook.webp" type="image/webp">
+            <img src="../assets/img/v11-hook.png" alt="Illustration: ein vager Satz und ein Programmablaufplan als zwei Eingaben für einen Code-Assistenten, die zu verschiedenen Ergebnissen führen" width="1600" height="900" loading="lazy" onerror="this.closest('figure').hidden=true">
+          </picture>
+        </figure>
+
+        <h3>Derselbe Auftrag, zwei Prompts</h3>
+        <p class="k-small k-muted"><strong>Hinweis:</strong> Die beiden Antworten unten sind <strong>Beispiel-Antworten</strong>. Sie sind nicht aus einer echten Anfrage kopiert, sondern so formuliert, wie ein Code-Assistent typischerweise antwortet, und mit den Fehlern versehen, die in der Praxis oft vorkommen. Wie echte Antworten aussehen, sieht jede Anfrage anders aus. Die Testfälle, mit denen beide Antworten geprüft werden, stehen vorab fest: vier Paarungen mit Nennmaß 25 mm, darunter die Grenze, an der das Spiel genau 0 ist.</p>
+
+        <div class="v11-vergleich">
+          <div class="v11-spalte">
+            <h4>Prompt A: ein Satz</h4>
+            <span class="v11-label">Beispiel-Antwort, nicht aus einer echten Anfrage</span>
+            <p class="v11-prompt">Schreib mir was für Passungen</p>
+            <pre><code># Beispiel-Antwort auf Prompt A
+# Abmaße in mm für Nennmaß 25 (von der KI genannt)
+ABMASSE = {
+    "H7": (0.000, 0.021),
+    "g6": (-0.005, -0.018),
+    "h6": (-0.013, 0.000),
+    "k6": (0.002, 0.015),
+    "r6": (0.023, 0.036),
+}
+
+
+def passungsart(bohrung, welle, nennmass=25.0):
+    b_min = nennmass + ABMASSE[bohrung][0]
+    b_max = nennmass + ABMASSE[bohrung][1]
+    w_min = nennmass + min(ABMASSE[welle])
+    w_max = nennmass + max(ABMASSE[welle])
+    if b_min &gt; w_max:
+        return "Spielpassung"
+    elif b_max &lt; w_min:
+        return "Übermaßpassung"
+    else:
+        return "Übergangspassung"
+
+
+def hoechstspiel(bohrung, welle, nennmass=25.0):
+    return round(nennmass + ABMASSE[bohrung][1] - (nennmass + min(ABMASSE[welle])), 3)
+
+
+# meine Testfälle (vorher festgelegt)
+testfaelle = [("g6", "Spielpassung"), ("r6", "Übermaßpassung"),
+              ("k6", "Übergangspassung"), ("h6", "Spielpassung")]
+for welle, soll in testfaelle:
+    ergebnis = passungsart("H7", welle)
+    if ergebnis == soll:
+        print("ok    ", "H7/" + welle, ergebnis)
+    else:
+        print("FEHLER", "H7/" + welle, ergebnis, "(erwartet:", soll + ")")
+print("Höchstspiel H7/g6:", hoechstspiel("H7", "g6"), "mm")</code></pre>
+          </div>
+          <div class="v11-spalte">
+            <h4>Prompt B: der PAP als Prompt</h4>
+            <span class="v11-label">Beispiel-Antwort, nicht aus einer echten Anfrage</span>
+            <p class="v11-prompt">Schreibe eine Python-Funktion passungsart(bohrung_min, bohrung_max, welle_min, welle_max). Alle Maße sind Kommazahlen in mm. Die Funktion gibt einen Text zurück und druckt nichts.
+
+Ablauf:
+1. Wenn bohrung_min &gt;= welle_max: "Spielpassung".
+2. Sonst, wenn bohrung_max &lt;= welle_min: "Übermaßpassung".
+3. Sonst: "Übergangspassung".
+
+Grenzfall: Ist das Spiel genau 0 (bohrung_min gleich welle_max), ist es eine Spielpassung.
+Beispiel: passungsart(25.000, 25.021, 24.987, 25.000) -&gt; "Spielpassung".
+Keine Toleranztabellen, keine Eingabe.</p>
+            <pre><code># Beispiel-Antwort auf Prompt B
+def passungsart(bohrung_min, bohrung_max, welle_min, welle_max):
+    """Liefert 'Spielpassung', 'Übermaßpassung' oder 'Übergangspassung' (Maße in mm)."""
+    if bohrung_min &gt;= welle_max:
+        return "Spielpassung"
+    elif bohrung_max &lt;= welle_min:
+        return "Übermaßpassung"
+    else:
+        return "Übergangspassung"
+
+
+# meine Testfälle (vorher festgelegt)
+testfaelle = [
+    (25.000, 25.021, 24.980, 24.993, "Spielpassung"),       # 25 H7/g6
+    (25.000, 25.021, 25.028, 25.041, "Übermaßpassung"),     # 25 H7/r6
+    (25.000, 25.021, 25.002, 25.015, "Übergangspassung"),   # 25 H7/k6
+    (25.000, 25.021, 24.987, 25.000, "Spielpassung"),       # 25 H7/h6: Spiel genau 0
+]
+for fall in testfaelle:
+    ergebnis = passungsart(fall[0], fall[1], fall[2], fall[3])
+    if ergebnis == fall[4]:
+        print("ok    ", ergebnis)
+    else:
+        print("FEHLER", ergebnis, "(erwartet:", fall[4] + ")")
+print("Höchstspiel H7/g6:", round(25.021 - 24.980, 3), "mm")</code></pre>
+          </div>
+        </div>
+
+        <div class="k-try" aria-labelledby="t-hook">
+          <h3 id="t-hook">Selbst sehen: Was bestehen die Antworten?</h3>
+          <p class="k-small k-muted">Beide Programme laufen mit den vier Testfällen. Sag erst voraus, dann führe beide aus (beim ersten Mal lädt Python einmalig nach). Der Visualisierer „Schritt für Schritt“ zeigt bei Prompt A, welcher Zweig an der Grenze genommen wird.</p>
+          <div class="k-predict">
+            <p class="k-predict__q">Wie viele der vier Testfälle besteht die Antwort auf den vagen Prompt A?</p>
+            <div class="k-predict__opts"><button type="button">alle vier</button><button type="button" data-correct>drei von vier</button><button type="button">keinen</button></div>
+            <div class="k-predict__result"></div>
+            <div class="k-predict__expl" hidden>Drei von vier. Die Antwort auf Prompt A besteht g6, r6 und k6 und scheitert an h6: Dort ist das Spiel genau 0, und ihr Vergleich <code>b_min &gt; w_max</code> verlangt „größer“ statt „größer oder gleich“. Außerdem hat die KI sich Abmaße <em>ausgedacht</em>: Nach ISO 286 hat 25 g6 die Abmaße −7 und −20 Mikrometer, die Antwort nimmt −5 und −18. Das Höchstspiel stimmt deshalb nicht (0,039 statt 0,041 mm). Das sieht man nur, wenn man die Zahlen nachschlägt. Die Antwort auf Prompt B hat weder Tabelle noch Rate-Anteil: Alles Nötige stand im Prompt.</div>
+          </div>
+        </div>
+
+        <h3>Wissens-Ampel für V11</h3>
+        <ul class="k-ampel-list" aria-label="Wissens-Ampel zu V11">
+          <li><span class="k-ampel k-ampel--kopf"><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-head"/></svg> Im Kopf</span><span>Der Auftrag gehört vor den Prompt: Eingaben, Ausgaben, Einheiten, Grenzfälle, Beispiele. Testfälle schreibst du <em>vor</em> dem Generieren von Hand. An der Grenze entscheidet <code class="k-i">&gt;=</code> oder <code class="k-i">&gt;</code>. <code class="k-i">import math</code>, <code class="k-i">from math import sqrt</code> und <code class="k-i">import math as m</code> legen verschiedene Namen an. Was nicht im Prompt steht, ergänzt die KI nach Wahrscheinlichkeit.</span></li>
+          <li><span class="k-ampel k-ampel--lesen"><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-book"/></svg> Lesen &amp; erkennen</span><span>Funktionen der Standardbibliothek in der Dokumentation nachschlagen (<code class="k-i">math</code>, <code class="k-i">statistics</code>, <code class="k-i">random</code>), <code class="k-i">pip</code>-Befehle und eine Datei <code class="k-i">requirements.txt</code> lesen, die Oberfläche von Copilot und Codespaces bedienen.</span></li>
+          <li><span class="k-ampel k-ampel--deleg"><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-handover"/></svg> Delegieren</span><span><code class="k-i">pip install</code> ausführen, passende Paketversionen auswählen, die Entwicklungsumgebung aufbauen (das übernimmt die vorbereitete Codespace-Umgebung), Routinecode und Standardfunktionen schreiben lassen. Du musst nur wissen, dass es das gibt, und das Ergebnis prüfen.</span></li>
+        </ul>
+
+        <div class="hinweis hinweis--warum"><strong class="hinweis__title">Warum muss ich das wissen?</strong><p>Im Beruf wirst du Code von KI-Assistenten bekommen, und du bist es, der ihn freigibt. Die Haftung liegt nicht beim Assistenten. Wer nur „funktioniert“ prüft, übersieht die stillen Fehler an der Grenze, die erfundenen Werte und die erfundenen Bibliotheken. In der Klausur kommt das als „Würdest du diesen Code freigeben?“, als Code mit <code class="k-i">import</code> und als PAP, den du in Code übersetzt.</p></div>
+      </section>
+
+      <!-- 2 ───────────── THEORIE ───────────── -->
+      <section class="k-section" id="theorie" data-section="theorie" aria-labelledby="h-theorie">
+        <h2 class="k-section__title" id="h-theorie"><span class="k-section__num" aria-hidden="true">2</span> Theorie</h2>
+
+        <h3>Erklärvideo (ca. 3 Min)</h3>
+        <figure class="k-video" id="video-theorie">
+          <video controls preload="metadata" poster="../assets/video/v11-theorie-poster.png" aria-label="Erklärvideo Programmieren mit Copilot: spezifizieren, Testfälle, generieren, prüfen, import und pip">
+            <source src="../assets/video/v11-theorie.mp4" type="video/mp4">
+            <track kind="subtitles" srclang="de" label="Deutsch" src="../assets/video/v11-theorie.vtt" default>
+            Dein Browser kann dieses Video nicht abspielen.
+          </video>
+          <div class="k-video__missing" hidden>Video folgt. Bis dahin: die Explorables und der Lesetext unten decken alles ab.</div>
+          <figcaption>Untertitel sind eingeschaltet (Deutsch).</figcaption>
+        </figure>
+
+        <h3>Der Arbeitsablauf: spezifizieren, testen, generieren, prüfen, verantworten</h3>
+        <p>Mit einem Code-Assistenten wie <abbr class="k-begriff" data-erklaerung="GitHub Copilot ist ein KI-Assistent, der in der Entwicklungsumgebung Programmcode vorschlägt, Fragen zu Code beantwortet und Code erklärt.">GitHub Copilot</abbr> arbeitest du nicht weniger, sondern an anderen Stellen. Das Tippen übernimmt die KI. Du übernimmst, was nur ein Mensch kann: genau sagen, was gebraucht wird, und prüfen, ob das Ergebnis stimmt. Der Ablauf hat fünf Schritte.</p>
+        <svg class="v11-fluss" viewBox="0 0 980 160" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ablauf in fünf Schritten: Spezifizieren, Testfälle von Hand, Generieren durch die KI, Prüfen, Verantworten; bei roten Tests geht es zurück zum Spezifizieren"><rect x="10" y="30" width="180" height="76" class=""/><text x="100" y="58" class="k" text-anchor="middle">1 Spezifizieren</text><text x="100" y="80" class="s" text-anchor="middle">PAP, Einheiten, Grenzfälle</text><text x="100" y="98" class="s" text-anchor="middle">(Du)</text><path d="M190 68L205 68"/><polygon points="205,68 197,63 197,73"/><rect x="205" y="30" width="180" height="76" class=""/><text x="295" y="58" class="k" text-anchor="middle">2 Testfälle</text><text x="295" y="80" class="s" text-anchor="middle">von Hand, vor dem Prompt</text><text x="295" y="98" class="s" text-anchor="middle">(Du)</text><path d="M385 68L400 68"/><polygon points="400,68 392,63 392,73"/><rect x="400" y="30" width="180" height="76" class="hot"/><text x="490" y="58" class="k" text-anchor="middle">3 Generieren</text><text x="490" y="80" class="s" text-anchor="middle">Copilot erzeugt Code</text><text x="490" y="98" class="s" text-anchor="middle">(KI)</text><path d="M580 68L595 68"/><polygon points="595,68 587,63 587,73"/><rect x="595" y="30" width="180" height="76" class=""/><text x="685" y="58" class="k" text-anchor="middle">4 Prüfen</text><text x="685" y="80" class="s" text-anchor="middle">Tests laufen, Code lesen</text><text x="685" y="98" class="s" text-anchor="middle">(Du)</text><path d="M775 68L790 68"/><polygon points="790,68 782,63 782,73"/><rect x="790" y="30" width="180" height="76" class=""/><text x="880" y="58" class="k" text-anchor="middle">5 Verantworten</text><text x="880" y="80" class="s" text-anchor="middle">freigeben oder zurück</text><text x="880" y="98" class="s" text-anchor="middle">(Du)</text><path class="back" d="M880 106L880 136L110 136L110 112"/><polygon class="back" points="110,108 105,118 115,118"/><text x="495" y="131" class="s" text-anchor="middle" style="fill:#9B1213">Tests rot: Prompt oder Spezifikation verbessern, nicht den Code einfach hinbiegen</text></svg>
+        <ol>
+          <li><strong>Spezifizieren:</strong> Aufgabe als PAP und Text festhalten (Eingaben, Ausgaben, Einheiten, Grenzfälle).</li>
+          <li><strong>Testfälle von Hand:</strong> Mindestens ein Fall je Zweig und die Grenzen, <em>bevor</em> du die KI fragst. Sonst richtest du die Tests unbewusst nach dem Code, den du gerade siehst.</li>
+          <li><strong>Generieren:</strong> Den Prompt abschicken, den Code ansehen, nicht blind übernehmen.</li>
+          <li><strong>Prüfen:</strong> Testfälle laufen lassen, den Code Zeile für Zeile lesen (V01 bis V10), Werte und Namen nachschlagen.</li>
+          <li><strong>Verantworten:</strong> Freigeben oder zurück zu Schritt 1. Sind die Tests rot, verbesserst du <em>Prompt und Spezifikation</em>, statt den Code planlos umzubauen.</li>
+        </ol>
+
+        <h3>Der PAP als Prompt</h3>
+        <p>Ein Programmablaufplan (V05) legt fest, <em>welche Fragen in welcher Reihenfolge gestellt werden</em>. Genau das braucht die KI, und es lässt sich in Sätze übersetzen: Jede Raute wird zu einem „Wenn …, dann …, sonst …“, jedes Ausgabesymbol zu einem festen Rückgabetext. Der Passungs-PAP hat zwei Rauten. Wähle einen Testfall und sieh, welchen Weg die Werte nehmen.</p>
+
+        <div class="k-explorable">
+          <h3>Passungs-PAP mit Testfällen</h3>
+          <p class="k-explorable__lead">Die erste Raute fragt, ob die kleinste Bohrung mindestens so groß ist wie die größte Welle (dann gibt es immer Spiel). Nur wenn nicht, fragt die zweite Raute, ob die größte Bohrung höchstens so groß ist wie die kleinste Welle (dann gibt es immer Übermaß). Alles andere ist Übergang. Probiere den vierten Testfall: Er liegt genau auf der Grenze.</p>
+          <div data-explorable="passung-pap"></div>
+          <noscript><p>Für das Explorable „Passungs-PAP mit Testfällen“ werden JavaScript und die PAP-Engine benötigt.</p></noscript>
+          <p class="k-small k-muted">Beobachtung: Die Reihenfolge der Rauten ist Teil der Spezifikation. Und „gleich“ gehört bei beiden Rauten ausdrücklich dazu (<code class="k-i">&gt;=</code>, <code class="k-i">&lt;=</code>). Im PAP steht das als Zeichen in der Raute, im Prompt muss es als Satz stehen, sonst muss die KI raten.</p>
+        </div>
+
+        <h3>Prompt-Qualität: fünf Fragen vor dem Abschicken</h3>
+        <p>Die KI schreibt, was nach deinem Text am wahrscheinlichsten folgt (V10). Fehlt eine Angabe, füllt sie die Lücke mit dem, was in ihren Trainingsdaten am häufigsten vorkam. Das ist oft richtig, aber ausgerechnet an den Grenzen nicht. Mit fünf Fragen schließt du die Lücken:</p>
+        <ul>
+          <li><strong>Eingaben:</strong> Welche Werte kommen herein, mit welchen Namen und welchem Datentyp?</li>
+          <li><strong>Ausgaben:</strong> Was kommt heraus (Rückgabewert oder <code class="k-i">print</code>), in welchem Typ und Format?</li>
+          <li><strong>Einheiten:</strong> In welcher Einheit rechnest du (mm, m, N, MPa, °C, 1/min)? Eine fehlende Einheit ist der klassische Faktor-1000-Fehler.</li>
+          <li><strong>Grenzfälle:</strong> Was gilt genau an der Grenze, bei 0, bei leerer oder ungültiger Eingabe?</li>
+          <li><strong>Beispiele:</strong> Mindestens ein Beispiel mit Eingabe und erwartetem Ergebnis.</li>
+        </ul>
+
+        <div class="k-explorable">
+          <h3>Prompt-Bewerter</h3>
+          <p class="k-explorable__lead">Lade den vagen Prompt und den PAP-Prompt und beobachte, welche der fünf Fragen beantwortet sind. Streiche dann im PAP-Prompt Sätze weg und schau, welches Kriterium dabei verschwindet. Das Werkzeug sucht nur Stichwörter: Es kann nicht beurteilen, ob deine Angaben stimmen.</p>
+          <div data-explorable="prompt-bewerter"></div>
+          <noscript><p>Für das Explorable „Prompt-Bewerter“ wird JavaScript benötigt.</p></noscript>
+        </div>
+
+        <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke</strong><p>Ein guter Prompt ist eine kleine Spezifikation: Eingaben, Ausgaben, Einheiten, Grenzfälle, Beispiele. Der PAP liefert den Ablauf dazu fast umsonst. Die Testfälle schreibst du <em>vor</em> dem Prompt, und sie enthalten immer die Grenze („Spiel genau 0“, „Wert genau auf der Toleranzgrenze“).</p></div>
+
+        <h3>Module: Werkzeugkisten für dein Programm</h3>
+        <p>Bisher hast du <code class="k-i">math</code> nur am Rand gesehen (V03). Jetzt wird das Prinzip klar: Ein <abbr class="k-begriff" data-erklaerung="Ein Modul ist eine Python-Datei mit fertigen Funktionen und Werten, die du in dein Programm holen kannst, wie eine Werkzeugkiste, die du aus dem Regal nimmst, statt jedes Werkzeug selbst zu bauen.">Modul</abbr> ist eine Sammlung fertiger Funktionen unter einem Namen. Mit <code class="k-i">import</code> holst du sie in dein Programm. Es gibt drei Schreibweisen, und sie legen <em>verschiedene Namen</em> an:</p>
+        <pre><code>import math                 # der Name math gehört jetzt zu deinem Programm
+print(math.sqrt(16))        # Funktion aus dem Modul: Modulname, Punkt, Funktionsname</code></pre>
+        <pre><code>from math import sqrt       # nur die eine Funktion holen
+print(sqrt(16))             # ohne Modulname davor</code></pre>
+        <pre><code>import math as m            # Zweitname (Kurzname) für das Modul
+print(m.sqrt(16))           # der Name math existiert hier nicht, nur m</code></pre>
+
+        <div class="k-explorable">
+          <h3>Welche Namen gibt es nach welchem import?</h3>
+          <p class="k-explorable__lead">Wähle oben eine import-Zeile. Rechts siehst du, was in der Werkzeugkiste <code class="k-i">math</code> liegt, links die Namen, die dein Programm dadurch kennt. Probiere dann Ausdrücke aus: <code class="k-i">math.sqrt(16)</code> nach <code class="k-i">import math as m</code> ergibt einen <code class="k-i">NameError</code>. Und <code class="k-i">math.tolerance(16)</code>? So eine Funktion gibt es nicht.</p>
+          <div data-explorable="import-namen"></div>
+          <noscript><p>Für das Explorable „Welche Namen gibt es nach welchem import?“ wird JavaScript benötigt.</p></noscript>
+          <p class="k-small k-muted">Beobachtung: Ein <code class="k-i">NameError</code> bedeutet „diesen Namen hast du nicht angelegt“, ein <code class="k-i">AttributeError</code> bedeutet „der Name existiert, aber das Modul hat nichts mit diesem Namen“. Das zweite passiert bei KI-Code, die sich Funktionen ausdenkt.</p>
+        </div>
+
+        <h3>Die Standardbibliothek: math, statistics, random</h3>
+        <p>Die <em>Standardbibliothek</em> kommt mit jedem Python mit. Du brauchst nichts zu installieren, nur zu importieren. Drei Module genügen für den Anfang: <code class="k-i">math</code> (Wurzel, Winkelfunktionen, <code class="k-i">pi</code>, <code class="k-i">isclose</code> aus V03), <code class="k-i">statistics</code> (Mittelwert, Median, Standardabweichung) und <code class="k-i">random</code> (Zufallszahlen, zum Beispiel für Simulationen mit Streuung).</p>
+        <pre><code>import statistics
+
+hoechstspiele = [0.041, -0.007, 0.019, 0.034]     # mm
+print("Mittelwert:", round(statistics.mean(hoechstspiele), 4))
+print("Median:", round(statistics.median(hoechstspiele), 4))
+print("Standardabweichung:", round(statistics.stdev(hoechstspiele), 4))</code></pre>
+        <pre><code>import random
+
+random.seed(7)               # fester Startwert: bei jedem Lauf dieselbe Folge, gut zum Testen
+werte = []
+for i in range(5):
+    werte.append(round(25.0 + random.uniform(-0.01, 0.01), 4))   # 25 mm mit Streuung +-0,01 mm
+print(werte)
+print("Ein Wurf mit dem Würfel:", random.randint(1, 6))</code></pre>
+        <p><code class="k-i">statistics.stdev</code> ist die Stichproben-Standardabweichung (geteilt durch n − 1) und braucht mindestens zwei Werte. Eine Funktion, die du nicht kennst, schlägst du in der Dokumentation nach (Python-Dokumentation, Bereich „Library Reference“), statt der KI zu glauben, dass es sie gibt.</p>
+
+        <h3>Ein eigenes Modul</h3>
+        <p>Jede Python-Datei ist ein Modul. Wenn du Funktionen wiederverwenden willst (V07), legst du sie in eine Datei, zum Beispiel <code class="k-i">passungen.py</code>, und importierst sie ohne die Endung <code class="k-i">.py</code>. Die Datei muss im selben Ordner wie dein Programm liegen. Im Labor hier ist <code class="k-i">passungen.py</code> schon mitgeliefert. Probiere es aus:</p>
+        <pre data-files="../assets/data/v11/passungen.py"><code>import passungen
+
+art = passungen.passungsart(25.000, 25.021, 24.980, 24.993)
+print(art)
+print("Höchstspiel:", passungen.hoechstspiel(25.021, 24.980), "mm")
+print("Mindestspiel:", passungen.mindestspiel(25.000, 24.993), "mm")</code></pre>
+        <div class="hinweis hinweis--achtung"><strong class="hinweis__title">Achtung</strong><p>Nenne eigene Dateien nie wie ein Modul, das du benutzen willst: Eine Datei <code class="k-i">math.py</code> oder <code class="k-i">random.py</code> in deinem Ordner verdeckt das echte Modul, und <code class="k-i">import math</code> holt deine Datei. Das führt zu rätselhaften Fehlern. Und <code class="k-i">from math import *</code> holt alle Namen auf einmal: Es sieht bequem aus, macht aber unlesbar, woher eine Funktion kommt. Das schreibt man nicht.</p></div>
+
+        <h3>pip: Pakete von außerhalb</h3>
+        <p>Was nicht in der Standardbibliothek steckt (zum Beispiel <code class="k-i">numpy</code> für schnelle Zahlenfelder in V13, <code class="k-i">pandas</code> in V15, <code class="k-i">matplotlib</code> in V14), ist ein <abbr class="k-begriff" data-erklaerung="Ein Paket ist eine Sammlung von Modulen, die jemand anderes geschrieben und veröffentlicht hat. Man muss es einmal auf den eigenen Rechner holen (installieren), bevor man es importieren kann.">Paket</abbr> und muss einmal auf deinen Rechner geholt werden. Das macht das Programm <code class="k-i">pip</code>. Es fragt den <abbr class="k-begriff" data-erklaerung="Der Paketindex PyPI (Python Package Index) ist die öffentliche Sammelstelle für Python-Pakete im Internet, wie ein Katalog mit Download. Jeder kann dort Pakete veröffentlichen.">Paketindex</abbr> PyPI im Internet, welche Version zu deinem Python passt, und legt die Dateien ab. <code class="k-i">pip</code> tippst du ins Terminal, nicht ins Python-Programm.</p>
+
+        <div class="k-explorable">
+          <h3>Von der Fehlermeldung zum installierten Paket</h3>
+          <p class="k-explorable__lead">Gehe die Schritte durch. Achte darauf, <em>wer</em> was tut: Python sucht nur an zwei Orten und gibt dann auf. Das Installieren löst erst du aus, und zwar außerhalb des Programms.</p>
+          <div data-explorable="pip-ablauf"></div>
+          <noscript><p>Für das Explorable „Von der Fehlermeldung zum installierten Paket“ wird JavaScript benötigt.</p></noscript>
+        </div>
+
+        <pre class="k-code" data-run="no"><code>pip install numpy              # neueste passende Version holen
+pip install numpy==2.0.0       # genau diese Version (Versionsnummer festnageln)
+pip list                       # alle installierten Pakete mit Version
+pip freeze &gt; requirements.txt  # Liste der Versionen in eine Datei schreiben
+pip install -r requirements.txt  # alles aus dieser Liste auf einem anderen Rechner installieren</code></pre>
+        <p class="k-small k-muted">Das sind Befehle für das Terminal und kein Python-Code, deshalb gibt es hier keinen „Ausführen“-Knopf. Im Browser-Labor kannst du kein <code class="k-i">pip</code> aufrufen: Dort sind die nötigen Pakete (NumPy, pandas, matplotlib) schon vorbereitet, und sie werden beim ersten <code class="k-i">import</code> automatisch geladen. In Codespaces hat die vorbereitete Umgebung <code class="k-i">numpy</code>, <code class="k-i">matplotlib</code> und <code class="k-i">jupyter</code> schon installiert.</p>
+        <div class="hinweis hinweis--achtung"><strong class="hinweis__title">Achtung</strong><p>Installiere nie ein Paket, nur weil KI-Code es importiert. Assistenten erfinden manchmal Paketnamen, die plausibel klingen. Wer einen erfundenen Namen blind installiert, holt sich im schlimmsten Fall ein Schadpaket von jemandem, der genau diesen Namen vorsorglich veröffentlicht hat. Prüfe vorher: Gibt es das Paket auf PyPI, wie alt ist es, wie bekannt, wer pflegt es? Im Zweifel nimmst du ein bekanntes Paket oder gar keines.</p></div>
+
+        <h3>Was Copilot ist und was nicht</h3>
+        <p>Copilot kennt zwei Arbeitsweisen. Die <strong>Inline-Vorschläge</strong> erscheinen beim Tippen als graue Schrift hinter dem Cursor: Mit <kbd>Tab</kbd> nimmst du den Vorschlag an, mit <kbd>Esc</kbd> lehnst du ihn ab. Der <strong>Chat</strong> ist ein Seitenfenster, in dem du eine Aufgabe beschreibst, Code erklären oder Fehlermeldungen deuten lässt. In beiden Fällen sieht Copilot die geöffnete Datei und einen Teil des Projekts: Was dort steht, fließt in die Vorschläge ein.</p>
+        <p>Und es gilt, was du in V10 gelernt hast: Copilot schreibt wahrscheinliche Fortsetzungen, keine geprüften Lösungen. Es kann falsche Werte, falsche Grenzen und erfundene Funktionen liefern, im selben ruhigen Ton wie richtige. Du gibst frei, nicht Copilot.</p>
+        <div class="hinweis hinweis--achtung"><strong class="hinweis__title">Achtung: Datenschutz</strong><p>Alles, was du in Prompt oder Chat schreibst und was im geöffneten Code steht, geht an Server des Anbieters. Schreib deshalb <strong>nie</strong> Firmen- oder Kundendaten, Zeichnungsdaten, Zugangsdaten, Schlüssel oder personenbezogene Daten in einen Prompt. In vielen Betrieben ist KI-Hilfe im Entwicklungsnetz ganz untersagt oder nur über freigegebene Werkzeuge erlaubt (Fertigungssteuerung, CAD-Daten, Kundenprojekte). Frag vorher nach. Für den Kurs nutzt du nur Übungsdaten.</p></div>
+      </section>
+
+      <!-- 3 ───────────── ANLEITUNG ───────────── -->
+      <section class="k-section" id="anleitung" data-section="anleitung" aria-labelledby="h-anleitung">
+        <h2 class="k-section__title" id="h-anleitung"><span class="k-section__num" aria-hidden="true">3</span> Copilot einrichten: Schritt für Schritt</h2>
+
+        <p>Diese Anleitung bringt dich von null zu deinem ersten Copilot-Vorschlag. Plane für die Einrichtung etwa 30 Minuten plus die Wartezeit für den Studierendenstatus ein. Die Abbildungen sind <strong>schematische Skizzen</strong> mit vereinfachter Oberfläche, keine Screenshots: Namen, Menüs und Aussehen ändern sich bei GitHub und in der Entwicklungsumgebung von Zeit zu Zeit. Suche im Zweifel nach den fettgedruckten Begriffen.</p>
+        <div class="hinweis hinweis--merke"><strong class="hinweis__title">Vorab</strong><p>Du brauchst: deine DHBW-Mailadresse, einen Nachweis, dass du Studierende oder Studierender bist (zum Beispiel die Studienbescheinigung als Foto oder PDF), und einen Browser. Copilot ist freiwillig. Wer keinen Zugang möchte oder bekommt, löst alle Aufgaben ohne KI (das ist die Phase-1-Arbeitsweise) und sieht die Copilot-Schritte in der Vorlesung live.</p></div>
+
+        <ol class="v11-anleitung">
+          <li>
+            <div>
+              <h4>GitHub-Konto mit DHBW-Mailadresse anlegen</h4>
+              <p>Wenn du schon ein GitHub-Konto hast, füge deine DHBW-Mailadresse unter <strong>Einstellungen, E-Mail</strong> hinzu und bestätige sie. Sonst lege ein neues Konto an: mit deiner DHBW-Mailadresse, einem Benutzernamen und einem Passwort, das du nirgends sonst benutzt. Öffne danach den Bestätigungslink in der E-Mail.</p>
+              <ul>
+                <li>Schalte die <strong>Zwei-Faktor-Anmeldung</strong> ein: GitHub verlangt sie für viele Funktionen, und sie schützt dein Konto.</li>
+                <li>Der Benutzername ist öffentlich sichtbar. Wähle nichts, was du später nicht mehr zeigen möchtest.</li>
+              </ul>
+            </div>
+            <figure><svg class="v11-skizze" viewBox="0 0 560 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Skizze eines Anmeldeformulars mit den Feldern E-Mail-Adresse, Benutzername und Passwort und dem Knopf Konto erstellen"><desc>Schematische Skizze, kein Screenshot.</desc><rect x="1" y="1" width="558" height="298" rx="0" class="fenster"/><rect x="1" y="1" width="558" height="30" rx="0" class="leiste"/><circle cx="18" cy="16" r="5" class="geist"/><circle cx="34" cy="16" r="5" class="geist"/><circle cx="50" cy="16" r="5" class="geist"/><rect x="70" y="7" width="470" height="18" rx="9" class="feld"/><text x="82" y="20" class="tk">Anmeldeseite des Code-Dienstes (schematisch)</text><text x="40" y="70" class="tb">Konto anlegen</text><text x="40" y="100" class="tk">E-Mail-Adresse</text><rect x="40" y="106" width="320" height="30" rx="4" class="feld"/><text x="50" y="126" class="tg">Studierenden-Mailadresse der DHBW</text><text x="40" y="158" class="tk">Benutzername</text><rect x="40" y="164" width="320" height="30" rx="4" class="feld"/><text x="50" y="184" class="tg">frei wählbar, ohne Klarnamen-Pflicht</text><text x="40" y="216" class="tk">Passwort</text><rect x="40" y="222" width="320" height="30" rx="4" class="feld"/><text x="50" y="242" class="tg">●●●●●●●●●●●●</text><rect x="40" y="262" width="150" height="28" rx="4" class="knopf-rot"/><text x="115" y="281" class="tw" text-anchor="middle">Konto erstellen</text><rect x="390" y="100" width="150" height="100" rx="4" class="flaeche"/><text x="465" y="126" class="tb" text-anchor="middle">Danach:</text><text x="465" y="148" class="tk" text-anchor="middle">E-Mail bestätigen,</text><text x="465" y="164" class="tk" text-anchor="middle">Zwei-Faktor-Schutz</text><text x="465" y="180" class="tk" text-anchor="middle">einschalten</text><path d="M440 96L367.8 116.4" class="pfeil"/><path d="M362 118L369.5 111.4L371.8 119.7Z" class="pfeilkopf"/><circle cx="380" cy="108" r="11" class="nr"/><text x="380" y="112.5" class="nrt" text-anchor="middle">1</text></svg><figcaption>Schematische Skizze eines Anmeldeformulars (kein Screenshot, kein echtes Logo).</figcaption></figure>
+          </li>
+          <li>
+            <div>
+              <h4>Studierendenstatus bei GitHub Education beantragen</h4>
+              <p>Über das Bildungsangebot <strong>GitHub Education</strong> (Seite <code class="k-i">education.github.com</code>) beantragst du den Studierendenzugang („Student Developer Pack“). Damit bekommst du Copilot für Studierende ohne eigene Rechnung. Gib deine Hochschule an (Duale Hochschule Baden-Württemberg) und lade den Nachweis hoch.</p>
+              <ul>
+                <li><strong>Nachweis:</strong> Studienbescheinigung als lesbares Foto oder PDF, mit Namen der Hochschule und gültigem Zeitraum. Die DHBW-Mailadresse allein genügt nicht immer.</li>
+                <li><strong>Wartezeit:</strong> Die Prüfung kann Stunden dauern, aber auch mehrere Wochen. Du bekommst eine E-Mail, wenn die Entscheidung gefallen ist. Beantrage deshalb früh.</li>
+                <li><strong>Standort:</strong> Erlaube dem Browser die Standortfreigabe nur, wenn der Antrag es verlangt, und nur dafür. Bei Ablehnung kannst du mit besserem Nachweis neu beantragen.</li>
+                <li>Der Status gilt für eine begrenzte Zeit und muss später erneuert werden (zum Beispiel jährlich).</li>
+              </ul>
+            </div>
+            <figure><svg class="v11-skizze" viewBox="0 0 560 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Skizze eines Antragsformulars für den Studierendenstatus mit Hochschulauswahl, Nachweis-Upload, Knopf Antrag senden und einer Statusanzeige in Prüfung"><desc>Schematische Skizze, kein Screenshot.</desc><rect x="1" y="1" width="558" height="298" rx="0" class="fenster"/><rect x="1" y="1" width="558" height="30" rx="0" class="leiste"/><circle cx="18" cy="16" r="5" class="geist"/><circle cx="34" cy="16" r="5" class="geist"/><circle cx="50" cy="16" r="5" class="geist"/><rect x="70" y="7" width="470" height="18" rx="9" class="feld"/><text x="82" y="20" class="tk">Bildungsangebot des Code-Dienstes (schematisch)</text><text x="30" y="66" class="tb">Studierendenstatus beantragen</text><text x="30" y="92" class="tk">Wähle die Hochschule</text><rect x="30" y="98" width="300" height="28" rx="4" class="feld"/><text x="40" y="117" class="tm">Duale Hochschule Baden-Württemberg</text><text x="30" y="146" class="tk">Nachweis</text><rect x="30" y="152" width="300" height="60" rx="4" class="flaeche"/><text x="180" y="178" class="tk" text-anchor="middle">Studienbescheinigung als Foto</text><text x="180" y="196" class="tk" text-anchor="middle">oder PDF hochladen</text><rect x="30" y="228" width="150" height="28" rx="4" class="knopf-rot"/><text x="105" y="247" class="tw" text-anchor="middle">Antrag senden</text><rect x="350" y="92" width="190" height="120" rx="4" class="feld"/><text x="445" y="116" class="tb" text-anchor="middle">Status deines Antrags</text><rect x="366" y="128" width="158" height="24" rx="12" class="flaeche"/><text x="445" y="145" class="tk" text-anchor="middle">in Prüfung</text><text x="445" y="172" class="tk" text-anchor="middle">Dauer: von wenigen Stunden</text><text x="445" y="188" class="tk" text-anchor="middle">bis zu mehreren Wochen</text><rect x="350" y="226" width="190" height="30" rx="4" class="flaeche"/><text x="445" y="246" class="tk" text-anchor="middle">Wenn genehmigt: E-Mail</text><circle cx="320" cy="76" r="11" class="nr"/><text x="320" y="80.5" class="nrt" text-anchor="middle">2</text><path d="M340 150L263.7 176.1" class="pfeil"/><path d="M258 178L265.1 171.0L267.9 179.2Z" class="pfeilkopf"/></svg><figcaption>Schematische Skizze: Hochschule wählen, Nachweis hochladen, Antrag senden, Status „in Prüfung“.</figcaption></figure>
+          </li>
+          <li>
+            <div>
+              <h4>Copilot aktivieren</h4>
+              <p>Ist der Status genehmigt, öffne <strong>Einstellungen, Copilot</strong>. Dort steht, dass dein Zugang aktiv ist (über den Studierendenstatus). Prüfe zwei Schalter: die <strong>Vorschläge in der Entwicklungsumgebung</strong> (an) und, ob Vorschläge blockiert werden sollen, die öffentlichem Code gleichen (empfohlen: blockieren). Falls angeboten, entscheide hier auch, ob deine Eingaben zur Verbesserung des Dienstes verwendet werden dürfen.</p>
+              <ul>
+                <li>Steht dort noch nur ein Angebot zum Bezahlen, ist der Status noch nicht freigegeben. Buche <strong>nichts</strong>, sondern warte auf die E-Mail oder prüfe den Status auf der Bildungsseite.</li>
+                <li>Zusätzlich gibt es eine kostenlose Basisstufe mit stark begrenztem Kontingent. Sie reicht zum Ausprobieren, aber nicht für ein ganzes Semester.</li>
+              </ul>
+            </div>
+            <figure><svg class="v11-skizze" viewBox="0 0 560 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Skizze einer Einstellungsseite mit dem Menüpunkt Copilot, einem aktiven Zugang über den Studierendenstatus und einem eingeschalteten Schalter für Vorschläge"><desc>Schematische Skizze, kein Screenshot.</desc><rect x="1" y="1" width="558" height="298" rx="0" class="fenster"/><rect x="1" y="1" width="558" height="30" rx="0" class="leiste"/><circle cx="18" cy="16" r="5" class="geist"/><circle cx="34" cy="16" r="5" class="geist"/><circle cx="50" cy="16" r="5" class="geist"/><rect x="70" y="7" width="470" height="18" rx="9" class="feld"/><text x="82" y="20" class="tk">Einstellungen des Kontos (schematisch)</text><rect x="14" y="44" width="140" height="242" rx="0" class="flaeche"/><text x="26" y="70" class="tk">Profil</text><text x="26" y="106" class="tk">Konto</text><text x="26" y="142" class="tk">Zugang, Abrechnung</text><rect x="14" y="160" width="140" height="30" rx="0" class="knopf-rot"/><text x="26" y="180" class="tw">Copilot</text><text x="26" y="214" class="tk">Sicherheit</text><text x="180" y="66" class="tb">GitHub Copilot</text><rect x="180" y="78" width="360" height="64" rx="4" class="feld"/><text x="194" y="102" class="tk">Dein Zugang</text><text x="194" y="124" class="tm">Aktiv über den Studierendenstatus</text><rect x="180" y="156" width="360" height="50" rx="4" class="feld"/><text x="194" y="186" class="tk">Vorschläge in der Entwicklungsumgebung</text><rect x="480" y="168" width="46" height="22" rx="11" class="knopf-gruen"/><circle cx="515" cy="179" r="8" fill="#fff"/><rect x="180" y="216" width="360" height="50" rx="4" class="feld"/><text x="194" y="246" class="tk">Vorschläge, die öffentlichem Code gleichen</text><text x="480" y="246" class="tk">blockieren</text><circle cx="538" cy="70" r="11" class="nr"/><text x="538" y="74.5" class="nrt" text-anchor="middle">3</text></svg><figcaption>Schematische Skizze der Einstellungen: Menüpunkt Copilot, aktiver Zugang, Schalter für Vorschläge.</figcaption></figure>
+          </li>
+          <li>
+            <div>
+              <h4>Repository der Vorlesung öffnen</h4>
+              <p>Ein <abbr class="k-begriff" data-erklaerung="Ein Repository ist ein Projektordner auf GitHub, in dem alle Dateien des Projekts samt Änderungsverlauf liegen. Die Vorlesung hat eines mit der Website, den Notebooks und der vorbereiteten Entwicklungsumgebung.">Repository</abbr> ist der Projektordner der Vorlesung auf GitHub. Den Link nennt dein Dozent im Kurs. Du siehst eine Dateiliste, darunter <code class="k-i">notebooks</code> und den Ordner <code class="k-i">.devcontainer</code>: Er enthält die fertige Beschreibung der Umgebung (Python, Jupyter und die Copilot-Erweiterung).</p>
+              <ul>
+                <li>Am besten kopierst du das Repository zuerst mit <strong>Fork</strong> (Knopf oben rechts) in dein eigenes Konto. Dann gehören die Dateien, die du anlegst, dir, und du kannst sie sichern.</li>
+                <li>Du veränderst damit nichts am Original der Vorlesung.</li>
+              </ul>
+            </div>
+            <figure><svg class="v11-skizze" viewBox="0 0 560 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Skizze der Startseite des Vorlesungs-Repositories mit Dateiliste und einem grünen Knopf Code oben rechts"><desc>Schematische Skizze, kein Screenshot.</desc><rect x="1" y="1" width="558" height="298" rx="0" class="fenster"/><rect x="1" y="1" width="558" height="30" rx="0" class="leiste"/><circle cx="18" cy="16" r="5" class="geist"/><circle cx="34" cy="16" r="5" class="geist"/><circle cx="50" cy="16" r="5" class="geist"/><rect x="70" y="7" width="470" height="18" rx="9" class="feld"/><text x="82" y="20" class="tk">Seite des Vorlesungs-Repositories (schematisch)</text><text x="30" y="64" class="tb">Benutzername / Vorlesung-Informatik</text><rect x="30" y="78" width="70" height="26" rx="4" class="flaeche"/><text x="65" y="96" class="tk" text-anchor="middle">Dateien</text><rect x="106" y="78" width="70" height="26" rx="4" class="flaeche"/><text x="141" y="96" class="tk" text-anchor="middle">Verlauf</text><rect x="350" y="76" width="100" height="30" rx="4" class="knopf-gruen"/><text x="400" y="96" class="tw" text-anchor="middle">Code  ▾</text><rect x="30" y="120" width="510" height="160" rx="4" class="feld"/><text x="46" y="146" class="tm">.devcontainer</text><text x="240" y="146" class="tk">Entwicklungsumgebung für Codespaces</text><path d="M30 160L540 160" class="linie"/><text x="46" y="180" class="tm">notebooks</text><text x="240" y="180" class="tk">Notebooks zu jeder Lektion</text><path d="M30 194L540 194" class="linie"/><text x="46" y="214" class="tm">site</text><text x="240" y="214" class="tk">die Vorlesungs-Website</text><path d="M30 228L540 228" class="linie"/><text x="46" y="248" class="tm">README.md</text><text x="240" y="248" class="tk">Kurzbeschreibung</text><path d="M30 262L540 262" class="linie"/><rect x="344" y="70" width="112" height="42" rx="4" class="rahmen-rot"/><circle cx="470" cy="72" r="11" class="nr"/><text x="470" y="76.5" class="nrt" text-anchor="middle">4</text></svg><figcaption>Schematische Skizze der Repository-Seite: Dateiliste und der grüne Knopf „Code“.</figcaption></figure>
+          </li>
+          <li>
+            <div>
+              <h4>Codespace starten</h4>
+              <p>Ein <abbr class="k-begriff" data-erklaerung="Ein Codespace ist ein Entwicklungsrechner in der Cloud, den du im Browser bedienst. Er enthält Editor, Python und Terminal, vorbereitet für dein Projekt, ohne dass du auf deinem Laptop etwas installierst.">Codespace</abbr> ist ein kleiner Entwicklungsrechner in der Cloud, den du im Browser bedienst. Klicke auf den grünen Knopf <strong>Code</strong>, wähle den Reiter <strong>Codespaces</strong> und dann <strong>Codespace auf main erstellen</strong>. Warte etwa eine Minute: Die Umgebung wird nach der Vorgabe im Ordner <code class="k-i">.devcontainer</code> gebaut, mit Python, Jupyter und den Copilot-Erweiterungen.</p>
+              <ul>
+                <li>Du arbeitest danach in einem Editor, der wie Visual Studio Code aussieht (links Dateien, in der Mitte Code, unten ein Terminal).</li>
+                <li>Beim zweiten Mal öffnest du denselben Codespace wieder, statt einen neuen anzulegen.</li>
+              </ul>
+            </div>
+            <figure><svg class="v11-skizze" viewBox="0 0 560 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Skizze des ausgeklappten Code-Menüs mit dem Reiter Codespaces und dem Knopf Codespace auf main erstellen"><desc>Schematische Skizze, kein Screenshot.</desc><rect x="1" y="1" width="558" height="298" rx="0" class="fenster"/><rect x="1" y="1" width="558" height="30" rx="0" class="leiste"/><circle cx="18" cy="16" r="5" class="geist"/><circle cx="34" cy="16" r="5" class="geist"/><circle cx="50" cy="16" r="5" class="geist"/><rect x="70" y="7" width="470" height="18" rx="9" class="feld"/><text x="82" y="20" class="tk">Menü Code im Repository (schematisch)</text><rect x="30" y="66" width="120" height="28" rx="4" class="knopf-gruen"/><text x="90" y="85" class="tw" text-anchor="middle">Code  ▴</text><rect x="150" y="66" width="380" height="206" rx="4" class="feld"/><rect x="166" y="80" width="100" height="26" rx="0" class="flaeche"/><text x="216" y="98" class="tk" text-anchor="middle">Lokal</text><rect x="266" y="80" width="120" height="26" rx="0" class="knopf"/><text x="326" y="98" class="tb" text-anchor="middle">Codespaces</text><path d="M266 106L386 106" class="pfeil"/><text x="166" y="136" class="tk">Codespaces auf main</text><rect x="166" y="148" width="348" height="32" rx="4" class="knopf-rot"/><text x="340" y="169" class="tw" text-anchor="middle">Codespace auf main erstellen</text><text x="166" y="206" class="tk">Beim ersten Mal dauert der Start etwa eine Minute,</text><text x="166" y="222" class="tk">die Umgebung wird nach der Vorgabe im Repository gebaut</text><text x="166" y="238" class="tk">(Python, Jupyter, Copilot).</text><circle cx="172" cy="254" r="11" class="nr"/><text x="172" y="258.5" class="nrt" text-anchor="middle">5</text><text x="188" y="258" class="tk">Danach öffnet sich ein Editor im Browser-Tab.</text></svg><figcaption>Schematische Skizze des Menüs „Code“ mit dem Reiter Codespaces und dem Knopf zum Erstellen.</figcaption></figure>
+          </li>
+          <li>
+            <div>
+              <h4>Copilot-Chat und Inline-Vorschläge benutzen</h4>
+              <p>Im Codespace findest du Copilot an zwei Stellen. Rechts (oder über das Chat-Symbol in der Kopfleiste) öffnet sich der <strong>Copilot-Chat</strong>: Dort beschreibst du die Aufgabe, am besten mit dem PAP-Prompt aus diesem Kapitel. Im Editor erscheinen beim Tippen graue <strong>Inline-Vorschläge</strong>.</p>
+              <ul>
+                <li><kbd>Tab</kbd> nimmt den grauen Vorschlag an, <kbd>Esc</kbd> lehnt ihn ab. Mit <kbd>Alt</kbd> + <kbd>]</kbd> und <kbd>Alt</kbd> + <kbd>[</kbd> blätterst du durch Alternativen (Standardbelegung, kann abweichen).</li>
+                <li>Im Chat zeigt Copilot Code mit einem Knopf zum Einfügen. Lies den Code, bevor du ihn einfügst.</li>
+                <li>Erscheint nichts: Prüfe das Copilot-Symbol unten rechts (angemeldet? aktiv?) und ob die Erweiterung geladen ist.</li>
+              </ul>
+            </div>
+            <figure><svg class="v11-skizze" viewBox="0 0 680 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Skizze eines Code-Editors im Browser: links die Dateiliste, in der Mitte Code mit einem grauen Vorschlag und einer Tastenzeile, darunter ein Terminal, rechts der Copilot-Chat"><desc>Schematische Skizze, kein Screenshot.</desc><rect x="1" y="1" width="678" height="384" rx="0" class="fenster"/><rect x="1" y="1" width="678" height="26" rx="0" class="leiste"/><text x="14" y="19" class="tk">passung_test.py  –  Codespace (Editor im Browser, schematisch)</text><rect x="1" y="27" width="110" height="357" rx="0" class="flaeche"/><text x="12" y="48" class="tk">DATEIEN</text><text x="12" y="74" class="tk">.devcontainer</text><text x="12" y="96" class="tk">notebooks</text><text x="12" y="118" class="tk">site</text><text x="12" y="140" class="tm">passung_test.py</text><rect x="111" y="27" width="330" height="220" rx="0" class="dunkel"/><text x="124" y="54" class="code">def passungsart(bohrung_min,</text><text x="124" y="74" class="code">        bohrung_max, welle_min,</text><text x="124" y="94" class="code">        welle_max):</text><text x="124" y="114" class="code" style="fill:#6B7280">    if bohrung_min &gt;= welle_max:</text><text x="124" y="134" class="code" style="fill:#6B7280">        return &quot;Spielpassung&quot;</text><rect x="124" y="150" width="300" height="24" rx="3" class="knopf"/><text x="274" y="167" class="tk" text-anchor="middle">Tab = annehmen    Esc = ablehnen</text><circle cx="428" cy="108" r="11" class="nr"/><text x="428" y="112.5" class="nrt" text-anchor="middle">6</text><rect x="111" y="247" width="330" height="137" rx="0" class="dunkel"/><text x="124" y="268" class="tg">TERMINAL</text><text x="124" y="292" class="code">$ python passung_test.py</text><text x="124" y="312" class="code">Spielpassung</text><rect x="441" y="27" width="238" height="357" rx="0" class="flaeche"/><text x="452" y="48" class="tk">COPILOT-CHAT</text><rect x="452" y="58" width="216" height="80" rx="4" class="feld"/><text x="460" y="76" class="tk">Du: Schreibe passungsart(…)</text><text x="460" y="92" class="tk">nach diesem Ablauf: …</text><text x="460" y="108" class="tk">Grenzfall: Spiel genau 0</text><text x="460" y="124" class="tk">ist eine Spielpassung.</text><rect x="452" y="148" width="216" height="118" rx="4" class="feld"/><text x="460" y="166" class="tk">Copilot: Hier ist der Code</text><text x="460" y="188" class="tm">def passungsart(…):</text><text x="460" y="206" class="tm">    …</text><rect x="460" y="224" width="120" height="28" rx="4" class="knopf"/><text x="520" y="243" class="tk" text-anchor="middle">In Datei einfügen</text><rect x="452" y="340" width="216" height="32" rx="4" class="feld"/><text x="462" y="361" class="tg">Frage an Copilot …</text><circle cx="656" cy="148" r="11" class="nr"/><text x="656" y="152.5" class="nrt" text-anchor="middle">7</text><circle cx="14" cy="404" r="11" class="nr"/><text x="14" y="408.5" class="nrt" text-anchor="middle">6</text><text x="32" y="408" class="tk">Grauer Vorschlag im Editor</text><circle cx="250" cy="404" r="11" class="nr"/><text x="250" y="408.5" class="nrt" text-anchor="middle">7</text><text x="268" y="408" class="tk">Chat-Seitenfenster: Aufgabe beschreiben, Code erklären lassen</text></svg><figcaption>Schematische Skizze: Dateiliste, Editor mit grauem Vorschlag, Terminal und Chat-Seitenfenster.</figcaption></figure>
+          </li>
+          <li>
+            <div>
+              <h4>Eigene Datei anlegen und ausführen</h4>
+              <p>Lege über das Plus-Symbol in der Dateiliste eine neue Datei an (zum Beispiel <code class="k-i">meine_tests.py</code>, die Endung <code class="k-i">.py</code> ist wichtig), schreibe oder erzeuge den Code und starte ihn mit dem Dreieck oben rechts oder im Terminal mit <code class="k-i">python meine_tests.py</code>. Die Ausgabe erscheint im Terminal darunter.</p>
+              <ul>
+                <li>Schreibe deine <strong>Testfälle zuerst</strong> in die Datei, <em>dann</em> frage Copilot. Das Ergebnis prüfst du mit denselben Testfällen.</li>
+                <li>Speichere mit <kbd>Strg</kbd> + <kbd>S</kbd>. Wenn du fertig bist, beende den Codespace (siehe Kontingente), und sichere deine Dateien im Fork (Quellcodeverwaltung, „Commit“ und „Push“), sonst bleiben sie nur im Codespace.</li>
+              </ul>
+            </div>
+            <figure><svg class="v11-skizze" viewBox="0 0 560 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Skizze: neue Datei mit Plus-Symbol anlegen, Python-Code schreiben, mit dem grünen Dreieck ausführen; die Ausgabe erscheint im Terminal darunter"><desc>Schematische Skizze, kein Screenshot.</desc><rect x="1" y="1" width="558" height="282" rx="0" class="fenster"/><rect x="1" y="1" width="558" height="26" rx="0" class="leiste"/><text x="14" y="19" class="tk">Neue Datei im Editor (schematisch)</text><rect x="1" y="27" width="150" height="255" rx="0" class="flaeche"/><text x="12" y="48" class="tk">DATEIEN</text><rect x="108" y="34" width="34" height="24" rx="3" class="knopf"/><text x="125" y="52" class="tb" text-anchor="middle">+</text><rect x="10" y="66" width="132" height="24" rx="3" class="feld"/><text x="18" y="83" class="tm">meine_tests.py</text><circle cx="10" cy="112" r="11" class="nr"/><text x="10" y="116.5" class="nrt" text-anchor="middle">1</text><rect x="151" y="27" width="408" height="120" rx="0" class="dunkel"/><text x="166" y="54" class="code">import statistics</text><text x="166" y="76" class="code">werte = [0.041, -0.007, 0.019, 0.034]</text><text x="166" y="98" class="code">print(statistics.mean(werte))</text><rect x="512" y="34" width="36" height="24" rx="4" class="knopf-gruen"/><path d="M524 40L538 46L524 52Z" fill="#fff"/><circle cx="498" cy="46" r="11" class="nr"/><text x="498" y="50.5" class="nrt" text-anchor="middle">2</text><rect x="151" y="147" width="408" height="135" rx="0" class="dunkel"/><text x="166" y="168" class="tg">TERMINAL</text><text x="166" y="190" class="code">$ python meine_tests.py</text><text x="166" y="212" class="code">0.02175</text><circle cx="535" cy="170" r="11" class="nr"/><text x="535" y="174.5" class="nrt" text-anchor="middle">3</text><circle cx="14" cy="304" r="11" class="nr"/><text x="14" y="308.5" class="nrt" text-anchor="middle">1</text><text x="32" y="308" class="tk">Datei mit + anlegen, Name endet auf .py</text><circle cx="300" cy="304" r="11" class="nr"/><text x="300" y="308.5" class="nrt" text-anchor="middle">2</text><text x="318" y="308" class="tk">Dreieck: Ausführen</text><circle cx="448" cy="304" r="11" class="nr"/><text x="448" y="308.5" class="nrt" text-anchor="middle">3</text><text x="466" y="308" class="tk">Ausgabe</text></svg><figcaption>Schematische Skizze: neue Datei anlegen, ausführen, Ausgabe im Terminal.</figcaption></figure>
+          </li>
+        </ol>
+
+        <h3>Kontingente, Datenschutz, Fehlersuche</h3>
+        <div class="v11-hinweisliste">
+          <div>
+            <h4>Kontingente</h4>
+            <ul>
+              <li><strong>Copilot:</strong> Es gibt monatliche Kontingente (Zahl der Chat-Anfragen, besondere Kontingente für leistungsstärkere Modelle). Sind sie aufgebraucht, wird gedrosselt oder auf ein einfacheres Modell gewechselt. Die aktuellen Werte stehen in deinen Copilot-Einstellungen.</li>
+              <li><strong>Codespaces:</strong> Jedes Konto hat im Monat ein begrenztes Kontingent an Rechenzeit (Core-Stunden) und Speicher. Eine Maschine mit zwei Kernen verbraucht pro Stunde zwei Core-Stunden. Der Studierendenzugang bringt mehr als das Basiskonto, aber nicht unbegrenzt.</li>
+              <li>Beende den Codespace, wenn du fertig bist (Menü links unten oder Befehl „Stop Current Codespace“). Ungenutzte Codespaces halten nach einer Weile von selbst an und werden nach einigen Tagen gelöscht.</li>
+            </ul>
+          </div>
+          <div>
+            <h4>Datenschutz und Sorgfalt</h4>
+            <ul>
+              <li>Keine Firmen-, Kunden-, Zeichnungs- oder Zugangsdaten in Prompts und nicht in Dateien im Codespace.</li>
+              <li>Kein Passwort, kein Schlüssel und kein Token in Code oder Chat. Gelangt so etwas einmal in ein Repository, gilt es als verbraucht und muss ersetzt werden.</li>
+              <li>Frag in jedem Betrieb vor dem ersten Einsatz: Ist KI-Hilfe erlaubt, und welche?</li>
+              <li>Code, den du mit Copilot erzeugst, gibst du selbst frei und kennzeichnest ihn im Projekt als KI-unterstützt, wenn die Regeln es verlangen (Projekt und Prüfung: dein Dozent sagt dir, wie).</li>
+            </ul>
+          </div>
+        </div>
+        <p class="k-small k-muted">Alle Angaben zu Kontingenten, Namen und Oberfläche sind Stand bei Erstellung dieser Seite. Verbindlich ist, was GitHub in deinen Einstellungen anzeigt.</p>
+      </section>
+
+      <!-- 4 ───────────── AUSPROBIEREN ───────────── -->
+      <section class="k-section" id="ausprobieren" data-section="ausprobieren" aria-labelledby="h-aus">
+        <h2 class="k-section__title" id="h-aus"><span class="k-section__num" aria-hidden="true">4</span> Ausprobieren</h2>
+
+        <p>Python läuft direkt hier im Browser. Jeder Codeblock hat einen Editor: Du kannst ihn ändern, ausführen, zurücksetzen und mit „Schritt für Schritt“ verfolgen. Erst tippen, was herauskommt, dann ausführen. Das Tippen ist der Lernmoment. Mit „Zurücksetzen“ holst du das Original (Strg+Enter führt aus).</p>
+
+      <div class="k-try">
+        <h3>Namen nach dem import</h3>
+        <div class="k-predict">
+          <p class="k-predict__q">Welche der vier Zeilen am Ende liefert 7.0, ohne Fehler?</p>
+          <div class="k-predict__opts"><button type="button">print(math.sqrt(49))</button><button type="button" data-correct>print(m.sqrt(49))</button><button type="button">print(sqrt(49))</button><button type="button">print(wurzel(49))</button></div>
+          <div class="k-predict__result"></div>
+          <div class="k-predict__expl" hidden><code>import math as m</code> legt nur den Namen <code>m</code> an. <code>math</code> und <code>sqrt</code> kennt das Programm nicht (<code>NameError</code>), und <code>wurzel</code> wurde nie angelegt. Probiere die falschen Zeilen aus und lies die Meldung von unten nach oben.</div>
+        </div>
+        <pre><code>import math as m
+print(m.sqrt(49))
+# Probiere nacheinander: print(math.sqrt(49)), print(sqrt(49)), print(wurzel(49))</code></pre>
+      </div>
+
+      <div class="k-try">
+        <h3>Mittelwert und Median mit statistics</h3>
+        <div class="k-predict">
+          <p class="k-predict__q">Der Mittelwert von 2, 4 und 9 ist 5. Und der Median?</p>
+          <div class="k-predict__opts"><button type="button">5</button><button type="button" data-correct>4</button><button type="button">9</button></div>
+          <div class="k-predict__result"></div>
+          <div class="k-predict__expl" hidden>4. Der Median ist der mittlere Wert der <em>sortierten</em> Reihe (2, 4, 9). Er ist weniger empfindlich gegen Ausreißer als der Mittelwert: Ersetze die 9 durch 90, dann springt der Mittelwert auf 32, der Median bleibt 4.</div>
+        </div>
+        <pre><code>import statistics
+
+werte = [2, 4, 9]
+print(statistics.mean(werte))
+print(statistics.median(werte))
+print(round(statistics.stdev(werte), 3))</code></pre>
+        <p class="k-small k-muted">Probiere danach eine Liste mit nur einem Element in <code class="k-i">statistics.stdev</code> (Fehlermeldung lesen) und die Liste <code class="k-i">[2, 4, 90]</code>.</p>
+      </div>
+
+      <div class="k-try">
+        <h3>Die Grenze: größer oder größer-gleich?</h3>
+        <div class="k-predict">
+          <p class="k-predict__q">Was gibt das Programm aus, wenn die kleinste Bohrung gleich der größten Welle ist?</p>
+          <div class="k-predict__opts"><button type="button">Spielpassung</button><button type="button" data-correct>Übergangspassung</button><button type="button">einen Fehler</button></div>
+          <div class="k-predict__result"></div>
+          <div class="k-predict__expl" hidden>Übergangspassung. Mit <code>&gt;</code> ist „25.000 größer als 25.000“ falsch, der erste Zweig wird übersprungen, und der zweite prüft das Übermaß, das auch nicht stimmt. Das Programm läuft ohne Meldung und gibt für diesen Grenzfall das Falsche aus. Ersetze <code>&gt;</code> durch <code>&gt;=</code>: Dann kommt Spielpassung. Diesen Fehler findet nur ein Testfall auf der Grenze.</div>
+        </div>
+        <pre><code>def passungsart(bohrung_min, bohrung_max, welle_min, welle_max):
+    if bohrung_min &gt; welle_max:
+        return "Spielpassung"
+    elif bohrung_max &lt;= welle_min:
+        return "Übermaßpassung"
+    else:
+        return "Übergangspassung"
+
+
+print(passungsart(25.000, 25.021, 24.987, 25.000))</code></pre>
+      </div>
+
+      <div class="k-try">
+        <h3>Eigenes Modul benutzen</h3>
+        <div class="k-predict">
+          <p class="k-predict__q">Das Mindestspiel ist „kleinste Bohrung minus größte Welle“. Welches Vorzeichen hat es bei einer Übermaßpassung?</p>
+          <div class="k-predict__opts"><button type="button">positiv</button><button type="button" data-correct>negativ</button><button type="button">null</button></div>
+          <div class="k-predict__result"></div>
+          <div class="k-predict__expl" hidden>Negativ. Die kleinste Bohrung ist dann kleiner als die größte Welle: Die Welle ist größer als die Bohrung und muss eingepresst werden. Ein „negatives Spiel“ nennt man Übermaß.</div>
+        </div>
+        <pre data-files="../assets/data/v11/passungen.py"><code>import passungen
+from passungen import mindestspiel as spiel_min
+
+g = passungen.GRENZMASSE_25
+print(passungen.passungsart(g["H7"][0], g["H7"][1], g["r6"][0], g["r6"][1]))
+print("Mindestspiel:", spiel_min(g["H7"][0], g["r6"][1]), "mm")</code></pre>
+      </div>
+
+      <div class="k-try">
+        <h3>Erfundene Funktion erkennen</h3>
+        <div class="k-predict">
+          <p class="k-predict__q">Die KI schreibt <code class="k-i">math.tolerance(...)</code>. Was passiert beim Ausführen?</p>
+          <div class="k-predict__opts"><button type="button">Die Toleranz wird berechnet.</button><button type="button" data-correct>AttributeError: Das Modul math hat kein tolerance.</button><button type="button">Der Wert 0.0 wird zurückgegeben.</button></div>
+          <div class="k-predict__result"></div>
+          <div class="k-predict__expl" hidden>Es gibt keine Funktion <code>math.tolerance</code>. Das Programm bricht ab, und die Meldung nennt den erfundenen Namen. Das ist noch der günstige Fall: Der Fehler ist laut. Gefährlicher sind erfundene <em>Zahlenwerte</em> und falsche Grenzen, die ohne Meldung durchlaufen.</div>
+        </div>
+        <pre><code>import math
+
+wert = math.tolerance(25.0, 0.02)
+print(wert)</code></pre>
+      </div>
+      </section>
+
+      <!-- 5 ───────────── SELBSTCHECK ───────────── -->
+      <section class="k-section" id="selbstcheck" data-section="selbstcheck" aria-labelledby="h-sc">
+        <h2 class="k-section__title" id="h-sc"><span class="k-section__num" aria-hidden="true">5</span> Selbstcheck</h2>
+
+        <p>Acht Quizaufgaben im Stil der Probeklausur (22 Punkte) und eine Code-Schreib-Aufgabe (6 Punkte, T9). Plane etwa 15 Minuten für das Quiz und 10 Minuten für T9 ein, ohne Hilfsmittel. Quiz-Punkte gibt es für den ersten Versuch; danach darfst du es nochmal probieren.</p>
+
+      <div class="k-quiz" data-quiz="v11">
+
+        <div class="k-q" data-type="output" data-points="2" data-id="t1" data-answer="7.0">
+          <div class="k-q__head"><span class="k-q__title">T1 · import mit Zweitnamen</span><span class="k-q__pts">2 Punkte</span></div>
+          <div class="k-q__text">Was gibt das Programm aus?<pre class="k-code" data-run="nach-antwort"><code>import math as m
+print(m.sqrt(49))</code></pre></div>
+          <div class="k-q__expl"><code>m.sqrt(49)</code> ist die Quadratwurzel von 49. <code>sqrt</code> liefert immer eine Kommazahl (V03), also <code>7.0</code> und nicht <code>7</code>.</div>
+        </div>
+
+        <div class="k-q" data-type="mc" data-points="2" data-id="t2">
+          <div class="k-q__head"><span class="k-q__title">T2 · NameError</span><span class="k-q__pts">2 Punkte</span></div>
+          <div class="k-q__text">Was passiert beim Ausführen?<pre class="k-code" data-run="nach-antwort"><code>from math import sqrt
+print(math.sqrt(4))</code></pre></div>
+          <ul class="k-q__options">
+            <li>Es wird 2.0 ausgegeben.</li>
+            <li data-correct>Python bricht mit <code>NameError: name 'math' is not defined</code> ab.</li>
+            <li>Python bricht mit einem ImportError ab.</li>
+            <li>Es wird 4 ausgegeben.</li>
+          </ul>
+          <div class="k-q__expl"><code>from math import sqrt</code> holt nur den Namen <code>sqrt</code>. Der Name <code>math</code> wurde nie angelegt, also kennt das Programm ihn nicht. Richtig wäre <code>print(sqrt(4))</code> oder <code>import math</code>.</div>
+        </div>
+
+        <div class="k-q" data-type="num" data-points="2" data-id="t3" data-answer="5" data-tol="0">
+          <div class="k-q__head"><span class="k-q__title">T3 · statistics</span><span class="k-q__pts">2 Punkte</span></div>
+          <div class="k-q__text">Welche Zahl gibt das Programm aus?<pre class="k-code" data-run="nach-antwort"><code>import statistics
+print(statistics.median([9, 2, 5, 7, 1]))</code></pre></div>
+          <div class="k-q__expl">Sortiert ist die Reihe 1, 2, 5, 7, 9. Der Median ist der mittlere Wert: 5. Wichtig: Der Median sortiert selbst, die Eingabe muss nicht sortiert sein.</div>
+        </div>
+
+        <div class="k-q" data-type="mc" data-points="3" data-id="t4">
+          <div class="k-q__head"><span class="k-q__title">T4 · pip</span><span class="k-q__pts">3 Punkte</span></div>
+          <div class="k-q__text">Was tut der Befehl <code>pip install numpy</code> im Terminal?</div>
+          <ul class="k-q__options">
+            <li>Er startet das Programm numpy.py.</li>
+            <li data-correct>Er lädt das Paket numpy aus dem Paketindex PyPI und legt es auf dem Rechner ab, damit <code>import numpy</code> danach funktioniert.</li>
+            <li>Er schreibt <code>import numpy</code> automatisch an den Anfang aller Programme.</li>
+            <li>Er prüft, ob numpy in der Standardbibliothek enthalten ist.</li>
+          </ul>
+          <div class="k-q__expl">pip installiert Pakete, die nicht zur Standardbibliothek gehören. Es läuft im Terminal, nicht im Programm, und ändert keinen Programmcode. Das <code>import</code> schreibst du selbst.</div>
+        </div>
+
+        <div class="k-q" data-type="mc" data-points="4" data-id="t5">
+          <div class="k-q__head"><span class="k-q__title">T5 · Aussagen (mehrere richtig)</span><span class="k-q__pts">4 Punkte</span></div>
+          <div class="k-q__text">Welche Aussagen sind richtig? Alle richtigen ankreuzen.</div>
+          <ul class="k-q__options">
+            <li data-correct>Testfälle schreibt man vor dem Generieren von Hand auf, damit sie nicht vom erzeugten Code beeinflusst werden.</li>
+            <li>Läuft der von Copilot erzeugte Code ohne Fehlermeldung, ist er richtig.</li>
+            <li data-correct>Ein Prompt mit Eingaben, Ausgaben, Einheiten, Grenzfällen und einem Beispiel lässt der KI weniger Raum zum Raten.</li>
+            <li>Konstruktionsdaten dürfen in den Prompt, wenn das Ergebnis dadurch besser wird.</li>
+          </ul>
+          <div class="k-q__expl">Ein Programm ohne Fehlermeldung kann trotzdem falsch rechnen (Grenzfall, erfundener Wert). Und vertrauliche Daten haben in einem Prompt nichts verloren, auch nicht für ein besseres Ergebnis.</div>
+        </div>
+
+        <div class="k-q" data-type="output" data-points="3" data-id="t6" data-answer="kein Spiel">
+          <div class="k-q__head"><span class="k-q__title">T6 · Grenzfall</span><span class="k-q__pts">3 Punkte</span></div>
+          <div class="k-q__text">Was gibt das Programm aus?<pre class="k-code" data-run="nach-antwort"><code>def spiel(bohrung_min, welle_max):
+    if bohrung_min &gt; welle_max:
+        return "Spiel"
+    return "kein Spiel"
+
+print(spiel(25.000, 25.000))</code></pre></div>
+          <div class="k-q__expl">25.000 ist nicht größer als 25.000, die Bedingung ist falsch, also läuft die letzte Zeile: „kein Spiel“. Bei einem Spiel von genau 0 ist das fachlich falsch (Spielpassung, wenn <code>&gt;=</code> gilt). Genau solche Fälle fängt ein Testfall auf der Grenze ab.</div>
+        </div>
+
+        <div class="k-q" data-type="mc" data-points="3" data-id="t7">
+          <div class="k-q__head"><span class="k-q__title">T7 · ModuleNotFoundError</span><span class="k-q__pts">3 Punkte</span></div>
+          <div class="k-q__text">KI-Code beginnt mit <code>import passungsrechner</code>, und Python meldet <code>ModuleNotFoundError: No module named 'passungsrechner'</code>. Was tust du zuerst?</div>
+          <ul class="k-q__options">
+            <li>Sofort <code>pip install passungsrechner</code>, damit es läuft.</li>
+            <li data-correct>Prüfen, ob es das Paket wirklich gibt (PyPI, Alter, Pflege). Ist der Name erfunden, den Code ändern, statt etwas zu installieren.</li>
+            <li>Die Zeile <code>import</code> löschen und hoffen, dass der Rest läuft.</li>
+            <li>Eine Datei <code>passungsrechner.py</code> mit beliebigem Inhalt anlegen.</li>
+          </ul>
+          <div class="k-q__expl">KI-Assistenten erfinden Paketnamen, und wer sie blind installiert, riskiert ein Schadpaket. Erst prüfen, dann entscheiden. Die anderen Wege lassen den Fehler verschwinden, ohne ihn zu lösen.</div>
+        </div>
+
+        <div class="k-q" data-type="mc" data-points="3" data-id="t8">
+          <div class="k-q__head"><span class="k-q__title">T8 · KI-Code freigeben?</span><span class="k-q__pts">3 Punkte</span></div>
+          <div class="k-q__text">Die KI soll prüfen, ob ein Messwert in der Toleranz liegt, und liefert:<pre class="k-code" data-run="nach-antwort"><code>import math
+
+def in_toleranz(wert, nenn, tol):
+    return math.tolerance(wert, nenn) &lt;= tol</code></pre>Würdest du das freigeben?</div>
+          <ul class="k-q__options">
+            <li>Ja, die Funktion hat einen sprechenden Namen und einen Rückgabewert.</li>
+            <li data-correct>Nein, <code>math.tolerance</code> gibt es nicht: Beim Aufruf bricht das Programm mit einem AttributeError ab. Richtig wäre zum Beispiel <code>abs(wert - nenn) &lt;= tol</code>.</li>
+            <li>Nein, <code>import math</code> darf nicht in einer Datei mit einer Funktion stehen.</li>
+            <li>Nein, das Ergebnis ist ein Text, kein Wahrheitswert.</li>
+          </ul>
+          <div class="k-q__expl">Der Code sieht ordentlich aus, aber die Funktion ist erfunden. Fremde Funktionen prüfst du in der Dokumentation. Die Toleranzprüfung ist in Wahrheit eine Betragsrechnung (V03).</div>
+        </div>
+
+        <div class="k-score" data-score aria-live="polite"></div>
+      </div>
+
+        <h3>Code schreiben im Klausurstil</h3>
+        <p class="k-small k-muted">Wie in der Klausur: erst von Hand schreiben, ohne Ausführen und ohne Auto-Vervollständigung. Dann abgeben, die Tests laufen lassen und dich selbst nach dem Punkteschema bewerten. Richtzeit 10 Minuten.</p>
+      <div class="a-task" data-a="klausur" data-id="sc-klausur" data-mode="programm" data-minutes="10">
+        <div class="a-task__head"><span class="a-task__title">T9 · Passung bestimmen</span><span class="a-pts">6 Punkte</span></div>
+        <div class="a-task__text">
+          <p>Schreibe ein Programm, das vier Maße in mm einliest (Kommazahlen, jeweils mit eigenem <code>input()</code>): die kleinste und die größte Bohrung, die kleinste und die größte Welle, in dieser Reihenfolge. Es bestimmt die Passungsart nach diesem Ablauf: Ist die kleinste Bohrung größer oder gleich der größten Welle, ist es eine Spielpassung. Sonst: Ist die größte Bohrung kleiner oder gleich der kleinsten Welle, ist es eine Übermaßpassung. Sonst ist es eine Übergangspassung. Danach gibt es das Höchstspiel (größte Bohrung minus kleinste Welle) mit drei Nachkommastellen aus.</p>
+          <div class="a-spec"><strong>Ausgabe genau so (Beispiel 25.000, 25.021, 24.980, 24.993):</strong><pre data-run="no">Passungsart: Spielpassung
+Höchstspiel: 0.041 mm</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V11" data-assist="off" aria-label="Python-Code von Hand schreiben, ohne Ausführen"></textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _soll(bmin, bmax, wmin, wmax):
+    if bmin >= wmax:
+        art = "Spielpassung"
+    elif bmax <= wmin:
+        art = "Übermaßpassung"
+    else:
+        art = "Übergangspassung"
+    return "Passungsart: " + art, "Höchstspiel: %.3f mm" % (bmax - wmin)
+
+def _pruefe(bmin, bmax, wmin, wmax):
+    a, b = _soll(bmin, bmax, wmin, wmax)
+    z = zeilen(run_program([str(bmin), str(bmax), str(wmin), str(wmax)]))
+    assert a in z, "Bei %r wird die Zeile %r erwartet. Dein Programm gibt aus: %r" % ((bmin, bmax, wmin, wmax), a, z)
+    assert b in z, "Bei %r wird die Zeile %r erwartet. Dein Programm gibt aus: %r" % ((bmin, bmax, wmin, wmax), b, z)
+
+def test_spiel():
+    """H7/g6: Spielpassung, Höchstspiel 0.041"""
+    _pruefe(25.000, 25.021, 24.980, 24.993)
+
+def test_uebermass():
+    """H7/r6: Übermaßpassung"""
+    _pruefe(25.000, 25.021, 25.028, 25.041)
+
+def test_uebergang():
+    """H7/k6: Übergangspassung"""
+    _pruefe(25.000, 25.021, 25.002, 25.015)
+
+def test_grenze():
+    """Grenzfall H7/h6: Spiel genau 0 ist Spielpassung"""
+    _pruefe(25.000, 25.021, 24.987, 25.000)
+
+def test_grenze_uebermass():
+    """Grenzfall: größte Bohrung gleich kleinste Welle ist Übermaßpassung"""
+    _pruefe(25.000, 25.021, 25.021, 25.040)
+        </script>
+        <script type="text/x-python" data-role="solution">
+bohrung_min = float(input("Kleinste Bohrung in mm: "))
+bohrung_max = float(input("Größte Bohrung in mm: "))
+welle_min = float(input("Kleinste Welle in mm: "))
+welle_max = float(input("Größte Welle in mm: "))
+if bohrung_min >= welle_max:
+    art = "Spielpassung"
+elif bohrung_max <= welle_min:
+    art = "Übermaßpassung"
+else:
+    art = "Übergangspassung"
+print(f"Passungsart: {art}")
+print(f"Höchstspiel: {bohrung_max - welle_min:.3f} mm")
+        </script>
+        <script type="application/json" data-role="scheme">[
+{"p":1,"t":"Alle vier Maße werden mit input() gelesen und mit float() umgewandelt, in der vorgegebenen Reihenfolge"},
+{"p":1,"t":"Die erste Bedingung vergleicht kleinste Bohrung mit größter Welle und benutzt >= (die Grenze gehört zur Spielpassung)"},
+{"p":1,"t":"Die zweite Bedingung (elif oder verschachteltes if) vergleicht größte Bohrung mit kleinster Welle und benutzt <="},
+{"p":1,"t":"Der else-Zweig liefert die Übergangspassung; die drei Texte sind richtig geschrieben"},
+{"p":1,"t":"Das Höchstspiel ist größte Bohrung minus kleinste Welle (nicht umgekehrt)"},
+{"p":1,"t":"Beide Ausgaben haben den richtigen Text, das Format :.3f und die Einheit mm"}
+]</script>
+      </div>
+      </section>
+
+      <!-- 6 ───────────── DEEP DIVE ───────────── -->
+      <section class="k-section" id="deepdive" data-section="deepdive" aria-labelledby="h-dd">
+        <h2 class="k-section__title" id="h-dd"><span class="k-section__num" aria-hidden="true">6</span> Deep Dive <span class="k-muted">(freiwillig)</span></h2>
+
+        <p>Für Neugierige. Nichts davon kommt in der Klausur dran.</p>
+
+      <details class="k-deep">
+        <summary>Virtuelle Umgebungen und requirements.txt</summary>
+        <div class="k-deep__body">
+          <p>Jedes Projekt braucht oft andere Paketversionen. Damit sie sich nicht stören, legt man pro Projekt eine <em>virtuelle Umgebung</em> an: einen eigenen Ordner mit eigener Python-Installation und eigenen Paketen. Im Terminal:</p>
+          <pre class="k-code" data-run="no"><code>python -m venv .venv              # Umgebung anlegen
+source .venv/bin/activate         # aktivieren (Windows: .venv\Scripts\activate)
+pip install numpy==2.0.0          # nur in dieser Umgebung
+pip freeze &gt; requirements.txt     # Stand festhalten</code></pre>
+          <p>Die Datei <code class="k-i">requirements.txt</code> ist die Einkaufsliste des Projekts: Wer sie bekommt, installiert mit <code class="k-i">pip install -r requirements.txt</code> dieselben Versionen. Die Codespace-Umgebung der Vorlesung macht Ähnliches in der Datei <code class="k-i">.devcontainer/devcontainer.json</code>: Dort steht, welche Python-Version und welche Erweiterungen beim Start eingerichtet werden. Wenn die KI dir ein neues Paket vorschlägt, gehört es mit Version in diese Liste, nicht „irgendwie“ auf den Rechner.</p>
+        </div>
+      </details>
+
+      <details class="k-deep">
+        <summary>Erfundene Pakete als Einfallstor: die Lieferkette</summary>
+        <div class="k-deep__body">
+          <p>Code-Assistenten erfinden gelegentlich Paketnamen, die so plausibel klingen, dass sie existieren könnten. Angreifer haben das erkannt: Sie veröffentlichen unter solchen häufig erfundenen Namen echte Pakete mit Schadcode und warten, dass jemand den Vorschlag der KI blind installiert. Diese Art Angriff nennt man <em>Lieferkettenangriff</em> (englisch supply chain attack). Dein Schutz sind einfache Gewohnheiten: Nur Pakete installieren, die du kennst oder geprüft hast; in der Projektliste Versionen festnageln; Pakete mit sehr jungem Alter und fast ohne Downloads misstrauisch betrachten. In V18 (IT-Sicherheit) und dem Cyber Resilience Act kommt das Thema wieder.</p>
+        </div>
+      </details>
+
+      <details class="k-deep">
+        <summary>Copilot-Chat, Bearbeiten und Agenten: wie viel darf die KI selbst ändern?</summary>
+        <div class="k-deep__body">
+          <p>Der Chat kennt mehrere Betriebsarten, die sich in der Oberfläche von Version zu Version etwas ändern: <em>Fragen</em> (die KI antwortet nur), <em>Bearbeiten</em> (die KI schlägt Änderungen an Dateien vor, die du annimmst oder ablehnst) und <em>Agent</em> (die KI plant mehrere Schritte, ändert Dateien und führt Befehle im Terminal aus). Je selbstständiger die Betriebsart, desto wichtiger werden deine Testfälle: Sie sind die einzige Stelle, an der du sicher siehst, ob nach vielen automatischen Änderungen noch dasselbe herauskommt. Du liest jede vorgeschlagene Änderung (der Vergleich „Diff“ zeigt alte und neue Zeilen) und gibst Befehle im Terminal nur frei, wenn du verstehst, was sie tun.</p>
+        </div>
+      </details>
+
+      <details class="k-deep">
+        <summary>Rechte und Pflichten bei KI-Code, kurz</summary>
+        <div class="k-deep__body">
+          <p>Keine Rechtsberatung, nur Denkanstöße: Wer KI-Code in einem Produkt einsetzt, bleibt für das Produkt verantwortlich. Die Frage, wem erzeugter Code gehört und ob er fremde Lizenzen berührt, ist nicht abschließend geklärt. Deshalb gibt es die Einstellung, Vorschläge zu blockieren, die öffentlichem Code gleichen. Betriebe regeln das meist mit Richtlinien: welche Werkzeuge erlaubt sind, welche Daten hinein dürfen, ob KI-Code gekennzeichnet werden muss. Frag danach, bevor du im Betrieb zum ersten Mal Copilot öffnest.</p>
+        </div>
+      </details>
+      </section>
+
+      <!-- Videos zur Nachbereitung -->
+      <section class="k-section" id="videos" aria-labelledby="h-videos">
+        <h2 class="k-section__title" id="h-videos">Videos zur Nachbereitung</h2>
+        <p>Alle drei Erklärvideos zu V11 zum Wiederholen, jeweils mit deutschen Untertiteln.</p>
+        <ul class="k-video-list">
+          <li><a href="#video-theorie">Programmieren mit Copilot: Spezifikation, Testfälle, Prüfen, import und pip erklärt</a> <span class="k-muted">(ca. 3 Min, Theorie, Abschnitt 2 dieser Lerneinheit)</span></li>
+          <li><a href="v11-labor.html#a-werkzeugkasten">Python-Werkstatt: import, Module und eigenes Modul</a> <span class="k-muted">(ca. 3 Min, im Labor bei „Werkzeugkasten“)</span></li>
+          <li><a href="v11-labor.html#a-vorgemacht">Vorgerechnet: Copilot-Ergebnis mit Testfällen prüfen</a> <span class="k-muted">(ca. 3 Min, im Labor bei „Vorgerechnetes Beispiel“)</span></li>
+        </ul>
+      </section>
+
+      <!-- Übergang -->
+      <section class="k-next" aria-labelledby="h-next">
+        <h2 id="h-next">Wie geht es weiter?</h2>
+        <p>Verstanden ist noch nicht geprüft. Im Programmierlabor schreibst du Code mit <code class="k-i">import</code>, prüfst mitgelieferte KI-Antworten (die Fehler sind eingebaut) und bewertest Prompts. Zu Hause folgt das Training mit acht automatisch geprüften Aufgaben (ca. 60 Min), darunter drei Aufgaben, die du in Codespaces mit Copilot bearbeitest und dann hier im Browser mit Testfällen prüfst.</p>
+        <p><a class="k-btn" href="v11-labor.html">Weiter ins Programmierlabor →</a></p>
+      </section>
+
+      <!-- Für Dozierende -->
+      <section class="k-section k-section--dozent" aria-labelledby="h-doz">
+        <h2 id="h-doz" class="k-sr">Für Dozierende</h2>
+      <details class="k-dozent">
+        <summary>Für Dozierende: Ablaufplan 135 Minuten Präsenz + 60 Minuten zu Hause</summary>
+        <div class="k-dozent__body">
+          <p class="k-small k-muted">Ein Termin besteht aus zwei Seiten: dieser <strong>Lerneinheit</strong> (verstehen) und dem <a href="v11-labor.html">Programmierlabor</a> (selbst programmieren). Die Tabelle sagt, wo welche Phase stattfindet. <strong>Vorbereitung:</strong> Den GitHub-Education-Antrag (Abschnitt 3) möglichst schon eine Woche vorher ankündigen, weil die Prüfung dauern kann. Wer keinen Zugang hat, bearbeitet die Copilot-Aufgaben im Labor ohne KI (Phase-1-Weg) oder arbeitet mit einem Partner mit.</p>
+          <div class="k-tablewrap"><table class="k-plan">
+            <thead><tr><th scope="col">Minuten</th><th scope="col">Wo</th><th scope="col">Was zu tun ist</th></tr></thead>
+            <tbody>
+              <tr><td>0–10</td><td>Lerneinheit 1<br>Warum</td><td><strong>Warm-up.</strong> Wiederholung V10 per Handzeichen: Warum liegt eine KI „selbstbewusst falsch“? Dann Hook: Prompt A und Prompt B nebeneinander zeigen, Vorhersage „Wie viele Testfälle besteht Antwort A?“ (drei von vier), dann beide ausführen. Hinweis: Die Antworten sind Beispiel-Antworten.</td></tr>
+              <tr><td>10–35</td><td>Lerneinheit 2<br>Theorie</td><td><strong>Informatik-Theorie mit Explorables.</strong> Der Ablauf in fünf Schritten (Abbildung). Passungs-PAP: Testfall 4 (Spiel genau 0) zeigen. Prompt-Bewerter: vagen und PAP-Prompt laden, im PAP-Prompt den Grenzfall-Satz löschen. import-Namen: NameError und AttributeError live erzeugen. pip-Ablauf in zwei Minuten. Ampel-Diskussion: „pip install ausführen“ ist Delegieren, „Testfälle schreiben“ ist Im Kopf.</td></tr>
+              <tr><td>35–80</td><td>Labor Teil A<br>Aufgaben 1 bis 7</td><td><strong>Python-Werkstatt, Teil 1 (ca. 45 Min).</strong> Werkzeugkasten (5), Vorgerechnetes Beispiel: Testfälle zuerst, dann der Copilot-Code (10), Ablauf verfolgen (7), Zeilen ordnen (8), Lückencode (5), Messreihe mit statistics (10). Rundgang; typische Fehler: <code>import</code> vergessen, Zweitname und Originalname verwechselt, Dateiname gleich Modulname.</td></tr>
+              <tr><td>80–90</td><td>–</td><td><strong>Pause.</strong> Runner vorab einmal ausführen lassen (lädt ca. 10 MB von jsDelivr).</td></tr>
+              <tr><td>90–120</td><td>Labor Teil A<br>Aufgaben 8 bis 10 und Live-Demo</td><td><strong>Python-Werkstatt, Teil 2.</strong> Prompt-Qualität bewerten (5), Code-Review (KI-Spiegel) gemeinsam am Beamer: Zeilen markieren, Auflösung, die drei Fehler einzeln ausführen (15), typische Fehlermeldungen (5). Reserve: <strong>Live-Demo im Codespace</strong> (10): Prompt aus dem PAP, Vorschlag mit Tab annehmen, Testfälle laufen lassen, einen Vorschlag mit Esc ablehnen.</td></tr>
+              <tr><td>120–135</td><td>Lerneinheit 5<br>Selbstcheck</td><td><strong>Selbstcheck, Exit-Ticket, Auftrag.</strong> Exit-Ticket: Quiz T2, T6, T7 (je 1 Min. tippen, dann auflösen). T9 (Code schreiben) als Hausaufgabe oder auf Papier. Auftrag: Labor Teil B, darin drei Aufgaben für Codespaces. Ausblick V12: Testen und Debuggen (<code>assert</code>).</td></tr>
+              <tr><td>zu Hause (ca. 60)</td><td>Labor Teil B<br>Aufgaben 1 bis 8</td><td><strong>Training.</strong> Fünf Code-Aufgaben (Module, eigenes Modul, Wiederholung V07/V08, drei Copilot-Aufgaben mit Prüfung im Browser), ein PAP zum Zeichnen (automatisch geprüft) und eine Klausur-Aufgabe (ca. 55 Min). Notebook und Deep Dive nach Wahl. Der Fortschritt bleibt im Browser der Studierenden; er ist für dich nicht einsehbar.</td></tr>
+            </tbody>
+          </table></div>
+          <p class="k-small k-muted">Material: Beamer, Handzeichen-Karten, stabiles WLAN, ein eigenes GitHub-Konto mit Copilot für die Live-Demo. Datenschutz: In der Demo nur Übungsdaten. Die Beispiel-Antworten in der Lerneinheit sind vom Kursautor formuliert und nicht aus einer echten Anfrage kopiert.</p>
+        </div>
+      </details>
+      </section>
+
+    </main>
+  </div>
+
+  <footer class="dhbw-footer k-footer">
+    <div class="dhbw-footer__inner">
+      <span><span class="dhbw-footer__brand">DHBW Stuttgart</span> · Campus Horb</span>
+      <span><a href="../index.html">Zurück zum Lernpfad</a> · V11 Programmieren mit Copilot · Lerneinheit</span>
+    </div>
+  </footer>
+
+  <script src="../assets/js/speicher.js"></script>
+  <script src="../assets/js/icons.js"></script>
+  <script src="../assets/js/editor.js" defer></script>
+  <script src="../assets/js/pap-engine.js"></script>
+  <script src="../assets/js/explorables-v11.js"></script>
+  <script src="../assets/js/kurs.js"></script>
+  <script src="../assets/js/aufgaben.js"></script>
+</body>
+</html>

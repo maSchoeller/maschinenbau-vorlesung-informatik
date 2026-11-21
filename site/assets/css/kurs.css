@@ -408,3 +408,6 @@ body[data-page="lerneinheit"] .dhbw-header__inner { max-width: 1540px; }
 /* Videos zur Nachbereitung: schlichte Liste */
 .k-video-list { list-style: none; padding: 0; display: grid; gap: var(--sp-2); }
 .k-video-list li { margin: 0; }
+
+/* Nicht ausführbare Codeblöcke (Ausgaben, Tracebacks) dürfen nie die Seite verbreitern */
+pre[data-run="no"] { overflow-x: auto; max-width: 100%; }
