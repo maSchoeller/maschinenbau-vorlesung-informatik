@@ -1,0 +1,1 @@
+Die Aufgabe: ein Werkstoff für eine Welle, aus Spannung in MPa und Temperatur in °C. Wichtig vorab: Das ist eine vereinfachte Lehr-Regel, keine Normauslegung. Unsere Regel: Heiß braucht warmfesten Stahl, sonst entscheidet die Spannung, und Unsinn wird abgewiesen. Wir zeichnen zuerst das Struktogramm und gehen dann den Code durch.

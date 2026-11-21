@@ -1,0 +1,1 @@
+Das Oder ist eine Parallelschaltung: Die beiden Schalter liegen nebeneinander. Hier reicht es, wenn A oder B geschlossen ist, denn der Strom nimmt den freien Weg. Die Tabelle liefert nur dann falsch, wenn beide Schalter offen sind. Jede Seite allein genügt, beide zusammen genügen erst recht.

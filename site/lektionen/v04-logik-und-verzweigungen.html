@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>V04 Boolesche Logik &amp; Verzweigungen · Lerneinheit · Informatik Maschinenbau</title>
+  <meta name="description" content="Warum die Zweihandschaltung einer Presse eine UND-Verknüpfung ist: Wahrheitswerte, Wahrheitstabellen, De Morgan und Verzweigungen im Programmablauf.">
+  <link rel="stylesheet" href="../assets/css/dhbw-base.css">
+  <link rel="stylesheet" href="../assets/css/kurs.css">
+  <link rel="stylesheet" href="../assets/css/aufgaben.css">
+  <link rel="stylesheet" href="../assets/css/editor.css">
+  <link rel="stylesheet" href="../assets/css/v04.css">
+</head>
+<body data-lesson="V04" data-page="lerneinheit">
+  <a class="k-skip" href="#inhalt">Zum Inhalt springen</a>
+
+  <header class="dhbw-header k-header">
+    <div class="dhbw-header__inner">
+      <a class="k-logo" href="../index.html" aria-label="Zur Startseite">
+        <span class="k-logo__mark" aria-hidden="true">DHBW</span>
+        <span class="k-logo__text">Informatik Maschinenbau<small>Campus Horb · 2026/27</small></span>
+      </a>
+      <nav class="k-nav" aria-label="Hauptnavigation">
+        <a href="../index.html">Start</a>
+        <a href="../index.html#lernpfad">Lernpfad</a>
+        <a href="../bibliothek.html">Bibliothek</a>
+        <a href="v04-logik-und-verzweigungen.html" aria-current="page">V04 Lerneinheit</a>
+        <a href="v04-labor.html">V04 Labor</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="l-page">
+    <nav class="k-toc" aria-label="Inhalt dieser Lerneinheit">
+      <p class="k-toc__title">Lerneinheit V04</p>
+      <ol class="k-toc__list">
+        <li><a href="#warum"><span class="k-toc__n">1</span>Warum?</a></li>
+        <li><a href="#theorie"><span class="k-toc__n">2</span>Theorie</a></li>
+        <li><a href="#ausprobieren"><span class="k-toc__n">3</span>Ausprobieren</a></li>
+        <li><a href="#selbstcheck"><span class="k-toc__n">4</span>Selbstcheck</a></li>
+        <li><a href="#deepdive"><span class="k-toc__n">5</span>Deep Dive</a></li>
+      </ol>
+      <div class="k-progress" data-progress-for="V04">
+        <span class="k-progress__bar"><span class="k-progress__fill"></span></span>
+        <span class="k-progress__text">0 von 5 Abschnitten</span>
+      </div>
+      <a class="k-toc__lab" href="v04-labor.html">Weiter ins Programmierlabor →</a>
+    </nav>
+
+    <main id="inhalt" class="l-content">
+
+      <header class="k-title">
+        <p class="k-title__label">V04 · Phase 1 Fundament · Lerneinheit</p>
+        <h1 id="h-titel">Boolesche Logik &amp; Verzweigungen</h1>
+        <p class="k-title__lead">Warum eine Presse zwei Hände braucht, und wie ein Programm aus Ja und Nein eine <abbr class="k-begriff" data-erklaerung="Eine Entscheidung im Programm: Je nachdem, ob eine Bedingung stimmt, läuft der eine oder der andere Teil des Programms. Wie eine Weiche im Gleis.">Verzweigung</abbr> macht.</p>
+        <p class="k-title__goals">Nach dieser Lerneinheit kannst du:</p>
+        <ul class="k-title__list">
+          <li>Aussagen mit <abbr class="k-begriff" data-erklaerung="UND ist wahr, wenn beide Teile wahr sind, wie zwei Schalter hintereinander: Nur wenn beide geschlossen sind, fließt Strom.">UND</abbr>, <abbr class="k-begriff" data-erklaerung="ODER ist wahr, wenn mindestens ein Teil wahr ist, wie zwei Schalter nebeneinander: Ist einer geschlossen, fließt Strom.">ODER</abbr> und <abbr class="k-begriff" data-erklaerung="NICHT dreht einen Wahrheitswert um: aus wahr wird falsch und aus falsch wird wahr.">NICHT</abbr> verknüpfen und eine <abbr class="k-begriff" data-erklaerung="Eine Wahrheitstabelle listet für jede mögliche Kombination der Eingänge auf, ob das Ergebnis wahr oder falsch ist. Bei zwei Eingängen sind das vier Zeilen.">Wahrheitstabelle</abbr> aufstellen,</li>
+          <li>erklären, warum die Zweihandschaltung eine UND-Verknüpfung ist und was bei ODER passieren würde,</li>
+          <li>eine Bedingung mit <abbr class="k-begriff" data-erklaerung="Die De Morganschen Regeln sagen, wie man ein NICHT vor einer Klammer auflöst: NICHT (A UND B) ist dasselbe wie (NICHT A) ODER (NICHT B).">De Morgan</abbr> umformen,</li>
+          <li>den Ablauf eines Programms mit if / elif / else vorhersagen,</li>
+          <li>KI-Code auf falsche Logik prüfen (und statt oder, Grenzwerte, Reihenfolge der Zweige).</li>
+        </ul>
+        <p class="k-small k-muted">Das Schreiben von Python-Code (<abbr class="k-begriff" data-erklaerung="Ein bool ist ein Wert, der nur True (wahr) oder False (falsch) sein kann, wie ein Schalter an oder aus."><code class="k-i">bool</code></abbr>, Vergleiche, <code class="k-i">and</code> / <code class="k-i">or</code> / <code class="k-i">not</code>, <code class="k-i">if</code> / <code class="k-i">elif</code> / <code class="k-i">else</code>, <abbr class="k-begriff" data-erklaerung="Einrückung heißt: Eine Zeile beginnt mit vier Leerzeichen Abstand. In Python zeigt die Einrückung, welche Zeilen zu einer Verzweigung gehören. Sie ist Teil der Syntax.">Einrückung</abbr>) übst du danach im <a href="v04-labor.html">Programmierlabor</a>.</p>
+      </header>
+
+      <!-- 1 ───────────── WARUM ───────────── -->
+      <section class="k-section" id="warum" data-section="warum" aria-labelledby="h-warum">
+        <h2 class="k-section__title" id="h-warum"><span class="k-section__num" aria-hidden="true">1</span> Warum?</h2>
+
+        <p>Zwei Szenen. In beiden entscheidet ein einziges kleines Wort über Sicherheit: <em>und</em> oder <em>oder</em>.</p>
+
+        <figure class="k-figure">
+          <picture>
+            <source srcset="../assets/img/v04-hook.webp" type="image/webp">
+            <img src="../assets/img/v04-hook.png" alt="Illustration: Bediener einer Presse drückt mit beiden Händen die zwei Taster der Zweihandschaltung, die Schutztür ist geschlossen" width="1600" height="900" loading="lazy" onerror="this.closest('figure').hidden=true">
+          </picture>
+        </figure>
+
+        <h3>Szene 1: Die Zweihandschaltung</h3>
+        <p>Eine Presse formt Blech mit vielen Tonnen Kraft. Der Bediener legt das Werkstück ein und löst den <abbr class="k-begriff" data-erklaerung="Ein Hub ist eine einzelne Auf-und-Ab-Bewegung der Presse: Der Stößel fährt nach unten, presst und fährt wieder hoch.">Hub</abbr> aus. Würde ein einzelner Taster dafür genügen, könnte er mit der einen Hand den Taster drücken, während die andere noch im Werkzeug liegt. Deshalb schreibt die Sicherheitstechnik eine <abbr class="k-begriff" data-erklaerung="Eine Zweihandschaltung löst eine gefährliche Bewegung erst aus, wenn der Bediener zwei Taster gleichzeitig drückt. So sind beide Hände an den Tastern und damit nicht im Gefahrenbereich.">Zweihandschaltung</abbr> vor: Der Hub startet nur, wenn <strong>beide</strong> Taster gedrückt sind. Dann sind beide Hände an den Tastern, also außerhalb der Gefahrenzone. In der Logik heißt das: linker Taster <strong>UND</strong> rechter Taster. Bei <strong>ODER</strong> würde ein Taster reichen, und die Sicherung wäre wirkungslos. Dazu kommen weitere Bedingungen: Die Schutztür muss zu sein, und der Hydraulikdruck muss im zulässigen Bereich liegen.</p>
+
+        <h3>Szene 2: Die KI verwechselt ein Wort</h3>
+        <p>Du bittest die KI um die Steuerlogik der Presse. Sie liefert eine Bedingung, die sich liest wie die Aufgabe, aber an einer Stelle steht <code class="k-i">or</code> statt <code class="k-i">and</code>, oder <code class="k-i">&lt;</code> statt <code class="k-i">&lt;=</code>. Das Programm läuft, der Normalfall funktioniert. Aber im Grenzfall gibt die Presse den Hub frei, obwohl sie sperren müsste. So etwas siehst du nur, wenn du die Logik selbst lesen kannst.</p>
+
+        <div class="k-try" aria-labelledby="t-hook">
+          <h3 id="t-hook">Selbst sehen: UND gegen ODER</h3>
+          <p class="k-small k-muted">Die linke Hand drückt, die rechte Hand ist noch im Werkzeug. <code class="k-i">True</code> heißt „wahr“ (Taster gedrückt), <code class="k-i">False</code> heißt „falsch“ (nicht gedrückt). Python versteht <code class="k-i">and</code> als UND und <code class="k-i">or</code> als ODER. Sag erst voraus, was die letzte Zeile ausgibt, dann „Ausführen“. Dann „Schritt für Schritt“: So siehst du, wie die Variablen belegt werden.</p>
+          <div class="k-predict">
+            <p class="k-predict__q">Was gibt <code class="k-i">print("ODER:", taster_links or taster_rechts)</code> aus?</p>
+            <div class="k-predict__opts"><button type="button" data-correct>ODER: True</button><button type="button">ODER: False</button></div>
+            <div class="k-predict__result"></div>
+            <div class="k-predict__expl" hidden>Bei ODER genügt ein wahrer Teil. Die Presse würde fahren, obwohl die rechte Hand im Werkzeug liegt. Genau deshalb braucht die Zweihandschaltung UND.</div>
+          </div>
+          <pre><code>taster_links = True      # linke Hand drückt
+taster_rechts = False    # rechte Hand ist noch im Werkzeug
+print("UND:", taster_links and taster_rechts)
+print("ODER:", taster_links or taster_rechts)</code></pre>
+        </div>
+
+        <h3>Wissens-Ampel für V04</h3>
+        <ul class="k-ampel-list" aria-label="Wissens-Ampel zu V04">
+          <li><span class="k-ampel k-ampel--kopf"><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-head"/></svg> Im Kopf</span><span>Was UND, ODER und NICHT bedeuten. Warum Sicherheitsbedingungen mit UND verknüpft sind. Dass in einer Verzweigung genau ein Zweig läuft, der erste mit wahrer Bedingung. Dass Grenzwerte (<code class="k-i">&lt;</code> oder <code class="k-i">&lt;=</code>) eine Entscheidung sind.</span></li>
+          <li><span class="k-ampel k-ampel--lesen"><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-book"/></svg> Lesen &amp; erkennen</span><span>De Morgan und das Umformen von Bedingungen. Kontaktplan und Funktionsplan einer SPS: Du erkennst UND (Reihe) und ODER (parallel).</span></li>
+          <li><span class="k-ampel k-ampel--deleg"><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-handover"/></svg> Delegieren</span><span>Große Wahrheitstabellen ausfüllen und Schaltungen vereinfachen. Das macht ein Werkzeug (oder die KI). Du prüfst nur, ob das Ergebnis zur Vorgabe passt.</span></li>
+        </ul>
+
+        <div class="hinweis hinweis--warum"><strong class="hinweis__title">Warum muss ich das wissen?</strong><p>Weil jede Steuerung und jedes Prüfprogramm aus Bedingungen besteht, und die KI schreibt sie dir hin, ohne die Sicherheitsfolgen zu kennen. Ein vertauschtes <code class="k-i">and</code> und <code class="k-i">or</code> besteht jeden Normaltest und fällt erst im Ernstfall auf. In der Klausur kommt das als „Was gibt der Code aus?“ und als „Würdest du den KI-Code freigeben?“ dran.</p></div>
+      </section>
+
+      <!-- 2 ───────────── THEORIE ───────────── -->
+      <section class="k-section" id="theorie" data-section="theorie" aria-labelledby="h-theorie">
+        <h2 class="k-section__title" id="h-theorie"><span class="k-section__num" aria-hidden="true">2</span> Theorie</h2>
+
+        <h3>Erklärvideo (ca. 3 Min)</h3>
+        <figure class="k-video" id="video-theorie">
+          <video controls preload="metadata" poster="../assets/video/v04-theorie-poster.png" aria-label="Erklärvideo Boolesche Logik und Verzweigungen">
+            <source src="../assets/video/v04-theorie.mp4" type="video/mp4">
+            <track kind="subtitles" srclang="de" label="Deutsch" src="../assets/video/v04-theorie.vtt" default>
+            Dein Browser kann dieses Video nicht abspielen.
+          </video>
+          <div class="k-video__missing" hidden>Video folgt. Bis dahin: die drei Explorables und der Lesetext unten decken alles ab.</div>
+          <figcaption>Untertitel sind eingeschaltet (Deutsch).</figcaption>
+        </figure>
+
+        <h3>Aussagen und Wahrheitswerte</h3>
+        <p>Eine <abbr class="k-begriff" data-erklaerung="Eine Aussage ist ein Satz, der entweder stimmt oder nicht stimmt, ohne Zwischenstufe. Zum Beispiel: Die Schutztür ist geschlossen.">Aussage</abbr> ist ein Satz, der entweder stimmt oder nicht stimmt: „Die Schutztür ist geschlossen“, „der Druck liegt zwischen 150 und 210 bar“. Etwas dazwischen gibt es nicht. Ob die Aussage stimmt, heißt ihr <abbr class="k-begriff" data-erklaerung="Der Wahrheitswert sagt, ob eine Aussage stimmt: wahr oder falsch. Mehr Möglichkeiten gibt es nicht.">Wahrheitswert</abbr>: <strong>wahr</strong> oder <strong>falsch</strong>. Der Rechner schreibt ihn als 1 und 0, also genau ein <abbr class="k-begriff" data-erklaerung="Ein Bit ist die kleinste Informationseinheit des Rechners: 0 oder 1, wie ein Schalter aus oder an (V02).">Bit</abbr> (V02). In der <abbr class="k-begriff" data-erklaerung="Speicherprogrammierbare Steuerung: ein kleiner Industrie-Computer, der Maschinen und Anlagen steuert, zum Beispiel Achsen und Ventile.">SPS</abbr> heißt dieser <abbr class="k-begriff" data-erklaerung="Der Datentyp sagt dem Rechner, was ein Wert ist (Ganzzahl, Kommazahl, Text, Wahrheitswert) und was man damit tun darf.">Datentyp</abbr> <code class="k-i">BOOL</code>, in Python <code class="k-i">bool</code> mit den zwei Werten <code class="k-i">True</code> und <code class="k-i">False</code>. Der Name erinnert an George Boole, der die Logik im 19. Jahrhundert als Rechnen mit wahr und falsch aufgeschrieben hat.</p>
+
+        <h3>Die drei Grundverknüpfungen</h3>
+        <p>Aus einfachen Aussagen baust du zusammengesetzte. Dafür gibt es drei <abbr class="k-begriff" data-erklaerung="Eine Verknüpfung nimmt einen oder zwei Wahrheitswerte und macht daraus einen neuen, so wie + aus zwei Zahlen eine neue Zahl macht.">Verknüpfungen</abbr>. Die Schaltungs-Spalte zeigt, wie sie als Schalter aussehen: Ein <abbr class="k-begriff" data-erklaerung="Ein Schließer ist ein Kontakt, der im Ruhezustand offen ist und beim Betätigen schließt, wie ein normaler Klingeltaster.">Schließer</abbr> lässt Strom durch, wenn er betätigt wird. Ein <abbr class="k-begriff" data-erklaerung="Ein Öffner ist ein Kontakt, der im Ruhezustand geschlossen ist und beim Betätigen öffnet, zum Beispiel der Pilz-Taster eines Not-Halts.">Öffner</abbr> macht das Gegenteil.</p>
+        <div class="k-tablewrap">
+        <table class="k-types">
+          <thead><tr><th scope="col">Verknüpfung</th><th scope="col">Wahr, wenn</th><th scope="col">Schaltung</th><th scope="col">Python</th></tr></thead>
+          <tbody>
+            <tr><td><strong>UND</strong> (A und B)</td><td>beide Teile wahr sind</td><td>zwei Schließer in Reihe</td><td><code class="k-i">a and b</code></td></tr>
+            <tr><td><strong>ODER</strong> (A oder B)</td><td>mindestens ein Teil wahr ist</td><td>zwei Schließer parallel</td><td><code class="k-i">a or b</code></td></tr>
+            <tr><td><strong>NICHT</strong> (nicht A)</td><td>der Teil falsch ist</td><td>ein Öffner</td><td><code class="k-i">not a</code></td></tr>
+          </tbody>
+        </table>
+        </div>
+        <p class="k-small k-muted">Das ODER der Logik ist „einschließend“: Es ist auch wahr, wenn beide Teile wahr sind. Das „oder“ im Alltag („Kaffee oder Tee?“) meint oft „entweder … oder“. Das heißt in der Logik XOR (Deep Dive).</p>
+
+        <h3>Wahrheitstabellen</h3>
+        <p>Eine Wahrheitstabelle schreibt für <em>jede</em> Kombination der Eingänge das Ergebnis auf. Bei zwei Eingängen sind das 2 · 2 = 4 Zeilen, bei drei Eingängen 8, bei vier 16: Mit <em>n</em> Eingängen gibt es 2<sup><em>n</em></sup> Zeilen, genau wie <em>n</em> Bits 2<sup><em>n</em></sup> Muster haben (V02). Das ist der Vorteil: Eine Tabelle lässt keinen Fall aus.</p>
+        <div class="k-tablewrap">
+        <table class="k-types">
+          <thead><tr><th scope="col">A</th><th scope="col">B</th><th scope="col">A UND B</th><th scope="col">A ODER B</th><th scope="col">NICHT A</th></tr></thead>
+          <tbody>
+            <tr><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td></tr>
+            <tr><td>0</td><td>1</td><td>0</td><td>1</td><td>1</td></tr>
+            <tr><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td></tr>
+            <tr><td>1</td><td>1</td><td>1</td><td>1</td><td>0</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <p class="k-small k-muted">0 steht für falsch, 1 für wahr. UND hat nur in einer von vier Zeilen eine 1, ODER in drei von vier. Darum ist UND „streng“ und ODER „großzügig“.</p>
+
+        <div class="k-explorable">
+          <h3>Logik-Baukasten</h3>
+          <p class="k-explorable__lead">Vier Schalter, drei Gatter hintereinander, eine Lampe „Hub frei“. Starte mit „Zweihandschaltung: alles UND“ und lege die Schalter um: Die Lampe darf nur leuchten, wenn alle vier stimmen. Lade dann „Falsch: Taster mit ODER“ und suche die Schalterstellung, in der die Lampe leuchtet, obwohl sie es nicht dürfte. Die <abbr class="k-begriff" data-erklaerung="Ein Gatter ist ein Baustein, der zwei Wahrheitswerte zu einem verknüpft, zum Beispiel ein UND-Gatter. In der Elektronik ist es ein kleiner Schaltkreis, in der Software eine Zeile.">Gatter</abbr> kannst du selbst umstellen.</p>
+          <div data-explorable="baukasten"></div>
+          <noscript><p>Für den Logik-Baukasten wird JavaScript benötigt.</p></noscript>
+          <p class="k-small k-muted">Beobachtung: Beim ODER liegen die gefährlichen Zeilen genau dort, wo ein Taster fehlt. Eine Sicherheitsbedingung schaltest du also mit UND, und jede Bedingung, die du vergisst, öffnet eine gefährliche Zeile.</p>
+        </div>
+
+        <h3>Verknüpfungen mischen: Priorität und Klammern</h3>
+        <p>Mehrere Verknüpfungen in einer Zeile werden in fester Reihenfolge ausgewertet, ähnlich wie bei „Punkt vor Strich“: <strong>NICHT</strong> zuerst, dann <strong>UND</strong> (wie das Mal), zuletzt <strong>ODER</strong> (wie das Plus). Also ist <code class="k-i">A oder B und C</code> dasselbe wie <code class="k-i">A oder (B und C)</code>, und nicht <code class="k-i">(A oder B) und C</code>. Wer unsicher ist, setzt Klammern. Sie kosten nichts und machen die Absicht lesbar. Die Zweihandschaltung in einer Zeile:</p>
+        <div class="k-formula">Hub frei = (Taster links UND Taster rechts) UND Tür zu UND Druck im Bereich</div>
+
+        <h3>De Morgan: NICHT vor der Klammer</h3>
+        <p>Für Sicherheitsfragen formulierst du oft die <em>Sperre</em> statt der Freigabe: „Der Hub ist gesperrt, wenn <strong>nicht</strong> alles in Ordnung ist.“ Das gleiche sagt: „Der Hub ist gesperrt, wenn <strong>irgendetwas</strong> fehlt.“ Beide Sätze meinen dasselbe. Die Regel dahinter heißt <abbr class="k-begriff" data-erklaerung="Augustus De Morgan war ein Mathematiker im 19. Jahrhundert. Seine Regeln erklären, wie ein NICHT vor einer Klammer UND und ODER vertauscht.">De Morgan</abbr>:</p>
+        <div class="k-formula">NICHT (A UND B) = (NICHT A) ODER (NICHT B)
+NICHT (A ODER B) = (NICHT A) UND (NICHT B)</div>
+        <p>Merkhilfe: Das NICHT „springt in die Klammer“. Dabei wird <strong>UND zu ODER</strong> (und umgekehrt), und jeder Teil bekommt ein eigenes NICHT. Auf die Presse angewendet: <code class="k-i">NICHT (links UND rechts UND Tür zu UND Druck ok)</code> ist dasselbe wie <code class="k-i">(NICHT links) ODER (NICHT rechts) ODER (NICHT Tür zu) ODER (NICHT Druck ok)</code>. Jede einzelne Störung sperrt den Hub.</p>
+
+        <div class="k-explorable">
+          <h3>De-Morgan-Prüfer</h3>
+          <p class="k-explorable__lead">Wähle ein Gesetz, lege A und B um und vergleiche die beiden Seiten. Sie sind in jeder Zeile gleich: darum darfst du eine in die andere umformen.</p>
+          <div data-explorable="demorgan"></div>
+          <noscript><p>Für den De-Morgan-Prüfer wird JavaScript benötigt.</p></noscript>
+        </div>
+
+        <h3>Logik in der SPS</h3>
+        <p>In einer SPS steckt dieselbe Logik, nur anders gezeichnet. Du musst die Bilder nur <em>erkennen</em>, nicht selbst zeichnen. Im <abbr class="k-begriff" data-erklaerung="Der Kontaktplan (KOP) sieht aus wie ein Stromlaufplan: links und rechts je eine Stromschiene, dazwischen Kontakte und rechts die Spule, die den Ausgang schaltet.">Kontaktplan</abbr> liegen die Kontakte zwischen zwei Stromschienen: Kontakte <strong>in Reihe</strong> sind UND, Kontakte <strong>parallel</strong> sind ODER, ein Öffner ist NICHT. Der Strom erreicht die Spule rechts nur, wenn ein Weg aus geschlossenen Kontakten existiert. Im <abbr class="k-begriff" data-erklaerung="Im Funktionsplan (FUP) zeichnet man Kästen für die Verknüpfungen: ein Kasten mit & für UND, einer mit ≥1 für ODER, mit Linien für die Signale dazwischen.">Funktionsplan</abbr> zeichnet man stattdessen Kästen: „&amp;“ für UND, „≥1“ für ODER.</p>
+        <figure class="k-figure">
+          <div class="k-tablewrap">
+          <svg role="img" aria-labelledby="kop-t kop-d" viewBox="0 0 720 150" width="720" height="150" style="min-width:560px;max-width:100%;height:auto;color:var(--text)">
+            <title id="kop-t">Kontaktplan der Zweihandschaltung</title>
+            <desc id="kop-d">Zwischen zwei Stromschienen liegen vier Schließer in Reihe: Taster links, Taster rechts, Schutztür zu und Druck im Bereich. Rechts folgt die Spule Hub. Der Strom fließt nur, wenn alle vier Kontakte geschlossen sind: UND.</desc>
+            <g stroke="currentColor" stroke-width="2" fill="none" font-family="inherit" font-size="14">
+              <line x1="40" y1="20" x2="40" y2="130"/><line x1="680" y1="20" x2="680" y2="130"/>
+              <line x1="40" y1="75" x2="116" y2="75"/><line x1="144" y1="75" x2="236" y2="75"/><line x1="264" y1="75" x2="356" y2="75"/><line x1="384" y1="75" x2="476" y2="75"/><line x1="504" y1="75" x2="584" y2="75"/><line x1="616" y1="75" x2="680" y2="75"/>
+              <line x1="116" y1="58" x2="116" y2="92"/><line x1="144" y1="58" x2="144" y2="92"/>
+              <line x1="236" y1="58" x2="236" y2="92"/><line x1="264" y1="58" x2="264" y2="92"/>
+              <line x1="356" y1="58" x2="356" y2="92"/><line x1="384" y1="58" x2="384" y2="92"/>
+              <line x1="476" y1="58" x2="476" y2="92"/><line x1="504" y1="58" x2="504" y2="92"/>
+              <circle cx="600" cy="75" r="16"/>
+            </g>
+            <g fill="currentColor" font-family="inherit" font-size="14" text-anchor="middle">
+              <text x="130" y="44">Taster links</text><text x="250" y="44">Taster rechts</text><text x="370" y="44">Tür zu</text><text x="490" y="44">Druck ok</text><text x="600" y="44">Hub</text>
+              <text x="130" y="112" fill="#4B5563">Schließer</text><text x="250" y="112" fill="#4B5563">Schließer</text><text x="370" y="112" fill="#4B5563">Schließer</text><text x="490" y="112" fill="#4B5563">Schließer</text><text x="600" y="112" fill="#4B5563">Spule</text>
+            </g>
+          </svg>
+          </div>
+          <figcaption>Kontaktplan der Zweihandschaltung: vier Kontakte in Reihe, rechts die Spule „Hub“. Reihe heißt UND. Würdest du die zwei Taster parallel zeichnen, wäre das ein ODER.</figcaption>
+        </figure>
+
+        <h3>Verzweigung: Entscheidung im Programmablauf</h3>
+        <p>Ein <abbr class="k-begriff" data-erklaerung="Ein Programm ist eine Liste von Anweisungen, die Python von oben nach unten Zeile für Zeile abarbeitet.">Programm</abbr> läuft normalerweise von oben nach unten. Mit einer Verzweigung wählt es abhängig von einer <abbr class="k-begriff" data-erklaerung="Eine Bedingung ist eine Aussage, die wahr oder falsch ist, zum Beispiel druck_bar > 210. Das Programm entscheidet danach, welchen Weg es nimmt.">Bedingung</abbr> einen von mehreren Wegen: „<strong>wenn</strong> die Bedingung stimmt, tu das, <strong>sonst</strong> tu jenes“. Die Bedingung ist ein Wahrheitswert, also genau das, was du gerade gelernt hast. Es gibt drei Bausteine:</p>
+        <ul>
+          <li><code class="k-i">if</code> („wenn“): der erste Test. Ist die Bedingung wahr, läuft der Zweig darunter.</li>
+          <li><code class="k-i">elif</code> („sonst wenn“, von englisch <em>else if</em>): ein weiterer Test, aber nur, wenn alle vorherigen falsch waren. Davon darf es beliebig viele geben.</li>
+          <li><code class="k-i">else</code> („sonst“): der Rest, wenn nichts davon gepasst hat. Er hat keine eigene Bedingung.</li>
+        </ul>
+        <p><strong>Es läuft genau ein Zweig:</strong> der erste, dessen Bedingung wahr ist. Alle späteren Tests werden dann nicht mehr geprüft. Deshalb kommt es auf die Reihenfolge an: Die Prüfungen, die ein Programm sicher stoppen sollen, gehören nach vorn. Wie man so einen Ablauf als Bild zeichnet (Struktogramm), lernst du in V05.</p>
+
+        <div class="k-explorable">
+          <h3>Weichen-Animation</h3>
+          <p class="k-explorable__lead">Das Pressenprogramm aus dem Labor: Der Ball ist der Programmablauf. Stell die Eingaben ein, dann „Ball starten“ (oder „Ein Schritt weiter“). Der Ball prüft eine Bedingung nach der anderen und nimmt den ersten Zweig, der wahr ist. Probiere: alles in Ordnung (Hub), Tür offen bei 230 bar (welche Meldung kommt?), nur ein Taster.</p>
+          <div data-explorable="weiche"></div>
+          <noscript><p>Für die Weichen-Animation wird JavaScript benötigt.</p></noscript>
+          <p class="k-small k-muted">Beobachtung: Bei offener Tür <em>und</em> zu hohem Druck meldet das Programm nur die Tür. Der Druck wird gar nicht mehr geprüft, die letzten Zweige sind „nicht geprüft“. Im Labor siehst du denselben Ablauf mit „Schritt für Schritt“ im echten Python-Code.</p>
+        </div>
+
+        <h3>So sieht das in Python aus</h3>
+        <p>Die Bedingung steht hinter <code class="k-i">if</code> und endet mit einem <strong>Doppelpunkt</strong>. Der Block, der dann laufen soll, ist <strong>eingerückt</strong> (vier Leerzeichen). In Python ist die Einrückung kein Schmuck, sondern Teil der <abbr class="k-begriff" data-erklaerung="Die Syntax ist die Schreibweise einer Programmiersprache, wie die Grammatik einer Sprache: Reihenfolge, Klammern, Doppelpunkte, Einrückung. Ein Fehler dort heißt Syntaxfehler.">Syntax</abbr>: Sie zeigt, welche Zeilen zum Zweig gehören. Für die Bedingungen gibt es sechs <abbr class="k-begriff" data-erklaerung="Ein Vergleichsoperator vergleicht zwei Werte und liefert True oder False, zum Beispiel ist 5 > 3 wahr.">Vergleichsoperatoren</abbr>:</p>
+        <div class="k-tablewrap">
+        <table class="k-types">
+          <thead><tr><th scope="col">Zeichen</th><th scope="col">Bedeutung</th><th scope="col">Beispiel</th><th scope="col">Ergebnis</th></tr></thead>
+          <tbody>
+            <tr><td><code class="k-i">==</code></td><td>gleich</td><td><code class="k-i">180 == 180</code></td><td><code class="k-i">True</code></td></tr>
+            <tr><td><code class="k-i">!=</code></td><td>ungleich</td><td><code class="k-i">180 != 180</code></td><td><code class="k-i">False</code></td></tr>
+            <tr><td><code class="k-i">&lt;</code>, <code class="k-i">&gt;</code></td><td>kleiner, größer</td><td><code class="k-i">150 &lt; 150</code></td><td><code class="k-i">False</code></td></tr>
+            <tr><td><code class="k-i">&lt;=</code>, <code class="k-i">&gt;=</code></td><td>kleiner oder gleich, größer oder gleich</td><td><code class="k-i">150 &lt;= 150</code></td><td><code class="k-i">True</code></td></tr>
+          </tbody>
+        </table>
+        </div>
+        <p>Python erlaubt wie in der Mathematik einen Bereich in einem Zug: <code class="k-i">150 &lt;= druck &lt;= 210</code>. Das genaue Schreiben und die typischen Fehler übst du im <a href="v04-labor.html#a-werkzeugkasten">Werkzeugkasten im Labor</a>. Probiere die Beispiele zuerst im nächsten Abschnitt aus.</p>
+
+        <div class="hinweis hinweis--achtung"><strong class="hinweis__title">Achtung</strong><p>Ein <code class="k-i">=</code> <em>speichert</em> einen Wert in einer Variable, erst <code class="k-i">==</code> <em>fragt</em>, ob zwei Werte gleich sind. Und: Kommazahlen (V03) vergleichst du nicht mit <code class="k-i">==</code>, sondern mit Toleranz (<code class="k-i">math.isclose</code>). Auch <code class="k-i">&lt;=</code> kann an der Grenze knapp danebenliegen, wenn der Wert vorher gerechnet wurde.</p></div>
+
+        <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke</strong><p>UND ist streng (alle müssen stimmen), ODER ist großzügig (einer genügt), NICHT dreht um. Sicherheitsbedingungen sind UND-Ketten. De Morgan wandelt „nicht alles“ in „irgendetwas nicht“ um. Eine Verzweigung führt genau einen Zweig aus: den ersten mit wahrer Bedingung.</p></div>
+      </section>
+
+      <!-- 3 ───────────── AUSPROBIEREN ───────────── -->
+      <section class="k-section" id="ausprobieren" data-section="ausprobieren" aria-labelledby="h-aus">
+        <h2 class="k-section__title" id="h-aus"><span class="k-section__num" aria-hidden="true">3</span> Ausprobieren</h2>
+
+        <p>Python läuft direkt hier im Browser. Jeder Codeblock hat einen Editor: Du kannst ihn ändern, ausführen, zurücksetzen und mit „Schritt für Schritt“ Zeile für Zeile verfolgen. Bei Verzweigungen lohnt sich das besonders: Du siehst, welche Zeile als nächste drankommt und welche übersprungen wird. Erst tippen, was herauskommt, dann ausführen (Strg+Enter führt aus).</p>
+
+        <div class="k-try">
+          <h3>Vergleiche liefern True oder False</h3>
+          <div class="k-predict">
+            <p class="k-predict__q">Was gibt <code class="k-i">print("180" == x)</code> aus?</p>
+            <div class="k-predict__opts"><button type="button">True</button><button type="button" data-correct>False</button><button type="button">Fehler</button></div>
+            <div class="k-predict__result"></div>
+            <div class="k-predict__expl" hidden>Der Text <code>"180"</code> und die Zahl <code>180</code> sind verschiedene Dinge. <code>==</code> meldet deshalb einfach <code>False</code>. Mit <code>&lt;</code> oder <code>&gt;</code> wäre es ein <code>TypeError</code>. Darum wandelst du eine Eingabe sofort mit <code>float()</code> in eine Zahl um (V03).</div>
+          </div>
+          <pre><code>x = 180
+print(x &gt; 150)
+print(x == 180)
+print(x != 180)
+print(150 &lt;= x &lt;= 210)
+print("180" == x)</code></pre>
+        </div>
+
+        <div class="k-try">
+          <h3>Priorität: UND vor ODER</h3>
+          <div class="k-predict">
+            <p class="k-predict__q">Was gibt die erste <code class="k-i">print</code>-Zeile aus?</p>
+            <div class="k-predict__opts"><button type="button" data-correct>True</button><button type="button">False</button></div>
+            <div class="k-predict__result"></div>
+            <div class="k-predict__expl" hidden><code>b and c</code> wird zuerst ausgewertet (<code>False and False</code> ergibt <code>False</code>). Dann bleibt <code>a or False</code>, und das ist <code>True</code>. Mit Klammern in der zweiten Zeile ändert sich das Ergebnis: <code>(a or b)</code> ist <code>True</code>, aber <code>True and c</code> ist <code>False</code>.</div>
+          </div>
+          <pre><code>a = True
+b = False
+c = False
+print(a or b and c)
+print((a or b) and c)</code></pre>
+        </div>
+
+        <div class="k-try">
+          <h3>De Morgan nachprüfen</h3>
+          <div class="k-predict">
+            <p class="k-predict__q">Was gibt die zweite Zeile <code class="k-i">print((not a) or (not b))</code> aus?</p>
+            <div class="k-predict__opts"><button type="button" data-correct>True</button><button type="button">False</button></div>
+            <div class="k-predict__result"></div>
+            <div class="k-predict__expl" hidden>Dasselbe wie die erste Zeile, nämlich <code>True</code>: <code>a and b</code> ist <code>False</code>, also ist <code>not (a and b)</code> wahr. Rechts ist <code>not b</code> wahr, damit ist das ODER wahr. Die beiden letzten Zeilen zeigen das zweite Gesetz. Ändere <code>a</code> und <code>b</code> auf alle vier Kombinationen: Die Paare bleiben immer gleich.</div>
+          </div>
+          <pre><code>a = True
+b = False
+print(not (a and b))
+print((not a) or (not b))
+print(not (a or b))
+print((not a) and (not b))</code></pre>
+        </div>
+
+        <div class="k-try">
+          <h3>Verzweigung: Drucküberwachung</h3>
+          <div class="k-predict">
+            <p class="k-predict__q">Was gibt das Programm bei <code class="k-i">druck = 230</code> aus?</p>
+            <div class="k-predict__opts"><button type="button">zu niedrig</button><button type="button">im Bereich</button><button type="button" data-correct>zu hoch</button></div>
+            <div class="k-predict__result"></div>
+            <div class="k-predict__expl" hidden>230 ist nicht kleiner als 150, also ist der <code>if</code>-Zweig falsch. Beim <code>elif</code> ist 230 nicht kleiner oder gleich 210, wieder falsch. Es bleibt <code>else</code>: „zu hoch“.</div>
+          </div>
+          <p class="k-small k-muted">Drück auf „Schritt für Schritt“ und achte darauf, welche <code class="k-i">print</code>-Zeilen übersprungen werden. Setze dann <code class="k-i">druck</code> auf 150, auf 210 und auf 210.5.</p>
+          <pre><code>druck = 230
+if druck &lt; 150:
+    print("zu niedrig")
+elif druck &lt;= 210:
+    print("im Bereich")
+else:
+    print("zu hoch")
+print("Prüfung beendet")</code></pre>
+        </div>
+
+        <div class="k-try">
+          <h3>Die Reihenfolge der Zweige zählt</h3>
+          <div class="k-predict">
+            <p class="k-predict__q">Was gibt das Programm bei 95 Grad aus?</p>
+            <div class="k-predict__opts"><button type="button">Abschaltung</button><button type="button" data-correct>Warnung</button><button type="button">beides</button></div>
+            <div class="k-predict__result"></div>
+            <div class="k-predict__expl" hidden>95 ist größer als 80, der erste Zweig passt: „Warnung“. Der <code>elif</code> wird gar nicht mehr geprüft, obwohl 95 auch größer als 90 ist. „Abschaltung“ kann so nie erscheinen. Die strengere Bedingung muss nach vorn: erst <code>&gt; 90</code>, dann <code>&gt; 80</code>.</div>
+          </div>
+          <pre><code>temperatur = 95
+if temperatur &gt; 80:
+    print("Warnung")
+elif temperatur &gt; 90:
+    print("Abschaltung")</code></pre>
+        </div>
+
+        <div class="k-try">
+          <h3>Rückgriff auf V03: Kommazahlen vergleichen</h3>
+          <div class="k-predict">
+            <p class="k-predict__q">Was gibt <code class="k-i">print(gemessen &lt;= 0.3)</code> aus?</p>
+            <div class="k-predict__opts"><button type="button">True</button><button type="button" data-correct>False</button></div>
+            <div class="k-predict__result"></div>
+            <div class="k-predict__expl" hidden><code>0.1 + 0.2</code> ist 0.30000000000000004, also <em>knapp größer</em> als 0.3. Nicht nur <code>==</code>, auch <code>&lt;=</code> kippt an der Grenze. Mit <code>math.isclose</code> prüfst du, ob zwei Werte praktisch gleich sind (V03).</div>
+          </div>
+          <pre><code>import math
+
+gemessen = 0.1 + 0.2
+print(gemessen == 0.3)
+print(gemessen &lt;= 0.3)
+print(math.isclose(gemessen, 0.3))</code></pre>
+        </div>
+      </section>
+
+      <!-- 4 ───────────── SELBSTCHECK ───────────── -->
+      <section class="k-section" id="selbstcheck" data-section="selbstcheck" aria-labelledby="h-sc">
+        <h2 class="k-section__title" id="h-sc"><span class="k-section__num" aria-hidden="true">4</span> Selbstcheck</h2>
+
+        <p>Acht Quizaufgaben im Stil der Probeklausur (23 Punkte) und eine Code-Schreib-Aufgabe (6 Punkte, T9). Plane etwa 15 Minuten für das Quiz und 10 Minuten für T9 ein, ohne Hilfsmittel. Quiz-Punkte gibt es für den ersten Versuch; danach darfst du es nochmal probieren.</p>
+
+      <div class="k-quiz" data-quiz="v04">
+
+        <div class="k-q" data-type="output" data-points="2" data-id="t1" data-answer="False True False">
+          <div class="k-q__head"><span class="k-q__title">T1 · Programmausgabe</span><span class="k-q__pts">2 Punkte</span></div>
+          <div class="k-q__text">Was gibt das Programm aus (eine Zeile, Werte durch Leerzeichen)?<pre class="k-code" data-run="nach-antwort"><code>print(True and False, True or False, not True)</code></pre></div>
+          <div class="k-q__expl">UND ist nur bei zwei wahren Teilen wahr (<code>False</code>), ODER schon bei einem (<code>True</code>), NICHT dreht <code>True</code> um (<code>False</code>). Ausgabe: <code>False True False</code>.</div>
+        </div>
+
+        <div class="k-q" data-type="num" data-points="3" data-id="t2" data-answer="5" data-tol="0">
+          <div class="k-q__head"><span class="k-q__title">T2 · Wahrheitstabelle</span><span class="k-q__pts">3 Punkte</span></div>
+          <div class="k-q__text">Eine Schaltung mit drei Schaltern A, B und C gibt <code>(A UND B) ODER C</code> aus. Für wie viele der 8 Schalterkombinationen leuchtet die Lampe?</div>
+          <div class="k-q__expl">Ist C wahr, leuchtet die Lampe immer: 4 Kombinationen (A und B beliebig). Ist C falsch, muss A UND B wahr sein: 1 Kombination. Zusammen 4 + 1 = 5.</div>
+        </div>
+
+        <div class="k-q" data-type="mc" data-points="2" data-id="t3">
+          <div class="k-q__head"><span class="k-q__title">T3 · De Morgan</span><span class="k-q__pts">2 Punkte</span></div>
+          <div class="k-q__text">Welcher Ausdruck ist gleichwertig zu <code>NICHT (A ODER B)</code>?</div>
+          <ul class="k-q__options">
+            <li><code>(NICHT A) ODER (NICHT B)</code></li>
+            <li data-correct><code>(NICHT A) UND (NICHT B)</code></li>
+            <li><code>A UND B</code></li>
+            <li><code>(NICHT A) UND B</code></li>
+          </ul>
+          <div class="k-q__expl">De Morgan: Das NICHT springt in die Klammer, ODER wird zu UND, und beide Teile werden verneint. Probe: A = B = 0 ergibt links <code>NICHT 0 = 1</code>, rechts <code>1 UND 1 = 1</code>. Die erste Option wäre das <em>andere</em> Gesetz (für UND in der Klammer).</div>
+        </div>
+
+        <div class="k-q" data-type="output" data-points="3" data-id="t4" data-answer="C">
+          <div class="k-q__head"><span class="k-q__title">T4 · Grenzwert</span><span class="k-q__pts">3 Punkte</span></div>
+          <div class="k-q__text">Was gibt das Programm aus?<pre class="k-code" data-run="nach-antwort"><code>druck = 210
+if druck &lt; 150:
+    print("A")
+elif druck &lt; 210:
+    print("B")
+else:
+    print("C")</code></pre></div>
+          <div class="k-q__expl">210 ist nicht kleiner als 150 und nicht kleiner als 210 (gleich!). Beide Bedingungen sind falsch, es läuft <code>else</code>: Ausgabe <code>C</code>. Die Grenze gehört hier zum <code>else</code>-Zweig, weil <code>&lt;</code> statt <code>&lt;=</code> steht.</div>
+        </div>
+
+        <div class="k-q" data-type="mc" data-points="4" data-id="t5">
+          <div class="k-q__head"><span class="k-q__title">T5 · Aussagen zu Python (mehrere richtig)</span><span class="k-q__pts">4 Punkte</span></div>
+          <div class="k-q__text">Welche Aussagen sind richtig? Alle richtigen ankreuzen.</div>
+          <ul class="k-q__options">
+            <li data-correct><code>=</code> speichert einen Wert, <code>==</code> vergleicht zwei Werte.</li>
+            <li>Der Doppelpunkt hinter <code>if …</code> darf man weglassen, Python errät den Rest.</li>
+            <li data-correct>Welche Zeilen zu einem <code>if</code>-Zweig gehören, bestimmt die Einrückung.</li>
+            <li data-correct><code>150 &lt;= x &lt;= 210</code> ist in Python erlaubt und prüft, ob x im Bereich liegt.</li>
+            <li>Ein <code>elif</code> wird auch dann geprüft, wenn der <code>if</code>-Zweig schon gelaufen ist.</li>
+          </ul>
+          <div class="k-q__expl">Ohne Doppelpunkt gibt es einen <code>SyntaxError</code>. Ein <code>elif</code> wird nur geprüft, wenn alle Tests davor falsch waren. Die anderen drei Aussagen stimmen.</div>
+        </div>
+
+        <div class="k-q" data-type="mc" data-points="3" data-id="t6">
+          <div class="k-q__head"><span class="k-q__title">T6 · KI-Code freigeben?</span><span class="k-q__pts">3 Punkte</span></div>
+          <div class="k-q__text">Die Aufgabe lautet: „Der Hub wird nur freigegeben, wenn <em>beide</em> Taster gedrückt sind.“ Die KI liefert:<pre class="k-code" data-run="nach-antwort"><code>taster_links = True
+taster_rechts = False
+if taster_links or taster_rechts:
+    print("Hub freigegeben")
+else:
+    print("Hub gesperrt")</code></pre>Würdest du das freigeben?</div>
+          <ul class="k-q__options">
+            <li>Ja, das Programm läuft ohne Fehler.</li>
+            <li data-correct>Nein, <code>or</code> gibt den Hub schon mit einem Taster frei. Es muss <code>and</code> heißen, sonst kann die zweite Hand im Werkzeug liegen.</li>
+            <li>Nein, bei <code>if</code> muss <code>== True</code> stehen.</li>
+            <li>Nein, <code>True</code> und <code>False</code> müssen in Anführungszeichen stehen.</li>
+          </ul>
+          <div class="k-q__expl">Das Programm läuft fehlerfrei und gibt „Hub freigegeben“ aus: genau der gefährliche Fall. Ein <code>and</code> hätte „Hub gesperrt“ geliefert. Das <code>== True</code> ist unnötig, und <code>"True"</code> in Anführungszeichen wäre Text, kein Wahrheitswert.</div>
+        </div>
+
+        <div class="k-q" data-type="output" data-points="3" data-id="t7" data-answer="False True">
+          <div class="k-q__head"><span class="k-q__title">T7 · Priorität</span><span class="k-q__pts">3 Punkte</span></div>
+          <div class="k-q__text">Was gibt das Programm aus (eine Zeile)?<pre class="k-code" data-run="nach-antwort"><code>a = 7
+b = 3
+print(a &gt; b and not a == 7, a % 2 == 1 or b &gt; 5)</code></pre></div>
+          <div class="k-q__expl">Vergleiche werden zuerst ausgewertet. Erster Ausdruck: <code>a &gt; b</code> ist <code>True</code>, <code>not a == 7</code> ist <code>not True</code>, also <code>False</code>. <code>True and False</code> ergibt <code>False</code>. Zweiter Ausdruck: <code>7 % 2 == 1</code> ist <code>True</code>, damit ist das ODER wahr. Ausgabe: <code>False True</code>.</div>
+        </div>
+
+        <div class="k-q" data-type="mc" data-points="3" data-id="t8">
+          <div class="k-q__head"><span class="k-q__title">T8 · KI-Code freigeben?</span><span class="k-q__pts">3 Punkte</span></div>
+          <div class="k-q__text">Der Druck darf von 150 bis 210 bar reichen, <em>die Grenzwerte gehören dazu</em>. Die KI liefert (Eingabe: 150):<pre class="k-code" data-run="nach-antwort" data-stdin="150"><code>druck = float(input("Druck in bar: "))
+if 150 &lt; druck &lt; 210:
+    print("Druck ok")
+else:
+    print("Stopp")</code></pre>Würdest du das freigeben?</div>
+          <ul class="k-q__options">
+            <li>Ja, der Bereich 150 bis 210 ist richtig geschrieben.</li>
+            <li data-correct>Nein, bei genau 150 und 210 meldet das Programm „Stopp“. Es muss <code>150 &lt;= druck &lt;= 210</code> heißen.</li>
+            <li>Nein, ein Bereich wie <code>150 &lt; druck &lt; 210</code> ist in Python nicht erlaubt.</li>
+            <li>Nein, <code>float(input(…))</code> funktioniert nicht.</li>
+          </ul>
+          <div class="k-q__expl">Der verkettete Vergleich ist erlaubt, aber <code>&lt;</code> schließt die Grenzen aus. Bei der Eingabe 150 steht „Stopp“ da, obwohl 150 zulässig ist. Grenzwerte sind die klassische Stelle für Fehler: Teste sie immer ausdrücklich.</div>
+        </div>
+
+        <div class="k-score" data-score aria-live="polite"></div>
+      </div>
+
+        <h3>Code schreiben im Klausurstil</h3>
+        <p class="k-small k-muted">Wie in der Klausur: erst von Hand schreiben, ohne Ausführen und ohne Auto-Vervollständigung. Dann abgeben, die Tests laufen lassen und dich selbst nach dem Punkteschema bewerten. Richtzeit 10 Minuten.</p>
+      <div class="a-task" data-a="klausur" data-id="sc-klausur" data-mode="programm" data-minutes="10">
+        <div class="a-task__head"><span class="a-task__title">T9 · Druckbehälter-Ampel</span><span class="a-pts">6 Punkte</span></div>
+        <div class="a-task__text">
+          <p>Ein Druckbehälter wird überwacht. Schreibe ein Programm, das den Druck <em>p</em> in bar als Kommazahl einliest und eine Zeile mit dem Status ausgibt: unter 1.0 bar <em>Unterdruck</em>; von 1.0 bis 6.0 bar (Grenzen gehören dazu) <em>Normal</em>; über 6.0 bis 8.0 bar (8.0 gehört dazu) <em>Warnung</em>; darüber <em>Abschalten</em>.</p>
+          <div class="a-spec"><strong>Ausgabe genau so (Beispiel p = 6.0):</strong><pre data-run="no">Status: Normal</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V04" data-assist="off" aria-label="Python-Code von Hand schreiben, ohne Ausführen"></textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _soll(p):
+    if p < 1.0:
+        return "Unterdruck"
+    if p <= 6.0:
+        return "Normal"
+    if p <= 8.0:
+        return "Warnung"
+    return "Abschalten"
+
+def _pruefe(p):
+    z = zeilen(run_program([str(p)]))
+    s = "Status: " + _soll(p)
+    assert s in z, "Bei p = %s wird die Zeile %r erwartet. Dein Programm gibt aus: %r" % (p, s, z)
+
+def test_normal():
+    """Normalbereich: p = 3.5 bar"""
+    _pruefe(3.5)
+
+def test_unter():
+    """Unterdruck: p = 0.5 bar"""
+    _pruefe(0.5)
+
+def test_grenzen_unten():
+    """Grenze 1.0 bar gehört zu Normal"""
+    _pruefe(1.0)
+
+def test_grenze_6():
+    """Grenze 6.0 bar gehört zu Normal, 6.5 ist Warnung"""
+    _pruefe(6.0); _pruefe(6.5)
+
+def test_grenze_8():
+    """Grenze 8.0 bar gehört zu Warnung, 8.1 ist Abschalten"""
+    _pruefe(8.0); _pruefe(8.1)
+        </script>
+        <script type="text/x-python" data-role="solution">
+p = float(input("Druck p in bar: "))
+
+if p < 1.0:
+    status = "Unterdruck"
+elif p <= 6.0:
+    status = "Normal"
+elif p <= 8.0:
+    status = "Warnung"
+else:
+    status = "Abschalten"
+
+print(f"Status: {status}")
+        </script>
+        <script type="application/json" data-role="scheme">[
+{"p":1,"t":"p wird mit input() eingelesen und in float umgewandelt"},
+{"p":1,"t":"Verzweigung mit if / elif / else, jeweils mit Doppelpunkt und eingerücktem Block"},
+{"p":1,"t":"Unterdruck: Bedingung p < 1.0"},
+{"p":1,"t":"Normal: Grenzen 1.0 und 6.0 gehören dazu (<= oder verkettet 1.0 <= p <= 6.0)"},
+{"p":1,"t":"Warnung bis einschließlich 8.0, danach else für Abschalten (Reihenfolge der Zweige stimmt)"},
+{"p":1,"t":"Ausgabe im Format „Status: …“ mit dem richtigen Text"}
+]</script>
+      </div>
+      </section>
+
+      <!-- 5 ───────────── DEEP DIVE ───────────── -->
+      <section class="k-section" id="deepdive" data-section="deepdive" aria-labelledby="h-dd">
+        <h2 class="k-section__title" id="h-dd"><span class="k-section__num" aria-hidden="true">5</span> Deep Dive <span class="k-muted">(freiwillig)</span></h2>
+
+        <p>Für Neugierige. Nichts davon kommt in der Klausur dran.</p>
+
+      <details class="k-deep">
+        <summary>Kurzschluss-Auswertung: Python hört auf, sobald das Ergebnis feststeht</summary>
+        <div class="k-deep__body">
+          <p>Bei <code class="k-i">a and b</code> schaut Python nur dann auf <code class="k-i">b</code>, wenn <code class="k-i">a</code> wahr ist: Ist <code class="k-i">a</code> falsch, steht das Ergebnis schon fest. Bei <code class="k-i">or</code> ist es umgekehrt. Das nutzt man als Schutz: Die Division im Beispiel wird gar nicht erst versucht, wenn <code class="k-i">x</code> gleich 0 ist. Ohne die Vorprüfung gäbe es einen <code class="k-i">ZeroDivisionError</code>.</p>
+          <pre><code>x = 0
+print(x != 0 and 10 / x &gt; 2)
+x = 4
+print(x != 0 and 10 / x &gt; 2)</code></pre>
+          <p>Dazu: Python akzeptiert in einer Bedingung nicht nur <code class="k-i">True</code> und <code class="k-i">False</code>. Als „falsch“ gelten auch die Zahl 0, der leere Text <code class="k-i">""</code> und andere „leere“ Werte, alles andere als „wahr“. Das ist praktisch, aber tückisch: Der Text <code class="k-i">"n"</code> ist nicht leer, also „wahr“. Darum vergleichen wir eine Eingabe ausdrücklich: <code class="k-i">input(...) == "j"</code>.</p>
+          <pre><code>print(bool(0), bool(0.0), bool(""))
+print(bool(5), bool("n"), bool("False"))</code></pre>
+        </div>
+      </details>
+
+      <details class="k-deep">
+        <summary>XOR und NAND: zwei weitere Verknüpfungen</summary>
+        <div class="k-deep__body">
+          <p><strong>XOR</strong> (exklusives ODER, „entweder … oder“) ist wahr, wenn genau ein Teil wahr ist. Bei zwei Wahrheitswerten ist das dasselbe wie „ungleich“. Mit Bits (V02) schreibt Python XOR als <code class="k-i">^</code>. <strong>NAND</strong> (NICHT-UND) ist <code class="k-i">not (a and b)</code>. Spannend: Aus NAND-Gattern allein lässt sich jede andere Verknüpfung bauen. Deshalb bestehen Prozessoren im Kern aus Millionen solcher Gatter.</p>
+          <pre><code>a = True
+b = True
+print("XOR:", a != b)
+print("XOR mit ^:", a ^ b)
+print("NAND:", not (a and b))
+print("NICHT a als NAND:", not (a and a))</code></pre>
+        </div>
+      </details>
+
+      <details class="k-deep">
+        <summary>Zweihandschaltung in der Praxis: mehr als zwei Kontakte</summary>
+        <div class="k-deep__body">
+          <p>Eine echte Zweihandschaltung prüft mehr als „beide gedrückt“. Die Norm für Zweihandschaltungen (EN ISO 13851) verlangt unter anderem, dass beide Taster innerhalb einer kurzen Zeit (rund einer halben Sekunde) betätigt werden, dass ein Taster allein oder ein Festbinden eines Tasters nichts auslöst und dass der Hub endet, sobald ein Taster losgelassen wird. Die Taster sind zweikanalig aufgebaut, und ein sicherheitsgerichtetes Relais oder eine Sicherheits-SPS wertet sie aus, weil ein einzelner Defekt (zum Beispiel ein verschweißter Kontakt) nicht zum Hub führen darf. Das Python-Programm im Labor bildet nur die <em>Logik</em> ab, es ersetzt keine Sicherheitssteuerung.</p>
+        </div>
+      </details>
+      </section>
+
+      <!-- Videos zur Nachbereitung -->
+      <section class="k-section" id="videos" aria-labelledby="h-videos">
+        <h2 class="k-section__title" id="h-videos">Videos zur Nachbereitung</h2>
+        <p>Alle drei Erklärvideos zu V04 zum Wiederholen, jeweils mit deutschen Untertiteln.</p>
+        <ul class="k-video-list">
+          <li><a href="#video-theorie">Boolesche Logik und Verzweigungen erklärt</a> <span class="k-muted">(ca. 3 Min, Theorie, Abschnitt 2 dieser Lerneinheit)</span></li>
+          <li><a href="v04-labor.html#a-werkzeugkasten">Python-Werkstatt: bool, Vergleiche, and/or/not, if/elif/else</a> <span class="k-muted">(ca. 3 Min, im Labor bei „Werkzeugkasten“)</span></li>
+          <li><a href="v04-labor.html#a-vorgemacht">Vorgerechnet: die Zweihandschaltung Schritt für Schritt</a> <span class="k-muted">(ca. 3 Min, im Labor bei „Vorgerechnetes Beispiel“)</span></li>
+        </ul>
+      </section>
+
+      <!-- Übergang -->
+      <section class="k-next" aria-labelledby="h-next">
+        <h2 id="h-next">Wie geht es weiter?</h2>
+        <p>Verstanden ist noch nicht geschrieben. Im Programmierlabor tippst du den Code selbst: erst mit Hilfen (Werkzeugkasten, Beispiel, Lückencode), dann allein. Zu Hause folgt das Training mit acht automatisch geprüften Aufgaben (ca. 60 Min).</p>
+        <p><a class="k-btn" href="v04-labor.html">Weiter ins Programmierlabor →</a></p>
+      </section>
+
+      <!-- Für Dozierende -->
+      <section class="k-section k-section--dozent" aria-labelledby="h-doz">
+        <h2 id="h-doz" class="k-sr">Für Dozierende</h2>
+      <details class="k-dozent">
+        <summary>Für Dozierende: Ablaufplan 135 Minuten Präsenz + 60 Minuten zu Hause</summary>
+        <div class="k-dozent__body">
+          <p class="k-small k-muted">Ein Termin besteht aus zwei Seiten: dieser <strong>Lerneinheit</strong> (verstehen) und dem <a href="v04-labor.html">Programmierlabor</a> (selbst programmieren). Die Tabelle sagt, wo welche Phase stattfindet.</p>
+          <div class="k-tablewrap"><table class="k-plan">
+            <thead><tr><th scope="col">Minuten</th><th scope="col">Wo</th><th scope="col">Was zu tun ist</th></tr></thead>
+            <tbody>
+              <tr><td>0–10</td><td>Lerneinheit 3<br>Ausprobieren</td><td><strong>Warm-up mit Wiederholung V03.</strong> Vorhersagequiz per Handzeichen: <code>0.1 + 0.2 == 0.3</code>? <code>int(3.9)</code>? <code>f"{2.5:.2f}"</code>? Jeweils erst abstimmen, dann im Runner ausführen. Überleitung: „Und was, wenn ich 0.1 + 0.2 <em>kleiner oder gleich</em> 0.3 frage?“ (Block „Rückgriff auf V03“).</td></tr>
+              <tr><td>10–35</td><td>Lerneinheit 1 und 2<br>Warum, Theorie</td><td><strong>Informatik-Theorie mit Explorables.</strong> Hook: Zweihandschaltung, Frage in den Raum „Reicht ein Taster?“. Logik-Baukasten live: erst „alles UND“ (Lampe nur bei vier Schaltern), dann „Taster mit ODER“ und die gefährlichen Zeilen suchen lassen. De-Morgan-Prüfer (Sperre formulieren). Kontaktplan kurz zeigen (Reihe = UND). Weichen-Animation: „Tür offen, 230 bar“, vorher raten lassen, welche Meldung kommt. Ampel-Diskussion: Karten „UND/ODER erklären“, „De Morgan“, „Wahrheitstabelle mit 16 Zeilen füllen“ den drei Stufen zuordnen.</td></tr>
+              <tr><td>35–80</td><td>Labor Teil A<br>Aufgaben 1 bis 6</td><td><strong>Python-Werkstatt, Teil 1 (ca. 45 Min).</strong> Werkzeugkasten kurz überfliegen (5), Zweihandschaltung vormachen und Zeile für Zeile erklären, zweiter Lauf mit Tür offen und 230 bar (10), Ablauf verfolgen allein, dann Auflösung (5), beide Parsons in Paaren (8, Einrückung!), Lückencode (7), Hydraulikdruck-Ampel als erste eigene Aufgabe (10). Rundgang; typische Fehler: <code>=</code> statt <code>==</code>, Doppelpunkt vergessen, Einrückung, Text mit Zahl vergleichen.</td></tr>
+              <tr><td>80–90</td><td>–</td><td><strong>Pause.</strong> Runner vorab einmal ausführen lassen (lädt ca. 10 MB von jsDelivr; im Hörsaal-WLAN sonst zäh).</td></tr>
+              <tr><td>90–120</td><td>Labor Teil A<br>Aufgaben 7 und 8</td><td><strong>Python-Werkstatt, Teil 2.</strong> Code-Review (KI-Spiegel) gemeinsam am Beamer: Studierende markieren in Paaren, Auflösung, Original-Code ausführen (falsche Freigabe, dann TypeError), korrigierte Version (20). Danach die vier typischen Fehlermeldungen ausführen und lesen lassen (5). Reserve (5): Lerneinheit, Abschnitt 3 „Ausprobieren“.</td></tr>
+              <tr><td>120–135</td><td>Lerneinheit 4<br>Selbstcheck</td><td><strong>Selbstcheck, Exit-Ticket, Auftrag.</strong> Exit-Ticket: Quiz T1, T3, T6 (je 1 Min. tippen, dann auflösen). T9 (Code schreiben) als Hausaufgabe oder auf Papier. Auftrag: Labor Teil B, Fälligkeit bis zum nächsten Termin. Deep-Dive-Teaser: Kurzschluss-Auswertung, XOR/NAND, Zweihandschaltung nach Norm. Ausblick V05: Struktogramm und verschachtelte Verzweigungen.</td></tr>
+              <tr><td>zu Hause (ca. 60)</td><td>Labor Teil B<br>Aufgaben 1 bis 8</td><td><strong>Training.</strong> Acht Code-Aufgaben mit automatischen Tests, darunter Wiederholungsaufgabe zu V03 (Typumwandlung, f-String) und Klausur-Modus (ca. 50 Min). Danach nach Wahl: Notebook, Deep Dive. Der Fortschritt bleibt im Browser der Studierenden; er ist für dich nicht einsehbar, also bei Bedarf zu Beginn des nächsten Termins abfragen.</td></tr>
+            </tbody>
+          </table></div>
+          <p class="k-small k-muted">Material: Beamer, Handzeichen-Karten, stabiles WLAN. Das Notebook (Codespaces) ist Vertiefung im Training, nicht Pflicht in der Präsenzzeit.</p>
+        </div>
+      </details>
+      </section>
+
+    </main>
+  </div>
+
+  <footer class="dhbw-footer k-footer">
+    <div class="dhbw-footer__inner">
+      <span><span class="dhbw-footer__brand">DHBW Stuttgart</span> · Campus Horb</span>
+      <span><a href="../index.html">Zurück zum Lernpfad</a> · V04 Boolesche Logik &amp; Verzweigungen · Lerneinheit</span>
+    </div>
+  </footer>
+
+  <script src="../assets/js/icons.js"></script>
+  <script src="../assets/js/editor.js" defer></script>
+  <script src="../assets/js/explorables-v04.js"></script>
+  <script src="../assets/js/kurs.js"></script>
+  <script src="../assets/js/aufgaben.js"></script>
+</body>
+</html>

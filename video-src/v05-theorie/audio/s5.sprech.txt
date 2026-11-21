@@ -1,0 +1,1 @@
+Bei mehr als zwei Fällen nimmst du die Mehrfachauswahl: eine Frage, mehrere Spalten, genau eine läuft. Beispiel Spannung: bis hundertvierzig Megapascal S zweihundertfünfunddreißig J R, bis zweihundertzwanzig Megapascal C fünfundvierzig E, sonst zweiundvierzig C R M O vier. Die Schleife folgt später: Ein Rahmen wiederholt seinen Inhalt, solange die Bedingung gilt.

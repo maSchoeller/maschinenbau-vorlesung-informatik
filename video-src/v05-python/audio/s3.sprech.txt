@@ -1,0 +1,1 @@
+Steckt im nein-Zweig eine weitere Verzweigung, steckt im Code ein if im else. Jede Ebene im Struktogramm ergibt eine Einrückebene mehr. Das else steht genau unter seinem if, sonst gehört es zu einem anderen Block. Zähle die Ebenen im Struktogramm, dann stimmt auch die Einrückung im Code.

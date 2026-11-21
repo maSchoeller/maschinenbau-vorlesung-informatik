@@ -1,0 +1,121 @@
+WEBVTT
+
+1
+00:00:00.400 --> 00:00:04.334
+In Python gibt es einen eigenen Datentyp für Wahrheitswerte: bool.
+
+2
+00:00:04.603 --> 00:00:10.151
+Er hat genau zwei Werte, True und False, beide mit großem Anfangsbuchstaben.
+
+3
+00:00:11.072 --> 00:00:18.217
+Meist entsteht ein bool durch einen Vergleich: druck > 150 ist bei einem Druck von 180 wahr.
+
+4
+00:00:18.655 --> 00:00:22.930
+Mit type() siehst du: Das Ergebnis ist ein bool, kein Text.
+
+5
+00:00:23.830 --> 00:00:31.321
+Python kennt sechs Vergleichsoperatoren: gleich, ungleich, kleiner, größer, kleiner gleich und größer gleich.
+
+6
+00:00:31.643 --> 00:00:38.832
+Beachte das doppelte Gleichheitszeichen: Ein einzelnes steht für die Zuweisung, ein doppeltes für den Vergleich.
+
+7
+00:00:40.681 --> 00:00:50.005
+druck = 180 legt den Wert fest, druck == 180 fragt, ob er gleich 180 ist.
+
+8
+00:00:51.226 --> 00:00:54.760
+Ungleich schreibst du mit Ausrufezeichen und Gleichheitszeichen.
+
+9
+00:00:55.660 --> 00:01:01.600
+Mehrere Bedingungen verknüpfst du mit and, or und not: und, oder, nicht.
+
+10
+00:01:02.609 --> 00:01:09.712
+and ist wahr, wenn beide Seiten wahr sind, or, wenn eine genügt, und not kehrt den Wert um.
+
+11
+00:01:10.767 --> 00:01:21.815
+Einen Bereich schreibst du so: 150 <= druck <= 210 prüft, ob der Druck zwischen 150 und 210 liegt.
+
+12
+00:01:22.019 --> 00:01:30.551
+Das ist dasselbe wie druck >= 150 and druck <= 210, nur kürzer.
+
+13
+00:01:31.273 --> 00:01:36.670
+Es gilt: not vor and vor or; im Zweifel setzt du Klammern.
+
+14
+00:01:37.570 --> 00:01:43.199
+Mit if entscheidet das Programm: Nur wenn die Bedingung wahr ist, läuft der eingerückte Block darunter.
+
+15
+00:01:44.200 --> 00:01:50.085
+Mit elif, kurz für else if, folgt eine weitere Prüfung, aber nur, wenn die erste falsch war.
+
+16
+00:01:50.885 --> 00:01:54.419
+else fängt alles ab, was übrig bleibt, und braucht keine Bedingung.
+
+17
+00:01:56.080 --> 00:02:01.782
+Bei einem Druck von 180 sind die ersten beiden Bedingungen falsch, also läuft der Block unter else.
+
+18
+00:02:02.774 --> 00:02:05.460
+Es läuft nur der erste Zweig mit wahrer Bedingung.
+
+19
+00:02:06.360 --> 00:02:11.104
+Zwei Dinge sind Pflicht: der Doppelpunkt am Zeilenende und die Einrückung.
+
+20
+00:02:11.424 --> 00:02:20.449
+Der Doppelpunkt sagt Python: Jetzt folgt ein Block. Die Einrückung, üblich sind vier Leerzeichen, sagt, welche Zeilen dazugehören.
+
+21
+00:02:21.419 --> 00:02:27.210
+Anders als in vielen anderen Sprachen gibt es keine geschweiften Klammern: Die Einrückung ist die Struktur.
+
+22
+00:02:28.110 --> 00:02:35.908
+Jetzt die häufigsten Fehler. Erstens: ein einzelnes Gleichheitszeichen in der Bedingung. Python meldet einen SyntaxError.
+
+23
+00:02:36.631 --> 00:02:40.691
+Zweitens: der vergessene Doppelpunkt, wieder ein SyntaxError.
+
+24
+00:02:41.587 --> 00:02:45.385
+Drittens: fehlt die Einrückung, kommt ein IndentationError.
+
+25
+00:02:46.105 --> 00:02:51.040
+Lies eine Fehlermeldung immer von unten: Die letzte Zeile nennt Art und Ursache.
+
+26
+00:02:51.940 --> 00:02:58.847
+Zum Schluss eine Falle aus der letzten Lektion: Vergleiche Kommazahlen nie mit ==.
+
+27
+00:02:59.145 --> 00:03:07.875
+0.1 + 0.2 == 0.3 ergibt False, weil Floats nur angenähert gespeichert werden.
+
+28
+00:03:08.539 --> 00:03:16.376
+Nimm stattdessen math.isclose nach import math: Das vergleicht mit einer kleinen Toleranz und liefert True.
+
+29
+00:03:17.287 --> 00:03:20.672
+Prüfe Messwerte also mit Toleranz oder mit Bereichen.
+
+30
+00:03:21.198 --> 00:03:22.870
+Probier alles selbst aus!

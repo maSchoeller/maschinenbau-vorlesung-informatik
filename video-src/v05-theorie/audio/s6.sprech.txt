@@ -1,0 +1,1 @@
+Vielleicht kennst du den Programmablaufplan, kurz P A P, mit Rauten und Pfeilen. Dort zeigen Pfeile den Fluss, das Struktogramm kennt keine Sprünge, nur Verschachtelung. Darum lässt sich ein Struktogramm fast eins zu eins in Code übersetzen. Merke: erst analysieren, dann das Struktogramm, dann der Code, von dir oder von der K I.

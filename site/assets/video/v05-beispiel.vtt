@@ -1,0 +1,105 @@
+WEBVTT
+
+1
+00:00:00.400 --> 00:00:07.376
+Die Aufgabe: ein Werkstoff für eine Welle, aus Spannung in MPa und Temperatur in °C.
+
+2
+00:00:08.260 --> 00:00:13.265
+Wichtig vorab: Das ist eine vereinfachte Lehr-Regel, keine Normauslegung.
+
+3
+00:00:14.001 --> 00:00:21.880
+Unsere Regel: Heiß braucht warmfesten Stahl, sonst entscheidet die Spannung, und Unsinn wird abgewiesen.
+
+4
+00:00:22.883 --> 00:00:26.690
+Wir zeichnen zuerst das Struktogramm und gehen dann den Code durch.
+
+5
+00:00:27.590 --> 00:00:31.205
+Zuerst zwei Eingaben: Spannung und Temperatur.
+
+6
+00:00:31.055 --> 00:00:37.985
+Dann die Plausibilitätsprüfung: Nur mögliche Werte kommen durch, sonst folgt eine Meldung.
+
+7
+00:00:37.835 --> 00:00:48.306
+Sonst: Über 300 °C ein warmfester Stahl, bis 200 MPa der 16Mo3, darüber ein Sonderwerkstoff.
+
+8
+00:00:48.156 --> 00:01:01.112
+Bei höchstens 300 °C wählt eine Mehrfachauswahl nach der Spannung: S235JR, C45E oder 42CrMo4.
+
+9
+00:01:00.962 --> 00:01:02.920
+Zum Schluss die Ausgabe.
+
+10
+00:01:03.820 --> 00:01:07.654
+Jetzt der Code: Die Zeilen 1 bis 3 sind Kommentare.
+
+11
+00:01:08.065 --> 00:01:14.910
+Die Zeilen 5 und 6 sind die Eingaben: input liest Text, float macht eine Kommazahl daraus.
+
+12
+00:01:15.810 --> 00:01:21.981
+Zeile 8 ist die erste Verzweigung: or verknüpft drei Bedingungen, eine wahre genügt.
+
+13
+00:01:22.635 --> 00:01:25.570
+Zeile 9 ist die Meldung: der ja-Zweig.
+
+14
+00:01:26.417 --> 00:01:33.620
+Mit else in Zeile 10 beginnt der nein-Zweig: Alles Eingerückte läuft nur bei plausiblen Eingaben.
+
+15
+00:01:34.520 --> 00:01:40.359
+Zeile 11 fragt nach über 300 °C und ist eingerückt, weil sie im nein-Zweig steckt.
+
+16
+00:01:41.690 --> 00:01:51.530
+Bei ja prüft Zeile 12 die Spannung: bis 200 MPa 16Mo3 in Zeile 13, sonst ein Sonderwerkstoff.
+
+17
+00:01:52.430 --> 00:01:57.482
+Das else in Zeile 16 gehört zu Zeile 11: bis 300 °C.
+
+18
+00:01:58.344 --> 00:02:14.146
+Eine Kette aus if, elif und else prüft die Spannung: bis 140 S235JR, bis 220 C45E, sonst 42CrMo4.
+
+19
+00:02:15.172 --> 00:02:19.920
+elif heißt: sonst, wenn. So entsteht die Mehrfachauswahl.
+
+20
+00:02:20.820 --> 00:02:24.983
+Zeile 23 gibt den Werkstoff aus, eingerückt wie im Struktogramm.
+
+21
+00:02:26.107 --> 00:02:32.750
+Probelauf eins: 180 MPa bei 20 °C ergibt C45E.
+
+22
+00:02:33.740 --> 00:02:42.470
+Probelauf zwei: 250 MPa bei 20 °C ergibt 42CrMo4, vergütet.
+
+23
+00:02:43.370 --> 00:02:52.683
+Probelauf drei: 150 MPa bei 400 °C ergibt 16Mo3, warmfest.
+
+24
+00:02:52.533 --> 00:02:58.821
+Probelauf vier: -5 MPa. Unmöglich, also nur die Meldung.
+
+25
+00:02:58.671 --> 00:03:02.106
+Vier Läufe, vier Wege, vier Testfälle.
+
+26
+00:03:01.956 --> 00:03:06.860
+Nochmals: vereinfachte Lehr-Regel, keine Normauslegung.

@@ -1,0 +1,1 @@
+Die Verzweigung stellt eine Frage und teilt den Ablauf in zwei Wege. Die Bedingung steht im Dreieck, links der Weg für ja, rechts der für nein. Genau ein Zweig wird ausgeführt, nie beide. Beispiel: Über dreihundert Grad Celsius ein warmfester Stahl, sonst ein normaler.

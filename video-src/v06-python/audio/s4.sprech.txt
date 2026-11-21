@@ -1,0 +1,1 @@
+break bricht die Schleife sofort ab, continue springt gleich zum nächsten Durchlauf. Im Beispiel zählt i von eins bis sieben. Bei drei überspringt continue den Rest des Blocks, die drei wird also nicht ausgegeben. Bei sechs beendet break die ganze Schleife, die sieben kommt gar nicht mehr dran. Ausgegeben werden nur eins, zwei, vier und fünf.

@@ -1,0 +1,1 @@
+Zwei Dinge sind Pflicht: der Doppelpunkt am Zeilenende und die Einrückung. Der Doppelpunkt sagt Python: Jetzt folgt ein Block. Die Einrückung, üblich sind vier Leerzeichen, sagt, welche Zeilen dazugehören. Anders als in vielen anderen Sprachen gibt es keine geschweiften Klammern: Die Einrückung ist die Struktur.

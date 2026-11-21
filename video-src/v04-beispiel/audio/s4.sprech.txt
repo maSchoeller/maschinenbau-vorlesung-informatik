@@ -1,0 +1,1 @@
+Die Zeilen dreizehn und vierzehn geben Zwischenergebnisse aus. print mit einem Komma zeigt erst den Text und dann den Wahrheitswert, getrennt durch ein Leerzeichen.

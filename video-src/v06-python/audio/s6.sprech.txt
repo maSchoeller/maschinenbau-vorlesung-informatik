@@ -1,0 +1,1 @@
+Wann nimmst du was? Steht die Anzahl der Durchläufe fest, nimmst du for mit range. Hängt das Ende von einer Bedingung ab, wie bei der Abkühlung, nimmst du while. Bei jeder Schleife prüfst du drei Dinge: den Startwert, die Bedingung und die Änderung im Block. Und bei range denkst du daran: Der Stoppwert gehört nicht mehr dazu. Probier alles selbst aus!

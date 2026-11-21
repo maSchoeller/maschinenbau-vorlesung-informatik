@@ -1,0 +1,1 @@
+Ein Struktogramm besteht aus wenigen Bausteinen, entwickelt von Nassi und Schneiderman. Die Anweisung ist ein Rechteck mit genau einem Schritt, zum Beispiel: Spannung einlesen. Mehrere Anweisungen untereinander bilden eine Sequenz: Sie laufen von oben nach unten ab.

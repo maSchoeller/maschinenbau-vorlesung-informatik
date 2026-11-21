@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>V06 Programmierlabor · Informatik Maschinenbau</title>
+  <meta name="description" content="Programmierlabor V06: Arbeitsumgebung mit Aufgabenliste, Editor und Befehls-Bibliothek. Teil A im Labor, Teil B Training zu Hause.">
+  <link rel="stylesheet" href="../assets/css/dhbw-base.css">
+  <link rel="stylesheet" href="../assets/css/kurs.css">
+  <link rel="stylesheet" href="../assets/css/aufgaben.css">
+  <link rel="stylesheet" href="../assets/css/editor.css">
+  <link rel="stylesheet" href="../assets/css/labor.css">
+</head>
+<body data-lesson="V06" data-page="labor">
+  <a class="k-skip" href="#inhalt">Zum Inhalt springen</a>
+
+  <header class="dhbw-header k-header">
+    <div class="dhbw-header__inner">
+      <a class="k-logo" href="../index.html" aria-label="Zur Startseite">
+        <span class="k-logo__mark" aria-hidden="true">DHBW</span>
+        <span class="k-logo__text">Informatik Maschinenbau<small>Campus Horb · 2026/27</small></span>
+      </a>
+      <nav class="k-nav" aria-label="Hauptnavigation">
+        <a href="../index.html">Start</a>
+        <a href="../index.html#lernpfad">Lernpfad</a>
+        <a href="../bibliothek.html">Bibliothek</a>
+        <a href="v06-schleifen.html">V06 Lerneinheit</a>
+        <a href="v06-labor.html" aria-current="page">V06 Labor</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="lab" data-lab>
+
+    <nav class="lab__list" aria-label="Aufgabenliste">
+      <div class="lab__listhead">
+        <p class="lab__title">Programmierlabor V06</p>
+        <a class="lab__back" href="v06-schleifen.html">← Lerneinheit</a>
+      </div>
+      <div class="a-progress" data-a-progress>
+        <span class="a-progress__bar"><span class="a-progress__fill"></span></span>
+        <span class="a-progress__text">0 von 14 Aufgaben gelöst</span>
+      </div>
+      <p class="lab__legend k-small k-muted"><span><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-circle"/></svg> offen</span><span><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-half"/></svg> begonnen</span><span><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-done"/></svg> gelöst</span></p>
+      <div data-lab-items></div>
+    </nav>
+
+    <main id="inhalt" class="lab__main" tabindex="-1">
+      <div class="lab__bar">
+        <div class="lab__select">
+          <label for="lab-select">Aufgabe</label>
+          <select id="lab-select"></select>
+        </div>
+        <button type="button" class="k-btn k-btn--ghost k-btn--small" id="lab-toolbox-btn" aria-expanded="false" aria-controls="lab-drawer">Werkzeugkasten</button>
+      </div>
+      <section class="lab__drawer" id="lab-drawer" aria-label="Werkzeugkasten" hidden></section>
+
+    <section class="l-task" id="a-werkzeugkasten" data-title="Werkzeugkasten" data-part="A" data-stars="" data-min="5" data-extra="" aria-labelledby="h-a-werkzeugkasten" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-werkzeugkasten" tabindex="-1">Werkzeugkasten</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Heute neu in Python: <abbr class="k-begriff" data-erklaerung="Eine Schleife wiederholt einen Teil des Programms, entweder solange eine Bedingung gilt oder eine bestimmte Anzahl von Malen, wie ein Bohrer, der Span für Span tiefer geht."><strong>Schleifen</strong></abbr> mit <abbr class="k-begriff" data-erklaerung="while heißt „solange“: Der eingerückte Block darunter wird wiederholt, solange die Bedingung wahr ist."><code class="k-i">while</code></abbr> und <abbr class="k-begriff" data-erklaerung="for ... in range(...) wiederholt einen Block für eine festgelegte Zahlenfolge, zum Beispiel für die Minuten 1 bis 5."><code class="k-i">for</code></abbr> mit <abbr class="k-begriff" data-erklaerung="range(start, stop, step) erzeugt eine Zahlenfolge. Der Endwert stop gehört nicht mehr dazu: range(1, 5) liefert 1, 2, 3, 4."><code class="k-i">range</code></abbr>, die Befehle <abbr class="k-begriff" data-erklaerung="break beendet die Schleife sofort, continue überspringt den Rest des aktuellen Durchlaufs und macht beim nächsten weiter."><code class="k-i">break</code></abbr> und <code class="k-i">continue</code> sowie die Muster <abbr class="k-begriff" data-erklaerung="Ein Zähler ist eine Variable, die in jedem Durchlauf um 1 erhöht wird und so die Durchläufe mitzählt.">Zähler</abbr>, Summe, Mittelwert und Maximum. Aus V04 und V05 setzen wir <code class="k-i">if</code>/<code class="k-i">elif</code>/<code class="k-i">else</code>, Vergleiche, <code class="k-i">and</code>/<code class="k-i">or</code>/<code class="k-i">not</code>, die <abbr class="k-begriff" data-erklaerung="Einrückung heißt: Zeilen, die zu einem Block gehören, beginnen weiter rechts (4 Leerzeichen). Python erkennt daran, was zur Schleife oder zum if gehört.">Einrückung</abbr> und das Struktogramm voraus, aus V01 bis V03 <code class="k-i">print</code>, Variablen, <code class="k-i">input</code>, <code class="k-i">int</code> und <code class="k-i">float</code>, f-Strings mit Format sowie Rechenzeichen. Listen und eigene Funktionen gibt es noch nicht, die kommen in V07 und V08. Die Klausur verlangt, dass du Code von Hand schreibst. Darum gehen wir in kleinen Schritten vom Vormachen zum Selberschreiben, und die Hilfen werden dabei weniger.</p>
+      <figure class="k-video">
+        <video controls preload="metadata" poster="../assets/video/v06-python-poster.png" aria-label="Python-Werkstatt: while, for, range, break und continue (ca. 3 Min)">
+          <source src="../assets/video/v06-python.mp4" type="video/mp4">
+          <track kind="subtitles" srclang="de" label="Deutsch" src="../assets/video/v06-python.vtt" default>
+          Dein Browser kann dieses Video nicht abspielen.
+        </video>
+        <div class="k-video__missing" hidden>Video folgt. Bis dahin: Lies den Code unten Zeile für Zeile und probiere ihn aus.</div>
+        <figcaption>Python-Werkstatt: while, for, range, break und continue (ca. 3 Min). Untertitel sind eingeschaltet (Deutsch).</figcaption>
+      </figure>
+      <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke</strong><p>Diese sieben <abbr class="k-begriff" data-erklaerung="Die Syntax ist die Schreibweise einer Programmiersprache, wie die Grammatik einer Sprache: Reihenfolge, Klammern, Anführungszeichen. Ein Tippfehler dort heißt Syntaxfehler.">Syntax</abbr>-Karten sind dein Spickzettel, bis es sitzt. Du erreichst sie in jeder Aufgabe über den Knopf „Werkzeugkasten“ oben. Alle Befehle des Kurses stehen außerdem rechts in der Befehls-Bibliothek. Führe jede Karte aus und drück bei den Schleifen auf „Schritt für Schritt“: Dort siehst du, wie dieselben Zeilen mehrfach laufen.</p></div>
+      <div class="lab__toolbox" id="lab-toolbox">
+<div class="a-syntax-list">
+  <article class="a-syntax" aria-labelledby="sk-while">
+    <span class="a-syntax__label">Syntax-Karte 1</span>
+    <h4 id="sk-while">while: solange die Bedingung wahr ist</h4>
+<pre><code>zaehler = 0
+while zaehler &lt; 4:
+    print("Durchlauf", zaehler)
+    zaehler = zaehler + 1
+print("danach:", zaehler)</code></pre>
+    <ul>
+      <li>Nach der Bedingung steht ein <strong>Doppelpunkt</strong>. Der <abbr class="k-begriff" data-erklaerung="Der Rumpf ist der Teil der Schleife, der bei jedem Durchlauf abgearbeitet wird. In Python steht er eingerückt unter dem Schleifenkopf.">Rumpf</abbr> steht <strong>eingerückt</strong> (4 Leerzeichen). Was nicht mehr eingerückt ist, läuft erst nach der Schleife.</li>
+      <li>Die Bedingung wird <em>vor jedem</em> <abbr class="k-begriff" data-erklaerung="Ein Durchlauf (auch Iteration) ist ein einmaliges Abarbeiten des Schleifenrumpfs. Bei 5 Wiederholungen hat die Schleife 5 Durchläufe.">Durchlauf</abbr> geprüft. Probiere <code class="k-i">zaehler = 9</code> am Anfang: Der Rumpf läuft dann kein einziges Mal.</li>
+      <li>Im Rumpf muss sich etwas ändern, das die Bedingung irgendwann falsch macht. Sonst gibt es eine Endlosschleife (Karte 6).</li>
+      <li>Nach der Schleife steht <code class="k-i">zaehler</code> auf 4: dem ersten Wert, für den die Bedingung falsch ist.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-for">
+    <span class="a-syntax__label">Syntax-Karte 2</span>
+    <h4 id="sk-for">for und range: die Zählschleife</h4>
+<pre><code>for i in range(3):
+    print("A", i)          # 0, 1, 2
+for i in range(1, 4):
+    print("B", i)          # 1, 2, 3
+for i in range(10, 0, -4):
+    print("C", i)          # 10, 6, 2</code></pre>
+    <div class="k-tablewrap"><table>
+      <tbody>
+        <tr><td><code class="k-i">range(stop)</code></td><td>0 bis stop − 1</td></tr>
+        <tr><td><code class="k-i">range(start, stop)</code></td><td>start bis stop − 1</td></tr>
+        <tr><td><code class="k-i">range(start, stop, step)</code></td><td>jede step-te Zahl, rückwärts mit negativem step</td></tr>
+      </tbody>
+    </table></div>
+    <ul>
+      <li><strong>Der Endwert gehört nicht mehr dazu.</strong> <code class="k-i">range(1, 5)</code> liefert 1, 2, 3, 4. Für 1 bis n schreibst du <code class="k-i">range(1, n + 1)</code>.</li>
+      <li>Die Zahl der Durchläufe ist <code class="k-i">stop - start</code> (bei Schrittweite 1). Das ist deine Gegenprobe gegen den Fehler „eins daneben“.</li>
+      <li>Die Laufvariable (hier <code class="k-i">i</code>) setzt <code class="k-i">for</code> selbst. Du erhöhst sie nicht von Hand.</li>
+      <li><code class="k-i">range</code> braucht ganze Zahlen: <code class="k-i">range(2.5)</code> ist ein <code class="k-i">TypeError</code>.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-summe">
+    <span class="a-syntax__label">Syntax-Karte 3</span>
+    <h4 id="sk-summe">Summe und Mittelwert aufbauen</h4>
+<pre data-stdin="3&#10;20.5&#10;22&#10;21.5"><code>n = int(input("Anzahl: "))
+summe = 0.0
+for i in range(n):
+    wert = float(input(f"Wert {i + 1}: "))
+    summe = summe + wert
+print("Summe:", summe)
+print("Mittelwert:", summe / n)</code></pre>
+    <ul>
+      <li><strong>Vor</strong> der Schleife <code class="k-i">summe = 0.0</code> (<abbr class="k-begriff" data-erklaerung="Initialisieren heißt: einer Variablen vor der ersten Benutzung einen Startwert geben. Ohne Startwert kennt Python die Variable noch nicht und meldet einen NameError.">initialisieren</abbr>), <strong>im Rumpf</strong> aufaddieren, <strong>nach</strong> der Schleife auswerten. Die Variable, in der du aufsammelst, heißt <abbr class="k-begriff" data-erklaerung="Ein Akkumulator ist eine Variable, in die man bei jedem Durchlauf etwas dazugibt, zum Beispiel eine Summe. Er sammelt wie ein Zählwerk, das mitläuft.">Akkumulator</abbr>.</li>
+      <li>Der Mittelwert ist Summe durch Anzahl und wird erst <em>nach</em> der Schleife berechnet (nicht eingerückt).</li>
+      <li>Für ein Produkt startest du bei <code class="k-i">1</code>, nicht bei 0.</li>
+      <li>Kurzschreibweise: <code class="k-i">summe += wert</code> ist dasselbe wie <code class="k-i">summe = summe + wert</code> (ebenso <code class="k-i">-=</code>, <code class="k-i">*=</code>, <code class="k-i">/=</code>). In der Befehls-Bibliothek und in KI-Code siehst du sie oft. Probiere sie in dieser Karte aus.</li>
+      <li>Die Eingabefelder unter dem Code sind vorbelegt, probier andere Werte. Mit „Schritt für Schritt“ siehst du, wie <code class="k-i">summe</code> wächst.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-max">
+    <span class="a-syntax__label">Syntax-Karte 4</span>
+    <h4 id="sk-max">Maximum bestimmen (if in der Schleife)</h4>
+<pre data-stdin="4&#10;-5&#10;-2.5&#10;-8&#10;-3"><code>n = int(input("Anzahl: "))
+maximum = float(input("Wert 1: "))
+for i in range(2, n + 1):
+    wert = float(input(f"Wert {i}: "))
+    if wert &gt; maximum:
+        maximum = wert
+print("Maximum:", maximum)</code></pre>
+    <ul>
+      <li>Der Startwert ist der <em>erste Messwert</em>, nicht 0: Sonst gewinnt die 0 gegen lauter negative Werte (Probe: die Vorbelegung ist negativ). Die Schleife beginnt dann beim zweiten Wert.</li>
+      <li>Das <code class="k-i">if</code> steht <em>im</em> Rumpf (zwei Stufen eingerückt), die Zuweisung noch eine Stufe tiefer. Das kennst du aus V04, jetzt läuft es bei jedem Durchlauf.</li>
+      <li>Das Minimum geht genauso mit <code class="k-i">&lt;</code>.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-break">
+    <span class="a-syntax__label">Syntax-Karte 5</span>
+    <h4 id="sk-break">break, continue und die fußgesteuerte Schleife</h4>
+<pre><code>for i in range(1, 10):
+    if i % 2 == 0:
+        continue      # gerade Zahlen überspringen
+    if i &gt; 6:
+        break         # Schleife sofort beenden
+    print(i)
+print("Ende")</code></pre>
+<pre data-stdin="-3&#10;0&#10;5"><code>while True:
+    wert = float(input("Wert größer 0: "))
+    if wert &gt; 0:
+        break
+    print("Bitte größer als 0")
+print("OK:", wert)</code></pre>
+    <ul>
+      <li><code class="k-i">continue</code> überspringt den Rest des aktuellen Durchlaufs, die Schleife läuft mit dem nächsten Wert weiter. <code class="k-i">break</code> beendet die ganze Schleife.</li>
+      <li><code class="k-i">while True:</code> läuft endlos, bis ein <code class="k-i">break</code> sie beendet. So baust du die <strong>fußgesteuerte</strong> Schleife (Rumpf mindestens einmal, dann prüfen), die Python als eigenes Wort nicht hat. Die Bedingung am <code class="k-i">break</code> ist die <em>Umkehrung</em> der Bedingung von <code class="k-i">while</code>.</li>
+      <li>Nutze <code class="k-i">break</code> sparsam: Eine klare Schleifenbedingung ist meistens lesbarer.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-endlos">
+    <span class="a-syntax__label">Syntax-Karte 6</span>
+    <h4 id="sk-endlos">Endlosschleife vermeiden: Notausstieg und Toleranz</h4>
+<pre><code>x = 0.0
+versuche = 0
+while x &lt; 1.0 and versuche &lt; 100:
+    x = x + 0.1
+    versuche = versuche + 1
+print(versuche, x)</code></pre>
+    <ul>
+      <li>Die zweite Bedingung <code class="k-i">versuche &lt; 100</code> ist dein <abbr class="k-begriff" data-erklaerung="Ein Watchdog (Wachhund) ist ein Zeitwächter in einer Steuerung. Meldet sich das Programm nicht rechtzeitig, schlägt er Alarm und fährt die Anlage in einen sicheren Zustand.">Watchdog</abbr> im Kleinen: Spätestens nach 100 Durchläufen ist Schluss.</li>
+      <li>Bei Kommazahlen <strong>nie</strong> <code class="k-i">==</code> oder <code class="k-i">!=</code> in der Schleifenbedingung. Hier endet die Schleife mit <code class="k-i">&lt;</code>, aber nach <em>11</em> statt 10 Durchläufen: Zehnmal 0.1 ergibt 0.9999999999999999, das ist noch kleiner als 1.0 (V03). Willst du genau 10 Durchläufe, nimm <code class="k-i">for i in range(10)</code>.</li>
+      <li>Kommazahlen mit <abbr class="k-begriff" data-erklaerung="Die Toleranz ist der Bereich, um den ein Wert abweichen darf und trotzdem als „passt“ gilt, wie in der Zeichnung. Für Kommazahlen legst du ihn selbst fest.">Toleranz</abbr> abfragen: <code class="k-i">while abs(x - ziel) &gt; 1e-9:</code>.</li>
+      <li>Der Python-Runner hier im Browser bricht jedes Programm nach einigen Sekunden ab. Das siehst du bei „Typische Fehlermeldungen“.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-nest">
+    <span class="a-syntax__label">Syntax-Karte 7</span>
+    <h4 id="sk-nest">Verschachtelte Schleife: eine Tabelle</h4>
+<pre><code>import math
+
+for d in range(20, 41, 10):
+    for n in range(500, 1501, 500):
+        vc = math.pi * d * n / 1000
+        print(f"d = {d} mm, n = {n} 1/min: vc = {vc:.2f} m/min")</code></pre>
+    <ul>
+      <li>Die <strong>innere</strong> Schleife läuft bei <em>jedem</em> Durchlauf der äußeren komplett durch: 3 mal 3 = 9 Zeilen. Jede Ebene ist eine Stufe weiter eingerückt.</li>
+      <li>Wir nutzen im Kurs nur diese eine Verschachtelung (eine Schleife in einer Schleife) für Tabellen.</li>
+      <li>Die äußere Schleife ändert sich langsam (Durchmesser), die innere schnell (Drehzahl).</li>
+    </ul>
+  </article>
+</div>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-vorgemacht" data-title="Vorgerechnetes Beispiel: Abkühlung nach dem Härten" data-part="A" data-stars="" data-min="10" data-extra="" aria-labelledby="h-a-vorgemacht" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-vorgemacht" tabindex="-1">Vorgerechnetes Beispiel: Abkühlung nach dem Härten</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Aufgabe: Ein gehärtetes Werkstück kommt mit 850 °C aus dem Ofen. Nach dem Newtonschen Abkühlungsgesetz verliert es pro Minute den Anteil <code class="k-i">k</code> seines Abstands zur Hallentemperatur. Das <abbr class="k-begriff" data-erklaerung="Ein Programm ist eine Liste von Anweisungen, die Python von oben nach unten Zeile für Zeile abarbeitet.">Programm</abbr> bestimmt, nach wie vielen Minuten es unter 60 °C liegt, und gibt dann für die ersten fünf Minuten eine kleine Tabelle mit Mittelwert aus. Lies den Code Zeile für Zeile, dann führe ihn aus. Drück danach auf „Schritt für Schritt“ und beobachte, wie sich <code class="k-i">temperatur</code> und <code class="k-i">minuten</code> bei jedem Durchlauf ändern.</p>
+      <figure class="k-video">
+        <video controls preload="metadata" poster="../assets/video/v06-beispiel-poster.png" aria-label="Vorgerechnet: die Abkühlung nach dem Härten Schritt für Schritt (ca. 3 Min)">
+          <source src="../assets/video/v06-beispiel.mp4" type="video/mp4">
+          <track kind="subtitles" srclang="de" label="Deutsch" src="../assets/video/v06-beispiel.vtt" default>
+          Dein Browser kann dieses Video nicht abspielen.
+        </video>
+        <div class="k-video__missing" hidden>Video folgt. Bis dahin: Lies den Code unten Zeile für Zeile und probiere ihn aus.</div>
+        <figcaption>Vorgerechnet: die Abkühlung nach dem Härten Schritt für Schritt (ca. 3 Min). Untertitel sind eingeschaltet (Deutsch).</figcaption>
+      </figure>
+      <div class="a-task" data-a="run" data-id="w-vorgemacht" data-count="0" data-mode="programm" data-timeout="5000">
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V06" aria-label="Python-Code: Abkühlung nach dem Härten"># Abkühlung eines Werkstücks nach dem Härten (Newtonsches Abkühlungsgesetz)
+# (V06: while, for, range, Zähler und Summen)
+
+temperatur = 850.0      # °C direkt nach dem Ofen
+umgebung = 20.0         # °C Hallentemperatur
+k = 0.08                # Abkühlkonstante pro Minute
+ziel = 60.0             # ab hier darf das Teil weiterbearbeitet werden
+
+minuten = 0
+while temperatur &gt; ziel:
+    temperatur = temperatur - k * (temperatur - umgebung)
+    minuten = minuten + 1
+
+print(f"Nach {minuten} Minuten: {temperatur:.1f} °C")
+
+# Tabelle für die ersten 5 Minuten mit for und range
+t = 850.0
+summe = 0.0
+for minute in range(1, 6):
+    t = t - k * (t - umgebung)
+    summe = summe + t
+    print(f"Minute {minute}: {t:6.1f} °C")
+print(f"Mittelwert der ersten 5 Minuten: {summe / 5:.1f} °C")</textarea></div>
+      </div>
+      <ol class="a-explain">
+        <li><strong>Zeilen 4 bis 9:</strong> Erst kommen die <abbr class="k-begriff" data-erklaerung="Eine Variable ist ein Name für einen Speicherplatz, wie ein beschriftetes Schubfach. Mit x = 3 legst du die 3 unter dem Namen x ab.">Variablen</abbr> mit ihren Startwerten. <code class="k-i">minuten = 0</code> ist der <strong>Zähler</strong>: Er muss <em>vor</em> der Schleife existieren, sonst gäbe es einen <code class="k-i">NameError</code>.</li>
+        <li><strong>Zeile 10:</strong> <code class="k-i">while temperatur &gt; ziel:</code> bedeutet „solange das Teil heißer als das Ziel ist“. Python prüft die Bedingung <em>vor jedem</em> Durchlauf. Der Doppelpunkt und die Einrückung der nächsten Zeilen gehören dazu.</li>
+        <li><strong>Zeilen 11 und 12:</strong> Der Rumpf rechnet aus der <em>alten</em> Temperatur die neue und zählt eine Minute weiter. Beide Variablen ändern sich in jedem Durchlauf: <code class="k-i">temperatur</code> läuft auf <code class="k-i">ziel</code> zu, darum endet die Schleife. Rechne den ersten Durchlauf selbst: 850 − 0,08 · (850 − 20) = 783,6.</li>
+        <li><strong>Zeile 14:</strong> Die Ausgabe steht <em>nicht</em> mehr eingerückt, sie läuft erst nach der Schleife, genau einmal: „Nach 37 Minuten: 58.0 °C“. Nach 36 Minuten war das Teil noch über 60 °C, nach 37 darunter. Der Zähler <code class="k-i">minuten</code> ist am Ende die <em>Zahl der Durchläufe</em>.</li>
+        <li><strong>Zeilen 17 bis 23:</strong> Jetzt die Zählschleife. <code class="k-i">range(1, 6)</code> liefert 1 bis 5 (die 6 gehört nicht dazu), also fünf Durchläufe. <code class="k-i">minute</code> zählt <code class="k-i">for</code> von selbst. <code class="k-i">summe</code> ist der <strong>Akkumulator</strong>: Startwert 0.0 vor der Schleife, in jedem Durchlauf kommt die neue Temperatur dazu. Der Mittelwert <code class="k-i">summe / 5</code> steht <em>nach</em> der Schleife. Das Format <code class="k-i">:6.1f</code> macht die Zahlen sechs Zeichen breit, damit die Tabelle rechtsbündig untereinander steht.</li>
+        <li><strong>Selbsterklärung:</strong> Setze <code class="k-i">ziel = 20.0</code> und führe aus. Was erwartest du, und was passiert? (Das Teil nähert sich 20 °C nur an. Der Python-Runner ist hier der Watchdog.) Dann setze <code class="k-i">k = 0.16</code> und <code class="k-i">ziel</code> zurück auf 60: Dauert es halb so lang?</li>
+      </ol>
+    </section>
+
+    <section class="l-task" id="a-ablauf" data-title="Ablauf verfolgen" data-part="A" data-stars="" data-min="7" data-extra="" aria-labelledby="h-a-ablauf" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-ablauf" tabindex="-1">Ablauf verfolgen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Bevor du Schleifen schreibst, musst du sie lesen können. Führe das Programm im Kopf aus, <strong>Zeile für Zeile, so wie Python es tut</strong>. Bei einer Schleife kommen dieselben Zeilen mehrfach vor: Jede Ausführung ist ein eigener Schritt in der Tabelle. Die Zeile mit der Bedingung (<code class="k-i">while</code> oder <code class="k-i">for</code>) bekommt keinen eigenen Schritt: Du entscheidest dort selbst, ob der Rumpf noch einmal läuft. Trage ein, was danach in den hervorgehobenen Variablen steht. Wenn du unsicher bist, lass den Code vorher im „Vorgerechneten Beispiel“ oder in Karte 1 mit „Schritt für Schritt“ laufen.</p>
+      <div class="a-task" data-a="trace" data-id="w-trace">
+        <script type="application/json">{"code":["zaehler = 0","summe = 0","while zaehler < 3:","    zaehler = zaehler + 1","    summe = summe + zaehler * 2","print(f\"zaehler = {zaehler}, summe = {summe}\")"],
+"vars":["zaehler","summe"],
+"steps":[
+{"line":1,"set":{"zaehler":"0"},"hint":"Der Startwert des Zählers steht vor der Schleife: 0."},
+{"line":2,"set":{"summe":"0"},"hint":"Der Akkumulator startet bei 0."},
+{"line":4,"set":{"zaehler":"1"},"hint":"Bedingung geprüft: 0 < 3 ist wahr, der Rumpf läuft. Zeile 4 erhöht zaehler um 1."},
+{"line":5,"set":{"summe":"2"},"hint":"summe = 0 + zaehler * 2, und zaehler ist jetzt 1: 0 + 2."},
+{"line":4,"set":{"zaehler":"2"},"hint":"Zurück zur Bedingung: 1 < 3 ist wahr. Der Rumpf läuft wieder, zaehler wird 2."},
+{"line":5,"set":{"summe":"6"},"hint":"summe = 2 + 2 * 2 = 6. Die alte Summe (2) wird benutzt, dann überschrieben."},
+{"line":4,"set":{"zaehler":"3"},"hint":"2 < 3 ist wahr: dritter Durchlauf, zaehler wird 3."},
+{"line":5,"set":{"summe":"12"},"hint":"summe = 6 + 3 * 2 = 12."},
+{"line":6,"out":"zaehler = 3, summe = 12","hint":"Zurück zur Bedingung: 3 < 3 ist falsch, die Schleife endet. Das print steht nicht mehr eingerückt, es läuft einmal nach der Schleife."}
+]}</script>
+      </div>
+      <p class="l-task__intro">Zweiter Ablauf: eine Zählschleife mit <code class="k-i">if</code> im Rumpf. Jetzt gehört die Laufvariable <code class="k-i">i</code> mit in die Tabelle: <code class="k-i">for</code> setzt sie in jedem Durchlauf neu, und diese Zeile ist ein Schritt. Ist die <code class="k-i">if</code>-Bedingung falsch, wird die Zeile darunter übersprungen.</p>
+      <div class="a-task" data-a="trace" data-id="w-trace2">
+        <script type="application/json">{"code":["n = 0","for i in range(1, 6):","    if i % 2 == 0:","        n = n + i","print(n)"],
+"vars":["i","n"],
+"steps":[
+{"line":1,"set":{"n":"0"},"hint":"Startwert des Akkumulators."},
+{"line":2,"set":{"i":"1"},"hint":"range(1, 6) liefert 1, 2, 3, 4, 5. Im ersten Durchlauf ist i gleich 1. Dort ist 1 % 2 gleich 1, also nicht 0: Das if ist falsch, Zeile 4 wird übersprungen."},
+{"line":2,"set":{"i":"2"},"hint":"Zweiter Durchlauf: i ist 2."},
+{"line":4,"set":{"n":"2"},"hint":"2 % 2 ist 0, das if ist wahr: n = 0 + 2."},
+{"line":2,"set":{"i":"3"},"hint":"Dritter Durchlauf: i ist 3. 3 % 2 = 1, das if ist falsch, Zeile 4 entfällt."},
+{"line":2,"set":{"i":"4"},"hint":"Vierter Durchlauf: i ist 4."},
+{"line":4,"set":{"n":"6"},"hint":"4 % 2 ist 0: n = 2 + 4 = 6."},
+{"line":2,"set":{"i":"5"},"hint":"Fünfter und letzter Durchlauf: i ist 5. 5 % 2 = 1: nichts passiert."},
+{"line":5,"out":"6","hint":"Die Schleife ist zu Ende, n ist 6 (die Summe der geraden Zahlen 2 und 4). print steht nicht eingerückt und läuft einmal."}
+]}</script>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-zeilen" data-title="Zeilen ordnen" data-part="A" data-stars="" data-min="8" data-extra="" aria-labelledby="h-a-zeilen" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-zeilen" tabindex="-1">Zeilen ordnen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Alle Zeilen sind da, aber durcheinander. Bring sie in die richtige Reihenfolge <strong>und rücke die Zeilen im Schleifenrumpf ein</strong> (Pfeil nach rechts oder Mausziehen). Manche Zeilen sind <strong>Ablenker</strong>: Sie gehören nicht ins Programm.</p>
+      <div class="a-task" data-a="parsons" data-id="w-parsons1">
+        <div class="a-task__head"><h3 class="a-task__title">Summe der Zahlen von 1 bis n</h3></div>
+        <p>Das Programm liest n ein und gibt die Summe 1 + 2 + … + n aus. Überlege vorher: Wo gehört der Startwert der Summe hin, und welche Zeilen stehen im Rumpf?</p>
+        <script type="application/json">{"solution":["n = int(input('n: '))","summe = 0","for i in range(1, n + 1):","    summe = summe + i","print(f'Summe: {summe}')"],
+"distractors":["for i in range(1, n):","summe = summe + 1"],
+"alts":[["summe = 0","n = int(input('n: '))","for i in range(1, n + 1):","    summe = summe + i","print(f'Summe: {summe}')"]]}</script>
+      </div>
+
+      <div class="a-task" data-a="parsons" data-id="w-parsons2">
+        <div class="a-task__head"><h3 class="a-task__title">Abkühlen bis zum Ziel</h3></div>
+        <p>Das Programm liest die Zieltemperatur ein, kühlt das Teil minutenweise ab und gibt die Zahl der Minuten aus. Die Ausgabe gehört erst nach die Schleife.</p>
+        <script type="application/json">{"solution":["temperatur = 850.0","ziel = float(input('Ziel in °C: '))","minuten = 0","while temperatur > ziel:","    temperatur = temperatur - 0.08 * (temperatur - 20)","    minuten = minuten + 1","print(f'{minuten} Minuten')"],
+"distractors":["while temperatur != ziel:","minuten = minuten - 1"],
+"alts":[["temperatur = 850.0","ziel = float(input('Ziel in °C: '))","minuten = 0","while temperatur > ziel:","    minuten = minuten + 1","    temperatur = temperatur - 0.08 * (temperatur - 20)","print(f'{minuten} Minuten')"],
+["temperatur = 850.0","minuten = 0","ziel = float(input('Ziel in °C: '))","while temperatur > ziel:","    temperatur = temperatur - 0.08 * (temperatur - 20)","    minuten = minuten + 1","print(f'{minuten} Minuten')"],
+["ziel = float(input('Ziel in °C: '))","temperatur = 850.0","minuten = 0","while temperatur > ziel:","    temperatur = temperatur - 0.08 * (temperatur - 20)","    minuten = minuten + 1","print(f'{minuten} Minuten')"],
+["ziel = float(input('Ziel in °C: '))","minuten = 0","temperatur = 850.0","while temperatur > ziel:","    temperatur = temperatur - 0.08 * (temperatur - 20)","    minuten = minuten + 1","print(f'{minuten} Minuten')"],
+["minuten = 0","temperatur = 850.0","ziel = float(input('Ziel in °C: '))","while temperatur > ziel:","    temperatur = temperatur - 0.08 * (temperatur - 20)","    minuten = minuten + 1","print(f'{minuten} Minuten')"],
+["minuten = 0","ziel = float(input('Ziel in °C: '))","temperatur = 850.0","while temperatur > ziel:","    temperatur = temperatur - 0.08 * (temperatur - 20)","    minuten = minuten + 1","print(f'{minuten} Minuten')"]]}</script>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-luecken" data-title="Lücken füllen" data-part="A" data-stars="" data-min="5" data-extra="" aria-labelledby="h-a-luecken" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-luecken" tabindex="-1">Lücken füllen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Jetzt tippst du Teile selbst. Ergänze die vier Lücken, sodass das Programm die Zieltemperatur einliest, das Werkstück minutenweise abkühlt und die Minuten und die erreichte Temperatur mit einer <abbr class="k-begriff" data-erklaerung="Nachkommastellen sind die Ziffern hinter dem Komma. Bei 3.14159 sind es fünf.">Nachkommastelle</abbr> ausgibt. Geprüft wird nicht nur dein Wortlaut, sondern ob das Programm das Richtige tut, auch bei einem Ziel, das schon beim Start erreicht ist.</p>
+      <div class="a-task" data-a="gap" data-id="w-luecken" data-mode="programm">
+        <pre class="a-gap__src">temperatur = 850.0
+ziel = float(input("Ziel in °C: "))
+minuten = 0
+@@while@@ temperatur @@&gt;@@ ziel:
+    temperatur = temperatur - 0.08 * (temperatur - 20)
+    minuten = @@minuten + 1@@
+print(f"Nach {minuten} Minuten: {temperatur:@@.1f@@} °C")</pre>
+        <script type="text/x-python" data-role="tests">
+def _lauf(ziel):
+    return zeilen(run_program([str(ziel)]))
+
+def test_beispiel():
+    """Ziel 60: 'Nach 37 Minuten: 58.0 °C'"""
+    z = _lauf(60)
+    assert "Nach 37 Minuten: 58.0 °C" in z, "Erwartet wird die Zeile 'Nach 37 Minuten: 58.0 °C'. Dein Programm gibt aus: %r" % z
+
+def test_hundert():
+    """Ziel 100: 'Nach 29 Minuten: 93.9 °C'"""
+    z = _lauf(100)
+    assert "Nach 29 Minuten: 93.9 °C" in z, "Erwartet wird die Zeile 'Nach 29 Minuten: 93.9 °C'. Dein Programm gibt aus: %r" % z
+
+def test_schon_kalt():
+    """Ziel 900 (schon beim Start erreicht): 0 Minuten, 850.0 °C"""
+    z = _lauf(900)
+    assert "Nach 0 Minuten: 850.0 °C" in z, "Ist das Ziel schon beim Start erreicht, darf der Rumpf kein einziges Mal laufen. Erwartet 'Nach 0 Minuten: 850.0 °C', dein Programm gibt aus: %r" % z
+        </script>
+        <ol class="a-hints">
+          <li>Lücke 1 und 2: Das Teil soll weiterkühlen, <em>solange</em> es heißer als das Ziel ist. Welches Wort leitet die Schleife ein, und welcher Vergleich passt?</li>
+          <li>Lücke 3: Der Zähler wird in jedem Durchlauf um 1 größer. Er benutzt seinen alten Wert (Syntax-Karte 1).</li>
+          <li>Lücke 4: Das Format für eine Nachkommastelle heißt <code>.1f</code> (V03).</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-tabelle" data-title="Erste eigene Aufgabe: Schnittgeschwindigkeit je Drehzahl" data-part="A" data-stars="1" data-min="10" data-extra="" aria-labelledby="h-a-tabelle" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-tabelle" tabindex="-1">Erste eigene Aufgabe: Schnittgeschwindigkeit je Drehzahl</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Jetzt schreibst du die Schleife selbst, mit <abbr class="k-begriff" data-erklaerung="Ein Test ist ein kleines Prüfprogramm. Es startet dein Programm mit festen Eingaben und vergleicht die Ausgabe mit dem erwarteten Ergebnis.">Tests</abbr> als Sicherheitsnetz. Die Tests laufen mit mehreren Eingaben, auch mit solchen, die du nicht siehst.</p>
+      <div class="a-task" data-a="code" data-id="w-tabelle" data-mode="programm" data-inputs="60">
+        <div class="a-task__text">
+          <p>Beim Drehen gilt für die Schnittgeschwindigkeit v<sub>c</sub> = π · d · n / 1000 (v<sub>c</sub> in m/min, Durchmesser <em>d</em> in mm, Drehzahl <em>n</em> in 1/min), das kennst du aus V03. Das Programm liest <em>d</em> ein und gibt für die Drehzahlen 500, 1000, 1500 und 2000 je eine Zeile aus. Nutze eine <code class="k-i">for</code>-Schleife mit <code class="k-i">range</code>, nicht vier einzelne <code class="k-i">print</code>.</p>
+          <div class="a-spec"><strong>Ausgabe genau so (Eingabe d = 60):</strong><pre data-run="no">n = 500 1/min: vc = 94.25 m/min
+n = 1000 1/min: vc = 188.50 m/min
+n = 1500 1/min: vc = 282.74 m/min
+n = 2000 1/min: vc = 376.99 m/min</pre></div>
+          <p class="k-small k-muted">Denk an den Endwert von <code class="k-i">range</code>: Die 2000 muss noch dazugehören.</p>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V06" aria-label="Python-Code: Schnittgeschwindigkeit je Drehzahl"># Schnittgeschwindigkeit für vier Drehzahlen
+import math
+
+d = float(input("Durchmesser d in mm: "))
+# gib für n = 500, 1000, 1500, 2000 je eine Zeile aus
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _soll(d):
+    return ["n = %d 1/min: vc = %.2f m/min" % (n, math.pi * d * n / 1000) for n in (500, 1000, 1500, 2000)]
+
+def _pruefe(d):
+    soll = _soll(d)
+    z = zeilen(run_program([str(d)]))
+    zn = [l for l in z if l.startswith("n = ")]
+    assert zn == soll, "Bei d = %s werden genau diese Zeilen erwartet:\n%s\nDein Programm gibt aus: %r" % (d, "\n".join(soll), z)
+
+def test_beispiel():
+    """Beispiel d = 60 mm: vier Zeilen von 500 bis 2000"""
+    _pruefe(60)
+
+def test_zweites():
+    """Anderer Durchmesser: d = 25 mm"""
+    _pruefe(25)
+
+def test_kommazahl():
+    """Kommazahl: d = 12.5 mm"""
+    _pruefe(12.5)
+
+def test_letzte_drehzahl():
+    """Die letzte Zeile gehört zu n = 2000 (Endwert von range!)"""
+    z = zeilen(run_program(["40"]))
+    zn = [l for l in z if l.startswith("n = ")]
+    assert len(zn) == 4 and zn[-1].startswith("n = 2000 "), "Es müssen vier Zeilen sein, die letzte mit n = 2000. Dein Programm gibt aus: %r" % z
+        </script>
+        <script type="text/x-python" data-role="solution">
+import math
+
+d = float(input("Durchmesser d in mm: "))
+for n in range(500, 2001, 500):
+    vc = math.pi * d * n / 1000
+    print(f"n = {n} 1/min: vc = {vc:.2f} m/min")
+        </script>
+        <ol class="a-hints">
+          <li>Die Drehzahlen 500, 1000, 1500, 2000 sind eine Zahlenfolge mit Schrittweite 500. Welche drei Zahlen braucht <code>range</code> (Syntax-Karte 2)?</li>
+          <li>Der Endwert gehört nicht dazu: <code>range(500, 2001, 500)</code> endet bei 2000.</li>
+          <li>Im Rumpf (eingerückt): <code>vc = math.pi * d * n / 1000</code>, dann <code>print(f"n = {n} 1/min: vc = {vc:.2f} m/min")</code>.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-review" data-seen="manual" data-title="Code-Review: KI-Code prüfen" data-part="A" data-stars="" data-min="20" data-extra="" aria-labelledby="h-a-review" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-review" tabindex="-1">Code-Review: KI-Code prüfen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Eine KI hat Code geliefert. Er sieht sauber aus und läuft los. Würdest du ihn freigeben? Klick die Zeilen an, die du für fehlerhaft hältst, dann lass auflösen.</p>
+      <figure class="k-figure">
+        <picture>
+          <source srcset="../assets/img/ki-spiegel.webp" type="image/webp">
+          <img src="../assets/img/ki-spiegel.png" alt="Illustration: KI-Code wird von einem Ingenieur geprüft" width="1600" height="901" loading="lazy" onerror="this.closest('figure').hidden=true">
+        </picture>
+      </figure>
+
+      <div class="k-mirror">
+        <h3>Szenario: Auswertung für die Härterei</h3>
+        <p class="k-prompt__who">Prompt eines Studierenden</p>
+        <blockquote class="k-prompt">Schreib mir ein kleines Python-Programm mit drei Teilen. (1) Summe der Zahlen von 1 bis n, n wird eingegeben. (2) Mittelwert von Messwerten: erst die Anzahl eingeben, dann die Werte. (3) Nach wie vielen Minuten kühlt ein Werkstück von 850 °C bei 20 °C Umgebung auf höchstens 60 °C ab, wenn es pro Minute 8 % des Abstands zur Umgebung verliert?</blockquote>
+        <p class="k-prompt__who">KI-Antwort (Python)</p>
+          <ol class="k-codelines" aria-label="Code der KI, Zeilen anklickbar">
+            <li><button type="button" class="k-line">n = int(input(&quot;n: &quot;))</button></li>
+            <li><button type="button" class="k-line">summe = 0</button></li>
+            <li><button type="button" class="k-line" data-bug="a">for i in range(1, n):</button></li>
+            <li><button type="button" class="k-line">    summe = summe + i</button></li>
+            <li><button type="button" class="k-line">print(f&quot;Summe 1 bis {n}: {summe}&quot;)</button></li>
+            <li><button type="button" class="k-line"> </button></li>
+            <li><button type="button" class="k-line">anzahl = int(input(&quot;Anzahl Messwerte: &quot;))</button></li>
+            <li><button type="button" class="k-line">for i in range(anzahl):</button></li>
+            <li><button type="button" class="k-line" data-bug="b">    summe = 0</button></li>
+            <li><button type="button" class="k-line">    wert = float(input(f&quot;Messwert {i + 1}: &quot;))</button></li>
+            <li><button type="button" class="k-line">    summe = summe + wert</button></li>
+            <li><button type="button" class="k-line">print(f&quot;Mittelwert: {summe / anzahl:.2f}&quot;)</button></li>
+            <li><button type="button" class="k-line"> </button></li>
+            <li><button type="button" class="k-line">temperatur = 850.0</button></li>
+            <li><button type="button" class="k-line">minuten = 0</button></li>
+            <li><button type="button" class="k-line" data-bug="c">while temperatur != 60.0:</button></li>
+            <li><button type="button" class="k-line">    temperatur = temperatur - 0.08 * (temperatur - 20.0)</button></li>
+            <li><button type="button" class="k-line">    minuten = minuten + 1</button></li>
+            <li><button type="button" class="k-line">print(f&quot;Nach {minuten} Minuten&quot;)</button></li>
+          </ol>
+        <p class="k-small k-muted">Tipp: Es sind drei Fehler eingebaut, einer je Teilaufgabe. Nicht jede Zeile ist falsch.</p>
+
+        <div class="k-mirror__task">
+          <p><strong>Würdest du das freigeben?</strong> Markiere die fehlerhaften Zeilen, dann lass auflösen.</p>
+          <button type="button" class="k-btn" data-mirror-check>Auflösen</button>
+          <p class="k-verdict" role="status" hidden></p>
+
+          <div data-mirror-after hidden>
+            <h3>Die drei Fehler</h3>
+            <h4>Fehler 1: eins daneben (Zeile 3)</h4>
+            <p><code class="k-i">range(1, n)</code> endet bei n − 1, der Endwert gehört nicht dazu. Für n = 10 addiert die Schleife 1 bis 9 und liefert 45 statt 55. Das Programm läuft ohne Fehlermeldung durch: Solche Fehler findest du nur mit einer Gegenprobe von Hand (Gauß: n · (n + 1) / 2 = 55). Lösung: <code class="k-i">range(1, n + 1)</code>.</p>
+            <h4>Fehler 2: Akkumulator in der Schleife zurückgesetzt (Zeile 9)</h4>
+            <p><code class="k-i">summe = 0</code> steht <em>im</em> Rumpf: In jedem Durchlauf wird die Summe gelöscht, am Ende steht nur der letzte Messwert drin. Der Mittelwert wird damit „letzter Wert durch Anzahl“. Außerdem gehört der Startwert <em>vor</em> die Schleife. Lösung: <code class="k-i">summe = 0.0</code> vor <code class="k-i">for</code>.</p>
+            <h4>Fehler 3: Endlosschleife durch != bei Kommazahlen (Zeile 16)</h4>
+            <p>Die Temperatur nähert sich 60 °C nicht exakt, sie springt über den Wert hinweg: 61.3, dann 56.2. <code class="k-i">!=</code> bleibt für immer wahr, die Schleife endet nie. In der SPS würde der Watchdog zuschlagen, hier ist es das Zeitlimit des Runners. Lösung: <code class="k-i">while temperatur &gt; 60.0</code>. Dieser Fehler ist der gemeinste: Er zeigt sich nicht beim Lesen, sondern erst beim Ablauf.</p>
+
+            <h3>Die KI-Version zum Ausprobieren</h3>
+            <p class="k-small k-muted">Die ersten beiden Ausgaben sind falsch (45 statt 55, und ein Mittelwert von 7.17 statt 21.33). Danach läuft das Programm in die Endlosschleife, und der Runner bricht nach vier Sekunden ab. Die Eingaben (10, 3 und die Werte 20.5, 22.0, 21.5) stehen im Feld unter dem Code.</p>
+            <pre data-stdin="10&#10;3&#10;20.5&#10;22.0&#10;21.5" data-timeout="4000"><code>n = int(input("n: "))
+summe = 0
+for i in range(1, n):
+    summe = summe + i
+print(f"Summe 1 bis {n}: {summe}")
+
+anzahl = int(input("Anzahl Messwerte: "))
+for i in range(anzahl):
+    summe = 0
+    wert = float(input(f"Messwert {i + 1}: "))
+    summe = summe + wert
+print(f"Mittelwert: {summe / anzahl:.2f}")
+
+temperatur = 850.0
+minuten = 0
+while temperatur != 60.0:
+    temperatur = temperatur - 0.08 * (temperatur - 20.0)
+    minuten = minuten + 1
+print(f"Nach {minuten} Minuten")</code></pre>
+
+            <h3>Korrigierte Version</h3>
+            <pre data-stdin="10&#10;3&#10;20.5&#10;22.0&#10;21.5"><code>n = int(input("n: "))
+summe = 0
+for i in range(1, n + 1):
+    summe = summe + i
+print(f"Summe 1 bis {n}: {summe}")
+
+anzahl = int(input("Anzahl Messwerte: "))
+summe = 0.0
+for i in range(anzahl):
+    wert = float(input(f"Messwert {i + 1}: "))
+    summe = summe + wert
+print(f"Mittelwert: {summe / anzahl:.2f}")
+
+temperatur = 850.0
+minuten = 0
+while temperatur &gt; 60.0:
+    temperatur = temperatur - 0.08 * (temperatur - 20.0)
+    minuten = minuten + 1
+print(f"Nach {minuten} Minuten")</code></pre>
+            <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke</strong><p>Bei Schleifen prüfst du immer die Ränder von Hand: den ersten und den letzten Durchlauf, die Anzahl der Durchläufe und den Startwert jeder Variablen. Und du fragst: „Wird die Bedingung irgendwann falsch, auch bei Kommazahlen?“ Die KI liefert das häufigste Muster, nicht das passende. Deine Testfälle (n = 1, Grenzwerte, ein Ziel, das schon erreicht ist) schreibst du vorher von Hand auf.</p></div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-fehler" data-title="Typische Fehlermeldungen" data-part="A" data-stars="" data-min="5" data-extra="" aria-labelledby="h-a-fehler" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-fehler" tabindex="-1">Typische Fehlermeldungen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Fehlermeldungen sind keine Strafe, sondern ein Wegweiser. Bei Schleifen gibt es allerdings auch Fehler, die <em>keine</em> Meldung auslösen. Diese fünf siehst du garantiert. Jedes Beispiel lässt sich ausführen: Schau dir die echte Meldung an und lies sie von unten nach oben (zuerst die letzte Zeile).</p>
+      <div class="a-errors">
+        <div class="a-error">
+          <h3>Endlosschleife: „Abgebrochen nach 3 s“</h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="3000">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V06" aria-label="Fehlerbeispiel Endlosschleife">zaehler = 0
+while zaehler &lt; 5:
+    produkt = zaehler * 2
+print("fertig")</textarea></div>
+          </div>
+          <p>Meldung: <code class="k-i">Abgebrochen nach 3 s. Läuft da eine Endlosschleife?</code> Das ist keine Python-Fehlermeldung, sondern der Watchdog des Runners. Die Ursache: <code>zaehler</code> wird im Rumpf nie erhöht, die Bedingung <code>zaehler &lt; 5</code> bleibt für immer wahr, und „fertig“ erscheint nie. Ergänze <code>zaehler = zaehler + 1</code> im Rumpf. Auf deinem eigenen Rechner würdest du ein hängendes Programm mit Strg+C abbrechen. Bei Kommazahlen kommt dieselbe Meldung, wenn <code>!=</code> oder <code>==</code> den Wert nie trifft.</p>
+        </div>
+        <div class="a-error">
+          <h3><code class="k-i">IndentationError</code>: Rumpf nicht eingerückt</h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="5000">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V06" aria-label="Fehlerbeispiel IndentationError">zaehler = 0
+while zaehler &lt; 3:
+zaehler = zaehler + 1
+print(zaehler)</textarea></div>
+          </div>
+          <p>Meldung: <code class="k-i">IndentationError: expected an indented block after 'while' statement on line 2</code>. Nach dem Doppelpunkt der Schleife muss der Rumpf eingerückt sein (4 Leerzeichen). Die Meldung nennt die Zeile des Schleifenkopfs. Heimtückisch ist die Variante <em>ohne</em> Meldung: Steht <code>print(summe)</code> versehentlich eingerückt, gibst du in jedem Durchlauf eine Zwischensumme aus. Steht <code>summe = summe + i</code> versehentlich nicht eingerückt, wird nur einmal addiert. Probiere beides in Karte 3 aus.</p>
+        </div>
+        <div class="a-error">
+          <h3><code class="k-i">NameError</code>: Variable nicht initialisiert</h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="5000">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V06" aria-label="Fehlerbeispiel NameError">for i in range(1, 4):
+    summe = summe + i
+print(summe)</textarea></div>
+          </div>
+          <p>Meldung: <code class="k-i">NameError: name 'summe' is not defined</code>. Im ersten Durchlauf will Python <code>summe + i</code> rechnen, aber <code>summe</code> hat noch keinen Wert. Setze <code>summe = 0</code> <em>vor</em> die Schleife. Steht der Startwert stattdessen in der Schleife, gibt es keine Meldung, aber die Summe wird in jedem Durchlauf gelöscht (Code-Review, Fehler 2).</p>
+        </div>
+        <div class="a-error">
+          <h3><code class="k-i">TypeError</code>: range mit einer Kommazahl</h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="5000" data-inputs="3">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V06" aria-label="Fehlerbeispiel TypeError bei range">n = float(input("Anzahl: "))
+for i in range(n):
+    print(i)</textarea></div>
+          </div>
+          <p>Meldung: <code class="k-i">TypeError: 'float' object cannot be interpreted as an integer</code>. <code>range</code> zählt in ganzen Schritten und akzeptiert keinen <code>float</code>, auch nicht 3.0. Wandle die Eingabe mit <code>int(input(...))</code> um, wenn sie die Zahl der Durchläufe sein soll (V03: Typ passend zur Aufgabe wählen).</p>
+        </div>
+        <div class="a-error">
+          <h3>Falsches Ergebnis ohne Meldung: eins daneben</h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="5000">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V06" aria-label="Beispiel Fehler um eins">summe = 0
+for i in range(1, 10):
+    summe = summe + i
+print("Summe 1 bis 10:", summe)</textarea></div>
+          </div>
+          <p>Ausgabe: <code class="k-i">Summe 1 bis 10: 45</code>. Python meldet nichts, denn das Programm tut genau, was dasteht: <code>range(1, 10)</code> endet bei 9. Gewollt war 55. Solche Fehler fängst du nur mit einer <strong>Gegenprobe von Hand</strong> (Gauß: 10 · 11 / 2 = 55) und mit den Randfällen n = 1 und n = 2. Faustregel: <code>range(a, b)</code> hat genau <code>b - a</code> Durchläufe.</p>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-1" data-title="Summe und Mittelwert der Zahlen 1 bis n" data-part="B" data-stars="1" data-min="5" data-extra="" aria-labelledby="h-t-1" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-1" tabindex="-1">Summe und Mittelwert der Zahlen 1 bis n</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Programmieren lernst du mit den Fingern, nicht mit den Augen. Das Training ist ein fester Teil jedes Termins und gehört zum Selbststudium. Du musst nicht alles an einem Stück machen, aber alles bis zum nächsten Termin. Die Aufgaben laufen komplett im Browser und werden automatisch geprüft.</p>
+      <div class="hinweis hinweis--achtung"><strong class="hinweis__title">Achtung</strong><p>Phase 1: <abbr class="k-begriff" data-erklaerung="GitHub Copilot ist ein KI-Assistent, der in der Entwicklungsumgebung Programmcode vorschlägt oder erklärt.">Copilot</abbr> nur als Erklärer. Erlaubt: „Erkläre mir diese Fehlermeldung“, „Was macht Zeile 3?“, „Warum läuft die Schleife nicht zu Ende?“. Nicht erlaubt: „Schreib mir die Schleife“. Du tippst den Code selbst, denn nur dann lernst du, ihn zu prüfen. Ab V10 darf die KI Code erzeugen, und du prüfst.</p></div>
+
+      <div class="a-task" data-a="code" data-id="tr-1" data-mode="programm" data-inputs="10">
+        <div class="a-task__text">
+          <p>Lies eine ganze Zahl <em>n</em> ein. Berechne mit einer <code class="k-i">for</code>-Schleife die Summe 1 + 2 + … + n und gib sie und den Mittelwert dieser n Zahlen aus (Summe durch n, zwei Nachkommastellen).</p>
+          <div class="a-spec"><strong>Ausgabe genau so (Beispiel n = 10):</strong><pre data-run="no">Summe: 55
+Mittelwert: 5.50</pre></div>
+          <p class="k-small k-muted">Gegenprobe von Hand: Die Summe von 1 bis n ist n · (n + 1) / 2.</p>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V06" aria-label="Python-Code Aufgabe 1"># Summe und Mittelwert von 1 bis n
+n = int(input("n: "))
+
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _pruefe(n):
+    s = n * (n + 1) // 2
+    soll = ["Summe: %d" % s, "Mittelwert: %.2f" % (s / n)]
+    z = zeilen(run_program([str(n)]))
+    for t in soll:
+        assert t in z, "Bei n = %d wird die Zeile %r erwartet. Dein Programm gibt aus: %r" % (n, t, z)
+
+def test_beispiel():
+    """Beispiel n = 10: Summe 55, Mittelwert 5.50"""
+    _pruefe(10)
+
+def test_eins():
+    """Randfall n = 1: Summe 1, Mittelwert 1.00"""
+    _pruefe(1)
+
+def test_gross():
+    """n = 100: Summe 5050"""
+    _pruefe(100)
+
+def test_sieben():
+    """n = 7: Summe 28 (der Endwert gehört dazu!)"""
+    _pruefe(7)
+        </script>
+        <script type="text/x-python" data-role="solution">
+n = int(input("n: "))
+summe = 0
+for i in range(1, n + 1):
+    summe = summe + i
+print(f"Summe: {summe}")
+print(f"Mittelwert: {summe / n:.2f}")
+        </script>
+        <ol class="a-hints">
+          <li>Der Akkumulator <code>summe = 0</code> steht <em>vor</em> der Schleife. Die Schleife läuft über die Zahlen 1 bis n.</li>
+          <li><code>range(1, n)</code> endet bei n − 1. Du brauchst <code>range(1, n + 1)</code>.</li>
+          <li>Im Rumpf: <code>summe = summe + i</code>. Die Ausgaben stehen <em>nach</em> der Schleife (nicht eingerückt); der Mittelwert ist <code>summe / n</code> mit <code>:.2f</code>.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-2" data-title="Countdown rückwärts" data-part="B" data-stars="1" data-min="4" data-extra="" aria-labelledby="h-t-2" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-2" tabindex="-1">Countdown rückwärts</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="code" data-id="tr-2" data-mode="programm" data-inputs="3">
+        <div class="a-task__text">
+          <p>Vor dem Start einer Prüfung läuft ein Countdown. Lies die Sekunden <em>n</em> (ganze Zahl) ein und gib jede Sekunde in einer eigenen Zeile von <em>n</em> bis 1 aus, danach die Zeile <code class="k-i">Start</code>. Zähle rückwärts: <code class="k-i">range</code> kann auch eine negative Schrittweite.</p>
+          <div class="a-spec"><strong>Ausgabe genau so (Beispiel n = 3):</strong><pre data-run="no">3
+2
+1
+Start</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V06" aria-label="Python-Code Aufgabe 2"># Countdown
+n = int(input("Sekunden: "))
+
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _pruefe(n):
+    soll = [str(i) for i in range(n, 0, -1)] + ["Start"]
+    z = zeilen(run_program([str(n)]))
+    z = [l for l in z if l.isdigit() or l == "Start"]   # Eingabeaufforderung ignorieren
+    assert z == soll, "Bei n = %d wird diese Ausgabe erwartet: %r. Dein Programm gibt aus: %r" % (n, soll, z)
+
+def test_beispiel():
+    """Beispiel n = 3: 3, 2, 1, Start"""
+    _pruefe(3)
+
+def test_fuenf():
+    """n = 5: von 5 bis 1, dann Start"""
+    _pruefe(5)
+
+def test_eins():
+    """Randfall n = 1: nur 1 und Start"""
+    _pruefe(1)
+
+def test_null():
+    """Randfall n = 0: die Schleife läuft nie, nur Start"""
+    _pruefe(0)
+        </script>
+        <script type="text/x-python" data-role="solution">
+n = int(input("Sekunden: "))
+for sekunde in range(n, 0, -1):
+    print(sekunde)
+print("Start")
+        </script>
+        <ol class="a-hints">
+          <li>Von n bis 1, jeweils um 1 kleiner: <code>range(start, stop, step)</code> mit negativem <code>step</code> (Syntax-Karte 2).</li>
+          <li>Der Endwert gehört nicht dazu. Damit die 1 noch ausgegeben wird, muss der Endwert 0 sein: <code>range(n, 0, -1)</code>.</li>
+          <li>Das <code>print("Start")</code> steht nach der Schleife, nicht eingerückt.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-3" data-title="Messreihe prüfen: if in der Schleife" data-part="B" data-stars="2" data-min="8" data-extra="Wiederholung V04/V05" aria-labelledby="h-t-3" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-3" tabindex="-1">Messreihe prüfen: if in der Schleife</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="code" data-id="tr-3" data-mode="programm" data-inputs="5|25.0|25.05|24.95|25.1|24.9">
+        <div class="a-task__text">
+          <p>Wiederholung V03 bis V05: Ein Wellenmaß hat das Nennmaß 25,00 mm und die Toleranz ± 0,05 mm; die Grenzen gehören dazu. Lies zuerst die Anzahl <em>n</em> der Messwerte, dann <em>n</em> Messwerte ein. Zähle in der Schleife mit <code class="k-i">if</code> und <code class="k-i">else</code>, wie viele in Toleranz liegen und wie viele Ausschuss sind. Denk an die Rundungsfehler an den Grenzen (V03): 25.05 − 25.0 ist 0.05000000000000071.</p>
+          <div class="a-spec"><strong>Ausgabe genau so (Beispiel n = 5, Werte 25.0, 25.05, 24.95, 25.1, 24.9):</strong><pre data-run="no">In Toleranz: 3 von 5
+Ausschuss: 2</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V06" aria-label="Python-Code Aufgabe 3">import math
+
+nennmass = 25.0
+abmass = 0.05
+n = int(input("Anzahl Messwerte: "))
+
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _zaehle(werte):
+    gut = sum(1 for w in werte if abs(w - 25.0) <= 0.05 + 1e-9)
+    return gut, len(werte) - gut
+
+def _pruefe(werte):
+    gut, aus = _zaehle(werte)
+    soll = ["In Toleranz: %d von %d" % (gut, len(werte)), "Ausschuss: %d" % aus]
+    z = zeilen(run_program([str(len(werte))] + [str(w) for w in werte]))
+    for t in soll:
+        assert t in z, "Bei %r wird die Zeile %r erwartet. Dein Programm gibt aus: %r" % (werte, t, z)
+
+def test_beispiel():
+    """Beispiel: 25.0, 25.05, 24.95, 25.1, 24.9"""
+    _pruefe([25.0, 25.05, 24.95, 25.1, 24.9])
+
+def test_grenzen():
+    """Beide Grenzen gehören dazu: 25.05 und 24.95"""
+    _pruefe([25.05, 24.95])
+
+def test_alle_schlecht():
+    """Alles Ausschuss: 26.0, 24.0, 25.06"""
+    _pruefe([26.0, 24.0, 25.06])
+
+def test_alle_gut():
+    """Alles in Toleranz: 25.0, 25.01, 24.99, 25.04"""
+    _pruefe([25.0, 25.01, 24.99, 25.04])
+        </script>
+        <script type="text/x-python" data-role="solution">
+import math
+
+nennmass = 25.0
+abmass = 0.05
+n = int(input("Anzahl Messwerte: "))
+gut = 0
+ausschuss = 0
+for i in range(n):
+    messwert = float(input(f"Messwert {i + 1}: "))
+    if math.isclose(messwert, nennmass, rel_tol=0.0, abs_tol=abmass + 1e-9):
+        gut = gut + 1
+    else:
+        ausschuss = ausschuss + 1
+print(f"In Toleranz: {gut} von {n}")
+print(f"Ausschuss: {ausschuss}")
+        </script>
+        <ol class="a-hints">
+          <li>Zwei Zähler (<code>gut</code> und <code>ausschuss</code>) werden <em>vor</em> der Schleife auf 0 gesetzt. In der Schleife wird bei jedem Wert genau einer von beiden erhöht.</li>
+          <li>Jeder Messwert wird <em>in</em> der Schleife mit <code>float(input(...))</code> gelesen. Die Bedingung in Toleranz: <code>math.isclose(messwert, nennmass, rel_tol=0.0, abs_tol=abmass + 1e-9)</code> (V03).</li>
+          <li>Die Struktur: <code>for i in range(n):</code>, darin <code>if ...:</code> mit <code>gut = gut + 1</code> und <code>else:</code> mit <code>ausschuss = ausschuss + 1</code>. Die beiden <code>print</code> stehen nach der Schleife.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-4" data-title="Fehler finden: die hängende Schleife" data-part="B" data-stars="2" data-min="6" data-extra="" aria-labelledby="h-t-4" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-4" tabindex="-1">Fehler finden: die hängende Schleife</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="code" data-id="tr-4" data-mode="programm" data-inputs="1.2" data-timeout="6000">
+        <div class="a-task__text">
+          <p>Beim Schruppen wird das Aufmaß in Schnitten von je 0,5 mm abgetragen. Das Programm unten zählt, wie viele Schnitte nötig sind. Bei einem Aufmaß von 2.0 mm läuft es, bei 1.2 mm hängt es. Der Prüfstand bricht nach einigen Sekunden ab: Das ist hier der Watchdog. Finde den Fehler und repariere die Schleife, sodass sie für jedes Aufmaß richtig zählt: Das letzte Stück Material (weniger als 0,5 mm) braucht noch einen Schnitt.</p>
+          <div class="a-spec"><strong>Ausgabe genau so (Eingabe 1.2):</strong><pre data-run="no">Schnitte: 3</pre></div>
+          <p class="k-small k-muted">Tipp: Drück auf „Schritt für Schritt“ und beobachte, wie sich <code class="k-i">aufmass</code> bei jedem Durchlauf ändert. Wird es jemals genau 0?</p>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V06" aria-label="Python-Code Aufgabe 4">aufmass = float(input("Aufmaß in mm: "))
+schnitte = 0
+while aufmass != 0:
+    aufmass = aufmass - 0.5
+    schnitte = schnitte + 1
+print(f"Schnitte: {schnitte}")
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _schnitte(a):
+    n = 0
+    while a > 0:
+        a = a - 0.5
+        n = n + 1
+    return n
+
+def _pruefe(a):
+    soll = "Schnitte: %d" % _schnitte(a)
+    z = zeilen(run_program([str(a)]))
+    assert soll in z, "Bei Aufmaß %s wird die Zeile %r erwartet. Dein Programm gibt aus: %r" % (a, soll, z)
+
+def test_beispiel():
+    """Aufmaß 1.2 mm: 3 Schnitte (das Programm hängt bisher)"""
+    _pruefe(1.2)
+
+def test_glatt():
+    """Aufmaß 2.0 mm: 4 Schnitte"""
+    _pruefe(2.0)
+
+def test_klein():
+    """Aufmaß 0.3 mm: ein Schnitt reicht"""
+    _pruefe(0.3)
+
+def test_null():
+    """Aufmaß 0: kein Schnitt nötig"""
+    _pruefe(0.0)
+
+def test_krumm():
+    """Aufmaß 2.1 mm: 5 Schnitte"""
+    _pruefe(2.1)
+        </script>
+        <script type="text/x-python" data-role="solution">
+aufmass = float(input("Aufmaß in mm: "))
+schnitte = 0
+while aufmass > 0:
+    aufmass = aufmass - 0.5
+    schnitte = schnitte + 1
+print(f"Schnitte: {schnitte}")
+        </script>
+        <ol class="a-hints">
+          <li>Rechne von Hand: 1.2, dann 0.7, dann 0.2, dann −0.3. Ist das Aufmaß dazwischen jemals genau 0?</li>
+          <li>Die Bedingung <code>aufmass != 0</code> ist für immer wahr, weil der Wert über die 0 hinwegspringt. Du brauchst eine Bedingung, die auch „kleiner als 0“ als Ende erkennt.</li>
+          <li><code>while aufmass &gt; 0:</code> (kopfgesteuert, solange noch Material übrig ist). Das ist dieselbe Regel wie bei der Abkühlung: kein <code>==</code> und kein <code>!=</code> bei Kommazahlen.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-5" data-title="Tabelle mit verschachtelter Schleife" data-part="B" data-stars="2" data-min="6" data-extra="" aria-labelledby="h-t-5" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-5" tabindex="-1">Tabelle mit verschachtelter Schleife</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="code" data-id="tr-5" data-mode="programm">
+        <div class="a-task__text">
+          <p>Für drei Durchmesser (20, 40 und 60 mm) und drei Drehzahlen (500, 1000 und 1500 1/min) soll die Schnittgeschwindigkeit v<sub>c</sub> = π · d · n / 1000 ausgegeben werden: neun Zeilen. Die äußere Schleife läuft über den Durchmesser, die innere über die Drehzahl (Syntax-Karte 7).</p>
+          <div class="a-spec"><strong>Ausgabe genau so (die ersten vier und die letzte der neun Zeilen):</strong><pre data-run="no">d = 20 mm, n = 500 1/min: vc = 31.42 m/min
+d = 20 mm, n = 1000 1/min: vc = 62.83 m/min
+d = 20 mm, n = 1500 1/min: vc = 94.25 m/min
+d = 40 mm, n = 500 1/min: vc = 62.83 m/min
+...
+d = 60 mm, n = 1500 1/min: vc = 282.74 m/min</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V06" aria-label="Python-Code Aufgabe 5"># Tabelle der Schnittgeschwindigkeit
+import math
+
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+SOLL = ["d = %d mm, n = %d 1/min: vc = %.2f m/min" % (d, n, math.pi * d * n / 1000) for d in (20, 40, 60) for n in (500, 1000, 1500)]
+
+def test_anzahl():
+    """Es gibt genau neun Zeilen mit 'vc ='"""
+    z = [l for l in zeilen(run_program([])) if "vc =" in l]
+    assert len(z) == 9, "Erwartet werden 9 Zeilen (3 Durchmesser mal 3 Drehzahlen), dein Programm gibt %d aus." % len(z)
+
+def test_inhalt():
+    """Alle neun Zeilen stimmen, äußere Schleife über d, innere über n"""
+    z = [l for l in zeilen(run_program([])) if "vc =" in l]
+    assert z == SOLL, "Erwartet:\n%s\nDein Programm gibt aus:\n%s" % ("\n".join(SOLL), "\n".join(z))
+
+def test_erste_und_letzte():
+    """Erste Zeile d = 20, n = 500, letzte Zeile d = 60, n = 1500"""
+    z = [l for l in zeilen(run_program([])) if "vc =" in l]
+    assert z and z[0] == SOLL[0] and z[-1] == SOLL[-1], "Die erste Zeile soll %r sein, die letzte %r. Dein Programm gibt aus: %r" % (SOLL[0], SOLL[-1], z)
+        </script>
+        <script type="text/x-python" data-role="solution">
+import math
+
+for d in range(20, 61, 20):
+    for n in range(500, 1501, 500):
+        vc = math.pi * d * n / 1000
+        print(f"d = {d} mm, n = {n} 1/min: vc = {vc:.2f} m/min")
+        </script>
+        <ol class="a-hints">
+          <li>Zwei <code>for</code>-Schleifen, die innere im Rumpf der äußeren (eine Stufe weiter eingerückt). Die äußere läuft über 20, 40, 60: <code>range(20, 61, 20)</code>.</li>
+          <li>Die innere läuft über 500, 1000, 1500: <code>range(500, 1501, 500)</code>.</li>
+          <li>Im Rumpf der inneren Schleife (zwei Stufen eingerückt): <code>vc = math.pi * d * n / 1000</code> und <code>print(f"d = {d} mm, n = {n} 1/min: vc = {vc:.2f} m/min")</code>.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-6" data-title="Schruppen: Anzahl der Schnitte" data-part="B" data-stars="3" data-min="10" data-extra="" aria-labelledby="h-t-6" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-6" tabindex="-1">Schruppen: Anzahl der Schnitte</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="code" data-id="tr-6" data-mode="programm" data-inputs="5|1.5" data-timeout="6000">
+        <div class="a-task__text">
+          <p>Ein Aufmaß <em>a</em> (in mm) wird in Schnitten der Zustelltiefe <em>ap</em> (in mm) abgetragen. Der letzte Schnitt darf kleiner ausfallen. Lies erst <em>a</em>, dann <em>ap</em> ein und gib die nötige Zahl der Schnitte aus. Schreibe eine <code class="k-i">while</code>-Schleife, die das verbleibende Aufmaß verringert und die Schnitte zählt.</p>
+          <div class="a-spec"><strong>Ausgabe genau so (Beispiel a = 5, ap = 1.5):</strong><pre data-run="no">Schnitte: 4</pre></div>
+          <p class="k-small k-muted">Falle (V03): Bei a = 0.7 und ap = 0.1 sind es 7 Schnitte. Aber 0.7 − 7 · 0.1 ist nicht genau 0, sondern ein winziger Rest, und ein Vergleich „größer als 0“ würde einen achten Schnitt auslösen. Prüfe das verbleibende Aufmaß mit einer Toleranz, die weit unter jeder Messauflösung liegt (zum Beispiel 1e-9 mm).</p>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V06" aria-label="Python-Code Aufgabe 6">aufmass = float(input("Aufmaß a in mm: "))
+zustellung = float(input("Zustelltiefe ap in mm: "))
+
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _pruefe(a, ap, soll):
+    z = zeilen(run_program([str(a), str(ap)]))
+    erw = "Schnitte: %d" % soll
+    assert erw in z, "Bei a = %s und ap = %s wird die Zeile %r erwartet. Dein Programm gibt aus: %r" % (a, ap, erw, z)
+
+def test_beispiel():
+    """Beispiel a = 5, ap = 1.5: 4 Schnitte"""
+    _pruefe(5, 1.5, 4)
+
+def test_glatt():
+    """a = 2.5, ap = 0.5: genau 5 Schnitte"""
+    _pruefe(2.5, 0.5, 5)
+
+def test_rundungsfalle():
+    """Rundungsfalle: a = 0.7, ap = 0.1 sind 7 Schnitte, nicht 8"""
+    _pruefe(0.7, 0.1, 7)
+
+def test_rundungsfalle2():
+    """Rundungsfalle: a = 1.0, ap = 0.1 sind 10 Schnitte, nicht 11"""
+    _pruefe(1.0, 0.1, 10)
+
+def test_klein():
+    """Kleine Maße: a = 0.0005, ap = 0.0001 sind 5 Schnitte (Toleranz nicht zu groß wählen)"""
+    _pruefe(0.0005, 0.0001, 5)
+
+def test_nichts_zu_tun():
+    """a = 0: kein Schnitt"""
+    _pruefe(0, 1, 0)
+        </script>
+        <script type="text/x-python" data-role="solution">
+aufmass = float(input("Aufmaß a in mm: "))
+zustellung = float(input("Zustelltiefe ap in mm: "))
+
+rest = aufmass
+schnitte = 0
+while rest > 1e-9:
+    rest = rest - zustellung
+    schnitte = schnitte + 1
+print(f"Schnitte: {schnitte}")
+        </script>
+        <ol class="a-hints">
+          <li>Zwei Variablen vor der Schleife: das verbleibende Aufmaß (am Anfang gleich <code>aufmass</code>) und der Zähler <code>schnitte = 0</code>.</li>
+          <li>Die Schleife läuft, <em>solange noch Material übrig ist</em>. Wie prüfst du „übrig“ bei Kommazahlen, ohne dass ein winziger Rest von 5e-17 einen Extra-Schnitt auslöst?</li>
+          <li><code>while rest &gt; 1e-9:</code> Im Rumpf: <code>rest = rest - zustellung</code> und <code>schnitte = schnitte + 1</code>. Die Ausgabe steht nach der Schleife.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-7" data-title="Knobelaufgabe: Der kleinste Teiler" data-part="B" data-stars="4" data-min="Zusatz" data-extra="" aria-labelledby="h-t-7" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-7" tabindex="-1">Knobelaufgabe: Der kleinste Teiler</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="code" data-id="tr-7" data-mode="programm" data-inputs="91">
+        <div class="a-task__text">
+          <p>Ein Zahnrad soll möglichst viele gleichmäßig verteilte Bohrungen bekommen. Ihre Zahl <em>n</em> (≥ 2) lässt sich nur dann gleichmäßig in Gruppen aufteilen, wenn sie einen Teiler größer 1 hat. Lies <em>n</em> ein und finde mit einer <code class="k-i">for</code>-Schleife den kleinsten Teiler größer als 1, also die kleinste Zahl <em>t</em> ab 2, für die <code class="k-i">n % t == 0</code> ist. Sobald du ihn gefunden hast, beendest du die Schleife mit <code class="k-i">break</code>. Findet die Schleife keinen Teiler, ist <em>n</em> eine Primzahl.</p>
+          <div class="a-spec"><strong>Ausgabe genau so (Beispiele):</strong><pre data-run="no">Eingabe 91:  Kleinster Teiler: 7
+Eingabe 97:  97 ist eine Primzahl</pre></div>
+          <p class="k-small k-muted">Tipp: Merke dir in einer Variable, ob du etwas gefunden hast. Setze sie vor der Schleife auf einen Wert, der „noch nichts gefunden“ bedeutet.</p>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V06" aria-label="Python-Code Aufgabe 7">n = int(input("n (mindestens 2): "))
+
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _soll(n):
+    for t in range(2, n):
+        if n % t == 0:
+            return "Kleinster Teiler: %d" % t
+    return "%d ist eine Primzahl" % n
+
+def _pruefe(n):
+    soll = _soll(n)
+    z = zeilen(run_program([str(n)]))
+    assert soll in z, "Bei n = %d wird die Zeile %r erwartet. Dein Programm gibt aus: %r" % (n, soll, z)
+
+def test_zusammengesetzt():
+    """91 = 7 · 13: Kleinster Teiler 7"""
+    _pruefe(91)
+
+def test_prim():
+    """97 ist eine Primzahl"""
+    _pruefe(97)
+
+def test_gerade():
+    """100: Kleinster Teiler 2"""
+    _pruefe(100)
+
+def test_zwei():
+    """Randfall n = 2: Primzahl"""
+    _pruefe(2)
+
+def test_quadrat():
+    """Quadrat einer Primzahl: 49 hat den kleinsten Teiler 7"""
+    _pruefe(49)
+
+def test_gross_prim():
+    """Größere Primzahl 7919"""
+    _pruefe(7919)
+        </script>
+        <script type="text/x-python" data-role="solution">
+n = int(input("n (mindestens 2): "))
+teiler = n
+for t in range(2, n):
+    if n % t == 0:
+        teiler = t
+        break
+if teiler == n:
+    print(f"{n} ist eine Primzahl")
+else:
+    print(f"Kleinster Teiler: {teiler}")
+        </script>
+        <ol class="a-hints">
+          <li>Probiere der Reihe nach t = 2, 3, 4, … bis n − 1: <code>for t in range(2, n):</code>. Beim ersten Treffer ist Schluss.</li>
+          <li>Setze vor der Schleife <code>teiler = n</code> („nichts gefunden“). Im Rumpf: <code>if n % t == 0:</code>, dann <code>teiler = t</code> und <code>break</code>.</li>
+          <li>Nach der Schleife (nicht eingerückt): ist <code>teiler</code> noch gleich <code>n</code>, gab es keinen Treffer, also eine Primzahl. Sonst gibst du den Teiler aus.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-8" data-title="Klausur-Modus: Wurzel nach Newton" data-part="B" data-stars="4" data-min="15" data-extra="8 Punkte" aria-labelledby="h-t-8" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-8" tabindex="-1">Klausur-Modus: Wurzel nach Newton</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="klausur" data-id="tr-8" data-mode="programm" data-minutes="15">
+        <div class="a-task__text">
+          <p><strong>So wie in der Klausur:</strong> Schreibe den Code ohne Ausführen und ohne <abbr class="k-begriff" data-erklaerung="Die Auto-Vervollständigung schlägt dir beim Tippen passende Wörter vor. In der Klausur gibt es sie nicht.">Auto-Vervollständigung</abbr>, wenn möglich zuerst auf Papier. Erst danach „Abgeben und prüfen“, dann bewertest du dich selbst.</p>
+          <p>Schreibe ein Programm, das die Quadratwurzel einer positiven Zahl <em>a</em> mit dem Newton-Verfahren bestimmt. Lies zuerst <em>a</em> und dann die Toleranz <em>tol</em> (beides Kommazahlen) ein. Starte mit <code class="k-i">x = a</code> und wiederhole <code class="k-i">x = (x + a / x) / 2</code>, <strong>solange</strong> <code class="k-i">abs(x * x - a)</code> größer als <em>tol</em> ist. Zähle die Durchläufe. Gib danach aus:</p>
+          <ul>
+            <li>die Wurzel mit 8 Nachkommastellen,</li>
+            <li>die Zahl der Schritte (ganze Zahl).</li>
+          </ul>
+          <div class="a-spec"><strong>Ausgabe genau so (a = 2, tol = 1e-9):</strong><pre data-run="no">Wurzel: 1.41421356
+Schritte: 4</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V06" data-assist="off" aria-label="Python-Code von Hand schreiben, ohne Ausführen"></textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _ref(a, tol):
+    x = a
+    n = 0
+    while abs(x * x - a) > tol:
+        x = (x + a / x) / 2
+        n = n + 1
+    return x, n
+
+def _pruefe(a, tol):
+    x, n = _ref(a, tol)
+    soll = ["Wurzel: %.8f" % x, "Schritte: %d" % n]
+    z = zeilen(run_program([str(a), str(tol)]))
+    for s in soll:
+        assert s in z, "Bei a = %s und tol = %s wird die Zeile %r erwartet. Dein Programm gibt aus: %r" % (a, tol, s, z)
+
+def test_beispiel():
+    """Beispiel a = 2, tol = 1e-9: 4 Schritte"""
+    _pruefe(2, 1e-9)
+
+def test_neun():
+    """a = 9, tol = 1e-6: Wurzel 3"""
+    _pruefe(9, 1e-6)
+
+def test_kleiner_als_eins():
+    """a = 0.5, tol = 1e-9"""
+    _pruefe(0.5, 1e-9)
+
+def test_grobe_toleranz():
+    """Grobe Toleranz a = 2, tol = 0.01: wenige Schritte"""
+    _pruefe(2, 0.01)
+
+def test_start_schon_gut():
+    """a = 1: der Startwert x = 1 genügt schon, 0 Schritte"""
+    z = zeilen(run_program(["1", "1e-9"]))
+    assert "Schritte: 0" in z and "Wurzel: 1.00000000" in z, "Bei a = 1 ist die Bedingung schon am Anfang falsch, der Rumpf läuft nie. Erwartet: 'Wurzel: 1.00000000' und 'Schritte: 0'. Dein Programm gibt aus: %r" % z
+        </script>
+        <script type="text/x-python" data-role="solution">
+a = float(input("a: "))
+tol = float(input("Toleranz: "))
+x = a
+schritte = 0
+while abs(x * x - a) > tol:
+    x = (x + a / x) / 2
+    schritte = schritte + 1
+print(f"Wurzel: {x:.8f}")
+print(f"Schritte: {schritte}")
+        </script>
+        <script type="application/json" data-role="scheme">[
+{"p":1,"t":"a und tol werden mit input() eingelesen und mit float() umgewandelt (in dieser Reihenfolge)"},
+{"p":1,"t":"Vor der Schleife: sinnvoller Startwert (zum Beispiel x = a) und Zähler schritte = 0"},
+{"p":1,"t":"while-Bedingung mit Toleranz: abs(x * x - a) > tol (kein == oder !=)"},
+{"p":1,"t":"Im Rumpf steht die richtige Newton-Formel x = (x + a / x) / 2"},
+{"p":1,"t":"Im Rumpf wird der Zähler um 1 erhöht"},
+{"p":1,"t":"Die Ausgaben stehen nach der Schleife (nicht eingerückt)"},
+{"p":1,"t":"Wurzel mit f-String und :.8f ausgegeben"},
+{"p":1,"t":"Schritte als ganze Zahl ausgegeben, Texte „Wurzel:“ und „Schritte:“ stimmen"}
+]</script>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-notebook" data-nonumber="1" data-title="Notebook und Deep Dive" data-part="B" data-stars="" data-min="" data-extra="ohne Wertung" aria-labelledby="h-t-notebook" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-notebook" tabindex="-1">Notebook und Deep Dive</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Mehr üben mit Abkühlkurve, Messreihen, Newton-Verfahren und Tabellen. Das Notebook nutzt nur Python aus V01 bis V06. Es hat drei Stufen (Aufwärmen, Anwenden, Knobeln), keine Lösungen, dafür Selbsttests.</p>
+      <p><a class="k-btn k-btn--ghost" href="../notebooks/V06-Schleifen.ipynb" download>V06-Schleifen.ipynb herunterladen</a></p>
+      <ol class="k-steps">
+        <li><strong>In Codespaces öffnen:</strong> Im Kurs-Repository auf GitHub „Code“ → „Codespaces“ → „Create codespace“. Die Umgebung (Python 3.12, NumPy, Matplotlib, Jupyter) ist vorbereitet. Dann <code class="k-i">notebooks/V06-Schleifen.ipynb</code> öffnen.</li>
+        <li><strong>Oder lokal:</strong> <code class="k-i">pip install numpy matplotlib jupyter</code>, dann <code class="k-i">jupyter lab</code>.</li>
+        <li>Immer erst die Vorhersage-Zellen ausfüllen, dann ausführen. Hängt eine Zelle in einer Endlosschleife, stoppst du sie in Jupyter mit dem Quadrat-Knopf („Interrupt“).</li>
+      </ol>
+      <h3>Danach</h3>
+      <p><a href="v06-schleifen.html#deepdive">Zum Deep Dive</a> (freiwillig): Bisektion, Schleifen in der SPS, Newton-Konvergenz, verschachtelte Schleifen. Oder zurück zur <a href="v06-schleifen.html">Lerneinheit</a>, um etwas nachzulesen.</p>
+
+    </section>
+
+      <nav class="lab__pager" aria-label="Zwischen Aufgaben wechseln">
+        <a class="k-btn k-btn--ghost" id="lab-prev" href="#a-werkzeugkasten">← Zurück</a>
+        <a class="k-btn k-btn--ghost" id="lab-next" href="#a-vorgemacht">Weiter →</a>
+      </nav>
+    </main>
+
+    <div class="lab__dock" data-library-dock data-state="off"></div>
+  </div>
+
+  <footer class="dhbw-footer k-footer">
+    <div class="dhbw-footer__inner">
+      <span><span class="dhbw-footer__brand">DHBW Stuttgart</span> · Campus Horb</span>
+      <span><a href="../index.html">Zurück zum Lernpfad</a> · V06 Programmierlabor</span>
+    </div>
+  </footer>
+
+  <script src="../assets/js/icons.js"></script>
+  <script src="../assets/js/editor.js" defer></script>
+  <script src="../assets/js/kurs.js"></script>
+  <script src="../assets/js/aufgaben.js"></script>
+  <script src="../assets/js/labor.js"></script>
+</body>
+</html>

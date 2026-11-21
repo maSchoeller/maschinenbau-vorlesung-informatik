@@ -1,0 +1,125 @@
+WEBVTT
+
+1
+00:00:00.400 --> 00:00:04.975
+Ein Struktogramm lässt sich fast mechanisch in Python übersetzen: Block für Block.
+
+2
+00:00:05.699 --> 00:00:11.139
+Links das Struktogramm, rechts der Code, und gleiche Farbe heißt: gehört zusammen.
+
+3
+00:00:12.253 --> 00:00:17.123
+Aus jeder Eingabe wird eine Zeile: float(input(...)) liest eine Kommazahl ein.
+
+4
+00:00:17.958 --> 00:00:22.763
+Die Namen der Variablen übernimmst du aus dem Struktogramm, dann findet jeder die Stelle wieder.
+
+5
+00:00:23.509 --> 00:00:26.370
+Dieses Muster wendest du ab jetzt bei jeder Aufgabe an.
+
+6
+00:00:27.270 --> 00:00:29.813
+Die Verzweigung wird zu if und else.
+
+7
+00:00:30.729 --> 00:00:34.928
+Die Bedingung aus dem Dreieck steht hinter if, gefolgt von einem Doppelpunkt.
+
+8
+00:00:35.257 --> 00:00:40.253
+Der ja-Zweig steht eingerückt darunter, der nein-Zweig eingerückt unter else.
+
+9
+00:00:40.763 --> 00:00:48.593
+Einrückung heißt: vier Leerzeichen weiter rechts. Sie ist kein Schmuck, sie bestimmt, was zu welchem Zweig gehört.
+
+10
+00:00:48.939 --> 00:00:52.520
+Der Doppelpunkt darf nicht fehlen, sonst meldet Python einen Fehler.
+
+11
+00:00:53.420 --> 00:00:58.736
+Steckt im nein-Zweig eine weitere Verzweigung, steckt im Code ein if im else.
+
+12
+00:00:58.955 --> 00:01:02.815
+Jede Ebene im Struktogramm ergibt eine Einrückebene mehr.
+
+13
+00:01:03.120 --> 00:01:07.759
+Das else steht genau unter seinem if, sonst gehört es zu einem anderen Block.
+
+14
+00:01:08.103 --> 00:01:12.830
+Zähle die Ebenen im Struktogramm, dann stimmt auch die Einrückung im Code.
+
+15
+00:01:13.730 --> 00:01:19.513
+Wir prüfen die Eingabe zuerst, denn bei einer Spannung von 0 bricht die Division ab.
+
+16
+00:01:19.363 --> 00:01:24.498
+Python meldet einen ZeroDivisionError, und danach kommt keine Ausgabe mehr.
+
+17
+00:01:24.348 --> 00:01:30.842
+Ein if vor der Rechnung fängt solche Werte ab: Plausibel heißt, der Wert ist physikalisch möglich.
+
+18
+00:01:30.692 --> 00:01:37.058
+Auch eine negative Spannung ergibt keinen Sinn, deshalb prüfen wir spannung <= 0.
+
+19
+00:01:36.908 --> 00:01:41.460
+So schützt ein einziges if das ganze Programm vor unsinnigen Werten.
+
+20
+00:01:42.360 --> 00:01:44.802
+Bei drei Ausgängen hast du zwei Möglichkeiten.
+
+21
+00:01:44.910 --> 00:01:52.352
+Links verschachtelt, ein if im else, rechts mit elif, der Kurzform für else und gleich wieder if.
+
+22
+00:01:52.485 --> 00:01:54.126
+Beide liefern dasselbe.
+
+23
+00:01:54.314 --> 00:01:58.811
+Nimm elif für gleichrangige Bereiche, die der Reihe nach geprüft werden: Der erste Treffer gewinnt.
+
+24
+00:01:58.915 --> 00:02:06.551
+Verschachtle, wenn die zweite Frage nur in einem Zweig Sinn ergibt, wie die Rechnung nach der Prüfung.
+
+25
+00:02:07.134 --> 00:02:12.407
+Bei vielen Bereichen bleibt elif übersichtlich, tiefe Verschachtelung wird schnell unlesbar.
+
+26
+00:02:12.639 --> 00:02:17.290
+Entscheidend ist, dass du beim Lesen sofort siehst, welche Fälle zusammengehören.
+
+27
+00:02:18.190 --> 00:02:23.444
+Ob der Code stimmt, zeigen Testfälle, die du aus dem Struktogramm ableitest.
+
+28
+00:02:23.731 --> 00:02:26.756
+Die Regel: Jeder Zweig wird mindestens einmal durchlaufen.
+
+29
+00:02:27.829 --> 00:02:36.066
+Unser Struktogramm hat drei Wege, also drei Tests, dazu ein Grenzfall: Bei genau 1,5 gilt noch ausreichend.
+
+30
+00:02:36.262 --> 00:02:40.720
+Du sagst das Ergebnis vorher und vergleichst es mit der Ausgabe von Python.
+
+31
+00:02:41.025 --> 00:02:45.520
+Stimmt ein Test nicht, weißt du sofort, in welchem Zweig du suchen musst.

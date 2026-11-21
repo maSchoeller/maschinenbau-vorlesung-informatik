@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>V04 Programmierlabor · Informatik Maschinenbau</title>
+  <meta name="description" content="Programmierlabor V04: Arbeitsumgebung mit Aufgabenliste, Editor und Befehls-Bibliothek. Teil A im Labor, Teil B Training zu Hause.">
+  <link rel="stylesheet" href="../assets/css/dhbw-base.css">
+  <link rel="stylesheet" href="../assets/css/kurs.css">
+  <link rel="stylesheet" href="../assets/css/aufgaben.css">
+  <link rel="stylesheet" href="../assets/css/editor.css">
+  <link rel="stylesheet" href="../assets/css/labor.css">
+</head>
+<body data-lesson="V04" data-page="labor">
+  <a class="k-skip" href="#inhalt">Zum Inhalt springen</a>
+
+  <header class="dhbw-header k-header">
+    <div class="dhbw-header__inner">
+      <a class="k-logo" href="../index.html" aria-label="Zur Startseite">
+        <span class="k-logo__mark" aria-hidden="true">DHBW</span>
+        <span class="k-logo__text">Informatik Maschinenbau<small>Campus Horb · 2026/27</small></span>
+      </a>
+      <nav class="k-nav" aria-label="Hauptnavigation">
+        <a href="../index.html">Start</a>
+        <a href="../index.html#lernpfad">Lernpfad</a>
+        <a href="../bibliothek.html">Bibliothek</a>
+        <a href="v04-logik-und-verzweigungen.html">V04 Lerneinheit</a>
+        <a href="v04-labor.html" aria-current="page">V04 Labor</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="lab" data-lab>
+
+    <nav class="lab__list" aria-label="Aufgabenliste">
+      <div class="lab__listhead">
+        <p class="lab__title">Programmierlabor V04</p>
+        <a class="lab__back" href="v04-logik-und-verzweigungen.html">← Lerneinheit</a>
+      </div>
+      <div class="a-progress" data-a-progress>
+        <span class="a-progress__bar"><span class="a-progress__fill"></span></span>
+        <span class="a-progress__text">0 von 13 Aufgaben gelöst</span>
+      </div>
+      <p class="lab__legend k-small k-muted"><span><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-circle"/></svg> offen</span><span><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-half"/></svg> begonnen</span><span><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-done"/></svg> gelöst</span></p>
+      <div data-lab-items></div>
+    </nav>
+
+    <main id="inhalt" class="lab__main" tabindex="-1">
+      <div class="lab__bar">
+        <div class="lab__select">
+          <label for="lab-select">Aufgabe</label>
+          <select id="lab-select"></select>
+        </div>
+        <button type="button" class="k-btn k-btn--ghost k-btn--small" id="lab-toolbox-btn" aria-expanded="false" aria-controls="lab-drawer">Werkzeugkasten</button>
+      </div>
+      <section class="lab__drawer" id="lab-drawer" aria-label="Werkzeugkasten" hidden></section>
+
+    <section class="l-task" id="a-werkzeugkasten" data-title="Werkzeugkasten" data-part="A" data-stars="" data-min="5" data-extra="" aria-labelledby="h-a-werkzeugkasten" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-werkzeugkasten" tabindex="-1">Werkzeugkasten</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Heute neu in Python: <abbr class="k-begriff" data-erklaerung="Ein bool ist ein Wert, der nur True (wahr) oder False (falsch) sein kann, wie ein Schalter an oder aus."><code class="k-i">bool</code></abbr>-Werte, <abbr class="k-begriff" data-erklaerung="Ein Vergleichsoperator vergleicht zwei Werte und liefert True oder False, zum Beispiel ist 5 &gt; 3 wahr.">Vergleiche</abbr>, die Verknüpfungen <code class="k-i">and</code>, <code class="k-i">or</code>, <code class="k-i">not</code> und die <abbr class="k-begriff" data-erklaerung="Eine Verzweigung ist eine Entscheidung im Programm: Je nach Bedingung läuft der eine oder der andere Teil. Wie eine Weiche im Gleis.">Verzweigung</abbr> mit <code class="k-i">if</code>, <code class="k-i">elif</code> und <code class="k-i">else</code>. Aus V01 bis V03 setzen wir <code class="k-i">print</code>, <abbr class="k-begriff" data-erklaerung="Eine Variable ist ein Name für einen Speicherplatz, wie ein beschriftetes Schubfach. Mit x = 3 legst du die 3 unter dem Namen x ab.">Variablen</abbr>, <code class="k-i">input</code>, <code class="k-i">float()</code>, f-Strings und <code class="k-i">math.isclose</code> voraus. Das Video zeigt dir die Schreibweise, die Karten unten dienen dir als Spickzettel. Jeder Code ist ausführbar: Drück auf „Schritt für Schritt“, vor allem bei der Verzweigung (Karte 4).</p>
+      <figure class="k-video">
+        <video controls preload="metadata" poster="../assets/video/v04-python-poster.png" aria-label="Python-Werkstatt: bool, Vergleiche, and/or/not, if/elif/else (ca. 3 Min)">
+          <source src="../assets/video/v04-python.mp4" type="video/mp4">
+          <track kind="subtitles" srclang="de" label="Deutsch" src="../assets/video/v04-python.vtt" default>
+          Dein Browser kann dieses Video nicht abspielen.
+        </video>
+        <div class="k-video__missing" hidden>Video folgt. Bis dahin: Lies den Code unten Zeile für Zeile und probiere ihn aus.</div>
+        <figcaption>Python-Werkstatt: bool, Vergleiche, and/or/not, if/elif/else (ca. 3 Min). Untertitel sind eingeschaltet (Deutsch).</figcaption>
+      </figure>
+      <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke</strong><p>Diese fünf <abbr class="k-begriff" data-erklaerung="Die Syntax ist die Schreibweise einer Programmiersprache, wie die Grammatik einer Sprache: Reihenfolge, Klammern, Doppelpunkte, Einrückung. Ein Tippfehler dort heißt Syntaxfehler.">Syntax</abbr>-Karten sind dein Spickzettel, bis es sitzt. Du erreichst sie in jeder Aufgabe über den Knopf „Werkzeugkasten“ oben. Alle Befehle des Kurses stehen außerdem rechts in der Befehls-Bibliothek.</p></div>
+      <div class="lab__toolbox" id="lab-toolbox">
+<div class="a-syntax-list">
+  <article class="a-syntax" aria-labelledby="sk-bool">
+    <span class="a-syntax__label">Syntax-Karte 1</span>
+    <h4 id="sk-bool">Wahrheitswerte und Vergleiche</h4>
+<pre><code>x = 180
+ok = x &gt; 150            # True
+print(ok, type(ok))
+print(x == 180, x != 180)
+print(x &lt; 150, x &lt;= 180, x &gt;= 200)</code></pre>
+    <div class="k-tablewrap"><table>
+      <tbody>
+        <tr><td><code class="k-i">==</code> / <code class="k-i">!=</code></td><td>gleich / ungleich</td></tr>
+        <tr><td><code class="k-i">&lt;</code> / <code class="k-i">&gt;</code></td><td>kleiner / größer (Grenze gehört nicht dazu)</td></tr>
+        <tr><td><code class="k-i">&lt;=</code> / <code class="k-i">&gt;=</code></td><td>kleiner oder gleich / größer oder gleich (Grenze gehört dazu)</td></tr>
+      </tbody>
+    </table></div>
+    <ul>
+      <li>Das Ergebnis eines Vergleichs ist ein <code class="k-i">bool</code>: nur <code class="k-i">True</code> oder <code class="k-i">False</code>, immer mit großem Anfangsbuchstaben und ohne Anführungszeichen.</li>
+      <li><code class="k-i">=</code> speichert einen Wert, <code class="k-i">==</code> fragt, ob zwei Werte gleich sind.</li>
+      <li>Einen Text vergleichst du nicht mit einer Zahl: <code class="k-i">"180" == 180</code> ist <code class="k-i">False</code>, und <code class="k-i">"180" &gt; 150</code> ist ein <code class="k-i">TypeError</code>.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-bereich">
+    <span class="a-syntax__label">Syntax-Karte 2</span>
+    <h4 id="sk-bereich">Bereich prüfen und Kommazahlen</h4>
+<pre><code>import math
+
+druck = 180.0
+print(150 &lt;= druck &lt;= 210)    # Grenzen gehören dazu
+print(150 &lt; druck &lt; 210)      # Grenzen gehören nicht dazu
+print(0.1 + 0.2 == 0.3)       # Falle aus V03
+print(math.isclose(0.1 + 0.2, 0.3))</code></pre>
+    <ul>
+      <li>Ein Bereich lässt sich wie in der Mathematik in einem Zug schreiben: <code class="k-i">150 &lt;= druck &lt;= 210</code>.</li>
+      <li>Wähle <code class="k-i">&lt;=</code> oder <code class="k-i">&lt;</code> bewusst: Steht in der Vorgabe „von 150 bis 210“, gehören die Grenzen dazu.</li>
+      <li>Kommazahlen vergleichst du nicht mit <code class="k-i">==</code> (V03): Nimm <code class="k-i">math.isclose</code> oder prüfe gegen feste Grenzen.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-logik">
+    <span class="a-syntax__label">Syntax-Karte 3</span>
+    <h4 id="sk-logik">and, or, not</h4>
+<pre><code>a = True
+b = False
+print(a and b)            # False: beide müssen wahr sein
+print(a or b)             # True: einer genügt
+print(not a)              # False: dreht um
+print(a or b and not a)   # not vor and vor or
+print((a or b) and not a) # Klammern ändern das</code></pre>
+    <ul>
+      <li>Es sind Wörter, keine Zeichen: <code class="k-i">and</code>, <code class="k-i">or</code>, <code class="k-i">not</code>, klein geschrieben.</li>
+      <li>Reihenfolge: zuerst Vergleiche, dann <code class="k-i">not</code>, dann <code class="k-i">and</code>, zuletzt <code class="k-i">or</code>. Im Zweifel Klammern setzen.</li>
+      <li>Jede Seite von <code class="k-i">and</code> und <code class="k-i">or</code> ist eine vollständige Bedingung: <code class="k-i">x &gt; 3 and x &lt; 9</code>, nicht <code class="k-i">x &gt; 3 and &lt; 9</code>.</li>
+      <li>De Morgan: <code class="k-i">not (a and b)</code> ist dasselbe wie <code class="k-i">(not a) or (not b)</code>.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-if">
+    <span class="a-syntax__label">Syntax-Karte 4</span>
+    <h4 id="sk-if">if, elif, else und Einrückung</h4>
+<pre><code>druck = 230.0
+if druck &lt; 150:
+    print("zu niedrig")
+elif druck &lt;= 210:
+    print("im Bereich")
+else:
+    print("zu hoch")
+print("fertig")          # nicht eingerückt: läuft immer</code></pre>
+    <ul>
+      <li>Hinter <code class="k-i">if</code>, <code class="k-i">elif</code> und <code class="k-i">else</code> steht ein <strong>Doppelpunkt</strong>. Die Zeilen darunter sind <strong>vier Leerzeichen eingerückt</strong> (die Tab-Taste im Editor macht das für dich). Die Einrückung ist Teil der Syntax: Sie sagt Python, was zum Zweig gehört.</li>
+      <li>Es läuft genau ein Zweig: der erste mit wahrer Bedingung. <code class="k-i">elif</code> und <code class="k-i">else</code> sind optional; <code class="k-i">else</code> hat keine Bedingung.</li>
+      <li>Eine Zeile, die wieder ganz links beginnt, beendet den Block und läuft in jedem Fall.</li>
+      <li>Drück auf „Schritt für Schritt“: Du siehst, welche Zeilen übersprungen werden.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-ja">
+    <span class="a-syntax__label">Syntax-Karte 5</span>
+    <h4 id="sk-ja">Ja/Nein und Zahl einlesen</h4>
+<pre data-stdin="j&#10;180"><code>tuer_zu = input("Schutztür geschlossen? (j/n): ") == "j"
+druck = float(input("Druck in bar: "))
+print(tuer_zu, type(tuer_zu))
+print(druck &gt; 150)</code></pre>
+    <ul>
+      <li><code class="k-i">input(...) == "j"</code> ist ein Vergleich: Das Ergebnis ist <code class="k-i">True</code>, wenn der Benutzer „j“ tippt, sonst <code class="k-i">False</code>. So wird aus Text ein <code class="k-i">bool</code>.</li>
+      <li>Der Vergleich ist genau: „J“ (großes J) ist nicht „j“.</li>
+      <li>Zahlen immer sofort mit <code class="k-i">float()</code> umwandeln (V03), sonst gibt es beim Vergleich einen <code class="k-i">TypeError</code>.</li>
+    </ul>
+  </article>
+</div>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-vorgemacht" data-title="Vorgerechnetes Beispiel: Zweihandschaltung" data-part="A" data-stars="" data-min="10" data-extra="" aria-labelledby="h-a-vorgemacht" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-vorgemacht" tabindex="-1">Vorgerechnetes Beispiel: Zweihandschaltung</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Aufgabe: Ein <abbr class="k-begriff" data-erklaerung="Ein Programm ist eine Liste von Anweisungen, die Python von oben nach unten Zeile für Zeile abarbeitet.">Programm</abbr> steuert die Freigabe einer Presse. Der Hub wird nur freigegeben, wenn beide Taster gedrückt sind, die Schutztür zu ist und der Hydraulikdruck von 150 bis 210 bar liegt. Sonst nennt das Programm den Grund. Lies den Code Zeile für Zeile, dann führe ihn aus. Die Eingaben stehen im Feld darunter (alles in Ordnung, Druck 180 bar). Drück danach auf „Schritt für Schritt“: Bei der Verzweigung ab Zeile 16 siehst du, wie das Programm Zeilen überspringt.</p>
+      <figure class="k-video">
+        <video controls preload="metadata" poster="../assets/video/v04-beispiel-poster.png" aria-label="Vorgerechnet: die Zweihandschaltung Schritt für Schritt (ca. 3 Min)">
+          <source src="../assets/video/v04-beispiel.mp4" type="video/mp4">
+          <track kind="subtitles" srclang="de" label="Deutsch" src="../assets/video/v04-beispiel.vtt" default>
+          Dein Browser kann dieses Video nicht abspielen.
+        </video>
+        <div class="k-video__missing" hidden>Video folgt. Bis dahin: Lies den Code unten Zeile für Zeile und probiere ihn aus.</div>
+        <figcaption>Vorgerechnet: die Zweihandschaltung Schritt für Schritt (ca. 3 Min). Untertitel sind eingeschaltet (Deutsch).</figcaption>
+      </figure>
+      <pre data-stdin="j&#10;j&#10;j&#10;180"><code># Zweihandschaltung einer Presse: Hub nur, wenn beide Taster gedrückt,
+# die Schutztür zu und der Hydraulikdruck im zulässigen Bereich ist.
+# (V04: bool, Vergleiche, and/or/not, if/elif/else)
+
+taster_links = input("Taster links gedrückt? (j/n): ") == "j"
+taster_rechts = input("Taster rechts gedrückt? (j/n): ") == "j"
+tuer_zu = input("Schutztür geschlossen? (j/n): ") == "j"
+druck_bar = float(input("Hydraulikdruck in bar: "))
+
+druck_ok = 150 &lt;= druck_bar &lt;= 210
+freigabe = taster_links and taster_rechts and tuer_zu and druck_ok
+
+print("Beide Taster:", taster_links and taster_rechts)
+print("Druck im Bereich:", druck_ok)
+
+if freigabe:
+    print("Hub freigegeben")
+elif not tuer_zu:
+    print("Stopp: Schutztür offen")
+elif not druck_ok:
+    print(f"Stopp: Druck {druck_bar:.1f} bar außerhalb von 150 bis 210 bar")
+else:
+    print("Warten: bitte beide Taster drücken")</code></pre>
+      <ol class="a-explain">
+        <li><strong>Zeilen 5 bis 7:</strong> <code class="k-i">input(...) == "j"</code> ist ein Vergleich. Der Benutzer tippt „j“ oder „n“, der Vergleich macht daraus <code class="k-i">True</code> oder <code class="k-i">False</code>. Die drei Variablen sind also <code class="k-i">bool</code>, kein Text.</li>
+        <li><strong>Zeile 8:</strong> Der Druck ist eine Kommazahl: <code class="k-i">float(input(...))</code> (V03). Ohne <code class="k-i">float()</code> gäbe Zeile 10 einen <code class="k-i">TypeError</code>, denn Text lässt sich nicht mit 150 vergleichen.</li>
+        <li><strong>Zeile 10:</strong> <code class="k-i">150 &lt;= druck_bar &lt;= 210</code> prüft den Bereich in einem Zug. Wegen <code class="k-i">&lt;=</code> gehören 150 und 210 dazu. Das Ergebnis ist <code class="k-i">druck_ok</code>, ein <code class="k-i">bool</code>.</li>
+        <li><strong>Zeile 11:</strong> Vier Wahrheitswerte mit <code class="k-i">and</code> verknüpft: <code class="k-i">freigabe</code> ist nur dann <code class="k-i">True</code>, wenn <em>alle vier</em> <code class="k-i">True</code> sind. Mit <code class="k-i">or</code> statt <code class="k-i">and</code> wäre die Sicherung wirkungslos.</li>
+        <li><strong>Zeilen 13 und 14:</strong> <code class="k-i">print</code> zeigt auch Wahrheitswerte an, hier als Zwischenergebnisse. Das ist ein guter Weg, eine Bedingung zu prüfen, bevor man sie in <code class="k-i">if</code> einsetzt.</li>
+        <li><strong>Zeilen 16 bis 23:</strong> Die Verzweigung. Hinter jeder Bedingung steht ein Doppelpunkt, darunter vier Leerzeichen Einrückung. Es läuft genau ein Zweig: erst die Freigabe, dann „Tür offen“, dann „Druck falsch“, sonst „Warten“. Zeile 21 ist ein f-String mit <code class="k-i">:.1f</code> (V03).</li>
+        <li><strong>Selbsterklärung:</strong> Ändere die Eingaben und sag vorher die Meldung voraus. Probiere: <code class="k-i">j, j, n, 230</code> (Tür offen und Druck zu hoch: Welche Meldung kommt, und warum nur eine?), <code class="k-i">j, n, j, 180</code>, und <code class="k-i">j, j, j, 210</code> (Grenzfall). Was passiert bei Druck 210.5?</li>
+      </ol>
+    </section>
+
+    <section class="l-task" id="a-ablauf" data-title="Ablauf verfolgen" data-part="A" data-stars="" data-min="5" data-extra="" aria-labelledby="h-a-ablauf" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-ablauf" tabindex="-1">Ablauf verfolgen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Bei einer <abbr class="k-begriff" data-erklaerung="Eine Verzweigung ist eine Entscheidung im Programm: Je nach Bedingung läuft der eine oder der andere Teil. Wie eine Weiche im Gleis.">Verzweigung</abbr> werden Zeilen übersprungen. Führe das Programm im Kopf aus und trage ein, was danach in den hervorgehobenen Variablen steht. Achte auf die Spalte „Zeile“: Sie springt, weil Python nur den Zweig ausführt, dessen Bedingung stimmt. Ein <code class="k-i">bool</code> schreibst du mit großem Anfangsbuchstaben und ohne Anführungszeichen: <code class="k-i">True</code>. Text steht in Anführungszeichen. Wenn du unsicher bist, lass den Code vorher im „Vorgerechneten Beispiel“ mit „Schritt für Schritt“ laufen.</p>
+      <div class="a-task" data-a="trace" data-id="w-trace">
+        <script type="application/json">{"code":["druck = 215.0","untergrenze = 150","obergrenze = 210","im_bereich = untergrenze <= druck <= obergrenze","if im_bereich:","    meldung = \"frei\"","elif druck > obergrenze:","    meldung = \"zu hoch\"","else:","    meldung = \"zu niedrig\"","print(f\"Druck {druck:.0f} bar: {meldung}\")"],
+"vars":["druck","untergrenze","obergrenze","im_bereich","meldung"],
+"steps":[
+{"line":1,"set":{"druck":"215.0"},"hint":"Eine Kommazahl mit Dezimalpunkt: 215.0."},
+{"line":2,"set":{"untergrenze":"150"},"hint":"Eine Ganzzahl ohne Punkt."},
+{"line":3,"set":{"obergrenze":"210"},"hint":"Eine Ganzzahl ohne Punkt."},
+{"line":4,"set":{"im_bereich":"False"},"hint":"Ist 150 <= 215.0 <= 210? Die zweite Hälfte (215.0 <= 210) stimmt nicht, also ist das ganze Ergebnis False. Ein bool schreibst du ohne Anführungszeichen."},
+{"line":8,"set":{"meldung":"'zu hoch'"},"hint":"Zeile 5 (if im_bereich) ist falsch, Python springt zum elif in Zeile 7: 215.0 > 210 ist wahr, also läuft Zeile 8. Der Text steht in Anführungszeichen."},
+{"line":11,"out":"Druck 215 bar: zu hoch","hint":"Der else-Zweig (Zeilen 9 und 10) wird übersprungen. Der f-String setzt druck mit :.0f (keine Nachkommastellen) und meldung ein."}
+]}</script>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-zeilen" data-title="Zeilen ordnen" data-part="A" data-stars="" data-min="8" data-extra="" aria-labelledby="h-a-zeilen" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-zeilen" tabindex="-1">Zeilen ordnen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Alle Zeilen sind da, aber durcheinander. Bring sie in die richtige Reihenfolge <strong>und rücke sie richtig ein</strong>: Zeilen, die zu einem <code class="k-i">if</code>-, <code class="k-i">elif</code>- oder <code class="k-i">else</code>-Zweig gehören, werden eingerückt (die Pfeile an der Zeile rücken ein und aus). Manche Zeilen sind <strong>Ablenker</strong>: Sie gehören nicht ins Programm.</p>
+      <div class="a-task" data-a="parsons" data-id="w-parsons1">
+        <div class="a-task__head"><h3 class="a-task__title">Drucküberwachung</h3></div>
+        <p>Das Programm liest den Druck in bar ein und meldet, ob er zu niedrig (unter 150), im Bereich (150 bis 210) oder zu hoch ist.</p>
+        <script type="application/json">{"solution":["druck = float(input('Druck in bar: '))","if druck < 150:","    print('zu niedrig')","elif druck <= 210:","    print('im Bereich')","else:","    print('zu hoch')"],
+"distractors":["druck = input('Druck in bar: ')","elif druck <= 210"]}</script>
+      </div>
+
+      <div class="a-task" data-a="parsons" data-id="w-parsons2">
+        <div class="a-task__head"><h3 class="a-task__title">Hub nur mit beiden Tastern</h3></div>
+        <p>Das Programm fragt beide Taster ab (Eingabe „j“ heißt gedrückt) und gibt den Hub nur frei, wenn beide gedrückt sind.</p>
+        <script type="application/json">{"solution":["taster_links = input('Taster links? (j/n): ') == 'j'","taster_rechts = input('Taster rechts? (j/n): ') == 'j'","if taster_links and taster_rechts:","    print('Hub freigegeben')","else:","    print('Hub gesperrt')"],
+"distractors":["if taster_links or taster_rechts:","taster_links = input('Taster links? (j/n): ')"],
+"alts":[["taster_rechts = input('Taster rechts? (j/n): ') == 'j'","taster_links = input('Taster links? (j/n): ') == 'j'","if taster_links and taster_rechts:","    print('Hub freigegeben')","else:","    print('Hub gesperrt')"]]}</script>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-luecken" data-title="Lücken füllen" data-part="A" data-stars="" data-min="7" data-extra="" aria-labelledby="h-a-luecken" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-luecken" tabindex="-1">Lücken füllen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Jetzt tippst du Teile selbst. Ergänze die fünf Lücken, sodass das Programm eine Spindel nur freigibt, wenn die Schutzhaube geschlossen ist <em>und</em> die Drehzahl höchstens 3000 beträgt (3000 selbst ist erlaubt). Geprüft wird nicht nur dein Wortlaut, sondern ob das Programm das Richtige tut.</p>
+      <div class="a-task" data-a="gap" data-id="w-luecken" data-mode="programm">
+        <pre class="a-gap__src">n = @@float@@(input("Drehzahl in 1/min: "))
+haube_zu = input("Schutzhaube geschlossen? (j/n): ") @@==@@ "j"
+if n @@<=@@ 3000 @@and@@ haube_zu:
+    print("Spindel frei")
+@@else@@:
+    print("Spindel gesperrt")</pre>
+        <script type="text/x-python" data-role="tests">
+def _pruefe(n, haube, soll):
+    z = zeilen(run_program([str(n), haube]))
+    assert soll in z, "Bei n = %s und Haube %r wird %r erwartet. Dein Programm gibt aus: %r" % (n, haube, soll, z)
+
+def test_frei():
+    """Drehzahl 1500, Haube zu: Spindel frei"""
+    _pruefe(1500, "j", "Spindel frei")
+
+def test_grenze():
+    """Grenzfall 3000 gehört dazu: Spindel frei"""
+    _pruefe(3000, "j", "Spindel frei")
+
+def test_zu_schnell():
+    """3001 ist zu schnell: gesperrt"""
+    _pruefe(3001, "j", "Spindel gesperrt")
+
+def test_haube_offen():
+    """Haube offen: gesperrt, auch bei kleiner Drehzahl"""
+    _pruefe(500, "n", "Spindel gesperrt")
+        </script>
+        <ol class="a-hints">
+          <li>Die Eingabe ist Text, die Drehzahl soll eine Zahl sein. Welche Umwandlung hast du in V03 gelernt (Syntax-Karte 5)?</li>
+          <li>Ob der Benutzer „j“ getippt hat, fragst du mit einem Vergleich: Welches Zeichen steht für „ist gleich“ (nicht <code>=</code>!)?</li>
+          <li>„Höchstens 3000“ heißt: 3000 gehört dazu. Beide Bedingungen müssen gleichzeitig gelten: Welches Wort verknüpft sie? Und wie heißt der Zweig ohne Bedingung?</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-eigene" data-title="Erste eigene Aufgabe: Hydraulikdruck-Ampel" data-part="A" data-stars="1" data-min="10" data-extra="" aria-labelledby="h-a-eigene" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-eigene" tabindex="-1">Erste eigene Aufgabe: Hydraulikdruck-Ampel</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Jetzt schreibst du alles selbst, mit <abbr class="k-begriff" data-erklaerung="Ein Test ist ein kleines Prüfprogramm. Es startet dein Programm mit festen Eingaben und vergleicht die Ausgabe mit dem erwarteten Ergebnis.">Tests</abbr> als Sicherheitsnetz. Die Tests laufen mit mehreren Eingaben, auch mit den Grenzwerten, die du nicht siehst.</p>
+      <div class="a-task" data-a="code" data-id="w-eigene" data-mode="programm" data-inputs="150">
+        <div class="a-task__text">
+          <p>Lies den Hydraulikdruck <em>p</em> in bar als Kommazahl ein und gib genau eine der drei Meldungen aus: unter 150 bar <em>Druck zu niedrig</em>, von 150 bis 210 bar (beide Grenzen gehören dazu) <em>Druck im Bereich</em>, über 210 bar <em>Druck zu hoch</em>.</p>
+          <div class="a-spec"><strong>Ausgabe genau so (Beispiel 150):</strong><pre data-run="no">Druck im Bereich</pre></div>
+          <p class="k-small k-muted">Tipp: Drück auf „Schritt für Schritt“ und beobachte, welche Zeilen übersprungen werden. Teste die Grenzen 150 und 210 selbst.</p>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V04" aria-label="Python-Code: Hydraulikdruck-Ampel"># Hydraulikdruck-Ampel
+p = float(input("Druck in bar: "))
+
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _soll(p):
+    if p < 150:
+        return "Druck zu niedrig"
+    if p <= 210:
+        return "Druck im Bereich"
+    return "Druck zu hoch"
+
+def _pruefe(p, text=""):
+    z = zeilen(run_program([str(p)]))
+    s = _soll(p)
+    assert s in z, "Bei %s bar wird die Zeile %r erwartet. Dein Programm gibt aus: %r. %s" % (p, s, z, text)
+    assert sum(1 for l in z if l in ("Druck zu niedrig", "Druck im Bereich", "Druck zu hoch")) == 1, "Es soll genau eine Meldung erscheinen. Dein Programm gibt aus: %r" % z
+
+def test_beispiel():
+    """Beispiel 150 bar: im Bereich (untere Grenze gehört dazu)"""
+    _pruefe(150, "Gehört 150 dazu? Dann <= statt < verwenden.")
+
+def test_mitte():
+    """Mitte des Bereichs: 180 bar"""
+    _pruefe(180)
+
+def test_obere_grenze():
+    """Obere Grenze 210 bar gehört dazu"""
+    _pruefe(210, "Gehört 210 dazu? Dann <= statt < verwenden.")
+
+def test_niedrig():
+    """Zu niedrig: 149.9 bar und 0 bar"""
+    _pruefe(149.9); _pruefe(0)
+
+def test_hoch():
+    """Zu hoch: 210.1 bar und 300 bar"""
+    _pruefe(210.1); _pruefe(300)
+        </script>
+        <script type="text/x-python" data-role="solution">
+p = float(input("Druck in bar: "))
+
+if p < 150:
+    print("Druck zu niedrig")
+elif p <= 210:
+    print("Druck im Bereich")
+else:
+    print("Druck zu hoch")
+        </script>
+        <ol class="a-hints">
+          <li>Drei Fälle, also <code>if</code> / <code>elif</code> / <code>else</code>. Nimm zuerst den Fall „zu niedrig“ (Syntax-Karte 4).</li>
+          <li>Wenn „zu niedrig“ schon ausgeschlossen ist, genügt für den Bereich im <code>elif</code> die obere Grenze: <code>p &lt;= 210</code>. Warum?</li>
+          <li>Doppelpunkt hinter jeder Bedingung und hinter <code>else</code> nicht vergessen, und das <code>print</code> jeweils um vier Leerzeichen einrücken.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-review" data-seen="manual" data-title="Code-Review: KI-Code prüfen" data-part="A" data-stars="" data-min="20" data-extra="" aria-labelledby="h-a-review" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-review" tabindex="-1">Code-Review: KI-Code prüfen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Eine KI hat Code geliefert. Er sieht sauber aus und läuft los. Würdest du ihn freigeben? Klick die Zeilen an, die du für fehlerhaft hältst, dann lass auflösen.</p>
+      <figure class="k-figure">
+        <picture>
+          <source srcset="../assets/img/ki-spiegel.webp" type="image/webp">
+          <img src="../assets/img/ki-spiegel.png" alt="Illustration: KI-Code wird von einem Ingenieur geprüft" width="1600" height="901" loading="lazy" onerror="this.closest('figure').hidden=true">
+        </picture>
+      </figure>
+
+      <div class="k-mirror">
+        <h3>Szenario: Freigabelogik einer Presse</h3>
+        <p class="k-prompt__who">Prompt eines Studierenden</p>
+        <blockquote class="k-prompt">Schreib mir ein kleines Python-Programm für die Pressensteuerung. (1) Der Hub wird nur freigegeben, wenn beide Taster gedrückt sind, die Schutztür zu ist und der Hydraulikdruck von 150 bis 210 bar liegt; die Grenzen 150 und 210 gehören dazu. (2) Sonst soll die Ursache gemeldet werden: erst die Tür, dann den Druck, sonst „Warten“. (3) Frag die Hubzahl seit der letzten Wartung ab und melde „Wartung fällig“, wenn sie 10000 oder mehr beträgt.</blockquote>
+        <p class="k-prompt__who">KI-Antwort (Python)</p>
+          <ol class="k-codelines" aria-label="Code der KI, Zeilen anklickbar">
+            <li><button type="button" class="k-line">taster_links = input(&quot;Taster links gedrückt? (j/n): &quot;) == &quot;j&quot;</button></li>
+            <li><button type="button" class="k-line">taster_rechts = input(&quot;Taster rechts gedrückt? (j/n): &quot;) == &quot;j&quot;</button></li>
+            <li><button type="button" class="k-line">tuer_zu = input(&quot;Schutztür geschlossen? (j/n): &quot;) == &quot;j&quot;</button></li>
+            <li><button type="button" class="k-line">druck_bar = float(input(&quot;Hydraulikdruck in bar: &quot;))</button></li>
+            <li><button type="button" class="k-line"> </button></li>
+            <li><button type="button" class="k-line" data-bug="a">druck_ok = 150 &lt; druck_bar &lt; 210</button></li>
+            <li><button type="button" class="k-line">print(&quot;Druck im Bereich:&quot;, druck_ok)</button></li>
+            <li><button type="button" class="k-line"> </button></li>
+            <li><button type="button" class="k-line" data-bug="b">if taster_links and taster_rechts:</button></li>
+            <li><button type="button" class="k-line">&nbsp;&nbsp;&nbsp;&nbsp;print(&quot;Hub freigegeben&quot;)</button></li>
+            <li><button type="button" class="k-line">elif not tuer_zu:</button></li>
+            <li><button type="button" class="k-line">&nbsp;&nbsp;&nbsp;&nbsp;print(&quot;Stopp: Schutztür offen&quot;)</button></li>
+            <li><button type="button" class="k-line">elif not druck_ok:</button></li>
+            <li><button type="button" class="k-line">&nbsp;&nbsp;&nbsp;&nbsp;print(f&quot;Stopp: Druck {druck_bar:.1f} bar außerhalb von 150 bis 210 bar&quot;)</button></li>
+            <li><button type="button" class="k-line">else:</button></li>
+            <li><button type="button" class="k-line">&nbsp;&nbsp;&nbsp;&nbsp;print(&quot;Warten: bitte beide Taster drücken&quot;)</button></li>
+            <li><button type="button" class="k-line"> </button></li>
+            <li><button type="button" class="k-line">hubzahl = input(&quot;Hubzahl seit der Wartung: &quot;)</button></li>
+            <li><button type="button" class="k-line" data-bug="c">if hubzahl &gt;= 10000:</button></li>
+            <li><button type="button" class="k-line">&nbsp;&nbsp;&nbsp;&nbsp;print(&quot;Wartung fällig&quot;)</button></li>
+          </ol>
+        <p class="k-small k-muted">Tipp: Es sind drei Fehler eingebaut, einer je Teilaufgabe. Nicht jede Zeile ist falsch.</p>
+
+        <div class="k-mirror__task">
+          <p><strong>Würdest du das freigeben?</strong> Markiere die fehlerhaften Zeilen, dann lass auflösen.</p>
+          <button type="button" class="k-btn" data-mirror-check>Auflösen</button>
+          <p class="k-verdict" role="status" hidden></p>
+
+          <div data-mirror-after hidden>
+            <h3>Die drei Fehler</h3>
+            <h4>Fehler 1: Grenzen fallen heraus (Zeile 6)</h4>
+            <p>Der verkettete Vergleich ist erlaubt und liest sich richtig. Aber <code class="k-i">&lt;</code> schließt die Grenzen aus: Bei genau 150 oder 210 bar ist <code class="k-i">druck_ok</code> <code class="k-i">False</code>, obwohl die Vorgabe sagt, dass beide Grenzen dazugehören. Lösung: <code class="k-i">150 &lt;= druck_bar &lt;= 210</code>. Grenzwerte sind die klassische Stelle für Fehler.</p>
+            <h4>Fehler 2: Der Hub wird zu früh freigegeben (Zeile 9)</h4>
+            <p>Die erste Bedingung prüft nur die Taster. Ist die Tür offen oder der Druck falsch, läuft trotzdem der Zweig „Hub freigegeben“, und die <code class="k-i">elif</code>-Zweige darunter werden nie erreicht, weil es genau einen Zweig gibt. Die Sicherheitsbedingung muss <em>alle vier</em> Teile mit <code class="k-i">and</code> verknüpfen: <code class="k-i">taster_links and taster_rechts and tuer_zu and druck_ok</code>.</p>
+            <h4>Fehler 3: Text statt Zahl (Zeile 19)</h4>
+            <p><code class="k-i">input()</code> liefert Text. <code class="k-i">hubzahl &gt;= 10000</code> vergleicht einen Text mit einer Zahl und bricht mit einem <code class="k-i">TypeError</code> ab. Lösung: <code class="k-i">hubzahl = int(input(...))</code>. Dieser Fehler zeigt sich erst, wenn jemand etwas eintippt.</p>
+
+            <h3>Die KI-Version zum Ausprobieren</h3>
+            <p class="k-small k-muted">Die ersten beiden Ausgaben sind falsch (die Tür ist offen, und 150 bar gehören zum zulässigen Bereich). Danach bricht das Programm mit dem <code class="k-i">TypeError</code> ab. Die Eingaben (j, j, n, 150 und 12000) stehen im Feld unter dem Code. Drück auf „Schritt für Schritt“, um jede Zeile einzeln zu sehen.</p>
+            <pre data-stdin="j&#10;j&#10;n&#10;150&#10;12000"><code>taster_links = input("Taster links gedrückt? (j/n): ") == "j"
+taster_rechts = input("Taster rechts gedrückt? (j/n): ") == "j"
+tuer_zu = input("Schutztür geschlossen? (j/n): ") == "j"
+druck_bar = float(input("Hydraulikdruck in bar: "))
+
+druck_ok = 150 &lt; druck_bar &lt; 210
+print("Druck im Bereich:", druck_ok)
+
+if taster_links and taster_rechts:
+    print("Hub freigegeben")
+elif not tuer_zu:
+    print("Stopp: Schutztür offen")
+elif not druck_ok:
+    print(f"Stopp: Druck {druck_bar:.1f} bar außerhalb von 150 bis 210 bar")
+else:
+    print("Warten: bitte beide Taster drücken")
+
+hubzahl = input("Hubzahl seit der Wartung: ")
+if hubzahl &gt;= 10000:
+    print("Wartung fällig")</code></pre>
+
+            <h3>Korrigierte Version</h3>
+            <pre data-stdin="j&#10;j&#10;n&#10;150&#10;12000"><code>taster_links = input("Taster links gedrückt? (j/n): ") == "j"
+taster_rechts = input("Taster rechts gedrückt? (j/n): ") == "j"
+tuer_zu = input("Schutztür geschlossen? (j/n): ") == "j"
+druck_bar = float(input("Hydraulikdruck in bar: "))
+
+druck_ok = 150 &lt;= druck_bar &lt;= 210
+print("Druck im Bereich:", druck_ok)
+
+freigabe = taster_links and taster_rechts and tuer_zu and druck_ok
+if freigabe:
+    print("Hub freigegeben")
+elif not tuer_zu:
+    print("Stopp: Schutztür offen")
+elif not druck_ok:
+    print(f"Stopp: Druck {druck_bar:.1f} bar außerhalb von 150 bis 210 bar")
+else:
+    print("Warten: bitte beide Taster drücken")
+
+hubzahl = int(input("Hubzahl seit der Wartung: "))
+if hubzahl &gt;= 10000:
+    print("Wartung fällig")</code></pre>
+            <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke</strong><p>Die KI hat nicht „falsch gedacht“, sie hat das Muster geliefert, das am häufigsten vorkommt. Ob Grenzen dazugehören und welche Bedingungen zur Freigabe zählen, steht nur in deiner Spezifikation. Teste deshalb jede Bedingung einzeln (Tür offen, ein Taster, Druck genau 150 und 210) und lies bei jeder Verzweigung die Reihenfolge der Zweige.</p></div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-fehler" data-title="Typische Fehlermeldungen" data-part="A" data-stars="" data-min="5" data-extra="" aria-labelledby="h-a-fehler" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-fehler" tabindex="-1">Typische Fehlermeldungen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Fehlermeldungen sind keine Strafe, sondern ein Wegweiser. Diese vier siehst du bei Verzweigungen garantiert. Jedes Beispiel lässt sich ausführen: Schau dir die echte Meldung an und lies sie von unten nach oben (zuerst die letzte Zeile). Die gefährlichsten Fehler melden sich allerdings gar nicht: ein <code class="k-i">or</code> statt <code class="k-i">and</code>, ein <code class="k-i">&lt;</code> statt <code class="k-i">&lt;=</code>, ein <code class="k-i">==</code> bei Kommazahlen (V03). Dagegen helfen nur Tests mit Grenzwerten.</p>
+      <div class="a-errors">
+        <div class="a-error">
+          <h3><code class="k-i">SyntaxError</code>: <code class="k-i">=</code> statt <code class="k-i">==</code></h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="5000">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V04" aria-label="Fehlerbeispiel SyntaxError Zuweisung statt Vergleich">druck = 180
+if druck = 180:
+    print("Solldruck erreicht")</textarea></div>
+          </div>
+          <p>Meldung: <code class="k-i">SyntaxError: invalid syntax. Maybe you meant '==' or ':=' instead of '='?</code>. Ein einzelnes <code>=</code> speichert einen Wert, in einer Bedingung willst du aber <em>vergleichen</em>: <code>if druck == 180:</code>. Python merkt das zum Glück sofort.</p>
+        </div>
+        <div class="a-error">
+          <h3><code class="k-i">SyntaxError</code>: Doppelpunkt fehlt</h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="5000">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V04" aria-label="Fehlerbeispiel SyntaxError fehlender Doppelpunkt">druck = 180
+if druck &gt; 150
+    print("zu hoch")</textarea></div>
+          </div>
+          <p>Meldung: <code class="k-i">SyntaxError: expected ':'</code>. Hinter <code>if</code>, <code>elif</code> und <code>else</code> gehört ein Doppelpunkt. Er sagt Python: „Jetzt beginnt der Block, der dazugehört.“ Schau in die angezeigte Zeile: Die Stelle ist meist genau dort, wo der Pfeil hinzeigt.</p>
+        </div>
+        <div class="a-error">
+          <h3><code class="k-i">IndentationError</code>: Einrückung fehlt</h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="5000">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V04" aria-label="Fehlerbeispiel IndentationError">druck = 180
+if druck &gt; 150:
+print("zu hoch")</textarea></div>
+          </div>
+          <p>Meldung: <code class="k-i">IndentationError: expected an indented block after 'if' statement on line 2</code>. Die Zeile nach dem Doppelpunkt muss <abbr class="k-begriff" data-erklaerung="Einrückung heißt: Die Zeile beginnt mit vier Leerzeichen Abstand. In Python zeigt sie, welche Zeilen zu einem Zweig gehören.">eingerückt</abbr> sein, sonst weiß Python nicht, was zum Zweig gehört. Rücke sie um vier Leerzeichen ein (Tab-Taste). Die Gegenprobe: Rückst du eine Zeile zu weit ein, lautet die Meldung <code>unexpected indent</code>.</p>
+        </div>
+        <div class="a-error">
+          <h3><code class="k-i">TypeError</code>: Text mit Zahl vergleichen</h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="5000">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V04" aria-label="Fehlerbeispiel TypeError Vergleich">druck = "180"
+if druck &gt; 150:
+    print("zu hoch")</textarea></div>
+          </div>
+          <p>Meldung: <code class="k-i">TypeError: '&gt;' not supported between instances of 'str' and 'int'</code>. Gemeint: <code>"180"</code> ist Text, <code>150</code> ist eine Zahl, und Text lässt sich nicht der Größe nach mit einer Zahl vergleichen. Meistens fehlt ein <code>float()</code> um ein <code>input()</code> (<abbr class="k-begriff" data-erklaerung="Typumwandlung heißt: einen Wert in einen anderen Datentyp verwandeln, zum Beispiel den Text in eine Zahl.">Typumwandlung</abbr>, V03). Tückisch: <code>"180" == 150</code> meldet keinen Fehler, sondern einfach <code>False</code>.</p>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-1" data-title="Leistung aus Spannung und Strom" data-part="B" data-stars="1" data-min="4" data-extra="Wiederholung V03" aria-labelledby="h-t-1" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-1" tabindex="-1">Leistung aus Spannung und Strom</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Programmieren lernst du mit den Fingern, nicht mit den Augen. Das Training ist ein fester Teil jedes Termins und gehört zum Selbststudium. Du musst nicht alles an einem Stück machen, aber alles bis zum nächsten Termin. Die Aufgaben laufen komplett im Browser und werden automatisch geprüft.</p>
+      <div class="hinweis hinweis--achtung"><strong class="hinweis__title">Achtung</strong><p>Phase 1: <abbr class="k-begriff" data-erklaerung="GitHub Copilot ist ein KI-Assistent, der in der Entwicklungsumgebung Programmcode vorschlägt oder erklärt.">Copilot</abbr> nur als Erklärer. Erlaubt: „Erkläre mir diese Fehlermeldung“, „Was macht Zeile 3?“, „Warum läuft der elif nie?“. Nicht erlaubt: „Schreib mir die Verzweigung“. Du tippst den Code selbst, denn nur dann lernst du, ihn zu prüfen. Ab V10 darf die KI Code erzeugen, und du prüfst.</p></div>
+
+      <div class="a-task" data-a="code" data-id="tr-1" data-mode="programm" data-inputs="230|5">
+        <div class="a-task__text">
+          <p>Wiederholung aus V03: Eingaben umwandeln und formatiert ausgeben. Lies die Spannung <em>U</em> in V und den Strom <em>I</em> in A als Kommazahlen ein (in dieser Reihenfolge), berechne die Leistung <em>P</em> = <em>U</em> · <em>I</em> und gib zwei Zeilen aus: die Leistung mit einer Nachkommastelle und den Datentyp von <em>P</em>.</p>
+          <div class="a-spec"><strong>Ausgabe genau so (Beispiel U = 230, I = 5):</strong><pre data-run="no">Leistung: 1150.0 W
+Typ: &lt;class 'float'&gt;</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V04" aria-label="Python-Code Aufgabe 1"># Leistung P = U * I
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _pruefe(u, i):
+    z = zeilen(run_program([str(u), str(i)]))
+    s1 = "Leistung: %.1f W" % (u * i)
+    assert s1 in z, "Erwartet wird die Zeile %r. Dein Programm gibt aus: %r" % (s1, z)
+    assert "Typ: <class 'float'>" in z, "Erwartet wird die Zeile \"Typ: <class 'float'>\". Dein Programm gibt aus: %r" % z
+
+def test_beispiel():
+    """Beispiel U = 230 V, I = 5 A"""
+    _pruefe(230, 5)
+
+def test_kommazahlen():
+    """Kommazahlen: U = 12.5 V, I = 0.4 A"""
+    _pruefe(12.5, 0.4)
+
+def test_typ_immer_float():
+    """Auch bei ganzen Zahlen ist P ein float: U = 400, I = 3"""
+    _pruefe(400, 3)
+        </script>
+        <script type="text/x-python" data-role="solution">
+u = float(input("Spannung U in V: "))
+i = float(input("Strom I in A: "))
+p = u * i
+print(f"Leistung: {p:.1f} W")
+print("Typ:", type(p))
+        </script>
+        <ol class="a-hints">
+          <li>Beide Eingaben mit <code>float(input(...))</code> umwandeln, sonst lässt sich Text nicht multiplizieren (V03).</li>
+          <li>Formatierte Ausgabe: <code>print(f"Leistung: {p:.1f} W")</code>.</li>
+          <li>Der Typ kommt von <code>type(p)</code>: <code>print("Typ:", type(p))</code>.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-2" data-title="Messwert gegen Toleranzgrenzen" data-part="B" data-stars="1" data-min="5" data-extra="" aria-labelledby="h-t-2" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-2" tabindex="-1">Messwert gegen Toleranzgrenzen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="code" data-id="tr-2" data-mode="programm" data-inputs="24.97">
+        <div class="a-task__text">
+          <p>Ein Wellendurchmesser hat das Untermaß 24.95 mm und das Obermaß 25.05 mm. Lies den gemessenen Durchmesser in mm ein und speichere drei Wahrheitswerte: <code class="k-i">in_toleranz</code> (zwischen den Grenzen, die Grenzen gehören dazu), <code class="k-i">zu_klein</code> (unter dem Untermaß) und <code class="k-i">zu_gross</code> (über dem Obermaß). Gib die drei Werte aus. <code class="k-i">None</code> in der Vorgabe ersetzt du jeweils durch deinen Ausdruck.</p>
+          <div class="a-spec"><strong>Ausgabe genau so (Beispiel 24.97):</strong><pre data-run="no">In Toleranz: True
+Zu klein: False
+Zu groß: False</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V04" aria-label="Python-Code Aufgabe 2">durchmesser = float(input("Durchmesser in mm: "))
+in_toleranz = None     # ersetze None
+zu_klein = None        # ersetze None
+zu_gross = None        # ersetze None
+print(f"In Toleranz: {in_toleranz}")
+print(f"Zu klein: {zu_klein}")
+print(f"Zu groß: {zu_gross}")
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _pruefe(d):
+    i = 24.95 <= d <= 25.05
+    k = d < 24.95
+    g = d > 25.05
+    z = zeilen(run_program([str(d)]))
+    for s in ("In Toleranz: %s" % i, "Zu klein: %s" % k, "Zu groß: %s" % g):
+        assert s in z, "Bei %s mm wird die Zeile %r erwartet. Dein Programm gibt aus: %r" % (d, s, z)
+
+def test_mitte():
+    """Beispiel 24.97 mm: in Toleranz"""
+    _pruefe(24.97)
+
+def test_untere_grenze():
+    """Grenzfall 24.95 gehört dazu"""
+    _pruefe(24.95)
+
+def test_obere_grenze():
+    """Grenzfall 25.05 gehört dazu"""
+    _pruefe(25.05)
+
+def test_zu_klein():
+    """24.9 mm ist zu klein"""
+    _pruefe(24.9)
+
+def test_zu_gross():
+    """25.1 mm ist zu groß"""
+    _pruefe(25.1)
+        </script>
+        <script type="text/x-python" data-role="solution">
+durchmesser = float(input("Durchmesser in mm: "))
+in_toleranz = 24.95 <= durchmesser <= 25.05
+zu_klein = durchmesser < 24.95
+zu_gross = durchmesser > 25.05
+print(f"In Toleranz: {in_toleranz}")
+print(f"Zu klein: {zu_klein}")
+print(f"Zu groß: {zu_gross}")
+        </script>
+        <ol class="a-hints">
+          <li>Ein Vergleich liefert direkt <code>True</code> oder <code>False</code>: <code>zu_klein = durchmesser &lt; 24.95</code>.</li>
+          <li>Beide Grenzen gehören dazu, also <code>&lt;=</code>. Den Bereich schreibst du in einem Zug: <code>24.95 &lt;= durchmesser &lt;= 25.05</code> (Syntax-Karte 2).</li>
+          <li>Das Untermaß 24.95 und das Obermaß 25.05 stehen als feste Zahlen im Vergleich. Das ist hier in Ordnung: Der Messwert wird gegen dieselbe Zahl verglichen, nichts wird vorher gerechnet.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-3" data-title="Förderband-Freigabe" data-part="B" data-stars="2" data-min="8" data-extra="" aria-labelledby="h-t-3" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-3" tabindex="-1">Förderband-Freigabe</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="code" data-id="tr-3" data-mode="programm" data-inputs="j|n|n|j">
+        <div class="a-task__text">
+          <p>Ein Förderband läuft, wenn <strong>(</strong>der Start-Taster gedrückt ist <strong>oder</strong> die Automatik aktiv ist<strong>)</strong>, <strong>und</strong> der Not-Halt <strong>nicht</strong> ausgelöst ist <strong>und</strong> die Schutzhaube geschlossen ist. Lies vier Ja/Nein-Eingaben ein (Antwort „j“ heißt ja), in dieser Reihenfolge: Start-Taster gedrückt, Automatik aktiv, Not-Halt ausgelöst, Schutzhaube geschlossen. Gib den Wahrheitswert aus.</p>
+          <div class="a-spec"><strong>Ausgabe genau so (Beispiel j, n, n, j):</strong><pre data-run="no">Band läuft: True</pre></div>
+          <p class="k-small k-muted">Tipp: Zeichne zuerst die Wahrheitstabelle für ein paar Zeilen und achte auf die Klammern beim ODER. Der Not-Halt braucht ein <code class="k-i">not</code>.</p>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V04" aria-label="Python-Code Aufgabe 3"># Förderband-Freigabe
+start = input("Start-Taster gedrückt? (j/n): ") == "j"
+
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+import itertools
+
+def _soll(start, auto, nothalt, haube):
+    return (start or auto) and not nothalt and haube
+
+def test_beispiel():
+    """Beispiel j, n, n, j: das Band läuft"""
+    z = zeilen(run_program(["j", "n", "n", "j"]))
+    assert "Band läuft: True" in z, "Erwartet wird die Zeile 'Band läuft: True'. Dein Programm gibt aus: %r" % z
+
+def test_alle_kombinationen():
+    """Alle 16 Kombinationen stimmen mit der Vorgabe überein"""
+    for combo in itertools.product([True, False], repeat=4):
+        eingaben = ["j" if c else "n" for c in combo]
+        s = "Band läuft: %s" % bool(_soll(*combo))
+        z = zeilen(run_program(eingaben))
+        assert s in z, "Bei den Eingaben %s (Start, Automatik, Not-Halt, Haube) wird %r erwartet. Dein Programm gibt aus: %r. Klammern beim ODER gesetzt? Not-Halt mit not?" % (eingaben, s, z)
+        </script>
+        <script type="text/x-python" data-role="solution">
+start = input("Start-Taster gedrückt? (j/n): ") == "j"
+automatik = input("Automatik aktiv? (j/n): ") == "j"
+nothalt = input("Not-Halt ausgelöst? (j/n): ") == "j"
+haube_zu = input("Schutzhaube geschlossen? (j/n): ") == "j"
+
+laeuft = (start or automatik) and not nothalt and haube_zu
+print(f"Band läuft: {laeuft}")
+        </script>
+        <ol class="a-hints">
+          <li>Vier Eingaben, jede mit <code>input(...) == "j"</code> in einen <code>bool</code> verwandeln (Syntax-Karte 5).</li>
+          <li>Die Bedingung in Worten: (Start oder Automatik) und nicht Not-Halt und Haube zu. Ohne Klammern würde <code>and</code> vor <code>or</code> rechnen.</li>
+          <li><code>laeuft = (start or automatik) and not nothalt and haube_zu</code>, dann <code>print(f"Band läuft: {laeuft}")</code>.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-4" data-title="Strömungsart nach Reynolds-Zahl" data-part="B" data-stars="2" data-min="7" data-extra="" aria-labelledby="h-t-4" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-4" tabindex="-1">Strömungsart nach Reynolds-Zahl</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="code" data-id="tr-4" data-mode="programm" data-inputs="3000">
+        <div class="a-task__text">
+          <p>Bei einer Rohrströmung entscheidet die <abbr class="k-begriff" data-erklaerung="Die Reynolds-Zahl Re ist eine Kennzahl ohne Einheit. Sie vergleicht Trägheits- und Zähigkeitskräfte der Strömung und sagt, ob sie glatt (laminar) oder verwirbelt (turbulent) fließt.">Reynolds-Zahl</abbr> <em>Re</em> über die Strömungsart: unter 2300 <em>laminar</em>, von 2300 bis 4000 (beide Grenzen gehören dazu) <em>Übergang</em>, über 4000 <em>turbulent</em>. Lies <em>Re</em> als Kommazahl ein und gib die Strömungsart aus.</p>
+          <div class="a-spec"><strong>Ausgabe genau so (Beispiel 3000):</strong><pre data-run="no">Strömung: Übergang</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V04" aria-label="Python-Code Aufgabe 4"># Strömungsart
+re = float(input("Reynolds-Zahl: "))
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _soll(r):
+    if r < 2300:
+        return "laminar"
+    if r <= 4000:
+        return "Übergang"
+    return "turbulent"
+
+def _pruefe(r):
+    s = "Strömung: " + _soll(r)
+    z = zeilen(run_program([str(r)]))
+    assert s in z, "Bei Re = %s wird die Zeile %r erwartet. Dein Programm gibt aus: %r" % (r, s, z)
+
+def test_laminar():
+    """Re = 1000: laminar"""
+    _pruefe(1000)
+
+def test_grenzen_unten():
+    """Re = 2299.9 laminar, Re = 2300 Übergang"""
+    _pruefe(2299.9); _pruefe(2300)
+
+def test_uebergang():
+    """Re = 3000: Übergang"""
+    _pruefe(3000)
+
+def test_grenze_oben():
+    """Re = 4000 Übergang, Re = 4000.5 turbulent"""
+    _pruefe(4000); _pruefe(4000.5)
+
+def test_turbulent():
+    """Re = 100000: turbulent"""
+    _pruefe(100000)
+        </script>
+        <script type="text/x-python" data-role="solution">
+re = float(input("Reynolds-Zahl: "))
+
+if re < 2300:
+    art = "laminar"
+elif re <= 4000:
+    art = "Übergang"
+else:
+    art = "turbulent"
+
+print(f"Strömung: {art}")
+        </script>
+        <ol class="a-hints">
+          <li>Drei Fälle, ein <code>if</code>-<code>elif</code>-<code>else</code>. Beginne mit „laminar“: <code>re &lt; 2300</code>.</li>
+          <li>Im <code>elif</code> ist „unter 2300“ schon ausgeschlossen. Du musst nur noch die obere Grenze prüfen, und 4000 gehört noch dazu: <code>re &lt;= 4000</code>.</li>
+          <li>Du kannst in jedem Zweig direkt <code>print("Strömung: laminar")</code> schreiben. Oder du merkst dir die Art in einer Variable und gibst sie am Ende einmal aus.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-5" data-title="Messteil bewerten: Gutteil, Nacharbeit, Ausschuss" data-part="B" data-stars="3" data-min="8" data-extra="" aria-labelledby="h-t-5" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-5" tabindex="-1">Messteil bewerten: Gutteil, Nacharbeit, Ausschuss</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="code" data-id="tr-5" data-mode="programm" data-inputs="25.05">
+        <div class="a-task__text">
+          <p>Eine Welle hat das Nennmaß 25.00 mm mit der Toleranz ± 0.05 mm. Lies den Messwert in mm ein und bewerte ihn: <em>Gutteil</em>, wenn er von 24.95 bis 25.05 mm liegt (beide Grenzen gehören dazu). <em>Nacharbeit</em>, wenn er über 25.05, aber höchstens 25.15 mm liegt (zu viel Material lässt sich abtragen). Sonst <em>Ausschuss</em> (auch zu kleine Wellen: Material lässt sich nicht ansetzen).</p>
+          <div class="a-spec"><strong>Ausgabe genau so (Beispiel 25.05):</strong><pre data-run="no">Ergebnis: Gutteil</pre></div>
+          <p class="k-small k-muted">Rückgriff auf V03: <code class="k-i">abs(24.95 - 25.0)</code> ist 0.05000000000000071 und damit knapp größer als 0.05. Wer die Grenze als Abstand zum Nennmaß rechnet, fällt an der Grenze durch. Vergleiche besser direkt mit den festen Grenzen 24.95, 25.05 und 25.15.</p>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V04" aria-label="Python-Code Aufgabe 5"># Messteil bewerten
+messwert = float(input("Messwert in mm: "))
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _soll(x):
+    if 24.95 <= x <= 25.05:
+        return "Gutteil"
+    if 25.05 < x <= 25.15:
+        return "Nacharbeit"
+    return "Ausschuss"
+
+def _pruefe(x, text=""):
+    s = "Ergebnis: " + _soll(x)
+    z = zeilen(run_program([str(x)]))
+    assert s in z, "Bei %s mm wird die Zeile %r erwartet. Dein Programm gibt aus: %r. %s" % (x, s, z, text)
+
+def test_mitte():
+    """Nennmaß 25.0: Gutteil"""
+    _pruefe(25.0)
+
+def test_obere_grenze_gut():
+    """Grenzfall 25.05: noch Gutteil"""
+    _pruefe(25.05, "Die Grenze gehört dazu. Rechnest du mit abs(x - 25.0)? Das ist 0.05000000000000071: Vergleiche direkt mit 25.05.")
+
+def test_untere_grenze_gut():
+    """Grenzfall 24.95: noch Gutteil"""
+    _pruefe(24.95, "Die Grenze gehört dazu. abs(24.95 - 25.0) ist knapp größer als 0.05: Vergleiche direkt mit 24.95.")
+
+def test_nacharbeit():
+    """25.1 mm: Nacharbeit, und 25.15 gehört noch dazu"""
+    _pruefe(25.1); _pruefe(25.15, "25.15 gehört noch zur Nacharbeit.")
+
+def test_knapp_drueber():
+    """25.0501 ist schon Nacharbeit"""
+    _pruefe(25.0501)
+
+def test_ausschuss():
+    """Ausschuss: 25.2 mm (zu groß) und 24.9 mm (zu klein)"""
+    _pruefe(25.2); _pruefe(24.9, "Zu kleine Teile sind Ausschuss, nicht Nacharbeit.")
+        </script>
+        <script type="text/x-python" data-role="solution">
+messwert = float(input("Messwert in mm: "))
+
+if 24.95 <= messwert <= 25.05:
+    ergebnis = "Gutteil"
+elif 25.05 < messwert <= 25.15:
+    ergebnis = "Nacharbeit"
+else:
+    ergebnis = "Ausschuss"
+
+print(f"Ergebnis: {ergebnis}")
+        </script>
+        <ol class="a-hints">
+          <li>Drei Zweige: Gutteil, Nacharbeit, sonst Ausschuss. Für „Gutteil“ brauchst du einen Bereich mit beiden Grenzen: <code>24.95 &lt;= messwert &lt;= 25.05</code>.</li>
+          <li>Achtung beim <code>elif</code>: Prüfst du nur <code>messwert &lt;= 25.15</code>, landen auch zu kleine Messwerte (24.9) dort. Schreibe den Bereich mit beiden Seiten: <code>25.05 &lt; messwert &lt;= 25.15</code>.</li>
+          <li>Alles andere ist <code>else</code>: Ausschuss. Ausgabe: <code>print(f"Ergebnis: {ergebnis}")</code>.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-6" data-title="Sperrbedingung mit De Morgan" data-part="B" data-stars="2" data-min="8" data-extra="" aria-labelledby="h-t-6" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-6" tabindex="-1">Sperrbedingung mit De Morgan</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="code" data-id="tr-6" data-mode="programm" data-inputs="j|j|n">
+        <div class="a-task__text">
+          <p>Eine Anlage ist freigegeben, wenn die Schutztür zu ist, der Not-Halt entriegelt ist und der Druck passt. Lies drei Ja/Nein-Eingaben ein (j heißt ja), in dieser Reihenfolge: Schutztür zu, Not-Halt entriegelt, Druck ok. Berechne die Sperre auf <strong>zwei Arten</strong> und gib beide aus: (1) die Verneinung der ganzen UND-Kette (<code class="k-i">not (...)</code>), (2) die Umformung nach De Morgan: jeder Teil einzeln verneint, mit <code class="k-i">or</code> verknüpft. Beide Zeilen müssen immer dasselbe zeigen.</p>
+          <div class="a-spec"><strong>Ausgabe genau so (Beispiel j, j, n):</strong><pre data-run="no">Sperre (NICHT UND): True
+Sperre (De Morgan): True</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V04" aria-label="Python-Code Aufgabe 6"># Sperre auf zwei Arten
+tuer_zu = input("Schutztür zu? (j/n): ") == "j"
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+import itertools
+
+def test_beispiel():
+    """Beispiel j, j, n: beide Zeilen True"""
+    z = zeilen(run_program(["j", "j", "n"]))
+    assert "Sperre (NICHT UND): True" in z and "Sperre (De Morgan): True" in z, "Erwartet werden beide Zeilen mit True. Dein Programm gibt aus: %r" % z
+
+def test_alle_kombinationen():
+    """Alle 8 Kombinationen: beide Zeilen stimmen"""
+    for combo in itertools.product([True, False], repeat=3):
+        eingaben = ["j" if c else "n" for c in combo]
+        sperre = not all(combo)
+        z = zeilen(run_program(eingaben))
+        for name in ("NICHT UND", "De Morgan"):
+            s = "Sperre (%s): %s" % (name, sperre)
+            assert s in z, "Bei den Eingaben %s wird die Zeile %r erwartet. Dein Programm gibt aus: %r" % (eingaben, s, z)
+        </script>
+        <script type="text/x-python" data-role="solution">
+tuer_zu = input("Schutztür zu? (j/n): ") == "j"
+nothalt_frei = input("Not-Halt entriegelt? (j/n): ") == "j"
+druck_ok = input("Druck ok? (j/n): ") == "j"
+
+sperre1 = not (tuer_zu and nothalt_frei and druck_ok)
+sperre2 = (not tuer_zu) or (not nothalt_frei) or (not druck_ok)
+
+print(f"Sperre (NICHT UND): {sperre1}")
+print(f"Sperre (De Morgan): {sperre2}")
+        </script>
+        <ol class="a-hints">
+          <li>Drei Eingaben, jede mit <code>input(...) == "j"</code> (Syntax-Karte 5).</li>
+          <li>Variante 1: <code>not (tuer_zu and nothalt_frei and druck_ok)</code>, das <code>not</code> steht vor der Klammer.</li>
+          <li>Variante 2 nach De Morgan: das <code>not</code> springt in die Klammer, <code>and</code> wird zu <code>or</code>: <code>(not tuer_zu) or (not nothalt_frei) or (not druck_ok)</code>.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-7" data-title="Knobelaufgabe: Zwei aus drei" data-part="B" data-stars="4" data-min="Zusatz" data-extra="" aria-labelledby="h-t-7" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-7" tabindex="-1">Knobelaufgabe: Zwei aus drei</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="code" data-id="tr-7" data-mode="programm" data-inputs="j|j|n">
+        <div class="a-task__text">
+          <p>Sicherheitsrelevante Größen werden oft von drei Sensoren gleichzeitig überwacht („zwei aus drei“): Ein einzelner defekter Sensor soll weder einen Fehlalarm auslösen noch einen echten Alarm verhindern. Lies drei Ja/Nein-Eingaben ein (Sensor 1, 2, 3 meldet Grenzwert überschritten, j heißt ja) und gib zwei Zeilen aus: <code class="k-i">Alarm</code> ist <code class="k-i">True</code>, wenn <strong>mindestens zwei</strong> Sensoren melden. <code class="k-i">Sensoren uneinig</code> ist <code class="k-i">True</code>, wenn die drei Sensoren <strong>nicht alle dasselbe</strong> melden (dann sollte jemand einen Sensor prüfen). Nur <code class="k-i">and</code>, <code class="k-i">or</code>, <code class="k-i">not</code> und Vergleiche, keine Verzweigung nötig.</p>
+          <div class="a-spec"><strong>Ausgabe genau so (Beispiel j, j, n):</strong><pre data-run="no">Alarm: True
+Sensoren uneinig: True</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V04" aria-label="Python-Code Aufgabe 7"># Zwei aus drei
+s1 = input("Sensor 1 meldet Grenzwert? (j/n): ") == "j"
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+import itertools
+
+def test_beispiel():
+    """Beispiel j, j, n: Alarm und uneinig"""
+    z = zeilen(run_program(["j", "j", "n"]))
+    assert "Alarm: True" in z and "Sensoren uneinig: True" in z, "Erwartet werden 'Alarm: True' und 'Sensoren uneinig: True'. Dein Programm gibt aus: %r" % z
+
+def test_alle_kombinationen():
+    """Alle 8 Kombinationen stimmen"""
+    for combo in itertools.product([True, False], repeat=3):
+        eingaben = ["j" if c else "n" for c in combo]
+        alarm = sum(combo) >= 2
+        uneinig = len(set(combo)) > 1
+        z = zeilen(run_program(eingaben))
+        for s in ("Alarm: %s" % alarm, "Sensoren uneinig: %s" % uneinig):
+            assert s in z, "Bei den Eingaben %s wird die Zeile %r erwartet. Dein Programm gibt aus: %r" % (eingaben, s, z)
+        </script>
+        <script type="text/x-python" data-role="solution">
+s1 = input("Sensor 1 meldet Grenzwert? (j/n): ") == "j"
+s2 = input("Sensor 2 meldet Grenzwert? (j/n): ") == "j"
+s3 = input("Sensor 3 meldet Grenzwert? (j/n): ") == "j"
+
+alarm = (s1 and s2) or (s1 and s3) or (s2 and s3)
+uneinig = not (s1 == s2 == s3)
+
+print(f"Alarm: {alarm}")
+print(f"Sensoren uneinig: {uneinig}")
+        </script>
+        <ol class="a-hints">
+          <li>Mindestens zwei von drei heißt: Es gibt ein Paar, das beide meldet. Wie viele Paare gibt es? Verknüpfe jedes Paar mit <code>and</code> und die Paare mit <code>or</code>.</li>
+          <li><code>alarm = (s1 and s2) or (s1 and s3) or (s2 and s3)</code>.</li>
+          <li>„Alle gleich“ schreibt sich <code>s1 == s2 == s3</code> (verketteter Vergleich, auch für <code>bool</code>). Uneinig ist das Gegenteil: <code>not (...)</code>.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-8" data-title="Klausur-Modus: Behälterüberwachung" data-part="B" data-stars="4" data-min="15" data-extra="8 Punkte" aria-labelledby="h-t-8" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-8" tabindex="-1">Klausur-Modus: Behälterüberwachung</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="klausur" data-id="tr-8" data-mode="programm" data-minutes="15">
+        <div class="a-task__text">
+          <p><strong>So wie in der Klausur:</strong> Schreibe den Code ohne Ausführen und ohne <abbr class="k-begriff" data-erklaerung="Die Auto-Vervollständigung schlägt dir beim Tippen passende Wörter vor. In der Klausur gibt es sie nicht.">Auto-Vervollständigung</abbr>, wenn möglich zuerst auf Papier. Erst danach „Abgeben und prüfen“, dann bewertest du dich selbst.</p>
+          <p>Ein Druckbehälter wird überwacht. Nacheinander werden eingelesen: der Druck <em>p</em> in bar (Kommazahl), die Temperatur <em>T</em> in °C (Kommazahl) und „Füllstand in Ordnung?“ (j oder n). Gib genau eine Zeile <code class="k-i">Status: …</code> aus, nach diesen Regeln (die erste zutreffende gilt):</p>
+          <ul>
+            <li>Füllstand nicht in Ordnung: <em>Abschaltung: Füllstand</em>,</li>
+            <li>sonst <em>p</em> über 10 bar <strong>oder</strong> <em>T</em> über 120 °C: <em>Abschaltung: Grenzwert</em>,</li>
+            <li>sonst <em>p</em> über 8 bar <strong>oder</strong> <em>T</em> über 100 °C: <em>Warnung</em>,</li>
+            <li>sonst: <em>Normal</em>.</li>
+          </ul>
+          <div class="a-spec"><strong>Ausgabe genau so (Beispiel p = 8.5, T = 90, Füllstand j):</strong><pre data-run="no">Status: Warnung</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V04" data-assist="off" aria-label="Python-Code von Hand schreiben, ohne Ausführen"></textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _soll(p, t, ok):
+    if not ok:
+        return "Abschaltung: Füllstand"
+    if p > 10 or t > 120:
+        return "Abschaltung: Grenzwert"
+    if p > 8 or t > 100:
+        return "Warnung"
+    return "Normal"
+
+def _pruefe(p, t, ok):
+    s = "Status: " + _soll(p, t, ok)
+    z = zeilen(run_program([str(p), str(t), "j" if ok else "n"]))
+    assert s in z, "Bei p = %s, T = %s, Füllstand %s wird die Zeile %r erwartet. Dein Programm gibt aus: %r" % (p, t, "j" if ok else "n", s, z)
+
+def test_beispiel():
+    """Beispiel p = 8.5, T = 90, Füllstand j: Warnung"""
+    _pruefe(8.5, 90, True)
+
+def test_normal_und_grenzen():
+    """Normal, auch genau auf den Grenzen p = 8 und T = 100"""
+    _pruefe(5, 80, True); _pruefe(8, 100, True)
+
+def test_warnung():
+    """Warnung durch Druck oder durch Temperatur"""
+    _pruefe(8.5, 80, True); _pruefe(5, 100.5, True)
+
+def test_grenze_abschaltung():
+    """p = 10 und T = 120 sind noch Warnung, darüber Abschaltung"""
+    _pruefe(10, 120, True); _pruefe(10.5, 80, True); _pruefe(5, 121, True)
+
+def test_fuellstand_zuerst():
+    """Füllstand hat Vorrang, auch wenn alles andere schlecht ist"""
+    _pruefe(5, 80, False); _pruefe(11, 130, False)
+        </script>
+        <script type="text/x-python" data-role="solution">
+p = float(input("Druck p in bar: "))
+t = float(input("Temperatur T in °C: "))
+fuellstand_ok = input("Füllstand in Ordnung? (j/n): ") == "j"
+
+if not fuellstand_ok:
+    status = "Abschaltung: Füllstand"
+elif p > 10 or t > 120:
+    status = "Abschaltung: Grenzwert"
+elif p > 8 or t > 100:
+    status = "Warnung"
+else:
+    status = "Normal"
+
+print(f"Status: {status}")
+        </script>
+        <script type="application/json" data-role="scheme">[
+{"p":1,"t":"p und T werden mit input() eingelesen und in float umgewandelt, der Füllstand mit input()"},
+{"p":1,"t":"Der Füllstand wird als Wahrheitswert gespeichert (input(...) == \"j\") oder direkt mit == \"j\" verglichen"},
+{"p":1,"t":"Verzweigung mit if / elif / else, jeweils Doppelpunkt und eingerückter Block"},
+{"p":1,"t":"Reihenfolge der Zweige stimmt: Füllstand zuerst, dann Abschaltung, dann Warnung"},
+{"p":1,"t":"Abschaltung: p > 10 or T > 120 (or, nicht and; Grenzen nicht eingeschlossen)"},
+{"p":1,"t":"Warnung: p > 8 or T > 100 (or, nicht and)"},
+{"p":1,"t":"else liefert Normal"},
+{"p":1,"t":"Ausgabe im Format „Status: …“ mit allen vier Texten genau richtig geschrieben"}
+]</script>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-notebook" data-nonumber="1" data-title="Notebook und Deep Dive" data-part="B" data-stars="" data-min="" data-extra="ohne Wertung" aria-labelledby="h-t-notebook" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-notebook" tabindex="-1">Notebook und Deep Dive</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Mehr üben mit Wahrheitstabellen, Grenzwerten, Sicherheitslogik und Verzweigungen. Das Notebook nutzt nur Python aus V01 bis V04. Es hat drei Stufen (Aufwärmen, Anwenden, Knobeln), keine Lösungen, dafür Selbsttests.</p>
+      <p><a class="k-btn k-btn--ghost" href="../notebooks/V04-Logik-und-Verzweigungen.ipynb" download>V04-Logik-und-Verzweigungen.ipynb herunterladen</a></p>
+      <ol class="k-steps">
+        <li><strong>In Codespaces öffnen:</strong> Im Kurs-Repository auf GitHub „Code“ → „Codespaces“ → „Create codespace“. Die Umgebung (Python 3.12, NumPy, Matplotlib, Jupyter) ist vorbereitet. Dann <code class="k-i">notebooks/V04-Logik-und-Verzweigungen.ipynb</code> öffnen.</li>
+        <li><strong>Oder lokal:</strong> <code class="k-i">pip install numpy matplotlib jupyter</code>, dann <code class="k-i">jupyter lab</code>.</li>
+        <li>Immer erst die Vorhersage-Zellen ausfüllen, dann ausführen.</li>
+      </ol>
+      <h3>Danach</h3>
+      <p><a href="v04-logik-und-verzweigungen.html#deepdive">Zum Deep Dive</a> (freiwillig): Kurzschluss-Auswertung, XOR und NAND, Zweihandschaltung nach Norm. Oder zurück zur <a href="v04-logik-und-verzweigungen.html">Lerneinheit</a>, um etwas nachzulesen.</p>
+
+    </section>
+
+      <nav class="lab__pager" aria-label="Zwischen Aufgaben wechseln">
+        <a class="k-btn k-btn--ghost" id="lab-prev" href="#a-werkzeugkasten">← Zurück</a>
+        <a class="k-btn k-btn--ghost" id="lab-next" href="#a-vorgemacht">Weiter →</a>
+      </nav>
+    </main>
+
+    <div class="lab__dock" data-library-dock data-state="off"></div>
+  </div>
+
+  <footer class="dhbw-footer k-footer">
+    <div class="dhbw-footer__inner">
+      <span><span class="dhbw-footer__brand">DHBW Stuttgart</span> · Campus Horb</span>
+      <span><a href="../index.html">Zurück zum Lernpfad</a> · V04 Programmierlabor</span>
+    </div>
+  </footer>
+
+  <script src="../assets/js/icons.js"></script>
+  <script src="../assets/js/editor.js" defer></script>
+  <script src="../assets/js/kurs.js"></script>
+  <script src="../assets/js/aufgaben.js"></script>
+  <script src="../assets/js/labor.js"></script>
+</body>
+</html>

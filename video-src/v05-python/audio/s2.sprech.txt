@@ -1,0 +1,1 @@
+Die Verzweigung wird zu if und else. Die Bedingung aus dem Dreieck steht hinter if, gefolgt von einem Doppelpunkt. Der ja-Zweig steht eingerückt darunter, der nein-Zweig eingerückt unter else. Einrückung heißt: vier Leerzeichen weiter rechts. Sie ist kein Schmuck, sie bestimmt, was zu welchem Zweig gehört. Der Doppelpunkt darf nicht fehlen, sonst meldet Python einen Fehler.

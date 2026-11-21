@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>V05 Programmierlabor · Informatik Maschinenbau</title>
+  <meta name="description" content="Programmierlabor V05: Struktogramme in Python übersetzen. Arbeitsumgebung mit Aufgabenliste, Editor und Befehls-Bibliothek. Teil A im Labor, Teil B Training zu Hause.">
+  <link rel="stylesheet" href="../assets/css/dhbw-base.css">
+  <link rel="stylesheet" href="../assets/css/kurs.css">
+  <link rel="stylesheet" href="../assets/css/aufgaben.css">
+  <link rel="stylesheet" href="../assets/css/editor.css">
+  <link rel="stylesheet" href="../assets/css/labor.css">
+  <link rel="stylesheet" href="../assets/css/v05.css">
+</head>
+<body data-lesson="V05" data-page="labor">
+  <a class="k-skip" href="#inhalt">Zum Inhalt springen</a>
+
+  <header class="dhbw-header k-header">
+    <div class="dhbw-header__inner">
+      <a class="k-logo" href="../index.html" aria-label="Zur Startseite">
+        <span class="k-logo__mark" aria-hidden="true">DHBW</span>
+        <span class="k-logo__text">Informatik Maschinenbau<small>Campus Horb · 2026/27</small></span>
+      </a>
+      <nav class="k-nav" aria-label="Hauptnavigation">
+        <a href="../index.html">Start</a>
+        <a href="../index.html#lernpfad">Lernpfad</a>
+        <a href="../bibliothek.html">Bibliothek</a>
+        <a href="v05-struktogramm.html">V05 Lerneinheit</a>
+        <a href="v05-labor.html" aria-current="page">V05 Labor</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="lab" data-lab>
+
+    <nav class="lab__list" aria-label="Aufgabenliste">
+      <div class="lab__listhead">
+        <p class="lab__title">Programmierlabor V05</p>
+        <a class="lab__back" href="v05-struktogramm.html">← Lerneinheit</a>
+      </div>
+      <div class="a-progress" data-a-progress>
+        <span class="a-progress__bar"><span class="a-progress__fill"></span></span>
+        <span class="a-progress__text">0 von 13 Aufgaben gelöst</span>
+      </div>
+      <p class="lab__legend k-small k-muted"><span><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-circle"/></svg> offen</span><span><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-half"/></svg> begonnen</span><span><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-done"/></svg> gelöst</span></p>
+      <div data-lab-items></div>
+    </nav>
+
+    <main id="inhalt" class="lab__main" tabindex="-1">
+      <div class="lab__bar">
+        <div class="lab__select">
+          <label for="lab-select">Aufgabe</label>
+          <select id="lab-select"></select>
+        </div>
+        <button type="button" class="k-btn k-btn--ghost k-btn--small" id="lab-toolbox-btn" aria-expanded="false" aria-controls="lab-drawer">Werkzeugkasten</button>
+      </div>
+      <section class="lab__drawer" id="lab-drawer" aria-label="Werkzeugkasten" hidden></section>
+
+    <section class="l-task" id="a-werkzeugkasten" data-title="Werkzeugkasten" data-part="A" data-stars="" data-min="5" data-extra="" aria-labelledby="h-a-werkzeugkasten" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-werkzeugkasten" tabindex="-1">Werkzeugkasten</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Heute neu in Python: kein neuer Befehl, sondern eine neue Arbeitsweise. Du übersetzt ein <abbr class="k-begriff" data-erklaerung="Ein Bild für einen Ablauf aus übereinander gestapelten Kästchen, von oben nach unten gelesen. Es heißt auch Nassi-Shneiderman-Diagramm nach seinen Erfindern.">Struktogramm</abbr> in Code, schreibst <abbr class="k-begriff" data-erklaerung="Eine Verzweigung in einer Verzweigung: Erst eine Frage, und nur in einem ihrer Zweige eine zweite Frage. Die zweite Zeile ist dann eine Stufe weiter eingerückt.">verschachtelte</abbr> Verzweigungen lesbar, <abbr class="k-begriff" data-erklaerung="Ein Check, ob ein eingegebener Wert überhaupt sinnvoll sein kann, zum Beispiel eine Temperatur nicht unter −273 °C. Wie der Blick auf die Anzeige: „Das kann nicht stimmen.“">prüfst Eingaben</abbr> mit <code class="k-i">if</code> und leitest <abbr class="k-begriff" data-erklaerung="Testfälle sind feste Sätze von Eingaben mit der Ausgabe, die du vorher aus dem Struktogramm abgelesen hast. Passt die Ausgabe nicht, steckt ein Fehler im Programm.">Testfälle</abbr> aus dem Struktogramm ab. Voraus gesetzt werden <code class="k-i">print</code>, <code class="k-i">input</code>, <code class="k-i">float</code>, Variablen, <code class="k-i">math</code>, Vergleiche, <code class="k-i">and</code>/<code class="k-i">or</code>/<code class="k-i">not</code> und <code class="k-i">if</code>/<code class="k-i">elif</code>/<code class="k-i">else</code> aus V01 bis V04. Die Klausur verlangt, dass du Code von Hand schreibst. Darum gehen wir in kleinen Schritten vom Vormachen zum Selberschreiben, und die Hilfen werden dabei weniger.</p>
+      <figure class="k-video">
+        <video controls preload="metadata" poster="../assets/video/v05-python-poster.png" aria-label="Python-Werkstatt: Struktogramm in Code übersetzen (ca. 3 Min)">
+          <source src="../assets/video/v05-python.mp4" type="video/mp4">
+          <track kind="subtitles" srclang="de" label="Deutsch" src="../assets/video/v05-python.vtt" default>
+          Dein Browser kann dieses Video nicht abspielen.
+        </video>
+        <div class="k-video__missing" hidden>Video folgt. Bis dahin: Lies den Code unten Zeile für Zeile und probiere ihn aus.</div>
+        <figcaption>Python-Werkstatt: Struktogramm in Code übersetzen (ca. 3 Min). Untertitel sind eingeschaltet (Deutsch).</figcaption>
+      </figure>
+      <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke</strong><p>Diese sechs Karten sind dein Spickzettel, bis es sitzt. Du erreichst sie in jeder Aufgabe über den Knopf „Werkzeugkasten“ oben. Alle Befehle des Kurses stehen außerdem rechts in der Befehls-Bibliothek.</p></div>
+      <div class="lab__toolbox" id="lab-toolbox">
+<div class="a-syntax-list">
+  <article class="a-syntax" aria-labelledby="sk-uebersetzen">
+    <span class="a-syntax__label">Syntax-Karte 1</span>
+    <h4 id="sk-uebersetzen">Struktogramm → Python</h4>
+    <div class="k-tablewrap"><table>
+      <thead><tr><th scope="col">Im Struktogramm</th><th scope="col">In Python</th></tr></thead>
+      <tbody>
+        <tr><td>Anweisung</td><td>eine Zeile</td></tr>
+        <tr><td>Kästchen untereinander (Sequenz)</td><td>Zeilen untereinander, gleich weit eingerückt</td></tr>
+        <tr><td>Verzweigung, Ja-Zweig</td><td><code class="k-i">if Bedingung:</code> und darunter eine Stufe eingerückt</td></tr>
+        <tr><td>Verzweigung, Nein-Zweig</td><td><code class="k-i">else:</code> auf Höhe des <code class="k-i">if</code>, darunter eingerückt</td></tr>
+        <tr><td>Mehrfachverzweigung</td><td><code class="k-i">if</code> / <code class="k-i">elif</code> / <code class="k-i">else</code></td></tr>
+        <tr><td>Kästchen nach der Verzweigung</td><td>wieder ganz links, auf Höhe des <code class="k-i">if</code></td></tr>
+      </tbody>
+    </table></div>
+<pre data-stdin="20"><code>import math
+d = float(input("Durchmesser in mm: "))    # Anweisung
+flaeche = math.pi * d ** 2 / 4             # Anweisung
+print(f"Fläche: {flaeche:.1f} mm²")        # Anweisung</code></pre>
+    <ul>
+      <li>Von oben nach unten übersetzen: ein Kästchen, eine Form.</li>
+      <li>Ein Struktogramm sagt <em>was</em>, Python verlangt <em>wie genau</em>: Typ umwandeln (<code class="k-i">float</code>), Einheiten, Formattext.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-ifelse">
+    <span class="a-syntax__label">Syntax-Karte 2</span>
+    <h4 id="sk-ifelse">Verzweigung: if und else</h4>
+<pre data-stdin="-5"><code>x = float(input("x: "))
+if x &lt; 0:
+    betrag = -x
+else:
+    betrag = x
+print("Betrag:", betrag)</code></pre>
+    <ul>
+      <li>Nach der Bedingung steht ein <strong>Doppelpunkt</strong>. Ohne ihn: <code class="k-i">SyntaxError</code>.</li>
+      <li>Der Zweig darunter ist <strong>4 Leerzeichen</strong> eingerückt. Die Einrückung ist der Rahmen des Zweigs.</li>
+      <li><code class="k-i">else:</code> hat keine Bedingung und steht genau unter seinem <code class="k-i">if</code>.</li>
+      <li>Einfache Verzweigung (nur Ja-Zweig): <code class="k-i">else</code> einfach weglassen.</li>
+      <li>Das <code class="k-i">print</code> ganz links läuft <em>immer</em>, nach der Verzweigung.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-elif">
+    <span class="a-syntax__label">Syntax-Karte 3</span>
+    <h4 id="sk-elif">Mehrfachverzweigung: elif</h4>
+<pre data-stdin="1.2"><code>s = float(input("Sicherheitsfaktor S: "))
+if s &gt;= 1.5:
+    print("sicher")
+elif s &gt;= 1.0:
+    print("knapp")
+else:
+    print("Versagen")</code></pre>
+    <ul>
+      <li>Von oben nach unten: Der <strong>erste</strong> Treffer gewinnt, danach wird nichts mehr geprüft.</li>
+      <li>Die <strong>Reihenfolge</strong> zählt. Bei <code class="k-i">s = 1.6</code> würde die Frage „≥ 1.0“ zuerst auch passen: Dann kämen die Fälle durcheinander.</li>
+      <li>Drei einzelne <code class="k-i">if</code> sind <em>keine</em> Mehrfachverzweigung: Jedes wird für sich geprüft.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-nest">
+    <span class="a-syntax__label">Syntax-Karte 4</span>
+    <h4 id="sk-nest">Verschachtelt oder flach?</h4>
+<pre data-stdin="350&#10;180"><code>t = float(input("Temperatur in °C: "))
+s = float(input("Spannung in MPa: "))
+# verschachtelt: erst die Temperatur, dann (nur im Ja-Zweig) die Spannung
+if t &gt; 300:
+    if s &lt;= 200:
+        print("16Mo3")
+    else:
+        print("Sonderwerkstoff")
+else:
+    print("S235JR")</code></pre>
+<pre data-stdin="350&#10;180"><code>t = float(input("Temperatur in °C: "))
+s = float(input("Spannung in MPa: "))
+# dasselbe flach, mit and
+if t &gt; 300 and s &lt;= 200:
+    print("16Mo3")
+elif t &gt; 300:
+    print("Sonderwerkstoff")
+else:
+    print("S235JR")</code></pre>
+    <ul>
+      <li><strong>Verschachteln</strong>, wenn die zweite Frage nur in einem Zweig Sinn hat. <strong><code class="k-i">elif</code></strong>, wenn die Fälle gleichrangig sind.</li>
+      <li>Nicht tiefer als drei Ebenen. Jede Stufe = 4 Leerzeichen mehr.</li>
+      <li>Jeder Zweig legt alle Variablen fest, die danach gebraucht werden (sonst <code class="k-i">NameError</code>).</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-pruef">
+    <span class="a-syntax__label">Syntax-Karte 5</span>
+    <h4 id="sk-pruef">Eingabe prüfen</h4>
+<pre data-stdin="15000"><code>drehzahl = float(input("Drehzahl in 1/min: "))
+if drehzahl &lt; 0 or drehzahl &gt; 12000:
+    print("Eingabe unplausibel")
+else:
+    print("Drehzahl ok:", drehzahl)</code></pre>
+    <ul>
+      <li>Zuerst prüfen, dann rechnen. Die Prüfung ist die <em>erste</em> Verzweigung.</li>
+      <li>Mit <code class="k-i">or</code> verknüpfst du „zu klein oder zu groß“. Mit <code class="k-i">and</code> wäre das nie erfüllt (keine Zahl ist beides).</li>
+      <li>Gleichwertig: <code class="k-i">if not (0 &lt;= drehzahl &lt;= 12000):</code></li>
+      <li>Das fängt unsinnige <em>Zahlen</em> ab. Text wie „abc“ bricht <code class="k-i">float()</code> trotzdem mit einem <code class="k-i">ValueError</code> ab (Abfangen: V09).</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-test">
+    <span class="a-syntax__label">Syntax-Karte 6</span>
+    <h4 id="sk-test">Grenzwerte und Testfälle</h4>
+<pre><code>spannung = 140
+print(spannung &lt;= 140)       # Grenzwert gehört dazu
+print(spannung &lt; 140)        # so wäre er ausgeschlossen
+print(spannung + 0.001 &lt;= 140)</code></pre>
+    <ul>
+      <li>Pro Zweig <strong>einen</strong> Testfall, dazu die Werte genau auf den Grenzen (auf, knapp darüber, knapp darunter).</li>
+      <li>Schreibe Eingabe und erwartete Ausgabe <strong>vor</strong> dem Programmieren auf, aus dem Struktogramm abgelesen.</li>
+      <li>Vergleiche mit Kommazahlen an der Grenze: siehe V03 (Toleranz).</li>
+    </ul>
+  </article>
+</div>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-vorgemacht" data-title="Vorgerechnetes Beispiel: Werkstoffvorschlag" data-part="A" data-stars="" data-min="10" data-extra="" aria-labelledby="h-a-vorgemacht" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-vorgemacht" tabindex="-1">Vorgerechnetes Beispiel: Werkstoffvorschlag</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Aufgabe: Ein <abbr class="k-begriff" data-erklaerung="Ein Programm ist eine Liste von Anweisungen, die Python von oben nach unten Zeile für Zeile abarbeitet.">Programm</abbr> schlägt für eine Welle einen Werkstoff vor. Erst steht das Struktogramm, dann der Code, der es Zeile für Zeile umsetzt. Lies beides nebeneinander, dann führe den Code aus. Die Eingaben stehen im Feld darunter (Beispiel: 180 MPa bei 20 °C). Drück danach auf „Schritt für Schritt“: Dann siehst du, welche Zeilen Python überspringt.</p>
+      <figure class="k-video">
+        <video controls preload="metadata" poster="../assets/video/v05-beispiel-poster.png" aria-label="Vorgerechnet: Werkstoffvorschlag nach Struktogramm (ca. 3 Min)">
+          <source src="../assets/video/v05-beispiel.mp4" type="video/mp4">
+          <track kind="subtitles" srclang="de" label="Deutsch" src="../assets/video/v05-beispiel.vtt" default>
+          Dein Browser kann dieses Video nicht abspielen.
+        </video>
+        <div class="k-video__missing" hidden>Video folgt. Bis dahin: Lies den Code unten Zeile für Zeile und probiere ihn aus.</div>
+        <figcaption>Vorgerechnet: Werkstoffvorschlag nach Struktogramm (ca. 3 Min). Untertitel sind eingeschaltet (Deutsch).</figcaption>
+      </figure>
+      <h3>Das Struktogramm</h3>
+      <figure class="v05-fig">
+        <div class="sg-wrap"><div class="sg sg--wide" role="group" aria-label="Struktogramm: Werkstoffvorschlag für eine Welle"><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">spannung einlesen (MPa)</span></div><div class="sg-stmt"><span class="sg-t">temperatur einlesen (°C)</span></div><div class="sg-if"><div class="sg-head" style="--cols:1fr 3fr;--split:25.00%"><span class="sg-t">spannung ≤ 0 oder temperatur &lt; −50 oder temperatur &gt; 600?</span><span class="sg-j">Ja</span><span class="sg-n">Nein</span></div><div class="sg-branches" style="--cols:1fr 3fr"><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">Ausgabe: Eingabe unplausibel – bitte Werte prüfen</span></div></div><div class="sg-seq"><div class="sg-if"><div class="sg-head" style="--cols:1fr 1fr;--split:50.00%"><span class="sg-t">temperatur &gt; 300?</span><span class="sg-j">Ja</span><span class="sg-n">Nein</span></div><div class="sg-branches" style="--cols:1fr 1fr"><div class="sg-seq"><div class="sg-if"><div class="sg-head"><span class="sg-t">spannung ≤ 200?</span><span class="sg-j">Ja</span><span class="sg-n">Nein</span></div><div class="sg-branches"><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">werkstoff = 16Mo3 (warmfest)</span></div></div><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">werkstoff = Sonderwerkstoff, Rücksprache Konstruktion</span></div></div></div></div></div><div class="sg-seq"><div class="sg-case"><div class="sg-head sg-head--case" style="--split:50%"><span class="sg-t">spannung</span></div><div class="sg-cols" style="--n:3"><div class="sg-col"><span class="sg-lab">≤ 140</span><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">werkstoff = S235JR</span></div></div></div><div class="sg-col"><span class="sg-lab">≤ 220</span><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">werkstoff = C45E</span></div></div></div><div class="sg-col"><span class="sg-lab">sonst</span><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">werkstoff = 42CrMo4 (vergütet)</span></div></div></div></div></div></div></div></div><div class="sg-stmt"><span class="sg-t">Ausgabe: Empfohlener Werkstoff: werkstoff</span></div></div></div></div></div></div></div>
+        <figcaption>Vereinfachte Lehr-Regel, keine Normauslegung.</figcaption>
+      </figure>
+      <h3>Der Code dazu</h3>
+      <div class="a-task" data-a="run" data-id="w-vorgemacht" data-count="0" data-mode="programm" data-inputs="180|20">
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V05" aria-label="Python-Code: Werkstoffvorschlag"># Werkstoffvorschlag für eine Welle nach einem Struktogramm
+# (vereinfachte Lehr-Regel, keine Normauslegung)
+# (V05: Struktogramm -&gt; Code, verschachtelte Verzweigungen, Eingabe prüfen)
+
+spannung = float(input("Maximale Spannung in MPa: "))
+temperatur = float(input("Betriebstemperatur in °C: "))
+
+if spannung &lt;= 0 or temperatur &lt; -50 or temperatur &gt; 600:
+    print("Eingabe unplausibel - bitte Werte prüfen")
+else:
+    if temperatur &gt; 300:
+        if spannung &lt;= 200:
+            werkstoff = "16Mo3 (warmfest)"
+        else:
+            werkstoff = "Sonderwerkstoff - Rücksprache Konstruktion"
+    else:
+        if spannung &lt;= 140:
+            werkstoff = "S235JR"
+        elif spannung &lt;= 220:
+            werkstoff = "C45E"
+        else:
+            werkstoff = "42CrMo4 (vergütet)"
+    print("Empfohlener Werkstoff:", werkstoff)</textarea></div>
+      </div>
+      <ol class="a-explain">
+        <li><strong>Zeilen 5 und 6:</strong> Die beiden Anweisungen oben im Struktogramm. <code class="k-i">input()</code> liefert Text, <code class="k-i">float()</code> macht daraus eine Zahl (V03).</li>
+        <li><strong>Zeile 8:</strong> Die erste Verzweigung ist die <abbr class="k-begriff" data-erklaerung="Ein Check, ob ein eingegebener Wert überhaupt sinnvoll sein kann, zum Beispiel eine Temperatur unter −273 °C. Wie der Blick auf die Anzeige: „Das kann nicht stimmen.“">Plausibilitätsprüfung</abbr>. <code class="k-i">or</code> verknüpft die drei Fälle: Es genügt, dass <em>eine</em> Bedingung zutrifft. Die Prüfung steht ganz oben, damit nie mit unsinnigen Werten gerechnet wird.</li>
+        <li><strong>Zeilen 9 und 10:</strong> Der Ja-Zweig (eine Anweisung, eingerückt) und das <code class="k-i">else:</code> für den Nein-Zweig. Alles, was im Struktogramm im Nein-Zweig steht, ist ab Zeile 11 um eine Stufe eingerückt.</li>
+        <li><strong>Zeilen 11 bis 15:</strong> Eine verschachtelte Verzweigung. Erst fragt der Code die Temperatur, nur im warmen Bereich dann die Spannung (Grenze 200). Die zweite Frage hat nur im Ja-Zweig Sinn, darum Verschachtelung.</li>
+        <li><strong>Zeilen 17 bis 22:</strong> Die Mehrfachverzweigung als <code class="k-i">if</code>/<code class="k-i">elif</code>/<code class="k-i">else</code>. Hier sind die Fälle gleichrangig (immer dieselbe Größe, die Spannung), also <code class="k-i">elif</code> statt Verschachtelung. Die Reihenfolge ≤ 140, dann ≤ 220 ist wichtig.</li>
+        <li><strong>Zeile 23:</strong> Das letzte Kästchen im Struktogramm steht im Nein-Zweig der Plausibilitätsprüfung, nach der inneren Verzweigung. Im Code steht <code class="k-i">print</code> deshalb eine Stufe tief (unter dem <code class="k-i">else:</code> von Zeile 10) und hinter <em>beiden</em> Temperaturzweigen: Es läuft nur bei plausibler Eingabe, dann aber immer.</li>
+        <li><strong>Selbsterklärung:</strong> Tippe diese <abbr class="k-begriff" data-erklaerung="Ein Testfall ist ein fester Satz Eingaben mit der Ausgabe, die du vorher aus dem Struktogramm abgelesen hast. Passt die Ausgabe nicht, steckt ein Fehler im Programm.">Testfälle</abbr> in die Eingabefelder und prüfe die Ausgabe: 250 / 400 (Sonderwerkstoff), −5 / 20 (unplausibel), 140 / 20 (Grenzwert), 100 / 300 (Grenzwert Temperatur). Was ändert sich bei 100 / 300.1?</li>
+      </ol>
+      <h3>Die Testfälle zu diesem Struktogramm</h3>
+      <div class="k-tablewrap">
+      <table class="k-types">
+        <thead><tr><th scope="col">Spannung</th><th scope="col">Temperatur</th><th scope="col">Zweig</th><th scope="col">Erwartete Ausgabe</th></tr></thead>
+        <tbody>
+          <tr><td>180</td><td>20</td><td>≤ 300 °C, 140 &lt; Spannung ≤ 220</td><td>C45E</td></tr>
+          <tr><td>100</td><td>20</td><td>≤ 300 °C, Spannung ≤ 140</td><td>S235JR</td></tr>
+          <tr><td>250</td><td>20</td><td>≤ 300 °C, Spannung &gt; 220</td><td>42CrMo4 (vergütet)</td></tr>
+          <tr><td>150</td><td>400</td><td>&gt; 300 °C, Spannung ≤ 200</td><td>16Mo3 (warmfest)</td></tr>
+          <tr><td>250</td><td>400</td><td>&gt; 300 °C, Spannung &gt; 200</td><td>Sonderwerkstoff, Rücksprache Konstruktion</td></tr>
+          <tr><td>−5</td><td>20</td><td>unplausibel</td><td>Eingabe unplausibel</td></tr>
+          <tr><td>140</td><td>20</td><td>Grenzwert Spannung</td><td>S235JR</td></tr>
+          <tr><td>100</td><td>300</td><td>Grenzwert Temperatur</td><td>S235JR</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </section>
+
+    <section class="l-task" id="a-ablauf" data-title="Ablauf verfolgen" data-part="A" data-stars="" data-min="5" data-extra="" aria-labelledby="h-a-ablauf" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-ablauf" tabindex="-1">Ablauf verfolgen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Bevor du Code schreibst, musst du den Weg durch eine Verzweigung lesen können. Führe das Programm im Kopf aus und trage ein, was nach der jeweiligen Zeile in den Variablen steht. Die Zeilen mit <code class="k-i">if</code> und <code class="k-i">else</code> setzen selbst nichts: Sie lenken nur. Darum <strong>fehlen sie in der Tabelle</strong>, und die Zeilennummer springt. Wahrheitswerte schreibst du als <code class="k-i">True</code> oder <code class="k-i">False</code>, Text mit Anführungszeichen.</p>
+      <div class="a-task" data-a="trace" data-id="w-trace">
+        <script type="application/json">{"code":["temperatur = 350.0","spannung = 180.0","heiss = temperatur > 300","fest = spannung > 200","if heiss:","    if fest:","        werkstoff = \"Sonder\"","    else:","        werkstoff = \"16Mo3\"","else:","    werkstoff = \"S235JR\"","print(werkstoff, heiss)"],
+"vars":["temperatur","spannung","heiss","fest","werkstoff"],
+"steps":[
+{"line":1,"set":{"temperatur":"350.0"},"hint":"Eine Kommazahl: 350.0 mit Dezimalpunkt, ohne Anführungszeichen."},
+{"line":2,"set":{"spannung":"180.0"},"hint":"Wieder eine Kommazahl: 180.0."},
+{"line":3,"set":{"heiss":"True"},"hint":"350.0 > 300 ist ein Vergleich. Sein Ergebnis ist ein Wahrheitswert: True oder False, ohne Anführungszeichen."},
+{"line":4,"set":{"fest":"False"},"hint":"180.0 > 200? Das stimmt nicht: False. Weil heiss True ist, geht Python in den Ja-Zweig (Zeile 6), und dort ist fest False: Es springt zum else in Zeile 8."},
+{"line":9,"set":{"werkstoff":"'16Mo3'"},"hint":"fest ist False, also läuft der else-Zweig der inneren Verzweigung (Zeile 9). Die Zeilen 7, 10 und 11 werden übersprungen. werkstoff ist Text: mit Anführungszeichen."},
+{"line":12,"out":"16Mo3 True","hint":"print gibt werkstoff und heiss durch ein Leerzeichen getrennt aus. Text erscheint ohne Anführungszeichen, der Wahrheitswert als True."}
+]}</script>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-zeilen" data-title="Zeilen ordnen" data-part="A" data-stars="" data-min="8" data-extra="" aria-labelledby="h-a-zeilen" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-zeilen" tabindex="-1">Zeilen ordnen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Alle Zeilen sind da, aber durcheinander. Bring sie in die richtige Reihenfolge <strong>und</strong> in die richtige Einrückung: Mit den Pfeilen links und rechts an der Zeile rückst du sie ein. Die Einrückung ist der Rahmen eines Zweigs. Manche Zeilen sind <strong>Ablenker</strong>: Sie gehören nicht ins Programm.</p>
+      <div class="a-task" data-a="parsons" data-id="w-parsons1">
+        <div class="a-task__head"><h3 class="a-task__title">Drehzahl prüfen</h3></div>
+        <p>Setze dieses Struktogramm um: Das Programm liest die Drehzahl ein und meldet, ob sie plausibel ist.</p>
+        <div class="sg-wrap"><div class="sg sg--mid" role="group" aria-label="Struktogramm: Drehzahl prüfen"><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">drehzahl einlesen (1/min)</span></div><div class="sg-if"><div class="sg-head"><span class="sg-t">drehzahl &lt; 0 oder drehzahl &gt; 12000?</span><span class="sg-j">Ja</span><span class="sg-n">Nein</span></div><div class="sg-branches"><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">Ausgabe: Eingabe unplausibel</span></div></div><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">Ausgabe: Drehzahl ok: drehzahl</span></div></div></div></div></div></div></div>
+        <script type="application/json">{"solution":["drehzahl = float(input('Drehzahl in 1/min: '))","if drehzahl < 0 or drehzahl > 12000:","    print('Eingabe unplausibel')","else:","    print('Drehzahl ok:', drehzahl)"],
+"distractors":["if drehzahl < 0 and drehzahl > 12000:","drehzahl = input('Drehzahl in 1/min: ')"]}</script>
+      </div>
+
+      <div class="a-task" data-a="parsons" data-id="w-parsons2">
+        <div class="a-task__head"><h3 class="a-task__title">Kühlkreislauf: verschachtelt</h3></div>
+        <p>Setze dieses Struktogramm um. Achte darauf, welche Zeilen im Ja-Zweig der ersten Verzweigung stehen. <code class="k-i">pumpe_an</code> ist ein Wahrheitswert (V04): Der Vergleich <code class="k-i">== 'j'</code> in der ersten Zeile macht aus der Eingabe <code class="k-i">True</code> oder <code class="k-i">False</code>.</p>
+        <div class="sg-wrap"><div class="sg sg--mid" role="group" aria-label="Struktogramm: Kühlkreislauf überwachen"><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">pumpe_an einlesen (ja/nein)</span></div><div class="sg-stmt"><span class="sg-t">temperatur einlesen (°C)</span></div><div class="sg-if"><div class="sg-head"><span class="sg-t">pumpe_an?</span><span class="sg-j">Ja</span><span class="sg-n">Nein</span></div><div class="sg-branches"><div class="sg-seq"><div class="sg-if"><div class="sg-head"><span class="sg-t">temperatur &gt; 80?</span><span class="sg-j">Ja</span><span class="sg-n">Nein</span></div><div class="sg-branches"><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">Ausgabe: Alarm: Übertemperatur</span></div></div><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">Ausgabe: Betrieb normal</span></div></div></div></div></div><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">Ausgabe: Anlage aus</span></div></div></div></div></div></div></div>
+        <script type="application/json">{"solution":["pumpe_an = input('Pumpe läuft? (j/n): ') == 'j'","temperatur = float(input('Temperatur in °C: '))","if pumpe_an:","    if temperatur > 80:","        print('Alarm: Übertemperatur')","    else:","        print('Betrieb normal')","else:","    print('Anlage aus')"],
+"distractors":["if pumpe_an == 'j':","elif temperatur > 80:"],
+"alts":[["temperatur = float(input('Temperatur in °C: '))","pumpe_an = input('Pumpe läuft? (j/n): ') == 'j'","if pumpe_an:","    if temperatur > 80:","        print('Alarm: Übertemperatur')","    else:","        print('Betrieb normal')","else:","    print('Anlage aus')"]]}</script>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-luecken" data-title="Lücken füllen" data-part="A" data-stars="" data-min="7" data-extra="" aria-labelledby="h-a-luecken" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-luecken" tabindex="-1">Lücken füllen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Jetzt tippst du Teile selbst. Ergänze die vier Lücken so, dass das Programm das Struktogramm umsetzt. Geprüft wird nicht nur dein Wortlaut, sondern ob das Programm in <em>jedem Zweig</em> das Richtige tut.</p>
+      <div class="sg-wrap"><div class="sg sg--mid" role="group" aria-label="Struktogramm: Sicherheitsfaktor bewerten"><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">streckgrenze einlesen (MPa)</span></div><div class="sg-stmt"><span class="sg-t">spannung einlesen (MPa)</span></div><div class="sg-if"><div class="sg-head" style="--cols:1fr 2fr;--split:33.33%"><span class="sg-t">streckgrenze ≤ 0 oder spannung ≤ 0?</span><span class="sg-j">Ja</span><span class="sg-n">Nein</span></div><div class="sg-branches" style="--cols:1fr 2fr"><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">Ausgabe: Eingabe unplausibel</span></div></div><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">s = streckgrenze / spannung</span></div><div class="sg-case"><div class="sg-head sg-head--case" style="--split:50%"><span class="sg-t">s</span></div><div class="sg-cols" style="--n:3"><div class="sg-col"><span class="sg-lab">≥ 1,5</span><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">Ausgabe: sicher</span></div></div></div><div class="sg-col"><span class="sg-lab">≥ 1,0</span><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">Ausgabe: knapp</span></div></div></div><div class="sg-col"><span class="sg-lab">sonst</span><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">Ausgabe: Versagen</span></div></div></div></div></div></div></div></div></div></div></div>
+      <div class="a-task" data-a="gap" data-id="w-luecken" data-mode="programm">
+        <pre class="a-gap__src">streckgrenze = float(input("Streckgrenze Re in MPa: "))
+spannung = float(input("Spannung in MPa: "))
+if streckgrenze &lt;= 0 @@or@@ spannung &lt;= 0:
+    print("Eingabe unplausibel")
+@@else@@:
+    s = streckgrenze / spannung
+    if s @@&gt;=@@ 1.5:
+        print("sicher")
+    elif s &gt;= 1.0:
+        print("knapp")
+    else:
+        print(@@"Versagen"@@)</pre>
+        <script type="text/x-python" data-role="tests">
+def _pruefe(re_wert, sigma, soll):
+    z = zeilen(run_program([str(re_wert), str(sigma)]))
+    gefunden = [l for l in z if l in ("sicher", "knapp", "Versagen", "Eingabe unplausibel")]
+    assert gefunden == [soll], "Bei Re = %s und σ = %s wird genau die Zeile %r erwartet. Dein Programm gibt aus: %r" % (re_wert, sigma, soll, z)
+
+def test_sicher():
+    """S = 2.0: sicher"""
+    _pruefe(300, 150, "sicher")
+
+def test_grenze_sicher():
+    """Grenzfall S = 1.5 genau: sicher"""
+    _pruefe(300, 200, "sicher")
+
+def test_knapp():
+    """S = 1.2: knapp"""
+    _pruefe(300, 250, "knapp")
+
+def test_grenze_knapp():
+    """Grenzfall S = 1.0 genau: knapp"""
+    _pruefe(300, 300, "knapp")
+
+def test_versagen():
+    """S = 0.75: Versagen"""
+    _pruefe(300, 400, "Versagen")
+
+def test_unplausibel():
+    """Spannung 0 oder Streckgrenze negativ: Eingabe unplausibel (ohne Division durch 0)"""
+    _pruefe(300, 0, "Eingabe unplausibel")
+    _pruefe(-300, 100, "Eingabe unplausibel")
+        </script>
+        <ol class="a-hints">
+          <li>Lücke 1: Die Eingabe ist unplausibel, wenn <em>mindestens eine</em> der beiden Größen unsinnig ist. Welches Wort verknüpft „oder“?</li>
+          <li>Lücke 2: Das Schlüsselwort für „sonst“, ohne Bedingung (mit Doppelpunkt dahinter).</li>
+          <li>Lücke 3: Der Grenzwert 1.5 gehört laut Struktogramm („≥ 1,5“) zu „sicher“. Welcher Vergleich schließt ihn ein?</li>
+          <li>Lücke 4: Text steht in Anführungszeichen, auch hier.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-fuellstand" data-title="Erste eigene Aufgabe: Tankfüllstand" data-part="A" data-stars="1" data-min="10" data-extra="" aria-labelledby="h-a-fuellstand" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-fuellstand" tabindex="-1">Erste eigene Aufgabe: Tankfüllstand</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Jetzt schreibst du alles selbst, mit <abbr class="k-begriff" data-erklaerung="Ein Test ist ein kleines Prüfprogramm. Es startet dein Programm mit festen Eingaben und vergleicht die Ausgabe mit dem erwarteten Ergebnis.">Tests</abbr> als Sicherheitsnetz. Die Tests laufen mit mehreren Eingaben, auch an den Grenzen und mit solchen, die du nicht siehst.</p>
+      <div class="a-task" data-a="code" data-id="w-fuellstand" data-mode="programm" data-inputs="55">
+        <div class="a-task__text">
+          <p>Ein Tankfüllstand in Prozent wird eingelesen und bewertet. Setze das Struktogramm um. Die Grenzen 20 und 80 gehören zum Bereich „Normal“.</p>
+          <div class="sg-wrap"><div class="sg sg--mid" role="group" aria-label="Struktogramm: Tankfüllstand bewerten"><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">fuellstand einlesen (%)</span></div><div class="sg-if"><div class="sg-head" style="--cols:1fr 2fr;--split:33.33%"><span class="sg-t">fuellstand &lt; 0 oder fuellstand &gt; 100?</span><span class="sg-j">Ja</span><span class="sg-n">Nein</span></div><div class="sg-branches" style="--cols:1fr 2fr"><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">Ausgabe: Eingabe unplausibel</span></div></div><div class="sg-seq"><div class="sg-case"><div class="sg-head sg-head--case" style="--split:50%"><span class="sg-t">fuellstand</span></div><div class="sg-cols" style="--n:3"><div class="sg-col"><span class="sg-lab">&lt; 20</span><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">Ausgabe: Status: Nachfüllen</span></div></div></div><div class="sg-col"><span class="sg-lab">≤ 80</span><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">Ausgabe: Status: Normal</span></div></div></div><div class="sg-col"><span class="sg-lab">sonst</span><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">Ausgabe: Status: Überfüllung droht</span></div></div></div></div></div></div></div></div></div></div></div>
+          <div class="a-spec"><strong>Ausgaben genau so:</strong><pre data-run="no">Eingabe unplausibel
+Status: Nachfüllen
+Status: Normal
+Status: Überfüllung droht</pre></div>
+          <p class="k-small k-muted">Beispiel: 55 ergibt „Status: Normal“. Lege zuerst auf Papier eine Testtabelle an: je ein Wert pro Zweig und die Werte 0, 20, 80, 100 an den Grenzen.</p>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V05" aria-label="Python-Code: Tankfüllstand"># Tankfüllstand nach Struktogramm
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _soll(f):
+    if f < 0 or f > 100:
+        return "Eingabe unplausibel"
+    if f < 20:
+        return "Status: Nachfüllen"
+    if f <= 80:
+        return "Status: Normal"
+    return "Status: Überfüllung droht"
+
+def _pruefe(f):
+    soll = _soll(f)
+    z = zeilen(run_program([str(f)]))
+    gefunden = [l for l in z if l.startswith("Status") or "unplausibel" in l]
+    assert gefunden == [soll], "Bei %s wird genau die Zeile %r erwartet. Dein Programm gibt aus: %r" % (f, soll, z)
+
+def test_beispiel():
+    """Beispiel 55: Status: Normal"""
+    _pruefe(55)
+
+def test_nachfuellen():
+    """Niedriger Füllstand 5: Nachfüllen"""
+    _pruefe(5)
+
+def test_ueberfuellung():
+    """Hoher Füllstand 95: Überfüllung droht"""
+    _pruefe(95)
+
+def test_unplausibel():
+    """Unsinnige Werte -1 und 100.5: Eingabe unplausibel"""
+    _pruefe(-1)
+    _pruefe(100.5)
+
+def test_ganz_leer_voll():
+    """Grenzen des Bereichs: 0 ist noch plausibel (Nachfüllen), 100 auch (Überfüllung droht)"""
+    _pruefe(0)
+    _pruefe(100)
+
+def test_grenze_20_80():
+    """Grenzfälle 20 und 80 gehören zu Normal, 19.9 und 80.1 nicht"""
+    _pruefe(20)
+    _pruefe(80)
+    _pruefe(19.9)
+    _pruefe(80.1)
+        </script>
+        <script type="text/x-python" data-role="solution">
+fuellstand = float(input("Füllstand in %: "))
+
+if fuellstand < 0 or fuellstand > 100:
+    print("Eingabe unplausibel")
+elif fuellstand < 20:
+    print("Status: Nachfüllen")
+elif fuellstand <= 80:
+    print("Status: Normal")
+else:
+    print("Status: Überfüllung droht")
+        </script>
+        <ol class="a-hints">
+          <li>Beginne mit dem Einlesen (<code>float(input(...))</code>), dann kommt die Prüfung der Eingabe als <em>erste</em> Verzweigung.</li>
+          <li>Der Nein-Zweig der Prüfung ist die Mehrfachverzweigung: <code>elif</code> für jeden weiteren Fall, <code>else</code> für „sonst“. Die Reihenfolge der Fälle im Struktogramm ist die Reihenfolge im Code.</li>
+          <li>Grenzen: „&lt; 20“ ist <code>&lt;</code>, „≤ 80“ ist <code>&lt;=</code>. Prüfe 20 und 80 selbst.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-review" data-seen="manual" data-title="Code-Review: KI-Code prüfen" data-part="A" data-stars="" data-min="20" data-extra="" aria-labelledby="h-a-review" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-review" tabindex="-1">Code-Review: KI-Code prüfen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Eine KI hat nach einem Struktogramm Code geliefert. Er sieht sauber aus und läuft los. Würdest du ihn freigeben? Vergleiche ihn Zweig für Zweig mit dem Struktogramm, klick die Zeilen an, die du für fehlerhaft hältst, dann lass auflösen.</p>
+      <figure class="k-figure">
+        <picture>
+          <source srcset="../assets/img/ki-spiegel.webp" type="image/webp">
+          <img src="../assets/img/ki-spiegel.png" alt="Illustration: KI-Code wird von einem Ingenieur geprüft" width="1600" height="901" loading="lazy" onerror="this.closest('figure').hidden=true">
+        </picture>
+      </figure>
+
+      <div class="k-mirror">
+        <h3>Szenario: Passungsart aus dem Spiel bestimmen</h3>
+        <p class="k-prompt__who">Prompt eines Studierenden (mit Struktogramm)</p>
+        <blockquote class="k-prompt">Schreib mir ein Python-Programm nach diesem Struktogramm. Eingaben in µm: Höchstspiel pmax und Mindestspiel pmin. Ist pmax kleiner als pmin, ist die Eingabe unplausibel. Sonst: Mindestspiel ≥ 0 ist eine Spielpassung, Höchstspiel ≤ 0 eine Übermaßpassung, alles andere eine Übergangspassung. Die Grenzwerte 0 gehören zur Spielpassung beziehungsweise zur Übermaßpassung.</blockquote>
+        <div class="sg-wrap"><div class="sg sg--wide" role="group" aria-label="Struktogramm: Passungsart bestimmen"><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">pmax einlesen (Höchstspiel in µm)</span></div><div class="sg-stmt"><span class="sg-t">pmin einlesen (Mindestspiel in µm)</span></div><div class="sg-if"><div class="sg-head" style="--cols:1fr 2fr;--split:33.33%"><span class="sg-t">pmax &lt; pmin?</span><span class="sg-j">Ja</span><span class="sg-n">Nein</span></div><div class="sg-branches" style="--cols:1fr 2fr"><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">Ausgabe: Eingabe unplausibel</span></div></div><div class="sg-seq"><div class="sg-case"><div class="sg-head sg-head--case" style="--split:50%"><span class="sg-t">Fall</span></div><div class="sg-cols" style="--n:3"><div class="sg-col"><span class="sg-lab">pmin ≥ 0</span><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">art = Spielpassung</span></div></div></div><div class="sg-col"><span class="sg-lab">pmax ≤ 0</span><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">art = Übermaßpassung</span></div></div></div><div class="sg-col"><span class="sg-lab">sonst</span><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">art = Übergangspassung</span></div></div></div></div></div><div class="sg-stmt"><span class="sg-t">Ausgabe: Passungsart: art</span></div></div></div></div></div></div></div>
+        <p class="k-prompt__who">KI-Antwort (Python, vorab erzeugtes Beispiel)</p>
+          <ol class="k-codelines" aria-label="Code der KI, Zeilen anklickbar">
+            <li><button type="button" class="k-line">pmax = float(input(&quot;Höchstspiel in µm: &quot;))</button></li>
+            <li><button type="button" class="k-line">pmin = float(input(&quot;Mindestspiel in µm: &quot;))</button></li>
+            <li><button type="button" class="k-line"> </button></li>
+            <li><button type="button" class="k-line">if pmax &lt; pmin:</button></li>
+            <li><button type="button" class="k-line">    print(&quot;Eingabe unplausibel&quot;)</button></li>
+            <li><button type="button" class="k-line">else:</button></li>
+            <li><button type="button" class="k-line" data-bug="a">    if pmin &gt; 0:</button></li>
+            <li><button type="button" class="k-line">        art = &quot;Spielpassung&quot;</button></li>
+            <li><button type="button" class="k-line" data-bug="b">    elif pmax &gt;= 0:</button></li>
+            <li><button type="button" class="k-line">        art = &quot;Übermaßpassung&quot;</button></li>
+            <li><button type="button" class="k-line">    else:</button></li>
+            <li><button type="button" class="k-line">        art = &quot;Übergangspassung&quot;</button></li>
+            <li><button type="button" class="k-line" data-bug="c">print(&quot;Passungsart:&quot;, art)</button></li>
+          </ol>
+        <p class="k-small k-muted">Tipp: Es sind drei Fehler eingebaut, in drei verschiedenen Zeilen. Nicht jede Zeile ist falsch.</p>
+
+        <div class="k-mirror__task">
+          <p><strong>Würdest du das freigeben?</strong> Markiere die fehlerhaften Zeilen, dann lass auflösen.</p>
+          <button type="button" class="k-btn" data-mirror-check>Auflösen</button>
+          <p class="k-verdict" role="status" hidden></p>
+
+          <div data-mirror-after hidden>
+            <h3>Die drei Fehler</h3>
+            <h4>Fehler 1: Grenzwert falsch (Zeile 7)</h4>
+            <p>Das Struktogramm sagt „pmin ≥ 0“, der Code schreibt <code class="k-i">pmin &gt; 0</code>. Bei genau 0 µm Mindestspiel (zum Beispiel Höchstspiel 30, Mindestspiel 0) wird die erste Frage mit „Nein“ beantwortet, und der Fall landet bei einer der anderen Passungsarten. Richtig ist <code class="k-i">&gt;=</code>: Das Mindestspiel 0 gehört zur Spielpassung. Ein Grenzwert-Testfall hätte es gezeigt.</p>
+            <h4>Fehler 2: Vergleich in die falsche Richtung (Zeile 9)</h4>
+            <p>Das Struktogramm sagt „pmax ≤ 0“, der Code schreibt <code class="k-i">pmax &gt;= 0</code>. Zusammen mit Fehler 1 ergibt das für Höchstspiel 30 und Mindestspiel 0 die Antwort „Übermaßpassung“, obwohl es eine Spielpassung ist. Umgekehrt bekommt eine echte Übermaßpassung (Höchstspiel −10, Mindestspiel −30) die Antwort „Übergangspassung“. Solche Richtungsfehler übersieht man beim Lesen leicht, ein Testfall pro Zweig fängt sie.</p>
+            <h4>Fehler 3: Ausgabe außerhalb des Zweigs (Zeile 13)</h4>
+            <p>Die letzte Zeile steht ganz links, also <em>nach</em> der gesamten Verzweigung. Bei unplausibler Eingabe wird <code class="k-i">art</code> nie festgelegt, und <code class="k-i">print</code> bricht mit einem <code class="k-i">NameError</code> ab. Im Struktogramm steht das Ausgabe-Kästchen im Nein-Zweig. Richtig: eine Stufe eingerückt unter dem <code class="k-i">else:</code> von Zeile 6.</p>
+
+            <h3>Die KI-Version zum Ausprobieren</h3>
+            <p class="k-small k-muted">Mit Höchstspiel 30 und Mindestspiel 0 kommt eine falsche Passungsart heraus („Übermaßpassung“ statt Spielpassung). Ändere die Eingaben auf −10 und −30 (wieder falsch: „Übergangspassung“ statt Übermaßpassung) und auf 10 und 20 (NameError). Drück auf „Schritt für Schritt“, um jede Zeile einzeln zu sehen.</p>
+            <pre data-stdin="30&#10;0"><code>pmax = float(input("Höchstspiel in µm: "))
+pmin = float(input("Mindestspiel in µm: "))
+
+if pmax &lt; pmin:
+    print("Eingabe unplausibel")
+else:
+    if pmin &gt; 0:
+        art = "Spielpassung"
+    elif pmax &gt;= 0:
+        art = "Übermaßpassung"
+    else:
+        art = "Übergangspassung"
+print("Passungsart:", art)</code></pre>
+
+            <h3>Korrigierte Version</h3>
+            <pre data-stdin="30&#10;0"><code>pmax = float(input("Höchstspiel in µm: "))
+pmin = float(input("Mindestspiel in µm: "))
+
+if pmax &lt; pmin:
+    print("Eingabe unplausibel")
+else:
+    if pmin &gt;= 0:
+        art = "Spielpassung"
+    elif pmax &lt;= 0:
+        art = "Übermaßpassung"
+    else:
+        art = "Übergangspassung"
+    print("Passungsart:", art)</code></pre>
+            <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke</strong><p>Das Programm hat keinen Syntaxfehler und läuft bei den meisten Eingaben „irgendwie“. Gefunden hättest du die Fehler mit deiner Testtabelle aus dem Struktogramm: ein Fall pro Zweig und die Grenzwerte. Prüfe KI-Code immer gegen die Zweige und die Grenzen, nicht nur gegen die Formel.</p></div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-fehler" data-title="Typische Fehlermeldungen" data-part="A" data-stars="" data-min="5" data-extra="" aria-labelledby="h-a-fehler" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-fehler" tabindex="-1">Typische Fehlermeldungen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Fehlermeldungen sind keine Strafe, sondern ein Wegweiser. Diese vier siehst du bei Verzweigungen garantiert. Jedes Beispiel lässt sich ausführen: Schau dir die echte Meldung an und lies sie von unten nach oben (zuerst die letzte Zeile).</p>
+      <div class="a-errors">
+        <div class="a-error">
+          <h3><code class="k-i">SyntaxError</code>: Doppelpunkt vergessen</h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="5000">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V05" aria-label="Fehlerbeispiel SyntaxError Doppelpunkt">x = 5
+if x > 3
+    print("groß")</textarea></div>
+          </div>
+          <p>Meldung: <code class="k-i">SyntaxError: expected ':'</code>. Gemeint: Hinter der Bedingung fehlt der Doppelpunkt. Python zeigt mit einem Pfeil an die Stelle. Der Doppelpunkt steht auch hinter <code>else</code> und <code>elif …</code>.</p>
+        </div>
+        <div class="a-error">
+          <h3><code class="k-i">IndentationError</code>: Einrückung fehlt</h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="5000">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V05" aria-label="Fehlerbeispiel IndentationError">x = 5
+if x > 3:
+print("groß")</textarea></div>
+          </div>
+          <p>Meldung: <code class="k-i">IndentationError: expected an indented block after 'if' statement on line 2</code>. Gemeint: Nach dem Doppelpunkt muss der Zweig <em>eingerückt</em> sein (4 Leerzeichen). Genauso, wenn die Zeilen eines Zweigs verschieden weit eingerückt sind (<code>unindent does not match any outer indentation level</code>).</p>
+        </div>
+        <div class="a-error">
+          <h3><code class="k-i">SyntaxError</code>: = statt ==</h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="5000">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V05" aria-label="Fehlerbeispiel SyntaxError Gleichheitszeichen">x = 3
+if x = 3:
+    print("drei")</textarea></div>
+          </div>
+          <p>Meldung: <code class="k-i">SyntaxError: invalid syntax. Maybe you meant '==' or ':=' instead of '='?</code>. Ein einzelnes <code>=</code> speichert einen Wert, ein doppeltes <code>==</code> fragt „gleich?“. In einer Bedingung brauchst du die Frage.</p>
+        </div>
+        <div class="a-error">
+          <h3><code class="k-i">NameError</code>: Ein Zweig legt die Variable nicht fest</h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="5000">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V05" aria-label="Fehlerbeispiel NameError">temperatur = 20.0
+if temperatur > 300:
+    werkstoff = "16Mo3"
+print("Werkstoff:", werkstoff)</textarea></div>
+          </div>
+          <p>Meldung: <code class="k-i">NameError: name 'werkstoff' is not defined</code>. Bei 20 °C läuft der Ja-Zweig nicht, also gibt es <code>werkstoff</code> nie. Im Struktogramm fehlt ein Kästchen im Nein-Zweig. Lösung: ein <code>else:</code> ergänzen, das die Variable auch dort festlegt.</p>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-1" data-title="Anlagenfreigabe (Wiederholung V04)" data-part="B" data-stars="1" data-min="4" data-extra="Wiederholung V04" aria-labelledby="h-t-1" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-1" tabindex="-1">Anlagenfreigabe (Wiederholung V04)</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Programmieren lernst du mit den Fingern, nicht mit den Augen. Das Training ist ein fester Teil jedes Termins und gehört zum Selbststudium. Du musst nicht alles an einem Stück machen, aber alles bis zum nächsten Termin. Die Aufgaben laufen komplett im Browser und werden automatisch geprüft.</p>
+      <div class="hinweis hinweis--achtung"><strong class="hinweis__title">Achtung</strong><p>Phase 1: <abbr class="k-begriff" data-erklaerung="GitHub Copilot ist ein KI-Assistent, der in der Entwicklungsumgebung Programmcode vorschlägt oder erklärt.">Copilot</abbr> nur als Erklärer. Erlaubt: „Erkläre mir diese Fehlermeldung“, „Was macht Zeile 3?“, „Warum läuft der Else-Zweig?“. Nicht erlaubt: „Schreib mir die Funktion“. Du tippst den Code selbst, denn nur dann lernst du, ihn zu prüfen. Ab V10 darf die KI Code erzeugen, und du prüfst.</p></div>
+
+      <div class="a-task" data-a="code" data-id="tr-1" data-mode="programm" data-inputs="j|n|auto">
+        <div class="a-task__text">
+          <p>Eine Anlage wird freigegeben, wenn die Pumpe in Ordnung ist, keine Störung aktiv ist und die Betriebsart <code class="k-i">hand</code> oder <code class="k-i">auto</code> gewählt ist. Lies nacheinander ein: „Pumpe in Ordnung? (j/n)“, „Störung aktiv? (j/n)“ und die Betriebsart als Text. Wandle die ersten beiden Antworten mit <code class="k-i">== "j"</code> in Wahrheitswerte um und gib das Ergebnis aus.</p>
+          <div class="a-spec"><strong>Ausgabe genau so (Beispiel j, n, auto):</strong><pre data-run="no">Freigabe: True</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V05" aria-label="Python-Code Aufgabe 1"># Anlagenfreigabe
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _soll(p, s, b):
+    pumpe = p == "j"
+    stoerung = s == "j"
+    return "Freigabe: %s" % (pumpe and not stoerung and (b == "hand" or b == "auto"))
+
+def _pruefe(p, s, b):
+    soll = _soll(p, s, b)
+    z = zeilen(run_program([p, s, b]))
+    assert soll in z, "Bei %s, %s, %s wird die Zeile %r erwartet. Dein Programm gibt aus: %r" % (p, s, b, soll, z)
+
+def test_beispiel():
+    """Pumpe ok, keine Störung, auto: Freigabe True"""
+    _pruefe("j", "n", "auto")
+
+def test_hand():
+    """Pumpe ok, keine Störung, hand: Freigabe True"""
+    _pruefe("j", "n", "hand")
+
+def test_stoerung():
+    """Störung aktiv: Freigabe False"""
+    _pruefe("j", "j", "auto")
+
+def test_pumpe():
+    """Pumpe nicht in Ordnung: Freigabe False"""
+    _pruefe("n", "n", "auto")
+
+def test_betriebsart():
+    """Unbekannte Betriebsart aus: Freigabe False"""
+    _pruefe("j", "n", "aus")
+        </script>
+        <script type="text/x-python" data-role="solution">
+pumpe_ok = input("Pumpe in Ordnung? (j/n): ") == "j"
+stoerung = input("Störung aktiv? (j/n): ") == "j"
+betriebsart = input("Betriebsart (hand/auto): ")
+
+freigabe = pumpe_ok and not stoerung and (betriebsart == "hand" or betriebsart == "auto")
+print("Freigabe:", freigabe)
+        </script>
+        <ol class="a-hints">
+          <li><code>input("...") == "j"</code> liefert direkt <code>True</code> oder <code>False</code>. Die dritte Eingabe bleibt Text.</li>
+          <li>Die Betriebsart ist in Ordnung, wenn sie <code>"hand"</code> <em>oder</em> <code>"auto"</code> ist. Setze diese Teilbedingung in Klammern.</li>
+          <li><code>freigabe = pumpe_ok and not stoerung and (...)</code>, dann <code>print("Freigabe:", freigabe)</code>.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-2" data-title="Messwert: gut oder Ausschuss" data-part="B" data-stars="1" data-min="4" data-extra="" aria-labelledby="h-t-2" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-2" tabindex="-1">Messwert: gut oder Ausschuss</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="code" data-id="tr-2" data-mode="programm" data-inputs="25.05">
+        <div class="a-task__text">
+          <p>Eine Welle hat das Nennmaß 25,00 mm mit ±0,05 mm Toleranz. Setze das Struktogramm um. Die Grenzmaße 24,95 und 25,05 gehören noch zu „Gut“. Denke an V03: Kommazahlen vergleichst du an der Grenze mit einer winzigen Rechentoleranz (zum Beispiel <code class="k-i">+ 1e-9</code>).</p>
+          <div class="sg-wrap"><div class="sg sg--mid" role="group" aria-label="Struktogramm: Messwert prüfen"><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">messwert einlesen (mm)</span></div><div class="sg-if"><div class="sg-head"><span class="sg-t">|messwert − 25,00| ≤ 0,05?</span><span class="sg-j">Ja</span><span class="sg-n">Nein</span></div><div class="sg-branches"><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">Ausgabe: Gut</span></div></div><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">Ausgabe: Ausschuss</span></div></div></div></div></div></div></div>
+          <div class="a-spec"><strong>Ausgabe genau so:</strong><pre data-run="no">Gut
+Ausschuss</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V05" aria-label="Python-Code Aufgabe 2"># Messwert prüfen
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _pruefe(m, soll):
+    z = zeilen(run_program([str(m)]))
+    gefunden = [l for l in z if l in ("Gut", "Ausschuss")]
+    assert gefunden == [soll], "Bei %s wird genau die Zeile %r erwartet. Dein Programm gibt aus: %r" % (m, soll, z)
+
+def test_mitte():
+    """Messwert 25.0 (genau Nennmaß): Gut"""
+    _pruefe(25.0, "Gut")
+
+def test_obere_grenze():
+    """Grenzfall 25.05: Gut (Rundungsfehler beachten!)"""
+    _pruefe(25.05, "Gut")
+
+def test_untere_grenze():
+    """Grenzfall 24.95: Gut"""
+    _pruefe(24.95, "Gut")
+
+def test_zu_gross():
+    """25.06: Ausschuss"""
+    _pruefe(25.06, "Ausschuss")
+
+def test_zu_klein():
+    """24.9: Ausschuss"""
+    _pruefe(24.9, "Ausschuss")
+        </script>
+        <script type="text/x-python" data-role="solution">
+messwert = float(input("Messwert in mm: "))
+
+if abs(messwert - 25.0) <= 0.05 + 1e-9:
+    print("Gut")
+else:
+    print("Ausschuss")
+        </script>
+        <ol class="a-hints">
+          <li>Einlesen mit <code>float(input(...))</code>. Die Bedingung im Struktogramm ist „Abstand zum Nennmaß ≤ Abmaß“: Der Abstand ist <code>abs(messwert - 25.0)</code>.</li>
+          <li>Direkt <code>abs(messwert - 25.0) &lt;= 0.05</code> fällt bei 25.05 durch (0.05000000000000071). Addiere rechts <code>1e-9</code>.</li>
+          <li>Dann <code>if ...:</code> mit <code>print("Gut")</code> und <code>else:</code> mit <code>print("Ausschuss")</code>.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-3" data-title="Schnittgeschwindigkeit mit Eingabeprüfung" data-part="B" data-stars="2" data-min="7" data-extra="" aria-labelledby="h-t-3" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-3" tabindex="-1">Schnittgeschwindigkeit mit Eingabeprüfung</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="code" data-id="tr-3" data-mode="programm" data-inputs="60|1000">
+        <div class="a-task__text">
+          <p>Beim Drehen gilt v<sub>c</sub> = π · <em>d</em> · <em>n</em> / 1000 (Durchmesser <em>d</em> in mm, Drehzahl <em>n</em> in 1/min, v<sub>c</sub> in m/min). Setze das Struktogramm um: erst die Eingabe prüfen, dann rechnen. Lies zuerst <em>d</em>, dann <em>n</em> ein.</p>
+          <div class="sg-wrap"><div class="sg sg--wide" role="group" aria-label="Struktogramm: Schnittgeschwindigkeit mit Eingabeprüfung"><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">d einlesen (mm)</span></div><div class="sg-stmt"><span class="sg-t">n einlesen (1/min)</span></div><div class="sg-if"><div class="sg-head" style="--cols:1fr 2fr;--split:33.33%"><span class="sg-t">d ≤ 0 oder d &gt; 1000 oder n ≤ 0 oder n &gt; 20000?</span><span class="sg-j">Ja</span><span class="sg-n">Nein</span></div><div class="sg-branches" style="--cols:1fr 2fr"><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">Ausgabe: Eingabe unplausibel</span></div></div><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">vc = π · d · n / 1000</span></div><div class="sg-stmt"><span class="sg-t">Ausgabe: vc = … m/min (1 Nachkommastelle)</span></div></div></div></div></div></div></div>
+          <div class="a-spec"><strong>Ausgaben genau so (Beispiel d = 60, n = 1000):</strong><pre data-run="no">vc = 188.5 m/min
+Eingabe unplausibel</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V05" aria-label="Python-Code Aufgabe 3"># Schnittgeschwindigkeit mit Eingabeprüfung
+import math
+
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _soll(d, n):
+    if d <= 0 or d > 1000 or n <= 0 or n > 20000:
+        return "Eingabe unplausibel"
+    return "vc = %.1f m/min" % (math.pi * d * n / 1000)
+
+def _pruefe(d, n):
+    soll = _soll(d, n)
+    z = zeilen(run_program([str(d), str(n)]))
+    gefunden = [l for l in z if l.startswith("vc") or "unplausibel" in l]
+    assert gefunden == [soll], "Bei d = %s und n = %s wird genau die Zeile %r erwartet. Dein Programm gibt aus: %r" % (d, n, soll, z)
+
+def test_beispiel():
+    """Beispiel d = 60, n = 1000"""
+    _pruefe(60, 1000)
+
+def test_kommazahl():
+    """Kommazahl d = 12.5, n = 8000"""
+    _pruefe(12.5, 8000)
+
+def test_d_unplausibel():
+    """Durchmesser 0 und -5: Eingabe unplausibel"""
+    _pruefe(0, 1000)
+    _pruefe(-5, 1000)
+
+def test_n_unplausibel():
+    """Drehzahl 0 und 20001: Eingabe unplausibel"""
+    _pruefe(60, 0)
+    _pruefe(60, 20001)
+
+def test_grenzen_erlaubt():
+    """Grenzwerte 1000 mm und 20000 1/min sind noch erlaubt"""
+    _pruefe(1000, 20000)
+    _pruefe(1000.5, 100)
+        </script>
+        <script type="text/x-python" data-role="solution">
+import math
+
+d = float(input("Durchmesser d in mm: "))
+n = float(input("Drehzahl n in 1/min: "))
+
+if d <= 0 or d > 1000 or n <= 0 or n > 20000:
+    print("Eingabe unplausibel")
+else:
+    vc = math.pi * d * n / 1000
+    print(f"vc = {vc:.1f} m/min")
+        </script>
+        <ol class="a-hints">
+          <li>Zuerst beide Werte einlesen und mit <code>float()</code> umwandeln, dann erst prüfen.</li>
+          <li>Die Prüfung hat vier Teile, die mit <code>or</code> verbunden sind: „d zu klein“, „d zu groß“, „n zu klein“, „n zu groß“. Die Grenzen 1000 und 20000 selbst sind <em>noch erlaubt</em>.</li>
+          <li>Im <code>else</code>-Zweig stehen beide Anweisungen: <code>vc = math.pi * d * n / 1000</code> und <code>print(f"vc = {vc:.1f} m/min")</code>.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-4" data-title="Hydraulikdruck bewerten" data-part="B" data-stars="2" data-min="7" data-extra="" aria-labelledby="h-t-4" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-4" tabindex="-1">Hydraulikdruck bewerten</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="code" data-id="tr-4" data-mode="programm" data-inputs="300">
+        <div class="a-task__text">
+          <p>Der Druck einer Hydraulikanlage in bar wird bewertet. Das Struktogramm enthält eine Mehrfachverzweigung: Schreibe sie mit <code class="k-i">elif</code>, nicht mit drei einzelnen <code class="k-i">if</code>. Die Grenzen 250 und 350 gehören jeweils zur niedrigeren Stufe.</p>
+          <div class="sg-wrap"><div class="sg sg--mid" role="group" aria-label="Struktogramm: Hydraulikdruck bewerten"><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">druck einlesen (bar)</span></div><div class="sg-if"><div class="sg-head" style="--cols:1fr 2fr;--split:33.33%"><span class="sg-t">druck &lt; 0 oder druck &gt; 400?</span><span class="sg-j">Ja</span><span class="sg-n">Nein</span></div><div class="sg-branches" style="--cols:1fr 2fr"><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">Ausgabe: Eingabe unplausibel</span></div></div><div class="sg-seq"><div class="sg-case"><div class="sg-head sg-head--case" style="--split:50%"><span class="sg-t">druck</span></div><div class="sg-cols" style="--n:3"><div class="sg-col"><span class="sg-lab">≤ 250</span><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">Ausgabe: Zustand: Normalbetrieb</span></div></div></div><div class="sg-col"><span class="sg-lab">≤ 350</span><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">Ausgabe: Zustand: Warnung</span></div></div></div><div class="sg-col"><span class="sg-lab">sonst</span><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">Ausgabe: Zustand: Abschaltung</span></div></div></div></div></div></div></div></div></div></div></div>
+          <div class="a-spec"><strong>Ausgaben genau so:</strong><pre data-run="no">Eingabe unplausibel
+Zustand: Normalbetrieb
+Zustand: Warnung
+Zustand: Abschaltung</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V05" aria-label="Python-Code Aufgabe 4"># Hydraulikdruck bewerten
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _soll(p):
+    if p < 0 or p > 400:
+        return "Eingabe unplausibel"
+    if p <= 250:
+        return "Zustand: Normalbetrieb"
+    if p <= 350:
+        return "Zustand: Warnung"
+    return "Zustand: Abschaltung"
+
+def _pruefe(p):
+    soll = _soll(p)
+    z = zeilen(run_program([str(p)]))
+    gefunden = [l for l in z if l.startswith("Zustand") or "unplausibel" in l]
+    assert gefunden == [soll], "Bei %s bar wird genau die Zeile %r erwartet. Dein Programm gibt aus: %r" % (p, soll, z)
+
+def test_normal():
+    """Normalbetrieb bei 120 bar"""
+    _pruefe(120)
+
+def test_warnung():
+    """Warnung bei 300 bar"""
+    _pruefe(300)
+
+def test_abschaltung():
+    """Abschaltung bei 380 bar"""
+    _pruefe(380)
+
+def test_unplausibel():
+    """Unsinnige Werte -1 und 401: Eingabe unplausibel"""
+    _pruefe(-1)
+    _pruefe(401)
+
+def test_grenzen_unten():
+    """Grenzfälle 0 und 250 gehören zu Normalbetrieb, 250.5 zu Warnung"""
+    _pruefe(0)
+    _pruefe(250)
+    _pruefe(250.5)
+
+def test_grenzen_oben():
+    """Grenzfälle 350 gehört zu Warnung, 350.5 und 400 zu Abschaltung"""
+    _pruefe(350)
+    _pruefe(350.5)
+    _pruefe(400)
+        </script>
+        <script type="text/x-python" data-role="solution">
+druck = float(input("Druck in bar: "))
+
+if druck < 0 or druck > 400:
+    print("Eingabe unplausibel")
+elif druck <= 250:
+    print("Zustand: Normalbetrieb")
+elif druck <= 350:
+    print("Zustand: Warnung")
+else:
+    print("Zustand: Abschaltung")
+        </script>
+        <ol class="a-hints">
+          <li>Die Prüfung der Eingabe ist das <code>if</code>. Alle weiteren Fälle sind <code>elif</code>, das Ende ist <code>else</code>. Alles zusammen ist <em>eine</em> Kette.</li>
+          <li>Die Reihenfolge ist wichtig: erst „≤ 250“, dann „≤ 350“. Dann musst du bei der zweiten Frage nicht mehr „größer als 250“ prüfen: Wer hier ankommt, ist es schon.</li>
+          <li>Grenzen mit <code>&lt;=</code>, nicht <code>&lt;</code>. Teste 250 und 350 selbst.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-5" data-title="Heizungsregelung: verschachtelt" data-part="B" data-stars="2" data-min="8" data-extra="" aria-labelledby="h-t-5" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-5" tabindex="-1">Heizungsregelung: verschachtelt</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="code" data-id="tr-5" data-mode="programm" data-inputs="60|55">
+        <div class="a-task__text">
+          <p>Eine Heizungsregelung vergleicht die Ist-Temperatur mit der Soll-Temperatur (beides in °C). Zuerst fragt sie, ob es zu kalt ist; nur dann ist die zweite Frage „sehr kalt?“ sinnvoll. Im Nein-Zweig ist es die Frage, ob es zu warm ist. Setze das Struktogramm mit <strong>verschachtelten</strong> Verzweigungen um. Lies erst <em>soll</em>, dann <em>ist</em> ein.</p>
+          <div class="sg-wrap"><div class="sg sg--wide" role="group" aria-label="Struktogramm: Heizungsregelung"><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">soll einlesen (°C)</span></div><div class="sg-stmt"><span class="sg-t">ist einlesen (°C)</span></div><div class="sg-if"><div class="sg-head"><span class="sg-t">ist &lt; soll − 2?</span><span class="sg-j">Ja</span><span class="sg-n">Nein</span></div><div class="sg-branches"><div class="sg-seq"><div class="sg-if"><div class="sg-head"><span class="sg-t">ist &lt; soll − 10?</span><span class="sg-j">Ja</span><span class="sg-n">Nein</span></div><div class="sg-branches"><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">Ausgabe: Heizen: volle Leistung</span></div></div><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">Ausgabe: Heizen: halbe Leistung</span></div></div></div></div></div><div class="sg-seq"><div class="sg-if"><div class="sg-head"><span class="sg-t">ist &gt; soll + 2?</span><span class="sg-j">Ja</span><span class="sg-n">Nein</span></div><div class="sg-branches"><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">Ausgabe: Kühlen</span></div></div><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">Ausgabe: Temperatur halten</span></div></div></div></div></div></div></div></div></div></div>
+          <div class="a-spec"><strong>Ausgaben genau so (Beispiel soll 60, ist 55):</strong><pre data-run="no">Heizen: volle Leistung
+Heizen: halbe Leistung
+Kühlen
+Temperatur halten</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V05" aria-label="Python-Code Aufgabe 5"># Heizungsregelung
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _soll(soll, ist):
+    if ist < soll - 2:
+        if ist < soll - 10:
+            return "Heizen: volle Leistung"
+        return "Heizen: halbe Leistung"
+    if ist > soll + 2:
+        return "Kühlen"
+    return "Temperatur halten"
+
+def _pruefe(soll, ist):
+    s = _soll(soll, ist)
+    z = zeilen(run_program([str(soll), str(ist)]))
+    gefunden = [l for l in z if l.startswith("Heizen") or l in ("Kühlen", "Temperatur halten")]
+    assert gefunden == [s], "Bei soll = %s und ist = %s wird genau die Zeile %r erwartet. Dein Programm gibt aus: %r" % (soll, ist, s, z)
+
+def test_beispiel():
+    """Beispiel soll 60, ist 55: halbe Leistung"""
+    _pruefe(60, 55)
+
+def test_volle_leistung():
+    """Sehr kalt (ist 45): volle Leistung"""
+    _pruefe(60, 45)
+
+def test_kuehlen():
+    """Zu warm (ist 65): Kühlen"""
+    _pruefe(60, 65)
+
+def test_halten():
+    """Im Bereich (ist 60): Temperatur halten"""
+    _pruefe(60, 60)
+    _pruefe(60, 61.5)
+
+def test_grenzen():
+    """Grenzfälle: ist = soll - 2, soll + 2 halten; ist = soll - 10 halbe Leistung"""
+    _pruefe(60, 58)
+    _pruefe(60, 62)
+    _pruefe(60, 50)
+    _pruefe(60, 49.5)
+        </script>
+        <script type="text/x-python" data-role="solution">
+soll = float(input("Soll in °C: "))
+ist = float(input("Ist in °C: "))
+
+if ist < soll - 2:
+    if ist < soll - 10:
+        print("Heizen: volle Leistung")
+    else:
+        print("Heizen: halbe Leistung")
+else:
+    if ist > soll + 2:
+        print("Kühlen")
+    else:
+        print("Temperatur halten")
+        </script>
+        <ol class="a-hints">
+          <li>Zwei äußere Zweige: „ist &lt; soll − 2“ (Ja) und sonst. In jedem davon steckt eine eigene, zweiseitige Verzweigung.</li>
+          <li>Jede Stufe in der Einrückung entspricht einer Ebene im Struktogramm. Vier Leerzeichen mehr pro Ebene.</li>
+          <li>Probiere die Grenzen: ist = soll − 2 ist nicht „zu kalt“ (kein <code>&lt;=</code>), ist = soll − 10 ist noch „halbe Leistung“.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-6" data-title="Testfälle ableiten: Werkstoff-Struktogramm" data-part="B" data-stars="3" data-min="8" data-extra="" aria-labelledby="h-t-6" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-6" tabindex="-1">Testfälle ableiten: Werkstoff-Struktogramm</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="code" data-id="tr-6" data-mode="code">
+        <div class="a-task__text">
+          <p>Hier schreibst du keinen Programmcode, sondern <strong>Testdaten</strong>. Lies das Werkstoff-Struktogramm aus dem Vorgerechneten Beispiel und lege sechs Testfälle fest, sodass <strong>jeder der sechs Zweige genau einmal</strong> durchlaufen wird (Spannung in MPa, Temperatur in °C, die Reihenfolge ist egal). Dazu zwei Grenzwerte. Ersetze jedes <code class="k-i">None</code> durch eine Zahl.</p>
+          <div class="sg-wrap"><div class="sg sg--wide" role="group" aria-label="Struktogramm: Werkstoffvorschlag für eine Welle"><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">spannung einlesen (MPa)</span></div><div class="sg-stmt"><span class="sg-t">temperatur einlesen (°C)</span></div><div class="sg-if"><div class="sg-head" style="--cols:1fr 3fr;--split:25.00%"><span class="sg-t">spannung ≤ 0 oder temperatur &lt; −50 oder temperatur &gt; 600?</span><span class="sg-j">Ja</span><span class="sg-n">Nein</span></div><div class="sg-branches" style="--cols:1fr 3fr"><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">Ausgabe: Eingabe unplausibel – bitte Werte prüfen</span></div></div><div class="sg-seq"><div class="sg-if"><div class="sg-head" style="--cols:1fr 1fr;--split:50.00%"><span class="sg-t">temperatur &gt; 300?</span><span class="sg-j">Ja</span><span class="sg-n">Nein</span></div><div class="sg-branches" style="--cols:1fr 1fr"><div class="sg-seq"><div class="sg-if"><div class="sg-head"><span class="sg-t">spannung ≤ 200?</span><span class="sg-j">Ja</span><span class="sg-n">Nein</span></div><div class="sg-branches"><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">werkstoff = 16Mo3 (warmfest)</span></div></div><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">werkstoff = Sonderwerkstoff, Rücksprache Konstruktion</span></div></div></div></div></div><div class="sg-seq"><div class="sg-case"><div class="sg-head sg-head--case" style="--split:50%"><span class="sg-t">spannung</span></div><div class="sg-cols" style="--n:3"><div class="sg-col"><span class="sg-lab">≤ 140</span><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">werkstoff = S235JR</span></div></div></div><div class="sg-col"><span class="sg-lab">≤ 220</span><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">werkstoff = C45E</span></div></div></div><div class="sg-col"><span class="sg-lab">sonst</span><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">werkstoff = 42CrMo4 (vergütet)</span></div></div></div></div></div></div></div></div><div class="sg-stmt"><span class="sg-t">Ausgabe: Empfohlener Werkstoff: werkstoff</span></div></div></div></div></div></div></div>
+          <ul>
+            <li>Die sechs Zweige: unplausibel, warm (≤ 200 und &gt; 200), kühl (≤ 140, ≤ 220, darüber).</li>
+            <li><code class="k-i">grenze_spannung</code>: größte Spannung bei 20 °C, die noch zu S235JR gehört.</li>
+            <li><code class="k-i">grenze_temperatur</code>: größte Temperatur bei Spannung 150, bei der noch nicht der warmfeste Bereich gilt.</li>
+          </ul>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V05" aria-label="Python-Code Aufgabe 6"># Testfälle für das Werkstoff-Struktogramm: Ersetze jedes None durch eine Zahl.
+t1_spannung = None
+t1_temperatur = None
+t2_spannung = None
+t2_temperatur = None
+t3_spannung = None
+t3_temperatur = None
+t4_spannung = None
+t4_temperatur = None
+t5_spannung = None
+t5_temperatur = None
+t6_spannung = None
+t6_temperatur = None
+
+grenze_spannung = None
+grenze_temperatur = None
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _zweig(s, t):
+    if s <= 0 or t < -50 or t > 600:
+        return "unplausibel"
+    if t > 300:
+        return "warm bis 200 MPa" if s <= 200 else "warm über 200 MPa"
+    if s <= 140:
+        return "S235JR"
+    if s <= 220:
+        return "C45E"
+    return "42CrMo4"
+
+ALLE = ["unplausibel", "warm bis 200 MPa", "warm über 200 MPa", "S235JR", "C45E", "42CrMo4"]
+
+def _zahl(x):
+    return isinstance(x, (int, float)) and not isinstance(x, bool)
+
+def _paare():
+    return [(t1_spannung, t1_temperatur), (t2_spannung, t2_temperatur), (t3_spannung, t3_temperatur),
+            (t4_spannung, t4_temperatur), (t5_spannung, t5_temperatur), (t6_spannung, t6_temperatur)]
+
+def test_zahlen():
+    """Alle zwölf Testwerte sind Zahlen (kein None mehr)"""
+    for i, (s, t) in enumerate(_paare(), start=1):
+        assert _zahl(s) and _zahl(t), "Testfall %d ist noch keine Zahl: Spannung %r, Temperatur %r. Ersetze das None." % (i, s, t)
+
+def test_alle_zweige():
+    """Jeder der sechs Zweige wird mindestens einmal durchlaufen"""
+    for i, (s, t) in enumerate(_paare(), start=1):
+        assert _zahl(s) and _zahl(t), "Testfall %d ist noch keine Zahl." % i
+    erreicht = [_zweig(s, t) for s, t in _paare()]
+    fehlt = [z for z in ALLE if z not in erreicht]
+    assert not fehlt, "Diese Zweige fehlen noch: %s. Deine Testfälle erreichen: %s" % (", ".join(fehlt), ", ".join(erreicht))
+
+def test_genau_einmal():
+    """Kein Zweig doppelt: sechs Testfälle, sechs verschiedene Zweige"""
+    for i, (s, t) in enumerate(_paare(), start=1):
+        assert _zahl(s) and _zahl(t), "Testfall %d ist noch keine Zahl." % i
+    erreicht = [_zweig(s, t) for s, t in _paare()]
+    doppelt = sorted(set(z for z in erreicht if erreicht.count(z) > 1))
+    assert not doppelt, "Diese Zweige kommen mehrfach vor: %s. Verteile die Testfälle auf alle sechs Zweige." % ", ".join(doppelt)
+
+def test_grenze_spannung():
+    """grenze_spannung: Dort ist es noch S235JR, ein winziges Stück mehr ist C45E"""
+    assert _zahl(grenze_spannung), "grenze_spannung ist noch keine Zahl."
+    assert _zweig(grenze_spannung, 20) == "S235JR", "Bei %s MPa und 20 °C ist es noch nicht S235JR (sondern %s). Wo liegt die Grenze „≤ 140“?" % (grenze_spannung, _zweig(grenze_spannung, 20))
+    assert _zweig(grenze_spannung + 0.001, 20) == "C45E", "Ein winziges Stück über grenze_spannung muss schon C45E sein. Du hast eine Zahl unterhalb der Grenze gewählt: Die größte Spannung ist gesucht."
+
+def test_grenze_temperatur():
+    """grenze_temperatur: Bei Spannung 150 gilt bis dahin C45E, knapp darüber 16Mo3"""
+    assert _zahl(grenze_temperatur), "grenze_temperatur ist noch keine Zahl."
+    assert _zweig(150, grenze_temperatur) == "C45E", "Bei 150 MPa und %s °C ist es noch nicht C45E (sondern %s)." % (grenze_temperatur, _zweig(150, grenze_temperatur))
+    assert _zweig(150, grenze_temperatur + 0.001) == "warm bis 200 MPa", "Ein winziges Stück über grenze_temperatur muss schon der warme Bereich sein. Gesucht ist die größte Temperatur, die noch nicht „> 300“ ist."
+        </script>
+        <script type="text/x-python" data-role="solution">
+t1_spannung = -5
+t1_temperatur = 20
+t2_spannung = 150
+t2_temperatur = 400
+t3_spannung = 250
+t3_temperatur = 400
+t4_spannung = 100
+t4_temperatur = 20
+t5_spannung = 180
+t5_temperatur = 20
+t6_spannung = 250
+t6_temperatur = 20
+
+grenze_spannung = 140
+grenze_temperatur = 300
+        </script>
+        <ol class="a-hints">
+          <li>Lies das Struktogramm von oben: Welche Bedingungen müssen zutreffen, damit Zweig 1, 2, … erreicht wird? Zweig „unplausibel“ erreichst du zum Beispiel mit einer negativen Spannung.</li>
+          <li>Für die kühlen Zweige: Temperatur z. B. 20, Spannung unter 140, zwischen 140 und 220, über 220. Für die warmen: Temperatur über 300 mit Spannung bis 200 und über 200.</li>
+          <li>Die Grenzwerte sind die Zahlen, die <em>noch gerade</em> zu „≤ 140“ beziehungsweise „nicht &gt; 300“ gehören.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-7" data-title="Knobelaufgabe: Quadratische Gleichung mit Randfällen" data-part="B" data-stars="4" data-min="Zusatz" data-extra="" aria-labelledby="h-t-7" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-7" tabindex="-1">Knobelaufgabe: Quadratische Gleichung mit Randfällen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="code" data-id="tr-7" data-mode="programm" data-inputs="1|-4|3">
+        <div class="a-task__text">
+          <p>Die Gleichung a·x² + b·x + c = 0 sieht einfach aus, hat aber viele Randfälle: Ist <em>a</em> gleich 0, ist es gar keine quadratische Gleichung mehr, und dann kann sogar <em>b</em> gleich 0 sein. Setze dieses Struktogramm um. Lies <em>a</em>, <em>b</em>, <em>c</em> in dieser Reihenfolge ein (<code class="k-i">float</code>), nutze <code class="k-i">math.sqrt</code> und gib Kommazahlen mit zwei Nachkommastellen aus.</p>
+          <div class="sg-wrap"><div class="sg sg--wide" role="group" aria-label="Struktogramm: Quadratische Gleichung mit Randfällen"><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">a, b, c einlesen</span></div><div class="sg-if"><div class="sg-head" style="--cols:1fr 2fr;--split:33.33%"><span class="sg-t">a = 0?</span><span class="sg-j">Ja</span><span class="sg-n">Nein</span></div><div class="sg-branches" style="--cols:1fr 2fr"><div class="sg-seq"><div class="sg-if"><div class="sg-head"><span class="sg-t">b = 0?</span><span class="sg-j">Ja</span><span class="sg-n">Nein</span></div><div class="sg-branches"><div class="sg-seq"><div class="sg-if"><div class="sg-head"><span class="sg-t">c = 0?</span><span class="sg-j">Ja</span><span class="sg-n">Nein</span></div><div class="sg-branches"><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">Ausgabe: unendlich viele Lösungen</span></div></div><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">Ausgabe: keine Lösung</span></div></div></div></div></div><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">Ausgabe: x = −c / b (lineare Gleichung)</span></div></div></div></div></div><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">D = b² − 4ac</span></div><div class="sg-case"><div class="sg-head sg-head--case" style="--split:50%"><span class="sg-t">D</span></div><div class="sg-cols" style="--n:3"><div class="sg-col"><span class="sg-lab">&lt; 0</span><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">Ausgabe: keine reelle Lösung</span></div></div></div><div class="sg-col"><span class="sg-lab">= 0</span><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">Ausgabe: x = −b / (2a) (doppelt)</span></div></div></div><div class="sg-col"><span class="sg-lab">&gt; 0</span><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">Ausgabe: x1 = (−b + √D) / (2a), x2 = (−b − √D) / (2a)</span></div></div></div></div></div></div></div></div></div></div></div>
+          <div class="a-spec"><strong>Ausgaben genau so (Beispiel a = 1, b = −4, c = 3):</strong><pre data-run="no">x1 = 3.00, x2 = 1.00
+x = 2.50
+x = -1.00 (doppelt)
+keine reelle Lösung
+unendlich viele Lösungen
+keine Lösung</pre></div>
+          <p class="k-small k-muted">Die Zeilen oben sind alle sechs möglichen Ausgaben, jeweils mit Beispielwerten.</p>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V05" aria-label="Python-Code Aufgabe 7"># Quadratische Gleichung mit Randfällen
+import math
+
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _soll(a, b, c):
+    if a == 0:
+        if b == 0:
+            return "unendlich viele Lösungen" if c == 0 else "keine Lösung"
+        return "x = %.2f" % (-c / b)
+    d = b * b - 4 * a * c
+    if d < 0:
+        return "keine reelle Lösung"
+    if d == 0:
+        return "x = %.2f (doppelt)" % (-b / (2 * a))
+    w = math.sqrt(d)
+    return "x1 = %.2f, x2 = %.2f" % ((-b + w) / (2 * a), (-b - w) / (2 * a))
+
+def _pruefe(a, b, c):
+    soll = _soll(a, b, c)
+    z = zeilen(run_program([str(a), str(b), str(c)]))
+    gefunden = [l for l in z if l.startswith("x") or "Lösung" in l]
+    assert gefunden == [soll], "Bei a = %s, b = %s, c = %s wird genau die Zeile %r erwartet. Dein Programm gibt aus: %r" % (a, b, c, soll, z)
+
+def test_zwei_loesungen():
+    """a = 1, b = -4, c = 3: zwei Lösungen"""
+    _pruefe(1, -4, 3)
+
+def test_zwei_loesungen_2():
+    """a = 2, b = -3, c = -2: x1 = 2.00, x2 = -0.50"""
+    _pruefe(2, -3, -2)
+
+def test_doppelt():
+    """a = 1, b = 2, c = 1: doppelte Lösung"""
+    _pruefe(1, 2, 1)
+
+def test_keine_reelle():
+    """a = 1, b = 2, c = 5: keine reelle Lösung"""
+    _pruefe(1, 2, 5)
+
+def test_linear():
+    """a = 0, b = 2, c = -5: lineare Gleichung, x = 2.50"""
+    _pruefe(0, 2, -5)
+
+def test_entartet():
+    """a = 0 und b = 0: unendlich viele (c = 0) oder keine Lösung (c = 5)"""
+    _pruefe(0, 0, 0)
+    _pruefe(0, 0, 5)
+        </script>
+        <script type="text/x-python" data-role="solution">
+import math
+
+a = float(input("a: "))
+b = float(input("b: "))
+c = float(input("c: "))
+
+if a == 0:
+    if b == 0:
+        if c == 0:
+            print("unendlich viele Lösungen")
+        else:
+            print("keine Lösung")
+    else:
+        print(f"x = {-c / b:.2f}")
+else:
+    d = b ** 2 - 4 * a * c
+    if d < 0:
+        print("keine reelle Lösung")
+    elif d == 0:
+        print(f"x = {-b / (2 * a):.2f} (doppelt)")
+    else:
+        x1 = (-b + math.sqrt(d)) / (2 * a)
+        x2 = (-b - math.sqrt(d)) / (2 * a)
+        print(f"x1 = {x1:.2f}, x2 = {x2:.2f}")
+        </script>
+        <ol class="a-hints">
+          <li>Die äußere Verzweigung fragt <code>a == 0</code>. Ihr Ja-Zweig enthält zwei weitere Ebenen (<code>b == 0</code>, dann <code>c == 0</code>), der Nein-Zweig die Diskriminante.</li>
+          <li>Der Nein-Zweig beginnt mit <code>d = b ** 2 - 4 * a * c</code>, dann folgt die Mehrfachverzweigung mit <code>if</code>, <code>elif</code>, <code>else</code>.</li>
+          <li>Die Formel für zwei Lösungen: <code>(-b + math.sqrt(d)) / (2 * a)</code> und mit Minus. Vergiss die Klammern um <code>2 * a</code> nicht.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-8" data-title="Klausur-Modus: Getriebeöl-Auswahl" data-part="B" data-stars="4" data-min="15" data-extra="8 Punkte" aria-labelledby="h-t-8" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-8" tabindex="-1">Klausur-Modus: Getriebeöl-Auswahl</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="klausur" data-id="tr-8" data-mode="programm" data-minutes="15">
+        <div class="a-task__text">
+          <p><strong>So wie in der Klausur:</strong> Das Struktogramm ist gegeben, du schreibst den Code. Ohne Ausführen und ohne <abbr class="k-begriff" data-erklaerung="Die Auto-Vervollständigung schlägt dir beim Tippen passende Wörter vor. In der Klausur gibt es sie nicht.">Auto-Vervollständigung</abbr>, wenn möglich zuerst auf Papier. Erst danach „Abgeben und prüfen“, dann bewertest du dich selbst.</p>
+          <p>Ein Getriebe bekommt nach Umfangsgeschwindigkeit <em>v</em> (in m/s) und Öltemperatur <em>T</em> (in °C) eine Ölempfehlung (vereinfachte Lehr-Regel, keine Auslegung). Lies erst <em>v</em>, dann <em>T</em> ein. Setze das Struktogramm um:</p>
+          <div class="sg-wrap"><div class="sg sg--wide" role="group" aria-label="Struktogramm: Getriebeöl-Auswahl (vereinfachte Lehr-Regel)"><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">v einlesen (m/s)</span></div><div class="sg-stmt"><span class="sg-t">T einlesen (°C)</span></div><div class="sg-if"><div class="sg-head" style="--cols:1fr 3fr;--split:25.00%"><span class="sg-t">v &lt; 0 oder v &gt; 30 oder T &lt; −20 oder T &gt; 150?</span><span class="sg-j">Ja</span><span class="sg-n">Nein</span></div><div class="sg-branches" style="--cols:1fr 3fr"><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">Ausgabe: Eingabe unplausibel</span></div></div><div class="sg-seq"><div class="sg-if"><div class="sg-head" style="--cols:1fr 1fr;--split:50.00%"><span class="sg-t">T &gt; 100?</span><span class="sg-j">Ja</span><span class="sg-n">Nein</span></div><div class="sg-branches" style="--cols:1fr 1fr"><div class="sg-seq"><div class="sg-if"><div class="sg-head"><span class="sg-t">v ≤ 10?</span><span class="sg-j">Ja</span><span class="sg-n">Nein</span></div><div class="sg-branches"><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">öl = ISO VG 320</span></div></div><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">öl = ISO VG 220</span></div></div></div></div></div><div class="sg-seq"><div class="sg-case"><div class="sg-head sg-head--case" style="--split:50%"><span class="sg-t">v</span></div><div class="sg-cols" style="--n:3"><div class="sg-col"><span class="sg-lab">≤ 5</span><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">öl = ISO VG 150</span></div></div></div><div class="sg-col"><span class="sg-lab">≤ 15</span><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">öl = ISO VG 100</span></div></div></div><div class="sg-col"><span class="sg-lab">sonst</span><div class="sg-seq"><div class="sg-stmt"><span class="sg-t">öl = ISO VG 68</span></div></div></div></div></div></div></div></div><div class="sg-stmt"><span class="sg-t">Ausgabe: Ölempfehlung: öl</span></div></div></div></div></div></div></div>
+          <div class="a-spec"><strong>Ausgaben genau so (Beispiel v = 8, T = 40):</strong><pre data-run="no">Ölempfehlung: ISO VG 100
+Eingabe unplausibel</pre><p class="k-small k-muted">In allen anderen Fällen steht statt „ISO VG 100“ die jeweilige Sorte aus dem Struktogramm.</p></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V05" data-assist="off" aria-label="Python-Code von Hand schreiben, ohne Ausführen"></textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _soll(v, t):
+    if v < 0 or v > 30 or t < -20 or t > 150:
+        return "Eingabe unplausibel"
+    if t > 100:
+        s = "ISO VG 320" if v <= 10 else "ISO VG 220"
+    elif v <= 5:
+        s = "ISO VG 150"
+    elif v <= 15:
+        s = "ISO VG 100"
+    else:
+        s = "ISO VG 68"
+    return "Ölempfehlung: " + s
+
+def _pruefe(v, t):
+    soll = _soll(v, t)
+    z = zeilen(run_program([str(v), str(t)]))
+    gefunden = [l for l in z if l.startswith("Ölempfehlung") or "unplausibel" in l]
+    assert gefunden == [soll], "Bei v = %s und T = %s wird genau die Zeile %r erwartet. Dein Programm gibt aus: %r" % (v, t, soll, z)
+
+def test_beispiel():
+    """Beispiel v = 8 m/s, T = 40 °C: ISO VG 100"""
+    _pruefe(8, 40)
+
+def test_kalt_langsam():
+    """Kühl und langsam (v = 3, T = 40): ISO VG 150"""
+    _pruefe(3, 40)
+
+def test_kalt_schnell():
+    """Kühl und schnell (v = 20, T = 40): ISO VG 68"""
+    _pruefe(20, 40)
+
+def test_heiss():
+    """Heiß: v = 8, T = 120 und v = 12, T = 120"""
+    _pruefe(8, 120)
+    _pruefe(12, 120)
+
+def test_unplausibel():
+    """Unsinnige Werte: v = -1, v = 31, T = -21, T = 151"""
+    _pruefe(-1, 40)
+    _pruefe(31, 40)
+    _pruefe(8, -21)
+    _pruefe(8, 151)
+
+def test_grenzen():
+    """Grenzfälle: v = 5, v = 15 (Mehrfach), v = 10 bei T = 120, T = 100"""
+    _pruefe(5, 40)
+    _pruefe(15, 40)
+    _pruefe(10, 120)
+    _pruefe(8, 100)
+    _pruefe(8, 100.5)
+
+def test_randwerte_erlaubt():
+    """Randwerte sind erlaubt: v = 0, v = 30, T = -20, T = 150"""
+    _pruefe(0, 40)
+    _pruefe(30, 40)
+    _pruefe(8, -20)
+    _pruefe(8, 150)
+        </script>
+        <script type="text/x-python" data-role="solution">
+v = float(input("Umfangsgeschwindigkeit v in m/s: "))
+T = float(input("Öltemperatur T in °C: "))
+
+if v < 0 or v > 30 or T < -20 or T > 150:
+    print("Eingabe unplausibel")
+else:
+    if T > 100:
+        if v <= 10:
+            oel = "ISO VG 320"
+        else:
+            oel = "ISO VG 220"
+    elif v <= 5:
+        oel = "ISO VG 150"
+    elif v <= 15:
+        oel = "ISO VG 100"
+    else:
+        oel = "ISO VG 68"
+    print("Ölempfehlung:", oel)
+        </script>
+        <script type="application/json" data-role="scheme">[
+{"p":1,"t":"v und T werden mit input() eingelesen und mit float() umgewandelt (richtige Reihenfolge)"},
+{"p":1,"t":"Plausibilitätsprüfung mit or über alle vier Grenzen (v < 0, v > 30, T < −20, T > 150) als erste Verzweigung"},
+{"p":1,"t":"Ja-Zweig gibt „Eingabe unplausibel“ aus, alles andere steht im else-Zweig"},
+{"p":1,"t":"Äußere Verzweigung im else-Zweig: T > 100"},
+{"p":1,"t":"Innere Verzweigung für T > 100: v ≤ 10 gibt ISO VG 320, sonst ISO VG 220"},
+{"p":1,"t":"Mehrfachverzweigung für T ≤ 100 als if/elif/else mit den Grenzen 5 und 15 (ISO VG 150, 100, 68)"},
+{"p":1,"t":"Grenzwerte richtig (≤ 5, ≤ 15, ≤ 10, > 100)"},
+{"p":1,"t":"Ausgabe im Format „Ölempfehlung: …“, die Ausgabe steht im Nein-Zweig der Plausibilitätsprüfung (eingerückt)"}
+]</script>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-notebook" data-nonumber="1" data-title="Notebook und Deep Dive" data-part="B" data-stars="" data-min="" data-extra="ohne Wertung" aria-labelledby="h-t-notebook" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-notebook" tabindex="-1">Notebook und Deep Dive</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Mehr üben mit Struktogrammen, Verzweigungen, Eingabeprüfung und Testfällen. Das Notebook nutzt nur Python aus V01 bis V05. Es hat drei Stufen (Aufwärmen, Anwenden, Knobeln), keine Lösungen, dafür Selbsttests.</p>
+      <p><a class="k-btn k-btn--ghost" href="../notebooks/V05-Struktogramm.ipynb" download>V05-Struktogramm.ipynb herunterladen</a></p>
+      <ol class="k-steps">
+        <li><strong>In Codespaces öffnen:</strong> Im Kurs-Repository auf GitHub „Code“ → „Codespaces“ → „Create codespace“. Die Umgebung (Python 3.12, NumPy, Matplotlib, Jupyter) ist vorbereitet. Dann <code class="k-i">notebooks/V05-Struktogramm.ipynb</code> öffnen.</li>
+        <li><strong>Oder lokal:</strong> <code class="k-i">pip install numpy matplotlib jupyter</code>, dann <code class="k-i">jupyter lab</code>.</li>
+        <li>Immer erst die Vorhersage-Zellen ausfüllen, dann ausführen.</li>
+      </ol>
+      <h3>Danach</h3>
+      <p><a href="v05-struktogramm.html#deepdive">Zum Deep Dive</a> (freiwillig): Goto-Debatte, zyklomatische Komplexität, Schleifen im Struktogramm. Oder zurück zur <a href="v05-struktogramm.html">Lerneinheit</a>, um etwas nachzulesen.</p>
+
+    </section>
+
+      <nav class="lab__pager" aria-label="Zwischen Aufgaben wechseln">
+        <a class="k-btn k-btn--ghost" id="lab-prev" href="#a-werkzeugkasten">← Zurück</a>
+        <a class="k-btn k-btn--ghost" id="lab-next" href="#a-vorgemacht">Weiter →</a>
+      </nav>
+    </main>
+
+    <div class="lab__dock" data-library-dock data-state="off"></div>
+  </div>
+
+  <footer class="dhbw-footer k-footer">
+    <div class="dhbw-footer__inner">
+      <span><span class="dhbw-footer__brand">DHBW Stuttgart</span> · Campus Horb</span>
+      <span><a href="../index.html">Zurück zum Lernpfad</a> · V05 Programmierlabor</span>
+    </div>
+  </footer>
+
+  <script src="../assets/js/icons.js"></script>
+  <script src="../assets/js/editor.js" defer></script>
+  <script src="../assets/js/kurs.js"></script>
+  <script src="../assets/js/aufgaben.js"></script>
+  <script src="../assets/js/labor.js"></script>
+</body>
+</html>

@@ -385,10 +385,17 @@ def _main(kind, src, inputs, tests_src, mode):
 
     var runBtn = null, checkBtn = null, resetBtn, submitBtn = null;
     if (kind !== 'klausur') runBtn = el('button', { type: 'button', class: 'k-btn k-btn--small' + (kind === 'code' ? ' k-btn--ghost' : ''), text: 'Ausführen' });
+    var stepBtn = null;
+    if (kind !== 'klausur') {
+      stepBtn = el('button', { type: 'button', class: 'k-btn k-btn--small k-btn--ghost', text: 'Schritt für Schritt' });
+      stepBtn.addEventListener('click', function () {
+        if (window.KursViz) window.KursViz.open(ta.value, { stdin: currentInputs().join(String.fromCharCode(10)), opener: stepBtn }).catch(function () { /* Fehler zeigt der Visualisierer */ });
+      });
+    }
     if (kind === 'code') checkBtn = el('button', { type: 'button', class: 'k-btn k-btn--small', text: 'Prüfen' });
     if (kind === 'klausur') submitBtn = el('button', { type: 'button', class: 'k-btn k-btn--small', text: 'Abgeben und prüfen' });
     resetBtn = el('button', { type: 'button', class: 'k-btn k-btn--small k-btn--link', text: kind === 'klausur' ? 'Neu schreiben' : 'Zurücksetzen' });
-    [runBtn, checkBtn, submitBtn, resetBtn, ui.hintBtn, ui.solBtn].forEach(function (b) { if (b) ui.bar.appendChild(b); });
+    [runBtn, stepBtn, checkBtn, submitBtn, resetBtn, ui.hintBtn, ui.solBtn].forEach(function (b) { if (b) ui.bar.appendChild(b); });
     ui.bar.appendChild(ui.status);
 
     var anchor = ui.inputBox || editorBox;
