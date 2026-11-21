@@ -1,0 +1,129 @@
+WEBVTT
+
+1
+00:00:00.400 --> 00:00:02.931
+Mit print gibst du etwas auf dem Bildschirm aus.
+
+2
+00:00:03.698 --> 00:00:07.298
+Text steht in Anführungszeichen, Zahlen schreibst du ohne.
+
+3
+00:00:08.134 --> 00:00:11.870
+Du kannst mehrere Argumente übergeben, getrennt durch Kommas.
+
+4
+00:00:12.899 --> 00:00:16.206
+Python setzt zwischen die Teile automatisch ein Leerzeichen.
+
+5
+00:00:17.140 --> 00:00:19.908
+Und jedes print beginnt in einer neuen Zeile.
+
+6
+00:00:20.808 --> 00:00:23.594
+Eine Variable ist ein Name für einen Wert.
+
+7
+00:00:24.580 --> 00:00:27.857
+Mit dem Gleichheitszeichen gibst du einem Wert einen Namen.
+
+8
+00:00:28.670 --> 00:00:32.149
+Das nennt man Zuweisung, und es ist keine Gleichung.
+
+9
+00:00:33.104 --> 00:00:41.687
+Python liest sie von rechts nach links: Erst wird die rechte Seite berechnet, dann bekommt das Ergebnis den Namen auf der linken Seite.
+
+10
+00:00:42.544 --> 00:00:46.911
+Danach kannst du den Namen überall verwenden, wo du den Wert brauchst.
+
+11
+00:00:47.811 --> 00:00:52.094
+Einer Variablen darfst du jederzeit einen neuen Wert zuweisen.
+
+12
+00:00:52.756 --> 00:00:54.303
+Der alte Wert ist dann weg.
+
+13
+00:00:54.968 --> 00:00:58.954
+Häufig siehst du zähler gleich zähler plus eins.
+
+14
+00:00:59.263 --> 00:01:10.059
+Das ist keine Gleichung, sondern eine Anweisung: Nimm den aktuellen Wert, addiere eins und speichere das Ergebnis unter demselben Namen.
+
+15
+00:01:10.959 --> 00:01:13.271
+Kommentare beginnen mit einer Raute.
+
+16
+00:01:14.154 --> 00:01:17.521
+Python ignoriert alles ab der Raute bis zum Zeilenende.
+
+17
+00:01:18.387 --> 00:01:23.607
+Sie erklären dir und anderen, warum etwas im Code steht, zum Beispiel die Einheit.
+
+18
+00:01:24.597 --> 00:01:27.682
+Mit input liest du eine Eingabe von der Tastatur.
+
+19
+00:01:28.922 --> 00:01:35.384
+Der Text in den Klammern erscheint als Aufforderung, und die Antwort speichert Python in einer Variablen.
+
+20
+00:01:36.034 --> 00:01:40.622
+Wichtig: input liefert immer Text, auch wenn du Ziffern tippst.
+
+21
+00:01:41.141 --> 00:01:44.818
+Wie du daraus Zahlen machst, lernst du in Lektion drei.
+
+22
+00:01:45.718 --> 00:01:47.739
+Für Namen gelten feste Regeln.
+
+23
+00:01:48.320 --> 00:01:52.819
+Erlaubt sind Buchstaben, Ziffern und der Unterstrich.
+
+24
+00:01:53.520 --> 00:01:58.229
+Ein Name darf nicht mit einer Ziffer beginnen und keine Leerzeichen enthalten.
+
+25
+00:01:59.122 --> 00:02:05.769
+Python unterscheidet Groß- und Kleinschreibung: kraft und Kraft sind zwei verschiedene Namen.
+
+26
+00:02:06.238 --> 00:02:12.610
+Wähle sprechende Namen mit Einheit, zum Beispiel kraft_n statt nur k.
+
+27
+00:02:13.510 --> 00:02:18.697
+Zum Schluss: Fehlermeldungen sind keine Strafe, sondern Hinweise.
+
+28
+00:02:18.944 --> 00:02:24.860
+Ein NameError heißt: Python kennt diesen Namen nicht, hier wegen eines Tippfehlers.
+
+29
+00:02:25.259 --> 00:02:28.607
+Die Meldung schlägt sogar den richtigen Namen vor.
+
+30
+00:02:29.289 --> 00:02:38.279
+Ein SyntaxError heißt: Die Zeile ist grammatisch falsch, hier fehlt ein Komma. Dann läuft das Programm gar nicht erst los.
+
+31
+00:02:39.303 --> 00:02:43.399
+Lies immer die letzte Zeile der Meldung und die Zeilennummer darüber.
+
+32
+00:02:44.404 --> 00:02:50.433
+Jetzt bist du dran: Tippe alle Beispiele selbst ab und probiere sie aus.

@@ -1,0 +1,1 @@
+Die ersten beiden Zeilen sind Kommentare. Sie beginnen mit einer Raute und sagen, worum es geht. In Zeile vier und fünf liest input zwei Texte ein: den Namen der Prüferin oder des Prüfers und die Bauteil-Bezeichnung. Der Text in den Klammern ist die Aufforderung, die Antworten landen in den Variablen prüfer und bauteil. Beides bleibt Text, damit wird nichts gerechnet.

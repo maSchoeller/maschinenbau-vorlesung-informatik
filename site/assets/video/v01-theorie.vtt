@@ -1,0 +1,105 @@
+WEBVTT
+
+1
+00:00:00.400 --> 00:00:03.965
+Eine KI soll die Zugspannung in einem Rundstab berechnen.
+
+2
+00:00:04.555 --> 00:00:09.249
+Die Zugkraft beträgt 12 000 Newton, der Durchmesser 10 Millimeter.
+
+3
+00:00:10.019 --> 00:00:17.145
+Die KI antwortet selbstsicher: 0,153 Megapascal.
+
+4
+00:00:18.305 --> 00:00:22.082
+Das klingt plausibel, ist aber um den Faktor 1000 falsch.
+
+5
+00:00:22.940 --> 00:00:27.174
+Richtig sind etwa 152,8 Megapascal.
+
+6
+00:00:28.174 --> 00:00:35.112
+Die Fläche wurde von Quadratmillimetern falsch in Quadratmeter umgerechnet: durch 1000 statt durch eine Million.
+
+7
+00:00:35.838 --> 00:00:39.320
+Wer das nicht merkt, dimensioniert danach ein Bauteil falsch.
+
+8
+00:00:40.220 --> 00:00:46.340
+Warum also selbst programmieren lernen, wenn eine KI das kann? Dafür gibt es vier Gründe.
+
+9
+00:00:47.185 --> 00:00:54.248
+Erstens: Du musst Code lesen können, um ihn zu prüfen. Wer ihn nicht versteht, kann nur glauben.
+
+10
+00:00:55.201 --> 00:01:04.344
+Zweitens: Eine KI verstärkt deine Spezifikation. Ist die Aufgabe unklar, bekommst du schnell und überzeugend das Falsche.
+
+11
+00:01:05.380 --> 00:01:14.310
+Drittens: Du musst überschlagen können. 12 000 durch rund 80 sind etwa 150, und schon fällt der Fehler auf.
+
+12
+00:01:15.287 --> 00:01:24.481
+Viertens: Im Betrieb läuft oft gar keine KI. Steuerungen, Messgeräte und Skripte sind Code, den du verstehen und anpassen musst.
+
+13
+00:01:25.381 --> 00:01:31.485
+Du musst aber nicht alles selbst können. Dafür gibt es die Wissens-Ampel.
+
+14
+00:01:32.319 --> 00:01:40.336
+Im Kopf: Das brauchst du ohne Hilfe, sonst kannst du KI-Ergebnisse nicht beurteilen, zum Beispiel Größenordnungen und Einheiten.
+
+15
+00:01:40.959 --> 00:01:47.441
+Lesen und erkennen: Du verstehst Code, musst ihn aber nicht zwingend selbst schreiben.
+
+16
+00:01:48.104 --> 00:01:53.264
+Delegieren: Die KI übernimmt, du musst nur wissen, dass es das gibt.
+
+17
+00:01:53.838 --> 00:01:58.171
+Bei jedem Thema im Kurs zeigt dir die Ampel, in welche Stufe es gehört.
+
+18
+00:01:59.071 --> 00:02:01.196
+Doch was ist eigentlich ein Programm?
+
+19
+00:02:01.880 --> 00:02:08.588
+Ein Programm folgt fast immer demselben Muster: Eingabe, Verarbeitung, Ausgabe.
+
+20
+00:02:09.435 --> 00:02:16.760
+Hier stehen in den ersten beiden Zeilen die Eingaben, in der dritten wird gerechnet, und die vierte gibt das Ergebnis aus.
+
+21
+00:02:17.775 --> 00:02:22.382
+Der Interpreter arbeitet den Code Zeile für Zeile von oben nach unten ab.
+
+22
+00:02:23.325 --> 00:02:29.220
+Und er ist deterministisch: gleiche Eingabe, gleiches Ergebnis, jedes Mal.
+
+23
+00:02:29.705 --> 00:02:38.224
+Genau das macht ein Programm überprüfbar, anders als eine KI-Antwort, die bei jeder Anfrage anders ausfallen kann.
+
+24
+00:02:39.124 --> 00:02:45.467
+Merke dir: Die KI ist ein starkes Werkzeug, aber die Verantwortung für das Ergebnis bleibt bei dir.
+
+25
+00:02:46.335 --> 00:02:52.330
+Dafür brauchst du Wissen im Kopf, Leseverständnis und ein Gefühl für Größenordnungen.
+
+26
+00:02:53.297 --> 00:02:57.099
+Im nächsten Video schreibst du deine ersten Zeilen Python.

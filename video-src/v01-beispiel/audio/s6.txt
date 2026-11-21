@@ -1,0 +1,1 @@
+Jetzt der Probelauf. Als Prüfer gibst du Max Mustermann ein, als Bauteil Welle W siebzehn. Danach läuft der Rest ohne weitere Eingabe, Zeile für Zeile. Die Fläche beträgt achtundsiebzig Komma fünf drei neun sieben fünf Quadratmillimeter. Die Spannung ist einhundertzweiundfünfzig Komma sieben acht acht acht sieben und dann noch viele weitere Stellen, in Megapascal.

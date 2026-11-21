@@ -1,0 +1,1 @@
+Merke dir: Die KI ist ein starkes Werkzeug, aber die Verantwortung für das Ergebnis bleibt bei dir. Dafür brauchst du Wissen im Kopf, Leseverständnis und ein Gefühl für Größenordnungen. Im nächsten Video schreibst du deine ersten Zeilen Python.

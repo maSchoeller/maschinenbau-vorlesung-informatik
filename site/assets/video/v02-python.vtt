@@ -1,0 +1,113 @@
+WEBVTT
+
+1
+00:00:00.400 --> 00:00:04.845
+In Python rechnest du mit int, also mit ganzen Zahlen.
+
+2
+00:00:05.553 --> 00:00:11.846
+Plus, Minus und Mal funktionieren wie gewohnt, nur dass Mal als Sternchen geschrieben wird.
+
+3
+00:00:12.966 --> 00:00:20.005
+7 + 3 ist 10, 7 − 3 ist 4, 7 · 3 ist 21.
+
+4
+00:00:20.743 --> 00:00:23.345
+Das Ergebnis bleibt dabei ein int.
+
+5
+00:00:24.245 --> 00:00:30.542
+Der einfache Schrägstrich dividiert und liefert immer einen float, auch wenn die Division aufgeht.
+
+6
+00:00:31.270 --> 00:00:37.275
+7 / 2 ergibt 3.5, 6 / 3 ergibt 2.0.
+
+7
+00:00:37.761 --> 00:00:43.484
+Zwei Sterne potenzieren: 2 ** 10 ist 1024.
+
+8
+00:00:43.821 --> 00:00:49.558
+Brauchst du eine ganze Zahl als Ergebnis, nimmst du den doppelten Schrägstrich.
+
+9
+00:00:50.458 --> 00:00:58.161
+Jetzt das wichtigste Paar: // liefert den Ganzteil der Division, % den Rest.
+
+10
+00:00:58.961 --> 00:01:01.862
+17 // 5 ergibt 3, 17 % 5 ergibt 2.
+
+11
+00:01:02.779 --> 00:01:08.196
+Die beiden gehören zusammen: 3 · 5 + 2 ergibt wieder 17.
+
+12
+00:01:08.755 --> 00:01:12.885
+Praktisch: Aus 4000 Sekunden werden 66 Minuten und 40 Sekunden.
+
+13
+00:01:13.716 --> 00:01:20.601
+Dasselbe Muster gilt für Zähler, Stückzahlen und Zeiten: erst der Ganzteil, dann der Rest.
+
+14
+00:01:21.501 --> 00:01:26.973
+Python beachtet die Rangfolge wie in der Mathematik: Potenz vor Punkt vor Strich.
+
+15
+00:01:27.652 --> 00:01:32.400
+2 + 3 * 4 ergibt 14, weil zuerst multipliziert wird.
+
+16
+00:01:32.993 --> 00:01:39.316
+Mit Klammern erzwingst du die Reihenfolge: (2 + 3) * 4 ergibt 20.
+
+17
+00:01:40.123 --> 00:01:44.355
+Und 2 * 3 ** 2 ist 18, denn die Potenz kommt zuerst.
+
+18
+00:01:44.920 --> 00:01:48.440
+Im Zweifel setze Klammern, das liest sich auch besser.
+
+19
+00:01:49.340 --> 00:01:53.043
+Zwischen den Zahlensystemen wandelst du mit drei Funktionen um.
+
+20
+00:01:53.674 --> 00:01:59.126
+bin() liefert die Binärschreibweise als Text, mit dem Präfix 0b.
+
+21
+00:01:59.317 --> 00:02:04.306
+hex() liefert die Hexschreibweise mit dem Präfix 0x, in Kleinbuchstaben.
+
+22
+00:02:05.147 --> 00:02:20.537
+Zurück geht es mit int() und der Basis als zweitem Argument: Aus "1010" zur Basis 2 wird 10, aus "ff" zur Basis 16 wird 255.
+
+23
+00:02:21.476 --> 00:02:26.124
+Die Präfixe sind nur Beschriftung: Der Wert der Zahl bleibt derselbe.
+
+24
+00:02:27.024 --> 00:02:32.917
+Anders als in der SPS ist ein Python-int beliebig groß, er wächst einfach mit.
+
+25
+00:02:33.970 --> 00:02:41.432
+2 ** 100 hat 31 Stellen und läuft nie über.
+
+26
+00:02:42.251 --> 00:02:50.287
+Einen Überlauf simulierst du selbst: Der Rest modulo 2 ** 16 lässt den Wert wieder bei 0 beginnen.
+
+27
+00:02:51.190 --> 00:02:56.841
+Und teilst du durch null, meldet Python einen ZeroDivisionError und bricht ab.
+
+28
+00:02:57.364 --> 00:03:02.926
+Lies die Meldung, sie sagt dir genau, was los ist. Probier alles selbst aus!

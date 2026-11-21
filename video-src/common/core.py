@@ -4,9 +4,9 @@ import os, re, sys, json, shutil, subprocess
 from PIL import Image, ImageDraw, ImageFont
 
 W, H, FPS = 1280, 720, 25
-HERE = os.path.dirname(os.path.abspath(__file__))
-FONT_SANS = os.path.join(HERE, "..", "fonts", "SourceSans3.ttf")
-SITE_VIDEO = os.path.abspath(os.path.join(HERE, "..", "..", "site", "assets", "video"))
+_COMMON_DIR = os.path.dirname(os.path.abspath(__file__))
+FONT_SANS = os.path.join(_COMMON_DIR, "..", "fonts", "SourceSans3.ttf")
+SITE_VIDEO = os.path.abspath(os.path.join(_COMMON_DIR, "..", "..", "site", "assets", "video"))
 
 RED = (226, 0, 26); DARK = (26, 26, 26); GREY = (107, 114, 128)
 BG = (247, 247, 248); WHITE = (255, 255, 255); LINE = (221, 224, 229)

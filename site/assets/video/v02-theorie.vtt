@@ -1,0 +1,125 @@
+WEBVTT
+
+1
+00:00:00.400 --> 00:00:04.978
+Ein Drehgeber zählt Impulse, und sein Zähler hat 16 Bit.
+
+2
+00:00:05.870 --> 00:00:12.174
+Bei 65535 ist Schluss: Der nächste Impuls setzt ihn auf 0 zurück.
+
+3
+00:00:13.170 --> 00:00:21.135
+Liest die Steuerung denselben Zähler mit Vorzeichen, springt er von 32767 auf −32768.
+
+4
+00:00:21.438 --> 00:00:26.751
+Die Achse bewegt sich nur einen Impuls, doch die Zahl springt über die ganze Skala.
+
+5
+00:00:27.809 --> 00:00:31.007
+Schauen wir, wie ein Rechner wirklich zählt.
+
+6
+00:00:31.907 --> 00:00:35.189
+Im Dezimalsystem ist jede Stelle eine Zehnerpotenz.
+
+7
+00:00:35.986 --> 00:00:39.685
+45 ist 4 · 10 plus 5 · 1.
+
+8
+00:00:40.503 --> 00:00:47.010
+Ein Rechner kennt nur zwei Zustände, also zählt er binär: Jede Stelle ist eine Zweierpotenz.
+
+9
+00:00:47.714 --> 00:00:51.613
+45 ist dann 32 + 8 + 4 + 1, also 101101.
+
+10
+00:00:51.948 --> 00:01:00.291
+Im Hexadezimalsystem steht jede Stelle für eine Sechzehnerpotenz, mit den Ziffern 0 bis 9 und A bis F.
+
+11
+00:01:01.149 --> 00:01:08.599
+45 ist 2 · 16 + 13, und 13 schreibt man D: also 2D.
+
+12
+00:01:09.499 --> 00:01:13.156
+Dezimal in binär wandelst du mit dem Divisionsrestverfahren um.
+
+13
+00:01:13.889 --> 00:01:17.329
+Du teilst immer wieder durch 2 und merkst dir den Rest.
+
+14
+00:01:18.148 --> 00:01:28.605
+45 durch 2 ist 22 Rest 1, und so weiter, bis du bei 0 ankommst.
+
+15
+00:01:29.286 --> 00:01:34.329
+Die Reste liest du von unten nach oben: 101101.
+
+16
+00:01:34.893 --> 00:01:39.084
+Zurück rechnest du, indem du die Stellenwerte der Einsen addierst.
+
+17
+00:01:39.984 --> 00:01:43.504
+Ein Bit ist eine Binärstelle, 0 oder 1. Acht Bit sind ein Byte.
+
+18
+00:01:44.309 --> 00:01:53.995
+Mit n Bit gibt es 2ⁿ Werte, ohne Vorzeichen von 0 bis 2ⁿ − 1.
+
+19
+00:01:54.310 --> 00:02:01.418
+Bei 8 Bit sind das 0 bis 255, bei 16 Bit 0 bis 65535.
+
+20
+00:02:02.580 --> 00:02:10.831
+Mit Vorzeichen halbiert sich der positive Bereich: Bei 16 Bit liegt er zwischen −32768 und +32767.
+
+21
+00:02:11.358 --> 00:02:16.350
+Wird der Bereich verlassen, läuft die Zahl über und beginnt von vorn.
+
+22
+00:02:17.250 --> 00:02:23.212
+Negative Zahlen speichert der Rechner im Zweierkomplement.
+
+23
+00:02:23.791 --> 00:02:26.653
+Du schreibst den Betrag binär auf, invertierst alle Bits und addierst 1.
+
+24
+00:02:27.106 --> 00:02:37.957
+Beispiel −5 in 8 Bit: 00000101 invertiert, plus 1, ergibt 11111011.
+
+25
+00:02:38.909 --> 00:02:43.742
+Ohne Vorzeichen gelesen wäre dasselbe Muster die 251.
+
+26
+00:02:44.068 --> 00:02:51.434
+Am Zahlenkreis siehst du den Überlauf: Nach der größten positiven kommt die kleinste negative Zahl.
+
+27
+00:02:52.334 --> 00:03:01.554
+Lange Bitketten sind unlesbar. Hex ist die Kurzschrift: Vier Bit ergeben genau eine Hexziffer.
+
+28
+00:03:02.541 --> 00:03:07.844
+Jede Vierergruppe wird eine Ziffer: Das Register wird zu F, A, 3, 1, also 0xFA31.
+
+29
+00:03:08.367 --> 00:03:13.356
+In SPS-Registern und bei Fehlercodes begegnet dir Hex ständig.
+
+30
+00:03:13.977 --> 00:03:18.991
+Das Präfix 0x kennzeichnet Hex, 0b kennzeichnet binär.
+
+31
+00:03:20.128 --> 00:03:26.192
+Merke: Ein Zähler hat endlich viele Bits. Prüfe immer, ob dein Wertebereich reicht.

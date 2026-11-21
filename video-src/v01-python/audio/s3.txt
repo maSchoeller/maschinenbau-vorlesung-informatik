@@ -1,0 +1,1 @@
+Einer Variablen darfst du jederzeit einen neuen Wert zuweisen. Der alte Wert ist dann weg. Häufig siehst du zähler gleich zähler plus eins. Das ist keine Gleichung, sondern eine Anweisung: Nimm den aktuellen Wert, addiere eins und speichere das Ergebnis unter demselben Namen.

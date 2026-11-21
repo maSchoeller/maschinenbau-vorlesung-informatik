@@ -1,0 +1,1 @@
+Heute rechnest du ein Prüfprotokoll vor: die Zugspannung in einem Rundstab. Bekannt sind die Zugkraft von zwölftausend Newton und der Durchmesser von zehn Millimetern. Das Programm fragt nach Prüfer und Bauteil, berechnet Fläche und Spannung und gibt ein Protokoll aus. Dafür reichen print, Variablen, Kommentare und input aus diesem Kapitel.

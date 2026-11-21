@@ -31,7 +31,7 @@ Jeder Termin hat einen **Informatik-Strang** (Theorie) und einen **Python-Strang
 | Nr | Informatik-Strang | Python-Strang (neu eingeführt) | Hook | Phase |
 |---|---|---|---|---|
 | V01 | Warum programmieren, wenn KI es kann? Wissens-Ampel | print, Variablen & Zuweisung, Kommentare, input, Namensregeln | KI-Rechnung um Faktor 1000 falsch | 1 |
-| V02 | Bits, Binär, Hex, Zweierkomplement | int, Rechenoperatoren (+ - * / // % **), Operatorrangfolge, bin()/hex()/int(x, 2) | Encoder-Zähler läuft über | 1 |
+| V02 | Bits, Binär, Hex, Zweierkomplement | int, int(text) für Eingaben, Rechenoperatoren (+ - * / // % **), Operatorrangfolge, bin()/hex()/int(x, 2) | Encoder-Zähler läuft über | 1 |
 | V03 | Fließkommazahlen & Datentypen | float, type(), Typumwandlung int()/float()/str(), input → Zahl, f-Strings mit Format (:.2f), math-Modul, math.isclose | 0.1+0.2, Toleranzen addieren | 1 |
 | V04 | Boolesche Logik | bool, Vergleichsoperatoren, and/or/not, if / elif / else, Einrückung | Zweihand-Sicherheitsschaltung | 1 |
 | V05 | Problemanalyse & Struktogramm | Struktogramm → Code, verschachtelte Verzweigungen, Eingabe prüfen | Struktogramm wird zum Prompt | 1 |

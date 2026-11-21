@@ -1,0 +1,1 @@
+Für Namen gelten feste Regeln. Erlaubt sind Buchstaben, Ziffern und der Unterstrich. Ein Name darf nicht mit einer Ziffer beginnen und keine Leerzeichen enthalten. Python unterscheidet Groß- und Kleinschreibung: kraft und Kraft sind zwei verschiedene Namen. Wähle sprechende Namen mit Einheit, zum Beispiel kraft Unterstrich n statt nur k.

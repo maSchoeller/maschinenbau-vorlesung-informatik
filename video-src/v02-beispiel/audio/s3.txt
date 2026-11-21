@@ -1,0 +1,1 @@
+Zeile neun rechnet den Winkel der angefangenen Umdrehung: neunhundertvier mal dreihundertsechzig durch eintausendvierundzwanzig. Mal und Schrägstrich sind gleichrangig und werden von links nach rechts gerechnet. Der einfache Schrägstrich liefert immer einen float: dreihundertsiebzehn Komma acht eins zwei fünf Grad. Das ist knapp vor einer vollen Umdrehung.

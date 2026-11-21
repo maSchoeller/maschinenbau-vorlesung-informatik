@@ -100,7 +100,7 @@ def _hint(e):
     if isinstance(e, TypeError):
         return "Die Typen passen nicht zusammen. input() liefert immer Text (str): mit float() oder int() in eine Zahl umwandeln, bevor du rechnest."
     if isinstance(e, ValueError):
-        return "Dieser Text lässt sich nicht in eine Zahl umwandeln. Dezimalpunkt statt Komma? int() akzeptiert kein '2.5', dafür float()."
+        return "Dieser Text passt nicht zur Umwandlung. Prüfe Komma statt Punkt und das Zahlensystem: int('2.5') geht nicht, int('102', 2) auch nicht (2 ist keine Binärziffer)."
     if isinstance(e, EOFError):
         return "Das Programm wollte mehr Eingaben lesen, als vorgesehen sind. Zählt dein Programm die input()-Aufrufe richtig?"
     if isinstance(e, ZeroDivisionError):

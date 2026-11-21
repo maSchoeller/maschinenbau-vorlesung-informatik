@@ -1,0 +1,21 @@
+/* =============================================================
+   v02.css – Explorables der Lektion V02 (Bit-Schalter, Überlauf-Zähler)
+   Baut auf kurs.css auf (.k-bit, .k-seg, .k-chip, .k-readout, .k-chart).
+   ============================================================= */
+.v02-acts { margin: var(--sp-3) 0 0; align-items: center; }
+.v02-nibbles { display: flex; flex-wrap: wrap; gap: var(--sp-3) var(--sp-4); margin: var(--sp-4) 0; }
+.v02-nib { display: grid; gap: 4px; justify-items: start; }
+.v02-nib__hex { font-family: var(--dhbw-font-mono); font-weight: 700; font-size: var(--fs-md); color: var(--red-dark); border-bottom: 2px solid var(--red-mid); width: 100%; text-align: center; }
+.v02-nib__bits { display: flex; gap: 2px; }
+.v02-bit { display: grid; justify-items: center; gap: 2px; }
+.v02-bit .k-bit { width: 30px; }
+.v02-bit__w { font-size: var(--fs-xs); font-family: var(--dhbw-font-mono); color: var(--k-muted); line-height: 1.2; }
+.v02-counter { font-family: var(--dhbw-font-mono); font-weight: 700; font-size: var(--fs-xl); background: var(--code-bg); color: var(--code-text); padding: var(--sp-3) var(--sp-5); border-radius: var(--r-base); display: inline-block; min-width: 7ch; text-align: right; margin: var(--sp-3) 0; max-width: 100%; }
+.v02-msg { min-height: 1.65em; margin: var(--sp-3) 0 0; font-weight: 600; }
+.v02-msg.is-on { padding: var(--sp-3) var(--sp-4); border-left: 3px solid var(--k-bad); background: var(--k-bad-bg); color: var(--k-bad); max-width: var(--k-measure); }
+@media (max-width: 480px) {
+  .v02-bit .k-bit { width: 26px; }
+  .v02-bit__w { font-size: 0.625rem; letter-spacing: -0.03em; }
+  .v02-counter { font-size: var(--fs-lg); padding: var(--sp-3) var(--sp-4); }
+  .k-seg { flex-wrap: wrap; }
+}

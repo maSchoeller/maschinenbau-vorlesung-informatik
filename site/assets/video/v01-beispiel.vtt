@@ -1,0 +1,121 @@
+WEBVTT
+
+1
+00:00:00.400 --> 00:00:05.616
+Heute rechnest du ein Prüfprotokoll vor: die Zugspannung in einem Rundstab.
+
+2
+00:00:06.137 --> 00:00:11.387
+Bekannt sind die Zugkraft von 12 000 Newton und der Durchmesser von 10 Millimetern.
+
+3
+00:00:12.140 --> 00:00:18.737
+Das Programm fragt nach Prüfer und Bauteil, berechnet Fläche und Spannung und gibt ein Protokoll aus.
+
+4
+00:00:19.339 --> 00:00:23.902
+Dafür reichen print, Variablen, Kommentare und input aus diesem Kapitel.
+
+5
+00:00:24.802 --> 00:00:31.255
+Die ersten beiden Zeilen sind Kommentare. Sie beginnen mit einer Raute und sagen, worum es geht.
+
+6
+00:00:32.139 --> 00:00:40.899
+In Zeile 4 und 5 liest input zwei Texte ein: den Namen der Prüferin oder des Prüfers und die Bauteil-Bezeichnung.
+
+7
+00:00:41.750 --> 00:00:48.244
+Der Text in den Klammern ist die Aufforderung, die Antworten landen in den Variablen pruefer und bauteil.
+
+8
+00:00:49.441 --> 00:00:52.855
+Beides bleibt Text, damit wird nichts gerechnet.
+
+9
+00:00:53.755 --> 00:01:01.499
+Dann folgen die festen Werte: kraft_n ist 12000, durchmesser_mm ist 10.
+
+10
+00:01:02.674 --> 00:01:07.399
+Die Einheit steckt im Namen und im Kommentar, so verwechselst du später nichts.
+
+11
+00:01:07.733 --> 00:01:12.879
+Pi ist hier eine Näherung: 3,14159.
+
+12
+00:01:13.540 --> 00:01:19.069
+Alle Zahlen stehen noch fest im Code. Zahlen einlesen lernst du in Lektion drei.
+
+13
+00:01:19.969 --> 00:01:26.312
+Jetzt wird gerechnet. Zeile 11 berechnet die Fläche: pi mal d mal d durch vier.
+
+14
+00:01:26.588 --> 00:01:37.800
+Denk an die Zuweisung von rechts nach links: Erst wird die rechte Seite ausgerechnet, dann bekommt flaeche_mm2 das Ergebnis.
+
+15
+00:01:38.897 --> 00:01:42.908
+Zeile 12 teilt die Kraft durch die Fläche und speichert die Spannung.
+
+16
+00:01:43.470 --> 00:01:52.521
+Die Fläche liegt in Quadratmillimetern vor, also kommt Newton pro Quadratmillimeter heraus, das sind Megapascal.
+
+17
+00:01:53.673 --> 00:01:59.307
+Die Reihenfolge zählt: Die Fläche muss existieren, bevor du sie benutzt.
+
+18
+00:02:00.207 --> 00:02:02.225
+Zum Schluss folgen fünf print-Zeilen.
+
+19
+00:02:03.158 --> 00:02:05.131
+Die erste gibt die Überschrift aus.
+
+20
+00:02:05.978 --> 00:02:14.651
+Die nächsten vier haben je zwei Argumente, einen Text und eine Variable. print setzt dazwischen ein Leerzeichen.
+
+21
+00:02:15.406 --> 00:02:20.365
+So landen Prüfer, Bauteil, Fläche und Spannung im Protokoll.
+
+22
+00:02:21.265 --> 00:02:28.747
+Jetzt der Probelauf. Als Prüfer gibst du Max Mustermann ein, als Bauteil Welle W siebzehn.
+
+23
+00:02:29.511 --> 00:02:33.626
+Danach läuft der Rest ohne weitere Eingabe, Zeile für Zeile.
+
+24
+00:02:34.342 --> 00:02:39.823
+Die Fläche beträgt 78,53975 Quadratmillimeter.
+
+25
+00:02:40.727 --> 00:02:49.597
+Die Spannung ist 152,78887 und dann noch viele weitere Stellen, in Megapascal.
+
+26
+00:02:50.497 --> 00:03:00.190
+Jetzt der wichtigste Schritt: Passt das Ergebnis? Im Kopf überschlägst du 12 000 durch rund 80, das sind etwa 150.
+
+27
+00:03:00.594 --> 00:03:06.824
+Unser Ergebnis liegt bei etwa 153 Megapascal, die Größenordnung stimmt.
+
+28
+00:03:07.417 --> 00:03:16.570
+Das passt zu Baustahl S235: Die Streckgrenze liegt bei 235 Megapascal, der Stab bleibt also darunter.
+
+29
+00:03:17.177 --> 00:03:20.997
+Die vielen Nachkommastellen formatieren wir in Lektion drei.
+
+30
+00:03:21.951 --> 00:03:29.510
+Ein Ergebnis wie 0,153 oder 150 000 Megapascal würde dir dagegen sofort auffallen.

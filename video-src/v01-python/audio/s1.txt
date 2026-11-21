@@ -1,0 +1,1 @@
+Mit print gibst du etwas auf dem Bildschirm aus. Text steht in Anführungszeichen, Zahlen schreibst du ohne. Du kannst mehrere Argumente übergeben, getrennt durch Kommas. Python setzt zwischen die Teile automatisch ein Leerzeichen. Und jedes print beginnt in einer neuen Zeile.
