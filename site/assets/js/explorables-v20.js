@@ -189,7 +189,7 @@
         { hl: [12], t: 'return liefert (ring − loecher) / 1e6 · 7,85 = ' + de(masse(p), 2) + ' kg an die Aufrufstelle. self und die lokalen Variablen verschwinden, das Objekt bleibt unverändert.', locals: [['ring', de(v.ring, 0) + ' mm³'], ['loecher', de(v.loecher, 0) + ' mm³']], self: true, ret: de(masse(p), 2) + ' kg' }
       ];
     }
-    function starteAufruf(n) { st.aufruf = n; st.step = 0; st.hl = []; st.prog.push('print(' + n + '.masse())'); progMerk(); render(); }
+    function starteAufruf(n) { st.aufruf = n; st.step = 0; st.hl = []; var zeile = 'print(' + n + '.masse())'; if (st.prog[st.prog.length - 1] !== zeile) st.prog.push(zeile); progMerk(); render(); }
     function progMerk() { /* Platzhalter: der Aufruf steht schon im Programm */ }
 
     function render() {
