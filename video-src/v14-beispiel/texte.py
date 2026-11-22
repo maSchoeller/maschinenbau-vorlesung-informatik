@@ -1,0 +1,36 @@
+"""Sprechertext V14 Beispiel (Quelltext mit Markup), genau briefing/v14-beispiel.py."""
+SRC = [
+ ["Du bremst mit dem Fahrrad, und das Handy misst mit der App phyphox die Beschleunigung.",
+  "Die Datei [[bremsen.csv|bremsen Punkt C S V]] hat das Semikolon als Trennzeichen und das Dezimalkomma.",
+  "Daraus sollen zwei Diagramme werden: oben die Beschleunigung, unten die Geschwindigkeit, beide über der Zeit.",
+  "Die Geschwindigkeit hat das Handy nicht gemessen. Die rechnen wir aus."],
+ ["Der Plan: zwei leere Listen anlegen, die Datei öffnen und die Kopfzeile überspringen.",
+  "Die erste Schleife fragt: noch eine Zeile? Dann kommen Zeit und Beschleunigung in die Listen.",
+  "Danach berechnen wir den Zeitschritt [[dt|d t]] und starten die Geschwindigkeit bei [[4,4|vier Komma vier]].",
+  "Die zweite Schleife hängt für jeden Beschleunigungswert eine neue Geschwindigkeit an. Am Ende kommen zwei Teilbilder und zwei Kennwerte."],
+ ["Die Zeilen 5 und 6 holen `csv` und `matplotlib`.",
+  "Die Funktion `zahl` in den Zeilen 9 und 10 macht aus dem Text [[-3,78|minus drei Komma sieben acht]] eine Zahl: Komma durch Punkt, dann `float`.",
+  "Ab Zeile 13 liest die Schleife die Datei zeilenweise. `next` überspringt die Kopfzeile.",
+  "Spalte null ist die Zeit, Spalte zwei die Beschleunigung in Fahrtrichtung."],
+ ["Der Zeitschritt `dt` ist der Abstand zweier Messzeiten, hier [[0,02 Sekunden|null Komma null zwei Sekunden]].",
+  "Die Geschwindigkeit startet bei [[4,4|vier Komma vier]] Meter pro Sekunde, das sind etwa 16 Kilometer pro Stunde.",
+  "Ein Rechenbeispiel: Bei [[-3 m/s²|minus drei Meter pro Sekunde zum Quadrat]] verliert das Rad in einem Schritt [[0,06|null Komma null sechs]] Meter pro Sekunde. Aus [[4,4|vier Komma vier]] werden [[4,34|vier Komma drei vier]].",
+  "Die Schleife macht das für jeden Wert. [[v[-1]|v minus eins in eckigen Klammern]] ist der letzte Wert der Liste, und `v` wächst um einen Wert pro Schritt."],
+ ["Zeile 28: `subplots` liefert die Abbildung und zwei Teilbilder, `oben` und `unten`, mit gemeinsamer Zeitachse.",
+  "Oben die Beschleunigung in Rot, mit Titel, Einheit und grauer Nulllinie.",
+  "Unten die Geschwindigkeit in Schwarz. Die Zeitachse beschriftest du nur hier, weil beide Bilder sie teilen.",
+  "Mit `show` in Zeile 42 erscheint das Bild: Bis etwa vier Sekunden rollt das Rad gleichmäßig, dann bremst es bis fast zum Stillstand."],
+ ["Die Ehrlichkeit steckt in Zeile 38: [[set_ylim|set y lim]] von null bis fünf lässt die Achse bei null beginnen.",
+  "Mit vier bis fünf läuft die Kurve unten aus dem Bild. Die Bremsung ist dann kaum zu sehen.",
+  "Die Ausgabe: größte Verzögerung [[-3,78 m/s²|minus drei Komma sieben acht Meter pro Sekunde zum Quadrat]], Geschwindigkeit am Ende [[0,05 m/s|null Komma null fünf Meter pro Sekunde]].",
+  "Merke: Einheit in jeden Achsentitel, eine Bezugslinie bei null und die Achse bei null beginnen."],
+]
+
+SZENEN = [
+ "Fahrrad mit Handy am Lenker (phyphox); rechts Tabellen-Ausschnitt der CSV mit Semikolon und Dezimalkomma; unten zwei leere Teilbilder (oben Beschleunigung, unten Geschwindigkeit) mit Fragezeichen bei der Geschwindigkeit.",
+ "Programmablaufplan der Auswertung, Knoten erscheinen nacheinander: Start, Listen, Datei öffnen, Schleife noch eine Zeile, dt und v = [4,4], Schleife noch ein a, Teilbilder, Kennwerte, Ende.",
+ "Code Zeilen 5 bis 20 getippt; je Satz eine Gruppe markiert; rechts Kacheln: Text wird Zahl, Spalte 0 Zeit, Spalte 2 a_y, Tabellenzeile mit Pfeilen auf die Spalten.",
+ "Code Zeilen 22 bis 26 mit Kacheln; kleines Rechenbeispiel -3 mal 0,02 gleich -0,06, 4,4 minus 0,06 gleich 4,34; die Liste v wächst Wert für Wert.",
+ "Code Zeilen 28 bis 42 links, rechts entsteht das Zwei-Teilbilder-Diagramm mit echten Daten aus bremsen.csv (oben a rot mit Nulllinie, unten v schwarz, y von 0 bis 5).",
+ "Zwei Diagramme der Geschwindigkeit nebeneinander: ehrlich (0 bis 5, grün) und set_ylim(4.0, 5.0) (rot, Kurve läuft aus dem Bild); darunter die zwei Ausgabezeilen und der Merksatz.",
+]

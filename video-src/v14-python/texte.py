@@ -1,0 +1,36 @@
+"""Sprechertext V14 Python-Werkstatt (Quelltext mit Markup)."""
+SRC = [
+ ["Zum Zeichnen holst du dir matplotlib: `import matplotlib.pyplot as plt`. [[plt|P L T]] ist der Kurzname, genau wie bei `import math as m`.",
+  "Dann brauchst du zwei Listen gleicher Länge: die Zeiten und die Geschwindigkeiten.",
+  "`plt.plot(zeit, v)` zeichnet die Linie. Die x-Liste kommt zuerst, dann die y-Liste."],
+ ["Ein Diagramm ohne Beschriftung sagt nichts.",
+  "Mit `plt.xlabel` und `plt.ylabel` schreibst du Größe, Formelzeichen und Einheit an die Achsen.",
+  "`plt.title` gibt dem Bild eine Überschrift, und `plt.grid(True)` legt ein Gitter zum Ablesen darüber.",
+  "Erst `plt.show()` zeigt das Bild. Ohne diese Zeile erscheint nichts."],
+ ["Es gibt vier Diagrammarten, und jede hat ihren Zweck.",
+  "`plot` zeichnet eine Linie für einen Verlauf, `scatter` einzelne Punkte für den Zusammenhang zweier Größen.",
+  "`bar` bekommt erst die Namen, dann die Werte, und vergleicht Kategorien.",
+  "`hist` bekommt nur eine Liste und zählt selbst. Mit `bins` bestimmst du die Zahl der Klassen."],
+ ["Ein Diagramm kann täuschen, deshalb legst du die Achse selbst fest.",
+  "`plt.ylim(0, 5)` setzt die Grenzen der senkrechten Achse, und `plt.axhline` zieht eine Hilfslinie, hier bei 4,6. Am Teilbild heißt es `ax.set_ylim`.",
+  "Wählst du die Grenzen zu eng, verschwinden die höheren Werte ohne jede Meldung.",
+  "Und Balken beginnen immer bei null, sonst wirken kleine Unterschiede riesig."],
+ ["Für zwei Größen untereinander brauchst du das Entpacken: `a, b = paar` verteilt ein Tupel auf zwei Namen.",
+  "`plt.subplots(2, 1)` liefert ebenfalls ein Tupel. `fig` bekommt die Abbildung, `oben` und `unten` die beiden Teilbilder.",
+  "Gezeichnet wird am Teilbild: `oben.plot`, `oben.set_ylabel`, `unten.set_xlabel`. Vor Beschriftung und Grenzen steht `set_`.",
+  "`sharex=True` teilt die Zeitachse, und `fig.tight_layout()` verhindert überlappende Beschriftungen."],
+ ["Die häufigsten Fehler. Erstens: Die Listen sind verschieden lang, und Python meldet einen `ValueError`: x and y must have same first dimension.",
+  "Zweitens: Steht Text statt Zahlen in der Liste, weil ein Komma nicht ersetzt wurde, entsteht eine Achse mit Texten statt Zahlen.",
+  "Drittens: x und y sind vertauscht, und die Zeit liegt senkrecht.",
+  "Viertens: `plt.show()` vergessen, dann gibt es kein Bild.",
+  "Und unterscheide Linien nie nur über die Farbe: Nimm Linienstil, Marker und `label` mit `legend`."],
+]
+
+SZENEN = [
+ "Links wird der Code getippt (import, zwei Listen, plt.plot), rechts entsteht die Linie der Geschwindigkeit über der Zeit.",
+ "Links kommen xlabel, ylabel, title, grid und show dazu; rechts erscheinen Achsentitel, Überschrift und Gitter, erst mit show wird das Bild voll sichtbar.",
+ "Oben vier Codezeilen für plot, scatter, bar und hist; darunter entsteht je ein Mini-Diagramm: Linie, Punkte, Balken, Histogramm.",
+ "Links ylim und axhline; rechts die Linie mit gestrichelter Hilfslinie bei 4,6, dann ylim bis 3 und der Verlauf wird oben abgeschnitten, zuletzt Balken ab null gegen abgeschnittene Balken.",
+ "Erst das Tupel a, b = paar mit Ausgabe, dann der subplots-Code; rechts entstehen zwei Teilbilder untereinander mit gemeinsamer Zeitachse.",
+ "Vier Fehlerkarten nacheinander: ValueError bei ungleich langen Listen, Textachse, vertauschte Achsen, fehlendes show; zuletzt ein Diagramm mit zwei Linien in Linienstil, Marker und Legende.",
+]
