@@ -1,0 +1,35 @@
+"""Sprechertext V20 Theorie: Objekte und CAD-Automatisierung (Quelltext mit Markup)."""
+SRC = [
+ ["Du sollst eine Baureihe von Flanschen für sechs Rohrnennweiten liefern. Jede Variante von Hand im [[CAD|Kad]] zu zeichnen kostet Stunden, und bei jedem Maß kann sich ein Tippfehler einschleichen.",
+  "Besser: Ein Skript erzeugt alle sechs, eine Zeile je Variante, und prüft die Maße gleich mit.",
+  "Dafür brauchst du Objekte."],
+ ["Mit Objekten arbeitest du schon seit Vorlesung 1. [[\"m10\".upper()|Text M zehn, Punkt upper]] ruft eine Methode auf einem Text auf, [[teile.append(\"Welle\")|teile Punkt append von Text Welle]] hängt etwas an eine Liste.",
+  "Text und Liste sind Objekte, `upper` und `append` sind ihre Methoden. Jetzt bauen wir eigene Objekte."],
+ ["Eine Klasse ist der Bauplan, ein Objekt das konkrete Teil. Die Klasse `Flansch` legt fest, welche Maße ein Flansch hat und was man daraus berechnen kann.",
+  "`f1 = Flansch(120, 40, 15, 90, 6, 11)` erzeugt daraus ein Teil. Die Maße heißen Attribute, die Rechnungen Methoden.",
+  "Jedes Objekt hat seine eigenen Maße: Ändert sich bei `f1` etwas, bleibt `f2` unberührt.",
+  "Der Bauplan steht einmal da, die Teile kannst du beliebig oft davon erzeugen."],
+ ["Beim Erzeugen läuft automatisch die Methode [[__init__|init]]. Sie speichert die Maße im Objekt, zum Beispiel `self.d_aussen = d_aussen`.",
+  "Und `self`? Das ist das Objekt, mit dem die Methode gerade arbeitet. Bei `f1.masse()` zeigt `self` auf `f1`, bei `f2.masse()` auf `f2`.",
+  "So rechnet dieselbe Methode jedes Mal mit den richtigen Maßen."],
+ ["Im [[CAD|Kad]] ist ein Bauteil ein Satz Parameter plus Regeln, ein parametrisches Modell. Die Klasse bildet genau das nach.",
+  "Die Regel `ist_gueltig` prüft, ob eine Bohrung über den Rand oder ins Mittelloch ragt.",
+  "Aus den Maßen entsteht ein Dreiecksnetz, das du als [[STL|S T L]]-Datei exportierst. Für den 3D-Druck reicht das Netz, für die Fertigung braucht man exakte Geometrie, etwa im [[STEP|Step]]-Format.",
+  "Programme wie FreeCAD oder CadQuery steuerst du auf dieselbe Weise per Python."],
+ ["Im Ablaufplan ist der Aufruf von `ist_gueltig` ein Unterprogramm, wie du es von den Funktionen aus Vorlesung 7 kennst.",
+  "Die Regel steht einmal in der Klasse und gilt für jede Variante.",
+  "Für jede Nennweite: Flansch erzeugen, prüfen. Ist er gültig, wird die Masse ausgegeben, sonst eine Warnung."],
+ ["Solche Skripte schreibt dir heute oft die [[KI|Ka I]]. Deine Aufgabe ist das Prüfen: Stimmen die Maße, stimmen die Einheiten, ist die Regel vollständig?",
+  "Eine falsche Einheit, und die Masse ist um den Faktor tausend falsch.",
+  "Die [[KI|Ka I]] schreibt das Skript, du prüfst Klasse und Regeln."],
+]
+
+SZENEN = [
+ "Hook: sechs Flansche der Baureihe in Draufsicht, links Handarbeit im CAD, rechts eine Zeile je Variante.",
+ "Objekte seit V01: Text und Liste als Objekte mit Methoden upper und append.",
+ "Klasse als Bauplan, daraus zwei Objekte f1 und f2 mit eigenen Attributen.",
+ "Animation f1.masse(): self zeigt auf f1; dann f2.masse(), self zeigt auf f2.",
+ "Parametrisches Modell mit Regel ist_gueltig (gültig und ungültig), Dreiecksnetz, STL, FreeCAD/CadQuery.",
+ "PAP der Baureihe mit Unterprogramm ist_gueltig.",
+ "Leitidee: KI schreibt das Skript, du prüfst Klasse und Regeln.",
+]
