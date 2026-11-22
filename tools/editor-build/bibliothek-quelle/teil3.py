@@ -413,3 +413,139 @@ S("sqlite3", "sqlite3 (SQL)", AU, "V19", "lesen",
 S("class", "class", AU, "V20", "lesen",
   "Eigener Datentyp mit Attributen und Methoden, z. B. ein parametrisches Bauteil.",
   "class Bauteil:\n    def __init__(self, laenge):\n        self.laenge = laenge", ["def"], bez=["__init__", "self"])
+
+
+# ───────────── V14 Visualisierung (matplotlib) ─────────────
+DG = "Diagramme (matplotlib)"
+
+E("plt-plot", "plt.plot() mit Beschriftung", DG, "V14", "kopf",
+  "Zeichnet eine Linie aus zwei gleich langen Listen und beschriftet die Achsen mit Größe und Einheit.",
+  "import matplotlib.pyplot as plt\nplt.plot(x_liste, y_liste)\nplt.xlabel(\"Größe Formelzeichen in Einheit\")\nplt.ylabel(\"...\")\nplt.title(\"...\")\nplt.show()",
+  "matplotlib ist ein Paket zum Zeichnen von Diagrammen, pyplot holst du unter dem Kurznamen plt. plt.plot(x, y) bekommt zuerst die Werte der waagerechten, dann der senkrechten Achse, beide Listen gleich lang. Jede Achse bekommt Größe, Formelzeichen und Einheit („Zeit t in s“), das Bild einen Titel. grid(True) legt ein Gitter zum Ablesen dahinter. Erst plt.show() zeigt das Bild.",
+  '''
+  import matplotlib.pyplot as plt
+
+  zeit = [0, 1, 2, 3, 4, 5]                # Zeit in s
+  v = [0.0, 2.2, 3.6, 4.2, 4.5, 4.6]       # Geschwindigkeit in m/s
+
+  plt.plot(zeit, v)
+  plt.xlabel("Zeit t in s")
+  plt.ylabel("Geschwindigkeit v in m/s")
+  plt.title("Anfahren eines Wagens")
+  plt.grid(True)
+  plt.show()
+  ''',
+  "Immer, wenn sich eine Größe über der Zeit oder einer anderen geordneten Größe ändert: Messreihen, Kennlinien, Verläufe.",
+  [("Messpunkte zusätzlich markieren", 'import matplotlib.pyplot as plt\nhub = [0, 12, 25, 37, 50]          # Hub in mm\nzeit = [0, 0.5, 1.0, 1.5, 2.0]      # Zeit in s\nplt.plot(zeit, hub, marker="o")\nplt.xlabel("Zeit t in s")\nplt.ylabel("Hub h in mm")\nplt.title("Ausfahren eines Zylinders")\nplt.show()'),
+   ("Zwei Linien mit Legende", 'import matplotlib.pyplot as plt\nt = [0, 10, 20, 30]\nplt.plot(t, [20, 35, 44, 48], label="Lager 1")\nplt.plot(t, [20, 30, 36, 39], linestyle="--", label="Lager 2")\nplt.xlabel("Zeit t in min")\nplt.ylabel("Temperatur T in °C")\nplt.title("Lagertemperaturen")\nplt.legend()\nplt.show()')],
+  [("Listen verschieden lang (Kopfzeile mitgezählt?)", 'import matplotlib.pyplot as plt\nplt.plot([0, 1, 2], [4, 5])\nplt.show()'),
+   ("Zahlen als Text eingelesen: matplotlib zeichnet Kategorien statt einer Zahlenachse", 'import matplotlib.pyplot as plt\nplt.plot([0, 1, 2], ["4,2", "3,9", "4,0"])\nplt.title("Text statt Zahl")\nplt.show()', "kein Fehler, aber die y-Achse zeigt die Texte in Lesereihenfolge statt Zahlen"),
+   ("plt nicht importiert", 'plt.plot([0, 1], [0, 1])')],
+  ["liste", "plt-diagrammarten", "plt-achsen", "plt-subplots"],
+  bez=["matplotlib", "plt", "plt.plot", "plt.xlabel", "plt.ylabel", "plt.title", "plt.grid", "plt.show"],
+  aliase=["Diagramm", "Plot", "Achsenbeschriftung", "Einheit", "pyplot"])
+
+E("plt-diagrammarten", "scatter, bar, hist", DG, "V14", "kopf",
+  "Punkte für Zusammenhänge, Balken für Kategorien, Histogramm für Verteilungen.",
+  "plt.scatter(x, y)\nplt.bar(namen, werte)\nplt.hist(werte, bins=12)",
+  "Die Diagrammart ist eine Aussage. Eine Linie behauptet einen stetigen Verlauf mit Reihenfolge. Unabhängige Proben (zwölf Zugproben, fünf Bauteile) zeigst du als Punkte mit scatter. Kategorien (Maschinen, Schichten) vergleichst du mit bar: erst die Namen, dann die Werte, und die Achse beginnt bei 0. Viele Messwerte einer Größe zeigt hist: Es bekommt nur eine Liste, teilt den Bereich in bins Klassen und zählt selbst.",
+  '''
+  import matplotlib.pyplot as plt
+
+  kraft = [2, 4, 6, 8, 10]                 # Zugkraft in kN
+  dehnung = [0.8, 1.7, 2.3, 3.4, 4.1]      # Verlängerung in mm
+  plt.scatter(kraft, dehnung)
+  plt.xlabel("Zugkraft F in kN")
+  plt.ylabel("Verlängerung dl in mm")
+  plt.title("Zugversuch: fünf Proben")
+  plt.show()
+  ''',
+  "Bevor du einen Befehl tippst: Welche Frage soll das Bild beantworten? Verlauf, Zusammenhang, Vergleich oder Verteilung?",
+  [("Balken: Ausschuss je Maschine", 'import matplotlib.pyplot as plt\nplt.bar(["D1", "D2", "F1"], [2.1, 3.4, 1.8])\nplt.ylabel("Ausschussquote in %")\nplt.title("Ausschuss je Maschine")\nplt.show()'),
+   ("Histogramm: Streuung der Durchmesser", 'import random\nimport matplotlib.pyplot as plt\nrandom.seed(1)\nd = [random.gauss(20.0, 0.01) for i in range(200)]\nplt.hist(d, bins=12)\nplt.xlabel("Durchmesser d in mm")\nplt.ylabel("Anzahl Wellen")\nplt.title("200 Wellen")\nplt.show()')],
+  [("hist mit zwei Listen aufgerufen (die zweite Liste gilt als Klassengrenzen)", 'import matplotlib.pyplot as plt\nplt.hist([1, 2, 3], [4, 5, 6, 7])\nplt.title("Unerwartete Klassen")\nplt.show()', "kein Fehler, aber die zweite Liste wird als Klassengrenzen gedeutet"),
+   ("bar: Namen und Werte verschieden lang", 'import matplotlib.pyplot as plt\nplt.bar(["A", "B", "C"], [1, 2])\nplt.show()')],
+  ["plt-plot", "plt-achsen"],
+  bez=["plt.scatter", "plt.bar", "plt.hist", "bins"],
+  aliase=["Streudiagramm", "Punktdiagramm", "Balkendiagramm", "Histogramm", "Verteilung"])
+
+E("plt-achsen", "ylim, axhline, legend", DG, "V14", "kopf",
+  "Achsengrenzen selbst festlegen, Hilfslinien zeichnen, Linien unterscheidbar beschriften.",
+  "plt.ylim(unten, oben)\nplt.axhline(y, color=\"gray\")\nplt.plot(x, y, label=\"...\")\nplt.legend()",
+  "matplotlib wählt die Achsengrenzen passend zu den Daten. Kleine Unterschiede sehen dann groß aus. Mit ylim (am Teilbild set_ylim) legst du die Grenzen selbst fest: Balken beginnen immer bei 0. Werte außerhalb der Grenzen werden ohne Meldung nicht gezeichnet. axhline zeichnet eine waagerechte Hilfslinie (Null, Sollwert, Grenzwert), axvline eine senkrechte. label an jeder Linie und legend() ergeben die Legende. Unterscheide Linien nie nur über die Farbe, sondern auch über linestyle oder marker.",
+  '''
+  import matplotlib.pyplot as plt
+
+  monat = [1, 2, 3, 4, 5, 6]
+  a = [2.2, 2.1, 2.3, 2.2, 2.4, 2.2]       # Ausschussquote in %
+  b = [2.4, 2.5, 2.3, 2.5, 2.6, 2.4]
+
+  plt.plot(monat, a, color="black", marker="o", label="Maschine A")
+  plt.plot(monat, b, color="#0072B2", linestyle="--", marker="s", label="Maschine B")
+  plt.axhline(2.5, color="gray", linestyle=":")
+  plt.ylim(0, 3)
+  plt.xlabel("Monat")
+  plt.ylabel("Ausschussquote in %")
+  plt.title("Ausschuss je Maschine")
+  plt.legend()
+  plt.show()
+  ''',
+  "Bei jedem Vergleich (Balken immer ab 0), bei Grenz- und Sollwerten und sobald mehr als eine Linie im Bild ist.",
+  [("Grenzwert als Hilfslinie", 'import matplotlib.pyplot as plt\nt = [0, 5, 10, 15, 20]\ntemp = [22, 38, 45, 52, 58]\nplt.plot(t, temp)\nplt.axhline(55, color="gray", linestyle="--")\nplt.ylim(0, 70)\nplt.xlabel("Zeit t in min")\nplt.ylabel("Temperatur T in °C")\nplt.title("Lager mit Grenzwert 55 °C")\nplt.show()'),
+   ("Abgeschnittene Achse zum Vergleich", 'import matplotlib.pyplot as plt\nplt.bar(["A", "B"], [2.25, 2.50])\nplt.ylim(2.0, 2.6)\nplt.ylabel("Ausschussquote in %")\nplt.title("Täuscht: B wirkt doppelt so hoch")\nplt.show()')],
+  [("Grenzen zu eng: Messwerte verschwinden ohne Meldung", 'import matplotlib.pyplot as plt\nplt.plot([0, 1, 2], [4.0, 6.5, 5.0], marker="o")\nplt.ylim(3, 6)\nplt.title("Punkt bei 6,5 fehlt")\nplt.show()', "kein Fehler, aber der Punkt 6,5 liegt außerhalb und wird nicht gezeichnet"),
+   ("legend() ohne label an den Linien", 'import matplotlib.pyplot as plt\nplt.plot([0, 1], [0, 1])\nplt.legend()\nplt.title("Leere Legende")\nplt.show()', "Warnung: No artists with labels found to put in legend; die Legende bleibt leer", False)],
+  ["plt-plot", "plt-diagrammarten", "plt-subplots"],
+  bez=["plt.ylim", "plt.xlim", ".set_ylim", ".set_xlim", "plt.axhline", "plt.axvline", "plt.legend", "label", "linestyle", "marker"],
+  aliase=["Achsengrenzen", "Hilfslinie", "Legende", "Täuschung", "ehrliche Achse"])
+
+E("tupel-entpacken", "Tupel entpacken (a, b = ...)", LD, "V14", "kopf",
+  "Verteilt mehrere Werte in einem Schritt auf mehrere Namen.",
+  "a, b = paar\nfig, ax = plt.subplots()",
+  "Steht links vom Gleichheitszeichen eine Reihe von Namen und rechts ein Tupel (oder eine Liste) mit genau so vielen Werten, bekommt jeder Name seinen Wert: a, b = 3, 4 gibt a den Wert 3 und b den Wert 4. Klammern links entpacken eine Gruppe in der Gruppe. Funktionen, die zwei Dinge zurückgeben, liefern ein Tupel, das du so auspackst, zum Beispiel plt.subplots().",
+  '''
+  paar = (3, 4.5)
+  a, b = paar
+  print(a + b)
+
+  zeilen, spalten = 2, 3
+  print(zeilen * spalten)
+  ''',
+  "Bei Funktionen mit mehreren Rückgabewerten (plt.subplots) und um zwei Werte in einer Zeile zuzuweisen.",
+  [("Zwei Werte tauschen", 'a, b = 1, 2\na, b = b, a\nprint(a, b)'),
+   ("Gruppe in der Gruppe", 'nr, (x, y) = 1, (20.0, 35.5)\nprint(nr, x, y)')],
+  [("Anzahl passt nicht", 'a, b = (1, 2, 3)'),
+   ("Zu wenige Werte", 'a, b, c = (1, 2)')],
+  ["tupel", "plt-subplots"],
+  bez=["Entpacken"],
+  aliase=["Unpacking", "Mehrfachzuweisung"])
+
+E("plt-subplots", "plt.subplots()", DG, "V14", "kopf",
+  "Legt eine Abbildung mit einem oder mehreren Teilbildern an; gezeichnet wird über den Namen des Teilbilds.",
+  "fig, ax = plt.subplots()\nfig, (oben, unten) = plt.subplots(2, 1, sharex=True)\nax.plot(x, y)\nax.set_xlabel(\"...\")",
+  "plt.subplots(zeilen, spalten) gibt zwei Dinge zurück: die ganze Abbildung fig und die Teilbilder. Mit Tupel-Entpacken bekommen sie Namen. In ein Teilbild zeichnest du mit seinen Methoden: ax.plot, ax.scatter, ax.bar. Einstellungen heißen am Teilbild set_...: set_xlabel, set_ylabel, set_title, set_ylim. sharex=True gibt mehreren Teilbildern dieselbe x-Achse, sharey=True dieselbe y-Achse (wichtig beim Vergleich). fig.tight_layout() verhindert überlappende Beschriftungen.",
+  '''
+  import matplotlib.pyplot as plt
+
+  zeit = [0, 1, 2, 3, 4, 5]
+  weg = [0.0, 1.1, 4.4, 9.9, 17.6, 27.5]   # Weg in m
+  v = [0.0, 2.2, 4.4, 6.6, 8.8, 11.0]      # Geschwindigkeit in m/s
+
+  fig, (oben, unten) = plt.subplots(2, 1, sharex=True)
+  oben.plot(zeit, weg)
+  oben.set_ylabel("Weg s in m")
+  oben.set_title("Anfahren")
+  unten.plot(zeit, v)
+  unten.set_ylabel("Geschwindigkeit v in m/s")
+  unten.set_xlabel("Zeit t in s")
+  fig.tight_layout()
+  plt.show()
+  ''',
+  "Sobald Größen mit verschiedenen Einheiten zusammengehören (Beschleunigung und Geschwindigkeit) oder zwei Messungen nebeneinander verglichen werden.",
+  [("Ein Teilbild, ausdrücklich benannt", 'import matplotlib.pyplot as plt\nfig, ax = plt.subplots()\nax.plot([0, 5, 10], [22.0, 31.5, 38.0])\nax.set_xlabel("Zeit t in min")\nax.set_ylabel("Temperatur T in °C")\nax.set_title("Lagertemperatur")\nax.set_ylim(0, 50)\nplt.show()'),
+   ("Zwei Maschinen nebeneinander, gleiche Skala", 'import matplotlib.pyplot as plt\nfig, (links, rechts) = plt.subplots(1, 2, sharey=True)\nlinks.bar(["F", "S"], [2.1, 2.4])\nlinks.set_title("Maschine A")\nrechts.bar(["F", "S"], [2.3, 3.0])\nrechts.set_title("Maschine B")\nlinks.set_ylabel("Ausschussquote in %")\nplt.show()')],
+  [("ax.xlabel statt ax.set_xlabel", 'import matplotlib.pyplot as plt\nfig, ax = plt.subplots()\nax.xlabel("Zeit t in s")'),
+   ("Teilbilder nicht entpackt: das Raster ist eine Gruppe", 'import matplotlib.pyplot as plt\nfig, ax = plt.subplots(2, 1)\nax.plot([0, 1], [0, 1])')],
+  ["plt-plot", "plt-achsen", "tupel-entpacken"],
+  bez=["plt.subplots", ".set_xlabel", ".set_ylabel", ".set_title", "fig", "ax", "sharex", "sharey", ".tight_layout"],
+  aliase=["Subplots", "Teilbild", "Axes", "Figure"])
