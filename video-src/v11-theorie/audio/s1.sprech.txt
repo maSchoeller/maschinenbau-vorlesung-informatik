@@ -1,0 +1,1 @@
+Eine Konstrukteurin braucht ein Programm für Passungen. Sie fragt die Ka I zweimal. Einmal mit einem Satz: Schreib mir was für Passungen. Und einmal mit ihrem Programmablaufplan. Beide Antworten sehen gut aus. Nur eine hat einen Fehler, und der steckt genau an der Grenze.

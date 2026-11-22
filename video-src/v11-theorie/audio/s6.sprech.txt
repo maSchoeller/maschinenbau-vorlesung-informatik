@@ -1,0 +1,1 @@
+Mit GitHub Copilot arbeitest du im Editor: graue Vorschläge mit Tab annehmen, mit Escape ablehnen, dazu ein Chat. Das Tippen übernimmt die Ka I. Spezifizieren, Testen und Freigeben bleibt bei dir. Keine Firmen- oder Kundendaten in Prompts. Ablauf: spezifizieren, Testfälle von Hand, generieren, prüfen, verantworten.

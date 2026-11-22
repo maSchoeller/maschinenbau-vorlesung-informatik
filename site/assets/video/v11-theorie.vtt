@@ -1,0 +1,101 @@
+WEBVTT
+
+1
+00:00:00.400 --> 00:00:05.217
+Eine Konstrukteurin braucht ein Programm für Passungen. Sie fragt die KI zweimal.
+
+2
+00:00:05.421 --> 00:00:08.604
+Einmal mit einem Satz: Schreib mir was für Passungen.
+
+3
+00:00:09.192 --> 00:00:11.577
+Und einmal mit ihrem Programmablaufplan.
+
+4
+00:00:11.991 --> 00:00:18.050
+Beide Antworten sehen gut aus. Nur eine hat einen Fehler, und der steckt genau an der Grenze.
+
+5
+00:00:18.950 --> 00:00:26.369
+Der erste Prompt lässt viel offen. Die KI muss raten: Welche Maße, welche Einheit, was gilt bei Gleichheit?
+
+6
+00:00:26.570 --> 00:00:31.975
+Sie füllt die Lücken mit dem, was am häufigsten vorkommt, und erfindet sogar Toleranzwerte.
+
+7
+00:00:32.667 --> 00:00:40.367
+Der zweite Prompt ist der Programmablaufplan in Sätzen: zwei Rauten, drei Ausgaben, dazu Einheit und ein Beispiel.
+
+8
+00:00:40.618 --> 00:00:47.560
+Fünf Fragen helfen vor dem Abschicken: Eingaben, Ausgaben, Einheiten, Grenzfälle, Beispiele.
+
+9
+00:00:48.460 --> 00:00:52.675
+Der wichtigste Schritt kommt vor dem Prompt: Du schreibst die Testfälle von Hand.
+
+10
+00:00:52.960 --> 00:00:59.484
+Je ein Fall pro Zweig, und ein Fall genau auf der Grenze. Hier: Das Spiel ist genau null.
+
+11
+00:01:00.256 --> 00:01:04.094
+Dann lässt du die KI den Code erzeugen und führst deine Tests aus.
+
+12
+00:01:04.188 --> 00:01:11.550
+Die erste Antwort scheitert am Grenzfall: größer statt größer-gleich. Ohne den Test wäre der Fehler nie aufgefallen.
+
+13
+00:01:12.450 --> 00:01:18.407
+Zum Auswerten brauchst du fertige Bausteine. Ein Modul ist eine Python-Datei mit Funktionen.
+
+14
+00:01:18.838 --> 00:01:24.547
+Mit import math holst du das ganze Modul und schreibst math.sqrt.
+
+15
+00:01:24.769 --> 00:01:30.913
+Mit from math import sqrt holst du nur die Funktion, ohne Modulnamen.
+
+16
+00:01:31.234 --> 00:01:39.265
+Mit import math as m vergibst du einen Kurznamen. Danach gibt es nur m, der Name math existiert nicht.
+
+17
+00:01:39.609 --> 00:01:48.100
+Die Standardbibliothek bringt math, statistics und random mit. Ein eigenes Modul ist einfach eine eigene Datei.
+
+18
+00:01:49.000 --> 00:01:55.333
+Was nicht zur Standardbibliothek gehört, ist ein Paket. Das holt das Programm pip aus dem Paketindex.
+
+19
+00:01:55.923 --> 00:02:04.172
+Fehlt ein Paket, meldet Python ModuleNotFoundError. Du installierst es im Terminal mit pip install, nicht im Programm.
+
+20
+00:02:04.370 --> 00:02:11.709
+Aber Vorsicht: KI erfindet manchmal Paketnamen. Wer sie blind installiert, kann sich ein Schadpaket holen.
+
+21
+00:02:11.745 --> 00:02:16.650
+Erst prüfen, ob es das Paket gibt, wie bekannt es ist und wer es pflegt.
+
+22
+00:02:17.550 --> 00:02:25.081
+Mit GitHub Copilot arbeitest du im Editor: graue Vorschläge mit Tab annehmen, mit Escape ablehnen, dazu ein Chat.
+
+23
+00:02:25.205 --> 00:02:30.758
+Das Tippen übernimmt die KI. Spezifizieren, Testen und Freigeben bleibt bei dir.
+
+24
+00:02:31.190 --> 00:02:33.774
+Keine Firmen- oder Kundendaten in Prompts.
+
+25
+00:02:34.318 --> 00:02:40.320
+Ablauf: spezifizieren, Testfälle von Hand, generieren, prüfen, verantworten.

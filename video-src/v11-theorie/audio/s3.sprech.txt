@@ -1,0 +1,1 @@
+Der wichtigste Schritt kommt vor dem Prompt: Du schreibst die Testfälle von Hand. Je ein Fall pro Zweig, und ein Fall genau auf der Grenze. Hier: Das Spiel ist genau null. Dann lässt du die Ka I den Code erzeugen und führst deine Tests aus. Die erste Antwort scheitert am Grenzfall: größer statt größer-gleich. Ohne den Test wäre der Fehler nie aufgefallen.
