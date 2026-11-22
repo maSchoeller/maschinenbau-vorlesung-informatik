@@ -205,5 +205,5 @@
   .pap text { fill: #000 !important; }
 
   .pk-ende { display: block; text-align: right; font-size: 9.5pt; margin-top: 12pt; font-style: italic; }
-  .pk-fuss { display: block; position: fixed; left: 0; right: 0; bottom: -12mm; margin: 0; text-align: center; font-size: 8.5pt; color: #000; }
+  .pk-fuss { display: none; }   /* feste Fußzeile druckt in Chromium an falscher Stelle; Schlusszeile .pk-ende genügt */
 }
