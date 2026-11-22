@@ -100,3 +100,12 @@ text.v14-b { fill: #B00014; }
 .prj-grid thead th { border-bottom-width: 2px; }
 .prj-grid tbody th { font-weight: 700; white-space: nowrap; }
 .prj-grid td:nth-child(2) { white-space: nowrap; text-align: right; font-variant-numeric: tabular-nums; }
+
+/* Handy: Die SVG-Diagramme werden auf ca. 340 px verkleinert; Beschriftung in SVG-Einheiten vergrößern, damit sie lesbar bleibt (ca. 9-10 px) */
+@media (max-width: 600px) {
+  .v14-svg text { font-size: 18px; }
+  .v14-svg text.v14-axt { font-size: 16px; }
+  .v14-svg--mini text { font-size: 15px; }
+  .v14-svg text.v14-name { font-size: 14px; }
+  .v14-svg text.v14-head { font-size: 15px; }
+}
