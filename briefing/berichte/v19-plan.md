@@ -95,3 +95,9 @@ Beispiel: genau `briefing/v19-beispiel.py`.
 
 ## Allgemein
 Deutsch, Du-Ansprache, keine Emojis, keine Gedankenstrich-Flut, fachlich exakt. Begriffs-Hinweise (`k-begriff`) für jeden neuen Fachbegriff: Datenbank, Datenbankmanagementsystem, Tabelle, Datensatz, Spalte, Primärschlüssel, Fremdschlüssel, SQL, Abfrage, Cursor, Transaktion, commit, Platzhalter, SQL-Injection, deklarativ, JOIN, Aggregatfunktion.
+
+## Nachtrag nach Rebase (V12-V17 auf main)
+- Neueste Vorlage mit gleichem roten Faden: v17-netzwerke.html, v17-labor.html, video-src/v17-* (h17.py mit Modus probe), briefing/berichte/v17.md.
+- Labor bekommt wie V17 die Station t-projekt "Projekt: Meilenstein V19" (Teil B, ohne Wertung), Inhalt aus site/projekt.html (Meilenstein v19 "Ausgabe und Diagramm"); naechster Meilenstein V20: Feinschliff und Code-Review im Team.
+- Projektthema Stueckliste nennt schon "Stueckliste in einer SQLite-Datenbank (V19)" - aufgreifen.
+- Hoechstens 2 Subagenten gleichzeitig.
