@@ -56,7 +56,8 @@
 .v12-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--sp-5); align-items: start; margin-bottom: var(--sp-3); max-width: none; }
 .v12-grid--dbg { grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); }
 .v12-grid--cyc { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); }
-.v12-grid--pap { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); }
+.v12-grid--pap { grid-template-columns: minmax(0, 1fr); justify-items: center; }
+.v12-grid--pap > * { width: 100%; max-width: 760px; }
 @media (max-width: 900px) { .v12-grid, .v12-grid--dbg, .v12-grid--cyc, .v12-grid--pap { grid-template-columns: minmax(0, 1fr); } }
 .v12-code { list-style: none; margin: 0; padding: var(--sp-3) 0; background: var(--code-bg); color: var(--code-text); font-family: var(--dhbw-font-mono); font-size: var(--fs-sm); line-height: 1.7; border-radius: var(--r-base); max-width: none; counter-reset: ln; overflow-x: auto; }
 .v12-code li { counter-increment: ln; padding: 0 var(--sp-4) 0 0; white-space: pre; border-left: 3px solid transparent; }

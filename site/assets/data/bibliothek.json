@@ -3282,6 +3282,248 @@
     "__init__",
     "self"
    ]
+  },
+  {
+   "id": "testfunktion",
+   "name": "Testfunktion",
+   "kategorie": "Testen & Fehlersuche",
+   "eingefuehrt": "V12",
+   "ampel": "lesen",
+   "kurz": "Eine Funktion test_...(), die mit assert prüft, ob deine Funktion das Richtige liefert.",
+   "syntax": "def test_name():\n    assert funktion(eingabe) == erwartet\n    print(\"bestanden\")\n\ntest_name()",
+   "erklaerung": "Eine Testfunktion ist eine kleine Funktion ohne Parameter, deren Name mit test_ beginnt. Darin steht pro Prüfung eine assert-Zeile: links der Aufruf deiner Funktion, rechts der Wert, den du von Hand aus der Spezifikation bestimmt hast. Stimmt alles, läuft die Funktion bis zum Ende und gibt „bestanden“ aus. Scheitert ein assert, bricht der Test mit AssertionError ab. Wichtig: Die Testfunktion läuft nur, wenn du sie selbst aufrufst.",
+   "beispiel": "def zustand(t):\n    if t < -40 or t > 200:\n        return \"sensorfehler\"\n    if t < 70:\n        return \"normal\"\n    if t <= 85:\n        return \"warnung\"\n    return \"abschalten\"\n\ndef test_zustand():\n    assert zustand(20) == \"normal\"\n    assert zustand(69.9) == \"normal\"\n    assert zustand(70) == \"warnung\"\n    assert zustand(85) == \"warnung\"\n    assert zustand(85.1) == \"abschalten\"\n    assert zustand(-41) == \"sensorfehler\"\n    print(\"bestanden\")\n\ntest_zustand()",
+   "wann_nutzen": "Sobald du eine Funktion geschrieben hast und wissen willst, ob sie für typische Werte und Grenzfälle stimmt, und nach jeder späteren Änderung wieder.",
+   "transfer": [
+    {
+     "situation": "Drehzahl-Ampel prüfen",
+     "code": "def ampel(n):\n    if n < 0:\n        return \"ungueltig\"\n    if n < 3000:\n        return \"gruen\"\n    if n <= 4500:\n        return \"gelb\"\n    return \"rot\"\n\ndef test_ampel():\n    assert ampel(-1) == \"ungueltig\"\n    assert ampel(0) == \"gruen\"\n    assert ampel(2999) == \"gruen\"\n    assert ampel(3000) == \"gelb\"\n    assert ampel(4500) == \"gelb\"\n    assert ampel(4501) == \"rot\"\n    print(\"bestanden\")\n\ntest_ampel()"
+    },
+    {
+     "situation": "Gleitkommazahlen mit math.isclose vergleichen",
+     "code": "import math\n\ndef kmh_in_ms(v):\n    return v / 3.6\n\ndef test_kmh_in_ms():\n    assert math.isclose(kmh_in_ms(36), 10)\n    assert math.isclose(kmh_in_ms(0), 0, abs_tol=1e-9)\n    assert math.isclose(kmh_in_ms(100), 27.7778, rel_tol=1e-4)\n    print(\"bestanden\")\n\ntest_kmh_in_ms()"
+    },
+    {
+     "situation": "Mehrere Tests nacheinander aufrufen",
+     "code": "def verdoppeln(x):\n    return 2 * x\n\ndef test_positiv():\n    assert verdoppeln(3) == 6\n\ndef test_null():\n    assert verdoppeln(0) == 0\n\ntest_positiv()\ntest_null()\nprint(\"alle bestanden\")"
+    }
+   ],
+   "verwandt": [
+    "assert",
+    "assertion-error",
+    "testfaelle-liste",
+    "def",
+    "grenzwerte-testen"
+   ],
+   "bezeichner": [
+    "Testfunktion"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "bestanden",
+   "typische_fehler": [
+    {
+     "beschreibung": "Test scheitert: Funktion liefert etwas anderes",
+     "code": "def zustand(t):\n    if t <= 70:\n        return \"normal\"\n    return \"warnung\"\n\ndef test_zustand():\n    assert zustand(70) == \"warnung\"\n    print(\"bestanden\")\n\ntest_zustand()",
+     "meldung": "AssertionError"
+    },
+    {
+     "beschreibung": "Testfunktion mit Argument aufgerufen",
+     "code": "def test_null():\n    assert 0 == 0\n\ntest_null(5)",
+     "meldung": "TypeError: test_null() takes 0 positional arguments but 1 was given"
+    }
+   ]
+  },
+  {
+   "id": "testfaelle-liste",
+   "name": "Testfälle als Liste",
+   "kategorie": "Testen & Fehlersuche",
+   "eingefuehrt": "V12",
+   "ampel": "lesen",
+   "kurz": "Alle Testfälle als Liste von Tupeln (Eingabe, erwartet) und eine Schleife, die sie abarbeitet.",
+   "syntax": "faelle = [(eingabe1, erwartet1), (eingabe2, erwartet2)]\nfor eingabe, erwartet in faelle:\n    assert funktion(eingabe) == erwartet, f\"...\"",
+   "erklaerung": "Statt dutzende assert-Zeilen zu schreiben, legst du die Testfälle als Liste von Tupeln an: erst die Eingabe, dann das erwartete Ergebnis. Die Schleife entpackt jedes Tupel in zwei Namen und prüft den Fall. Hinter dem Komma des assert steht eine Meldung als f-String, die den scheiternden Fall nennt, sonst weißt du nicht, welcher von vielen Fällen schuld ist. Neue Fälle brauchen nur eine neue Zeile in der Liste.",
+   "beispiel": "def ampel(n):\n    if n < 0:\n        return \"ungueltig\"\n    if n < 3000:\n        return \"gruen\"\n    if n <= 4500:\n        return \"gelb\"\n    return \"rot\"\n\nfaelle = [\n    (-1, \"ungueltig\"),\n    (0, \"gruen\"),\n    (2999, \"gruen\"),\n    (3000, \"gelb\"),\n    (4500, \"gelb\"),\n    (4501, \"rot\"),\n]\nfor eingabe, erwartet in faelle:\n    ergebnis = ampel(eingabe)\n    assert ergebnis == erwartet, f\"ampel({eingabe}): erwartet {erwartet}, bekommen {ergebnis}\"\nprint(\"alle\", len(faelle), \"Fälle bestanden\")",
+   "wann_nutzen": "Wenn du viele Eingaben mit bekannten Ergebnissen prüfen willst, besonders alle Grenzwerte einer Funktion.",
+   "transfer": [
+    {
+     "situation": "Temperatur-Zustände",
+     "code": "def zustand(t):\n    if t < -40 or t > 200:\n        return \"sensorfehler\"\n    if t < 70:\n        return \"normal\"\n    if t <= 85:\n        return \"warnung\"\n    return \"abschalten\"\n\nfaelle = [(-41, \"sensorfehler\"), (-40, \"normal\"), (69, \"normal\"), (70, \"warnung\"), (85, \"warnung\"), (86, \"abschalten\"), (200, \"abschalten\"), (201, \"sensorfehler\")]\nfor t, erwartet in faelle:\n    assert zustand(t) == erwartet, f\"zustand({t}) lieferte {zustand(t)}, erwartet {erwartet}\"\nprint(\"bestanden\")"
+    },
+    {
+     "situation": "Mit math.isclose bei Dezimalzahlen",
+     "code": "import math\n\ndef kmh_in_ms(v):\n    return v / 3.6\n\nfaelle = [(0, 0.0), (36, 10.0), (72, 20.0), (-36, -10.0)]\nfor kmh, erwartet in faelle:\n    ergebnis = kmh_in_ms(kmh)\n    assert math.isclose(ergebnis, erwartet, abs_tol=1e-9), f\"{kmh} km/h: {ergebnis}, erwartet {erwartet}\"\nprint(\"bestanden\")"
+    }
+   ],
+   "verwandt": [
+    "testfunktion",
+    "tupel",
+    "liste",
+    "for-liste",
+    "fstring",
+    "assert"
+   ],
+   "bezeichner": [
+    "Testfälle"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "alle 6 Fälle bestanden",
+   "typische_fehler": [
+    {
+     "beschreibung": "Ein Fall ist falsch: die Meldung nennt ihn",
+     "code": "def ampel(n):\n    if n < 3000:\n        return \"gruen\"\n    return \"rot\"\n\nfaelle = [(0, \"gruen\"), (3000, \"gelb\")]\nfor eingabe, erwartet in faelle:\n    assert ampel(eingabe) == erwartet, f\"ampel({eingabe}): erwartet {erwartet}\"",
+     "meldung": "AssertionError: ampel(3000): erwartet gelb"
+    },
+    {
+     "beschreibung": "Tupel hat nicht zwei Werte",
+     "code": "faelle = [(1, 2), (3, 4, 5)]\nfor eingabe, erwartet in faelle:\n    print(eingabe, erwartet)",
+     "meldung": "ValueError: too many values to unpack (expected 2)"
+    }
+   ]
+  },
+  {
+   "id": "except-as",
+   "name": "except … as fehler",
+   "kategorie": "Testen & Fehlersuche",
+   "eingefuehrt": "V12",
+   "ampel": "lesen",
+   "kurz": "Fängt einen Fehler ab und gibt dir das Fehlerobjekt, dessen Meldung du ausgeben kannst.",
+   "syntax": "try:\n    ...\nexcept AssertionError as fehler:\n    print(fehler)",
+   "erklaerung": "Mit as gibst du dem abgefangenen Fehler einen Namen. print(fehler) zeigt dann die Meldung, die hinter dem Komma des assert steht. So läuft eine Testschleife auch nach einem gescheiterten Fall weiter, und du bekommst am Ende eine Übersicht statt nur den ersten Fehler. Ein Zähler für die gescheiterten Fälle zeigt, wie viele es insgesamt waren.",
+   "beispiel": "def zustand(t):\n    if t < 70:\n        return \"normal\"\n    if t < 85:\n        return \"warnung\"\n    return \"abschalten\"\n\nfaelle = [(20, \"normal\"), (70, \"warnung\"), (85, \"warnung\"), (90, \"abschalten\")]\ngescheitert = 0\nfor t, erwartet in faelle:\n    try:\n        assert zustand(t) == erwartet, f\"zustand({t}): erwartet {erwartet}, bekommen {zustand(t)}\"\n    except AssertionError as fehler:\n        print(\"FEHLER:\", fehler)\n        gescheitert += 1\nprint(gescheitert, \"von\", len(faelle), \"Fällen gescheitert\")",
+   "wann_nutzen": "Wenn ein Test nicht beim ersten Fehler stoppen soll, sondern alle gescheiterten Fälle melden soll. Auch für andere Fehler, deren Meldung du anzeigen willst.",
+   "transfer": [
+    {
+     "situation": "Meldung eines ValueError ausgeben",
+     "code": "try:\n    zahl = float(\"abc\")\nexcept ValueError as fehler:\n    print(\"Eingabe ungültig:\", fehler)"
+    },
+    {
+     "situation": "Fehlerart mit ausgeben",
+     "code": "try:\n    print(10 / 0)\nexcept ZeroDivisionError as fehler:\n    print(type(fehler).__name__, \"-\", fehler)"
+    },
+    {
+     "situation": "Gescheiterte Fälle sammeln",
+     "code": "def ampel(n):\n    return \"gruen\" if n < 3000 else \"rot\"\n\nfaelle = [(0, \"gruen\"), (3000, \"gelb\"), (5000, \"rot\"), (4000, \"gelb\")]\nschlecht = []\nfor n, erwartet in faelle:\n    try:\n        assert ampel(n) == erwartet\n    except AssertionError:\n        schlecht.append(n)\nprint(\"gescheitert bei:\", schlecht)"
+    }
+   ],
+   "verwandt": [
+    "try-except",
+    "assert",
+    "assertion-error",
+    "testfaelle-liste"
+   ],
+   "bezeichner": [
+    "as"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "FEHLER: zustand(85): erwartet warnung, bekommen abschalten\n1 von 4 Fällen gescheitert",
+   "typische_fehler": [
+    {
+     "beschreibung": "as vergessen: fehler ist nicht definiert",
+     "code": "try:\n    assert 1 == 2, \"ungleich\"\nexcept AssertionError:\n    print(fehler)",
+     "meldung": "NameError: name 'fehler' is not defined"
+    },
+    {
+     "beschreibung": "Doppelpunkt nach dem Namen vergessen",
+     "code": "try:\n    x = 1\nexcept ValueError as fehler\n    print(fehler)",
+     "meldung": "SyntaxError: expected ':'"
+    }
+   ]
+  },
+  {
+   "id": "grenzwerte-testen",
+   "name": "Grenzwerte testen",
+   "kategorie": "Testen & Fehlersuche",
+   "eingefuehrt": "V12",
+   "ampel": "kopf",
+   "kurz": "Merkkarte: Welche Testfälle du wählst, damit Fehler an den Rändern nicht durchrutschen.",
+   "syntax": "Bereich: je ein typischer Wert\nGrenze: beide Seiten testen\nSonderfälle: 0, negativ, leere Liste",
+   "erklaerung": "Fehler sitzen selten mitten im Bereich, sondern an den Grenzen. Gehe so vor: 1. Pro Bereich ein typischer Wert. 2. Jede Grenze von beiden Seiten, also direkt darunter, genau darauf und direkt darüber, besonders bei < gegen <=. 3. Sonderfälle: 0, negative Werte, leere Liste, ein einzelnes Element, unmögliche Eingaben. 4. Die erwartete Antwort bestimmst du von Hand aus der Spezifikation, nie, indem du deine Funktion laufen lässt und das Ergebnis abschreibst.",
+   "beispiel": "# Spezifikation: unter 70 normal, 70 bis 85 einschließlich Warnung,\n# über 85 abschalten, unter -40 oder über 200 Sensorfehler.\ndef zustand(t):\n    if t < -40 or t > 200:\n        return \"sensorfehler\"\n    if t < 70:\n        return \"normal\"\n    if t <= 85:\n        return \"warnung\"\n    return \"abschalten\"\n\nfaelle = [\n    (20, \"normal\"),          # typisch je Bereich\n    (78, \"warnung\"),\n    (120, \"abschalten\"),\n    (69.9, \"normal\"),        # Grenze 70 von beiden Seiten\n    (70, \"warnung\"),\n    (85, \"warnung\"),         # Grenze 85 von beiden Seiten\n    (85.1, \"abschalten\"),\n    (-40, \"normal\"),         # Sensorgrenzen\n    (-40.1, \"sensorfehler\"),\n    (200, \"abschalten\"),\n    (200.1, \"sensorfehler\"),\n    (0, \"normal\"),           # Sonderfall 0\n]\nfor t, erwartet in faelle:\n    assert zustand(t) == erwartet, f\"zustand({t}) falsch\"\nprint(\"alle\", len(faelle), \"Fälle bestanden\")",
+   "wann_nutzen": "Immer, wenn du Testfälle für eine Funktion mit Bereichen, Schwellen oder Listen auswählst.",
+   "transfer": [
+    {
+     "situation": "Sonderfälle bei einer Liste",
+     "code": "def mittelwert(werte):\n    if len(werte) == 0:\n        return 0\n    return sum(werte) / len(werte)\n\nassert mittelwert([]) == 0\nassert mittelwert([5]) == 5\nassert mittelwert([2, 4]) == 3\nassert mittelwert([-2, 2]) == 0\nprint(\"bestanden\")"
+    },
+    {
+     "situation": "Grenze < gegen <= prüfen",
+     "code": "def ampel(n):\n    if n < 0:\n        return \"ungueltig\"\n    if n < 3000:\n        return \"gruen\"\n    if n <= 4500:\n        return \"gelb\"\n    return \"rot\"\n\nfor n, erwartet in [(2999, \"gruen\"), (3000, \"gelb\"), (4500, \"gelb\"), (4501, \"rot\"), (-1, \"ungueltig\"), (0, \"gruen\")]:\n    assert ampel(n) == erwartet, f\"ampel({n})\"\nprint(\"bestanden\")"
+    }
+   ],
+   "verwandt": [
+    "testfaelle-liste",
+    "testfunktion",
+    "assert",
+    "vergleiche"
+   ],
+   "bezeichner": [
+    "Grenzwerte"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "alle 12 Fälle bestanden",
+   "typische_fehler": [
+    {
+     "beschreibung": "Nur typische Werte getestet: der Fehler an der Grenze 85 fällt erst mit dem Grenzwert auf",
+     "code": "def zustand(t):\n    if t < 70:\n        return \"normal\"\n    if t < 85:\n        return \"warnung\"\n    return \"abschalten\"\n\nassert zustand(20) == \"normal\"\nassert zustand(78) == \"warnung\"\nassert zustand(120) == \"abschalten\"\nassert zustand(85) == \"warnung\", \"Grenze 85 gehört noch zur Warnung\"",
+     "meldung": "AssertionError: Grenze 85 gehört noch zur Warnung"
+    },
+    {
+     "beschreibung": "Sonderfall leere Liste nie getestet",
+     "code": "def mittelwert(werte):\n    return sum(werte) / len(werte)\n\nprint(mittelwert([2, 4]))\nprint(mittelwert([]))",
+     "meldung": "ZeroDivisionError: division by zero"
+    }
+   ]
+  },
+  {
+   "id": "assertion-error",
+   "name": "AssertionError",
+   "kategorie": "Testen & Fehlersuche",
+   "eingefuehrt": "V12",
+   "ampel": "kopf",
+   "kurz": "Die Fehlerart, wenn ein assert scheitert: Die Annahme war falsch.",
+   "syntax": "AssertionError: Meldung",
+   "erklaerung": "Ein AssertionError bedeutet: Eine mit assert geprüfte Bedingung war falsch, dein Test ist gescheitert. Die Meldung hinter dem Komma des assert steht in der letzten Traceback-Zeile. Der Traceback zeigt die Stelle des assert, also die Stelle des Tests, nicht die Stelle des Fehlers. Den Fehler selbst suchst du in der geprüften Funktion. Achtung bei Klammern: assert (bedingung, \"Meldung\") bildet ein Tupel, und ein nicht leeres Tupel ist immer wahr. Der Test kann dann nie scheitern.",
+   "beispiel": "def zustand(t):\n    if t < 70:\n        return \"normal\"\n    return \"warnung\"\n\ntry:\n    assert zustand(70) == \"normal\", \"zustand(70) sollte normal sein\"\nexcept AssertionError as fehler:\n    print(\"AssertionError:\", fehler)",
+   "wann_nutzen": "Beim Lesen von Testergebnissen: Er sagt dir, welcher Fall scheitert, nicht warum.",
+   "transfer": [
+    {
+     "situation": "Meldung des Tests lesen",
+     "code": "drehzahl = 5000\ntry:\n    assert drehzahl <= 4500, f\"Drehzahl {drehzahl} zu hoch\"\nexcept AssertionError as fehler:\n    print(\"AssertionError:\", fehler)"
+    },
+    {
+     "situation": "Vergleich mit math.isclose",
+     "code": "import math\ntry:\n    assert math.isclose(100 / 3.6, 28), \"100 km/h sind nicht 28 m/s\"\nexcept AssertionError as fehler:\n    print(\"AssertionError:\", fehler)"
+    }
+   ],
+   "verwandt": [
+    "assert",
+    "traceback",
+    "except-as",
+    "tupel",
+    "testfunktion"
+   ],
+   "bezeichner": [
+    "AssertionError"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [],
+   "beispiel_ausgabe": "AssertionError: zustand(70) sollte normal sein",
+   "typische_fehler": [
+    {
+     "beschreibung": "Test gescheitert: Meldung steht hinter dem Komma",
+     "code": "def kmh_in_ms(v):\n    return v * 3.6\n\nassert kmh_in_ms(36) == 10, \"36 km/h sollten 10 m/s sein\"",
+     "meldung": "AssertionError: 36 km/h sollten 10 m/s sein"
+    },
+    {
+     "beschreibung": "Klammern machen ein Tupel: der Test scheitert nie, obwohl 1 == 2 falsch ist",
+     "code": "assert (1 == 2, \"wird nie geprüft\")\nprint(\"läuft durch, obwohl falsch\")",
+     "meldung": "Kein Fehler, nur eine Warnung: SyntaxWarning: assertion is always true, perhaps remove parentheses?"
+    }
+   ]
   }
  ]
 }

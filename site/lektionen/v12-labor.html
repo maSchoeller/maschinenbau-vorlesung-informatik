@@ -392,7 +392,7 @@ AssertionError: Grenzwert 85 °C falsch eingeordnet</pre>
         <div class="a-task__head"><h3 class="a-task__title">Gescheiterten Test abfangen</h3></div>
         <p>Das Programm prüft die Grenze 85 und meldet, wenn der Test scheitert. Bei Erfolg steht eine Meldung im <code>try</code>-Block, bei Misserfolg im <code>except</code>-Block. Das Wort <code>as</code> gibt der Ausnahme den Namen <code>fehler</code>.</p>
         <script type="application/json">{"solution":["try:","    assert zustand(85) == 'warnung', 'Grenzwert 85 falsch'","    print('Test bestanden')","except AssertionError as fehler:","    print('Test gescheitert:', fehler)"],
-"distractors":["except AssertionError, fehler:","    print(fehler)"],
+"distractors":["except AssertionError, fehler:","    assert (zustand(85) == 'warnung', 'Grenzwert 85 falsch')"],
 "alts":[]}</script>
       </div>
 
