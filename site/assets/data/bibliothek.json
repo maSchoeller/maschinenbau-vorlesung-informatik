@@ -4906,6 +4906,334 @@
      "meldung": "ZeroDivisionError: float division by zero"
     }
    ]
+  },
+  {
+   "id": "klasse",
+   "name": "class (Klasse definieren)",
+   "kategorie": "Klassen & Objekte",
+   "eingefuehrt": "V20",
+   "ampel": "kopf",
+   "kurz": "Ein Bauplan für Objekte: bündelt Maße (Attribute) und Rechnungen (Methoden) eines Bauteils.",
+   "syntax": "class Name:\n    def __init__(self, parameter):\n        self.parameter = parameter\n\n    def methode(self):\n        return ...",
+   "erklaerung": "Mit class legst du einen neuen Datentyp an. Die Klasse ist der Bauplan, wie ein Normblatt oder eine Zeichnungsvorlage: Sie beschreibt, welche Maße ein Bauteil hat und was man damit rechnen kann, ist selbst aber noch kein konkretes Teil. Der Name steht im Kopf, ein Doppelpunkt schließt ihn ab, der Rumpf ist eingerückt. Per Konvention beginnt der Klassenname mit einem Großbuchstaben (Flansch, Welle), damit man ihn von Variablen unterscheidet. Die Definition allein rechnet nichts: Erst wenn du ein Objekt erzeugst, entsteht ein konkretes Teil.",
+   "beispiel": "class Welle:\n    \"\"\"Glatte Welle (Maße in mm).\"\"\"\n\n    def __init__(self, d, l):\n        self.d = d\n        self.l = l\n\n    def volumen(self):\n        return 3.14159265 / 4 * self.d ** 2 * self.l\n\n\nw = Welle(20, 150)\nprint(w.d, w.l)\nprint(round(w.volumen() / 1000, 1), \"cm³\")",
+   "wann_nutzen": "Immer wenn zusammengehörige Maße und die zugehörigen Rechnungen sonst als lose Variablen und Funktionen mit vielen Parametern herumliegen: Welle, Rohr, Flansch, Feder, Werkzeug.",
+   "transfer": [
+    {
+     "situation": "Bauplan für eine Feder",
+     "code": "class Feder:\n    def __init__(self, c):\n        self.c = c\n\n    def kraft(self, s):\n        return self.c * s\n\nf = Feder(12.5)\nprint(f.kraft(4), \"N\")"
+    },
+    {
+     "situation": "Zwei Teile aus einem Bauplan",
+     "code": "class Rohr:\n    def __init__(self, d_aussen, d_innen, l):\n        self.d_aussen = d_aussen\n        self.d_innen = d_innen\n        self.l = l\n\nr1 = Rohr(42, 36, 1000)\nr2 = Rohr(60, 52, 500)\nprint(r1.d_aussen, r2.d_aussen)"
+    }
+   ],
+   "verwandt": [
+    "init",
+    "objekt-erzeugen",
+    "def"
+   ],
+   "bezeichner": [
+    "class"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [
+    "Klasse",
+    "Bauplan",
+    "Objektorientierung",
+    "eigener Datentyp",
+    "OOP"
+   ],
+   "beispiel_ausgabe": "20 150\n47.1 cm³",
+   "typische_fehler": [
+    {
+     "beschreibung": "Doppelpunkt hinter dem Klassennamen vergessen",
+     "code": "class Welle\n    pass",
+     "meldung": "SyntaxError: expected ':'"
+    },
+    {
+     "beschreibung": "Klasse definiert, aber kein Objekt erzeugt: der Klassenname allein hat keine Maße",
+     "code": "class Welle:\n    def __init__(self, d):\n        self.d = d\n\nprint(Welle.d)",
+     "meldung": "AttributeError: type object 'Welle' has no attribute 'd'"
+    }
+   ]
+  },
+  {
+   "id": "init",
+   "name": "__init__ (Konstruktor)",
+   "kategorie": "Klassen & Objekte",
+   "eingefuehrt": "V20",
+   "ampel": "kopf",
+   "kurz": "Richtet ein neues Objekt ein: nimmt die Maße entgegen und speichert sie als Attribute.",
+   "syntax": "def __init__(self, d, l):\n    self.d = d\n    self.l = l",
+   "erklaerung": "__init__ (zwei Unterstriche davor und dahinter) ruft Python automatisch auf, sobald du ein Objekt erzeugst, zum Beispiel mit Welle(20, 150). Der erste Parameter heißt immer self, die übrigen sind die Werte, die du beim Erzeugen angibst. Was nicht mit self.name = ... gespeichert wird, ist nach dem Ende von __init__ weg: Parameter sind lokale Variablen. Auch Standardwerte funktionieren wie bei jeder Funktion. __init__ gibt nichts zurück (kein return).",
+   "beispiel": "class Flansch:\n    def __init__(self, d_aussen, d_innen, dicke, n=4):\n        self.d_aussen = d_aussen\n        self.d_innen = d_innen\n        self.dicke = dicke\n        self.n = n\n\n\nf1 = Flansch(120, 40, 15, 6)\nf2 = Flansch(100, 30, 12)\nprint(f1.n, f2.n)",
+   "wann_nutzen": "Bei jeder Klasse, die Maße oder Zustand speichert: Einmal beim Erzeugen festlegen, danach in allen Methoden benutzen.",
+   "transfer": [
+    {
+     "situation": "Wert prüfen, bevor er gespeichert wird",
+     "code": "class Welle:\n    def __init__(self, d, l):\n        if d <= 0 or l <= 0:\n            raise ValueError(\"Maße müssen positiv sein\")\n        self.d = d\n        self.l = l\n\nprint(Welle(20, 150).d)"
+    },
+    {
+     "situation": "Aus gegebenen Maßen ein weiteres Attribut ableiten",
+     "code": "class Rohr:\n    def __init__(self, d_aussen, d_innen):\n        self.d_aussen = d_aussen\n        self.d_innen = d_innen\n        self.wand = (d_aussen - d_innen) / 2\n\nprint(Rohr(42, 36).wand)"
+    }
+   ],
+   "verwandt": [
+    "klasse",
+    "self",
+    "default-werte"
+   ],
+   "bezeichner": [
+    "__init__"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [
+    "Konstruktor",
+    "Initialisierung",
+    "Objekt einrichten"
+   ],
+   "beispiel_ausgabe": "6 4",
+   "typische_fehler": [
+    {
+     "beschreibung": "Parameter nicht als Attribut gespeichert: die Methode findet ihn nicht",
+     "code": "class Welle:\n    def __init__(self, d, l):\n        self.d = d\n\n    def volumen(self):\n        return self.l * self.d\n\nprint(Welle(20, 150).volumen())",
+     "meldung": "AttributeError: 'Welle' object has no attribute 'l'"
+    },
+    {
+     "beschreibung": "Zu wenige Argumente beim Erzeugen",
+     "code": "class Welle:\n    def __init__(self, d, l):\n        self.d = d\n        self.l = l\n\nw = Welle(20)",
+     "meldung": "TypeError: Welle.__init__() missing 1 required positional argument: 'l'"
+    }
+   ]
+  },
+  {
+   "id": "self",
+   "name": "self",
+   "kategorie": "Klassen & Objekte",
+   "eingefuehrt": "V20",
+   "ampel": "kopf",
+   "kurz": "Das Objekt, mit dem eine Methode gerade arbeitet: über self.name erreichst du seine Attribute.",
+   "syntax": "def methode(self, ...):\n    return self.attribut",
+   "erklaerung": "In jeder Methode ist self der erste Parameter. Beim Aufruf w1.volumen() setzt Python das Objekt w1 automatisch dort ein, du schreibst es nicht in die Klammer. Darum gehört in die Methode self.d für das Maß des eigenen Objekts: Ein nacktes d wäre eine andere Variable (und existiert meist nicht). Ruft man dieselbe Methode an einem zweiten Objekt auf, ist self dieses zweite Objekt, und die Rechnung nimmt dessen Maße. Der Name self ist Konvention, aber alle verwenden ihn.",
+   "beispiel": "class Welle:\n    def __init__(self, d, l):\n        self.d = d\n        self.l = l\n\n    def streckung(self):\n        return self.l / self.d\n\n\nw1 = Welle(20, 150)\nw2 = Welle(40, 150)\nprint(w1.streckung())\nprint(w2.streckung())",
+   "wann_nutzen": "In jeder Methode und in __init__, sobald sie Maße des Objekts lesen oder ändern soll.",
+   "transfer": [
+    {
+     "situation": "Eine Methode ändert den Zustand des eigenen Objekts",
+     "code": "class Werkzeug:\n    def __init__(self, standzeit):\n        self.rest = standzeit\n\n    def benutze(self, minuten):\n        self.rest = self.rest - minuten\n\nt = Werkzeug(60)\nt.benutze(25)\nprint(t.rest)"
+    },
+    {
+     "situation": "Eine Methode ruft eine andere Methode desselben Objekts auf",
+     "code": "class Quader:\n    def __init__(self, a, b, c):\n        self.a, self.b, self.c = a, b, c\n\n    def volumen(self):\n        return self.a * self.b * self.c\n\n    def masse(self, dichte=7.85):\n        return self.volumen() / 1e6 * dichte\n\nprint(round(Quader(100, 50, 20).masse(), 2), \"kg\")"
+    }
+   ],
+   "verwandt": [
+    "klasse",
+    "methode",
+    "attribut"
+   ],
+   "bezeichner": [
+    "self"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [
+    "selbst",
+    "eigenes Objekt",
+    "self vergessen"
+   ],
+   "beispiel_ausgabe": "7.5\n3.75",
+   "typische_fehler": [
+    {
+     "beschreibung": "self in der Definition vergessen",
+     "code": "class Welle:\n    def __init__(self, d):\n        self.d = d\n\n    def umfang():\n        return 3.14159 * self.d\n\nprint(Welle(20).umfang())",
+     "meldung": "TypeError: Welle.umfang() takes 0 positional arguments but 1 was given"
+    },
+    {
+     "beschreibung": "d statt self.d in der Rechnung",
+     "code": "class Welle:\n    def __init__(self, d):\n        self.d = d\n\n    def umfang(self):\n        return 3.14159 * d\n\nprint(Welle(20).umfang())",
+     "meldung": "NameError: name 'd' is not defined. Did you mean: 'self.d'?"
+    }
+   ]
+  },
+  {
+   "id": "attribut",
+   "name": "Attribut lesen und ändern",
+   "kategorie": "Klassen & Objekte",
+   "eingefuehrt": "V20",
+   "ampel": "kopf",
+   "kurz": "Ein Maß oder Merkmal eines Objekts: mit objekt.name lesen, mit objekt.name = wert ändern.",
+   "syntax": "w = Welle(20, 150)\nprint(w.d)\nw.d = 25",
+   "erklaerung": "Ein Attribut ist eine Variable, die zu einem Objekt gehört. Du erreichst sie mit einem Punkt zwischen Objektname und Attributname. Lesen und Ändern funktionieren wie bei einer normalen Variablen; es gibt keine Klammern. Jedes Objekt hat seine eigenen Attribute: Ändert man w1.d, bleibt w2.d unverändert. Wichtig: Weist du ein Objekt einem zweiten Namen zu (w2 = w1), gibt es trotzdem nur ein Objekt mit zwei Namen, und eine Änderung ist über beide sichtbar (wie bei Listen in V08).",
+   "beispiel": "class Welle:\n    def __init__(self, d, l):\n        self.d = d\n        self.l = l\n\n\nw1 = Welle(20, 150)\nw2 = Welle(20, 150)\nw1.d = 25\nprint(w1.d, w2.d)\n\nw3 = w1\nw3.l = 200\nprint(w1.l)",
+   "wann_nutzen": "Wenn du Varianten durchspielst (Länge ändern, Durchmesser ändern) oder den Zustand eines Teils fortschreibst (Reststandzeit, Stückzahl).",
+   "transfer": [
+    {
+     "situation": "Alle Maße eines Objekts ausgeben",
+     "code": "class Welle:\n    def __init__(self, d, l):\n        self.d = d\n        self.l = l\n\nw = Welle(20, 150)\nprint(vars(w))"
+    },
+    {
+     "situation": "Variante durch Ändern eines Attributs",
+     "code": "class Flansch:\n    def __init__(self, n):\n        self.n = n\n\nf = Flansch(6)\nfor n in (4, 6, 8):\n    f.n = n\n    print(f.n, \"Bohrungen\")"
+    }
+   ],
+   "verwandt": [
+    "klasse",
+    "init",
+    "liste"
+   ],
+   "bezeichner": [
+    "Attribut",
+    "vars"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [
+    "Eigenschaft",
+    "Maß ändern",
+    "punkt-notation",
+    "Alias"
+   ],
+   "beispiel_ausgabe": "25 20\n200",
+   "typische_fehler": [
+    {
+     "beschreibung": "Tippfehler im Attributnamen",
+     "code": "class Welle:\n    def __init__(self, d):\n        self.d = d\n\nw = Welle(20)\nprint(w.durchmesser)",
+     "meldung": "AttributeError: 'Welle' object has no attribute 'durchmesser'"
+    },
+    {
+     "beschreibung": "Zwei Namen, ein Objekt: die Änderung schlägt auf beide durch",
+     "code": "class Welle:\n    def __init__(self, d):\n        self.d = d\n\nw1 = Welle(20)\nw2 = w1\nw2.d = 99\nprint(w1.d)",
+     "meldung": "(keine Fehlermeldung) Ausgabe 99: w1 und w2 sind dasselbe Objekt."
+    }
+   ]
+  },
+  {
+   "id": "methode",
+   "name": "Methode definieren und aufrufen",
+   "kategorie": "Klassen & Objekte",
+   "eingefuehrt": "V20",
+   "ampel": "kopf",
+   "kurz": "Eine Funktion, die zu einer Klasse gehört: Aufruf mit Klammern am Objekt, z. B. w.volumen().",
+   "syntax": "class Welle:\n    def volumen(self):\n        return ...\n\nw.volumen()",
+   "erklaerung": "Eine Methode ist eine def-Funktion im Rumpf der Klasse. Ihr erster Parameter ist self. Aufgerufen wird sie am Objekt: objekt.methode(argumente). Die Klammern sind Pflicht, auch ohne Argumente; ohne Klammern bekommst du nur die Methode selbst (bound method), nicht ihr Ergebnis. Methoden können Standardwerte haben (masse(dichte=7.85)), etwas zurückgeben (return) oder ein Attribut verändern. Du nutzt Methoden seit V01: \"M10\".upper() und liste.append(x) sind Methodenaufrufe, denn str und list sind Klassen.",
+   "beispiel": "import math\n\n\nclass Rohr:\n    def __init__(self, d_aussen, d_innen, l):\n        self.d_aussen = d_aussen\n        self.d_innen = d_innen\n        self.l = l\n\n    def volumen(self):\n        \"\"\"mm³\"\"\"\n        return math.pi / 4 * (self.d_aussen ** 2 - self.d_innen ** 2) * self.l\n\n    def masse(self, dichte=7.85):\n        \"\"\"kg, Dichte in g/cm³\"\"\"\n        return self.volumen() / 1000 * dichte / 1000\n\n\nr = Rohr(42, 36, 1000)\nprint(round(r.volumen() / 1000, 1), \"cm³\")\nprint(round(r.masse(), 2), \"kg Stahl\")\nprint(round(r.masse(2.70), 2), \"kg Aluminium\")",
+   "wann_nutzen": "Für jede Rechnung oder Prüfung, die zu einem Bauteil gehört: Volumen, Masse, ist_gueltig, benutzen.",
+   "transfer": [
+    {
+     "situation": "Prüfmethode mit Wahrheitswert",
+     "code": "class Rohr:\n    def __init__(self, d_aussen, d_innen):\n        self.d_aussen = d_aussen\n        self.d_innen = d_innen\n\n    def ist_gueltig(self):\n        return 0 < self.d_innen < self.d_aussen\n\nprint(Rohr(42, 36).ist_gueltig(), Rohr(36, 42).ist_gueltig())"
+    },
+    {
+     "situation": "Baureihe: Methode auf allen Objekten einer Liste",
+     "code": "class Welle:\n    def __init__(self, d, l):\n        self.d = d\n        self.l = l\n\n    def volumen(self):\n        return 3.14159265 / 4 * self.d ** 2 * self.l\n\nreihe = [Welle(d, 200) for d in (16, 20, 25)]\nfor w in reihe:\n    print(w.d, round(w.volumen() / 1000, 1))"
+    },
+    {
+     "situation": "Bekannte Methoden: str und list sind Klassen",
+     "code": "text = \"m10\"\nprint(text.upper())\nteile = []\nteile.append(\"Welle\")\nprint(teile)"
+    }
+   ],
+   "verwandt": [
+    "klasse",
+    "self",
+    "def",
+    "default-werte"
+   ],
+   "bezeichner": [
+    "Methode",
+    "bound method"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [
+    "Funktion im Objekt",
+    "Methodenaufruf",
+    "Klammern",
+    "bound method"
+   ],
+   "beispiel_ausgabe": "367.6 cm³\n2.89 kg Stahl\n0.99 kg Aluminium",
+   "typische_fehler": [
+    {
+     "beschreibung": "Klammern vergessen: du bekommst die Methode, nicht das Ergebnis",
+     "code": "class Welle:\n    def __init__(self, d):\n        self.d = d\n\n    def umfang(self):\n        return 3.14159 * self.d\n\nprint(Welle(20).umfang)",
+     "meldung": "(keine Fehlermeldung) Ausgabe <bound method Welle.umfang of ...>: das Ergebnis fehlt, die Klammern auch."
+    },
+    {
+     "beschreibung": "Argument übergeben, das die Methode nicht erwartet",
+     "code": "class Welle:\n    def __init__(self, d):\n        self.d = d\n\n    def umfang(self):\n        return 3.14159 * self.d\n\nprint(Welle(20).umfang(5))",
+     "meldung": "TypeError: Welle.umfang() takes 1 positional argument but 2 were given"
+    }
+   ]
+  },
+  {
+   "id": "objekt-erzeugen",
+   "name": "Objekt erzeugen (Klassenname(...))",
+   "kategorie": "Klassen & Objekte",
+   "eingefuehrt": "V20",
+   "ampel": "kopf",
+   "kurz": "Aus dem Bauplan ein konkretes Teil machen: name = Klasse(werte). Viele Objekte gehen in eine Liste.",
+   "syntax": "w = Welle(20, 150)\nreihe = [Welle(16, 200), Welle(20, 200)]",
+   "erklaerung": "Der Aufruf Klassenname(werte) legt ein neues Objekt (eine Instanz, ein Exemplar) an und führt dabei __init__ mit diesen Werten aus. Das Ergebnis speicherst du in einer Variablen. Aus einer Klasse kannst du beliebig viele Objekte erzeugen, jedes mit eigenen Maßen. Wie jeder Wert dürfen sie in Listen, Dictionaries oder Funktionsargumenten stehen. So bildest du eine Baureihe ab und wertest sie mit einer Schleife aus.",
+   "beispiel": "class Flansch:\n    def __init__(self, d_aussen, d_innen, dicke):\n        self.d_aussen = d_aussen\n        self.d_innen = d_innen\n        self.dicke = dicke\n\n    def volumen(self):\n        return 3.14159265 / 4 * (self.d_aussen ** 2 - self.d_innen ** 2) * self.dicke\n\n\nreihe = [Flansch(90, 30, 12), Flansch(120, 40, 15), Flansch(150, 60, 18)]\nfor f in reihe:\n    print(f.d_aussen, round(f.volumen() / 1000, 1), \"cm³\")\n\ngroesster = max(reihe, key=lambda f: f.volumen())\nprint(\"Größtes Volumen bei Außendurchmesser:\", groesster.d_aussen)",
+   "wann_nutzen": "Wenn du mehrere Varianten desselben Bauteils vergleichst: Baureihe, Prüfplan, Stückliste mit Objekten.",
+   "transfer": [
+    {
+     "situation": "Objekte aus Tabellenzeilen erzeugen",
+     "code": "class Welle:\n    def __init__(self, d, l):\n        self.d = d\n        self.l = l\n\nzeilen = [\"20;150\", \"25;200\"]\nwellen = []\nfor z in zeilen:\n    d, l = z.split(\";\")\n    wellen.append(Welle(float(d), float(l)))\nprint(len(wellen), wellen[1].l)"
+    },
+    {
+     "situation": "Ungültige Varianten zählen",
+     "code": "class Rohr:\n    def __init__(self, a, i):\n        self.a, self.i = a, i\n\n    def ist_gueltig(self):\n        return self.i < self.a\n\nrohre = [Rohr(42, 36), Rohr(30, 32), Rohr(60, 52)]\nprint(sum(1 for r in rohre if not r.ist_gueltig()), \"ungültig\")"
+    }
+   ],
+   "verwandt": [
+    "klasse",
+    "init",
+    "attribut",
+    "append"
+   ],
+   "bezeichner": [
+    "Objekt",
+    "Instanz"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [
+    "Instanz",
+    "Exemplar",
+    "Baureihe",
+    "Objekte in Liste",
+    "neues Objekt"
+   ],
+   "beispiel_ausgabe": "90 67.9 cm³\n120 150.8 cm³\n150 267.2 cm³\nGrößtes Volumen bei Außendurchmesser: 150",
+   "typische_fehler": [
+    {
+     "beschreibung": "Klammern beim Erzeugen vergessen: der Name ist nur die Klasse, kein Objekt",
+     "code": "class Welle:\n    def __init__(self, d):\n        self.d = d\n\nw = Welle\nprint(w.d)",
+     "meldung": "AttributeError: type object 'Welle' has no attribute 'd'"
+    },
+    {
+     "beschreibung": "Zu viele Argumente beim Erzeugen",
+     "code": "class Welle:\n    def __init__(self, d, l):\n        self.d = d\n        self.l = l\n\nw = Welle(20, 150, 7)",
+     "meldung": "TypeError: Welle.__init__() takes 3 positional arguments but 4 were given"
+    }
+   ]
+  },
+  {
+   "id": "bauteil3d",
+   "name": "bauteil3d (Dreiecksnetz, STL)",
+   "kategorie": "Ausblick (ab V10)",
+   "eingefuehrt": "V20",
+   "ampel": "delegieren",
+   "kurz": "Mitgeliefertes Hilfsmodul: erzeugt aus Maßen ein Dreiecksnetz und zeigt es in 3D (flansch, welle, ring, zeige). Dein Anteil: die Klasse mit den Maßen.",
+   "syntax": "import bauteil3d\nm = bauteil3d.flansch(120, 40, 15, 90, 6, 11)\nbauteil3d.zeige(m, \"Flansch\")",
+   "stichwort": true,
+   "verwandt": [
+    "klasse",
+    "methode"
+   ],
+   "bezeichner": [
+    "bauteil3d",
+    "STL",
+    "mesh"
+   ]
   }
  ]
 }
