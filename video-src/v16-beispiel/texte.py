@@ -1,0 +1,35 @@
+"""Sprechertext V16 Beispiel (Quelltext mit Markup), genau briefing/v16-beispiel.py."""
+SRC = [
+ ["Die Fertigungszelle [[FZ-3|F Z drei]] hat vier Maschinen: Drehmaschine [[D2|D zwei]], Fräsmaschine [[F1|F eins]], Roboter [[R1|R eins]] und Messmaschine [[M1|M eins]].",
+  "Jede schreibt jeden Tag eine Log-Datei. Eine Zeile hat die Form Zeit, Stufe, Meldung, getrennt durch Semikolon.",
+  "Unsere Aufgabe: Wie viele Fehler gab es je Maschine, und welcher kam zuerst? Dazu die Größe der Logs und die [[NC|En Ze]]-Programme."],
+ ["Der Plan: Wir legen Zähler an und gehen in einer äußeren Schleife durch jede Log-Datei.",
+  "Darin läuft eine innere Schleife über jede Zeile. Eine Raute fragt: Ist die Stufe [[ERROR|Error]]?",
+  "Wenn ja, merken wir uns den Fehler bei der Maschine. Am Ende geben wir alles aus.",
+  "Die Raute wird für jede Zeile jeder Datei einmal geprüft, bei 20 Dateien gut tausendmal."],
+ ["Die Zeilen 5 und 6 holen `time` und `Path`. In Zeile 8 startet die Stoppuhr, in Zeile 9 steht der Ordner der Zelle.",
+  "Zeile 11 ist ein leeres Dictionary für die Fehler, Zeile 12 und 13 sind die Zähler für Dateien und Bytes.",
+  "Zeile 14: `glob` sucht mit zwei Sternen alle Log-Dateien, `sorted` ordnet sie. Das sind 20 Stück.",
+  "Zeile 15 zählt eine Datei mehr, Zeile 16 addiert ihre Größe in Bytes."],
+ ["Zeile 17 holt die Maschine: zweimal `.parent` nach oben und dann `.name`. Aus dem Pfad der Datei wird der Maschinenname [[D2|D zwei]].",
+  "Zeile 18 öffnet die Datei, Zeile 19 geht Zeile für Zeile durch.",
+  "In Zeile 20 wird die Zeile gesäubert und am Semikolon zerlegt. [[teile[1]|teile eins in eckigen Klammern]] ist die Stufe.",
+  "Ist sie [[ERROR|Error]], legt Zeile 22 bis 23 bei einer neuen Maschine eine leere Liste an, und Zeile 24 hängt Datum, Uhrzeit und Meldung an."],
+ ["In Zeile 24 setzt sich der Eintrag zusammen: `log.stem` ist das Datum, [[teile[0][11:]|teile null, in eckigen Klammern elf Doppelpunkt]] schneidet die Uhrzeit heraus, [[teile[2]|teile zwei in eckigen Klammern]] ist die Meldung.",
+  "Zeile 26 gibt Dateien und Größe aus: 20 Dateien, 47,2 KiB. Dazu `groesse / 1024` mit einer Nachkommastelle.",
+  "Dann je Maschine die Fehlerzahl und der erste Fehler: [[D2|D zwei]] fünf, [[F1|F eins]] vier, [[M1|M eins]] elf, [[R1|R eins]] sieben.",
+  "Dass [[M1|M eins]] die meisten hat, siehst du erst durch das Zählen."],
+ ["Zeile 30 sucht mit `rglob` alle [[NC|En Ze]]-Programme, auch im Ordner alt, und `sorted` ordnet sie.",
+  "Im Browser steht [[FLANSCH_80|Flansch achtzig]] vorn, denn Linux sortiert Großbuchstaben vor Kleinbuchstaben. Unter Windows käme [[WELLE_20H6_v1|Welle zwanzig H sechs, Version eins]] zuerst.",
+  "Zeile 32 rechnet die Stoppuhr in Millisekunden um. Der Wert schwankt von Lauf zu Lauf, deshalb mehrmals messen.",
+  "Merke: Pfade mit `pathlib`, Dateien mit `glob` finden, mit `sorted` ordnen und die Laufzeit mit `perf_counter` messen."],
+]
+
+SZENEN = [
+ "Grundriss der Zelle FZ-3 mit vier Symbolen D2, F1, R1, M1 und einem Zellenrechner; daneben eine Log-Datei mit drei Zeilen, Zeit;Stufe;Meldung farbig markiert (INFO grau, WARN gelb, ERROR rot); unten die drei Fragen als Liste.",
+ "Programmablaufplan der Log-Suche mit PAP-Zeichenhilfe: Start, Zähler, äußere Schleife über Dateien, innere Schleife über Zeilen, Raute Stufe gleich ERROR, Fehler merken, Ausgabe, Ende; Knoten erscheinen nacheinander.",
+ "Code Zeilen 5 bis 16 getippt; je Satz markiert; rechts Kacheln: Stoppuhr, Ordner zelle, Dictionary leer, glob-Muster mit 20 Treffern als Dateiliste, Bytes-Zähler.",
+ "Code Zeilen 17 bis 24; rechts Pfad D2/logs/2026-11-16.log mit zwei Pfeilen hoch zu D2; Zeile als Text wird am Semikolon in drei Teile zerlegt; Rauten-Prüfung ERROR.",
+ "Code Zeilen 24 bis 28; Zerlegung des Eintrags aus Datum, Uhrzeit (Ausschnitt ab Zeichen 11) und Meldung; Ausgabe-Konsole mit der ersten Zeile und vier Maschinenzeilen; Balken der Fehlerzahlen je Maschine.",
+ "Code Zeilen 30 bis 32; Ausgabe NC-Programme mit drei Namen; Vergleich Browser (Linux) und Windows mit unterschiedlicher Reihenfolge; Stoppuhr mit schwankenden Werten; Merksatz.",
+]

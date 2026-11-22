@@ -1,0 +1,38 @@
+"""Sprechertext V16 Theorie: Rechner und Betriebssystem (Quelltext mit Markup)."""
+SRC = [
+ ["Die Baugruppe unserer Roboterzelle hat etwa [[2.000|zweitausend]] Teile. Du drehst sie im [[CAD|Kad]]-Programm, und das Bild ruckelt.",
+  "Im Task-Manager siehst du: Die [[CPU|Ze Pe U]] ist gesamt nur zu 13 % ausgelastet, aber ein einzelner Kern steht bei 100 %.",
+  "Der Arbeitsspeicher ist mit 15,2 von 16 [[GB|Gigabyte]] fast voll, und die Datei liegt auf dem Netzlaufwerk.",
+  "Wo ist der Engpass?"],
+ ["Der Prozessor führt die Befehle aus, mit mehreren Kernen und einigen Gigahertz Takt.",
+  "Der Arbeitsspeicher, kurz [[RAM|Ramm]], hält die laufenden Programme. Er ist schnell, aber flüchtig: Ohne Strom ist alles weg.",
+  "Die [[SSD|Es Es De]] speichert Dateien dauerhaft, ist aber viel langsamer. Die [[GPU|Ge Pe U]] zeichnet das Bild, das Drehen ist ihre Arbeit.",
+  "Nach von Neumann liegen Programm und Daten im selben Speicher, der Prozessor holt Befehl für Befehl."],
+ ["Schnell, groß und billig gibt es nicht zugleich. Also baut der Rechner eine Treppe.",
+  "Auf menschliches Maß: Eine Nanosekunde soll eine Sekunde sein.",
+  "Dann dauert ein Zugriff auf den Cache etwa eine Sekunde, auf den [[RAM|Ramm]] knapp zwei Minuten.",
+  "Eine [[SSD|Es Es De]] braucht gut einen Tag, eine Festplatte etwa vier Monate, und eine Datei vom Netzlaufwerk knapp zwei Wochen und mehr.",
+  "Alles Größenordnungen. Vom [[RAM|Ramm]] zur [[SSD|Es Es De]] liegt der Faktor 1000."],
+ ["Zwischen Programmen und Hardware steht das Betriebssystem, etwa Windows oder Linux, mit vier Aufgaben.",
+  "Erstens Prozesse: Ein Prozess ist ein laufendes Programm. Der Scheduler verteilt die Rechenzeit in Zeitscheiben auf die Kerne.",
+  "Zweitens Speicher: Jeder Prozess bekommt seinen eigenen Bereich. Ist der [[RAM|Ramm]] voll, lagert das Betriebssystem auf die [[SSD|Es Es De]] aus. Das ist etwa 1000-mal langsamer: Ruckeln.",
+  "Drittens das Dateisystem, ein Baum aus Ordnern. Und viertens Treiber: Beim [[CAD|Kad]] zählt der zertifizierte Grafiktreiber."],
+ ["Ein Prozess besteht aus Threads. Ein Thread arbeitet nacheinander und läuft immer nur auf einem Kern.",
+  "Viele Kerne helfen also nur, wenn das Programm seine Arbeit aufteilen kann.",
+  "Die Neuberechnung des Feature-Baums im [[CAD|Kad]] ist so ein Fall: Jedes Feature baut auf dem vorigen auf, also belegt sie einen Kern.",
+  "Bei 8 Kernen sind das 100 % geteilt durch 8, also 12,5 %. Das sind die 13 % im Task-Manager. Das Drehen übernimmt die [[GPU|Ge Pe U]]."],
+ ["Die Auflösung: drei Engpässe zugleich. Ein Kern am Anschlag, ein fast voller Arbeitsspeicher und das Netzlaufwerk.",
+  "Baugruppe vereinfachen, Teile unterdrücken, andere Programme schließen.",
+  "Lokal arbeiten, mit einer Kopie auf der [[SSD|Es Es De]].",
+  "Beim Kauf zählt der Takt pro Kern mehr als die Kernzahl. Dazu mehr [[RAM|Ramm]] und ein zertifizierter Grafiktreiber.",
+  "So sagst du der [[IT|I Te]] nicht „langsam“, sondern stellst eine Diagnose."],
+]
+
+SZENEN = [
+ "Rechner-Silhouette mit ruckelnder Baugruppe (Zahnradbaugruppe, Teilezähler 2.000); daneben ein Task-Manager-Ausschnitt: CPU gesamt 13 % (kleiner Balken), acht Kern-Kacheln mit einer auf 100 %, RAM-Balken 15,2 von 16 [[GB|Gigabyte]], Netzlaufwerk-Symbol; rotes Fragezeichen.",
+ "Blockschaltbild: CPU (mit Kernen), RAM, SSD, GPU, Netzwerk, verbunden durch Datenwege; Etiketten flüchtig und dauerhaft; kleine Von-Neumann-Skizze mit Programm und Daten im selben Speicher.",
+ "Speichertreppe mit logarithmischen Balken: Cache 1 ns = 1 s, RAM 100 ns = knapp 2 min, SSD 100 µs = gut 1 Tag, HDD 10 ms = ca. 4 Monate, Netzlaufwerk 1 ms und mehr = knapp 2 Wochen und mehr; Hinweis Faktor 1000 zwischen RAM und SSD.",
+ "Vier Kacheln um das Wort Betriebssystem: Prozesse mit Zeitscheiben auf zwei Kernen, Speicher mit RAM-Balken und Auslagerung auf SSD, Dateisystem als Ordnerbaum, Treiber mit Grafikkarte und Zertifikat-Haken.",
+ "Scheduler-Raster: vier Programme, ein Thread des CAD belegt nur einen Kern; acht Kern-Kacheln, eine voll, Rechnung 100 % : 8 = 12,5 % und Anzeige 13 % gesamt; GPU-Kachel für das Drehen.",
+ "Der Task-Manager aus Szene 1 noch einmal; drei Engpässe werden markiert (Kern, RAM, Netzlaufwerk) und je mit einer Maßnahme verbunden; zum Schluss die Diagnose als Satz.",
+]
