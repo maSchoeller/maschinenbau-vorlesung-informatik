@@ -1,0 +1,1604 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>V18 Programmierlabor · Informatik Maschinenbau</title>
+  <meta name="description" content="Programmierlabor V18: Arbeitsumgebung mit Aufgabenliste, Editor und Befehls-Bibliothek. Teil A im Labor, Teil B Training zu Hause. Prüfsummen mit hashlib: Bytes, SHA-256, Dateien blockweise lesen und Firmware vor dem Einspielen prüfen an der Fertigungszelle FZ-3.">
+  <link rel="stylesheet" href="../assets/css/dhbw-base.css">
+  <link rel="stylesheet" href="../assets/css/kurs.css">
+  <link rel="stylesheet" href="../assets/css/aufgaben.css">
+  <link rel="stylesheet" href="../assets/css/editor.css">
+  <link rel="stylesheet" href="../assets/css/labor.css">
+  <link rel="stylesheet" href="../assets/css/v05.css">
+  <link rel="stylesheet" href="../assets/css/pap-editor.css">
+</head>
+<body data-lesson="V18" data-page="labor">
+  <a class="k-skip" href="#inhalt">Zum Inhalt springen</a>
+
+  <header class="dhbw-header k-header">
+    <div class="dhbw-header__inner">
+      <a class="k-logo" href="../index.html" aria-label="Zur Startseite">
+        <span class="k-logo__mark" aria-hidden="true">DHBW</span>
+        <span class="k-logo__text">Informatik Maschinenbau<small>Campus Horb · 2026/27</small></span>
+      </a>
+      <nav class="k-nav" aria-label="Hauptnavigation">
+        <a href="../index.html">Start</a>
+        <a href="../index.html#lernpfad">Lernpfad</a>
+        <a href="../bibliothek.html">Bibliothek</a>
+        <a href="../pap-editor.html">PAP-Editor</a>
+        <a href="../projekt.html">Projekt</a>
+        <a href="v18-it-sicherheit.html">V18 Lerneinheit</a>
+        <a href="v18-labor.html" aria-current="page">V18 Labor</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="lab" data-lab>
+
+    <nav class="lab__list" aria-label="Aufgabenliste">
+      <div class="lab__listhead">
+        <p class="lab__title">Programmierlabor V18</p>
+        <a class="lab__back" href="v18-it-sicherheit.html">← Lerneinheit</a>
+      </div>
+      <div class="a-progress" data-a-progress>
+        <span class="a-progress__bar"><span class="a-progress__fill"></span></span>
+        <span class="a-progress__text">0 von 14 Aufgaben gelöst</span>
+      </div>
+      <p class="lab__legend k-small k-muted"><span><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-circle"/></svg> offen</span><span><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-half"/></svg> begonnen</span><span><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-done"/></svg> gelöst</span></p>
+      <div data-lab-items></div>
+    </nav>
+
+    <main id="inhalt" class="lab__main" tabindex="-1">
+      <div class="lab__bar">
+        <div class="lab__select">
+          <label for="lab-select">Aufgabe</label>
+          <select id="lab-select"></select>
+        </div>
+        <button type="button" class="k-btn k-btn--ghost k-btn--small" id="lab-toolbox-btn" aria-expanded="false" aria-controls="lab-drawer">Werkzeugkasten</button>
+      </div>
+      <section class="lab__drawer" id="lab-drawer" aria-label="Werkzeugkasten" hidden></section>
+
+    <section class="l-task" id="a-werkzeugkasten" data-title="Werkzeugkasten" data-part="A" data-stars="" data-min="5" data-extra="" aria-labelledby="h-a-werkzeugkasten" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-werkzeugkasten" tabindex="-1">Werkzeugkasten</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Heute neu in Python: <abbr class="k-begriff" data-erklaerung="Ein Byte sind 8 Bit und kann eine Zahl von 0 bis 255 speichern (V02). Jede Datei besteht aus Bytes, auch eine Firmware."><strong>Bytes</strong></abbr> und <code class="k-i">encode</code>, das Modul <abbr class="k-begriff" data-erklaerung="Ein Modul ist eine fertige Werkzeugkiste für Python. Mit import holst du sie in dein Programm, hier hashlib mit den Hash-Funktionen."><strong>hashlib</strong></abbr> mit der Prüfsumme <abbr class="k-begriff" data-erklaerung="Ein Hash (Prüfsumme) ist ein kurzer Fingerabdruck von beliebig vielen Daten: Gleiche Daten ergeben immer denselben Fingerabdruck, schon ein anderes Bit ergibt einen völlig anderen."><strong>SHA-256</strong></abbr>, Dateien <abbr class="k-begriff" data-erklaerung="Ein Block ist ein Stück einer Datei fester Größe, hier 4096 Bytes. Man liest große Dateien Stück für Stück, damit sie nicht ganz in den Arbeitsspeicher passen müssen."><strong>blockweise</strong></abbr> lesen und zwei Prüfsummen vergleichen. Das ist das Handwerkszeug, mit dem ein Programm in der Fertigungszelle FZ-3 prüft, ob eine Firmware unverändert ist.</p>
+      <figure class="k-video">
+        <video controls preload="metadata" poster="../assets/video/v18-python-poster.png" aria-label="Python-Werkstatt: Bytes, SHA-256 und Dateien blockweise">
+          <source src="../assets/video/v18-python.mp4" type="video/mp4">
+          <track kind="subtitles" srclang="de" label="Deutsch" src="../assets/video/v18-python.vtt" default>
+          Dein Browser kann dieses Video nicht abspielen.
+        </video>
+        <div class="k-video__missing" hidden>Video folgt. Bis dahin: Lies den Code unten Zeile für Zeile und probiere ihn aus.</div>
+        <figcaption>Python-Werkstatt: Bytes, hashlib, Dateien blockweise lesen (ca. 3 Min). Untertitel sind eingeschaltet (Deutsch).</figcaption>
+      </figure>
+      <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke</strong><p>Diese sechs Karten sind dein Spickzettel, bis es sitzt. Du erreichst sie in jeder Aufgabe über den Knopf „Werkzeugkasten“ oben. Führe jede Karte aus und ändere etwas daran. Alle Befehle des Kurses stehen außerdem in der Befehls-Bibliothek rechts. Die Firmware-Dateien für die Karten 3 und 4 sind schon eingebaut.</p></div>
+      <div class="lab__toolbox" id="lab-toolbox">
+<div class="a-syntax-list">
+  <article class="a-syntax" aria-labelledby="sk-bytes">
+    <span class="a-syntax__label">Syntax-Karte 1</span>
+    <h4 id="sk-bytes">Bytes und Text: b"...", encode, len</h4>
+<pre data-timeout="20000"><code>text = "Drehzahl 1450"
+daten = text.encode("utf-8")             # Text -&gt; Bytes
+print(daten)
+print(type(text), type(daten))           # str und bytes
+print(len(text), len(daten))             # 13 13: ein Zeichen = ein Byte (reines ASCII)
+
+print(len("Ä"), len("Ä".encode("utf-8")))   # 1 2: Umlaute brauchen zwei Bytes
+
+b = b"Ab"                                # Bytes-Literal: ein b vor den Anführungszeichen
+print(b[0], list(b))                     # 65 [65, 98]: Bytes sind Zahlen von 0 bis 255
+print(daten.decode("utf-8") == text)     # der Rückweg: Bytes -&gt; Text</code></pre>    <ul>
+      <li><code class="k-i">str</code> ist Text (eine Folge von Zeichen), <code class="k-i">bytes</code> ist eine Folge von <abbr class="k-begriff" data-erklaerung="Ein Byte sind 8 Bit und kann eine Zahl von 0 bis 255 speichern (V02). Jede Datei besteht aus Bytes, auch eine Firmware."><strong>Bytes</strong></abbr>. Einen Bytes-Wert schreibst du mit einem <code class="k-i">b</code> vor den Anführungszeichen: <code class="k-i">b"Ab"</code>.</li>
+      <li>Hash-Funktionen und Dateien arbeiten mit Bytes, nicht mit Text. <code class="k-i">"text".encode("utf-8")</code> macht aus Text Bytes, <code class="k-i">.decode("utf-8")</code> den Rückweg. In UTF-8 (V09) braucht ein ASCII-Zeichen ein Byte, ein Umlaut zwei.</li>
+      <li><code class="k-i">len(text)</code> zählt Zeichen, <code class="k-i">len(daten)</code> zählt Bytes. Bei „Ä“ ist das 1 gegen 2. Das ist der Grund, warum man <em>erst</em> kodiert und <em>dann</em> den Hash bildet.</li>
+      <li>Ein Element eines Bytes-Werts ist eine <strong>Zahl</strong> (<code class="k-i">b[0]</code> ist 65), kein Buchstabe.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-hash">
+    <span class="a-syntax__label">Syntax-Karte 2</span>
+    <h4 id="sk-hash">Prüfsumme mit hashlib: sha256 und hexdigest</h4>
+<pre data-timeout="20000"><code>import hashlib
+
+h = hashlib.sha256("Drehzahl 1450".encode("utf-8"))
+print(h.hexdigest())                     # 64 Hex-Zeichen = 256 Bit
+print(len(h.hexdigest()))                # 64
+print(len(h.digest()), type(h.digest())) # 32 &lt;class 'bytes'&gt;: dieselbe Zahl als rohe Bytes
+
+print(hashlib.sha256(b"").hexdigest())   # auch "nichts" hat eine Prüfsumme
+print(hashlib.sha256(b"Drehzahl 1450").hexdigest() == h.hexdigest())   # gleiche Daten, gleicher Hash</code></pre>    <ul>
+      <li>Ein <abbr class="k-begriff" data-erklaerung="Ein Hash (Prüfsumme) ist ein kurzer Fingerabdruck von beliebig vielen Daten: Gleiche Daten ergeben immer denselben Fingerabdruck, schon ein anderes Bit ergibt einen völlig anderen."><strong>Hash</strong></abbr> ist ein Fingerabdruck der Daten: Egal wie lang die Daten sind, bei SHA-256 kommen immer 256 Bit heraus, als <abbr class="k-begriff" data-erklaerung="Hex (hexadezimal) schreibt Zahlen mit den 16 Ziffern 0 bis 9 und a bis f. Zwei Hex-Zeichen sind genau ein Byte (V02)."><strong>Hex</strong></abbr> geschrieben 64 Zeichen (V02: ein Hex-Zeichen sind 4 Bit).</li>
+      <li><code class="k-i">hashlib.sha256(daten)</code> verlangt <strong>Bytes</strong>. <code class="k-i">.hexdigest()</code> liefert den Hash als Text mit 64 Zeichen, <code class="k-i">.digest()</code> als 32 rohe Bytes. Zum Vergleichen und Anzeigen nimmst du <code class="k-i">hexdigest()</code>.</li>
+      <li>Dieselben Daten ergeben immer denselben Hash, auf jedem Rechner. Das macht ihn als Fingerabdruck brauchbar.</li>
+      <li>Gibst du einen Text statt Bytes an, kommt ein <code class="k-i">TypeError</code> (Abschnitt „Typische Fehlermeldungen“).</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-datei">
+    <span class="a-syntax__label">Syntax-Karte 3</span>
+    <h4 id="sk-datei">Datei binär und blockweise lesen</h4>
+<pre data-files="../assets/data/v18/R1_fw_3.2.1.bin" data-timeout="20000"><code>import hashlib
+
+h = hashlib.sha256()                              # leerer "Fingerabdruck-Automat"
+anzahl = 0
+with open("R1_fw_3.2.1.bin", "rb") as datei:      # "rb" = read binary: Bytes statt Text
+    while True:
+        block = datei.read(4096)                  # höchstens 4096 Bytes
+        if not block:                             # leer (b"") = Dateiende
+            break
+        h.update(block)                           # Block einmischen
+        anzahl = anzahl + 1
+print(anzahl, "Blöcke")
+print(h.hexdigest())</code></pre><pre data-files="../assets/data/v18/R1_fw_3.2.1.bin" data-timeout="20000"><code>import hashlib
+
+# Kurzfassung für kleine Dateien: alles auf einmal lesen
+daten = open("R1_fw_3.2.1.bin", "rb").read()
+print(len(daten), "Bytes")
+print(hashlib.sha256(daten).hexdigest()[:16])</code></pre>    <ul>
+      <li><code class="k-i">open(pfad, "rb")</code> öffnet die Datei <abbr class="k-begriff" data-erklaerung="Binär heißt: Die Datei wird als reine Bytes gelesen, ohne dass Python versucht, daraus Text zu machen. Der Modus dafür heißt rb (read binary)."><strong>binär</strong></abbr>: Du bekommst die Bytes, wie sie sind. Im Textmodus würde Python versuchen, sie als UTF-8-Text zu lesen, und bei einer Firmware abbrechen (<code class="k-i">UnicodeDecodeError</code>).</li>
+      <li><code class="k-i">datei.read(4096)</code> liefert höchstens einen <abbr class="k-begriff" data-erklaerung="Ein Block ist ein Stück einer Datei fester Größe, hier 4096 Bytes. Man liest große Dateien Stück für Stück, damit sie nicht ganz in den Arbeitsspeicher passen müssen."><strong>Block</strong></abbr> von 4096 Bytes. Am Dateiende kommt ein leerer Wert <code class="k-i">b""</code>, und <code class="k-i">if not block: break</code> beendet die Schleife (V06).</li>
+      <li><code class="k-i">h = hashlib.sha256()</code> legt den Hash leer an, <code class="k-i">h.update(block)</code> mischt jeden Block ein. Das Ergebnis ist dasselbe wie bei einer Prüfsumme über die ganze Datei, aber der Speicherbedarf bleibt klein: Ein <abbr class="k-begriff" data-erklaerung="Firmware ist die Software, die fest in einem Gerät sitzt, zum Beispiel in der Steuerung eines Roboters. Sie wird als Datei eingespielt."><strong>Firmware</strong></abbr>-Abbild kann mehrere Gigabyte groß sein.</li>
+      <li>Die Kurzfassung (<code class="k-i">.read()</code> ohne Zahl) lädt alles auf einmal und ist nur für kleine Dateien gut.</li>
+      <li>Mit <code class="k-i">with</code> schließt Python die Datei von selbst (V09).</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-soll">
+    <span class="a-syntax__label">Syntax-Karte 4</span>
+    <h4 id="sk-soll">Prüfsummen-Datei lesen und vergleichen</h4>
+<pre data-files="../assets/data/v18/R1_fw_3.2.1.bin ../assets/data/v18/R1_fw_3.2.1.bin.sha256 ../assets/data/v18/R1_fw_3.2.1_usb.bin" data-timeout="20000"><code>import hashlib
+
+with open("R1_fw_3.2.1.bin.sha256", encoding="utf-8") as f:
+    inhalt = f.read()
+print(repr(inhalt[-24:]))             # Ende der Datei: Name und Zeilenumbruch \n
+teile = inhalt.split()                # an Leerraum zerlegen
+print(len(teile), teile[1])           # 2 Teile: Prüfsumme und Dateiname
+
+soll = teile[0].strip().lower()       # nur die Prüfsumme, klein, ohne Leerraum
+ist = hashlib.sha256(open("R1_fw_3.2.1.bin", "rb").read()).hexdigest()
+print(ist == soll)                    # True: gleich
+print(ist == inhalt)                  # False: der ganze Inhalt ist mehr als die Prüfsumme
+print("ABC" == "abc", "ABC".lower() == "abc")   # Groß/Klein zählt beim Vergleich</code></pre>    <ul>
+      <li>Eine <code class="k-i">.sha256</code>-Datei hat das Format <code class="k-i">&lt;Hex&gt;  &lt;Dateiname&gt;</code>, mit zwei Leerzeichen dazwischen und einem Zeilenumbruch am Ende. <code class="k-i">inhalt.split()</code> ohne Argument zerlegt an jedem Leerraum, <code class="k-i">[0]</code> ist die Prüfsumme (V09).</li>
+      <li>Vergleiche nie den ganzen Dateiinhalt mit der berechneten Prüfsumme: Dateiname und Zeilenumbruch gehören nicht dazu, der Vergleich wäre immer falsch.</li>
+      <li><code class="k-i">.strip()</code> entfernt Leerraum am Rand, <code class="k-i">.lower()</code> macht alles klein. Hex darf groß oder klein geschrieben sein (<code class="k-i">A1</code> ist <code class="k-i">a1</code>), ein Text-Vergleich unterscheidet das aber.</li>
+      <li>Beide Seiten des Vergleichs müssen <strong>Text</strong> sein: <code class="k-i">hexdigest()</code> gegen Text. Mit <code class="k-i">digest()</code> (Bytes) bekommst du keinen Fehler, sondern still <code class="k-i">False</code>.</li>
+      <li>Ist die Datei leer, liefert <code class="k-i">split()</code> eine leere Liste, und <code class="k-i">[0]</code> gibt einen <code class="k-i">IndexError</code>.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-lawine">
+    <span class="a-syntax__label">Syntax-Karte 5</span>
+    <h4 id="sk-lawine">Lawineneffekt: ein Zeichen, ein ganz anderer Hash</h4>
+<pre data-timeout="20000"><code>import hashlib
+
+a = hashlib.sha256(b"Drehzahl 1450").hexdigest()
+b = hashlib.sha256(b"Drehzahl 1451").hexdigest()
+print(a)
+print(b)
+
+gleich = 0
+for i in range(64):                    # Stelle für Stelle vergleichen
+    if a[i] == b[i]:
+        gleich = gleich + 1
+print(gleich, "von 64 Stellen sind gleich")</code></pre>    <ul>
+      <li>Ein einziges geändertes Zeichen im Text (oder ein einziges Bit in einer Datei) ändert etwa <strong>die Hälfte</strong> der Bits des Hashs. Das nennt man <strong>Lawineneffekt</strong>.</li>
+      <li>Dadurch fällt jede Manipulation auf, auch eine winzige. Umgekehrt kann man vom Hash nicht auf eine „ähnliche“ Datei schließen: Ähnliche Daten haben völlig unähnliche Hashes.</li>
+      <li>Bei 64 Hex-Zeichen sind rein zufällig etwa 4 Stellen gleich (1 von 16 pro Stelle). Mehr Übereinstimmung wäre ein Alarmzeichen.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-md5">
+    <span class="a-syntax__label">Syntax-Karte 6</span>
+    <h4 id="sk-md5">md5 und sha1: gibt es, aber nicht für Sicherheit</h4>
+<pre data-timeout="20000"><code>import hashlib
+
+daten = b"Drehzahl 1450"
+print(hashlib.md5(daten).hexdigest())      # 32 Zeichen = 128 Bit
+print(hashlib.sha1(daten).hexdigest())     # 40 Zeichen = 160 Bit
+print(hashlib.sha256(daten).hexdigest())   # 64 Zeichen = 256 Bit</code></pre>    <ul>
+      <li><code class="k-i">hashlib.md5</code> und <code class="k-i">hashlib.sha1</code> gibt es in jeder Python-Installation, und man sieht sie noch oft (alte Skripte, alte Download-Seiten, KI-Code).</li>
+      <li>Beide gelten als <strong>gebrochen</strong>: Für MD5 (seit 2004) und SHA-1 (seit 2017) sind Verfahren bekannt, mit denen sich zwei verschiedene Dateien mit demselben Hash bauen lassen. Ein Angreifer kann so eine manipulierte Datei mit derselben Prüfsumme herstellen.</li>
+      <li>Zum Erkennen zufälliger Übertragungsfehler reichen sie noch. <strong>Für Sicherheit nimmst du SHA-256.</strong> Und die Prüfsumme des Herstellers muss zu dem Verfahren passen: Ein MD5 vergleicht man nicht mit einem SHA-256.</li>
+    </ul>
+  </article>
+</div>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-vorgemacht" data-title="Vorgerechnetes Beispiel: Firmware R1 prüfen" data-part="A" data-stars="" data-min="10" data-extra="" aria-labelledby="h-a-vorgemacht" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-vorgemacht" tabindex="-1">Vorgerechnetes Beispiel: Firmware R1 prüfen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Aufgabe: Nach der Störung an R1 kommt ein Servicetechniker mit der neuen Firmware 3.2.1 auf einem USB-Stick. Der Hersteller veröffentlicht die Prüfsumme der Datei auf seiner Download-Seite. Das Programm berechnet die Prüfsumme der Original-Datei und der Datei vom Stick und vergleicht beide mit dem Wert des Herstellers. Lies den Code Zeile für Zeile, dann führe ihn aus.</p>
+      <figure class="k-video">
+        <video controls preload="metadata" poster="../assets/video/v18-beispiel-poster.png" aria-label="Vorgerechnet: Firmware R1 vor dem Einspielen prüfen">
+          <source src="../assets/video/v18-beispiel.mp4" type="video/mp4">
+          <track kind="subtitles" srclang="de" label="Deutsch" src="../assets/video/v18-beispiel.vtt" default>
+          Dein Browser kann dieses Video nicht abspielen.
+        </video>
+        <div class="k-video__missing" hidden>Video folgt. Bis dahin: Lies den Code unten Zeile für Zeile und probiere ihn aus.</div>
+        <figcaption>Vorgerechnet: Firmware prüfen (ca. 3 Min). Untertitel sind eingeschaltet (Deutsch).</figcaption>
+      </figure>
+      <div class="a-task" data-a="run" data-id="w-vorgemacht" data-count="0" data-mode="programm" data-timeout="20000" data-files="../assets/data/v18/R1_fw_3.2.1.bin ../assets/data/v18/R1_fw_3.2.1.bin.sha256 ../assets/data/v18/R1_fw_3.2.1_usb.bin">
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V18" aria-label="Python-Code: Firmware vor dem Einspielen prüfen"># Fertigungszelle FZ-3: Firmware für Roboter R1 vor dem Einspielen prüfen
+# (V18: hashlib, Prüfsummen von Dateien)
+# Dateien: R1_fw_3.2.1.bin, R1_fw_3.2.1.bin.sha256 (vom Hersteller), R1_fw_3.2.1_usb.bin (vom USB-Stick)
+
+import hashlib
+
+
+def sha256_datei(pfad):
+    """Berechnet die SHA-256-Prüfsumme einer Datei, Stück für Stück (auch für große Dateien)."""
+    h = hashlib.sha256()
+    with open(pfad, "rb") as datei:              # "rb": Bytes lesen, nicht Text
+        while True:
+            block = datei.read(4096)
+            if not block:
+                break
+            h.update(block)
+    return h.hexdigest()
+
+
+with open("R1_fw_3.2.1.bin.sha256", encoding="utf-8") as f:
+    soll = f.read().split()[0]                   # erste Spalte: Prüfsumme in Hex
+print("Soll (Hersteller):", soll[:16], "...")
+
+for name in ["R1_fw_3.2.1.bin", "R1_fw_3.2.1_usb.bin"]:
+    ist = sha256_datei(name)
+    if ist == soll:
+        print(f"{name}: OK - darf eingespielt werden")
+    else:
+        print(f"{name}: ABWEICHUNG - nicht einspielen! ({ist[:16]} ...)")
+
+# Schon ein Zeichen Unterschied ändert die ganze Prüfsumme (Lawineneffekt)
+print(hashlib.sha256(b"Drehzahl 1450").hexdigest()[:16])
+print(hashlib.sha256(b"Drehzahl 1451").hexdigest()[:16])</textarea></div>
+      </div>
+      <p class="k-small k-muted">Beim Ausführen siehst du: Die ersten 16 Zeichen der Herstellerprüfsumme, dann „OK“ für die Original-Datei und „ABWEICHUNG“ für die Datei vom Stick, zuletzt die Anfänge zweier Prüfsummen, die sich nur durch ein Zeichen im Text unterscheiden.</p>
+      <pre data-run="no" class="k-code"><code>Soll (Hersteller): f457673f9e3b31fd ...
+R1_fw_3.2.1.bin: OK - darf eingespielt werden
+R1_fw_3.2.1_usb.bin: ABWEICHUNG - nicht einspielen! (c01a88afebff47f1 ...)
+23f2ab28ad6cc6b5
+2318b47cd742ca40</code></pre>
+      <ol class="a-explain">
+        <li><strong>Zeilen 1 bis 3:</strong> Kommentare erklären, worum es geht und welche Dateien gebraucht werden. Die Datei <code class="k-i">.sha256</code> kommt vom Hersteller, die <code class="k-i">_usb.bin</code> vom Stick des Servicetechnikers.</li>
+        <li><strong>Zeile 5:</strong> <code class="k-i">import hashlib</code> holt das Modul mit den Hash-Funktionen (Standardbibliothek, nichts zu installieren).</li>
+        <li><strong>Zeilen 8 bis 17:</strong> Die Funktion <code class="k-i">sha256_datei(pfad)</code> (V07) berechnet die Prüfsumme einer Datei. Zeile 10 legt den Hash leer an. Zeile 11 öffnet die Datei mit <code class="k-i">"rb"</code>, also binär. Die Schleife in den Zeilen 12 bis 16 liest 4096 Bytes (Zeile 13), hört bei einem leeren Block auf (Zeilen 14 und 15) und mischt sonst den Block ein (Zeile 16). Zeile 17 gibt die Prüfsumme als Hex-Text zurück. Weil die Datei Stück für Stück gelesen wird, geht das auch für sehr große Dateien.</li>
+        <li><strong>Zeilen 20 und 21:</strong> Die Prüfsumme des Herstellers steht in einer Textdatei. <code class="k-i">f.read().split()[0]</code> liest den Inhalt, zerlegt ihn an Leerraum und nimmt das erste Stück: die Prüfsumme ohne Dateinamen und ohne Zeilenumbruch.</li>
+        <li><strong>Zeile 22:</strong> Ausgegeben werden nur die ersten 16 der 64 Zeichen (<code class="k-i">soll[:16]</code>, Ausschnitt wie bei Listen in V08). Das reicht zum Wiedererkennen.</li>
+        <li><strong>Zeilen 24 bis 29:</strong> Eine Schleife über die zwei Dateinamen. Für jede Datei wird die Prüfsumme berechnet (Zeile 25) und mit dem Soll-Wert verglichen (Zeile 26). Gleich: „OK“. Verschieden: „ABWEICHUNG - nicht einspielen!“ mit dem Anfang der berechneten Prüfsumme.</li>
+        <li><strong>Das Ergebnis:</strong> Die Datei vom Stick hat eine völlig andere Prüfsumme als die Original-Datei, obwohl in 65 536 Bytes nur <em>ein einziges Bit</em> gekippt ist. Das Programm hat ein Bit unter 524 288 Bit gefunden. Die Firmware wird <strong>nicht</strong> eingespielt, der Fund wird gemeldet.</li>
+        <li><strong>Zeilen 31 bis 33:</strong> Der Lawineneffekt im Kleinen: Zwei Texte, die sich in einer Ziffer unterscheiden, haben völlig verschiedene Prüfsummen (dass beide mit „23“ beginnen, ist Zufall, schon die dritte Stelle ist anders). Genau deshalb fällt das eine gekippte Bit auf.</li>
+        <li><strong>Was die Prüfsumme nicht kann:</strong> Sie sagt nur, dass die Datei zu dem Soll-Wert passt. Stammt der Soll-Wert vom selben Stick wie die Datei, kann ein Angreifer beides tauschen. Der Soll-Wert muss über einen zweiten, vertrauenswürdigen Weg kommen (Download-Seite des Herstellers). Dazu mehr in der Lerneinheit.</li>
+        <li><strong>Selbsterklärung:</strong> Ändere <code class="k-i">4096</code> in Zeile 13 in <code class="k-i">100</code>: Ändert sich das Ergebnis? Warum nicht? Dann ändere <code class="k-i">b"Drehzahl 1450"</code> in <code class="k-i">b"Drehzahl 1450 "</code> (mit Leerzeichen): Wie viel ändert sich? Zuletzt schreibe in Zeile 24 den Namen <code class="k-i">"R1_fw_3.2.1.bn"</code>: Welche Fehlermeldung kommt?</li>
+      </ol>
+
+    </section>
+
+    <section class="l-task" id="a-ablauf" data-title="Ablauf verfolgen" data-part="A" data-stars="" data-min="5" data-extra="" aria-labelledby="h-a-ablauf" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-ablauf" tabindex="-1">Ablauf verfolgen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Bevor du Prüfsummen vergleichst, musst du die Blockschleife lesen können. Führe das Programm im Kopf aus, <strong>Zeile für Zeile, so wie Python es tut</strong>. Es liest eine kleine Datei <code class="k-i">kurz.bin</code> mit nur zehn Bytes (die Buchstaben ABCDEFGHIJ) in Blöcken von vier Bytes. Bytes schreibst du mit einem <code class="k-i">b</code> davor, zum Beispiel <code class="k-i">b'ABCD'</code>. Zeile 1 öffnet nur die Datei und musst du nicht eintragen.</p>
+
+      <div class="a-task" data-a="trace" data-id="w-trace">
+        <script type="application/json">{"code": ["with open(\"kurz.bin\", \"rb\") as datei:", "    summe = 0", "    while True:", "        block = datei.read(4)", "        if not block:", "            break", "        summe = summe + len(block)", "        print(len(block))", "print(summe)"], "vars": ["summe", "block"], "steps": [{"line": 2, "set": {"summe": "0"}, "hint": "Zeile 1 hat die Datei kurz.bin mit den zehn Bytes ABCDEFGHIJ geöffnet. Zeile 2 setzt den Zähler summe auf 0."}, {"line": 4, "set": {"block": "b'ABCD'"}, "hint": "read(4) liefert die ersten vier Bytes. Bytes schreibt man mit einem b vor den Anführungszeichen: b'ABCD'."}, {"line": 7, "set": {"summe": "4"}, "hint": "Der Block ist nicht leer, also kein break. len(block) ist 4, summe wird 0 + 4."}, {"line": 8, "out": "4", "hint": "print gibt die Länge des Blocks aus."}, {"line": 4, "set": {"block": "b'EFGH'"}, "hint": "Zweiter Durchlauf: die nächsten vier Bytes."}, {"line": 7, "set": {"summe": "8"}, "hint": "summe ist 4 + 4."}, {"line": 8, "out": "4", "hint": "Wieder ein Block mit vier Bytes."}, {"line": 4, "set": {"block": "b'IJ'"}, "hint": "Es sind nur noch zwei Bytes übrig: Der letzte Block ist kürzer."}, {"line": 7, "set": {"summe": "10"}, "hint": "summe ist 8 + 2."}, {"line": 8, "out": "2", "hint": "Der kurze Block hat zwei Bytes."}, {"line": 4, "set": {"block": "b''"}, "hint": "Die Datei ist zu Ende. read liefert jetzt leere Bytes, geschrieben b'' (zwei Anführungszeichen ohne Inhalt). In Zeile 5 ist not block deshalb wahr, Zeile 6 beendet die Schleife."}, {"line": 9, "out": "10", "hint": "Nach der Schleife wird die Summe ausgegeben: die Dateigröße von 10 Bytes. Die Summe der Blocklängen ist immer die Größe der Datei."}]}</script>
+      </div>
+
+      <p class="l-task__intro">Zweiter Ablauf: die Prüfsumme des Herstellers lesen und vergleichen.</p>
+      <div class="a-task" data-a="trace" data-id="w-trace2">
+        <script type="application/json">{"code": ["inhalt = \"A1B2C3  fw.bin\\n\"", "teile = inhalt.split()", "soll = teile[0].lower()", "ist = \"a1b2c4\"", "if ist == soll:", "    urteil = \"OK\"", "else:", "    urteil = \"ABWEICHUNG\"", "print(soll, urteil)"], "vars": ["teile", "soll", "ist", "urteil"], "steps": [{"line": 2, "set": {"teile": "['A1B2C3', 'fw.bin']"}, "hint": "Zeile 1 hat den Text angelegt. split() zerlegt ihn an Leerraum (zwei Leerzeichen und der Zeilenumbruch fallen weg) in eine Liste mit zwei Texten."}, {"line": 3, "set": {"soll": "\"a1b2c3\""}, "hint": "teile[0] ist 'A1B2C3'. lower() macht daraus lauter Kleinbuchstaben: 'a1b2c3'."}, {"line": 4, "set": {"ist": "\"a1b2c4\""}, "hint": "Der berechnete Wert, hier fest geschrieben: Er endet auf 4, nicht auf 3."}, {"line": 8, "set": {"urteil": "\"ABWEICHUNG\""}, "hint": "Zeile 5 fragt ist == soll: 'a1b2c4' gegen 'a1b2c3' ist falsch. Die Zeilen 6 wird übersprungen, der else-Zweig setzt urteil."}, {"line": 9, "out": "a1b2c3 ABWEICHUNG", "hint": "print gibt soll und urteil durch ein Leerzeichen getrennt aus."}]}</script>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-zeilen" data-title="Zeilen ordnen" data-part="A" data-stars="" data-min="7" data-extra="" aria-labelledby="h-a-zeilen" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-zeilen" tabindex="-1">Zeilen ordnen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Alle Zeilen sind da, aber durcheinander. Bring sie in die richtige Reihenfolge <strong>und rücke die Zeilen im Block ein</strong> (Pfeil nach rechts oder Mausziehen). Manche Zeilen gehören nicht ins Programm.</p>
+
+      <div class="a-task" data-a="parsons" data-id="w-parsons1">
+        <div class="a-task__head"><h3 class="a-task__title">Prüfsumme einer Datei berechnen</h3></div>
+        <p>Die Funktion berechnet die SHA-256-Prüfsumme einer Datei Stück für Stück (<code class="k-i">import hashlib</code> steht schon darüber). Überlege vorher: Wann legst du den Hash an, in welchem Modus öffnest du die Datei, wann hörst du auf zu lesen, und was gibst du zurück? Zwei Zeilen sind falsch.</p>
+        <script type="application/json">{"solution": ["def sha256_datei(pfad):", "    h = hashlib.sha256()", "    with open(pfad, \"rb\") as datei:", "        while True:", "            block = datei.read(4096)", "            if not block:", "                break", "            h.update(block)", "    return h.hexdigest()"], "distractors": ["    with open(pfad) as datei:", "    return h.digest()"], "alts": [["def sha256_datei(pfad):", "    with open(pfad, \"rb\") as datei:", "        h = hashlib.sha256()", "        while True:", "            block = datei.read(4096)", "            if not block:", "                break", "            h.update(block)", "    return h.hexdigest()"]]}</script>
+      </div>
+
+      <div class="a-task" data-a="parsons" data-id="w-parsons2">
+        <div class="a-task__head"><h3 class="a-task__title">Zwei Dateien gegen den Soll-Wert prüfen</h3></div>
+        <p>Das Programm liest die Prüfsumme des Herstellers und prüft dann in einer Schleife zwei Dateien. Die Funktion <code class="k-i">sha256_datei</code> aus der vorigen Aufgabe steht schon über dem Programm. Die Prüfsumme wird <em>vor</em> der Schleife gelesen, nicht in jedem Durchlauf neu. Zwei Zeilen sind Ablenker.</p>
+        <script type="application/json">{"solution": ["with open(\"R1_fw_3.2.1.bin.sha256\", encoding=\"utf-8\") as f:", "    soll = f.read().split()[0].lower()", "for name in [\"R1_fw_3.2.1.bin\", \"R1_fw_3.2.1_usb.bin\"]:", "    ist = sha256_datei(name)", "    if ist == soll:", "        print(name, \"OK\")", "    else:", "        print(name, \"ABWEICHUNG\")"], "distractors": ["    soll = f.read().split().lower()", "    if ist = soll:"]}</script>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-luecken" data-title="Lücken füllen" data-part="A" data-stars="" data-min="5" data-extra="" aria-labelledby="h-a-luecken" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-luecken" tabindex="-1">Lücken füllen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Jetzt tippst du Teile selbst. Ergänze die fünf Lücken, sodass das Programm einen Text in Bytes umwandelt, den ersten Block der Firmware einliest und dessen Prüfsumme ausgibt.</p>
+
+      <div class="a-task" data-a="gap" data-id="w-luecken" data-mode="code" data-timeout="20000" data-files="../assets/data/v18/R1_fw_3.2.1.bin">
+        <pre class="a-gap__src">import hashlib
+
+text = "Drehzahl 1450"
+daten = text.@@encode@@("utf-8")             # Text -&gt; Bytes
+print(len(daten))
+
+h = hashlib.@@sha256@@()
+with open("R1_fw_3.2.1.bin", @@"rb"|'rb'@@) as datei:
+    block = datei.read(4096)
+    h.@@update@@(block)
+print(h.@@hexdigest@@()[:16])</pre>
+        <script type="text/x-python" data-role="tests">
+import hashlib
+
+def test_bytes():
+    """Der Text wird zu Bytes (13 Zeichen, 13 Bytes)"""
+    assert "daten" in globals() and isinstance(daten, bytes), "daten soll vom Typ bytes sein. Welche Methode macht aus einem Text Bytes (Syntax-Karte 1)?"
+    assert len(daten) == 13, "daten hat %d Bytes, erwartet 13." % len(daten)
+
+def test_hash_objekt():
+    """h ist ein SHA-256-Hash-Objekt"""
+    assert "h" in globals() and h.name == "sha256", "h soll mit hashlib.sha256() angelegt sein (Lücke 2)."
+
+def test_modus():
+    """Datei binär gelesen: der erste Block hat 4096 Bytes"""
+    assert "block" in globals() and isinstance(block, bytes), "block soll Bytes sein. Mit welchem Modus öffnest du eine Datei binär? Zwei Buchstaben, r wie read."
+    assert len(block) == 4096, "Der Block hat %d Bytes, erwartet 4096." % len(block)
+
+def test_ausgabe():
+    """Ausgabe: 13 und die ersten 16 Zeichen der Prüfsumme des ersten Blocks"""
+    z = _zeilen(AUSGABE)
+    soll = hashlib.sha256(open("R1_fw_3.2.1.bin", "rb").read(4096)).hexdigest()[:16]
+    assert z == ["13", soll], "Erwartet die zwei Zeilen 13 und %s, ausgegeben wurde %r. Fehlt update(block) oder hexdigest()?" % (soll, z)
+        </script>
+        <ol class="a-hints">
+          <li>Lücke 1: Eine Text-Methode macht aus <code>str</code> Bytes (Syntax-Karte 1). Ihr Argument ist die Kodierung <code>"utf-8"</code>.</li>
+          <li>Lücke 2: Welche Funktion aus <code>hashlib</code> liefert den SHA-256-Hash? Der Name der Prüfsumme ist der Name der Funktion.</li>
+          <li>Lücke 3: Der Modus zum binären Lesen. Zwei Buchstaben, in Anführungszeichen (Syntax-Karte 3).</li>
+          <li>Lücke 4: Die Methode des Hash-Objekts, die einen Block einmischt.</li>
+          <li>Lücke 5: Die Methode, die den Hash als Hex-Text (64 Zeichen) liefert, nicht als Bytes.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-pap" data-title="PAP: Firmware-Freigabe" data-part="A" data-stars="" data-min="8" data-extra="PAP zeichnen" aria-labelledby="h-a-pap" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-pap" tabindex="-1">PAP: Firmware-Freigabe</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Bevor du die Prüfung programmierst, zeichnest du den Plan. Das ist die Entscheidung am Ende des Beispiels, ohne Dateien: Zwei Texte kommen herein (der Soll-Wert des Herstellers und die berechnete Prüfsumme), ein Urteil kommt heraus. Die Prüfung erzeugt aus deinem PAP Python-Code und testet ihn mit gültigen und ungültigen Prüfsummen, einmal richtig, einmal falsch.</p>
+
+      <div class="a-task k-pap-aufgabe" data-a="pap-zeichnen" data-id="v18-freigabe" data-timeout="8000" data-erlaubt="in,out,op,if">
+        <div class="a-task__head"><h3 class="a-task__title">Firmware-Freigabe</h3></div>
+        <p>Zeichne einen PAP für die Freigabe. Die zwei Eingaben stehen schon da: <code class="k-i">soll</code> (die Prüfsumme vom Hersteller, als Text) und <code class="k-i">ist</code> (die selbst berechnete Prüfsumme, schon klein geschrieben). Der Soll-Wert kann Leerzeichen am Rand und Großbuchstaben haben, mach ihn zuerst mit einer Operation <code class="k-i">soll = soll.strip().lower()</code> vergleichbar. Dann prüfst du, ob er überhaupt eine SHA-256-Prüfsumme sein kann: Hat <code class="k-i">soll</code> nicht genau 64 Zeichen, gibst du <code class="k-i">"Prüfsumme ungültig"</code> aus. Sonst vergleichst du <code class="k-i">ist == soll</code>: gleich gibt <code class="k-i">"einspielen"</code> aus, verschieden <code class="k-i">"nicht einspielen"</code>. Texte stehen in Anführungszeichen, die Bedingungen schreibst du als Python-Ausdruck.</p>
+        <script type="application/json" data-role="start">{"baum": [{"k": "in", "v": "soll", "typ": "str", "prompt": ""}, {"k": "in", "v": "ist", "typ": "str", "prompt": ""}]}</script>
+        <script type="text/x-python" data-role="tests">
+import hashlib
+
+_H = hashlib.sha256(b"R1 Firmware 3.2.1").hexdigest()
+_H2 = hashlib.sha256(b"R1 Firmware 3.2.1 manipuliert").hexdigest()
+
+def _ausgabe(soll, ist):
+    z = _zeilen(_run_program([soll, ist]))
+    assert z, "Dein PAP gibt nichts aus. Erwartet wird genau ein Text: einspielen, nicht einspielen oder Prüfsumme ungültig."
+    return z[-1].lower().replace("ü", "ue").replace("ä", "ae")
+
+def test_gleich():
+    """Soll und ist gleich: einspielen"""
+    a = _ausgabe(_H, _H)
+    assert a == "einspielen", "Bei gleichen Prüfsummen wird 'einspielen' erwartet. Dein PAP gibt aus: %r" % a
+
+def test_abweichung():
+    """Soll und ist verschieden (ein Hash anders): nicht einspielen"""
+    a = _ausgabe(_H, _H2)
+    assert a == "nicht einspielen", "Bei verschiedenen Prüfsummen wird 'nicht einspielen' erwartet. Dein PAP gibt aus: %r" % a
+
+def test_soll_bereinigt():
+    """Soll in Großbuchstaben und mit Leerzeichen am Rand: trotzdem einspielen"""
+    a = _ausgabe("  " + _H.upper() + "  ", _H)
+    assert a == "einspielen", "Der Soll-Wert ist dieselbe Prüfsumme, nur groß geschrieben und mit Leerzeichen. Erwartet 'einspielen', dein PAP gibt aus: %r. Fehlt die Operation mit strip() und lower() vor dem Vergleich?" % a
+
+def test_zu_kurz():
+    """Soll mit falscher Länge: Prüfsumme ungültig"""
+    a = _ausgabe(_H[:40], _H)
+    assert a == "pruefsumme ungueltig", "Ein Soll-Wert mit 40 statt 64 Zeichen ist keine SHA-256-Prüfsumme. Erwartet 'Prüfsumme ungültig', dein PAP gibt aus: %r" % a
+
+def test_grenzen():
+    """63 und 65 Zeichen sind ungültig, 64 Zeichen sind gültig (auch wenn ist abweicht)"""
+    assert _ausgabe(_H[:63], _H) == "pruefsumme ungueltig", "63 Zeichen sind ungültig: genau 64 verlangen (len(soll) == 64)."
+    assert _ausgabe(_H + "0", _H) == "pruefsumme ungueltig", "65 Zeichen sind ungültig: genau 64 verlangen (len(soll) == 64)."
+    assert _ausgabe(_H, _H2) == "nicht einspielen", "Ein gültiger Soll-Wert mit abweichendem ist ergibt 'nicht einspielen'."
+        </script>
+        <script type="application/json" data-role="solution">{"baum": [{"k": "in", "v": "soll", "typ": "str", "prompt": ""}, {"k": "in", "v": "ist", "typ": "str", "prompt": ""}, {"k": "op", "v": "soll = soll.strip().lower()"}, {"k": "if", "v": "len(soll) == 64", "yes": [{"k": "if", "v": "ist == soll", "yes": [{"k": "out", "v": "\"einspielen\""}], "no": [{"k": "out", "v": "\"nicht einspielen\""}]}], "no": [{"k": "out", "v": "\"Prüfsumme ungültig\""}]}]}</script>
+        <ol class="a-hints">
+          <li>Nach den zwei Eingaben kommt eine Operation: <code>soll = soll.strip().lower()</code>. Sie macht den Soll-Wert vergleichbar (Leerzeichen am Rand weg, alles klein).</li>
+          <li>Die erste Raute prüft die Länge: <code>len(soll) == 64</code>. Im „nein“-Zweig steht die Ausgabe <code>"Prüfsumme ungültig"</code>.</li>
+          <li>Im „ja“-Zweig kommt die zweite Raute <code>ist == soll</code>: „ja“ gibt <code>"einspielen"</code> aus, „nein“ gibt <code>"nicht einspielen"</code> aus.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-erste" data-title="Erste eigene Aufgabe: Datei prüfen" data-part="A" data-stars="1" data-min="8" data-extra="" aria-labelledby="h-a-erste" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-erste" tabindex="-1">Erste eigene Aufgabe: Datei prüfen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Jetzt schreibst du selbst, mit <abbr class="k-begriff" data-erklaerung="Ein Test ist ein kleines Prüfprogramm. Es startet dein Programm mit festen Eingaben und vergleicht die Ausgabe mit dem erwarteten Ergebnis."><strong>Tests</strong></abbr> als Sicherheitsnetz. Du setzt aus dem Beispiel eine Funktion zusammen, die ein einziges Urteil liefert: Stimmt die Datei, ja oder nein? Gib das Ergebnis mit <code class="k-i">return</code> zurück.</p>
+
+      <div class="a-task" data-a="code" data-id="w-erste" data-mode="code" data-timeout="20000" data-files="../assets/data/v18/R1_fw_3.2.1.bin ../assets/data/v18/R1_fw_3.2.1.bin.sha256 ../assets/data/v18/R1_fw_3.2.1_usb.bin">
+        <div class="a-task__text">
+          <p>Schreibe die Funktion <code class="k-i">pruefe_datei(pfad, soll)</code>. Sie liest die Datei <strong>blockweise</strong> (4096 Bytes, binär), berechnet die SHA-256-Prüfsumme und gibt <code class="k-i">True</code> zurück, wenn sie gleich dem Soll-Wert ist, sonst <code class="k-i">False</code>. Der Soll-Wert darf Großbuchstaben haben und Leerzeichen oder einen Zeilenumbruch am Rand: Mach ihn vor dem Vergleich vergleichbar. Die Tests prüfen die beiden Firmware-Dateien und eigene Dateien, die sie selbst schreiben.</p>
+          <div class="a-spec"><strong>Erwartet</strong><pre data-run="no">pruefe_datei("R1_fw_3.2.1.bin", soll)      -&gt; True   (Original)
+pruefe_datei("R1_fw_3.2.1_usb.bin", soll)  -&gt; False  (ein Bit anders)</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V18" aria-label="Python-Code: Datei prüfen"># Firmware R1 vom USB-Stick: Stimmt die Prüfsumme?
+import hashlib
+
+
+def pruefe_datei(pfad, soll):
+    # Liest die Datei blockweise (4096 Bytes, Modus "rb"), berechnet die SHA-256-Prüfsumme
+    # und gibt True zurück, wenn sie gleich soll ist, sonst False.
+    # soll kann Großbuchstaben und Leerzeichen oder Zeilenumbruch am Rand haben.
+    pass
+
+
+with open("R1_fw_3.2.1.bin.sha256", encoding="utf-8") as f:
+    soll = f.read().split()[0]
+print(pruefe_datei("R1_fw_3.2.1.bin", soll))
+print(pruefe_datei("R1_fw_3.2.1_usb.bin", soll))
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+import hashlib
+
+def _hex(daten):
+    return hashlib.sha256(daten).hexdigest()
+
+def _soll():
+    return open("R1_fw_3.2.1.bin.sha256", encoding="utf-8").read().split()[0]
+
+def test_original():
+    """Original-Firmware: Prüfsumme stimmt, True"""
+    assert "pruefe_datei" in globals(), "Es fehlt die Funktion pruefe_datei(pfad, soll)."
+    r = pruefe_datei("R1_fw_3.2.1.bin", _soll())
+    assert r is True, "Für die Original-Datei erwartet True, die Funktion gibt %r zurück. (Gibt sie mit return zurück statt nur zu drucken? Vergleich == am Ende?)" % (r,)
+
+def test_usb():
+    """Datei vom USB-Stick: ein Bit anders, False"""
+    r = pruefe_datei("R1_fw_3.2.1_usb.bin", _soll())
+    assert r is False, "Für die USB-Datei erwartet False (ein Bit ist gekippt), die Funktion gibt %r zurück." % (r,)
+
+def test_soll_robust():
+    """Soll mit Großbuchstaben, Leerzeichen und Zeilenumbruch wird erkannt"""
+    s = "  " + _soll().upper() + "\n"
+    r = pruefe_datei("R1_fw_3.2.1.bin", s)
+    assert r is True, "Der Soll-Wert %r ist dieselbe Prüfsumme, nur anders geschrieben. Erwartet True, erhalten %r. Hilft strip() und lower()?" % (s[:12] + "...", r)
+
+def test_eigene_datei():
+    """Eigene Datei (über 4096 Bytes): richtig und nach einer Änderung falsch"""
+    daten = bytes((i * 7 + 3) % 256 for i in range(10000))
+    with open("t_eigen.bin", "wb") as f:
+        f.write(daten)
+    assert pruefe_datei("t_eigen.bin", _hex(daten)) is True, "Eine eigene Datei mit 10000 Bytes und der richtigen Prüfsumme soll True ergeben. Werden alle Blöcke eingemischt, auch der letzte kürzere?"
+    geaendert = bytearray(daten)
+    geaendert[9999] ^= 1
+    with open("t_eigen2.bin", "wb") as f:
+        f.write(geaendert)
+    assert pruefe_datei("t_eigen2.bin", _hex(daten)) is False, "Ein einziges geändertes Bit im letzten Byte muss auffallen: erwartet False."
+
+def test_leere_datei():
+    """Grenzfall: leere Datei"""
+    with open("t_leer.bin", "wb") as f:
+        pass
+    assert pruefe_datei("t_leer.bin", _hex(b"")) is True, "Die leere Datei hat die Prüfsumme e3b0c442... (SHA-256 von nichts). Erwartet True."
+        </script>
+        <script type="text/x-python" data-role="solution">
+# Firmware R1 vom USB-Stick: Stimmt die Prüfsumme?
+import hashlib
+
+
+def pruefe_datei(pfad, soll):
+    h = hashlib.sha256()
+    with open(pfad, "rb") as datei:
+        while True:
+            block = datei.read(4096)
+            if not block:
+                break
+            h.update(block)
+    return h.hexdigest() == soll.strip().lower()
+
+
+with open("R1_fw_3.2.1.bin.sha256", encoding="utf-8") as f:
+    soll = f.read().split()[0]
+print(pruefe_datei("R1_fw_3.2.1.bin", soll))
+print(pruefe_datei("R1_fw_3.2.1_usb.bin", soll))
+        </script>
+        <ol class="a-hints">
+          <li>Das Gerüst kennst du aus dem vorgerechneten Beispiel: <code>h = hashlib.sha256()</code>, dann <code>with open(pfad, "rb") as datei:</code> und <code>while True:</code> mit <code>block = datei.read(4096)</code>.</li>
+          <li>In der Schleife: <code>if not block: break</code>, sonst <code>h.update(block)</code>. Nach der Schleife kennt <code>h.hexdigest()</code> die Prüfsumme der ganzen Datei.</li>
+          <li>Vergleiche am Ende mit dem bereinigten Soll-Wert: <code>return h.hexdigest() == soll.strip().lower()</code>. Der Vergleich liefert schon True oder False.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-review" data-seen="manual" data-title="Code-Review: KI-Firmware-Prüfung" data-part="A" data-stars="" data-min="15" data-extra="" aria-labelledby="h-a-review" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-review" tabindex="-1">Code-Review: KI-Firmware-Prüfung</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Eine KI hat ein Programm geliefert, das die Firmware vor dem Einspielen prüft. Es sieht aufgeräumt aus. Würdest du es freigeben? Klick die Zeilen an, die du für fehlerhaft hältst, dann lass auflösen.</p>
+
+      <figure class="k-figure">
+        <picture>
+          <source srcset="../assets/img/ki-spiegel.webp" type="image/webp">
+          <img src="../assets/img/ki-spiegel.png" alt="Illustration: KI-Code wird von einem Ingenieur geprüft" width="1600" height="901" loading="lazy" onerror="this.closest('figure').hidden=true">
+        </picture>
+      </figure>
+
+      <div class="k-mirror">
+        <h3>Szenario: Firmware-Prüfung für den Roboter R1</h3>
+        <p class="k-prompt__who">Prompt eines Studierenden</p>
+        <blockquote class="k-prompt">Schreib mir ein Python-Skript: Auf dem USB-Stick des Servicetechnikers (Laufwerk E:) liegen die Firmware R1_fw_3.2.1.bin und die Datei R1_fw_3.2.1.bin.sha256 mit der SHA-256-Prüfsumme des Herstellers. Prüfe, ob die Firmware zur Prüfsumme passt, und sag, ob ich sie einspielen darf. Die Datei kann groß sein.</blockquote>
+        <p class="k-prompt__who">KI-Antwort (Python)</p>
+          <ol class="k-codelines" aria-label="Code der KI, Zeilen anklickbar">
+            <li><button type="button" class="k-line">import hashlib</button></li>
+            <li><button type="button" class="k-line"> </button></li>
+            <li><button type="button" class="k-line">STICK = &quot;E:/&quot;</button></li>
+            <li><button type="button" class="k-line" data-bug="d">PRUEFSUMME = STICK + &quot;R1_fw_3.2.1.bin.sha256&quot;</button></li>
+            <li><button type="button" class="k-line"> </button></li>
+            <li><button type="button" class="k-line">def pruefsumme(pfad):</button></li>
+            <li><button type="button" class="k-line" data-bug="c">    h = hashlib.md5()</button></li>
+            <li><button type="button" class="k-line" data-bug="a">    with open(pfad) as datei:</button></li>
+            <li><button type="button" class="k-line">        for zeile in datei:</button></li>
+            <li><button type="button" class="k-line">            h.update(zeile.encode(&quot;utf-8&quot;))</button></li>
+            <li><button type="button" class="k-line">    return h.hexdigest()</button></li>
+            <li><button type="button" class="k-line"> </button></li>
+            <li><button type="button" class="k-line" data-bug="b">soll = open(PRUEFSUMME).read()</button></li>
+            <li><button type="button" class="k-line">ist = pruefsumme(STICK + &quot;R1_fw_3.2.1.bin&quot;)</button></li>
+            <li><button type="button" class="k-line">if ist == soll:</button></li>
+            <li><button type="button" class="k-line">    print(&quot;OK - einspielen&quot;)</button></li>
+            <li><button type="button" class="k-line">else:</button></li>
+            <li><button type="button" class="k-line">    print(&quot;ABWEICHUNG - nicht einspielen&quot;)</button></li>
+          </ol>
+        <p class="k-small k-muted">Tipp: Es sind vier Fehler eingebaut, in vier verschiedenen Zeilen. Einer bringt das Programm zum Absturz, die anderen nicht. Nicht jede Zeile ist falsch.</p>
+
+        <div class="k-mirror__task">
+          <p><strong>Würdest du das freigeben?</strong> Markiere die fehlerhaften Zeilen, dann lass auflösen.</p>
+          <button type="button" class="k-btn" data-mirror-check>Auflösen</button>
+          <p class="k-verdict" role="status" hidden></p>
+
+          <div data-mirror-after hidden>
+            <h3>Die vier Fehler</h3>
+            <h4>Fehler 1: Datei im Textmodus geöffnet (Zeile 8)</h4>
+            <p><code class="k-i">open(pfad)</code> ohne <code class="k-i">"rb"</code> liest Text. Eine Firmware ist aber kein Text: Python findet ungültige UTF-8-Folgen und bricht mit einem <code class="k-i">UnicodeDecodeError</code> ab. Selbst bei einer Datei, die zufällig durchgeht, würden Zeilenenden umgewandelt und Bytes verändert, die Prüfsumme wäre falsch. Lösung: <code class="k-i">open(pfad, "rb")</code> und die Bytes direkt einmischen, ohne <code class="k-i">encode</code>. Ein Programm, das abstürzt, ist hier noch der harmloseste Fehler.</p>
+            <h4>Fehler 2: Soll-Wert ungekürzt verglichen (Zeile 13)</h4>
+            <p><code class="k-i">.read()</code> liefert den <em>ganzen</em> Dateiinhalt: die 64 Zeichen, zwei Leerzeichen, den Dateinamen und den Zeilenumbruch. Der Vergleich <code class="k-i">ist == soll</code> ist deshalb nie wahr: Das Programm meldet bei jeder, auch bei der richtigen Datei „ABWEICHUNG“. Kein Absturz, nur eine Warnung, die niemand mehr ernst nimmt. Lösung: <code class="k-i">soll = open(...).read().split()[0].lower()</code>.</p>
+            <h4>Fehler 3: MD5 statt SHA-256 (Zeile 7)</h4>
+            <p>Der Hersteller veröffentlicht eine SHA-256-Prüfsumme, die KI nimmt <code class="k-i">hashlib.md5</code>. Die Werte haben nicht einmal dieselbe Länge (32 statt 64 Zeichen), selbst mit allen anderen Korrekturen würde nie etwas übereinstimmen. Dazu ist MD5 gebrochen: Ein Angreifer kann gezielt Dateien mit demselben MD5 bauen. Lösung: <code class="k-i">hashlib.sha256()</code>, und zwar das Verfahren, das der Hersteller nennt.</p>
+            <h4>Fehler 4: Prüfsumme vom selben Stick (Zeile 4)</h4>
+            <p>Der Fachfehler: Die Prüfsumme liegt auf demselben Stick wie die Firmware. Wer die Firmware austauschen kann, tauscht auch die <code class="k-i">.sha256</code>-Datei aus, und das Programm meldet „OK“ für Schadcode. Die Prüfsumme hilft nur, wenn der Soll-Wert über einen <strong>zweiten, vertrauenswürdigen Weg</strong> kommt, etwa von der Download-Seite des Herstellers über HTTPS. Noch besser prüft das Gerät eine digitale Signatur (Lerneinheit). Die KI konnte das nicht wissen, denn der Prompt hat es ihr so beschrieben: Die Spezifikation war der Fehler.</p>
+
+            <h3>Die Fehler einzeln zum Ausprobieren</h3>
+            <p class="k-small k-muted">Je ein Aufruf, damit du siehst, was passiert: der Textmodus, der ungekürzte Soll-Wert, MD5 und der getauschte Stick. Probiere dann die Korrektur.</p>
+<pre data-files="../assets/data/v18/R1_fw_3.2.1.bin" data-timeout="20000"><code># Fehler 1: Datei im Textmodus öffnen
+with open("R1_fw_3.2.1.bin") as datei:
+    inhalt = datei.read()
+print(len(inhalt))</code></pre><pre data-files="../assets/data/v18/R1_fw_3.2.1.bin.sha256" data-timeout="20000"><code># Fehler 2: der ganze Inhalt der .sha256-Datei ist mehr als die Prüfsumme
+inhalt = open("R1_fw_3.2.1.bin.sha256").read()
+print(repr(inhalt[-24:]))                  # Dateiname und Zeilenumbruch hängen dran
+print(len(inhalt), "Zeichen statt 64")
+print(inhalt.split()[0] == inhalt)         # False: so ist ein Vergleich nie wahr
+print(len(inhalt.split()[0]))              # 64: nur die erste Spalte ist die Prüfsumme</code></pre><pre data-files="../assets/data/v18/R1_fw_3.2.1.bin" data-timeout="20000"><code># Fehler 3: MD5 ist kürzer und gebrochen, passt auch nicht zur Prüfsumme des Herstellers
+import hashlib
+
+daten = open("R1_fw_3.2.1.bin", "rb").read()
+print(len(hashlib.md5(daten).hexdigest()), "Zeichen bei md5")
+print(len(hashlib.sha256(daten).hexdigest()), "Zeichen bei sha256")</code></pre><pre data-timeout="20000"><code># Fehler 4: Datei UND Prüfsumme vom selben Stick - ein Angreifer tauscht beides
+import hashlib
+
+schadcode = b"R1-FW 3.2.1 mit Schadcode"
+pruefsumme_auf_dem_stick = hashlib.sha256(schadcode).hexdigest()   # vom Angreifer passend gemacht
+print(hashlib.sha256(schadcode).hexdigest() == pruefsumme_auf_dem_stick)   # True: das Programm sagt OK</code></pre>
+            <h3>Korrigierte Version (die vier Stellen)</h3>
+            <pre data-run="no" class="k-code"><code># Fehler 4: den Soll-Wert nicht vom Stick, sondern von der Hersteller-Seite (HTTPS) nehmen
+# und in eine Textdatei oder Variable legen, bevor der Stick eingesteckt wird
+PRUEFSUMME = "hersteller/R1_fw_3.2.1.bin.sha256"
+
+def pruefsumme(pfad):
+    h = hashlib.sha256()                       # Fehler 3
+    with open(pfad, "rb") as datei:            # Fehler 1
+        while True:
+            block = datei.read(4096)
+            if not block:
+                break
+            h.update(block)
+    return h.hexdigest()
+
+soll = open(PRUEFSUMME).read().split()[0].lower()   # Fehler 2</code></pre>
+            <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke</strong><p>Bei KI-Code, der Dateien prüft, fragst du: Wird binär gelesen (<code class="k-i">"rb"</code>)? Ist der Soll-Wert wirklich nur die Prüfsumme? Ist das Verfahren SHA-256 und passt es zur Angabe des Herstellers? Und die wichtigste Frage: Woher kommt der Soll-Wert? Ein Programm, das beim ersten Test läuft, ist noch nicht sicher.</p></div>
+
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-fehler" data-title="Typische Fehlermeldungen" data-part="A" data-stars="" data-min="5" data-extra="" aria-labelledby="h-a-fehler" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-fehler" tabindex="-1">Typische Fehlermeldungen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Mit Bytes und Dateien kommen neue Fehlermeldungen. Diese sechs siehst du garantiert. Jedes Beispiel lässt sich ausführen: Schau dir die echte Meldung an und lies sie von unten nach oben (zuerst die letzte Zeile). Eine davon ist gar keine Meldung, sondern ein stiller Fehler.</p>
+
+      <div class="a-errors">
+        <div class="a-error">
+          <h3><code class="k-i">TypeError</code>: Text statt Bytes</h3>
+            <div class="a-task" data-a="run" data-mode="programm" data-timeout="20000">
+              <div class="a-editor"><textarea class="py-editor" data-lesson="V18" aria-label="Fehlerbeispiel TypeError: Text statt Bytes">import hashlib
+
+print(hashlib.sha256("Drehzahl 1450").hexdigest())</textarea></div>
+            </div>
+          <p>Meldung: <code class="k-i">TypeError: Strings must be encoded before hashing</code>. Der Hash arbeitet mit Bytes, du hast Text übergeben. Erst kodieren: <code>hashlib.sha256("Drehzahl 1450".encode("utf-8"))</code>, oder gleich Bytes schreiben: <code>b"Drehzahl 1450"</code>.</p>
+        </div>
+        <div class="a-error">
+          <h3><code class="k-i">UnicodeDecodeError</code>: Firmware im Textmodus gelesen</h3>
+            <div class="a-task" data-a="run" data-mode="programm" data-timeout="20000" data-files="../assets/data/v18/R1_fw_3.2.1.bin">
+              <div class="a-editor"><textarea class="py-editor" data-lesson="V18" aria-label="Fehlerbeispiel UnicodeDecodeError: Firmware im Textmodus gelesen">with open("R1_fw_3.2.1.bin") as datei:
+    inhalt = datei.read()
+print(len(inhalt))</textarea></div>
+            </div>
+          <p>Meldung: <code class="k-i">UnicodeDecodeError: 'utf-8' codec can't decode byte 0xa9 in position 14: invalid start byte</code>. Ohne <code>"rb"</code> versucht Python, die Bytes als UTF-8-Text zu lesen. Eine Firmware ist kein Text, also gibt es irgendwo ein Byte, das kein gültiges Zeichen ergibt. Lösung: <code>open(pfad, "rb")</code>.</p>
+        </div>
+        <div class="a-error">
+          <h3><code class="k-i">AttributeError</code>: hexdigest auf Text</h3>
+            <div class="a-task" data-a="run" data-mode="programm" data-timeout="20000">
+              <div class="a-editor"><textarea class="py-editor" data-lesson="V18" aria-label="Fehlerbeispiel AttributeError: hexdigest auf Text">import hashlib
+
+h = hashlib.sha256(b"Drehzahl 1450").hexdigest()      # das ist schon der fertige Text
+print(h.hexdigest())</textarea></div>
+            </div>
+          <p>Meldung: <code class="k-i">AttributeError: 'str' object has no attribute 'hexdigest'</code>. <code>hexdigest()</code> ist eine Methode des <em>Hash-Objekts</em>. Hier ist <code>h</code> bereits ihr Ergebnis, ein Text, und Text kennt kein <code>hexdigest</code>. Entweder das Objekt behalten (<code>h = hashlib.sha256(...)</code>, später <code>h.hexdigest()</code>) oder den Text direkt verwenden. Dasselbe passiert mit <code>h.update(...)</code> nach <code>hexdigest()</code>.</p>
+        </div>
+        <div class="a-error">
+          <h3>Stiller Fehler: <code class="k-i">digest()</code> statt <code class="k-i">hexdigest()</code></h3>
+            <div class="a-task" data-a="run" data-mode="programm" data-timeout="20000" data-files="../assets/data/v18/R1_fw_3.2.1.bin ../assets/data/v18/R1_fw_3.2.1.bin.sha256 ../assets/data/v18/R1_fw_3.2.1_usb.bin">
+              <div class="a-editor"><textarea class="py-editor" data-lesson="V18" aria-label="Fehlerbeispiel Stiller Fehler: digest() statt hexdigest()">import hashlib
+
+soll = open("R1_fw_3.2.1.bin.sha256").read().split()[0]
+ist = hashlib.sha256(open("R1_fw_3.2.1.bin", "rb").read()).digest()
+print(type(ist), len(ist))
+print(ist == soll)</textarea></div>
+            </div>
+          <p>Hier gibt es <strong>keine</strong> Meldung, nur ein falsches Ergebnis: <code class="k-i">False</code>, obwohl die Datei stimmt. <code>digest()</code> liefert 32 rohe Bytes, <code>soll</code> ist ein Text mit 64 Zeichen. Bytes und Text sind nie gleich, auch wenn sie „dasselbe“ meinen. Das ist gefährlich, weil ein Programm so immer „ABWEICHUNG“ meldet (oder, mit umgekehrter Logik, immer „OK“). Vergleiche immer <code>hexdigest()</code> mit Text, und teste dein Programm einmal mit der richtigen Datei, damit du das „OK“ siehst.</p>
+        </div>
+        <div class="a-error">
+          <h3><code class="k-i">FileNotFoundError</code>: Datei nicht gefunden</h3>
+            <div class="a-task" data-a="run" data-mode="programm" data-timeout="20000" data-files="../assets/data/v18/R1_fw_3.2.1.bin">
+              <div class="a-editor"><textarea class="py-editor" data-lesson="V18" aria-label="Fehlerbeispiel FileNotFoundError: Datei nicht gefunden">with open("R1_fw_3.2.1.bn", "rb") as datei:      # Tippfehler im Namen
+    print(len(datei.read()))</textarea></div>
+            </div>
+          <p>Meldung: <code class="k-i">FileNotFoundError: [Errno 44] No such file or directory: 'R1_fw_3.2.1.bn'</code>. Python findet keine Datei mit genau diesem Namen im Arbeitsordner. Prüfe Schreibweise, Endung und Ordner. Im Browser-Labor müssen die Dateien in der Aufgabe eingebaut sein; im Codespace muss die Datei neben dem Programm liegen oder der Pfad stimmen. Für Prüfprogramme gilt: Eine fehlende Datei ist ein Prüfergebnis („FEHLT“), kein Grund für einen Absturz (Training 3).</p>
+        </div>
+        <div class="a-error">
+          <h3><code class="k-i">IndexError</code>: leere .sha256-Datei</h3>
+            <div class="a-task" data-a="run" data-mode="programm" data-timeout="20000">
+              <div class="a-editor"><textarea class="py-editor" data-lesson="V18" aria-label="Fehlerbeispiel IndexError: leere .sha256-Datei">with open("leer.sha256", "w", encoding="utf-8") as f:
+    pass                                   # legt eine leere Datei an
+
+with open("leer.sha256", encoding="utf-8") as f:
+    soll = f.read().split()[0]</textarea></div>
+            </div>
+          <p>Meldung: <code class="k-i">IndexError: list index out of range</code>. Bei einer leeren Datei liefert <code>split()</code> eine leere Liste, und <code>[0]</code> greift ins Leere. Das passiert bei einem abgebrochenen Download oder einer falschen Datei. Prüfe vorher: <code>teile = ...split()</code>, <code>if len(teile) == 0:</code> mit einer verständlichen Meldung (Training 2).</p>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-1" data-title="Prüfsumme eines Textes und Lawinen-Vergleich" data-part="B" data-stars="1" data-min="6" data-extra="" aria-labelledby="h-t-1" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-1" tabindex="-1">Prüfsumme eines Textes und Lawinen-Vergleich</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Programmieren lernst du mit den Fingern, nicht mit den Augen. Das Training ist ein fester Teil jedes Termins und gehört zum Selbststudium. Du musst nicht alles an einem Stück machen, aber alles bis zum nächsten Termin. Die Aufgaben laufen im Browser und werden automatisch geprüft.</p>
+      <div class="hinweis hinweis--achtung"><strong class="hinweis__title">Achtung</strong><p>Phase 3: Beim Projekt arbeitest du mit Copilot. Hier im Training schreibst du die Befehle selbst, damit du sie lesen kannst. Wenn Copilot dir später Code zum Prüfen von Dateien schreibt, prüfst du ihn mit der Liste aus dem Code-Review: Binär gelesen? Soll-Wert bereinigt? SHA-256 statt MD5? Woher kommt der Soll-Wert?</p></div>
+
+      <div class="a-task" data-a="code" data-id="tr-1" data-mode="code" data-timeout="20000">
+        <div class="a-task__text">
+          <p>Schreibe zwei Funktionen. <code class="k-i">sha256_text(text)</code> gibt die SHA-256-Prüfsumme eines Textes als Hex-Text zurück (erst mit UTF-8 in Bytes umwandeln). <code class="k-i">gleiche_zeichen(h1, h2)</code> zählt, an wie vielen Stellen zwei gleich lange Hex-Texte dasselbe Zeichen haben. Das Programm vergleicht damit die Texte „Drehzahl 1450“ und „Drehzahl 1451“: Obwohl sich nur ein Zeichen unterscheidet, stimmen kaum Stellen überein (Lawineneffekt).</p>
+          <div class="a-spec"><strong>Erwartet</strong><pre data-run="no">sha256_text("abc")  -&gt; 'ba7816bf8f01cfea...' (64 Zeichen)
+gleiche_zeichen("abcd", "abxd") -&gt; 3</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V18" aria-label="Python-Code Aufgabe 1">import hashlib
+
+
+def sha256_text(text):
+    # Gibt die SHA-256-Prüfsumme des Textes als Hex-Text zurück (Text zuerst in UTF-8-Bytes umwandeln)
+    pass
+
+
+def gleiche_zeichen(h1, h2):
+    # Zählt, an wie vielen Stellen die beiden Hex-Texte dasselbe Zeichen haben
+    pass
+
+
+a = sha256_text("Drehzahl 1450")
+b = sha256_text("Drehzahl 1451")
+print(a)
+print(b)
+print(gleiche_zeichen(a, b), "von 64 Stellen gleich")
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+import hashlib
+
+def test_leer():
+    """Der Hash von leerem Text beginnt mit e3b0c442"""
+    assert "sha256_text" in globals(), "Es fehlt die Funktion sha256_text(text)."
+    r = sha256_text("")
+    assert isinstance(r, str), "Die Funktion soll den Hex-Text (str) zurückgeben, nicht %s. Welche Methode liefert Hex-Text?" % type(r).__name__
+    assert r.startswith("e3b0c442"), "Erwartet einen Hash, der mit e3b0c442 beginnt, erhalten %r." % r[:12]
+
+def test_abc():
+    """Der Hash von abc beginnt mit ba7816bf und hat 64 Zeichen"""
+    r = sha256_text("abc")
+    assert len(r) == 64, "Die Prüfsumme hat %d Zeichen, erwartet 64 (hexdigest, nicht digest)." % len(r)
+    assert r == "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad", "Erwartet ba7816bf..., erhalten %r." % r[:12]
+
+def test_umlaut():
+    """Umlaute: UTF-8-Bytes, nicht Zeichen"""
+    t = "Größe Ä 20 mm"
+    soll = hashlib.sha256(t.encode("utf-8")).hexdigest()
+    assert sha256_text(t) == soll, "Für den Text mit Umlauten stimmt die Prüfsumme nicht. Mit .encode(\"utf-8\") wird jedes Ä zu zwei Bytes."
+
+def test_gleiche():
+    """gleiche_zeichen zählt gleiche Stellen"""
+    assert "gleiche_zeichen" in globals(), "Es fehlt die Funktion gleiche_zeichen(h1, h2)."
+    assert gleiche_zeichen("abcd", "abxd") == 3, "Bei abcd und abxd stimmen 3 Stellen überein, erhalten %r." % (gleiche_zeichen("abcd", "abxd"),)
+    h = sha256_text("x")
+    assert gleiche_zeichen(h, h) == 64, "Zwei gleiche Hashes stimmen an allen 64 Stellen überein."
+
+def test_lawine():
+    """Drehzahl 1450 gegen 1451: nur 5 von 64 Stellen gleich (Zufall)"""
+    r = gleiche_zeichen(sha256_text("Drehzahl 1450"), sha256_text("Drehzahl 1451"))
+    assert r == 5, "Erwartet 5 gleiche Stellen, erhalten %r. Ein einziges Zeichen Unterschied ändert fast jede Stelle (Lawineneffekt)." % (r,)
+        </script>
+        <script type="text/x-python" data-role="solution">
+import hashlib
+
+
+def sha256_text(text):
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def gleiche_zeichen(h1, h2):
+    anzahl = 0
+    for i in range(len(h1)):
+        if h1[i] == h2[i]:
+            anzahl = anzahl + 1
+    return anzahl
+
+
+a = sha256_text("Drehzahl 1450")
+b = sha256_text("Drehzahl 1451")
+print(a)
+print(b)
+print(gleiche_zeichen(a, b), "von 64 Stellen gleich")
+        </script>
+        <ol class="a-hints">
+          <li>Aus Text werden Bytes mit <code>text.encode("utf-8")</code>. Die Bytes gibst du an <code>hashlib.sha256(...)</code>, und <code>.hexdigest()</code> liefert die 64 Hex-Zeichen als Text.</li>
+          <li><code>gleiche_zeichen</code>: Zähler auf 0, <code>for i in range(len(h1)):</code>, und wenn <code>h1[i] == h2[i]</code> ist, den Zähler um 1 erhöhen.</li>
+          <li>Der Zähler wird am Ende mit <code>return</code> zurückgegeben (nicht nur gedruckt).</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-2" data-title="Soll-Prüfsumme aus der Datei lesen" data-part="B" data-stars="2" data-min="8" data-extra="" aria-labelledby="h-t-2" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-2" tabindex="-1">Soll-Prüfsumme aus der Datei lesen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+
+      <div class="a-task" data-a="code" data-id="tr-2" data-mode="code" data-timeout="20000" data-files="../assets/data/v18/R1_fw_3.2.1.bin.sha256">
+        <div class="a-task__text">
+          <p>Schreibe die Funktion <code class="k-i">lies_soll(pfad)</code>. Sie liest eine <code class="k-i">.sha256</code>-Datei (Format: Prüfsumme, Leerzeichen, Dateiname) und gibt die <strong>Prüfsumme</strong> zurück: die erste Spalte, in Kleinbuchstaben, ohne Leerraum. Ist die Datei leer, ist das Ergebnis der leere Text <code class="k-i">""</code> (kein Absturz). Die Tests schreiben eigene Dateien, mit Großbuchstaben, Leerzeilen und anderen Zeilenenden.</p>
+          <div class="a-spec"><strong>Erwartet</strong><pre data-run="no">lies_soll("R1_fw_3.2.1.bin.sha256") -&gt; "f457673f9e3b31fd836b6c71f76ef55cff73a0887186335f62906bd71d00e831"
+Datei mit "A1B2  teil.bin" -&gt; "a1b2"
+leere Datei -&gt; ""</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V18" aria-label="Python-Code Aufgabe 2">def lies_soll(pfad):
+    # Liest eine .sha256-Datei (Format: Prüfsumme, Leerzeichen, Dateiname) und gibt die
+    # Prüfsumme zurück: erste Spalte, alles klein, ohne Leerraum.
+    # Ist die Datei leer, ist das Ergebnis der leere Text "".
+    pass
+
+
+print(lies_soll("R1_fw_3.2.1.bin.sha256"))
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _schreibe(name, daten):
+    with open(name, "wb") as f:
+        f.write(daten.encode("utf-8"))
+
+def test_hersteller():
+    """Die Hersteller-Datei: f457673f... in Kleinbuchstaben"""
+    assert "lies_soll" in globals(), "Es fehlt die Funktion lies_soll(pfad)."
+    r = lies_soll("R1_fw_3.2.1.bin.sha256")
+    assert r == "f457673f9e3b31fd836b6c71f76ef55cff73a0887186335f62906bd71d00e831", "Erwartet f457673f9e3b31fd..., erhalten %r." % (r,)
+
+def test_grossbuchstaben():
+    """Großbuchstaben werden klein"""
+    _schreibe("t_a.sha256", "A1B2C3D4E5F60718  teil.bin\n")
+    r = lies_soll("t_a.sha256")
+    assert r == "a1b2c3d4e5f60718", "Erwartet a1b2c3d4e5f60718, erhalten %r. Alles klein: lower()." % (r,)
+
+def test_leerzeilen():
+    """Leerzeilen und Leerzeichen vor der Prüfsumme"""
+    _schreibe("t_b.sha256", "\n\n   0F0F0F  b.bin\n\n")
+    r = lies_soll("t_b.sha256")
+    assert r == "0f0f0f", "Erwartet 0f0f0f, erhalten %r. split() ohne Argument überspringt führende Leerzeichen und Zeilenumbrüche." % (r,)
+
+def test_nur_hash_und_windows():
+    """Nur die Prüfsumme ohne Dateinamen, Windows-Zeilenende und Tabulator"""
+    _schreibe("t_c.sha256", "ABCDEF\r\n")
+    assert lies_soll("t_c.sha256") == "abcdef", "Eine Datei mit nur der Prüfsumme und \\r\\n am Ende soll abcdef ergeben, erhalten %r." % (lies_soll("t_c.sha256"),)
+    _schreibe("t_d.sha256", "ABCDEF\tteil.bin\r\n")
+    assert lies_soll("t_d.sha256") == "abcdef", "Auch ein Tabulator trennt die Spalten."
+
+def test_leer():
+    """Grenzfall: leere Datei gibt den leeren Text"""
+    _schreibe("t_e.sha256", "")
+    try:
+        r = lies_soll("t_e.sha256")
+    except IndexError:
+        assert False, "Bei einer leeren Datei gibt es kein Element [0] (IndexError). Prüfe zuerst mit len(...), ob etwas gelesen wurde, und gib sonst \"\" zurück."
+    assert r == "", "Bei einer leeren Datei wird der leere Text erwartet, erhalten %r." % (r,)
+        </script>
+        <script type="text/x-python" data-role="solution">
+def lies_soll(pfad):
+    with open(pfad, encoding="utf-8") as f:
+        teile = f.read().split()
+    if len(teile) == 0:
+        return ""
+    return teile[0].lower()
+
+
+print(lies_soll("R1_fw_3.2.1.bin.sha256"))
+        </script>
+        <ol class="a-hints">
+          <li>Lies den ganzen Inhalt und zerlege ihn: <code>teile = f.read().split()</code>. Ohne Argument trennt <code>split()</code> an jedem Leerraum (Leerzeichen, Tab, Zeilenumbruch) und ignoriert Leerzeilen.</li>
+          <li>Die Prüfsumme ist <code>teile[0]</code>. Mach sie klein mit <code>.lower()</code>.</li>
+          <li>Ist die Datei leer, ist <code>teile</code> eine leere Liste, und <code>teile[0]</code> wäre ein IndexError. Frage zuerst <code>if len(teile) == 0:</code> und gib <code>""</code> zurück.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-3" data-title="NC-Programme gegen die Freigabeliste prüfen" data-part="B" data-stars="2" data-min="10" data-extra="Wiederholung V16" aria-labelledby="h-t-3" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-3" tabindex="-1">NC-Programme gegen die Freigabeliste prüfen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+
+      <div class="a-task" data-a="code" data-id="tr-3" data-mode="code" data-timeout="20000" data-files="../assets/data/v18/nc-freigabe.zip">
+        <div class="a-task__text">
+          <p>Der Programmierer hat die NC-Programme der Zelle freigegeben und die Prüfsummen in <code class="k-i">freigabe.sha256</code> festgehalten. Seitdem hat jemand Dateien angefasst: Bei FLANSCH_80.nc wurde der Vorschub verändert (<code class="k-i">F2000</code> statt <code class="k-i">F200</code>, auf den ersten Blick kaum zu sehen), und eine Datei der Liste fehlt. Schreibe <code class="k-i">pruefe_freigabe(ordner)</code>. Sie liest <code class="k-i">ordner/freigabe.sha256</code> (je Zeile: Prüfsumme, Leerzeichen, Pfad <em>relativ zum Ordner</em>, ohne Leerzeichen im Pfad) und gibt ein Dictionary zurück: Pfad zu <code class="k-i">"OK"</code>, <code class="k-i">"GEÄNDERT"</code> oder <code class="k-i">"FEHLT"</code>. Das ZIP wird im Browser entpackt, der Ordner heißt <code class="k-i">freigabe</code>. <code class="k-i">sha256_datei</code> aus dem Beispiel steht schon da, Pfade bildest du mit <code class="k-i">pathlib</code> (V16). Die Tests legen eigene Ordner an.</p>
+          <div class="a-spec"><strong>Erwartet</strong><pre data-run="no">nc-programme/WELLE_20H6.nc: OK
+nc-programme/FLANSCH_80.nc: GEÄNDERT
+nc-programme/BUCHSE_30.nc: OK
+nc-programme/GEHAEUSE_45.nc: FEHLT</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V18" aria-label="Python-Code Aufgabe 3">import hashlib
+from pathlib import Path
+
+
+def sha256_datei(pfad):
+    h = hashlib.sha256()
+    with open(pfad, "rb") as datei:
+        while True:
+            block = datei.read(4096)
+            if not block:
+                break
+            h.update(block)
+    return h.hexdigest()
+
+
+def pruefe_freigabe(ordner):
+    # Liest ordner/freigabe.sha256 (je Zeile: Prüfsumme, Leerzeichen, Pfad relativ zum Ordner)
+    # und gibt ein Dictionary zurück: Pfad -&gt; "OK", "GEÄNDERT" oder "FEHLT"
+    #   OK        Datei vorhanden, Prüfsumme stimmt
+    #   GEÄNDERT  Datei vorhanden, Prüfsumme weicht ab
+    #   FEHLT     Datei steht in der Liste, ist aber nicht im Ordner
+    ergebnis = {}
+    # ... hier kommt dein Code ...
+    return ergebnis
+
+
+ergebnis = pruefe_freigabe("freigabe")
+for pfad, status in ergebnis.items():
+    print(f"{pfad}: {status}")
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+import hashlib
+import os
+
+def _h(text):
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+def _normal(d):
+    return {k: ("GEÄNDERT" if v == "GEAENDERT" else v) for k, v in d.items()}
+
+def _lege_an(ordner, dateien, liste):
+    os.makedirs(ordner, exist_ok=True)
+    for pfad, inhalt in dateien.items():
+        voll = os.path.join(ordner, pfad)
+        os.makedirs(os.path.dirname(voll), exist_ok=True)
+        with open(voll, "wb") as f:
+            f.write(inhalt.encode("utf-8"))
+    with open(os.path.join(ordner, "freigabe.sha256"), "wb") as f:
+        f.write(liste.encode("utf-8"))
+
+def test_freigabe_fz3():
+    """Freigabeliste FZ-3: Welle OK, Flansch geändert, Buchse OK, Gehäuse fehlt"""
+    assert "pruefe_freigabe" in globals(), "Es fehlt die Funktion pruefe_freigabe(ordner)."
+    r = _normal(pruefe_freigabe("freigabe"))
+    erwartet = {"nc-programme/WELLE_20H6.nc": "OK", "nc-programme/FLANSCH_80.nc": "GEÄNDERT", "nc-programme/BUCHSE_30.nc": "OK", "nc-programme/GEHAEUSE_45.nc": "FEHLT"}
+    assert r == erwartet, "Erwartet %r, erhalten %r." % (erwartet, r)
+
+def test_eigener_ordner():
+    """Eigener Ordner: Großbuchstaben, Leerzeilen, Unterordner"""
+    _lege_an("t_f1", {"a/x.nc": "G01 X1\n", "a/b/y.nc": "G01 X2\n", "z.nc": "G01 X3\n"},
+             "\n" + _h("G01 X1\n").upper() + "  a/x.nc\n\n" + _h("G01 X2\n") + "  a/b/y.nc\n" + _h("G01 X3 verändert\n") + "  z.nc\n")
+    r = _normal(pruefe_freigabe("t_f1"))
+    erwartet = {"a/x.nc": "OK", "a/b/y.nc": "OK", "z.nc": "GEÄNDERT"}
+    assert r == erwartet, "Erwartet %r, erhalten %r. Die Prüfsumme in der Liste darf groß geschrieben sein, Leerzeilen werden übersprungen, Unterordner gehören zum Pfad." % (erwartet, r)
+
+def test_alles_ok_und_alles_fehlt():
+    """Grenzfälle: alles in Ordnung / keine Datei vorhanden"""
+    _lege_an("t_f2", {"p.nc": "M30\n", "q.nc": "M02\n"}, _h("M30\n") + "  p.nc\n" + _h("M02\n") + "  q.nc\n")
+    r = _normal(pruefe_freigabe("t_f2"))
+    assert r == {"p.nc": "OK", "q.nc": "OK"}, "Erwartet zweimal OK, erhalten %r." % (r,)
+    _lege_an("t_f3", {}, _h("x") + "  fehlt1.nc\n" + _h("y") + "  ordner/fehlt2.nc\n")
+    r = _normal(pruefe_freigabe("t_f3"))
+    assert r == {"fehlt1.nc": "FEHLT", "ordner/fehlt2.nc": "FEHLT"}, "Erwartet zweimal FEHLT, erhalten %r. Eine fehlende Datei darf das Programm nicht abbrechen." % (r,)
+
+def test_leere_liste():
+    """Grenzfall: Freigabeliste ohne Einträge gibt ein leeres Dictionary"""
+    _lege_an("t_f4", {"nicht_in_liste.nc": "M30\n"}, "\n")
+    r = pruefe_freigabe("t_f4")
+    assert r == {}, "Eine leere Liste ergibt {}, erhalten %r. Dateien im Ordner, die nicht in der Liste stehen, werden nicht aufgeführt." % (r,)
+        </script>
+        <script type="text/x-python" data-role="solution">
+import hashlib
+from pathlib import Path
+
+
+def sha256_datei(pfad):
+    h = hashlib.sha256()
+    with open(pfad, "rb") as datei:
+        while True:
+            block = datei.read(4096)
+            if not block:
+                break
+            h.update(block)
+    return h.hexdigest()
+
+
+def pruefe_freigabe(ordner):
+    basis = Path(ordner)
+    with open(basis / "freigabe.sha256", encoding="utf-8") as f:
+        zeilen = f.read().splitlines()
+    ergebnis = {}
+    for zeile in zeilen:
+        teile = zeile.split()
+        if len(teile) < 2:
+            continue
+        soll = teile[0].lower()
+        pfad = teile[1]
+        datei = basis / pfad
+        if not datei.exists():
+            ergebnis[pfad] = "FEHLT"
+        elif sha256_datei(datei) == soll:
+            ergebnis[pfad] = "OK"
+        else:
+            ergebnis[pfad] = "GEÄNDERT"
+    return ergebnis
+
+
+ergebnis = pruefe_freigabe("freigabe")
+for pfad, status in ergebnis.items():
+    print(f"{pfad}: {status}")
+        </script>
+        <ol class="a-hints">
+          <li>Pfade baust du mit pathlib (V16): <code>basis = Path(ordner)</code>, die Liste liegt bei <code>basis / "freigabe.sha256"</code>, eine Datei bei <code>basis / pfad</code>. <code>datei.exists()</code> sagt, ob es sie gibt.</li>
+          <li>Pro Zeile: <code>teile = zeile.split()</code>, <code>teile[0]</code> ist die Soll-Prüfsumme (klein machen), <code>teile[1]</code> der Pfad. Leere Zeilen haben keine Teile: mit <code>continue</code> überspringen.</li>
+          <li>Erst prüfen, ob die Datei existiert (sonst FEHLT), dann <code>sha256_datei(datei) == soll</code> (OK), sonst GEÄNDERT. Ergebnis: <code>ergebnis[pfad] = ...</code>, am Ende <code>return ergebnis</code>.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-4" data-title="Lawineneffekt messen: verschiedene Bits zählen" data-part="B" data-stars="3" data-min="12" data-extra="neu: XOR" aria-labelledby="h-t-4" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-4" tabindex="-1">Lawineneffekt messen: verschiedene Bits zählen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Wie viel ändert sich beim Lawineneffekt wirklich? Du zählst die verschiedenen <em>Bits</em>. Dafür gibt es einen neuen Operator: <code class="k-i">^</code> (XOR) vergleicht zwei ganze Zahlen Bit für Bit. Wo die Bits verschieden sind, steht im Ergebnis eine 1. Mit <code class="k-i">bin(...)</code> (V02) siehst du das Ergebnis binär, und <code class="k-i">.count("1")</code> zählt die Einsen.</p>
+
+      <pre data-timeout="20000"><code>a = 0b1100
+b = 0b1010
+print(bin(a ^ b))                    # 0b110: nur an Stellen mit verschiedenen Bits steht eine 1
+print(bin(a ^ b).count("1"))         # 2 Bits sind verschieden
+
+h = "ff"                             # ein Hex-Text
+print(int(h, 16), bin(int(h, 16)))   # 255 0b11111111</code></pre>
+      <div class="a-task" data-a="code" data-id="tr-4" data-mode="code" data-timeout="20000">
+        <div class="a-task__text">
+          <p>Schreibe <code class="k-i">bits_unterschied(h1, h2)</code>: Die Funktion bekommt zwei Hex-Prüfsummen als Text und gibt zurück, in wie vielen Bits sie sich unterscheiden (bei SHA-256 von 256). Wandle die Hex-Texte mit <code class="k-i">int(h, 16)</code> in Zahlen um. Das Programm misst den Lawineneffekt für „Drehzahl 1450“ gegen „Drehzahl 1451“: Etwa die Hälfte der 256 Bits sollte verschieden sein. Die Tests prüfen einfache Fälle von Hand und diesen Messwert.</p>
+          <div class="a-spec"><strong>Erwartet</strong><pre data-run="no">bits_unterschied("01", "00") -&gt; 1
+bits_unterschied("a5", "5a") -&gt; 8
+Drehzahl 1450 gegen 1451 -&gt; 116 von 256 Bit verschieden</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V18" aria-label="Python-Code Aufgabe 4">import hashlib
+
+
+def sha256_text(text):
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def bits_unterschied(h1, h2):
+    # Wie viele der 256 Bits sind in den beiden Hex-Prüfsummen verschieden?
+    pass
+
+
+a = sha256_text("Drehzahl 1450")
+b = sha256_text("Drehzahl 1451")
+print(bits_unterschied(a, b), "von 256 Bit verschieden")
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+import hashlib
+
+def test_vorhanden():
+    """Die Funktion bits_unterschied ist definiert"""
+    assert "bits_unterschied" in globals(), "Es fehlt die Funktion bits_unterschied(h1, h2)."
+
+def test_einfach():
+    """Einfache Fälle: gleich, ein Bit, vier Bit"""
+    assert bits_unterschied("00", "00") == 0, "Zwei gleiche Hex-Texte haben 0 verschiedene Bits."
+    assert bits_unterschied("01", "00") == 1, "01 und 00 unterscheiden sich in einem Bit, erhalten %r." % (bits_unterschied("01", "00"),)
+    assert bits_unterschied("0f", "00") == 4, "0f ist binär 00001111, gegen 00000000 sind das 4 verschiedene Bits, erhalten %r." % (bits_unterschied("0f", "00"),)
+    assert bits_unterschied("a5", "5a") == 8, "a5 = 10100101 und 5a = 01011010 sind in allen 8 Bits verschieden, erhalten %r." % (bits_unterschied("a5", "5a"),)
+
+def test_volle_laenge():
+    """Alle 256 Bits verschieden; ein einziges Bit gekippt"""
+    assert bits_unterschied("0" * 64, "f" * 64) == 256, "0000... gegen ffff... unterscheidet sich in allen 256 Bits, erhalten %r." % (bits_unterschied("0" * 64, "f" * 64),)
+    h = hashlib.sha256(b"test").hexdigest()
+    gekippt = format(int(h, 16) ^ (1 << 100), "064x")
+    assert bits_unterschied(h, gekippt) == 1, "Genau ein Bit ist gekippt: erwartet 1, erhalten %r." % (bits_unterschied(h, gekippt),)
+
+def test_fuehrende_nullen():
+    """Führende Nullen im Hex-Text zählen nicht als Fehler"""
+    assert bits_unterschied("0000000000000000000000000000000000000000000000000000000000000001", "0" * 64) == 1, "Mit vielen führenden Nullen: erwartet 1."
+
+def test_lawine():
+    """Drehzahl 1450 gegen 1451: 116 von 256 Bits verschieden"""
+    a = hashlib.sha256(b"Drehzahl 1450").hexdigest()
+    b = hashlib.sha256(b"Drehzahl 1451").hexdigest()
+    r = bits_unterschied(a, b)
+    assert r == 116, "Erwartet 116 verschiedene Bits (etwa die Hälfte von 256), erhalten %r." % (r,)
+        </script>
+        <script type="text/x-python" data-role="solution">
+import hashlib
+
+
+def sha256_text(text):
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def bits_unterschied(h1, h2):
+    return bin(int(h1, 16) ^ int(h2, 16)).count("1")
+
+
+a = sha256_text("Drehzahl 1450")
+b = sha256_text("Drehzahl 1451")
+print(bits_unterschied(a, b), "von 256 Bit verschieden")
+        </script>
+        <ol class="a-hints">
+          <li>Ein Hex-Text wird mit <code>int(h, 16)</code> zur Zahl (V02). Zwei Zahlen vergleichst du bitweise mit <code>^</code>: Wo die Bits verschieden sind, steht im Ergebnis eine 1.</li>
+          <li><code>bin(zahl)</code> liefert den Binärtext (<code>'0b101...'</code>), und <code>.count("1")</code> zählt darin die Einsen. Kombiniert: <code>bin(int(h1, 16) ^ int(h2, 16)).count("1")</code>.</li>
+          <li>Ohne <code>^</code>: Gehe beide Hex-Texte Stelle für Stelle durch, wandle jede Ziffer mit <code>int(ziffer, 16)</code> zu einer Zahl 0 bis 15, mache daraus mit <code>bin(...)</code> vier Bits und zähle, wo sie verschieden sind. Das ist länger, aber es geht.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-5" data-title="Firmware-Stand der Zelle prüfen" data-part="B" data-stars="3" data-min="12" data-extra="Wiederholung V16, V17" aria-labelledby="h-t-5" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-5" tabindex="-1">Firmware-Stand der Zelle prüfen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+
+      <div class="a-task" data-a="code" data-id="tr-5" data-mode="code" data-timeout="20000">
+        <div class="a-task__text">
+          <p>Wiederholung aus V16 und V17: JSON-Text lesen, Dictionaries, Schleife und Vergleich. Der Leitrechner der Zelle liefert den Firmware-Stand aller Geräte als <strong>JSON-Text</strong> (<code class="k-i">geraete</code>: Liste von Dictionaries mit <code class="k-i">id</code>, <code class="k-i">firmware</code> und <code class="k-i">sha256</code>). Der Hersteller liefert ein Dictionary <code class="k-i">ID zu Version und Prüfsumme</code>. Schreibe <code class="k-i">firmware_pruefen(stand_text, hersteller)</code>: Sie gibt ein Dictionary mit zwei Listen zurück, in der Reihenfolge der Geräte. In <code class="k-i">"update"</code> stehen die IDs, deren Version nicht der des Herstellers entspricht. In <code class="k-i">"hash_falsch"</code> stehen die IDs, deren Version stimmt, deren Prüfsumme aber nicht (vergleiche nach <code class="k-i">strip()</code> und <code class="k-i">lower()</code>). Ein Gerät kommt höchstens in eine der beiden Listen. Geräte, die der Hersteller nicht kennt, werden übersprungen.</p>
+          <div class="a-spec"><strong>Erwartet</strong><pre data-run="no">{"update": ["R1"], "hash_falsch": ["M1"]}   (für die Zelle FZ-3 im Starter)</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V18" aria-label="Python-Code Aufgabe 5">import json
+import hashlib
+
+
+def fw_hash(name):
+    return hashlib.sha256(name.encode("utf-8")).hexdigest()
+
+
+# Stand der Zelle (so liefert ihn ein Leitrechner als JSON-Text) und Liste des Herstellers
+stand_text = json.dumps({"zelle": "FZ-3", "geraete": [
+    {"id": "D2", "firmware": "2.8.0", "sha256": fw_hash("D2 2.8.0")},
+    {"id": "F1", "firmware": "4.1.2", "sha256": fw_hash("F1 4.1.2")},
+    {"id": "R1", "firmware": "3.2.0", "sha256": fw_hash("R1 3.2.0")},
+    {"id": "M1", "firmware": "1.9.4", "sha256": fw_hash("M1 1.9.4 manipuliert")},
+    {"id": "SPS", "firmware": "6.0.1", "sha256": fw_hash("SPS 6.0.1")},
+]})
+hersteller = {
+    "D2": {"version": "2.8.0", "sha256": fw_hash("D2 2.8.0")},
+    "F1": {"version": "4.1.2", "sha256": fw_hash("F1 4.1.2")},
+    "R1": {"version": "3.2.1", "sha256": fw_hash("R1 3.2.1")},
+    "M1": {"version": "1.9.4", "sha256": fw_hash("M1 1.9.4")},
+    "SPS": {"version": "6.0.1", "sha256": fw_hash("SPS 6.0.1")},
+}
+
+
+def firmware_pruefen(stand_text, hersteller):
+    # stand_text: JSON-Text mit "geraete" (Liste von Dictionaries mit id, firmware, sha256)
+    # hersteller: Dictionary ID -&gt; {"version": ..., "sha256": ...}
+    # Ergebnis: {"update": [IDs], "hash_falsch": [IDs]} in der Reihenfolge der Geräte
+    #   update       die Version weicht von der des Herstellers ab
+    #   hash_falsch  die Version stimmt, aber die Prüfsumme nicht
+    # Geräte, die der Hersteller nicht kennt, werden übersprungen.
+    pass
+
+
+print(firmware_pruefen(stand_text, hersteller))
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+import json
+import hashlib
+
+def _h(t):
+    return hashlib.sha256(t.encode("utf-8")).hexdigest()
+
+def _stand(liste):
+    return json.dumps({"zelle": "Z", "geraete": [{"id": i, "firmware": v, "sha256": h} for i, v, h in liste]})
+
+def test_fz3():
+    """FZ-3: R1 braucht ein Update, bei M1 passt die Prüfsumme nicht"""
+    assert "firmware_pruefen" in globals(), "Es fehlt die Funktion firmware_pruefen(stand_text, hersteller)."
+    r = firmware_pruefen(stand_text, hersteller)
+    assert r == {"update": ["R1"], "hash_falsch": ["M1"]}, "Erwartet {'update': ['R1'], 'hash_falsch': ['M1']}, erhalten %r." % (r,)
+
+def test_andere_daten():
+    """Andere Geräte: Reihenfolge wie im Stand, Update hat Vorrang vor Hash"""
+    herst = {"A": {"version": "1.0", "sha256": _h("A1")}, "B": {"version": "2.0", "sha256": _h("B2")},
+             "C": {"version": "3.0", "sha256": _h("C3")}, "D": {"version": "4.0", "sha256": _h("D4")}}
+    stand = _stand([("D", "4.0", _h("D4 kaputt")), ("A", "0.9", _h("irgendwas")), ("B", "2.0", _h("B2")), ("C", "2.9", _h("C3"))])
+    r = firmware_pruefen(stand, herst)
+    assert r == {"update": ["A", "C"], "hash_falsch": ["D"]}, "Erwartet {'update': ['A', 'C'], 'hash_falsch': ['D']}, erhalten %r. Weicht die Version ab, kommt das Gerät nur in update, auch wenn zusätzlich die Prüfsumme nicht passt." % (r,)
+
+def test_gross_klein():
+    """Prüfsumme des Herstellers in Großbuchstaben mit Leerzeichen gilt als gleich"""
+    herst = {"X": {"version": "1.2", "sha256": "  " + _h("X1.2").upper() + " "}}
+    r = firmware_pruefen(_stand([("X", "1.2", _h("X1.2"))]), herst)
+    assert r == {"update": [], "hash_falsch": []}, "Dieselbe Prüfsumme, nur groß geschrieben und mit Leerzeichen: erwartet keine Meldung, erhalten %r. Vor dem Vergleich strip() und lower()." % (r,)
+
+def test_unbekannt_und_alles_gut():
+    """Unbekanntes Gerät wird übersprungen; alles in Ordnung: zwei leere Listen"""
+    herst = {"A": {"version": "1", "sha256": _h("A")}}
+    r = firmware_pruefen(_stand([("A", "1", _h("A")), ("ZZ", "9", _h("?"))]), herst)
+    assert r == {"update": [], "hash_falsch": []}, "ZZ kennt der Hersteller nicht und wird übersprungen, A ist in Ordnung. Erhalten %r. (Mit hersteller.get(id) vermeidest du einen KeyError.)" % (r,)
+        </script>
+        <script type="text/x-python" data-role="solution">
+import json
+import hashlib
+
+
+def fw_hash(name):
+    return hashlib.sha256(name.encode("utf-8")).hexdigest()
+
+
+# Stand der Zelle (so liefert ihn ein Leitrechner als JSON-Text) und Liste des Herstellers
+stand_text = json.dumps({"zelle": "FZ-3", "geraete": [
+    {"id": "D2", "firmware": "2.8.0", "sha256": fw_hash("D2 2.8.0")},
+    {"id": "F1", "firmware": "4.1.2", "sha256": fw_hash("F1 4.1.2")},
+    {"id": "R1", "firmware": "3.2.0", "sha256": fw_hash("R1 3.2.0")},
+    {"id": "M1", "firmware": "1.9.4", "sha256": fw_hash("M1 1.9.4 manipuliert")},
+    {"id": "SPS", "firmware": "6.0.1", "sha256": fw_hash("SPS 6.0.1")},
+]})
+hersteller = {
+    "D2": {"version": "2.8.0", "sha256": fw_hash("D2 2.8.0")},
+    "F1": {"version": "4.1.2", "sha256": fw_hash("F1 4.1.2")},
+    "R1": {"version": "3.2.1", "sha256": fw_hash("R1 3.2.1")},
+    "M1": {"version": "1.9.4", "sha256": fw_hash("M1 1.9.4")},
+    "SPS": {"version": "6.0.1", "sha256": fw_hash("SPS 6.0.1")},
+}
+
+
+def firmware_pruefen(stand_text, hersteller):
+    stand = json.loads(stand_text)
+    update = []
+    hash_falsch = []
+    for g in stand["geraete"]:
+        soll = hersteller.get(g["id"])
+        if soll is None:
+            continue
+        if g["firmware"] != soll["version"]:
+            update.append(g["id"])
+        elif g["sha256"].strip().lower() != soll["sha256"].strip().lower():
+            hash_falsch.append(g["id"])
+    return {"update": update, "hash_falsch": hash_falsch}
+
+
+print(firmware_pruefen(stand_text, hersteller))
+        </script>
+        <ol class="a-hints">
+          <li>Der Stand ist JSON-<em>Text</em>: <code>stand = json.loads(stand_text)</code> (V17). Die Geräte stehen in <code>stand["geraete"]</code>, eine Liste von Dictionaries, durch die du mit <code>for g in ...</code> läufst.</li>
+          <li>Zum Gerät passt der Eintrag des Herstellers: <code>soll = hersteller.get(g["id"])</code>. Ist das <code>None</code>, kennt der Hersteller das Gerät nicht: <code>continue</code>.</li>
+          <li>Erst die Version vergleichen (<code>g["firmware"] != soll["version"]</code>, dann nach <code>update</code>), nur sonst die Prüfsumme (<code>elif</code>, beide Seiten mit <code>strip().lower()</code>, dann nach <code>hash_falsch</code>). Am Ende ein Dictionary mit beiden Listen zurückgeben.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-6" data-title="Manipulationssicheres Protokoll: die Hash-Kette" data-part="B" data-stars="4" data-min="15" data-extra="" aria-labelledby="h-t-6" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-6" tabindex="-1">Manipulationssicheres Protokoll: die Hash-Kette</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Ein Protokoll, das jemand nachträglich ändern kann, ist wenig wert. Ein Trick: Jede Zeile bekommt einen Hash, in den der <em>Hash der vorigen Zeile</em> eingeht (<code class="k-i">sha256(vorheriger_hash + zeile)</code>). Ändert jemand eine Zeile, stimmt ihr Hash nicht mehr, und weil der nächste Hash auf diesem aufbaut, reißt die Kette. Das nennt man <strong>Hash-Kette</strong> (die Idee hinter vielen manipulationssicheren Logs). Die Anforderungen des Cyber Resilience Act nennen die Protokollierung sicherheitsrelevanter Ereignisse und den Schutz von Daten vor Manipulation (Lerneinheit).</p>
+
+      <div class="a-task" data-a="code" data-id="tr-6" data-mode="code" data-timeout="20000">
+        <div class="a-task__text">
+          <p>Das Programm baut aus den Logzeilen des Roboters R1 eine Kette (<code class="k-i">baue_protokoll</code> ist schon da). Schreibe <code class="k-i">erste_manipulation(protokoll)</code>: Das Protokoll ist eine Liste von Paaren <code class="k-i">(zeile, gespeicherter_hash)</code>. Die Funktion prüft die Kette von vorn und gibt den <strong>Index</strong> (0, 1, 2 …) der ersten Zeile zurück, deren gespeicherter Hash nicht zur Kette passt, sonst <code class="k-i">None</code>. Die Tests ändern Zeilen, Hashes, löschen eine Zeile und berechnen sogar den Hash einer geänderten Zeile neu.</p>
+          <div class="a-spec"><strong>Erwartet</strong><pre data-run="no">unverändert -&gt; None
+Zeile 2 nachträglich geändert -&gt; 2</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V18" aria-label="Python-Code Aufgabe 6">import hashlib
+
+START = "0" * 64                       # Anfangswert der Kette
+
+
+def kettenhash(vorher, zeile):
+    # Prüfsumme aus dem vorherigen Hash und der neuen Zeile: so wird die Kette geknüpft
+    return hashlib.sha256((vorher + zeile).encode("utf-8")).hexdigest()
+
+
+def baue_protokoll(zeilen):
+    # Hängt an jede Zeile ihren Kettenhash: Liste von (Zeile, Hash)
+    protokoll = []
+    vorher = START
+    for zeile in zeilen:
+        vorher = kettenhash(vorher, zeile)
+        protokoll.append((zeile, vorher))
+    return protokoll
+
+
+def erste_manipulation(protokoll):
+    # Prüft die Kette von vorn und gibt den Index (0, 1, 2, ...) der ersten Zeile zurück,
+    # deren gespeicherter Hash nicht zur Kette passt. Ist alles in Ordnung: None.
+    pass
+
+
+zeilen = [
+    "08:02:11 Greifer zu",
+    "08:02:14 Teil abgelegt",
+    "08:05:40 Lichtgitter unterbrochen",
+    "08:05:41 Not-Halt ausgeloest",
+]
+protokoll = baue_protokoll(zeilen)
+print(erste_manipulation(protokoll))                    # None: alles in Ordnung
+protokoll[2] = ("08:05:40 Lichtgitter frei", protokoll[2][1])   # nachträglich geändert
+print(erste_manipulation(protokoll))                    # 2
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+import hashlib
+
+def _kette(zeilen):
+    out = []
+    vorher = "0" * 64
+    for z in zeilen:
+        vorher = hashlib.sha256((vorher + z).encode("utf-8")).hexdigest()
+        out.append((z, vorher))
+    return out
+
+_ZEILEN = ["A start", "B greifer zu", "C teil abgelegt", "D lichtgitter", "E not-halt", "F ende"]
+
+def test_heil():
+    """Unveränderte Kette: None; leeres Protokoll: None"""
+    assert "erste_manipulation" in globals(), "Es fehlt die Funktion erste_manipulation(protokoll)."
+    r = erste_manipulation(_kette(_ZEILEN))
+    assert r is None, "Die Kette ist in Ordnung: erwartet None, erhalten %r." % (r,)
+    assert erste_manipulation([]) is None, "Ein leeres Protokoll ist in Ordnung: erwartet None."
+
+def test_zeile_geaendert():
+    """Eine Zeile nachträglich geändert (Hash alt): Index dieser Zeile"""
+    p = _kette(_ZEILEN)
+    p[3] = ("D lichtgitter frei", p[3][1])
+    r = erste_manipulation(p)
+    assert r == 3, "Zeile 3 (Index 3) wurde geändert: erwartet 3, erhalten %r. Vergleiche für jede Zeile kettenhash(vorher, zeile) mit dem gespeicherten Hash." % (r,)
+
+def test_erste_und_letzte():
+    """Grenzfälle: erste Zeile, letzte Zeile, mehrere Änderungen (die erste zählt)"""
+    p = _kette(_ZEILEN)
+    p[0] = ("A start manipuliert", p[0][1])
+    assert erste_manipulation(p) == 0, "Die erste Zeile wurde geändert: erwartet 0, erhalten %r. Die Kette beginnt mit START." % (erste_manipulation(p),)
+    p = _kette(_ZEILEN)
+    p[5] = ("F ende manipuliert", p[5][1])
+    assert erste_manipulation(p) == 5, "Die letzte Zeile wurde geändert: erwartet 5, erhalten %r." % (erste_manipulation(p),)
+    p = _kette(_ZEILEN)
+    p[4] = ("E x", p[4][1])
+    p[1] = ("B y", p[1][1])
+    assert erste_manipulation(p) == 1, "Zeilen 1 und 4 wurden geändert: die erste Abweichung (Index 1) zählt, erhalten %r." % (erste_manipulation(p),)
+
+def test_hash_geaendert():
+    """Gespeicherter Hash verändert"""
+    p = _kette(_ZEILEN)
+    p[2] = (p[2][0], "f" * 64)
+    r = erste_manipulation(p)
+    assert r == 2, "Der gespeicherte Hash von Zeile 2 ist falsch: erwartet 2, erhalten %r." % (r,)
+
+def test_hash_neu_berechnet():
+    """Geänderte Zeile samt neu berechnetem Hash: fällt in der nächsten Zeile auf"""
+    p = _kette(_ZEILEN)
+    neu = hashlib.sha256((p[1][1] + "C teil verschwunden").encode("utf-8")).hexdigest()
+    p[2] = ("C teil verschwunden", neu)
+    r = erste_manipulation(p)
+    assert r == 3, "Der Angreifer hat Zeile 2 und deren Hash neu berechnet, aber Zeile 3 baut auf dem alten Hash auf: erwartet 3, erhalten %r. Die Kette verknüpft jede Zeile mit der davor." % (r,)
+
+def test_zeile_geloescht():
+    """Eine Zeile gelöscht: die Kette reißt an dieser Stelle"""
+    p = _kette(_ZEILEN)
+    del p[2]
+    r = erste_manipulation(p)
+    assert r == 2, "Zeile 2 wurde gelöscht, der Eintrag danach steht jetzt an Index 2 und passt nicht mehr zur Zeile davor: erwartet 2, erhalten %r." % (r,)
+        </script>
+        <script type="text/x-python" data-role="solution">
+import hashlib
+
+START = "0" * 64                       # Anfangswert der Kette
+
+
+def kettenhash(vorher, zeile):
+    # Prüfsumme aus dem vorherigen Hash und der neuen Zeile: so wird die Kette geknüpft
+    return hashlib.sha256((vorher + zeile).encode("utf-8")).hexdigest()
+
+
+def baue_protokoll(zeilen):
+    # Hängt an jede Zeile ihren Kettenhash: Liste von (Zeile, Hash)
+    protokoll = []
+    vorher = START
+    for zeile in zeilen:
+        vorher = kettenhash(vorher, zeile)
+        protokoll.append((zeile, vorher))
+    return protokoll
+
+
+def erste_manipulation(protokoll):
+    # Prüft die Kette von vorn und gibt den Index (0, 1, 2, ...) der ersten Zeile zurück,
+    # deren gespeicherter Hash nicht zur Kette passt. Ist alles in Ordnung: None.
+    vorher = START
+    for i in range(len(protokoll)):
+        zeile, gespeichert = protokoll[i]
+        if kettenhash(vorher, zeile) != gespeichert:
+            return i
+        vorher = gespeichert
+    return None
+
+
+zeilen = [
+    "08:02:11 Greifer zu",
+    "08:02:14 Teil abgelegt",
+    "08:05:40 Lichtgitter unterbrochen",
+    "08:05:41 Not-Halt ausgeloest",
+]
+protokoll = baue_protokoll(zeilen)
+print(erste_manipulation(protokoll))                    # None: alles in Ordnung
+protokoll[2] = ("08:05:40 Lichtgitter frei", protokoll[2][1])   # nachträglich geändert
+print(erste_manipulation(protokoll))                    # 2
+        </script>
+        <ol class="a-hints">
+          <li>Die Prüfung läuft wie das Bauen der Kette, nur mit Vergleich: Starte mit <code>vorher = START</code> und gehe die Einträge der Reihe nach durch.</li>
+          <li>Für jeden Eintrag <code>zeile, gespeichert = protokoll[i]</code>: Stimmt <code>kettenhash(vorher, zeile)</code> nicht mit <code>gespeichert</code> überein, ist <code>i</code> die erste manipulierte Stelle: <code>return i</code>.</li>
+          <li>Passt der Eintrag, wird sein gespeicherter Hash zum <code>vorher</code> des nächsten: <code>vorher = gespeichert</code>. Nach der Schleife (nichts gefunden) gibst du <code>None</code> zurück.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-7" data-title="Klausur-Modus: Prüfsumme von Hand schreiben" data-part="B" data-stars="4" data-min="15" data-extra="8 Punkte" aria-labelledby="h-t-7" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-7" tabindex="-1">Klausur-Modus: Prüfsumme von Hand schreiben</h2>
+        <p class="l-task__meta"></p>
+      </header>
+
+      <div class="a-task__text">
+        <p><strong>So wie in der Klausur:</strong> Der erste Teil läuft auf Papier, der zweite im Editor ohne Ausführen und ohne <abbr class="k-begriff" data-erklaerung="Die Auto-Vervollständigung schlägt dir beim Tippen passende Wörter vor. In der Klausur gibt es sie nicht.">Auto-Vervollständigung</abbr>.</p>
+        <h3>Teil 1 (Papier, 3 Punkte): Code lesen und Sicherheit begründen</h3>
+        <pre data-run="no" class="k-code"><code>import hashlib
+
+daten = "Ä".encode("utf-8")
+print(len(daten))
+print(len(hashlib.sha256(daten).hexdigest()))
+print(type(hashlib.sha256(daten).digest()))</code></pre>
+        <p>Was gibt das Programm aus (drei Zeilen, 2 Punkte)? Dazu eine Frage (1 Punkt): Die Firmware und ihre Prüfsummen-Datei liegen auf demselben USB-Stick. Warum beweist eine übereinstimmende Prüfsumme dort nicht, dass die Firmware echt ist, und woher muss der Soll-Wert kommen? Schreibe auf Papier, decke danach auf und vergleiche.</p>
+        <details class="k-deep">
+          <summary>Auflösung aufdecken und ausführen</summary>
+          <div class="k-deep__body">
+            <p>Ausgabe: <code class="k-i">2</code> (das „Ä“ besteht in UTF-8 aus zwei Bytes), dann <code class="k-i">64</code> (SHA-256 hat 256 Bit, als Hex 64 Zeichen), dann <code class="k-i">&lt;class 'bytes'&gt;</code> (<code>digest()</code> liefert Bytes, <code>hexdigest()</code> Text). Frage: Wer die Datei auf dem Stick austauschen kann, tauscht auch die Prüfsummen-Datei aus. Der Soll-Wert muss über einen zweiten, vertrauenswürdigen Weg kommen, zum Beispiel von der Download-Seite des Herstellers über HTTPS. Eine digitale Signatur, die das Gerät mit dem öffentlichen Schlüssel des Herstellers prüft, wäre noch besser.</p>
+<pre data-timeout="20000"><code>import hashlib
+
+daten = "Ä".encode("utf-8")
+print(len(daten))
+print(len(hashlib.sha256(daten).hexdigest()))
+print(type(hashlib.sha256(daten).digest()))</code></pre>
+          </div>
+        </details>
+        <h3>Teil 2 (Code schreiben, 8 Punkte)</h3>
+      </div>
+      <div class="a-task" data-a="klausur" data-id="tr-7" data-mode="code" data-minutes="15" data-timeout="20000">
+        <div class="a-task__text">
+          <p>Schreibe zwei Funktionen (mit <code>import hashlib</code>). <code>pruefe(daten, soll)</code> bekommt <strong>Bytes</strong> und einen Soll-Wert als Hex-Text und gibt <code>True</code> zurück, wenn die SHA-256-Prüfsumme der Daten dem Soll-Wert entspricht, sonst <code>False</code>. Der Soll-Wert kann Großbuchstaben und Leerzeichen oder einen Zeilenumbruch am Rand haben. '
+          '<code>pruefe_alle(dateien, solls)</code> bekommt zwei Dictionaries (<code>dateien</code>: Name zu Bytes, <code>solls</code>: Name zu Soll-Wert) und gibt die <strong>Liste der Namen</strong> zurück, deren Datei nicht zum Soll-Wert passt, in der Reihenfolge von <code>dateien</code>. Hat eine Datei keinen Eintrag in <code>solls</code>, gilt sie als abweichend. Rufe in <code>pruefe_alle</code> die Funktion <code>pruefe</code> auf.</p>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V18" data-assist="off" aria-label="Python-Code von Hand schreiben, ohne Ausführen"></textarea></div>
+        <script type="text/x-python" data-role="tests">
+import hashlib as _hl
+
+def _h(b):
+    return _hl.sha256(b).hexdigest()
+
+def test_vorhanden():
+    """Die Funktionen pruefe und pruefe_alle sind definiert"""
+    assert "pruefe" in globals(), "Es fehlt die Funktion pruefe(daten, soll)."
+    assert "pruefe_alle" in globals(), "Es fehlt die Funktion pruefe_alle(dateien, solls)."
+
+def test_pruefe_richtig_falsch():
+    """pruefe: True bei passender Prüfsumme, False sonst (Typ bool)"""
+    r = pruefe(b"abc", "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad")
+    assert r is True, "Die Prüfsumme von b'abc' stimmt: erwartet True, erhalten %r." % (r,)
+    r = pruefe(b"abd", "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad")
+    assert r is False, "b'abd' hat eine andere Prüfsumme: erwartet False, erhalten %r." % (r,)
+
+def test_pruefe_soll_bereinigt():
+    """pruefe: Soll in Großbuchstaben, mit Leerzeichen und Zeilenumbruch"""
+    soll = " " + _h(b"R1").upper() + "\n"
+    r = pruefe(b"R1", soll)
+    assert r is True, "Derselbe Hash, nur groß geschrieben und mit Leerraum: erwartet True, erhalten %r. Vor dem Vergleich strip() und lower()." % (r,)
+
+def test_pruefe_leer():
+    """pruefe: leere Daten haben die Prüfsumme e3b0c442..."""
+    assert pruefe(b"", _h(b"")) is True, "Auch leere Daten haben eine Prüfsumme (e3b0c442...). Erwartet True."
+
+def test_alle():
+    """pruefe_alle: Namen der abweichenden Dateien in Reihenfolge der Daten"""
+    dateien = {"R1.bin": b"firmware R1", "D2.bin": b"firmware D2 manipuliert", "F1.bin": b"firmware F1", "M1.bin": b"firmware M1"}
+    solls = {"R1.bin": _h(b"firmware R1"), "D2.bin": _h(b"firmware D2"), "F1.bin": _h(b"firmware F1").upper(), "M1.bin": _h(b"firmware M1 alt")}
+    r = pruefe_alle(dateien, solls)
+    assert r == ["D2.bin", "M1.bin"], "Erwartet ['D2.bin', 'M1.bin'], erhalten %r." % (r,)
+
+def test_alle_ohne_soll_und_leer():
+    """pruefe_alle: Datei ohne Soll-Eintrag zählt als abweichend; keine Dateien: []"""
+    r = pruefe_alle({"A": b"a", "B": b"b"}, {"A": _h(b"a")})
+    assert r == ["B"], "B hat keinen Soll-Eintrag und gilt als abweichend: erwartet ['B'], erhalten %r. Zuerst mit in prüfen, ob der Name im Soll-Dictionary steht." % (r,)
+    assert pruefe_alle({}, {"A": _h(b"a")}) == [], "Ohne Dateien erwartet []."
+    r = pruefe_alle({"A": b"a"}, {"A": _h(b"a")})
+    assert r == [], "Alles in Ordnung: erwartet [], erhalten %r." % (r,)
+        </script>
+        <script type="text/x-python" data-role="solution">
+import hashlib
+
+
+def pruefe(daten, soll):
+    ist = hashlib.sha256(daten).hexdigest()
+    return ist == soll.strip().lower()
+
+
+def pruefe_alle(dateien, solls):
+    abweichend = []
+    for name, daten in dateien.items():
+        if name not in solls or not pruefe(daten, solls[name]):
+            abweichend.append(name)
+    return abweichend
+        </script>
+        <script type="application/json" data-role="scheme">[{"p": 1, "t": "Funktion pruefe(daten, soll) mit def, Parametern und Doppelpunkt; import hashlib steht oben"}, {"p": 1, "t": "hashlib.sha256(daten) direkt auf die Bytes angewendet (kein encode, die Daten sind schon Bytes)"}, {"p": 1, "t": "hexdigest() für den Hex-Text (nicht digest())"}, {"p": 1, "t": "Soll-Wert mit strip() und lower() bereinigt"}, {"p": 1, "t": "Vergleich mit == und Rückgabe (return) des Wahrheitswerts"}, {"p": 1, "t": "Funktion pruefe_alle mit Schleife über dateien.items() (Name und Daten)"}, {"p": 1, "t": "Fehlender Name im Soll-Dictionary abgefangen (name not in solls) oder .get verwendet; Aufruf von pruefe (oder gleichwertig) mit solls[name]"}, {"p": 1, "t": "Abweichende Namen mit append in eine zuvor angelegte Liste, return der Liste; keine Syntaxfehler, richtige Einrückung"}]</script>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-projekt" data-nonumber="1" data-title="Projekt: Meilenstein V18" data-part="B" data-stars="" data-min="" data-extra="ohne Wertung" aria-labelledby="h-t-projekt" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-projekt" tabindex="-1">Projekt: Meilenstein V18</h2>
+        <p class="l-task__meta"></p>
+      </header>
+
+      <p class="l-task__intro">Falls in der Projektzeit nicht alles geschafft wurde: Hier ist die Liste für diesen Termin („Eingaben prüfen und Fehler abfangen“). Alle Themen, die weiteren Meilensteine und das Bewertungsraster stehen auf der <a href="../projekt.html">Projektseite</a>.</p>
+
+      <ol class="k-steps">
+        <li><strong>Ungültige Eingaben erkennen:</strong> Negative Werte, null, Text statt Zahl und eine leere Datei werden erkannt, <em>bevor</em> gerechnet wird. Nie ungeprüften Eingaben trauen: Das ist Programmierhandwerk und zugleich Sicherheit (Training 2 zeigt die leere Datei).</li>
+        <li><strong>Fehlende oder kaputte Dateien abfangen:</strong> Eine fehlende oder unlesbare Datei bricht das Programm nicht ab, sondern gibt eine verständliche Meldung auf Deutsch aus (<code class="k-i">FileNotFoundError</code>, Typische Fehlermeldungen und Training 3).</li>
+        <li><strong>try und except gezielt einsetzen:</strong> Du fängst die konkrete Fehlerart ab, die du erwartest (<code class="k-i">except FileNotFoundError</code>, <code class="k-i">except ValueError</code>). Kein leeres <code class="k-i">except:</code>, das jeden Fehler verschluckt.</li>
+        <li><strong>Mindestens drei Tests für Fehlerfälle:</strong> zum Beispiel eine negative Eingabe, eine fehlende Datei und eine leere Datei. Jeder Test sagt vorher, was passieren soll (Meldung, kein Absturz).</li>
+        <li><strong>Abhaken:</strong> Den Stand trägst du auf der <a href="../projekt.html#meilensteine">Projektseite</a> ein.</li>
+      </ol>
+      <p>Nächster Meilenstein (V19): Ausgabe und Diagramm.</p>
+
+    </section>
+
+    <section class="l-task" id="t-notebook" data-nonumber="1" data-title="Notebook und Deep Dive" data-part="B" data-stars="" data-min="" data-extra="ohne Wertung" aria-labelledby="h-t-notebook" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-notebook" tabindex="-1">Notebook und Deep Dive</h2>
+        <p class="l-task__meta"></p>
+      </header>
+
+      <p class="l-task__intro">Mehr üben mit Prüfsummen, Bytes und Dateien. Das Notebook nutzt Python aus V01 bis V18, hat drei Stufen (Aufwärmen, Anwenden, Knobeln), keine Lösungen, dafür Selbsttests, und ist für Codespaces gedacht: Dort ist alles vorinstalliert, und das Notebook holt die Firmware-Dateien von der Kurs-Website.</p>
+
+      <p><a class="k-btn k-btn--ghost" href="../notebooks/V18-IT-Sicherheit.ipynb" download>V18-IT-Sicherheit.ipynb herunterladen</a></p>
+      <ol class="k-steps">
+        <li><strong>In Codespaces öffnen:</strong> Im Kurs-Repository auf GitHub „Code“ → „Codespaces“ → „Create codespace“ (Schritt für Schritt in der <a href="v11-copilot.html#anleitung">Lerneinheit V11, Abschnitt 3</a>). Dann <code class="k-i">notebooks/V18-IT-Sicherheit.ipynb</code> öffnen.</li>
+        <li><strong>Oder lokal:</strong> <code class="k-i">pip install requests jupyter</code>, dann <code class="k-i">jupyter lab</code>. Du brauchst eine Internetverbindung: Das Notebook lädt die Dateien von der Kurs-Website.</li>
+        <li>Zu jeder Aufgabe: erst lesen, dann die Daten ansehen (<code class="k-i">print</code>), dann auswerten, dann die Prüfzelle starten.</li>
+      </ol>
+      <h3>Danach</h3>
+      <p><a href="v18-it-sicherheit.html#deepdive">Zum Deep Dive</a> (freiwillig): Passwörter richtig speichern (gesalzener, absichtlich langsamer Hash), digitale Signaturen und die RSA-Mathematik dahinter. Oder zurück zur <a href="v18-it-sicherheit.html">Lerneinheit</a>, oder weiter zum <a href="../projekt.html">Projekt</a>.</p>
+
+    </section>
+
+      <nav class="lab__pager" aria-label="Zwischen Aufgaben wechseln">
+        <a class="k-btn k-btn--ghost" id="lab-prev" href="#a-werkzeugkasten">← Zurück</a>
+        <a class="k-btn k-btn--ghost" id="lab-next" href="#a-vorgemacht">Weiter →</a>
+      </nav>
+    </main>
+
+    <div class="lab__dock" data-library-dock data-state="off"></div>
+  </div>
+
+  <footer class="dhbw-footer k-footer">
+    <div class="dhbw-footer__inner">
+      <span><span class="dhbw-footer__brand">DHBW Stuttgart</span> · Campus Horb</span>
+      <span><a href="../index.html">Zurück zum Lernpfad</a> · <a href="../projekt.html">Projekt</a> · V18 Programmierlabor</span>
+    </div>
+  </footer>
+
+  <script src="../assets/js/speicher.js"></script>
+  <script src="../assets/js/icons.js"></script>
+  <script src="../assets/js/editor.js" defer></script>
+  <script src="../assets/js/pap-engine.js"></script>
+  <script src="../assets/js/kurs.js"></script>
+  <script src="../assets/js/aufgaben.js"></script>
+  <script src="../assets/js/pap-editor.js"></script>
+  <script src="../assets/js/labor.js"></script>
+</body>
+</html>
