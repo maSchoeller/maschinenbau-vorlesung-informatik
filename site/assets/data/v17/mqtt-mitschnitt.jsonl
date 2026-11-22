@@ -1,0 +1,15 @@
+{"zeit": "10:15:00", "topic": "fz3/D2/status", "nutzlast": {"status": "laeuft", "drehzahl_1_min": 1450}}
+{"zeit": "10:15:00", "topic": "fz3/F1/status", "nutzlast": {"status": "laeuft", "drehzahl_1_min": 3000}}
+{"zeit": "10:15:01", "topic": "fz3/M1/status", "nutzlast": {"status": "bereit"}}
+{"zeit": "10:15:02", "topic": "fz3/R1/status", "nutzlast": {"status": "gestoert", "meldung": "Lichtgitter unterbrochen"}}
+{"zeit": "10:15:03", "topic": "fz3/D2/status", "nutzlast": {"status": "laeuft", "drehzahl_1_min": 1448}}
+{"zeit": "10:15:04", "topic": "fz3/D2/wartung", "nutzlast": {"werkzeug": "T4", "aktion": "wechseln"}}
+{"zeit": "10:15:05", "topic": "fz3/F1/status", "nutzlast": {"status": "laeuft", "drehzahl_1_min": 3000
+{'zeit': '10:15:06', 'topic': 'fz3/M1/status', 'nutzlast': {'status': 'messen'}}
+{"zeit": "10:15:07", "topic": "fz3/M1/status", "nutzlast": {"status": "messen"}}
+
+{"zeit": "10:15:08", "topic": "fz3/D2/status", "nutzlast": {"status": "laeuft", "drehzahl_1_min": 1451},}
+{"zeit": "10:15:09", "topic": "fz3/R1/status", "nutzlast": {"status": "gestoert", "meldung": "Lichtgitter unterbrochen"}}
+{"zeit": "10:15:10", "topic": "fz3/SPS/status", "nutzlast": {"status": "laeuft", "zykluszeit_ms": 10}}
+{"zeit": "10:15:11", "topic": "fz3/D2/status", "nutzlast": {"status": "laeuft", "drehzahl_1_min": 1450}}
+{"zeit": "10:15:12", "topic": "fz3/M1/status", "nutzlast": {"status": "bereit"}}

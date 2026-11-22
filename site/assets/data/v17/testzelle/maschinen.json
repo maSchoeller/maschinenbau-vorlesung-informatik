@@ -1,0 +1,21 @@
+{
+  "zelle": "Testzelle",
+  "netz": "10.0.0.0/24",
+  "maschinen": [
+    {
+      "id": "X1",
+      "ip": "10.0.0.11",
+      "status": "laeuft"
+    },
+    {
+      "id": "X2",
+      "ip": "10.0.0.12",
+      "status": "bereit"
+    },
+    {
+      "id": "X3",
+      "ip": "10.0.0.13",
+      "status": "laeuft"
+    }
+  ]
+}

@@ -1,0 +1,1368 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>V17 Programmierlabor · Informatik Maschinenbau</title>
+  <meta name="description" content="Programmierlabor V17: Arbeitsumgebung mit Aufgabenliste, Editor und Befehls-Bibliothek. Teil A im Labor, Teil B Training zu Hause. JSON, verschachtelte Daten, HTTP-Abfragen mit requests und IP-Adressen mit ipaddress an der Fertigungszelle FZ-3.">
+  <link rel="stylesheet" href="../assets/css/dhbw-base.css">
+  <link rel="stylesheet" href="../assets/css/kurs.css">
+  <link rel="stylesheet" href="../assets/css/aufgaben.css">
+  <link rel="stylesheet" href="../assets/css/editor.css">
+  <link rel="stylesheet" href="../assets/css/labor.css">
+  <link rel="stylesheet" href="../assets/css/v05.css">
+  <link rel="stylesheet" href="../assets/css/pap-editor.css">
+</head>
+<body data-lesson="V17" data-page="labor">
+  <a class="k-skip" href="#inhalt">Zum Inhalt springen</a>
+
+  <header class="dhbw-header k-header">
+    <div class="dhbw-header__inner">
+      <a class="k-logo" href="../index.html" aria-label="Zur Startseite">
+        <span class="k-logo__mark" aria-hidden="true">DHBW</span>
+        <span class="k-logo__text">Informatik Maschinenbau<small>Campus Horb · 2026/27</small></span>
+      </a>
+      <nav class="k-nav" aria-label="Hauptnavigation">
+        <a href="../index.html">Start</a>
+        <a href="../index.html#lernpfad">Lernpfad</a>
+        <a href="../bibliothek.html">Bibliothek</a>
+        <a href="../pap-editor.html">PAP-Editor</a>
+        <a href="../projekt.html">Projekt</a>
+        <a href="v17-netzwerke.html">V17 Lerneinheit</a>
+        <a href="v17-labor.html" aria-current="page">V17 Labor</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="lab" data-lab>
+
+    <nav class="lab__list" aria-label="Aufgabenliste">
+      <div class="lab__listhead">
+        <p class="lab__title">Programmierlabor V17</p>
+        <a class="lab__back" href="v17-netzwerke.html">← Lerneinheit</a>
+      </div>
+      <div class="a-progress" data-a-progress>
+        <span class="a-progress__bar"><span class="a-progress__fill"></span></span>
+        <span class="a-progress__text">0 von 15 Aufgaben gelöst</span>
+      </div>
+      <p class="lab__legend k-small k-muted"><span><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-circle"/></svg> offen</span><span><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-half"/></svg> begonnen</span><span><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-done"/></svg> gelöst</span></p>
+      <div data-lab-items></div>
+    </nav>
+
+    <main id="inhalt" class="lab__main" tabindex="-1">
+      <div class="lab__bar">
+        <div class="lab__select">
+          <label for="lab-select">Aufgabe</label>
+          <select id="lab-select"></select>
+        </div>
+        <button type="button" class="k-btn k-btn--ghost k-btn--small" id="lab-toolbox-btn" aria-expanded="false" aria-controls="lab-drawer">Werkzeugkasten</button>
+      </div>
+      <section class="lab__drawer" id="lab-drawer" aria-label="Werkzeugkasten" hidden></section>
+
+    <section class="l-task" id="a-werkzeugkasten" data-title="Werkzeugkasten" data-part="A" data-stars="" data-min="5" data-extra="" aria-labelledby="h-a-werkzeugkasten" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-werkzeugkasten" tabindex="-1">Werkzeugkasten</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Heute neu in Python: <abbr class="k-begriff" data-erklaerung="JSON ist ein Textformat für Daten: Objekte in geschweiften Klammern, Listen in eckigen, Texte in doppelten Anführungszeichen. Fast jede Schnittstelle im Netz liefert JSON, und Python macht daraus Dictionaries und Listen."><strong>JSON</strong></abbr> mit dem Modul <code class="k-i">json</code>, verschachtelte Daten, HTTP-Anfragen mit <abbr class="k-begriff" data-erklaerung="requests ist ein Python-Paket, mit dem ein Programm eine Anfrage an eine Internet-Adresse schickt und die Antwort bekommt. Es gehört nicht zur Standardbibliothek, ist aber im Labor schon eingebaut."><strong>requests</strong></abbr> und IP-Adressen mit <code class="k-i">ipaddress</code>. Das ist das Handwerkszeug, mit dem ein Programm in der Fertigungszelle FZ-3 Daten abholt und prüft.</p>
+
+      <figure class="k-video">
+        <video controls preload="metadata" poster="../assets/video/v17-python-poster.png" aria-label="Python-Werkstatt: JSON, verschachtelte Daten, requests und ipaddress">
+          <source src="../assets/video/v17-python.mp4" type="video/mp4">
+          <track kind="subtitles" srclang="de" label="Deutsch" src="../assets/video/v17-python.vtt" default>
+          Dein Browser kann dieses Video nicht abspielen.
+        </video>
+        <div class="k-video__missing" hidden>Video folgt. Bis dahin: Lies den Code unten Zeile für Zeile und probiere ihn aus.</div>
+        <figcaption>Python-Werkstatt: JSON, requests, ipaddress (ca. 3 Min). Untertitel sind eingeschaltet (Deutsch).</figcaption>
+      </figure>
+      <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke</strong><p>Diese sechs Karten sind dein Spickzettel, bis es sitzt. Du erreichst sie in jeder Aufgabe über den Knopf „Werkzeugkasten“ oben. Führe jede Karte aus und ändere etwas daran. Alle Befehle des Kurses stehen außerdem in der Befehls-Bibliothek rechts. Beim ersten Lauf lädt Python das Paket requests nach (ca. 1 MB, einmalig).</p></div>
+      <div class="lab__toolbox" id="lab-toolbox">
+<div class="a-syntax-list">
+  <article class="a-syntax" aria-labelledby="sk-json">
+    <span class="a-syntax__label">Syntax-Karte 1</span>
+    <h4 id="sk-json">JSON-Text und Python-Daten: loads und dumps</h4>
+<pre data-timeout="20000"><code>import json
+
+text = '{"id": "D2", "drehzahl_1_min": 1450, "laeuft": true, "fehler": null}'
+d = json.loads(text)                 # JSON-Text -&gt; Dictionary
+print(type(d), d["id"], d["drehzahl_1_min"])
+print(d["laeuft"], d["fehler"])      # True None
+
+zurueck = json.dumps(d)              # Dictionary -&gt; JSON-Text
+print(zurueck)
+print(json.dumps(d, indent=2))       # mit Einrückung, gut lesbar</code></pre>    <div class="k-tablewrap"><table class="k-types">
+      <thead><tr><th scope="col">JSON</th><th scope="col">Python</th></tr></thead>
+      <tbody>
+        <tr><td>Objekt <code class="k-i">{ ... }</code></td><td><code class="k-i">dict</code></td></tr>
+        <tr><td>Array <code class="k-i">[ ... ]</code></td><td><code class="k-i">list</code></td></tr>
+        <tr><td>Text <code class="k-i">"abc"</code></td><td><code class="k-i">str</code></td></tr>
+        <tr><td>Zahl <code class="k-i">5</code> / <code class="k-i">2.5</code></td><td><code class="k-i">int</code> / <code class="k-i">float</code></td></tr>
+        <tr><td><code class="k-i">true</code> / <code class="k-i">false</code></td><td><code class="k-i">True</code> / <code class="k-i">False</code></td></tr>
+        <tr><td><code class="k-i">null</code></td><td><code class="k-i">None</code></td></tr>
+      </tbody>
+    </table></div>
+    <ul>
+      <li><code class="k-i">json.loads(text)</code> macht aus JSON-<em>Text</em> ein Dictionary oder eine Liste (das <em>s</em> steht für „string“). <code class="k-i">json.dumps(obj)</code> macht den Rückweg und liefert wieder Text.</li>
+      <li>JSON verlangt <strong>doppelte</strong> Anführungszeichen und kein Komma nach dem letzten Eintrag. Ein Python-Dictionary mit einfachen Anführungszeichen ist kein gültiges JSON: <code class="k-i">json.loads</code> wirft einen <code class="k-i">JSONDecodeError</code>.</li>
+      <li>Die Tabelle zeigt, was aus welchem JSON-Baustein wird. Das <code class="k-i">null</code> wird zu <code class="k-i">None</code>, <code class="k-i">true</code> zu <code class="k-i">True</code> (groß geschrieben).</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-nest">
+    <span class="a-syntax__label">Syntax-Karte 2</span>
+    <h4 id="sk-nest">Verschachtelte Daten lesen</h4>
+<pre data-timeout="20000"><code>zelle = {
+    "zelle": "FZ-3",
+    "maschinen": [
+        {"id": "D2", "status": "laeuft"},
+        {"id": "R1", "status": "gestoert"},
+    ],
+    "verschleiss": {"T1": 22, "T4": 83},
+}
+
+print(zelle["maschinen"][1]["id"])         # Liste: Index; Dict: Schlüssel -&gt; R1
+for m in zelle["maschinen"]:               # Liste von Dicts durchlaufen
+    print(m["id"], m["status"])
+print(zelle["verschleiss"]["T4"])          # Dict im Dict: zwei Schlüssel -&gt; 83
+print(zelle["verschleiss"].get("T9", 0))   # fehlt der Schlüssel: Ersatzwert, kein Fehler</code></pre>    <ul>
+      <li>Daten aus dem Netz sind fast immer <strong>verschachtelt</strong>: ein Dictionary enthält eine Liste, die Liste enthält Dictionaries. Du liest von außen nach innen, ein Zugriff pro Ebene: <code class="k-i">zelle["maschinen"][1]["id"]</code>.</li>
+      <li><strong>Liste = Nummer</strong> in eckigen Klammern (<code class="k-i">[1]</code>), <strong>Dictionary = Schlüssel</strong> (<code class="k-i">["id"]</code>). Verwechselst du beides, kommt ein <code class="k-i">TypeError</code>.</li>
+      <li><code class="k-i">.get("T9", 0)</code> (bekannt aus V08) liefert den Ersatzwert, wenn der Schlüssel fehlt. Mit <code class="k-i">["T9"]</code> gäbe es einen <code class="k-i">KeyError</code>.</li>
+      <li>In der Fabrik fehlen Schlüssel öfter, als man denkt: Nicht jedes Gerät meldet alles (die SPS hat keine Stückzahl).</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-datei">
+    <span class="a-syntax__label">Syntax-Karte 3</span>
+    <h4 id="sk-datei">JSON-Datei schreiben und lesen: dump und load</h4>
+<pre data-timeout="20000"><code>import json
+
+meldung = {"maschine": "D2", "werkzeug": "T4", "aktion": "wechseln"}
+
+with open("meldung.json", "w", encoding="utf-8") as datei:
+    json.dump(meldung, datei, indent=2)        # Objekt -&gt; Datei
+
+with open("meldung.json", encoding="utf-8") as datei:
+    gelesen = json.load(datei)                 # Datei -&gt; Objekt
+
+print(gelesen)
+print(gelesen == meldung)</code></pre>    <ul>
+      <li><code class="k-i">json.dump(obj, datei)</code> schreibt in eine geöffnete Datei, <code class="k-i">json.load(datei)</code> liest aus einer. Beide ohne <em>s</em>: Sie arbeiten mit einer <strong>Datei</strong>, nicht mit einem Text.</li>
+      <li>Die Merkregel: <strong>mit s = String</strong> (<code class="k-i">loads</code>, <code class="k-i">dumps</code>), <strong>ohne s = Datei</strong> (<code class="k-i">load</code>, <code class="k-i">dump</code>). Das <code class="k-i">with open</code> kennst du aus V09.</li>
+      <li><code class="k-i">json.load(antwort)</code> mit einer requests-Antwort ist ein typischer Fehler: Eine Antwort ist keine Datei. Dafür gibt es <code class="k-i">antwort.json()</code> (nächste Karte).</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-requests">
+    <span class="a-syntax__label">Syntax-Karte 4</span>
+    <h4 id="sk-requests">HTTP mit requests: get, status_code, json</h4>
+<pre data-timeout="20000"><code>import requests
+
+URL = "../assets/data/v17/api/"        # Adresse der "API" (relativ zu dieser Seite)
+
+antwort = requests.get(URL + "D2.json")
+print(antwort.status_code)             # 200 = alles in Ordnung
+daten = antwort.json()                 # JSON-Antwort -&gt; Dictionary
+print(daten["programm"], daten["stueckzahl_schicht"])
+print(antwort.text[:40])               # derselbe Inhalt als roher Text</code></pre><pre data-timeout="20000"><code>import requests
+
+antwort = requests.get("../assets/data/v17/api/D9.json")    # diese Maschine gibt es nicht
+print(antwort.status_code)             # 404 = nicht gefunden
+if antwort.status_code == 200:
+    print(antwort.json())
+else:
+    print("Anfrage fehlgeschlagen, Status", antwort.status_code)</code></pre>    <ul>
+      <li><code class="k-i">requests.get(url)</code> schickt eine Anfrage und liefert die <strong>Antwort</strong> (ein Objekt). Daran hängen <code class="k-i">.status_code</code> (Zahl), <code class="k-i">.text</code> (Text) und <code class="k-i">.json()</code> (fertig als Dictionary).</li>
+      <li><strong>Prüfe den Status, bevor du <code class="k-i">.json()</code> aufrufst.</strong> Bei 404 ist der Inhalt eine Fehlerseite und kein JSON; <code class="k-i">.json()</code> bricht dann mit einem Fehler ab.</li>
+      <li>Hier im Labor sind die „Maschinen“ statische Dateien dieser Website. In der Fabrik antwortet ein Server am Leitrechner, aber dein Code sieht genauso aus. Nur <code class="k-i">GET</code> (lesen) kommt vor, kein Schreiben.</li>
+      <li>Läuft ein Programm außerhalb des Browsers (Codespace), schreibst du die volle Adresse hin, z. B. <code class="k-i">https://…/assets/data/v17/api/</code>.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-fehler">
+    <span class="a-syntax__label">Syntax-Karte 5</span>
+    <h4 id="sk-fehler">Fehler abfangen: ValueError und Status prüfen</h4>
+<pre data-timeout="20000"><code>import json
+import requests
+
+# 1. kaputtes JSON abfangen
+try:
+    daten = json.loads("{'id': 'D2'}")             # einfache Anführungszeichen: kein JSON
+except ValueError as fehler:
+    print("Kein gültiges JSON:", fehler)
+    daten = {}
+
+# 2. Status prüfen statt blind .json() aufzurufen
+antwort = requests.get("../assets/data/v17/api/D9.json")
+if antwort.status_code != 200:
+    print("Maschine nicht erreichbar, Status", antwort.status_code)
+else:
+    print(antwort.json())</code></pre>    <ul>
+      <li>Der <code class="k-i">JSONDecodeError</code> ist eine Unterart des <code class="k-i">ValueError</code>. Darum fängt <code class="k-i">except ValueError</code> kaputtes JSON ab (V09: gezielt abfangen, nie ein leeres <code class="k-i">except:</code>).</li>
+      <li>Ein Netzwerkproblem meldet sich oft <em>nicht</em> als Fehler, sondern als <strong>Statuscode</strong> (404, 500). Deshalb gehört <code class="k-i">if antwort.status_code == 200</code> vor jede Auswertung.</li>
+      <li>Beides zusammen ist das Muster für alles, was von außen kommt: Daten nie ungeprüft glauben.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-ip">
+    <span class="a-syntax__label">Syntax-Karte 6</span>
+    <h4 id="sk-ip">IP-Adressen mit ipaddress</h4>
+<pre data-timeout="20000"><code>import ipaddress
+
+netz = ipaddress.ip_network("192.168.30.0/24")
+print(netz.netmask, netz.network_address, netz.broadcast_address)
+print(netz.num_addresses - 2, "nutzbare Adressen")
+
+ip = ipaddress.ip_address("192.168.31.20")        # R1 nach dem Steuerungstausch
+print(ip in netz)                                 # liegt die Adresse im Netz?
+print(ipaddress.ip_address("192.168.30.11") in netz)
+
+ip_text = "192.168.30.11"
+print(f"{ip_text:15}|")                           # Breite 15: mit Leerzeichen aufgefüllt</code></pre>    <ul>
+      <li><code class="k-i">ip_network("…/24")</code> baut ein Netz, <code class="k-i">ip_address("…")</code> eine einzelne Adresse. Der Operator <code class="k-i">in</code> fragt, ob die Adresse im Netz liegt (der Rechner macht das UND aus der Lerneinheit).</li>
+      <li><code class="k-i">num_addresses</code> zählt <em>alle</em> Adressen des Netzes. Zwei sind nicht für Geräte: die Netzadresse (ganz unten) und die Broadcast-Adresse (ganz oben). Darum <code class="k-i">num_addresses - 2</code>.</li>
+      <li>Ist der Text keine Adresse (<code class="k-i">"192.168.30.300"</code>), gibt es einen <code class="k-i">ValueError</code>.</li>
+      <li><strong>Neu im f-String:</strong> <code class="k-i">{m['id']:4}</code> heißt „mindestens 4 Zeichen breit, links bündig, mit Leerzeichen aufgefüllt“. So stehen Tabellenspalten untereinander. Die Zahl hinter dem Doppelpunkt ist die Spaltenbreite.</li>
+      <li>Ohne diese Bibliothek: Text-Vergleiche wie <code class="k-i">startswith("192.168.3")</code> sehen richtig aus und sind falsch (siehe Code-Review).</li>
+    </ul>
+  </article>
+</div>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-vorgemacht" data-title="Vorgerechnetes Beispiel: Fertigungszelle FZ-3 abfragen" data-part="A" data-stars="" data-min="10" data-extra="" aria-labelledby="h-a-vorgemacht" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-vorgemacht" tabindex="-1">Vorgerechnetes Beispiel: Fertigungszelle FZ-3 abfragen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Aufgabe: Eine Fertigungszelle liefert ihre Daten als JSON über eine Adresse. Das Programm holt die Geräteliste, prüft für jedes Gerät, ob die IP-Adresse im Zellennetz liegt, holt die Details der Drehmaschine D2 und baut eine Wartungsmeldung als JSON-Text. Lies den Code Zeile für Zeile, dann führe ihn aus. In V16 hast du die Log-Dateien dieser Zelle durchsucht, jetzt fragst du die Maschinen selbst.</p>
+
+      <figure class="k-video">
+        <video controls preload="metadata" poster="../assets/video/v17-beispiel-poster.png" aria-label="Vorgerechnet: Fertigungszelle FZ-3 abfragen und das Netz prüfen">
+          <source src="../assets/video/v17-beispiel.mp4" type="video/mp4">
+          <track kind="subtitles" srclang="de" label="Deutsch" src="../assets/video/v17-beispiel.vtt" default>
+          Dein Browser kann dieses Video nicht abspielen.
+        </video>
+        <div class="k-video__missing" hidden>Video folgt. Bis dahin: Lies den Code unten Zeile für Zeile und probiere ihn aus.</div>
+        <figcaption>Vorgerechnet: Zelle abfragen und Netz prüfen (ca. 3 Min). Untertitel sind eingeschaltet (Deutsch).</figcaption>
+      </figure>
+      <div class="a-task" data-a="run" data-id="w-vorgemacht" data-count="0" data-mode="programm" data-timeout="20000">
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V17" aria-label="Python-Code: Fertigungszelle abfragen"># Fertigungszelle FZ-3: Maschinendaten per HTTP abfragen und das Netz prüfen
+# (V17: JSON, requests - HTTP-API abfragen; IP-Adresse und Subnetz)
+# Die "API" der Zelle sind statische JSON-Dateien auf dieser Website.
+
+import json
+import ipaddress
+import requests
+
+URL = "../assets/data/v17/api/"          # relativ zur Labor-Seite
+
+antwort = requests.get(URL + "maschinen.json")
+print("HTTP-Status:", antwort.status_code)
+zelle = antwort.json()                   # JSON-Text -&gt; Dictionary
+
+netz = ipaddress.ip_network(zelle["netz"])
+print(f"Zelle {zelle['zelle']}, Netz {netz}, {netz.num_addresses - 2} nutzbare Adressen")
+
+for m in zelle["maschinen"]:
+    ip = ipaddress.ip_address(m["ip"])
+    if ip in netz:
+        ort = "im Netz"
+    else:
+        ort = "FALSCHES NETZ"
+    print(f"{m['id']:4} {m['ip']:15} {m['status']:9} {ort}")
+
+# Details der Drehmaschine abrufen
+d2 = requests.get(URL + "D2.json").json()
+verschleiss = d2["werkzeugverschleiss_prozent"]
+for werkzeug, prozent in verschleiss.items():
+    if prozent &gt; 80:
+        print(f"D2: Werkzeug {werkzeug} bei {prozent} % - wechseln")
+
+# Meldung als JSON-Text, so wie sie per MQTT an fz3/D2/wartung gehen könnte
+meldung = {"maschine": "D2", "werkzeug": "T4", "aktion": "wechseln"}
+print(json.dumps(meldung))</textarea></div>
+      </div>
+      <p class="k-small k-muted">Beim Ausführen siehst du: Status 200, dann eine Tabelle mit fünf Geräten. Vier stehen „im Netz“, eine Zeile nicht. Danach die Drehmaschine mit dem Werkzeug, das gewechselt werden muss, und zuletzt die fertige Meldung als JSON-Text.</p>
+      <ol class="a-explain">
+        <li><strong>Zeilen 5 bis 7:</strong> Drei Bibliotheken: <code class="k-i">json</code> (Text und Daten ineinander umwandeln), <code class="k-i">ipaddress</code> (Adressen und Netze, Standardbibliothek) und <code class="k-i">requests</code> (Anfragen schicken).</li>
+        <li><strong>Zeile 9:</strong> Die Adresse der Daten steht einmal oben als Konstante <code class="k-i">URL</code>. Sie ist relativ zur Seite: ein Ordner hoch, dann <code class="k-i">assets/data/v17/api/</code>. In einem Codespace stünde dort die volle Internet-Adresse.</li>
+        <li><strong>Zeilen 11 bis 13:</strong> <code class="k-i">requests.get</code> holt <code class="k-i">maschinen.json</code>. Der Status 200 heißt „alles gut“. Danach macht <code class="k-i">antwort.json()</code> aus dem JSON-Text ein Dictionary. Hier fehlt eine Statusprüfung nur, weil die Datei sicher da ist; in eigenem Code kommt sie davor (Aufgabe „Code-Review“).</li>
+        <li><strong>Zeilen 15 und 16:</strong> Das Zellennetz steht selbst in den Daten (<code class="k-i">zelle["netz"]</code>). <code class="k-i">netz.num_addresses - 2</code> sind die nutzbaren Adressen: 256 minus Netzadresse und Broadcast gleich 254. Im f-String stehen die Ausdrücke in geschweiften Klammern; <code class="k-i">zelle['zelle']</code> hat einfache Anführungszeichen, weil der f-String selbst doppelte nutzt.</li>
+        <li><strong>Zeilen 18 bis 24:</strong> Eine Liste von Dictionaries: Jede Maschine <code class="k-i">m</code> ist ein Dictionary mit <code class="k-i">id</code>, <code class="k-i">ip</code>, <code class="k-i">status</code> und weiteren Schlüsseln. <code class="k-i">ipaddress.ip_address(m["ip"])</code> macht aus dem Text eine Adresse, <code class="k-i">ip in netz</code> prüft sie gegen das Netz. Der Roboter R1 steht bei 192.168.31.20 und damit <em>nicht</em> im Netz 192.168.30.0/24: Genau das ist der Fehler aus der Lerneinheit.</li>
+        <li><strong>Zeile 24:</strong> Neu ist die <em>Breite</em> im f-String: <code class="k-i">{m['id']:4}</code> füllt den Wert auf mindestens 4 Zeichen auf, <code class="k-i">:15</code> auf 15, <code class="k-i">:9</code> auf 9. Dadurch stehen die Spalten sauber untereinander.</li>
+        <li><strong>Zeilen 27 bis 31:</strong> Eine zweite Anfrage holt die Details der Drehmaschine. <code class="k-i">d2["werkzeugverschleiss_prozent"]</code> ist ein Dictionary im Dictionary: Werkzeug zu Prozent. <code class="k-i">.items()</code> liefert beide Teile in der Schleife (V08). Über 80 % wird gemeldet: Werkzeug T4 mit 83 %.</li>
+        <li><strong>Zeilen 34 und 35:</strong> Der umgekehrte Weg: <code class="k-i">json.dumps</code> macht aus einem Dictionary den JSON-Text. So könnte die Meldung auf dem Topic <code class="k-i">fz3/D2/wartung</code> an die Instandhaltung gehen (MQTT, Lerneinheit).</li>
+        <li><strong>Selbsterklärung:</strong> Ändere <code class="k-i">"maschinen.json"</code> in Zeile 11 in <code class="k-i">"maschinen2.json"</code> und führe aus: Welche Zeile bricht ab, und warum ist das ein Beleg dafür, dass der Status vor <code class="k-i">.json()</code> geprüft werden muss? Dann ändere <code class="k-i">prozent &gt; 80</code> in <code class="k-i">prozent &gt; 20</code>: Welche Werkzeuge erscheinen?</li>
+      </ol>
+
+    </section>
+
+    <section class="l-task" id="a-ablauf" data-title="Ablauf verfolgen" data-part="A" data-stars="" data-min="5" data-extra="" aria-labelledby="h-a-ablauf" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-ablauf" tabindex="-1">Ablauf verfolgen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Bevor du Daten aus dem Netz auswertest, musst du die Schleife darüber lesen können. Führe das Programm im Kopf aus, <strong>Zeile für Zeile, so wie Python es tut</strong>. Es ist die Netzprüfung aus dem Beispiel in klein: zwei Geräte, direkt als Dictionaries geschrieben. Schreibe Dictionaries mit Schlüsseln und Werten ab; Zeile 1 legt nur die Liste an und musst du nicht eintragen.</p>
+
+      <div class="a-task" data-a="trace" data-id="w-trace">
+        <script type="application/json">{"code": ["maschinen = [{\"id\": \"D2\", \"ip\": \"192.168.30.11\"}, {\"id\": \"R1\", \"ip\": \"192.168.31.20\"}]", "falsch = 0", "for m in maschinen:", "    ort = \"im Netz\"", "    if not m[\"ip\"].startswith(\"192.168.30.\"):", "        ort = \"FALSCHES NETZ\"", "        falsch = falsch + 1", "    print(m[\"id\"], ort)", "print(falsch)"], "vars": ["falsch", "m", "ort"], "steps": [{"line": 2, "set": {"falsch": "0"}, "hint": "Zeile 1 hat die Liste mit zwei Dictionaries angelegt. Zeile 2 setzt den Zähler falsch auf 0."}, {"line": 3, "set": {"m": "{'id': 'D2', 'ip': '192.168.30.11'}"}, "hint": "Erster Durchlauf: m ist das erste Dictionary der Liste, das der Drehmaschine. Schreibe es mit Schlüsseln und Werten."}, {"line": 4, "set": {"ort": "\"im Netz\""}, "hint": "Zuerst nimmt ort den Wert \"im Netz\" an (ein Text, mit Anführungszeichen)."}, {"line": 8, "out": "D2 im Netz", "hint": "Zeile 5 fragt: Beginnt die IP mit 192.168.30. ? Ja, also ist not ... falsch, und die Zeilen 6 und 7 werden übersprungen. print gibt die ID und ort aus, getrennt durch ein Leerzeichen."}, {"line": 3, "set": {"m": "{'id': 'R1', 'ip': '192.168.31.20'}"}, "hint": "Zweiter Durchlauf: m ist jetzt das Dictionary des Roboters."}, {"line": 4, "set": {"ort": "\"im Netz\""}, "hint": "ort wird in jedem Durchlauf wieder auf \"im Netz\" gesetzt."}, {"line": 6, "set": {"ort": "\"FALSCHES NETZ\""}, "hint": "192.168.31.20 beginnt nicht mit 192.168.30. (der dritte Block ist 31), also ist die Bedingung in Zeile 5 wahr. ort wird \"FALSCHES NETZ\"."}, {"line": 7, "set": {"falsch": "1"}, "hint": "Der Zähler steigt von 0 auf 1."}, {"line": 8, "out": "R1 FALSCHES NETZ", "hint": "print gibt die ID und ort aus."}, {"line": 9, "out": "1", "hint": "Nach der Schleife wird der Zähler ausgegeben: ein Gerät im falschen Netz."}]}</script>
+      </div>
+      <p class="l-task__intro">Zweiter Ablauf: verschachtelte Daten und <code class="k-i">.get</code>.</p>
+      <div class="a-task" data-a="trace" data-id="w-trace2">
+        <script type="application/json">{"code": ["d2 = {\"id\": \"D2\", \"verschleiss\": {\"T1\": 22, \"T4\": 83}}", "w = d2[\"verschleiss\"]", "t4 = w[\"T4\"]", "t9 = w.get(\"T9\", 0)", "rest = 100 - t4", "print(d2[\"id\"], t4, t9, rest)"], "vars": ["w", "t4", "t9", "rest"], "steps": [{"line": 2, "set": {"w": "{'T1': 22, 'T4': 83}"}, "hint": "Zeile 1 hat das verschachtelte Dictionary angelegt. d2[\"verschleiss\"] ist das innere Dictionary: Werkzeug zu Prozent."}, {"line": 3, "set": {"t4": "83"}, "hint": "Im inneren Dictionary gehört zum Schlüssel \"T4\" die Zahl 83."}, {"line": 4, "set": {"t9": "0"}, "hint": "Den Schlüssel \"T9\" gibt es nicht. Wegen .get liefert Python den Ersatzwert 0, ohne KeyError."}, {"line": 5, "set": {"rest": "17"}, "hint": "100 minus 83 sind 17."}, {"line": 6, "out": "D2 83 0 17", "hint": "print gibt vier Werte durch Leerzeichen getrennt aus: die ID aus d2, dann t4, t9 und rest."}]}</script>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-zeilen" data-title="Zeilen ordnen" data-part="A" data-stars="" data-min="7" data-extra="" aria-labelledby="h-a-zeilen" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-zeilen" tabindex="-1">Zeilen ordnen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Alle Zeilen sind da, aber durcheinander. Bring sie in die richtige Reihenfolge <strong>und rücke die Zeilen im Block ein</strong> (Pfeil nach rechts oder Mausziehen). Manche Zeilen gehören nicht ins Programm.</p>
+
+      <div class="a-task" data-a="parsons" data-id="w-parsons1">
+        <div class="a-task__head"><h3 class="a-task__title">Maschine abfragen und Verschleiß prüfen</h3></div>
+        <p>Das Programm holt die Daten der Drehmaschine, prüft erst den Status und läuft dann über die Werkzeuge. Überlege vorher: Was muss vor dem ersten <code class="k-i">requests</code>-Aufruf stehen, wann darfst du <code class="k-i">.json()</code> aufrufen, und was gehört <em>nicht</em> ins Programm?</p>
+        <script type="application/json">{"solution": ["import requests", "antwort = requests.get(\"../assets/data/v17/api/D2.json\")", "if antwort.status_code == 200:", "    d2 = antwort.json()", "    for werkzeug, prozent in d2[\"werkzeugverschleiss_prozent\"].items():", "        if prozent > 80:", "            print(\"wechseln:\", werkzeug)"], "distractors": ["    d2 = json.load(antwort)", "if antwort == 200:"]}</script>
+      </div>
+
+      <div class="a-task" data-a="parsons" data-id="w-parsons2">
+        <div class="a-task__head"><h3 class="a-task__title">Wartungsmeldung als JSON bauen</h3></div>
+        <p>Eine Meldung für den MQTT-Broker besteht aus einem Topic (Text) und einer Nutzlast (JSON-Text). Das Dictionary wird zuerst gebaut, dann in Text umgewandelt, dann wird ausgegeben. Zwei Zeilen sind Ablenker.</p>
+        <script type="application/json">{"solution": ["import json", "maschine = \"D2\"", "werkzeug = \"T4\"", "meldung = {\"maschine\": maschine, \"werkzeug\": werkzeug, \"aktion\": \"wechseln\"}", "text = json.dumps(meldung)", "topic = \"fz3/\" + maschine + \"/wartung\"", "print(topic, text)"], "distractors": ["text = json.loads(meldung)", "topic = \"fz3/\" + maschine + \"/status\""], "alts": [["import json", "maschine = \"D2\"", "werkzeug = \"T4\"", "meldung = {\"maschine\": maschine, \"werkzeug\": werkzeug, \"aktion\": \"wechseln\"}", "topic = \"fz3/\" + maschine + \"/wartung\"", "text = json.dumps(meldung)", "print(topic, text)"], ["import json", "werkzeug = \"T4\"", "maschine = \"D2\"", "meldung = {\"maschine\": maschine, \"werkzeug\": werkzeug, \"aktion\": \"wechseln\"}", "text = json.dumps(meldung)", "topic = \"fz3/\" + maschine + \"/wartung\"", "print(topic, text)"], ["import json", "maschine = \"D2\"", "topic = \"fz3/\" + maschine + \"/wartung\"", "werkzeug = \"T4\"", "meldung = {\"maschine\": maschine, \"werkzeug\": werkzeug, \"aktion\": \"wechseln\"}", "text = json.dumps(meldung)", "print(topic, text)"]]}</script>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-luecken" data-title="Lücken füllen" data-part="A" data-stars="" data-min="5" data-extra="" aria-labelledby="h-a-luecken" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-luecken" tabindex="-1">Lücken füllen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Jetzt tippst du Teile selbst. Ergänze die vier Lücken, sodass das Programm den JSON-Text einliest, die Geräte außerhalb des Zellennetzes findet und die Verschleißwerte ausgibt.</p>
+
+      <div class="a-task" data-a="gap" data-id="w-luecken" data-mode="code" data-timeout="20000">
+        <pre class="a-gap__src">import json
+import ipaddress
+
+text = '{"netz": "192.168.30.0/24", "maschinen": [{"id": "D2", "ip": "192.168.30.11"}, {"id": "R1", "ip": "192.168.31.20"}]}'
+zelle = json.@@loads@@(text)
+netz = ipaddress.ip_network(zelle["netz"])
+falsch = []
+for m in zelle[@@"maschinen"@@]:
+    ip = ipaddress.ip_address(m["ip"])
+    if ip @@not in@@ netz:
+        falsch.append(m["id"])
+
+verschleiss = {"T1": 22, "T4": 83}
+for werkzeug, prozent in verschleiss.@@items@@():
+    print(werkzeug, prozent)
+print(falsch)</pre>
+        <script type="text/x-python" data-role="tests">
+def test_json():
+    """Der JSON-Text ist ein Dictionary mit zwei Maschinen (json.loads)"""
+    assert "zelle" in globals() and isinstance(zelle, dict), "zelle soll ein Dictionary sein: Welche Funktion macht aus JSON-Text ein Dictionary (mit s wie string)?"
+    assert len(zelle["maschinen"]) == 2, "In zelle sollen zwei Maschinen stehen."
+
+def test_falsches_netz():
+    """Nur R1 liegt nicht im Netz"""
+    assert "falsch" in globals() and falsch == ["R1"], "falsch ist %r, erwartet ['R1']. Die Bedingung soll die Adressen auswählen, die NICHT im Netz liegen." % (globals().get("falsch"),)
+
+def test_items():
+    """Beide Werkzeuge werden mit Wert ausgegeben (.items())"""
+    z = zeilen(AUSGABE)
+    assert "T1 22" in z and "T4 83" in z, "Erwartet die Zeilen 'T1 22' und 'T4 83', ausgegeben wurde %r. Mit welcher Methode liefert ein Dictionary Schlüssel und Wert zugleich?" % (z,)
+        </script>
+        <ol class="a-hints">
+          <li>Lücke 1: Aus JSON-<em>Text</em> macht die Funktion mit s am Ende (Syntax-Karte 1) ein Dictionary.</li>
+          <li>Lücke 2: In welchem Schlüssel steckt die Liste der Maschinen? Schau in den JSON-Text.</li>
+          <li>Lücke 3: R1 soll ausgewählt werden, es liegt <em>nicht</em> im Netz. Zwei Wörter (Syntax-Karte 6: der Operator <code>in</code> und sein Gegenteil).</li>
+          <li>Lücke 4: Eine Dictionary-Methode, die Schlüssel und Wert zugleich liefert (V08), mit runden Klammern.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-pap" data-title="PAP: Adresse prüfen" data-part="A" data-stars="" data-min="8" data-extra="PAP zeichnen" aria-labelledby="h-a-pap" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-pap" tabindex="-1">PAP: Adresse prüfen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Bevor du die Prüfung programmierst, zeichnest du den Plan. Das ist ein Teil der Zellenprüfung aus dem Beispiel, nur ohne Bibliothek: Zwei Zahlen rein, ein Urteil raus. Die Prüfung erzeugt aus deinem PAP Python-Code und testet ihn mit mehreren Adressen, auch mit den Randwerten.</p>
+
+      <div class="a-task k-pap-aufgabe" data-a="pap-zeichnen" data-id="v17-adresse" data-timeout="8000" data-erlaubt="in,out,op,if">
+        <div class="a-task__head"><h3 class="a-task__title">Adresse im Zellennetz prüfen</h3></div>
+        <p>Zeichne einen PAP. Die Adresse hat die Form <code class="k-i">192.168.dritte.vierte</code>. Das Zellennetz ist <code class="k-i">192.168.30.0/24</code>. Eingaben sind das dritte und das vierte Oktett als ganze Zahlen (stehen schon da). Zuerst prüfst du den Hostanteil: Ist das vierte Oktett 0 (Netzadresse) oder 255 (Broadcast), gibst du <code class="k-i">"keine Geräteadresse"</code> aus. Sonst liegt die Adresse im Netz, wenn das dritte Oktett 30 ist: Ausgabe <code class="k-i">"im Netz"</code>, andernfalls <code class="k-i">"falsches Netz"</code>. Texte stehen in Anführungszeichen, die Bedingungen schreibst du als Python-Ausdruck, zum Beispiel <code class="k-i">vierte == 0 or vierte == 255</code>.</p>
+        <script type="application/json" data-role="start">{"baum": [{"k": "in", "v": "dritte", "typ": "int", "prompt": ""}, {"k": "in", "v": "vierte", "typ": "int", "prompt": ""}]}</script>
+        <script type="text/x-python" data-role="tests">
+def _ausgabe(dritte, vierte):
+    z = _zeilen(_run_program([str(dritte), str(vierte)]))
+    assert z, "Dein PAP gibt nichts aus. Erwartet wird genau ein Text: im Netz, falsches Netz oder keine Geräteadresse."
+    return z[-1].lower()
+
+def test_im_netz():
+    """192.168.30.11: im Netz"""
+    a = _ausgabe(30, 11)
+    assert a == "im netz", "Für 192.168.30.11 wird 'im Netz' erwartet. Dein PAP gibt aus: %r" % a
+
+def test_falsches_netz():
+    """192.168.31.20 (Roboter R1): falsches Netz"""
+    a = _ausgabe(31, 20)
+    assert a == "falsches netz", "Für 192.168.31.20 wird 'falsches Netz' erwartet. Dein PAP gibt aus: %r" % a
+
+def test_netzadresse():
+    """192.168.30.0: keine Geräteadresse (Netzadresse)"""
+    a = _ausgabe(30, 0)
+    assert a == "keine geräteadresse", "Für 192.168.30.0 (Netzadresse) wird 'keine Geräteadresse' erwartet. Dein PAP gibt aus: %r" % a
+
+def test_broadcast():
+    """192.168.30.255: keine Geräteadresse (Broadcast)"""
+    a = _ausgabe(30, 255)
+    assert a == "keine geräteadresse", "Für 192.168.30.255 (Broadcast) wird 'keine Geräteadresse' erwartet. Dein PAP gibt aus: %r" % a
+
+def test_grenzfaelle():
+    """Randwerte: .1 und .254 im Netz; 255 im falschen Netz ist ebenfalls keine Geräteadresse"""
+    assert _ausgabe(30, 1) == "im netz", "192.168.30.1 (das Gateway) liegt im Netz."
+    assert _ausgabe(30, 254) == "im netz", "192.168.30.254 liegt im Netz."
+    assert _ausgabe(31, 255) == "keine geräteadresse", "Die Prüfung auf 0 und 255 kommt zuerst: 192.168.31.255 ist keine Geräteadresse, egal in welchem Netz."
+    assert _ausgabe(0, 5) == "falsches netz", "192.168.0.5 liegt nicht im Netz 192.168.30.0/24."
+        </script>
+        <script type="application/json" data-role="solution">{"baum": [{"k": "in", "v": "dritte", "typ": "int", "prompt": ""}, {"k": "in", "v": "vierte", "typ": "int", "prompt": ""}, {"k": "if", "v": "vierte == 0 or vierte == 255", "yes": [{"k": "out", "v": "\"keine Geräteadresse\""}], "no": [{"k": "if", "v": "dritte == 30", "yes": [{"k": "out", "v": "\"im Netz\""}], "no": [{"k": "out", "v": "\"falsches Netz\""}]}]}]}</script>
+        <ol class="a-hints">
+          <li>Nach den zwei Eingaben kommt eine Raute mit der Bedingung für den Hostanteil: <code>vierte == 0 or vierte == 255</code>. Im „ja“-Zweig steht die Ausgabe <code>"keine Geräteadresse"</code> (mit Anführungszeichen).</li>
+          <li>Im „nein“-Zweig kommt die zweite Raute: <code>dritte == 30</code>. „ja“: Ausgabe <code>"im Netz"</code>, „nein“: Ausgabe <code>"falsches Netz"</code>.</li>
+          <li>Die Prüfung auf 0 und 255 steht <em>vorn</em>: Eine Broadcast-Adresse ist in keinem Netz ein Gerät, auch nicht im richtigen.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-erste" data-title="Erste eigene Aufgabe: Gestörte Maschinen finden" data-part="A" data-stars="1" data-min="8" data-extra="" aria-labelledby="h-a-erste" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-erste" tabindex="-1">Erste eigene Aufgabe: Gestörte Maschinen finden</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Jetzt schreibst du selbst, mit <abbr class="k-begriff" data-erklaerung="Ein Test ist ein kleines Prüfprogramm. Es startet dein Programm mit festen Eingaben und vergleicht die Ausgabe mit dem erwarteten Ergebnis."><strong>Tests</strong></abbr> als Sicherheitsnetz. Du arbeitest mit einer Liste von Dictionaries, so wie sie aus dem Netz kommt, und gibst das Ergebnis mit <code class="k-i">return</code> zurück.</p>
+
+      <div class="a-task" data-a="code" data-id="w-erste" data-mode="code" data-timeout="20000">
+        <div class="a-task__text">
+          <p>Schreibe die Funktion <code class="k-i">gestoerte(zelle)</code>. Sie bekommt ein Dictionary wie aus <code class="k-i">maschinen.json</code> (Schlüssel <code class="k-i">"maschinen"</code> mit einer Liste von Maschinen, jede mit <code class="k-i">"id"</code> und <code class="k-i">"status"</code>) und gibt eine <strong>Liste der IDs</strong> aller Maschinen zurück, deren Status <code class="k-i">"gestoert"</code> ist, in der Reihenfolge der Daten. Gibt es keine, ist die Liste leer. Die Tests rufen deine Funktion mit verschiedenen Zellen auf, nicht nur mit der gezeigten.</p>
+          <div class="a-spec"><strong>Erwartet</strong><pre data-run="no">gestoerte(zelle) -&gt; Liste der IDs mit Status "gestoert"
+Keine gestörte Maschine -&gt; []</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V17" aria-label="Python-Code: gestörte Maschinen finden"># Fertigungszelle FZ-3 (verkürzt): Status je Gerät
+zelle = {
+    "zelle": "FZ-3",
+    "maschinen": [
+        {"id": "D2", "status": "laeuft"},
+        {"id": "F1", "status": "laeuft"},
+        {"id": "R1", "status": "gestoert"},
+        {"id": "M1", "status": "bereit"},
+    ],
+}
+
+
+def gestoerte(zelle):
+    # Gibt eine Liste mit den IDs aller Maschinen zurück, deren Status "gestoert" ist
+    pass
+
+
+print(gestoerte(zelle))
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def test_beispiel():
+    """FZ-3: nur R1 ist gestört"""
+    assert "gestoerte" in globals(), "Es fehlt die Funktion gestoerte(zelle)."
+    r = gestoerte({"zelle": "FZ-3", "maschinen": [{"id": "D2", "status": "laeuft"}, {"id": "F1", "status": "laeuft"}, {"id": "R1", "status": "gestoert"}, {"id": "M1", "status": "bereit"}]})
+    assert r == ["R1"], "Erwartet ['R1'], die Funktion gibt %r zurück. (Gibt sie die Liste mit return zurück, statt sie nur mit print anzuzeigen?)" % (r,)
+
+def test_mehrere():
+    """Mehrere gestörte Maschinen, Reihenfolge wie in den Daten"""
+    z = {"maschinen": [{"id": "A", "status": "gestoert"}, {"id": "B", "status": "laeuft"}, {"id": "C", "status": "gestoert"}]}
+    r = gestoerte(z)
+    assert r == ["A", "C"], "Erwartet ['A', 'C'], die Funktion gibt %r zurück." % (r,)
+
+def test_keine():
+    """Keine gestörte Maschine: leere Liste"""
+    r = gestoerte({"maschinen": [{"id": "A", "status": "laeuft"}, {"id": "B", "status": "bereit"}]})
+    assert r == [], "Erwartet eine leere Liste [], die Funktion gibt %r zurück." % (r,)
+
+def test_leer():
+    """Grenzfall: Zelle ohne Maschinen"""
+    r = gestoerte({"maschinen": []})
+    assert r == [], "Bei einer leeren Maschinenliste wird [] erwartet, die Funktion gibt %r zurück." % (r,)
+
+def test_nur_gestoert():
+    """Nur der exakte Status gestoert zählt"""
+    r = gestoerte({"maschinen": [{"id": "X", "status": "gestoert"}, {"id": "Y", "status": "Gestoert "}, {"id": "Z", "status": "wartung"}]})
+    assert r == ["X"], "Erwartet ['X'], die Funktion gibt %r zurück. Verglichen wird mit dem genauen Text 'gestoert'." % (r,)
+        </script>
+        <script type="text/x-python" data-role="solution">
+zelle = {
+    "zelle": "FZ-3",
+    "maschinen": [
+        {"id": "D2", "status": "laeuft"},
+        {"id": "F1", "status": "laeuft"},
+        {"id": "R1", "status": "gestoert"},
+        {"id": "M1", "status": "bereit"},
+    ],
+}
+
+
+def gestoerte(zelle):
+    ids = []
+    for m in zelle["maschinen"]:
+        if m["status"] == "gestoert":
+            ids.append(m["id"])
+    return ids
+
+
+print(gestoerte(zelle))
+        </script>
+        <ol class="a-hints">
+          <li>Lege vor der Schleife eine leere Liste an: <code>ids = []</code>. Am Ende gibst du sie mit <code>return ids</code> zurück.</li>
+          <li>Die Maschinen stehen in <code>zelle["maschinen"]</code>, eine Liste von Dictionaries: <code>for m in zelle["maschinen"]:</code>. Status und ID sind <code>m["status"]</code> und <code>m["id"]</code>.</li>
+          <li>In der Schleife: <code>if m["status"] == "gestoert":</code> und dann <code>ids.append(m["id"])</code>.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-review" data-seen="manual" data-title="Code-Review: KI-Netz-Check prüfen" data-part="A" data-stars="" data-min="15" data-extra="" aria-labelledby="h-a-review" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-review" tabindex="-1">Code-Review: KI-Netz-Check prüfen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Eine KI hat ein Programm geliefert, das die Zelle FZ-3 abfragt und das Netz prüft. Es sieht aufgeräumt aus. Würdest du es freigeben? Klick die Zeilen an, die du für fehlerhaft hältst, dann lass auflösen.</p>
+
+      <figure class="k-figure">
+        <picture>
+          <source srcset="../assets/img/ki-spiegel.webp" type="image/webp">
+          <img src="../assets/img/ki-spiegel.png" alt="Illustration: KI-Code wird von einem Ingenieur geprüft" width="1600" height="901" loading="lazy" onerror="this.closest('figure').hidden=true">
+        </picture>
+      </figure>
+
+      <div class="k-mirror">
+        <h3>Szenario: Netz-Check der Fertigungszelle</h3>
+        <p class="k-prompt__who">Prompt eines Studierenden</p>
+        <blockquote class="k-prompt">Schreib mir ein Python-Programm: Hole mit requests die Datei maschinen.json der Fertigungszelle (Adresse ../assets/data/v17/api/). Prüfe vor dem Auswerten, ob die Anfrage geklappt hat. Gib für jede Maschine ID, Status und aus, ob ihre IP-Adresse im Zellennetz 192.168.30.0/24 liegt. Hole dann D2.json und gib die Spindeltemperatur der Drehmaschine in °C aus.</blockquote>
+        <p class="k-prompt__who">KI-Antwort (Python)</p>
+          <ol class="k-codelines" aria-label="Code der KI, Zeilen anklickbar">
+            <li><button type="button" class="k-line">import requests</button></li>
+            <li><button type="button" class="k-line">import json</button></li>
+            <li><button type="button" class="k-line"> </button></li>
+            <li><button type="button" class="k-line">URL = &quot;../assets/data/v17/api/&quot;</button></li>
+            <li><button type="button" class="k-line"> </button></li>
+            <li><button type="button" class="k-line">antwort = requests.get(URL + &quot;maschinen.json&quot;)</button></li>
+            <li><button type="button" class="k-line" data-bug="b">zelle = antwort.json()</button></li>
+            <li><button type="button" class="k-line"> </button></li>
+            <li><button type="button" class="k-line">for m in zelle[&quot;maschinen&quot;]:</button></li>
+            <li><button type="button" class="k-line" data-bug="a">    if m[&quot;ip&quot;].startswith(&quot;192.168.3&quot;):</button></li>
+            <li><button type="button" class="k-line">        ort = &quot;im Netz&quot;</button></li>
+            <li><button type="button" class="k-line">    else:</button></li>
+            <li><button type="button" class="k-line">        ort = &quot;FALSCHES NETZ&quot;</button></li>
+            <li><button type="button" class="k-line">    print(m[&quot;id&quot;], m[&quot;status&quot;], ort)</button></li>
+            <li><button type="button" class="k-line"> </button></li>
+            <li><button type="button" class="k-line">d2 = requests.get(URL + &quot;D2.json&quot;)</button></li>
+            <li><button type="button" class="k-line" data-bug="d">daten = json.load(d2)</button></li>
+            <li><button type="button" class="k-line" data-bug="c">print(&quot;Spindel D2:&quot;, daten[&quot;temperatur_c&quot;], &quot;°C&quot;)</button></li>
+          </ol>
+        <p class="k-small k-muted">Tipp: Es sind vier Fehler eingebaut, in vier verschiedenen Zeilen. Zwei davon bringen das Programm zum Absturz, zwei nicht. Nicht jede Zeile ist falsch.</p>
+
+        <div class="k-mirror__task">
+          <p><strong>Würdest du das freigeben?</strong> Markiere die fehlerhaften Zeilen, dann lass auflösen.</p>
+          <button type="button" class="k-btn" data-mirror-check>Auflösen</button>
+          <p class="k-verdict" role="status" hidden></p>
+
+          <div data-mirror-after hidden>
+            <h3>Die vier Fehler</h3>
+            <h4>Fehler 1: Text-Vergleich statt Netz-Prüfung (Zeile 10)</h4>
+            <p>Die Zeile fragt, ob die Adresse mit <code class="k-i">"192.168.3"</code> <em>beginnt</em>. Das gilt für 192.168.30.x, aber auch für 192.168.31.20, den Roboter R1 mit der falschen Adresse, und für 192.168.39.x. Das Programm meldet also „im Netz“ und lässt genau den Fehler durch, den es finden soll. Es gibt keine Fehlermeldung, nur ein falsches Ergebnis. Lösung: <code class="k-i">ipaddress.ip_address(m["ip"]) in ipaddress.ip_network(zelle["netz"])</code>. Eine Bibliothek, die Netzmasken versteht, ist besser als ein Textvergleich.</p>
+            <h4>Fehler 2: keine Statusprüfung (Zeile 7)</h4>
+            <p>Der Prompt verlangt, <em>vor dem Auswerten</em> zu prüfen, ob die Anfrage geklappt hat. Die KI ruft sofort <code class="k-i">.json()</code> auf. Bei Status 404 oder 500 steht in der Antwort eine Fehlerseite statt JSON, und das Programm bricht mit einem <code class="k-i">JSONDecodeError</code> ab, ohne dass man den Grund sieht. Lösung: <code class="k-i">if antwort.status_code != 200:</code> mit einer verständlichen Meldung und Abbruch, erst danach <code class="k-i">.json()</code>.</p>
+            <h4>Fehler 3: json.load statt .json() (Zeile 17)</h4>
+            <p><code class="k-i">json.load</code> erwartet eine <em>Datei</em>, <code class="k-i">d2</code> ist aber eine requests-Antwort. Das gibt einen <code class="k-i">AttributeError</code> (die Antwort hat keine Methode <code class="k-i">read</code>). Lösung: <code class="k-i">daten = d2.json()</code>. Merke: <code class="k-i">load</code>/<code class="k-i">dump</code> für Dateien, <code class="k-i">loads</code>/<code class="k-i">dumps</code> für Text, <code class="k-i">antwort.json()</code> für eine HTTP-Antwort.</p>
+            <h4>Fehler 4: erfundener Schlüssel (Zeile 18)</h4>
+            <p>In <code class="k-i">D2.json</code> heißt der Schlüssel <code class="k-i">"temperatur_spindel_c"</code>, nicht <code class="k-i">"temperatur_c"</code>. Die KI hat den Namen geraten und nie in die Daten geschaut. Es gibt einen <code class="k-i">KeyError</code>. Lösung: <code class="k-i">daten["temperatur_spindel_c"]</code>. Bei KI-Code zu Daten gilt: Jeder Schlüssel muss in den echten Daten vorkommen.</p>
+
+            <h3>Die Fehler einzeln zum Ausprobieren</h3>
+            <p class="k-small k-muted">Je ein Aufruf, damit du siehst, was passiert: der Text-Vergleich, die fehlende Statusprüfung, <code class="k-i">json.load</code> mit einer Antwort und der falsche Schlüssel. Probiere dann die Korrektur.</p>
+<pre data-timeout="20000"><code>import ipaddress
+
+ip_text = "192.168.31.20"       # R1 nach dem Steuerungstausch
+print(ip_text.startswith("192.168.3"))                            # Fehler 1: sieht nach "im Netz" aus
+print(ipaddress.ip_address(ip_text) in ipaddress.ip_network("192.168.30.0/24"))   # richtig: False</code></pre><pre data-timeout="20000"><code>import requests
+
+antwort = requests.get("../assets/data/v17/api/D9.json")           # gibt es nicht
+print(antwort.status_code)                                         # Fehler 2: 404, aber ...
+daten = antwort.json()                                             # ... hier bricht es ab: keine Fehlerursache im Text</code></pre><pre data-timeout="20000"><code>import json
+import requests
+
+d2 = requests.get("../assets/data/v17/api/D2.json")
+daten = json.load(d2)                                              # Fehler 3: json.load will eine Datei
+print(daten)</code></pre><pre data-timeout="20000"><code>import requests
+
+daten = requests.get("../assets/data/v17/api/D2.json").json()
+print(daten.keys())                                                # welche Schlüssel gibt es wirklich?
+print(daten["temperatur_c"])                                       # Fehler 4: KeyError</code></pre>
+            <h3>Korrigierte Version (die vier Stellen)</h3>
+            <pre data-run="no" class="k-code"><code>if antwort.status_code != 200:
+    print("Anfrage fehlgeschlagen, Status", antwort.status_code)
+    raise SystemExit
+zelle = antwort.json()
+
+netz = ipaddress.ip_network(zelle["netz"])
+...
+    if ipaddress.ip_address(m["ip"]) in netz:
+
+daten = d2.json()
+print("Spindel D2:", daten["temperatur_spindel_c"], "°C")</code></pre>
+            <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke</strong><p>Bei KI-Code, der Daten aus dem Netz holt, prüfst du: Wird der Status geprüft, bevor ausgewertet wird? Kommen die Schlüssel wirklich in den Daten vor? Wird ein Netz mit einer Bibliothek geprüft oder mit einem Textvergleich, der nur zufällig stimmt? Und ist <code class="k-i">load</code>/<code class="k-i">loads</code>/<code class="k-i">.json()</code> die richtige Variante? Ein Programm, das beim ersten Test läuft, ist noch nicht richtig.</p></div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-fehler" data-title="Typische Fehlermeldungen" data-part="A" data-stars="" data-min="5" data-extra="" aria-labelledby="h-a-fehler" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-fehler" tabindex="-1">Typische Fehlermeldungen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Mit Daten aus dem Netz kommen neue Fehlermeldungen. Diese sechs siehst du garantiert. Jedes Beispiel lässt sich ausführen: Schau dir die echte Meldung an und lies sie von unten nach oben (zuerst die letzte Zeile).</p>
+
+      <div class="a-errors">
+        <div class="a-error">
+          <h3><code class="k-i">KeyError</code>: Schlüssel fehlt</h3>
+            <div class="a-task" data-a="run" data-mode="programm" data-timeout="20000">
+              <div class="a-editor"><textarea class="py-editor" data-lesson="V17" aria-label="Fehlerbeispiel KeyError">d2 = {"id": "D2", "temperatur_spindel_c": 48.5}
+print(d2["temperatur_c"])</textarea></div>
+            </div>
+          <p>Meldung: <code class="k-i">KeyError: 'temperatur_c'</code>. Das Dictionary hat diesen Schlüssel nicht (es heißt <code>temperatur_spindel_c</code>). Schau in die echten Daten, ob der Name stimmt (<code>print(d2.keys())</code>), oder nimm <code>.get("temperatur_c", 0)</code>, wenn das Fehlen normal ist.</p>
+        </div>
+        <div class="a-error">
+          <h3><code class="k-i">TypeError</code>: Liste mit Text-Schlüssel angesprochen</h3>
+            <div class="a-task" data-a="run" data-mode="programm" data-timeout="20000">
+              <div class="a-editor"><textarea class="py-editor" data-lesson="V17" aria-label="Fehlerbeispiel TypeError list indices">zelle = {"maschinen": [{"id": "D2"}, {"id": "F1"}]}
+print(zelle["maschinen"]["D2"])</textarea></div>
+            </div>
+          <p>Meldung: <code class="k-i">TypeError: list indices must be integers or slices, not str</code>. <code>zelle["maschinen"]</code> ist eine <em>Liste</em>, und eine Liste kennt nur Nummern, keine Namen. Entweder mit Nummer (<code>[0]</code>) oder mit einer Schleife über die Liste und dann <code>m["id"]</code>. Die Meldung sagt dir, was du hast (Liste) und was du übergeben hast (Text).</p>
+        </div>
+        <div class="a-error">
+          <h3><code class="k-i">json.JSONDecodeError</code>: kein gültiges JSON</h3>
+            <div class="a-task" data-a="run" data-mode="programm" data-timeout="20000">
+              <div class="a-editor"><textarea class="py-editor" data-lesson="V17" aria-label="Fehlerbeispiel JSONDecodeError">import json
+
+print(json.loads('{"id": "D2", "laeuft": true}'))      # gültig
+print(json.loads("{'id': 'D2'}"))                      # einfache Anführungszeichen: ungültig</textarea></div>
+            </div>
+          <p>Meldung: <code class="k-i">JSONDecodeError: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)</code>. JSON will <strong>doppelte</strong> Anführungszeichen. Ebenso gibt es einen Fehler bei einem Komma nach dem letzten Eintrag (<code>{"a": 1,}</code>). Der Fehler ist ein <code>ValueError</code>, also mit <code>except ValueError</code> abfangbar. Die Zahlen am Ende zeigen die Stelle.</p>
+        </div>
+        <div class="a-error">
+          <h3><code class="k-i">TypeError</code>: loads bekommt kein Text</h3>
+            <div class="a-task" data-a="run" data-mode="programm" data-timeout="20000">
+              <div class="a-editor"><textarea class="py-editor" data-lesson="V17" aria-label="Fehlerbeispiel TypeError loads Dict">import json
+
+d = {"id": "D2", "status": "laeuft"}
+print(json.loads(d))</textarea></div>
+            </div>
+          <p>Meldung: <code class="k-i">TypeError: the JSON object must be str, bytes or bytearray, not dict</code>. <code>loads</code> macht aus <em>Text</em> ein Dictionary; hier ist es schon eines. Typisch nach <code>antwort.json()</code>: Das Ergebnis ist bereits ein Dictionary, ein zweites <code>loads</code> ist falsch.</p>
+        </div>
+        <div class="a-error">
+          <h3><code class="k-i">ValueError</code>: keine IP-Adresse</h3>
+            <div class="a-task" data-a="run" data-mode="programm" data-timeout="20000">
+              <div class="a-editor"><textarea class="py-editor" data-lesson="V17" aria-label="Fehlerbeispiel ValueError ip_address">import ipaddress
+
+print(ipaddress.ip_address("192.168.30.11"))
+print(ipaddress.ip_address("192.168.30.300"))          # ein Block darf höchstens 255 sein</textarea></div>
+            </div>
+          <p>Meldung: <code class="k-i">ValueError: '192.168.30.300' does not appear to be an IPv4 or IPv6 address</code>. Jeder der vier Blöcke ist ein Byte (0 bis 255, V02). Dasselbe passiert bei drei statt vier Blöcken oder mit einem Tippfehler.</p>
+        </div>
+        <div class="a-error">
+          <h3><code class="k-i">.json()</code> auf einer 404-Antwort</h3>
+            <div class="a-task" data-a="run" data-mode="programm" data-timeout="20000">
+              <div class="a-editor"><textarea class="py-editor" data-lesson="V17" aria-label="Fehlerbeispiel json auf 404">import requests
+
+antwort = requests.get("../assets/data/v17/api/D9.json")
+print(antwort.status_code)
+print(antwort.json())</textarea></div>
+            </div>
+          <p>Meldung: ein <code class="k-i">JSONDecodeError: Expecting value: line 1 column 1 (char 0)</code>, bei requests je nach Version unter dem Namen <code>requests.exceptions.JSONDecodeError</code>. Die Zeile davor hat schon gezeigt, was los ist: Status 404. Die Antwort ist eine Fehlerseite, kein JSON. Die Meldung von <code>.json()</code> klingt nach „kaputtes JSON“, die Ursache liegt aber in der Adresse. Darum <strong>erst den Status prüfen</strong>.</p>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-1" data-title="JSON-Text einer Maschine lesen" data-part="B" data-stars="1" data-min="6" data-extra="" aria-labelledby="h-t-1" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-1" tabindex="-1">JSON-Text einer Maschine lesen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Programmieren lernst du mit den Fingern, nicht mit den Augen. Das Training ist ein fester Teil jedes Termins und gehört zum Selbststudium. Du musst nicht alles an einem Stück machen, aber alles bis zum nächsten Termin. Die Aufgaben laufen im Browser und werden automatisch geprüft.</p>
+      <div class="hinweis hinweis--achtung"><strong class="hinweis__title">Achtung</strong><p>Phase 3: Beim Projekt arbeitest du mit Copilot. Hier im Training schreibst du die Befehle selbst, damit du sie lesen kannst. Wenn Copilot dir später Code zum Abholen von Daten schreibt, prüfst du ihn mit der Liste aus dem Code-Review: Status geprüft? Schlüssel echt? Richtige <code class="k-i">load</code>-Variante?</p></div>
+
+      <div class="a-task" data-a="code" data-id="tr-1" data-mode="programm" data-timeout="20000">
+        <div class="a-task__text">
+          <p>Das Programm bekommt den JSON-Text einer Maschine über <code class="k-i">input()</code> (in der Zelle würde er aus dem Netz kommen). Wandle ihn mit <code class="k-i">json.loads</code> in ein Dictionary um und gib in zwei Zeilen aus: erst das <strong>Programm</strong> (Schlüssel <code class="k-i">"programm"</code>), dann die <strong>Drehzahl</strong> (Schlüssel <code class="k-i">"drehzahl_1_min"</code>). Die Tests geben dem Programm verschiedene Texte.</p>
+          <div class="a-spec"><strong>Erwartet</strong><pre data-run="no">Eingabe: {"id": "F1", "status": "laeuft", "programm": "FLANSCH_80", "drehzahl_1_min": 3000}
+Ausgabe: FLANSCH_80
+         3000</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V17" aria-label="Python-Code Aufgabe 1">import json
+
+text = input()              # ein JSON-Text mit den Daten einer Maschine
+# 1. Text mit json.loads in ein Dictionary umwandeln
+# 2. zuerst das Programm, dann die Drehzahl ausgeben (zwei Zeilen)
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+import json
+
+def _lauf(d):
+    return _zeilen(_run_program([json.dumps(d)]))
+
+def test_f1():
+    """F1: FLANSCH_80 und 3000"""
+    z = _lauf({"id": "F1", "status": "laeuft", "programm": "FLANSCH_80", "drehzahl_1_min": 3000})
+    assert z == ["FLANSCH_80", "3000"], "Erwartet die zwei Zeilen FLANSCH_80 und 3000, ausgegeben wurde %r." % (z,)
+
+def test_d2():
+    """D2: anderer Text, anderes Ergebnis"""
+    z = _lauf({"id": "D2", "status": "laeuft", "programm": "WELLE_20H6", "drehzahl_1_min": 1450, "temperatur_spindel_c": 48.5})
+    assert z == ["WELLE_20H6", "1450"], "Erwartet WELLE_20H6 und 1450, ausgegeben wurde %r. Die Werte müssen aus dem eingelesenen Text kommen, nicht fest im Programm stehen." % (z,)
+
+def test_reihenfolge_schluessel():
+    """Die Reihenfolge der Schlüssel im Text darf wechseln"""
+    z = _lauf({"drehzahl_1_min": 800, "programm": "TEST_1", "id": "X"})
+    assert z == ["TEST_1", "800"], "Erwartet TEST_1 und 800, ausgegeben wurde %r." % (z,)
+        </script>
+        <script type="text/x-python" data-role="solution">
+import json
+
+text = input()
+d = json.loads(text)
+print(d["programm"])
+print(d["drehzahl_1_min"])
+        </script>
+        <ol class="a-hints">
+          <li>Zuerst <code>import json</code>. Dann <code>d = json.loads(text)</code>: Aus dem Text wird ein Dictionary.</li>
+          <li>Die Schlüssel heißen <code>"programm"</code> und <code>"drehzahl_1_min"</code>: <code>print(d["programm"])</code>.</li>
+          <li>Zwei <code>print</code>-Aufrufe geben zwei Zeilen aus. Die Zahl bleibt eine Zahl, es ist keine Umwandlung nötig.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-2" data-title="Wartungsmeldung als JSON bauen" data-part="B" data-stars="1" data-min="6" data-extra="" aria-labelledby="h-t-2" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-2" tabindex="-1">Wartungsmeldung als JSON bauen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="code" data-id="tr-2" data-mode="code" data-timeout="20000">
+        <div class="a-task__text">
+          <p>Die Instandhaltung bekommt Wartungsmeldungen als JSON-Text (auf dem Topic <code class="k-i">fz3/D2/wartung</code>). Schreibe die Funktion <code class="k-i">meldung(maschine, werkzeug)</code>, die ein Dictionary mit den drei Schlüsseln <code class="k-i">"maschine"</code>, <code class="k-i">"werkzeug"</code> und <code class="k-i">"aktion"</code> (immer <code class="k-i">"wechseln"</code>) baut und es als <strong>JSON-Text</strong> zurückgibt. Die Tests lesen den Text wieder mit <code class="k-i">json.loads</code> ein, ein einfach in Text gewandeltes Dictionary reicht also nicht.</p>
+          <div class="a-spec"><strong>Erwartet</strong><pre data-run="no">meldung("D2", "T4") -&gt; '{"maschine": "D2", "werkzeug": "T4", "aktion": "wechseln"}'</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V17" aria-label="Python-Code Aufgabe 2">import json
+
+
+def meldung(maschine, werkzeug):
+    # Baue ein Dictionary mit den Schlüsseln "maschine", "werkzeug" und "aktion" (Wert "wechseln")
+    # und gib es als JSON-Text zurück
+    pass
+
+
+print(meldung("D2", "T4"))
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def test_typ():
+    """Rückgabe ist ein Text (str)"""
+    assert "meldung" in globals(), "Es fehlt die Funktion meldung(maschine, werkzeug)."
+    r = meldung("D2", "T4")
+    assert isinstance(r, str), "Die Funktion soll JSON-TEXT zurückgeben (json.dumps), nicht %s." % type(r).__name__
+
+def test_inhalt():
+    """Der Text ist gültiges JSON mit den drei Schlüsseln"""
+    import json
+    r = meldung("D2", "T4")
+    try:
+        d = json.loads(r)
+    except ValueError:
+        assert False, "Die Rückgabe %r ist kein gültiges JSON. Tipp: json.dumps liefert doppelte Anführungszeichen, str(dict) nicht." % (r,)
+    assert d == {"maschine": "D2", "werkzeug": "T4", "aktion": "wechseln"}, "Das JSON enthält %r, erwartet {'maschine': 'D2', 'werkzeug': 'T4', 'aktion': 'wechseln'}." % (d,)
+
+def test_andere_werte():
+    """Andere Maschine und anderes Werkzeug"""
+    import json
+    d = json.loads(meldung("F1", "T1"))
+    assert d == {"maschine": "F1", "werkzeug": "T1", "aktion": "wechseln"}, "Für F1 und T1 erwartet {'maschine': 'F1', 'werkzeug': 'T1', 'aktion': 'wechseln'}, erhalten %r. Die Werte sollen aus den Parametern kommen." % (d,)
+        </script>
+        <script type="text/x-python" data-role="solution">
+import json
+
+
+def meldung(maschine, werkzeug):
+    daten = {"maschine": maschine, "werkzeug": werkzeug, "aktion": "wechseln"}
+    return json.dumps(daten)
+
+
+print(meldung("D2", "T4"))
+        </script>
+        <ol class="a-hints">
+          <li>Das Dictionary: <code>daten = {"maschine": maschine, "werkzeug": werkzeug, "aktion": "wechseln"}</code>. Links die Schlüssel als Text, rechts die Parameter ohne Anführungszeichen.</li>
+          <li>Aus dem Dictionary wird Text mit <code>json.dumps(daten)</code> (mit s: String).</li>
+          <li>Die Funktion soll den Text <em>zurückgeben</em> (<code>return</code>), nicht nur ausgeben.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-3" data-title="Liegt die Adresse im Netz?" data-part="B" data-stars="2" data-min="8" data-extra="" aria-labelledby="h-t-3" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-3" tabindex="-1">Liegt die Adresse im Netz?</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="code" data-id="tr-3" data-mode="code" data-timeout="20000">
+        <div class="a-task__text">
+          <p>Schreibe die Funktion <code class="k-i">im_netz(ip, netz)</code>. Beide Parameter sind Text (<code class="k-i">"192.168.31.20"</code>, <code class="k-i">"192.168.30.0/24"</code>). Die Funktion gibt <code class="k-i">True</code> zurück, wenn die Adresse im Netz liegt, sonst <code class="k-i">False</code>. Verwende die Bibliothek <code class="k-i">ipaddress</code>. Die Tests probieren verschiedene Präfixe aus (/8, /16, /24, /26).</p>
+          <div class="a-spec"><strong>Erwartet</strong><pre data-run="no">im_netz("192.168.30.11", "192.168.30.0/24") -&gt; True
+im_netz("192.168.31.20", "192.168.30.0/24") -&gt; False</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V17" aria-label="Python-Code Aufgabe 3">import ipaddress
+
+
+def im_netz(ip, netz):
+    # True, wenn die Adresse ip (Text) im Netz netz (Text, z. B. "192.168.30.0/24") liegt
+    pass
+
+
+print(im_netz("192.168.30.11", "192.168.30.0/24"))
+print(im_netz("192.168.31.20", "192.168.30.0/24"))
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def test_ja_nein():
+    """FZ-3: 192.168.30.11 ja, 192.168.31.20 nein"""
+    assert "im_netz" in globals(), "Es fehlt die Funktion im_netz(ip, netz)."
+    assert im_netz("192.168.30.11", "192.168.30.0/24") is True, "192.168.30.11 liegt im Netz 192.168.30.0/24: erwartet True, erhalten %r." % (im_netz("192.168.30.11", "192.168.30.0/24"),)
+    assert im_netz("192.168.31.20", "192.168.30.0/24") is False, "192.168.31.20 liegt NICHT im Netz 192.168.30.0/24: erwartet False, erhalten %r." % (im_netz("192.168.31.20", "192.168.30.0/24"),)
+
+def test_anderes_praefix():
+    """Kleineres Netz /26: .64 bis .127"""
+    assert im_netz("192.168.30.77", "192.168.30.64/26") is True, "192.168.30.77 liegt in 192.168.30.64/26 (Adressen .64 bis .127)."
+    assert im_netz("192.168.30.130", "192.168.30.64/26") is False, "192.168.30.130 liegt nicht in 192.168.30.64/26."
+    assert im_netz("192.168.30.63", "192.168.30.64/26") is False, "192.168.30.63 liegt knapp unter dem Netz 192.168.30.64/26."
+
+def test_anderes_netz():
+    """Ein ganz anderes Netz, andere Maske"""
+    assert im_netz("10.4.9.200", "10.0.0.0/8") is True, "10.4.9.200 liegt im Netz 10.0.0.0/8."
+    assert im_netz("11.0.0.1", "10.0.0.0/8") is False, "11.0.0.1 liegt nicht im Netz 10.0.0.0/8."
+    assert im_netz("192.168.30.5", "192.168.0.0/16") is True, "192.168.30.5 liegt im Netz 192.168.0.0/16."
+
+def test_bool():
+    """Das Ergebnis ist ein bool (True/False), kein Text"""
+    assert isinstance(im_netz("192.168.30.2", "192.168.30.0/24"), bool), "Die Funktion soll True oder False zurückgeben."
+        </script>
+        <script type="text/x-python" data-role="solution">
+import ipaddress
+
+
+def im_netz(ip, netz):
+    return ipaddress.ip_address(ip) in ipaddress.ip_network(netz)
+
+
+print(im_netz("192.168.30.11", "192.168.30.0/24"))
+print(im_netz("192.168.31.20", "192.168.30.0/24"))
+        </script>
+        <ol class="a-hints">
+          <li>Beide Eingaben sind Text. Mach aus dem Text eine Adresse (<code>ipaddress.ip_address(ip)</code>) und aus dem Netz-Text ein Netz (<code>ipaddress.ip_network(netz)</code>).</li>
+          <li>Der Operator <code>in</code> liefert schon <code>True</code> oder <code>False</code>: <code>adresse in netz</code>.</li>
+          <li>Also genügt eine Zeile: <code>return ipaddress.ip_address(ip) in ipaddress.ip_network(netz)</code>. Ein Textvergleich mit <code>startswith</code> besteht die Tests mit /26 und /8 nicht.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-4" data-title="F1 abfragen: Programm und Stückzahl" data-part="B" data-stars="2" data-min="8" data-extra="requests im Browser" aria-labelledby="h-t-4" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-4" tabindex="-1">F1 abfragen: Programm und Stückzahl</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="code" data-id="tr-4" data-mode="code" data-timeout="20000">
+        <div class="a-task__text">
+          <p>Hole die Daten einer Maschine und fasse sie in einer Zeile zusammen. Schreibe die Funktion <code class="k-i">kurzinfo(url)</code>: Sie holt die JSON-Datei unter <code class="k-i">url</code> mit <code class="k-i">requests</code> und gibt den Text <code class="k-i">"PROGRAMM: 61 Stück"</code> zurück, also Programm, Doppelpunkt, Stückzahl der Schicht (Schlüssel <code class="k-i">stueckzahl_schicht</code>), das Wort „Stück“. Für <code class="k-i">F1.json</code> ist das <code class="k-i">FLANSCH_80: 61 Stück</code>. Die Tests holen die Dateien selbst und vergleichen, auch für andere Maschinen.</p>
+          <div class="a-spec"><strong>Erwartet</strong><pre data-run="no">kurzinfo(URL + "F1.json") -&gt; "FLANSCH_80: 61 Stück"</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V17" aria-label="Python-Code Aufgabe 4">import requests
+
+URL = "../assets/data/v17/api/"
+
+
+def kurzinfo(url):
+    # Holt die JSON-Datei unter url und gibt einen Text der Form "PROGRAMM: 61 Stück" zurück
+    # (Programm und Stückzahl der Schicht aus der Antwort)
+    pass
+
+
+print(kurzinfo(URL + "F1.json"))
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+import requests
+
+def _erwartet(name):
+    d = requests.get("../assets/data/v17/api/" + name).json()
+    return "%s: %s Stück" % (d["programm"], d["stueckzahl_schicht"])
+
+def test_f1():
+    """F1: FLANSCH_80, 61 Stück"""
+    assert "kurzinfo" in globals(), "Es fehlt die Funktion kurzinfo(url)."
+    r = kurzinfo("../assets/data/v17/api/F1.json")
+    assert r == "FLANSCH_80: 61 Stück", "Erwartet 'FLANSCH_80: 61 Stück', erhalten %r." % (r,)
+
+def test_d2():
+    """D2: andere Datei, anderes Ergebnis"""
+    r = kurzinfo("../assets/data/v17/api/D2.json")
+    assert r == _erwartet("D2.json"), "Erwartet %r, erhalten %r. Die Funktion muss die Datei holen, die als url übergeben wird." % (_erwartet("D2.json"), r)
+
+def test_m1():
+    """M1: Messmaschine"""
+    r = kurzinfo("../assets/data/v17/api/M1.json")
+    assert r == _erwartet("M1.json"), "Erwartet %r, erhalten %r." % (_erwartet("M1.json"), r)
+
+def test_ausgabe():
+    """Das Programm gibt für F1 die Zeile aus"""
+    assert "FLANSCH_80: 61 Stück" in AUSGABE, "Im Programm soll print(kurzinfo(URL + \"F1.json\")) die Zeile FLANSCH_80: 61 Stück ausgeben. Ausgegeben wurde %r." % (AUSGABE,)
+        </script>
+        <script type="text/x-python" data-role="solution">
+import requests
+
+URL = "../assets/data/v17/api/"
+
+
+def kurzinfo(url):
+    antwort = requests.get(url)
+    daten = antwort.json()
+    return f"{daten['programm']}: {daten['stueckzahl_schicht']} Stück"
+
+
+print(kurzinfo(URL + "F1.json"))
+        </script>
+        <ol class="a-hints">
+          <li>Hol die Datei mit <code>antwort = requests.get(url)</code> und mach daraus Daten mit <code>antwort.json()</code>.</li>
+          <li>Die Schlüssel heißen <code>"programm"</code> und <code>"stueckzahl_schicht"</code>. Im f-String brauchst du für die Schlüssel einfache Anführungszeichen: <code>f"{daten['programm']}: …"</code>.</li>
+          <li>Das Ergebnis mit <code>return</code> zurückgeben. Der Aufruf unten im Programm gibt es aus.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-5" data-title="Wartungsliste aus verschachtelten Daten" data-part="B" data-stars="3" data-min="12" data-extra="" aria-labelledby="h-t-5" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-5" tabindex="-1">Wartungsliste aus verschachtelten Daten</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="code" data-id="tr-5" data-mode="code" data-timeout="20000">
+        <div class="a-task__text">
+          <p>Die Instandhaltung will wissen, welche Werkzeuge über der Verschleißgrenze liegen. <code class="k-i">details</code> ist ein Dictionary: Schlüssel ist die Maschinen-ID, Wert das Detail-Dictionary wie aus <code class="k-i">D2.json</code> (mit <code class="k-i">"werkzeugverschleiss_prozent"</code>, einem Dictionary Werkzeug zu Prozent). Schreibe <code class="k-i">wartungsliste(details, grenze=80)</code>: Sie gibt eine Liste von Tupeln <code class="k-i">(maschine, werkzeug, prozent)</code> zurück für jedes Werkzeug mit Verschleiß <strong>über</strong> der Grenze, in der Reihenfolge der Daten. Maschinen ohne diesen Schlüssel (der Roboter, die Messmaschine) werden übersprungen.</p>
+          <div class="a-spec"><strong>Erwartet</strong><pre data-run="no">wartungsliste(details) -&gt; [("D2", "T4", 83)]
+wartungsliste(details, 40) -&gt; [("D2", "T4", 83), ("F1", "T1", 47)]</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V17" aria-label="Python-Code Aufgabe 5">def wartungsliste(details, grenze=80):
+    # details: Dictionary, Schlüssel = Maschinen-ID, Wert = Detail-Dictionary (wie D2.json)
+    # Rückgabe: Liste von Tupeln (maschine, werkzeug, prozent) für jedes Werkzeug mit prozent &gt; grenze
+    # Maschinen ohne den Schlüssel "werkzeugverschleiss_prozent" werden übersprungen
+    pass
+
+
+details = {
+    "D2": {"id": "D2", "werkzeugverschleiss_prozent": {"T1": 22, "T4": 83}},
+    "F1": {"id": "F1", "werkzeugverschleiss_prozent": {"T1": 47}},
+    "R1": {"id": "R1", "status": "gestoert"},
+}
+print(wartungsliste(details))
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+DETAILS = {
+    "D2": {"id": "D2", "werkzeugverschleiss_prozent": {"T1": 22, "T4": 83}},
+    "F1": {"id": "F1", "werkzeugverschleiss_prozent": {"T1": 47}},
+    "R1": {"id": "R1", "status": "gestoert"},
+    "M1": {"id": "M1", "temperatur_raum_c": 20.1},
+    "X9": {"id": "X9", "werkzeugverschleiss_prozent": {"T2": 95, "T3": 81, "T5": 80}},
+}
+
+def test_standard():
+    """Grenze 80: D2/T4 und X9/T2, X9/T3"""
+    assert "wartungsliste" in globals(), "Es fehlt die Funktion wartungsliste(details, grenze=80)."
+    r = wartungsliste(DETAILS)
+    assert r == [("D2", "T4", 83), ("X9", "T2", 95), ("X9", "T3", 81)], "Erwartet [('D2', 'T4', 83), ('X9', 'T2', 95), ('X9', 'T3', 81)], erhalten %r. (Genau 80 % zählt nicht: > grenze.)" % (r,)
+
+def test_tupel():
+    """Die Einträge sind Tupel"""
+    r = wartungsliste(DETAILS)
+    assert r and all(isinstance(x, tuple) and len(x) == 3 for x in r), "Jeder Eintrag soll ein Tupel (maschine, werkzeug, prozent) sein, erhalten %r." % (r,)
+
+def test_andere_grenze():
+    """Grenze 40: auch F1/T1 mit 47 und X9/T5 mit 80"""
+    r = wartungsliste(DETAILS, 40)
+    assert r == [("D2", "T4", 83), ("F1", "T1", 47), ("X9", "T2", 95), ("X9", "T3", 81), ("X9", "T5", 80)], "Mit grenze=40 erwartet [('D2', 'T4', 83), ('F1', 'T1', 47), ('X9', 'T2', 95), ('X9', 'T3', 81), ('X9', 'T5', 80)], erhalten %r." % (r,)
+
+def test_fehlender_schluessel():
+    """Maschinen ohne Verschleißdaten brechen nichts ab"""
+    r = wartungsliste({"R1": {"id": "R1", "status": "gestoert"}, "M1": {"id": "M1"}})
+    assert r == [], "Ohne Verschleißdaten erwartet [], erhalten %r. Mit .get(...) statt [...] gibt es keinen KeyError." % (r,)
+
+def test_leer():
+    """Grenzfälle: leeres Dictionary, hohe Grenze"""
+    assert wartungsliste({}) == [], "Ein leeres Dictionary ergibt []."
+    assert wartungsliste(DETAILS, 100) == [], "Mit grenze=100 liegt nichts darüber: []."
+        </script>
+        <script type="text/x-python" data-role="solution">
+def wartungsliste(details, grenze=80):
+    liste = []
+    for maschine, daten in details.items():
+        verschleiss = daten.get("werkzeugverschleiss_prozent", {})
+        for werkzeug, prozent in verschleiss.items():
+            if prozent > grenze:
+                liste.append((maschine, werkzeug, prozent))
+    return liste
+
+
+details = {
+    "D2": {"id": "D2", "werkzeugverschleiss_prozent": {"T1": 22, "T4": 83}},
+    "F1": {"id": "F1", "werkzeugverschleiss_prozent": {"T1": 47}},
+    "R1": {"id": "R1", "status": "gestoert"},
+}
+print(wartungsliste(details))
+        </script>
+        <ol class="a-hints">
+          <li>Zwei Schleifen ineinander: außen über die Maschinen (<code>for maschine, daten in details.items():</code>), innen über die Werkzeuge der Maschine (<code>for werkzeug, prozent in ….items():</code>).</li>
+          <li>Das innere Dictionary holst du mit <code>daten.get("werkzeugverschleiss_prozent", {})</code>. Fehlt der Schlüssel, bekommst du ein leeres Dictionary, die innere Schleife läuft nullmal, und es gibt keinen <code>KeyError</code>.</li>
+          <li>Gesammelt wird mit <code>liste.append((maschine, werkzeug, prozent))</code>: Die doppelten Klammern bauen ein Tupel. Bedingung: <code>prozent &gt; grenze</code> (nicht <code>&gt;=</code>).</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-6" data-title="Zellenbericht: Stückzahl der Schicht" data-part="B" data-stars="3" data-min="12" data-extra="requests im Browser" aria-labelledby="h-t-6" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-6" tabindex="-1">Zellenbericht: Stückzahl der Schicht</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="code" data-id="tr-6" data-mode="code" data-timeout="30000">
+        <div class="a-task__text">
+          <p>In V16 hast du die Logs der Zelle durchsucht, jetzt rechnest du ihre Schichtleistung zusammen. Schreibe <code class="k-i">schichtsumme(url)</code>: Die Funktion holt <code class="k-i">url + "maschinen.json"</code>, dann für <strong>jedes</strong> Gerät die Datei <code class="k-i">url + id + ".json"</code> und addiert deren <code class="k-i">stueckzahl_schicht</code>. Hat ein Gerät keinen solchen Schlüssel, zählt es als 0. Für die Zelle FZ-3 kommt 546 heraus. Die Tests rufen die Funktion auch mit der Adresse einer zweiten, kleineren Zelle auf.</p>
+          <div class="a-spec"><strong>Erwartet</strong><pre data-run="no">schichtsumme("../assets/data/v17/api/") -&gt; 546</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V17" aria-label="Python-Code Aufgabe 6">import requests
+
+URL = "../assets/data/v17/api/"
+
+
+def schichtsumme(url):
+    # 1. url + "maschinen.json" holen und die Maschinen-IDs lesen
+    # 2. für jede ID url + id + ".json" holen
+    # 3. "stueckzahl_schicht" aller Geräte addieren (fehlt der Schlüssel: 0, z. B. bei der SPS)
+    pass
+
+
+print("Stückzahl der Schicht:", schichtsumme(URL))
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def test_fz3():
+    """FZ-3: 142 + 61 + 203 + 140 + 0 = 546"""
+    assert "schichtsumme" in globals(), "Es fehlt die Funktion schichtsumme(url)."
+    r = schichtsumme("../assets/data/v17/api/")
+    assert r == 546, "Erwartet 546 (D2 142, F1 61, R1 203, M1 140, SPS ohne Wert), erhalten %r." % (r,)
+
+def test_andere_zelle():
+    """Eine andere Zelle mit drei Geräten (eines ohne Stückzahl)"""
+    r = schichtsumme("../assets/data/v17/testzelle/")
+    assert r == 17, "Für die Testzelle (X1: 10, X2: ohne Wert, X3: 7) erwartet 17, erhalten %r. Die Adresse und die Geräteliste müssen aus der Funktion kommen, nicht fest im Code stehen." % (r,)
+
+def test_ganze_zahl():
+    """Das Ergebnis ist eine ganze Zahl"""
+    r = schichtsumme("../assets/data/v17/testzelle/")
+    assert isinstance(r, int), "Die Summe soll eine ganze Zahl (int) sein, erhalten %s." % type(r).__name__
+        </script>
+        <script type="text/x-python" data-role="solution">
+import requests
+
+URL = "../assets/data/v17/api/"
+
+
+def schichtsumme(url):
+    zelle = requests.get(url + "maschinen.json").json()
+    summe = 0
+    for m in zelle["maschinen"]:
+        details = requests.get(url + m["id"] + ".json").json()
+        summe = summe + details.get("stueckzahl_schicht", 0)
+    return summe
+
+
+print("Stückzahl der Schicht:", schichtsumme(URL))
+        </script>
+        <ol class="a-hints">
+          <li>Die Geräteliste: <code>zelle = requests.get(url + "maschinen.json").json()</code>, dann <code>for m in zelle["maschinen"]:</code>.</li>
+          <li>Pro Gerät holst du eine zweite Datei: <code>requests.get(url + m["id"] + ".json").json()</code>. Die Adresse setzt sich aus <code>url</code>, der ID und <code>".json"</code> zusammen.</li>
+          <li>Die SPS hat keine Stückzahl. Mit <code>details.get("stueckzahl_schicht", 0)</code> zählt sie als 0, ohne <code>KeyError</code>. Vor der Schleife steht <code>summe = 0</code>, danach <code>return summe</code>.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-7" data-title="MQTT-Mitschnitt auswerten (Zeilen, JSON, Fehler)" data-part="B" data-stars="3" data-min="10" data-extra="Wiederholung V08, V09" aria-labelledby="h-t-7" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-7" tabindex="-1">MQTT-Mitschnitt auswerten (Zeilen, JSON, Fehler)</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="code" data-id="tr-7" data-mode="code" data-timeout="20000" data-files="../assets/data/v17/mqtt-mitschnitt.jsonl">
+        <div class="a-task__text">
+          <p>Wiederholung aus V08 und V09 mit neuem Werkzeug. Ein MQTT-Client hat Nachrichten der Zelle mitgeschrieben: <code class="k-i">mqtt-mitschnitt.jsonl</code>, <strong>eine Nachricht pro Zeile</strong> als JSON (JSON Lines). Durch Funkstörungen sind einige Zeilen kaputt. Schreibe <code class="k-i">zaehle_topics(dateiname)</code>: Sie liest die Datei zeilenweise, wandelt jede Zeile mit <code class="k-i">json.loads</code> um, überspringt kaputte Zeilen mit <code class="k-i">except ValueError</code> und gibt ein Dictionary <code class="k-i">Topic zu Anzahl</code> der gültigen Nachrichten zurück. Fehlt die Datei, ist das Ergebnis <code class="k-i">{}</code>. Die Tests schreiben eigene Dateien und rufen deine Funktion damit auf.</p>
+          <div class="a-spec"><strong>Erwartet</strong><pre data-run="no">{"fz3/D2/status": 3, "fz3/F1/status": 1, ...}  (nur gültige Zeilen gezählt)</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V17" aria-label="Python-Code Aufgabe 7">import json
+
+
+def zaehle_topics(dateiname):
+    # Jede Zeile der Datei ist eine MQTT-Nachricht als JSON: {"zeit": ..., "topic": ..., "nutzlast": {...}}
+    # Gib ein Dictionary zurück: Topic -&gt; Anzahl der gültigen Nachrichten.
+    # Zeilen, die kein gültiges JSON sind, werden übersprungen (except ValueError).
+    # Gibt es die Datei nicht, ist das Ergebnis ein leeres Dictionary.
+    pass
+
+
+print(zaehle_topics("mqtt-mitschnitt.jsonl"))
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+import os
+
+def _datei(name, zeilen_liste):
+    with open(name, "w", encoding="utf-8") as f:
+        f.write("\n".join(zeilen_liste) + "\n")
+
+def test_mitschnitt():
+    """Der Mitschnitt der Zelle: sechs Topics, vier kaputte Zeilen übersprungen"""
+    assert "zaehle_topics" in globals(), "Es fehlt die Funktion zaehle_topics(dateiname)."
+    r = zaehle_topics("mqtt-mitschnitt.jsonl")
+    erwartet = {"fz3/D2/status": 3, "fz3/F1/status": 1, "fz3/M1/status": 3, "fz3/R1/status": 2, "fz3/D2/wartung": 1, "fz3/SPS/status": 1}
+    assert r == erwartet, "Erwartet %r, erhalten %r. (Vier Zeilen sind kaputt: abgeschnitten, einfache Anführungszeichen, leer, Komma am Ende.)" % (erwartet, r)
+
+def test_eigene_datei():
+    """Eigene Datei mit zwei Topics und einer kaputten Zeile"""
+    _datei("t_a.jsonl", ['{"topic": "a/x", "nutzlast": 1}', '{"topic": "a/y", "nutzlast": 2}', 'kein json', '{"topic": "a/x", "nutzlast": 3}'])
+    r = zaehle_topics("t_a.jsonl")
+    assert r == {"a/x": 2, "a/y": 1}, "Erwartet {'a/x': 2, 'a/y': 1}, erhalten %r." % (r,)
+
+def test_alles_kaputt():
+    """Grenzfall: nur kaputte Zeilen ergeben ein leeres Dictionary"""
+    _datei("t_b.jsonl", ["{", "x", '{"topic": "a",}'])
+    r = zaehle_topics("t_b.jsonl")
+    assert r == {}, "Erwartet {}, erhalten %r." % (r,)
+
+def test_fehlende_datei():
+    """Grenzfall: Datei gibt es nicht (FileNotFoundError abfangen)"""
+    assert not os.path.exists("gibt_es_nicht.jsonl")
+    try:
+        r = zaehle_topics("gibt_es_nicht.jsonl")
+    except FileNotFoundError:
+        assert False, "Die Funktion bricht mit FileNotFoundError ab. Fange den Fehler mit try/except ab und gib {} zurück."
+    assert r == {}, "Erwartet {} für eine fehlende Datei, erhalten %r." % (r,)
+        </script>
+        <script type="text/x-python" data-role="solution">
+import json
+
+
+def zaehle_topics(dateiname):
+    anzahl = {}
+    try:
+        with open(dateiname, encoding="utf-8") as datei:
+            for zeile in datei:
+                try:
+                    nachricht = json.loads(zeile)
+                except ValueError:
+                    continue
+                topic = nachricht["topic"]
+                anzahl[topic] = anzahl.get(topic, 0) + 1
+    except FileNotFoundError:
+        return {}
+    return anzahl
+
+
+print(zaehle_topics("mqtt-mitschnitt.jsonl"))
+        </script>
+        <ol class="a-hints">
+          <li>Das Gerüst: <code>try:</code> mit <code>with open(dateiname, encoding="utf-8") as datei:</code> und <code>for zeile in datei:</code>. Dazu ein <code>except FileNotFoundError:</code> mit <code>return {}</code> (V09).</li>
+          <li>In der Schleife kommt ein zweites <code>try</code> um <code>json.loads(zeile)</code> mit <code>except ValueError:</code> und <code>continue</code>. Auch eine leere Zeile löst den Fehler aus und wird so übersprungen.</li>
+          <li>Gezählt wird wie in V08: <code>anzahl[topic] = anzahl.get(topic, 0) + 1</code>. Das Topic steht in <code>nachricht["topic"]</code>.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-8" data-title="Klausur-Modus: JSON lesen, Netz prüfen, Code schreiben" data-part="B" data-stars="4" data-min="15" data-extra="8 Punkte" aria-labelledby="h-t-8" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-8" tabindex="-1">Klausur-Modus: JSON lesen, Netz prüfen, Code schreiben</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task__text">
+        <p><strong>So wie in der Klausur:</strong> Der erste Teil läuft auf Papier, der zweite im Editor ohne Ausführen und ohne <abbr class="k-begriff" data-erklaerung="Die Auto-Vervollständigung schlägt dir beim Tippen passende Wörter vor. In der Klausur gibt es sie nicht.">Auto-Vervollständigung</abbr>.</p>
+        <h3>Teil 1 (Papier, 3 Punkte): Code lesen und Netz rechnen</h3>
+        <pre data-run="no" class="k-code"><code>import json
+
+text = '{"id": "F1", "werkzeug": {"T1": 47, "T2": 91}, "stueck": [61, 12]}'
+d = json.loads(text)
+print(d["werkzeug"]["T2"])
+print(d["stueck"][0] + d["stueck"][1])
+print(type(d["stueck"]))
+print("T3" in d["werkzeug"])</code></pre>
+        <p>Was gibt das Programm aus (vier Zeilen)? Dazu zwei Fragen zum Netz: Liegt 192.168.30.200 im Netz 192.168.30.128/25? Wie viele Geräteadressen hat ein /27-Netz? Rechne auf Papier, decke danach auf und vergleiche.</p>
+        <details class="k-deep">
+          <summary>Auflösung aufdecken und ausführen</summary>
+          <div class="k-deep__body">
+            <p>Ausgabe: <code class="k-i">91</code>, dann <code class="k-i">73</code> (61 + 12), dann <code class="k-i">&lt;class 'list'&gt;</code>, dann <code class="k-i">False</code> (<code>in</code> prüft bei einem Dictionary die Schlüssel, und <code>"T3"</code> ist keiner). Netz: Ein /25 hat 128 Adressen, hier .128 bis .255, also liegt .200 <strong>im</strong> Netz. Ein /27 hat 2<sup>5</sup> = 32 Adressen, davon 30 für Geräte (Netzadresse und Broadcast abgezogen).</p>
+<pre data-timeout="20000"><code>import json
+import ipaddress
+
+text = '{"id": "F1", "werkzeug": {"T1": 47, "T2": 91}, "stueck": [61, 12]}'
+d = json.loads(text)
+print(d["werkzeug"]["T2"])
+print(d["stueck"][0] + d["stueck"][1])
+print(type(d["stueck"]))
+print("T3" in d["werkzeug"])
+print(ipaddress.ip_address("192.168.30.200") in ipaddress.ip_network("192.168.30.128/25"))
+print(ipaddress.ip_network("192.168.30.0/27").num_addresses - 2)</code></pre>
+          </div>
+        </details>
+        <h3>Teil 2 (Code schreiben, 8 Punkte)</h3>
+      </div>
+      <div class="a-task" data-a="klausur" data-id="tr-8" data-mode="code" data-minutes="15" data-timeout="20000">
+        <div class="a-task__text">
+          <p>Eine Zelle liegt als Dictionary vor, wie aus <code>maschinen.json</code>: <code>zelle["netz"]</code> ist zum Beispiel <code>"192.168.30.0/24"</code>, <code>zelle["maschinen"]</code> ist eine Liste von Dictionaries mit den Schlüsseln <code>"id"</code> und <code>"ip"</code> (Text). Schreibe eine Funktion <code>falsches_netz(zelle)</code>, die die <strong>IDs aller Geräte</strong> als Liste zurückgibt, deren IP-Adresse <strong>nicht im Netz der Zelle</strong> liegt. Es sind alles /24-Netze: Eine Adresse liegt im Netz, wenn ihre <strong>ersten drei Blöcke</strong> mit denen des Netzes übereinstimmen. Verwende <strong>nicht</strong> die Bibliothek <code>ipaddress</code>, sondern <code>split(".")</code> und den Vergleich der ersten drei Blöcke. Das Netz muss aus <code>zelle["netz"]</code> gelesen werden.</p>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V17" data-assist="off" aria-label="Python-Code von Hand schreiben, ohne Ausführen"></textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _z(netz, geraete):
+    return {"zelle": "Z", "netz": netz, "maschinen": [{"id": i, "ip": ip} for i, ip in geraete]}
+
+def test_vorhanden():
+    """Die Funktion falsches_netz(zelle) ist definiert"""
+    assert "falsches_netz" in globals(), "Es fehlt die Funktion falsches_netz(zelle)."
+
+def test_fz3():
+    """FZ-3: nur R1 (192.168.31.20) liegt im falschen Netz"""
+    z = _z("192.168.30.0/24", [("D2", "192.168.30.11"), ("F1", "192.168.30.12"), ("R1", "192.168.31.20"), ("M1", "192.168.30.14"), ("SPS", "192.168.30.2")])
+    r = falsches_netz(z)
+    assert r == ["R1"], "Erwartet ['R1'], die Funktion gibt %r zurück." % (r,)
+
+def test_anderes_netz():
+    """Ein anderes Netz 10.1.5.0/24: Das Netz kommt aus den Daten"""
+    z = _z("10.1.5.0/24", [("A", "10.1.5.20"), ("B", "10.1.6.20"), ("C", "10.2.5.20"), ("D", "10.1.5.99")])
+    r = falsches_netz(z)
+    assert r == ["B", "C"], "Erwartet ['B', 'C'], die Funktion gibt %r zurück. Das Netz muss aus zelle['netz'] gelesen werden, nicht fest im Code stehen." % (r,)
+
+def test_alle_richtig():
+    """Alle Geräte im richtigen Netz: leere Liste"""
+    r = falsches_netz(_z("192.168.30.0/24", [("D2", "192.168.30.11"), ("F1", "192.168.30.12")]))
+    assert r == [], "Erwartet [], die Funktion gibt %r zurück." % (r,)
+
+def test_mehrere_und_leer():
+    """Mehrere Fehler in Reihenfolge; keine Geräte"""
+    r = falsches_netz(_z("192.168.30.0/24", [("A", "192.168.31.1"), ("B", "192.168.30.1"), ("C", "10.0.0.1")]))
+    assert r == ["A", "C"], "Erwartet ['A', 'C'], die Funktion gibt %r zurück." % (r,)
+    assert falsches_netz(_z("192.168.30.0/24", [])) == [], "Ohne Geräte erwartet []."
+
+def test_ohne_ipaddress():
+    """Die Lösung kommt ohne die Bibliothek ipaddress aus"""
+    assert "ipaddress" not in globals(), "In dieser Aufgabe sollst du ohne die Bibliothek ipaddress arbeiten: nur split(\".\") und der Vergleich der ersten drei Blöcke."
+        </script>
+        <script type="text/x-python" data-role="solution">
+def falsches_netz(zelle):
+    netzteil = zelle["netz"].split("/")[0].split(".")[:3]
+    falsch = []
+    for m in zelle["maschinen"]:
+        if m["ip"].split(".")[:3] != netzteil:
+            falsch.append(m["id"])
+    return falsch
+        </script>
+        <script type="application/json" data-role="scheme">[{"p": 1, "t": "Funktion falsches_netz(zelle) mit def, Parameter und Doppelpunkt; am Ende return der Liste"}, {"p": 1, "t": "Netzteil aus zelle[\"netz\"] gelesen (nicht fest geschrieben): split(\"/\") und split(\".\"), die ersten drei Blöcke"}, {"p": 1, "t": "Leere Ergebnisliste vor der Schleife angelegt"}, {"p": 1, "t": "Schleife über zelle[\"maschinen\"] (Liste von Dictionaries)"}, {"p": 1, "t": "IP jedes Geräts mit split(\".\") zerlegt und nur die ersten drei Blöcke genommen ([:3])"}, {"p": 1, "t": "Vergleich der Listen der ersten drei Blöcke mit != (Block für Block, nicht startswith auf Teiltext)"}, {"p": 1, "t": "Bei Abweichung die ID (m[\"id\"]) mit append in die Ergebnisliste"}, {"p": 1, "t": "Keine Syntaxfehler, richtige Einrückung; ohne die Bibliothek ipaddress"}]</script>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-projekt" data-nonumber="1" data-title="Projekt: Meilenstein V17" data-part="B" data-stars="" data-min="" data-extra="ohne Wertung" aria-labelledby="h-t-projekt" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-projekt" tabindex="-1">Projekt: Meilenstein V17</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Falls in der Projektzeit nicht alles geschafft wurde: Hier ist die Liste für diesen Termin („Kernrechnung und Tests bestehen“). Alle Themen, die weiteren Meilensteine und das Bewertungsraster stehen auf der <a href="../projekt.html">Projektseite</a>.</p>
+
+      <ol class="k-steps">
+        <li><strong>Kernfunktionen implementieren:</strong> Die Funktionen aus dem Grundgerüst von V16 bekommen ihren Rechenkern, selbst oder mit Copilot. Du liest jede Zeile und kannst sie erklären. Kommen deine Daten aus einer JSON-Datei, liest du sie mit <code class="k-i">json.load</code> und greifst mit Schlüsseln zu (Training 1 und 5).</li>
+        <li><strong>Alle Testfälle bestehen:</strong> Starte die Tests. Bestanden sein müssen auch die Grenzfälle, nicht nur der Normalfall.</li>
+        <li><strong>Einheiten als Kommentar:</strong> Hinter jeder Größe steht die Einheit, zum Beispiel <code class="k-i"># in mm</code>.</li>
+        <li><strong>Copilot-Fehler suchen:</strong> Finde mindestens einen Fehler in dem, was Copilot geliefert hat, und beschreibe ihn im <code class="k-i">KI-PROTOKOLL.md</code>: Zeile, Fehler, Korrektur. Die Liste aus dem Code-Review (Status geprüft? Schlüssel echt? Passende Methode?) hilft auch bei Rechenfehlern.</li>
+        <li><strong>Abhaken:</strong> Den Stand trägst du auf der <a href="../projekt.html#meilensteine">Projektseite</a> ein.</li>
+      </ol>
+      <p>Nächster Meilenstein (V18): Eingaben prüfen und Fehler abfangen.</p>
+
+    </section>
+
+    <section class="l-task" id="t-notebook" data-nonumber="1" data-title="Notebook und Deep Dive" data-part="B" data-stars="" data-min="" data-extra="ohne Wertung" aria-labelledby="h-t-notebook" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-notebook" tabindex="-1">Notebook und Deep Dive</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Mehr üben mit JSON, HTTP-Abfragen und IP-Adressen. Das Notebook nutzt Python aus V01 bis V17, hat drei Stufen (Aufwärmen, Anwenden, Knobeln), keine Lösungen, dafür Selbsttests, und ist für Codespaces gedacht: Dort ist alles vorinstalliert, und die Zelle kann sich mit der Kurs-Website verbinden.</p>
+
+      <p><a class="k-btn k-btn--ghost" href="../notebooks/V17-Netzwerke.ipynb" download>V17-Netzwerke.ipynb herunterladen</a></p>
+      <ol class="k-steps">
+        <li><strong>In Codespaces öffnen:</strong> Im Kurs-Repository auf GitHub „Code“ → „Codespaces“ → „Create codespace“ (Schritt für Schritt in der <a href="v11-copilot.html#anleitung">Lerneinheit V11, Abschnitt 3</a>). Dann <code class="k-i">notebooks/V17-Netzwerke.ipynb</code> öffnen.</li>
+        <li><strong>Oder lokal:</strong> <code class="k-i">pip install requests jupyter</code>, dann <code class="k-i">jupyter lab</code>. Du brauchst eine Internetverbindung: Das Notebook holt die Maschinendaten von der Kurs-Website.</li>
+        <li>Zu jeder Aufgabe: erst lesen, dann die Daten ansehen (<code class="k-i">print</code>), dann auswerten, dann die Prüfzelle starten.</li>
+      </ol>
+      <h3>Danach</h3>
+      <p><a href="v17-netzwerke.html#deepdive">Zum Deep Dive</a> (freiwillig): MQTT mit paho-mqtt (läuft nur mit Broker, z. B. im Codespace), OPC UA, Subnetze von Hand rechnen. Oder zurück zur <a href="v17-netzwerke.html">Lerneinheit</a>, oder weiter zum <a href="../projekt.html">Projekt</a>.</p>
+
+    </section>
+
+      <nav class="lab__pager" aria-label="Zwischen Aufgaben wechseln">
+        <a class="k-btn k-btn--ghost" id="lab-prev" href="#a-werkzeugkasten">← Zurück</a>
+        <a class="k-btn k-btn--ghost" id="lab-next" href="#a-vorgemacht">Weiter →</a>
+      </nav>
+    </main>
+
+    <div class="lab__dock" data-library-dock data-state="off"></div>
+  </div>
+
+  <footer class="dhbw-footer k-footer">
+    <div class="dhbw-footer__inner">
+      <span><span class="dhbw-footer__brand">DHBW Stuttgart</span> · Campus Horb</span>
+      <span><a href="../index.html">Zurück zum Lernpfad</a> · <a href="../projekt.html">Projekt</a> · V17 Programmierlabor</span>
+    </div>
+  </footer>
+
+  <script src="../assets/js/speicher.js"></script>
+  <script src="../assets/js/icons.js"></script>
+  <script src="../assets/js/editor.js" defer></script>
+  <script src="../assets/js/pap-engine.js"></script>
+  <script src="../assets/js/kurs.js"></script>
+  <script src="../assets/js/aufgaben.js"></script>
+  <script src="../assets/js/pap-editor.js"></script>
+  <script src="../assets/js/labor.js"></script>
+</body>
+</html>
