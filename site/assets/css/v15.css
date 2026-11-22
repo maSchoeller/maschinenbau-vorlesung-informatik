@@ -1,0 +1,90 @@
+/* =============================================================
+   v15.css – Lektion V15 (Datenanalyse): Explorables DataFrame, groupby, Cp/Cpk-Rechner, Regelkarte.
+   Baut auf kurs.css und v05.css (PAP-Stile) auf. Präfix v15-. Rot nur für Ausschuss, Alarm und aktiven Zustand.
+   Diagramme: Schwarz und Rot, dazu Form (Raute), Schraffur und Text, nie nur Farbe.
+   ============================================================= */
+
+.v15-lbl { font-size: var(--fs-sm); font-weight: 600; }
+.v15-ctl { align-items: center; margin: 0 0 var(--sp-3); }
+.v15-ctl .k-btn { min-height: 44px; }
+.v15-seg { flex-wrap: wrap; max-width: 100%; }
+.v15-check { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font-size: var(--fs-sm); font-weight: 600; cursor: pointer; }
+.v15-check input { width: 20px; height: 20px; accent-color: var(--red-dark); }
+.v15-o { font-weight: 600; font-family: var(--dhbw-font-mono); font-size: var(--fs-sm); }
+
+/* Codezeile (einzelne Zeile über der Tabelle) */
+.v15-codeline { margin: 0 0 var(--sp-3); padding: var(--sp-3) var(--sp-4); background: var(--code-bg); color: var(--code-text); font-family: var(--dhbw-font-mono); font-size: var(--fs-sm); border-radius: var(--r-base); white-space: pre-wrap; word-break: break-word; max-width: none; }
+.v15-typ { margin: 0 0 var(--sp-3); font-weight: 600; font-size: var(--fs-sm); max-width: none; }
+.v15-text { margin: var(--sp-3) 0 0; max-width: var(--k-measure); min-height: 4.5em; }
+.v15-pfeil { margin: var(--sp-2) 0; font-size: var(--fs-sm); font-weight: 600; color: var(--k-muted); max-width: none; }
+.v15-out { min-width: 0; }
+
+/* Tabellen (DataFrame) */
+.v15-tabwrap { margin: 0 0 var(--sp-2); max-width: 100%; }
+.v15-tab { border-collapse: collapse; font-family: var(--dhbw-font-mono); font-size: var(--fs-sm); }
+.v15-tab th, .v15-tab td { padding: 6px 10px; text-align: right; border-bottom: 1px solid var(--border); white-space: nowrap; }
+.v15-tab thead th { border-bottom: 2px solid var(--border); font-weight: 700; }
+.v15-tab th.v15-idx { text-align: left; color: var(--k-muted); font-weight: 700; border-right: 2px solid var(--border); }
+.v15-tab .is-hi { background: #FBE3E6; }
+.v15-tab thead th.is-hi { box-shadow: inset 0 -3px 0 var(--red-dark); }
+.v15-tab .is-new { font-weight: 700; }
+.v15-tab td.is-true { font-weight: 700; color: var(--k-ok); }
+.v15-tab td.is-false { color: var(--k-muted); }
+.v15-tab tr { transition: opacity .35s; }
+.v15-tab tr.is-vor { opacity: 1; }
+.v15-tab tr.is-weg { opacity: .35; }
+.v15-tab tr.is-weg td:not(.is-false), .v15-tab tr.is-weg th { text-decoration: line-through; }
+
+/* groupby */
+.v15-gruppen { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-5); align-items: start; margin: 0 0 var(--sp-2); }
+@media (max-width: 700px) { .v15-gruppen { grid-template-columns: minmax(0, 1fr); gap: var(--sp-3); } }
+.v15-gruppe { min-width: 0; }
+.v15-gruppe__t { margin: 0 0 var(--sp-2); font-weight: 700; border-bottom: 2px solid var(--red-dark); padding-bottom: 2px; max-width: none; }
+.v15-gruppe__w { margin: var(--sp-2) 0 0; font-family: var(--dhbw-font-mono); font-weight: 700; max-width: none; }
+
+/* Diagramme (SVG) */
+.v15-chartwrap { min-width: 0; margin: 0 0 var(--sp-3); }
+.v15-svg { display: block; width: 100%; height: auto; max-width: 720px; background: #fff; }
+.v15-tick { font-size: 11px; fill: #4B5563; }
+.v15-axt { font-size: 12px; fill: #1A1A1A; font-weight: 600; }
+.v15-lim { font-size: 12px; fill: #1A1A1A; font-weight: 700; }
+.v15-bad { font-size: 11px; fill: #9B1213; font-weight: 700; }
+
+.v15-verdict { margin: var(--sp-3) 0; padding: var(--sp-3) var(--sp-4); border-left: 3px solid var(--k-info); background: var(--k-info-bg); max-width: var(--k-measure); }
+.v15-verdict p { margin: 0 0 var(--sp-2); max-width: none; }
+.v15-verdict p:last-child { margin-bottom: 0; }
+.v15-verdict.is-bad { border-color: var(--k-bad); background: var(--k-bad-bg); }
+.v15-verdict.is-ok { border-color: var(--k-ok); background: var(--k-ok-bg); }
+.v15-verdict.is-warn { border-color: #B45309; background: #FEF3E2; }
+.v15-verdict__h { font-weight: 700; }
+.v15-liste { margin: var(--sp-2) 0; padding-left: 1.2em; }
+
+.v15-calc { max-width: none; }
+.v15-dl { display: flex; flex-wrap: wrap; gap: var(--sp-2) var(--sp-5); margin: var(--sp-3) 0 var(--sp-2); }
+.v15-dl > div { min-width: 90px; }
+.v15-dl dt { font-size: var(--fs-sm); color: var(--k-muted); }
+.v15-dl dd { margin: 0; font-family: var(--dhbw-font-mono); font-weight: 700; font-size: var(--fs-md); }
+.v15-formel { margin: 0 0 var(--sp-2); font-family: var(--dhbw-font-mono); font-size: var(--fs-sm); max-width: none; overflow-wrap: anywhere; }
+
+/* PAP und Code nebeneinander */
+.v15-zwei { display: grid; grid-template-columns: minmax(0, 360px) minmax(0, 1fr); gap: var(--sp-5); align-items: start; margin: 0 0 var(--sp-3); }
+.v15-zwei > * { min-width: 0; }
+@media (max-width: 900px) { .v15-zwei { grid-template-columns: minmax(0, 1fr); } }
+
+/* PAP */
+.v15-papbox { min-width: 0; max-width: 520px; }
+
+/* Formeln im Lesetext */
+.v15-formblock { margin: var(--sp-3) 0; padding: var(--sp-3) var(--sp-4); border-left: 3px solid var(--border); font-family: var(--dhbw-font-mono); font-size: var(--fs-base); max-width: var(--k-measure); overflow-wrap: anywhere; }
+.v15-formblock p { margin: 0 0 var(--sp-1); max-width: none; }
+.v15-matrix th, .v15-matrix td { text-align: left; vertical-align: top; }
+
+/* Handy: SVG wird auf ca. 340 px verkleinert; Beschriftung in SVG-Einheiten vergrößern, damit sie lesbar bleibt (ca. 9-10 px) */
+@media (max-width: 600px) {
+  .v15-svg text { font-size: 19px; }
+  .v15-svg text.v15-axt { font-size: 18px; }
+  .v15-svg text.v15-lim { font-size: 18px; }
+  .v15-svg text.v15-bad { font-size: 17px; }
+  .v15-tab { font-size: 13px; }
+  .v15-tab th, .v15-tab td { padding: 6px 7px; }
+}
