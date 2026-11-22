@@ -988,3 +988,109 @@ print(k[["mean", "std", "Cp", "Cpk"]].round(3))
   ["pd-groupby", "pd-neue-spalte", "pd-describe"],
   bez=["Cp", "Cpk"],
   aliase=["Prozessfähigkeit", "Cpk", "Cp", "SPC", "Regelkarte", "Eingriffsgrenze"])
+
+# ───────────── V18 IT-Sicherheit (hashlib, Bytes, Prüfsummen) ─────────────
+SI = "Sicherheit & Prüfsummen"
+
+E("hashlib-sha256", "hashlib.sha256().hexdigest()", SI, "V18", "kopf",
+  "Berechnet den SHA-256-Fingerabdruck (Hash) von Bytes: immer 64 Hex-Zeichen.",
+  "import hashlib\nhashlib.sha256(daten).hexdigest()\nhashlib.sha256(\"Text\".encode(\"utf-8\")).hexdigest()",
+  "Eine Hashfunktion macht aus beliebig vielen Bytes einen Fingerabdruck fester Länge: bei SHA-256 sind es 256 Bit, als Text 64 Hex-Zeichen. Gleiche Daten ergeben immer denselben Hash; ändert sich auch nur ein Bit, sieht der Hash völlig anders aus (Lawineneffekt). Aus dem Hash kann man die Daten nicht zurückrechnen. sha256 nimmt nur Bytes an, Text musst du vorher mit .encode(\"utf-8\") umwandeln. hexdigest() liefert den Hash als Text (str), digest() als Bytes – vergleiche immer gleiche Arten miteinander. MD5 und SHA-1 gibt es auch, sie gelten für Sicherheitszwecke als gebrochen.",
+  '''
+  import hashlib
+
+  h1 = hashlib.sha256(b"Drehzahl 1450").hexdigest()
+  h2 = hashlib.sha256(b"Drehzahl 1451").hexdigest()
+  print(len(h1), "Hex-Zeichen")
+  print(h1[:16])
+  print(h2[:16])
+  print(h1 == h2)
+  ''',
+  "Wenn du prüfen willst, ob Daten unverändert sind: Firmware, NC-Programme, Konfigurationen, Downloads.",
+  [("Hash eines Textes (erst in Bytes umwandeln)", 'import hashlib\ntext = "Welle Ø20 h6"\nprint(hashlib.sha256(text.encode("utf-8")).hexdigest())'),
+   ("Daten in Stücken einmischen mit update", 'import hashlib\nh = hashlib.sha256()\nh.update(b"Drehzahl ")\nh.update(b"1450")\nprint(h.hexdigest() == hashlib.sha256(b"Drehzahl 1450").hexdigest())'),
+   ("Nur den Anfang zeigen", 'import hashlib\nprint(hashlib.sha256(b"R1").hexdigest()[:16], "...")')],
+  [("Text statt Bytes übergeben", 'import hashlib\nhashlib.sha256("Drehzahl 1450")'),
+   ("hexdigest vergessen: Objekt statt Text", 'import hashlib\nprint(hashlib.sha256(b"abc") == "ba7816bf")', "kein Fehler, aber immer False: links steht ein Hash-Objekt, kein Text", False),
+   ("digest() mit Hex-Text verglichen", 'import hashlib\nsoll = hashlib.sha256(b"abc").hexdigest()\nprint(hashlib.sha256(b"abc").digest() == soll)', "kein Fehler, aber False: digest() liefert Bytes, hexdigest() Text", False)],
+  ["bytes-encode", "datei-binaer", "pruefsumme-vergleichen", "hashlib"],
+  bez=["hashlib.sha256", ".hexdigest", ".digest", ".update", "hashlib.md5", "hashlib.sha1"],
+  aliase=["Hash", "Prüfsumme", "SHA-256", "Fingerabdruck", "Checksumme", "sha256sum"])
+
+E("bytes-encode", "bytes, b\"...\", .encode()", SI, "V18", "lesen",
+  "Bytes sind rohe Daten (Zahlen 0 bis 255). Text wird mit .encode() zu Bytes, mit .decode() zurück.",
+  "daten = b\"R1-FW\"\ndaten = \"Text\".encode(\"utf-8\")\ntext = daten.decode(\"utf-8\")",
+  "Im Speicher und in Dateien stehen nur Bytes. Ein str ist Text aus Zeichen, ein bytes-Objekt eine Folge von Zahlen von 0 bis 255. Ein b vor den Anführungszeichen schreibt Bytes direkt hin (nur für einfache Zeichen ohne Umlaute). .encode(\"utf-8\") übersetzt Text in Bytes – bei UTF-8 braucht ein Umlaut zwei Bytes, deshalb ist len() danach größer. .decode(\"utf-8\") geht den Weg zurück. Ein einzelnes Byte per Index ist eine Zahl.",
+  '''
+  daten = b"R1-FW 3.2.1"
+  print(type(daten), len(daten))
+  print(daten[0])
+
+  text = "Ä"
+  roh = text.encode("utf-8")
+  print(roh, len(text), len(roh))
+  print(roh.decode("utf-8") == text)
+  ''',
+  "Überall, wo Python mit Rohdaten arbeitet: Hashes, Binärdateien, Netzwerk, serielle Schnittstellen.",
+  [("Bytes als Hex anzeigen", 'print(b"R1".hex())'),
+   ("Länge in Zeichen und in Bytes", 'text = "Maß 20 µm"\nprint(len(text), len(text.encode("utf-8")))')],
+  [("Umlaut in einem b-Literal", 'daten = b"Maß"'),
+   ("Bytes und Text verknüpft", 'print(b"R1" + "-FW")'),
+   ("Bytes mit falscher Codierung zurückübersetzt", 'print("Ä".encode("utf-8").decode("ascii"))')],
+  ["hashlib-sha256", "datei-binaer"],
+  bez=["bytes", ".encode", ".decode", ".hex"],
+  aliase=["Bytes", "Binärdaten", "encode", "decode", "UTF-8"])
+
+E("datei-binaer", "open(pfad, \"rb\") blockweise lesen", SI, "V18", "lesen",
+  "Öffnet eine Datei als Bytes (\"rb\") und liest sie Stück für Stück, z. B. für eine Prüfsumme.",
+  "with open(pfad, \"rb\") as datei:\n    while True:\n        block = datei.read(4096)\n        if not block:\n            break\n        h.update(block)",
+  "Firmware, Bilder oder CAD-Dateien sind kein Text. Mit dem Modus \"rb\" (read binary) liefert read() Bytes statt str, eine Codierung gibt es dabei nicht. read(4096) holt höchstens 4096 Bytes; ist die Datei zu Ende, kommt ein leeres b\"\" zurück, und not block wird wahr. So passt auch eine Datei mit mehreren Gigabyte durch, ohne den Arbeitsspeicher zu füllen. Jeder Block wird per update in den Hash eingemischt; das Ergebnis ist dasselbe, als hätte man alles auf einmal gehasht.",
+  '''
+  import hashlib
+
+  with open("test.bin", "wb") as f:
+      f.write(b"0123456789")
+
+  h = hashlib.sha256()
+  with open("test.bin", "rb") as datei:
+      while True:
+          block = datei.read(4)
+          if not block:
+              break
+          print("Block:", block)
+          h.update(block)
+  print(h.hexdigest() == hashlib.sha256(b"0123456789").hexdigest())
+  ''',
+  "Bei jeder Datei, die keine Textdatei ist, und bei großen Dateien.",
+  [("Kleine Datei auf einmal lesen", 'import hashlib\nwith open("klein.bin", "wb") as f:\n    f.write(b"abc")\nwith open("klein.bin", "rb") as f:\n    print(hashlib.sha256(f.read()).hexdigest()[:16])'),
+   ("Dateigröße in Bytes", 'from pathlib import Path\nPath("x.bin").write_bytes(bytes(1000))\nprint(Path("x.bin").stat().st_size)')],
+  [("Binärdatei im Textmodus gelesen", 'with open("x.bin", "wb") as f:\n    f.write(bytes([0xFF, 0xFE, 0x00, 0x81]))\nwith open("x.bin", encoding="utf-8") as f:\n    f.read()'),
+   ("encoding bei \"rb\" angegeben", 'open("x.bin", "wb").close()\nopen("x.bin", "rb", encoding="utf-8")')],
+  ["hashlib-sha256", "with-open", "bytes-encode"],
+  bez=["\"rb\"", "\"wb\"", ".read", "read(4096)"],
+  aliase=["Binärmodus", "rb", "Datei als Bytes", "blockweise lesen", "Firmware lesen"])
+
+E("pruefsumme-vergleichen", "Prüfsumme vergleichen (Soll/Ist)", SI, "V18", "kopf",
+  "Soll-Wert aus der .sha256-Datei lesen, bereinigen und mit dem selbst berechneten Ist-Wert vergleichen.",
+  "soll = f.read().split()[0].lower()\nist = sha256_datei(pfad)\nif ist == soll:\n    print(\"OK\")",
+  "Hersteller veröffentlichen zu Downloads eine Prüfsummendatei im Format <hex>  <dateiname>. split()[0] nimmt die erste Spalte und wirft Leerzeichen und Zeilenumbruch weg; .lower() macht Großbuchstaben-Hex vergleichbar. Erst dann vergleichst du mit ==. Wichtig: Der Soll-Wert muss über einen zweiten, vertrauenswürdigen Weg kommen (z. B. Hersteller-Website), nicht vom selben USB-Stick wie die Datei – sonst kann ein Angreifer beides tauschen.",
+  '''
+  import hashlib
+
+  daten = b"R1-FW 3.2.1"
+  zeile = hashlib.sha256(daten).hexdigest().upper() + "  R1_fw_3.2.1.bin\\n"
+  soll = zeile.split()[0].lower()
+  ist = hashlib.sha256(daten).hexdigest()
+  if ist == soll:
+      print("OK - darf eingespielt werden")
+  else:
+      print("ABWEICHUNG - nicht einspielen!")
+  ''',
+  "Vor dem Einspielen von Firmware, Updates und freigegebenen NC-Programmen.",
+  [("Mehrere Dateien gegen eine Liste prüfen", 'import hashlib\nfreigabe = {"a.nc": hashlib.sha256(b"G0 X0").hexdigest()}\ndateien = {"a.nc": b"G0 X0", "b.nc": b"G1 X5"}\nfor name, inhalt in dateien.items():\n    if name not in freigabe:\n        print(name, "nicht freigegeben")\n    elif hashlib.sha256(inhalt).hexdigest() == freigabe[name]:\n        print(name, "OK")\n    else:\n        print(name, "GEÄNDERT")'),
+   ("Soll-Wert in Großbuchstaben mit Leerzeichen", 'import hashlib\nsoll = "  " + hashlib.sha256(b"R1").hexdigest().upper() + "\\n"\nist = hashlib.sha256(b"R1").hexdigest()\nprint(ist == soll, ist == soll.strip().lower())')],
+  [("Ganze Zeile mit Dateiname verglichen", 'import hashlib\nzeile = hashlib.sha256(b"x").hexdigest() + "  x.bin\\n"\nprint(hashlib.sha256(b"x").hexdigest() == zeile)', "kein Fehler, aber immer False: Dateiname und Zeilenumbruch stehen mit im Text", False),
+   ("Leere Prüfsummendatei", 'zeile = ""\nsoll = zeile.split()[0]')],
+  ["hashlib-sha256", "split", "datei-binaer"],
+  bez=["Soll-Ist-Vergleich", ".sha256"],
+  aliase=["Prüfsumme prüfen", "Checksumme vergleichen", "Integrität prüfen", "Firmware prüfen", "sha256sum -c"])
