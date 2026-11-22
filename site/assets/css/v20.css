@@ -1,0 +1,82 @@
+/* =============================================================
+   v20.css – Lektion V20 (Objekte & CAD-Automatisierung): Explorables „Bauplan und Teile“ und „Parametrischer Flansch“, PAP.
+   Baut auf kurs.css und v05.css (PAP-Stile) auf. Präfix v20-. Das Labor darf die Klassen mitbenutzen.
+   Rot nur für ungültige Maße; Fehler zusätzlich mit Symbol und Text (nie nur Farbe).
+   ============================================================= */
+
+.v20-lbl { font-size: var(--fs-sm); font-weight: 600; }
+.v20-ptitle { font-weight: 700; margin: 0 0 var(--sp-1); }
+.v20-ctl { margin: 0 0 var(--sp-3); }
+.v20-seg { flex-wrap: wrap; max-width: 100%; }
+.v20-btnrow { display: flex; flex-wrap: wrap; gap: var(--sp-2); align-items: center; margin: 0 0 var(--sp-3); max-width: none; }
+.v20-btnrow .k-btn { min-height: 44px; }
+.v20-live { min-height: 3.2em; margin: 0 0 var(--sp-3); padding: var(--sp-3) var(--sp-4); border-left: 3px solid var(--k-info); background: var(--k-info-bg); max-width: var(--k-measure); }
+.v20-grid2 { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: var(--sp-5); align-items: start; }
+.v20-grid2--b { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.v20-col { min-width: 0; }
+
+/* Code im Explorable */
+.v20-class, .v20-prog, .v20-call { background: var(--code-bg); color: var(--code-text); font-family: var(--dhbw-font-mono); font-size: var(--fs-sm); line-height: 1.55; border-radius: var(--r-base); padding: var(--sp-3) 0; margin: 0 0 var(--sp-3); overflow-x: auto; white-space: pre; max-width: 100%; }
+.v20-prog, .v20-call { padding: var(--sp-3) var(--sp-4); min-height: 3em; }
+.v20-line { display: block; padding: 0 var(--sp-4); border-left: 4px solid transparent; }
+.v20-line.is-hl { background: rgba(255, 255, 255, .16); border-left-color: #fff; }
+
+/* Speicher */
+.v20-mem { position: relative; display: grid; grid-template-columns: minmax(3.2rem, 5rem) minmax(0, 1fr); gap: var(--sp-5); align-items: start; min-height: 6rem; margin: 0 0 var(--sp-3); }
+.v20-arrows { position: absolute; left: 0; top: 0; pointer-events: none; overflow: visible; }
+.v20-names { display: flex; flex-direction: column; gap: var(--sp-2); position: relative; z-index: 1; }
+.v20-name { font-family: var(--dhbw-font-mono); font-weight: 700; padding: 6px 10px; border: 2px solid #1A1A1A; border-radius: 4px; background: #fff; text-align: center; }
+.v20-name--self { border-style: dashed; background: var(--canvas); }
+.v20-objs { display: flex; flex-direction: column; gap: var(--sp-3); position: relative; z-index: 1; min-width: 0; }
+.v20-obj { border: 2px solid #1A1A1A; border-radius: 6px; background: #fff; padding: var(--sp-2) var(--sp-3); }
+.v20-obj__head { font-weight: 700; font-size: var(--fs-sm); border-bottom: 1px solid var(--k-line); padding-bottom: 4px; margin-bottom: 4px; }
+.v20-attrs { display: grid; grid-template-columns: max-content 1fr; gap: 1px var(--sp-3); margin: 0; font-size: var(--fs-sm); max-width: none; }
+.v20-attrs dt { font-family: var(--dhbw-font-mono); color: var(--k-muted); }
+.v20-attrs dd { margin: 0; font-family: var(--dhbw-font-mono); font-weight: 700; }
+.v20-empty { margin: 0; }
+.v20-frame { border-left: 3px solid var(--k-info); background: var(--k-info-bg); padding: var(--sp-3) var(--sp-4); margin: 0 0 var(--sp-3); }
+
+/* Flansch-Explorable */
+.v20-form { display: grid; grid-template-columns: 1fr; gap: var(--sp-2); margin: 0 0 var(--sp-3); }
+.v20-fld { min-width: 0; }
+.v20-rangewrap { display: flex; align-items: center; gap: var(--sp-3); }
+.v20-range { flex: 1; min-width: 0; min-height: 44px; accent-color: var(--red-dark); }
+.v20-num { width: 5.5rem; min-height: 44px; padding: 4px 8px; font: inherit; font-family: var(--dhbw-font-mono); border: 2px solid var(--border); border-radius: var(--r-base); background: #fff; color: inherit; box-sizing: border-box; }
+.v20-num:focus-visible { outline: 3px solid var(--red-dark); outline-offset: 1px; }
+.v20-views { display: grid; gap: var(--sp-3); }
+.v20-fig { margin: 0; }
+.v20-svg { display: block; width: 100%; height: auto; max-width: 360px; background: #fff; border: 1px solid var(--k-line); }
+.v20-svg--side { max-width: 360px; }
+.v20-body { fill: #D6D9DE; stroke: #1A1A1A; stroke-width: 2; }
+.v20-hole { fill: #fff; stroke: #1A1A1A; stroke-width: 2; }
+.v20-pcd { fill: none; stroke: #4B5563; stroke-width: 1.2; stroke-dasharray: 6 4; }
+.v20-bore { fill: #fff; stroke: #1A1A1A; stroke-width: 2; }
+.v20-bore.is-bad { fill: #FDF0F1; stroke: #9B1213; stroke-width: 3; }
+.v20-axis { stroke: #1A1A1A; stroke-width: 1; }
+.v20-dim { stroke: #1A1A1A; stroke-width: 1; }
+.v20-svt { font-size: 13px; font-weight: 700; fill: #1A1A1A; font-family: var(--dhbw-font-mono); }
+.v20-cut { fill: #B6BBC3; stroke: #1A1A1A; stroke-width: 1.5; }
+.v20-gap { fill: #fff; stroke: #1A1A1A; stroke-width: 1; stroke-dasharray: 4 3; }
+.v20-gap.is-bad { fill: #FDF0F1; stroke: #9B1213; stroke-width: 2; }
+.v20-verdict { display: flex; gap: var(--sp-3); align-items: flex-start; margin: 0 0 var(--sp-3); padding: var(--sp-3) var(--sp-4); border-left: 3px solid var(--k-info); background: var(--k-info-bg); max-width: var(--k-measure); }
+.v20-verdict p { margin: 0 0 4px; }
+.v20-verdict.is-ok { border-color: var(--k-ok); background: var(--k-ok-bg); }
+.v20-verdict.is-bad { border-color: var(--k-bad); background: var(--k-bad-bg); }
+.v20-verdict.is-ok .v20-ic { color: var(--k-ok); }
+.v20-verdict.is-bad .v20-ic { color: var(--k-bad); }
+.v20-ic { flex: none; width: 1.5rem; height: 1.5rem; margin-top: 2px; }
+.v20-res { display: grid; grid-template-columns: max-content 1fr; gap: 2px var(--sp-4); margin: 0 0 var(--sp-3); max-width: none; }
+.v20-res dt { font-weight: 700; }
+.v20-res dd { margin: 0; font-family: var(--dhbw-font-mono); overflow-wrap: anywhere; }
+.v20-out { background: var(--code-bg); color: var(--code-text); font-family: var(--dhbw-font-mono); font-size: var(--fs-sm); padding: var(--sp-3) var(--sp-4); border-radius: var(--r-base); white-space: pre-wrap; overflow-wrap: anywhere; margin: 0 0 var(--sp-3); max-width: 100%; }
+
+.v20-papbox { overflow-x: auto; max-width: 100%; }
+
+/* Dreiecksnetz-Skizze im Text */
+.v20-note { max-width: var(--k-measure); }
+
+@media (max-width: 760px) {
+  .v20-grid2, .v20-grid2--b { grid-template-columns: minmax(0, 1fr); }
+  .v20-mem { gap: var(--sp-4); }
+}
+@media (prefers-reduced-motion: reduce) { .v20-arrows * { transition: none; } }
