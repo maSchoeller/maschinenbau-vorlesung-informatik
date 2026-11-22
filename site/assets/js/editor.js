@@ -113,7 +113,7 @@
   }
   function loadLib() {
     if (!libPromise) {
-      libPromise = fetch(URL_DATA).then(function (r) {
+      libPromise = fetch(URL_DATA, { cache: 'no-cache' }).then(function (r) {
         if (!r.ok) throw new Error('HTTP ' + r.status);
         return r.json();
       }).then(function (d) { buildIndex(d); return lib; }).catch(function (err) {
@@ -628,7 +628,7 @@
       lib.entries.forEach(function (e) { if (cats.indexOf(e.kategorie) < 0) cats.push(e.kategorie); });
       cats.forEach(function (c) { catSel.appendChild(el('option', { value: c, text: c })); });
       standSel.appendChild(el('option', { value: 'alle', text: 'Alles anzeigen' }));
-      for (var i = 1; i <= 9; i++) standSel.appendChild(el('option', { value: String(i), text: 'bis ' + lessonName(i) }));
+      for (var i = 1; i <= 22; i++) standSel.appendChild(el('option', { value: String(i), text: 'bis ' + lessonName(i) }));
       standSel.value = P.stand == null ? 'alle' : String(Math.min(9, P.stand));
       if (P.stand != null && P.stand > 9) standSel.value = 'alle';
     }

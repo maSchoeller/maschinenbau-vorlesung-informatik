@@ -121,8 +121,8 @@ print(&quot;Hallo, Welle!&quot;)"></textarea>
       // Stand-Auswahl
       var sel = $('bib-stand');
       sel.appendChild(el('option', { value: 'alle', text: 'Alles anzeigen' }));
-      for (var i = 1; i <= 9; i++) sel.appendChild(el('option', { value: String(i), text: 'bis V0' + i }));
-      sel.value = state.stand ? String(Math.min(9, state.stand)) : 'alle';
+      for (var i = 1; i <= 22; i++) sel.appendChild(el('option', { value: String(i), text: 'bis V' + (i < 10 ? '0' : '') + i }));
+      sel.value = state.stand ? String(Math.min(22, state.stand)) : 'alle';
 
       // Kategorie-Knöpfe
       var catBox = $('bib-cats');
@@ -175,7 +175,7 @@ print(&quot;Hallo, Welle!&quot;)"></textarea>
       function renderSheet(items) {
         sheet.innerHTML = '';
         var shown = items.filter(function (e) { return !state.stand || !L.isLater(e, state.stand) || e.stichwort; });
-        var head = state.stand ? 'Spickzettel Python bis ' + 'V0' + Math.min(9, state.stand) : 'Spickzettel Python – V01 bis V09';
+        var stN = Math.min(22, state.stand || 22); var head = state.stand ? 'Spickzettel Python bis V' + (stN < 10 ? '0' : '') + stN : 'Spickzettel Python – V01 bis V22';
         sheet.appendChild(el('p', { class: 'bib-sheet-intro', text: head + ' · Informatik Maschinenbau, DHBW Stuttgart Campus Horb' }));
         var byCat = {};
         shown.forEach(function (e) {
