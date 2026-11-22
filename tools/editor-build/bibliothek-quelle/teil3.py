@@ -1094,3 +1094,164 @@ E("pruefsumme-vergleichen", "Prüfsumme vergleichen (Soll/Ist)", SI, "V18", "kop
   ["hashlib-sha256", "split", "datei-binaer"],
   bez=["Soll-Ist-Vergleich", ".sha256"],
   aliase=["Prüfsumme prüfen", "Checksumme vergleichen", "Integrität prüfen", "Firmware prüfen", "sha256sum -c"])
+
+# ───────────── V19 Datenbanken & SQL (sqlite3, Platzhalter) ─────────────
+DB = "Datenbanken (SQL)"
+
+_FZ = '''import sqlite3
+db = sqlite3.connect(":memory:")
+cur = db.cursor()
+cur.execute("CREATE TABLE auftraege (nr INTEGER PRIMARY KEY, teil TEXT, maschine TEXT, menge INTEGER, status TEXT)")
+cur.executemany("INSERT INTO auftraege VALUES (?, ?, ?, ?, ?)", [
+    (4711, "WELLE_20H6", "D2", 500, "in Arbeit"),
+    (4712, "FLANSCH_80", "F1", 120, "offen"),
+    (4713, "WELLE_20H6", "D2", 300, "offen"),
+    (4714, "BUCHSE_30", "D2", 800, "fertig"),
+    (4715, "FLANSCH_80", "F1", 60, "fertig"),
+])
+db.commit()
+'''
+
+E("sqlite-connect", "sqlite3.connect() / cursor()", DB, "V19", "kopf",
+  "Öffnet eine SQLite-Datenbank und liefert einen Cursor, über den du SQL-Befehle ausführst.",
+  "import sqlite3\ndb = sqlite3.connect(\"datei.db\")   # oder \":memory:\"\ncur = db.cursor()\ncur.execute(\"SQL-Befehl\")\ndb.commit()\ndb.close()",
+  "sqlite3 gehört zur Standardbibliothek. connect öffnet die Datenbankdatei (gibt es sie nicht, wird sie angelegt); \":memory:\" legt eine Datenbank nur im Arbeitsspeicher an, praktisch zum Üben. Über den Cursor schickst du mit execute einen SQL-Befehl und holst mit fetchall oder fetchone das Ergebnis ab. Änderungen (INSERT, UPDATE, DELETE) werden erst mit db.commit() dauerhaft gespeichert, am Ende schließt db.close() die Verbindung.",
+  '''
+  import sqlite3
+
+  db = sqlite3.connect(":memory:")
+  cur = db.cursor()
+  cur.execute("CREATE TABLE maschinen (id TEXT PRIMARY KEY, typ TEXT)")
+  cur.execute("INSERT INTO maschinen VALUES ('D2', 'Drehmaschine')")
+  db.commit()
+  cur.execute("SELECT id, typ FROM maschinen")
+  print(cur.fetchall())
+  db.close()
+  ''',
+  "Sobald Daten in einer Datenbank liegen: Aufträge, Stücklisten, Messwerte aus einer Messmaschinen-Software.",
+  [("Tabellen einer Datenbank auflisten", _FZ + 'cur.execute("SELECT name FROM sqlite_master WHERE type = \'table\'")\nprint(cur.fetchall())'),
+   ("Ohne Cursor: execute direkt an der Verbindung", 'import sqlite3\ndb = sqlite3.connect(":memory:")\nprint(db.execute("SELECT 6 * 7").fetchone())')],
+  [("Tabellenname falsch geschrieben", _FZ + 'cur.execute("SELECT * FROM auftrag")'),
+   ("Spalte gibt es nicht", _FZ + 'cur.execute("SELECT nummer FROM auftraege")')],
+  ["sql-select", "sql-fetch", "sql-insert", "sqlite3"],
+  bez=["sqlite3.connect", ".cursor", ".execute", ".commit", ".close"],
+  aliase=["Datenbank öffnen", "Verbindung", "Cursor", "SQLite"])
+
+E("sql-select", "SELECT … FROM … WHERE", DB, "V19", "kopf",
+  "Fragt Zeilen einer Tabelle ab: welche Spalten, aus welcher Tabelle, unter welcher Bedingung.",
+  "SELECT spalte1, spalte2 FROM tabelle WHERE bedingung ORDER BY spalte DESC",
+  "SQL ist deklarativ: Du beschreibst, WAS du haben willst, die Datenbank entscheidet, WIE sie es findet. Die Datenbank arbeitet in dieser Reihenfolge: FROM (Tabelle), WHERE (Zeilen aussortieren), SELECT (Spalten auswählen), ORDER BY (sortieren, DESC = absteigend). SELECT * liefert alle Spalten. Bedingungen verknüpfst du mit AND und OR, ungleich ist !=. Ohne ORDER BY ist die Reihenfolge nicht garantiert. Werte aus Python setzt du immer über Platzhalter ein.",
+  _FZ + '''cur.execute("SELECT nr, teil, menge FROM auftraege WHERE maschine = 'D2' ORDER BY menge DESC")
+for nr, teil, menge in cur.fetchall():
+    print(nr, teil, menge)
+''',
+  "Für jede Auswertung: offene Aufträge einer Maschine, Teile über einer Menge, die größten Aufträge zuerst.",
+  [("Mehrere Bedingungen", _FZ + 'cur.execute("SELECT nr FROM auftraege WHERE maschine = \'F1\' AND status != \'fertig\'")\nprint(cur.fetchall())'),
+   ("Nur die ersten zwei (LIMIT)", _FZ + 'cur.execute("SELECT nr, menge FROM auftraege ORDER BY menge DESC LIMIT 2")\nprint(cur.fetchall())')],
+  [("SELECT falsch geschrieben", _FZ + 'cur.execute("SELEC nr FROM auftraege")'),
+   ("Text ohne Anführungszeichen: wird als Spaltenname gelesen", _FZ + 'cur.execute("SELECT nr FROM auftraege WHERE status = offen")')],
+  ["sql-platzhalter", "sql-fetch", "sql-group-by", "sqlite-connect"],
+  bez=["SELECT", "FROM", "WHERE", "ORDER BY", "DESC", "LIMIT"],
+  aliase=["Abfrage", "SQL", "Query", "sortieren", "filtern"])
+
+E("sql-platzhalter", "Platzhalter ? (gegen SQL-Injection)", DB, "V19", "kopf",
+  "Werte aus Python nie in den SQL-Text kleben, sondern mit ? und einem Tupel getrennt übergeben.",
+  "cur.execute(\"SELECT ... WHERE spalte = ? AND andere = ?\", (wert1, wert2))\ncur.execute(\"SELECT ... WHERE spalte = ?\", (wert,))   # Komma!",
+  "Baut man eine Eingabe per f-String in den SQL-Text ein, kann sie den Text verändern: Aus der Eingabe x' OR '1'='1 wird die Bedingung teil = 'x' OR '1'='1', die für jede Zeile wahr ist (SQL-Injection). Mit Platzhaltern bleibt der SQL-Text fest, der Wert geht getrennt als Daten an die Datenbank und wird nie als SQL-Code gelesen. Die Werte stehen in einem Tupel in der Reihenfolge der Fragezeichen; bei einem einzigen Wert braucht das Tupel ein Komma: (wert,). Platzhalter gehen nur für Werte, nicht für Tabellen- oder Spaltennamen.",
+  _FZ + '''eingabe = "x' OR '1'='1"
+cur.execute(f"SELECT nr FROM auftraege WHERE teil = '{eingabe}'")
+print("f-String:", len(cur.fetchall()), "Treffer")
+cur.execute("SELECT nr FROM auftraege WHERE teil = ?", (eingabe,))
+print("Platzhalter:", len(cur.fetchall()), "Treffer")
+''',
+  "Immer, wenn ein Wert aus einer Eingabe, Datei, API oder Variable in eine Abfrage kommt. Also praktisch immer.",
+  [("Zwei Werte", _FZ + 'maschine, status = "D2", "offen"\ncur.execute("SELECT nr FROM auftraege WHERE maschine = ? AND status = ?", (maschine, status))\nprint(cur.fetchall())'),
+   ("Anführungszeichen in den Daten sind kein Problem", 'import sqlite3\ndb = sqlite3.connect(":memory:")\ndb.execute("CREATE TABLE kunden (name TEXT)")\ndb.execute("INSERT INTO kunden VALUES (?)", ("O\'Brien",))\nprint(db.execute("SELECT name FROM kunden WHERE name = ?", ("O\'Brien",)).fetchall())')],
+  [("Komma vergessen: (\"D2\") ist kein Tupel, sondern Text mit 2 Zeichen", _FZ + 'cur.execute("SELECT nr FROM auftraege WHERE maschine = ?", ("D2"))'),
+   ("Anführungszeichen in den Daten zerbrechen den f-String-SQL", _FZ + 'name = "O\'Brien"\ncur.execute(f"SELECT nr FROM auftraege WHERE teil = \'{name}\'")'),
+   ("Zwei Anweisungen in einem execute", _FZ + 'cur.execute("SELECT nr FROM auftraege WHERE teil = \'x\'; DELETE FROM auftraege")')],
+  ["sql-select", "tupel", "fstring", "sqlite-connect"],
+  bez=["?", "Platzhalter"],
+  aliase=["SQL-Injection", "Parameter", "Injection", "Sicherheit", "bindings"])
+
+E("sql-fetch", "fetchall() / fetchone()", DB, "V19", "kopf",
+  "Holt das Ergebnis einer Abfrage: alle Zeilen als Liste von Tupeln oder eine Zeile (oder None).",
+  "zeilen = cur.fetchall()   # [(...), (...), ...]\nzeile = cur.fetchone()    # (...) oder None",
+  "Nach cur.execute(\"SELECT ...\") liegt das Ergebnis bereit. fetchall() liefert eine Liste von Tupeln, ein Tupel je Zeile, in der Reihenfolge der Spalten im SELECT; bei keinem Treffer eine leere Liste. fetchone() liefert die nächste Zeile als Tupel oder None, wenn es keine gibt. Prüfe deshalb vor dem Zugriff mit if zeile is None. Mit for nr, teil in cur.fetchall(): entpackst du jede Zeile direkt in Variablen.",
+  _FZ + '''cur.execute("SELECT teil, status FROM auftraege WHERE nr = ?", (4712,))
+zeile = cur.fetchone()
+print(zeile)
+cur.execute("SELECT teil, status FROM auftraege WHERE nr = ?", (9999,))
+print(cur.fetchone())
+''',
+  "fetchone für genau einen Datensatz (Suche nach Primärschlüssel, COUNT, SUM), fetchall für Listen.",
+  [("Einzelwert aus COUNT", _FZ + 'cur.execute("SELECT COUNT(*) FROM auftraege WHERE status = ?", ("offen",))\nanzahl = cur.fetchone()[0]\nprint(anzahl, "offene Aufträge")'),
+   ("Nicht gefunden abfangen", _FZ + 'cur.execute("SELECT status FROM auftraege WHERE nr = ?", (4799,))\nzeile = cur.fetchone()\nif zeile is None:\n    print("Auftrag nicht gefunden")\nelse:\n    print(zeile[0])')],
+  [("Zugriff auf None, wenn nichts gefunden wurde", _FZ + 'cur.execute("SELECT status FROM auftraege WHERE nr = ?", (4799,))\nprint(cur.fetchone()[0])')],
+  ["sql-select", "tupel", "for-liste"],
+  bez=[".fetchall", ".fetchone"],
+  aliase=["Ergebnis holen", "Liste von Tupeln", "None"])
+
+E("sql-insert", "CREATE TABLE / INSERT / executemany", DB, "V19", "lesen",
+  "Legt eine Tabelle an und fügt Zeilen ein, viele auf einmal mit executemany.",
+  "CREATE TABLE tabelle (spalte1 INTEGER PRIMARY KEY, spalte2 TEXT, spalte3 REAL)\ncur.execute(\"INSERT INTO tabelle VALUES (?, ?, ?)\", (1, \"a\", 2.5))\ncur.executemany(\"INSERT INTO tabelle VALUES (?, ?, ?)\", liste_von_tupeln)\ndb.commit()",
+  "CREATE TABLE legt fest, welche Spalten es gibt und welchen Datentyp sie haben (INTEGER, REAL, TEXT). Der Primärschlüssel (PRIMARY KEY) ist eindeutig wie eine Seriennummer: Eine zweite Zeile mit derselben Nummer lehnt die Datenbank ab. INSERT fügt eine Zeile ein, executemany wiederholt dasselbe INSERT für jedes Tupel einer Liste. Danach commit nicht vergessen.",
+  '''
+  import sqlite3
+
+  db = sqlite3.connect(":memory:")
+  cur = db.cursor()
+  cur.execute("CREATE TABLE auftraege (nr INTEGER PRIMARY KEY, teil TEXT, menge INTEGER)")
+  neue = [(4711, "WELLE_20H6", 500), (4712, "FLANSCH_80", 120)]
+  cur.executemany("INSERT INTO auftraege VALUES (?, ?, ?)", neue)
+  db.commit()
+  cur.execute("SELECT COUNT(*) FROM auftraege")
+  print(cur.fetchone()[0], "Aufträge")
+  ''',
+  "Beim Übernehmen von Daten aus CSV, JSON oder Eingaben in eine Datenbank.",
+  [("Nur bestimmte Spalten füllen", 'import sqlite3\ndb = sqlite3.connect(":memory:")\ndb.execute("CREATE TABLE teile (name TEXT, masse REAL, lager TEXT)")\ndb.execute("INSERT INTO teile (name, masse) VALUES (?, ?)", ("Welle", 2.4))\nprint(db.execute("SELECT * FROM teile").fetchall())'),
+   ("Doppelte Nummer abfangen", _FZ + 'try:\n    cur.execute("INSERT INTO auftraege VALUES (?, ?, ?, ?, ?)", (4711, "BOLZEN_12", "D2", 100, "offen"))\nexcept sqlite3.IntegrityError:\n    print("Auftragsnummer schon vergeben")')],
+  [("Primärschlüssel doppelt", _FZ + 'cur.execute("INSERT INTO auftraege VALUES (4711, \'BOLZEN_12\', \'D2\', 100, \'offen\')")'),
+   ("Zu wenige Werte für die Tabelle", _FZ + 'cur.execute("INSERT INTO auftraege VALUES (?, ?, ?)", (4716, "DECKEL_80", "F1"))')],
+  ["sqlite-connect", "sql-platzhalter", "sql-update-delete", "liste", "tupel"],
+  bez=["CREATE TABLE", "INSERT", ".executemany", "PRIMARY KEY", "INTEGER", "TEXT", "REAL"],
+  aliase=["Tabelle anlegen", "einfügen", "Primärschlüssel", "IntegrityError"])
+
+E("sql-update-delete", "UPDATE / DELETE (immer mit WHERE)", DB, "V19", "lesen",
+  "Ändert oder löscht Zeilen. Ohne WHERE trifft es jede Zeile der Tabelle.",
+  "cur.execute(\"UPDATE tabelle SET spalte = ? WHERE schluessel = ?\", (neu, nr))\ncur.execute(\"DELETE FROM tabelle WHERE schluessel = ?\", (nr,))\ndb.commit()\ncur.rowcount   # Anzahl betroffener Zeilen",
+  "UPDATE setzt neue Werte, DELETE entfernt Zeilen. Beide wirken auf alle Zeilen, auf die das WHERE passt, und ohne WHERE auf die ganze Tabelle. Das ist der klassische Fehler in KI-Code. cur.rowcount sagt, wie viele Zeilen betroffen waren (0 heißt: nichts gefunden). Erst db.commit() macht die Änderung in einer Datei-Datenbank dauerhaft.",
+  _FZ + '''cur.execute("UPDATE auftraege SET status = ? WHERE nr = ?", ("in Arbeit", 4712))
+print(cur.rowcount, "Zeile geändert")
+db.commit()
+cur.execute("SELECT nr, status FROM auftraege WHERE maschine = ? ORDER BY nr", ("F1",))
+print(cur.fetchall())
+''',
+  "Status eines Auftrags weitersetzen, Mengen korrigieren, stornierte Aufträge entfernen.",
+  [("Unbekannte Nummer erkennen", _FZ + 'cur.execute("UPDATE auftraege SET status = ? WHERE nr = ?", ("fertig", 4799))\nif cur.rowcount == 0:\n    print("Auftrag nicht gefunden")'),
+   ("Löschen mit Bedingung", _FZ + 'cur.execute("DELETE FROM auftraege WHERE status = ?", ("fertig",))\ndb.commit()\nprint(cur.rowcount, "gelöscht")')],
+  [("UPDATE ohne WHERE: alle Aufträge sind plötzlich fertig", _FZ + 'cur.execute("UPDATE auftraege SET status = ?", ("fertig",))\nprint(cur.rowcount, "Zeilen geändert")',
+    "(keine Fehlermeldung) 5 Zeilen geändert statt einer: Das WHERE fehlt."),
+   ("commit vergessen: nach dem Schließen ist die Änderung weg", 'import sqlite3\ndb = sqlite3.connect("t.db")\ndb.execute("CREATE TABLE t (x INTEGER)")\ndb.commit()\ndb.execute("INSERT INTO t VALUES (1)")\ndb.close()\ndb = sqlite3.connect("t.db")\nprint(db.execute("SELECT COUNT(*) FROM t").fetchone())',
+    "(keine Fehlermeldung) Ausgabe (0,): Das INSERT wurde nie mit commit gespeichert.")],
+  ["sql-insert", "sql-platzhalter", "sqlite-connect"],
+  bez=["UPDATE", "SET", "DELETE", ".rowcount"],
+  aliase=["ändern", "löschen", "Status setzen", "rowcount", "commit"])
+
+E("sql-group-by", "GROUP BY mit SUM / COUNT", DB, "V19", "lesen",
+  "Fasst Zeilen zu Gruppen zusammen und rechnet je Gruppe eine Summe, Anzahl, Mittel, Min oder Max.",
+  "SELECT spalte, SUM(menge), COUNT(*) FROM tabelle GROUP BY spalte\n# weitere: AVG(x), MIN(x), MAX(x)",
+  "Aggregatfunktionen rechnen über mehrere Zeilen: COUNT(*) zählt, SUM summiert, AVG bildet den Mittelwert, MIN und MAX suchen die Extremwerte. Ohne GROUP BY gibt es eine Ergebniszeile für die ganze Tabelle. Mit GROUP BY maschine sortiert die Datenbank die Zeilen in Fächer je Maschine und rechnet je Fach. WHERE filtert vorher einzelne Zeilen. Für eine feste Reihenfolge ORDER BY ergänzen.",
+  _FZ + '''cur.execute("SELECT maschine, SUM(menge) FROM auftraege GROUP BY maschine ORDER BY maschine")
+for maschine, summe in cur.fetchall():
+    print(f"{maschine}: {summe} Stück")
+''',
+  "Kennzahlen: Stück je Maschine, offene Aufträge je Status, mittlere Losgröße.",
+  [("Anzahl je Status", _FZ + 'cur.execute("SELECT status, COUNT(*) FROM auftraege GROUP BY status ORDER BY status")\nprint(cur.fetchall())'),
+   ("Ergebnis in ein Dictionary übernehmen", _FZ + 'cur.execute("SELECT maschine, SUM(menge) FROM auftraege WHERE status != ? GROUP BY maschine", ("fertig",))\noffen = {}\nfor maschine, summe in cur.fetchall():\n    offen[maschine] = summe\nprint(offen)')],
+  [("SUM über eine leere Auswahl ergibt None, nicht 0", _FZ + 'cur.execute("SELECT SUM(menge) FROM auftraege WHERE maschine = ?", ("R1",))\nprint(cur.fetchone()[0] + 10)'),
+   ("Spalte im SELECT, aber nicht im GROUP BY: SQLite nimmt still irgendeine Zeile", _FZ + 'cur.execute("SELECT maschine, teil, SUM(menge) FROM auftraege GROUP BY maschine ORDER BY maschine")\nprint(cur.fetchall())',
+    "(keine Fehlermeldung) Das Teil je Gruppe ist eins der Teile, welches, ist nicht festgelegt. Andere Datenbanken melden hier einen Fehler.")],
+  ["sql-select", "sql-fetch", "dict"],
+  bez=["GROUP BY", "SUM", "COUNT", "AVG", "MIN", "MAX"],
+  aliase=["Aggregatfunktion", "gruppieren", "zählen", "Summe je"])
