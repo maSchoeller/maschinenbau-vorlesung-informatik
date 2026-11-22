@@ -1,0 +1,152 @@
+/* =============================================================
+   Klausurtrainer · Seite klausurtrainer.html · Präfix kt-
+   Links Aufgabenliste mit Filter, rechts eine Aufgabe.
+   Baut auf dhbw-base.css, kurs.css, aufgaben.css, pap-editor.css auf.
+   ============================================================= */
+
+.kt-wrap { width: min(94vw, 1560px); margin: 0 auto; padding: var(--sp-5) 0 var(--sp-7); box-sizing: border-box; }
+body[data-page="klausurtrainer"] .dhbw-header__inner { max-width: none; width: min(94vw, 1560px); }
+
+/* ── Kopf ─────────────────────────────────────────────────── */
+.kt-hero { margin-bottom: var(--sp-6); }
+.kt-hero > * + * { margin-top: var(--sp-3); }
+.kt-hero__lead { max-width: var(--k-measure); font-size: var(--fs-md); }
+.kt-howto { max-width: none; }
+.kt-howto ul { margin: var(--sp-2) 0 0; padding-left: 1.2em; }
+.kt-howto li + li { margin-top: var(--sp-1); }
+.kt-howto p { margin-top: var(--sp-3); }
+@media (min-width: 1100px) {
+  .kt-howto ul { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sp-5); }
+  .kt-howto li + li { margin-top: 0; }
+}
+
+/* ── Fortschritt ──────────────────────────────────────────── */
+.kt-summary { margin-top: var(--sp-5); }
+.kt-sum__main { margin-bottom: var(--sp-2); }
+.kt-bar { height: 10px; background: var(--k-line); border-radius: 5px; overflow: hidden; min-width: 80px; }
+.kt-bar__fill { height: 100%; background: var(--k-ok); border-radius: 5px; }
+.kt-sum__groups { list-style: none; padding: 0; margin: var(--sp-4) 0 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sp-4) var(--sp-6); }
+.kt-sum__groups li { display: grid; gap: var(--sp-1); min-width: 0; }
+.kt-sum__gname { font-size: var(--fs-sm); font-weight: 600; }
+.kt-sum__gtxt { font-size: var(--fs-sm); color: var(--k-muted); }
+
+/* ── Zwei Spalten ─────────────────────────────────────────── */
+.kt-app { display: grid; grid-template-columns: 320px minmax(0, 1fr); gap: 0 var(--sp-6); align-items: start; }
+.kt-side { position: sticky; top: var(--sp-4); max-height: calc(100vh - 2 * var(--sp-4)); overflow-y: auto; padding-right: var(--sp-2); min-width: 0; }
+.kt-side__bar { display: none; }
+.kt-main { min-width: 0; overflow-anchor: none; }
+
+/* ── Filter ───────────────────────────────────────────────── */
+.kt-filter { display: grid; gap: var(--sp-3); margin-bottom: var(--sp-4); }
+.kt-filter__row label { display: block; font-size: var(--fs-sm); font-weight: 600; margin-bottom: 2px; }
+.kt-filter__row select { width: 100%; min-height: 44px; padding: 6px 10px; font: inherit; border: 2px solid #6B7280; border-radius: var(--r-base); background: #fff; color: var(--text); box-sizing: border-box; }
+.kt-filter__actions { display: flex; flex-wrap: wrap; gap: var(--sp-2); align-items: center; }
+.kt-filter__actions .k-btn { min-height: 44px; }
+.kt-filter p:empty { display: none; }
+
+/* ── Liste ────────────────────────────────────────────────── */
+.kt-list__sec { margin-top: var(--sp-4); }
+.kt-list__group { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 0 var(--sp-3); font-size: var(--fs-xs); font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--k-muted); margin: 0 0 var(--sp-2); }
+.kt-list__count { font-weight: 600; text-transform: none; letter-spacing: 0; font-variant-numeric: tabular-nums; }
+.kt-list__items { list-style: none; padding: 0; margin: 0; display: grid; gap: 2px; }
+.kt-list__items li { margin: 0; }
+.kt-item { display: grid; grid-template-columns: 1.5em minmax(0, 1fr); gap: 0 var(--sp-2); align-items: start; min-height: 44px; padding: 8px 10px; color: var(--text); text-decoration: none; border-left: 3px solid transparent; }
+.kt-item:hover { background: var(--canvas); color: var(--text); text-decoration: none; }
+.kt-item[aria-current="page"] { background: var(--red-tint); border-left-color: var(--red); }
+.kt-item[aria-current="page"] .kt-item__name { font-weight: 700; }
+.kt-item__mark { display: flex; justify-content: center; padding-top: 3px; color: var(--k-muted); }
+.kt-item__mark .k-ic { width: 1.1rem; height: 1.1rem; vertical-align: 0; }
+.kt-item[data-status="part"] .kt-item__mark { color: var(--k-warn); }
+.kt-item[data-status="done"] .kt-item__mark { color: var(--k-ok); }
+.kt-item__name { display: block; font-size: var(--fs-sm); line-height: 1.35; }
+.kt-item__meta { display: block; font-size: var(--fs-xs); color: var(--k-muted); }
+
+/* ── Aufgabe ──────────────────────────────────────────────── */
+.kt-task { padding: 0 0 var(--sp-5); min-width: 0; }
+.kt-task[hidden] { display: none !important; }
+.kt-task__head { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--sp-1) var(--sp-4); margin-bottom: var(--sp-4); }
+.kt-task__head > h2 { flex: 1 1 100%; order: 2; font-size: var(--fs-lg); outline: none; margin: 0; }
+.kt-task__head > h2:focus-visible { outline: 3px solid var(--k-focus); outline-offset: 4px; }
+.kt-task__kicker { order: 1; font-size: var(--fs-sm); font-weight: 600; color: var(--k-muted); margin: 0; }
+.kt-task__head .a-badge { order: 1; margin-left: auto; }
+.kt-task .a-task { margin-top: 0; }
+.kt-task .a-task__text { max-width: var(--k-measure); }
+.kt-task .a-task__text > * + * { margin-top: var(--sp-3); }
+.kt-task .a-task__text ul { padding-left: 1.2em; }
+.kt-task .a-task__text li + li { margin-top: var(--sp-1); }
+.kt-task .a-editor, .kt-task .a-bar, .kt-task .a-results, .kt-task .a-scheme, .kt-task .a-solution { max-width: 100%; }
+.kt-task .a-bar .k-btn--small { min-height: 44px; }
+.kt-task pre { max-width: 100%; }
+.kt-task .a-task__text pre.k-code { overflow-x: auto; }
+.kt-task .a-task__text .k-code { margin-top: var(--sp-3); }
+.kt-task textarea.py-editor { min-height: 12em; }
+.kt-pap { max-width: 100%; }
+.kt-pap .pap-wrap { margin: var(--sp-3) 0; max-height: 640px; overflow: auto; }
+.kt-tabelle { border-collapse: collapse; margin: var(--sp-3) 0; font-variant-numeric: tabular-nums; }
+.kt-tabelle th, .kt-tabelle td { border: 1px solid var(--border); padding: 4px 14px; text-align: center; }
+.kt-tabelle thead th { background: var(--canvas); }
+
+/* ── Papier-Aufgabe ───────────────────────────────────────── */
+.kt-antwort { margin-top: var(--sp-5); max-width: 100%; }
+.kt-antwort__label { display: block; font-weight: 700; margin-bottom: 2px; }
+.kt-antwort__ta { display: block; width: 100%; box-sizing: border-box; min-height: 8em; margin-top: var(--sp-2); padding: var(--sp-3) var(--sp-4); font: inherit; font-size: var(--fs-base); line-height: 1.5; border: 2px solid #6B7280; border-radius: var(--r-base); background: #fff; color: var(--text); resize: vertical; }
+.kt-antwort__ta.is-mono { font-family: var(--dhbw-font-mono); font-size: var(--fs-sm); line-height: var(--lh-code); white-space: pre; overflow: auto; }
+.kt-antwort__ta[readonly] { background: var(--canvas); }
+.kt-reveal { margin-top: var(--sp-5); }
+.kt-reveal > * + * { margin-top: var(--sp-4); }
+.kt-loesung { border-left: 3px solid var(--k-ok); background: var(--k-ok-bg); padding: var(--sp-3) var(--sp-5); max-width: 100%; }
+.kt-loesung > * + * { margin-top: var(--sp-3); }
+.kt-loesung h3 { margin: 0; font-size: var(--fs-md); }
+.kt-loesung .k-code, .kt-loesung .k-runner { margin-top: var(--sp-3); }
+.kt-reveal .a-scheme__fs { border: 0; padding: 0; margin: var(--sp-5) 0 0; min-width: 0; }
+.kt-reveal .a-scheme__fs legend { font-weight: 700; padding: 0; margin-bottom: var(--sp-2); }
+.kt-reveal .a-scheme__item { display: flex; gap: var(--sp-3); align-items: flex-start; min-height: 44px; padding: var(--sp-2) 0; border-top: 1px solid var(--k-line); cursor: pointer; }
+.kt-reveal .a-scheme__item input { width: 22px; height: 22px; margin-top: 2px; flex: 0 0 auto; }
+.kt-reveal .a-scheme__pts { margin-left: auto; white-space: nowrap; font-size: var(--fs-sm); color: var(--k-muted); padding-left: var(--sp-3); }
+.kt-reveal .a-scheme__score { font-weight: 700; margin-top: var(--sp-3); }
+
+/* Zeilenvergleich bei „Ausgabe bestimmen“ */
+.kt-cmp__wrap { overflow-x: auto; max-width: 100%; margin-top: var(--sp-3); }
+.kt-cmp { border-collapse: collapse; width: 100%; font-size: var(--fs-sm); }
+.kt-cmp th, .kt-cmp td { text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--k-line); vertical-align: top; }
+.kt-cmp thead th { border-bottom-width: 2px; }
+.kt-cmp__code { font-family: var(--dhbw-font-mono); white-space: pre-wrap; word-break: break-word; }
+.kt-cmp tr.is-bad td { background: var(--k-bad-bg); }
+.kt-cmp tr.is-ok .kt-cmp__res { color: var(--k-ok); font-weight: 700; }
+.kt-cmp tr.is-bad .kt-cmp__res { color: var(--k-bad); font-weight: 700; }
+.kt-cmp__res { white-space: nowrap; }
+.kt-cmp__mark { display: inline-flex; vertical-align: middle; margin-right: .3em; }
+.kt-cmp__mark .k-ic { width: 1.1rem; height: 1.1rem; }
+
+/* ── Navigation unter der Aufgabe ─────────────────────────── */
+.kt-nav { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--sp-3); margin-top: var(--sp-6); padding-top: var(--sp-4); border-top: 1px solid var(--k-line); }
+.kt-nav .k-btn { min-height: 44px; }
+.kt-leer { padding: var(--sp-4) var(--sp-5); border-left: 3px solid var(--k-warn-line); background: var(--k-warn-bg); }
+
+/* ── Mobil und Tablet ─────────────────────────────────────── */
+@media (max-width: 1100px) {
+  .kt-app { grid-template-columns: 280px minmax(0, 1fr); gap: 0 var(--sp-5); }
+}
+@media (max-width: 900px) {
+  .kt-app { grid-template-columns: minmax(0, 1fr); }
+  .kt-side { position: static; max-height: none; overflow: visible; padding-right: 0; margin-bottom: var(--sp-5); }
+  .kt-side__bar { display: block; }
+  .kt-side__toggle { width: 100%; min-height: 44px; justify-content: flex-start; text-align: left; white-space: normal; }
+  .kt-side__body { display: none; margin-top: var(--sp-3); }
+  .kt-side__body.is-open { display: block; }
+  .kt-sum__groups { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 760px) {
+  .kt-wrap { width: calc(100vw - 32px); padding-top: var(--sp-4); }
+  body[data-page="klausurtrainer"] .dhbw-header__inner { width: calc(100vw - 32px); }
+  .kt-task__head > h2 { font-size: var(--fs-md); }
+  .kt-loesung { padding-inline: var(--sp-4); }
+  .kt-nav { flex-direction: row; }
+  .kt-nav__pos { order: 3; flex: 1 1 100%; text-align: center; }
+  .kt-nav .k-btn { flex: 1 1 40%; }
+  .kt-reveal .a-scheme__item { flex-wrap: wrap; }
+  .kt-reveal .a-scheme__pts { margin-left: calc(22px + var(--sp-3)); padding-left: 0; }
+}
+
+/* Das Abzeichen „gelöst“ steht einmal im Aufgabenkopf (der PAP-Baustein setzt ein zweites in seinen eigenen Kopf) */
+.kt-task .a-task__head .a-badge { display: none; }
