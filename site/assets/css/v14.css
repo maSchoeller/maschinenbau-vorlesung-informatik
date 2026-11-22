@@ -1,0 +1,102 @@
+/* =============================================================
+   v14.css – Lektion V14 (Visualisierung) und Projektseite: Explorables „Diagramme, die täuschen“, Datenkoordinaten → Pixel,
+   Diagrammart-Wahl, Subplots; Themenkatalog, Meilensteine, Bewertungsraster der Projektseite.
+   Baut auf kurs.css und v05.css (PAP-Stile) auf. Präfix v14-. Rot nur für die zweite Datenreihe und den aktiven Zustand.
+   Diagrammfarben: Schwarz und Rot (V13-Stil), dazu Muster/Beschriftung, nie nur Farbe.
+   ============================================================= */
+
+.v14-lbl { font-size: var(--fs-sm); font-weight: 600; }
+.v14-ctl { align-items: center; margin: 0 0 var(--sp-3); }
+.v14-ctl .k-btn { min-height: 44px; }
+.v14-seg { flex-wrap: wrap; max-width: 100%; }
+.v14-check { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font-size: var(--fs-sm); font-weight: 600; cursor: pointer; }
+.v14-check input { width: 20px; height: 20px; accent-color: var(--red-dark); }
+
+/* Diagramme (SVG) */
+.v14-chartwrap { min-width: 0; margin: 0 0 var(--sp-3); }
+.v14-svg { display: block; width: 100%; height: auto; max-width: 720px; background: #fff; }
+.v14-svg--mini { max-width: 460px; }
+.v14-tick { font-size: 11px; fill: #4B5563; }
+.v14-axt { font-size: 12px; fill: #1A1A1A; font-weight: 600; }
+.v14-head { font-size: 13px; fill: #1A1A1A; font-weight: 700; }
+.v14-line { stroke-width: 2.4; stroke-linejoin: round; }
+.v14-a { stroke: #1A1A1A; }
+.v14-b { stroke: #E2001A; }
+text.v14-name { font-size: 12px; font-weight: 700; stroke: none; }
+text.v14-a { fill: #1A1A1A; }
+text.v14-b { fill: #B00014; }
+.v14-dot { fill: #1A1A1A; }
+.v14-dot--cur { fill: #E2001A; }
+.v14-out { font-size: 11px; fill: #9B1213; font-weight: 700; }
+.v14-bar { fill: #4B5563; }
+
+.v14-verdict { margin: var(--sp-3) 0; padding: var(--sp-3) var(--sp-4); border-left: 3px solid var(--k-info); background: var(--k-info-bg); max-width: var(--k-measure); }
+.v14-verdict.is-bad { border-color: var(--k-bad); background: var(--k-bad-bg); }
+.v14-verdict.is-ok { border-color: var(--k-ok); background: var(--k-ok-bg); }
+.v14-verdict ul { margin: var(--sp-2) 0 0; padding-left: 1.2em; }
+.v14-dl dd { font-size: var(--fs-md); }
+
+/* Datenkoordinaten */
+.v14-code { margin: 0 0 var(--sp-3); padding: var(--sp-2) var(--sp-3); background: var(--canvas); border-left: 3px solid var(--border); font-family: var(--dhbw-font-mono); font-size: var(--fs-sm); max-width: none; overflow-x: auto; white-space: pre; }
+.v14-two { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: var(--sp-5); align-items: start; }
+@media (max-width: 900px) { .v14-two { grid-template-columns: minmax(0, 1fr); } }
+.v14-calc { min-height: 9em; max-width: none; }
+.v14-calc p { max-width: none; }
+.v14-calc__t { font-weight: 700; }
+.v14-calc__f { font-family: var(--dhbw-font-mono); font-size: var(--fs-sm); margin-top: var(--sp-2); overflow-wrap: anywhere; }
+.v14-calc__bad { margin-top: var(--sp-2); padding: var(--sp-2) var(--sp-3); border-left: 3px solid var(--k-bad); background: var(--k-bad-bg); color: var(--k-bad); font-weight: 600; }
+
+/* Diagrammart */
+.v14-q { font-weight: 600; max-width: var(--k-measure); margin: 0 0 var(--sp-3); }
+.v14-fb { min-height: 3em; margin: var(--sp-3) 0; max-width: var(--k-measure); }
+.v14-fb.is-ok { padding: var(--sp-3) var(--sp-4); border-left: 3px solid var(--k-ok); background: var(--k-ok-bg); }
+.v14-fb.is-bad { padding: var(--sp-3) var(--sp-4); border-left: 3px solid var(--k-bad); background: var(--k-bad-bg); }
+.v14-figbox { margin: 0 0 var(--sp-3); }
+.k-predict__opts button.is-right { background: var(--k-ok); color: #fff; border-color: var(--k-ok); }
+.k-predict__opts button.is-wrong { border-color: var(--k-bad); color: var(--k-bad); text-decoration: line-through; }
+.v14-score { margin-left: var(--sp-3); }
+
+/* Subplots */
+.v14-codeline { margin: 0 0 var(--sp-3); padding: var(--sp-3) var(--sp-4); background: var(--code-bg); color: var(--code-text); font-family: var(--dhbw-font-mono); font-size: var(--fs-sm); border-radius: var(--r-base); white-space: pre-wrap; word-break: break-word; max-width: none; }
+
+/* PAP */
+.v14-papbox { min-width: 0; max-width: 520px; }
+
+/* ── Projektseite ───────────────────────────────────────── */
+.prj-wrap { max-width: 1100px; margin: 0 auto; padding: var(--sp-6) var(--gutter) var(--sp-8, 64px); }
+.prj-hero h1 { margin-bottom: var(--sp-3); }
+.prj-hero p { max-width: var(--k-measure); }
+.prj-sec { margin-top: var(--k-section-gap); scroll-margin-top: var(--sp-4); }
+.prj-sec > * + * { margin-top: var(--k-block-gap); }
+.prj-sec h2 { font-size: var(--fs-lg); margin-top: 0; }
+.prj-sec h3 { font-size: var(--fs-md); margin-top: var(--sp-6); }
+.prj-sec > h2 + * { margin-top: var(--sp-4); }
+.prj-sec p { max-width: var(--k-measure); }
+.prj-toc { display: flex; flex-wrap: wrap; gap: var(--sp-2) var(--sp-4); list-style: none; padding: 0; margin: var(--sp-4) 0 0; }
+.prj-toc a { display: inline-flex; align-items: center; min-height: 44px; }
+
+.prj-thema { padding: var(--sp-5) 0; border-top: 1px solid var(--border); }
+.prj-thema:first-of-type { border-top: 2px solid var(--border); }
+.prj-thema h3 { margin: 0 0 var(--sp-2); }
+.prj-thema__num { color: var(--red-dark); font-weight: 700; margin-right: .3em; }
+.prj-thema dl { display: grid; grid-template-columns: 11rem minmax(0, 1fr); gap: var(--sp-2) var(--sp-4); margin: var(--sp-3) 0 0; }
+.prj-thema dt { font-weight: 700; color: var(--k-muted); font-size: var(--fs-sm); }
+.prj-thema dd { margin: 0; max-width: var(--k-measure); }
+.prj-thema dd ul { margin: 0; padding-left: 1.2em; }
+@media (max-width: 700px) { .prj-thema dl { grid-template-columns: minmax(0, 1fr); gap: 2px; } .prj-thema dd { margin-bottom: var(--sp-2); } }
+
+.prj-miles { display: grid; gap: var(--sp-4); }
+.prj-mile { padding: var(--sp-4) 0; border-top: 1px solid var(--border); }
+.prj-mile h3 { margin: 0 0 var(--sp-2); font-size: var(--fs-base); }
+.prj-mile ul { list-style: none; padding: 0; margin: var(--sp-2) 0 0; display: grid; gap: 2px; }
+.prj-chk { display: flex; gap: var(--sp-3); align-items: flex-start; min-height: 44px; padding: 6px 0; cursor: pointer; max-width: var(--k-measure); }
+.prj-chk input { margin-top: 4px; width: 22px; height: 22px; flex: none; accent-color: var(--red-dark); }
+.prj-mile__stand { font-size: var(--fs-sm); font-weight: 600; color: var(--k-muted); }
+.prj-mile.is-done .prj-mile__stand { color: var(--k-ok); }
+.prj-mile.is-done h3::after { content: " – fertig"; color: var(--k-ok); font-weight: 600; }
+.prj-sum { font-weight: 600; }
+.prj-grid { width: 100%; border-collapse: collapse; font-size: var(--fs-sm); }
+.prj-grid th, .prj-grid td { text-align: left; vertical-align: top; padding: var(--sp-2) var(--sp-3); border-bottom: 1px solid var(--border); }
+.prj-grid thead th { border-bottom-width: 2px; }
+.prj-grid tbody th { font-weight: 700; white-space: nowrap; }
+.prj-grid td:nth-child(2) { white-space: nowrap; text-align: right; font-variant-numeric: tabular-nums; }

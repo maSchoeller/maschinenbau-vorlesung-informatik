@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Projekt · Informatik Maschinenbau · DHBW Stuttgart Campus Horb</title>
+  <meta name="description" content="Das Semesterprojekt: ein kleines Ingenieurwerkzeug in Python, in Zweiergruppen, mit Copilot. Themenkatalog mit sechs Themen, Meilensteine von V14 bis V21 zum Abhaken, Bewertungsraster und Präsentation in V22.">
+  <link rel="stylesheet" href="assets/css/dhbw-base.css">
+  <link rel="stylesheet" href="assets/css/kurs.css">
+  <link rel="stylesheet" href="assets/css/v14.css">
+</head>
+<body data-page="projekt" data-lesson="PROJEKT">
+  <a class="k-skip" href="#inhalt">Zum Inhalt springen</a>
+
+  <header class="dhbw-header k-header">
+    <div class="dhbw-header__inner">
+      <a class="k-logo" href="index.html" aria-label="Startseite Informatik Maschinenbau">
+        <span class="k-logo__mark" aria-hidden="true">DHBW</span>
+        <span class="k-logo__text">Informatik Maschinenbau<small>Campus Horb · 2026/27</small></span>
+      </a>
+      <nav class="k-nav" aria-label="Hauptnavigation">
+        <a href="index.html">Start</a>
+        <a href="index.html#lernpfad">Lernpfad</a>
+        <a href="bibliothek.html">Bibliothek</a>
+        <a href="pap-editor.html">PAP-Editor</a>
+        <a href="projekt.html" aria-current="page">Projekt</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="inhalt">
+    <div class="prj-wrap">
+
+      <section class="prj-hero" aria-labelledby="h-prj">
+        <p class="k-small k-muted">Phase 3 · Projekt · V14 bis V22</p>
+        <h1 id="h-prj">Projekt: ein kleines Ingenieurwerkzeug in Python</h1>
+        <p>Ab V14 arbeitest du in jedem Termin die letzten 30 Minuten an einem eigenen Projekt: ein Programm, das ein Problem aus dem Maschinenbau löst. Du arbeitest zu zweit, benutzt <abbr class="k-begriff" data-erklaerung="GitHub Copilot ist ein KI-Assistent, der in der Entwicklungsumgebung Programmcode vorschlägt, Fragen zu Code beantwortet und Code erklärt.">Copilot</abbr> wie in V11 gelernt (spezifizieren, Testfälle von Hand, generieren, prüfen, verantworten) und stellst das Ergebnis in V22 vor. Auf dieser Seite findest du den Themenkatalog, die Meilensteine zum Abhaken und das Bewertungsraster.</p>
+        <ul class="prj-toc" aria-label="Inhalt dieser Seite">
+          <li><a href="#regeln">Ablauf und Regeln</a></li>
+          <li><a href="#themen">Themenkatalog</a></li>
+          <li><a href="#meilensteine">Meilensteine</a></li>
+          <li><a href="#praesentation">Präsentation in V22</a></li>
+          <li><a href="#bewertung">Bewertungsraster</a></li>
+        </ul>
+      </section>
+
+      <!-- Ablauf -->
+      <section class="prj-sec" id="regeln" aria-labelledby="h-regeln">
+        <h2 id="h-regeln">Ablauf und Regeln</h2>
+        <ul>
+          <li><strong>Zweiergruppen.</strong> Beide verstehen jede Zeile. Teilt die Arbeit, aber lest den Code des anderen.</li>
+          <li><strong>30 Minuten pro Termin, acht Termine:</strong> V14 bis V21, jeweils am Ende des Termins mit Copilot. Dazu kommt, was ihr zu Hause fertig macht. Die Meilensteine unten sagen, was am Ende jedes Termins stehen soll.</li>
+          <li><strong>Reihenfolge wie in V11:</strong> erst die Aufgabe spezifizieren (PAP und Text), dann Testfälle von Hand, dann Copilot, dann prüfen. Kein Code wird übernommen, den ihr nicht erklären könnt.</li>
+          <li><strong>KI-Protokoll:</strong> Notiert in jedem Termin zwei Sätze in einer Datei <code class="k-i">KI-PROTOKOLL.md</code>: Was habt ihr Copilot gefragt, und was war falsch oder unpassend? Das braucht ihr für die Präsentation.</li>
+          <li><strong>Keine vertraulichen Daten</strong> in Prompts und im Repository: keine Firmen-, Kunden- oder Zugangsdaten. Nehmt eigene Messungen oder die Beispieldaten des Kurses.</li>
+        </ul>
+        <div class="hinweis hinweis--merke"><strong class="hinweis__title">Wer bewertet, und wie?</strong><p>Wie das Projekt bewertet wird und ob es in eine Note oder einen Bonus einfließt, legt der Dozent fest. Das Raster unten ist ein Arbeitsraster: Es zeigt, worauf es ankommt. Zahlen zu Noten stehen hier nicht.</p></div>
+      </section>
+
+      <!-- Themenkatalog -->
+      <section class="prj-sec" id="themen" aria-labelledby="h-themen">
+        <h2 id="h-themen">Themenkatalog: sechs Themen</h2>
+        <p>Wähle eins der sechs Themen (in V14 mit deinem Partner). Jedes Thema hat einen <strong>Mindestumfang (Muss)</strong>, den ihr bis V21 schafft, und <strong>Erweiterungen (Kann)</strong> für mehr Tiefe. Eigene Ideen sind möglich, wenn der Dozent sie in V14 freigibt.</p>
+
+        <article class="prj-thema" id="thema-1" aria-labelledby="h-thema-1">
+          <h3 id="h-thema-1"><span class="prj-thema__num">1</span>Wellen-Rechner</h3>
+          <p>Ein Programm, das eine Antriebswelle auf Torsion und Biegung nachrechnet und dazu einen passenden Werkstoff auswählt.</p>
+          <dl>
+            <dt>Nutzen für Ingenieure</dt><dd>Der Festigkeitsnachweis einer Welle gehört in jeden Konstruktionsablauf. Mit einem Programm rechnest du Varianten (Durchmesser, Werkstoff) in Sekunden statt in Tabellenkalkulationen.</dd>
+            <dt>Muss</dt><dd><ul>
+              <li>Eingaben: Torsionsmoment, Biegemoment, Durchmesser, Werkstoff, geforderte Sicherheit.</li>
+              <li>Torsionsspannung und Biegespannung aus den Widerstandsmomenten, Vergleichsspannung (Gestaltänderungsenergie-Hypothese).</li>
+              <li>Sicherheit gegen Streckgrenze, Ausgabe „ausreichend“ oder „nicht ausreichend“.</li>
+              <li>Werkstoffe aus einer Tabelle (Dictionary oder CSV), mindestens vier.</li>
+              <li>Mindestens fünf Testfälle, von Hand gerechnet.</li>
+            </ul></dd>
+            <dt>Kann</dt><dd><ul>
+              <li>Kleinsten genormten Durchmesser suchen, der noch reicht.</li>
+              <li>Alle Werkstoffe vergleichen und den leichtesten passenden vorschlagen.</li>
+              <li>Diagramm: Vergleichsspannung über dem Durchmesser (V14).</li>
+            </ul></dd>
+            <dt>Lektionen und Labore</dt><dd><a href="lektionen/v07-funktionen.html">V07 Funktionen</a> · <a href="lektionen/v07-labor.html">V07 Labor</a> · <a href="lektionen/v08-datenstrukturen.html">V08 Datenstrukturen</a> · <a href="lektionen/v12-testen-und-debuggen.html">V12 Testen</a> · <a href="lektionen/v14-visualisierung.html">V14 Visualisierung</a></dd>
+            <dt>Datenquelle</dt><dd>Werkstoffkennwerte (Streckgrenze) aus einem Datenblatt oder Tabellenbuch, Quelle im Programm als Kommentar angeben. Die Belastung denkt ihr euch aus oder nehmt sie aus einem Beispiel der Vorlesung Maschinenelemente.</dd>
+          </dl>
+        </article>
+
+        <article class="prj-thema" id="thema-2" aria-labelledby="h-thema-2">
+          <h3 id="h-thema-2"><span class="prj-thema__num">2</span>Messdaten-Auswertung mit phyphox</h3>
+          <p>Ihr nehmt mit dem Handy (App phyphox) eine eigene Messung auf, zum Beispiel eine Bremsung mit dem Fahrrad, einen Aufzug, ein Pendel oder eine Waschmaschine, und wertet sie automatisch aus.</p>
+          <dl>
+            <dt>Nutzen für Ingenieure</dt><dd>Messdaten kommen fast immer als Datei. Wer sie einlesen, bereinigen und darstellen kann, spart Stunden und macht seine Ergebnisse nachvollziehbar.</dd>
+            <dt>Muss</dt><dd><ul>
+              <li>Eine eigene Messung als CSV (oder die Beispieldatei), mit Zeit und mindestens einer Messgröße.</li>
+              <li>Datei einlesen (Semikolon, Dezimalkomma), kaputte Zeilen abfangen.</li>
+              <li>Kennwerte: Dauer, Maximum, Minimum, Mittelwert, Standardabweichung.</li>
+              <li>Ein ehrliches Diagramm mit Achsentiteln und Einheiten.</li>
+              <li>Mindestens drei Testfälle (kleine Beispieldatei, deren Kennwerte ihr von Hand kennt).</li>
+            </ul></dd>
+            <dt>Kann</dt><dd><ul>
+              <li>Geschwindigkeit durch Aufsummieren bestimmen (wie im Beispiel in V14).</li>
+              <li>Ausreißer erkennen und markieren.</li>
+              <li>Zwei Messungen in einem Bild vergleichen.</li>
+            </ul></dd>
+            <dt>Lektionen und Labore</dt><dd><a href="lektionen/v09-dateien-und-fehler.html">V09 Dateien und Fehler</a> · <a href="lektionen/v09-labor.html">V09 Labor</a> · <a href="lektionen/v13-laufzeit.html">V13 NumPy</a> · <a href="lektionen/v14-visualisierung.html">V14 Visualisierung</a> · <a href="lektionen/v14-labor.html">V14 Labor</a></dd>
+            <dt>Datenquelle</dt><dd>Eure eigene phyphox-Messung. Zum Üben und für die Tests: <a href="assets/data/v09/bremsen.csv" download>bremsen.csv</a> und <a href="assets/data/v09/waschmaschine.csv" download>waschmaschine.csv</a>.</dd>
+          </dl>
+        </article>
+
+        <article class="prj-thema" id="thema-3" aria-labelledby="h-thema-3">
+          <h3 id="h-thema-3"><span class="prj-thema__num">3</span>Toleranzkette</h3>
+          <p>Ein Programm, das aus den Maßen und Toleranzen mehrerer Bauteile das Schließmaß einer Baugruppe berechnet, einmal im ungünstigsten Fall (arithmetisch) und einmal statistisch.</p>
+          <dl>
+            <dt>Nutzen für Ingenieure</dt><dd>Ob eine Baugruppe sich montieren lässt und ob das Spiel reicht, entscheidet die Toleranzkette. Die statistische Rechnung zeigt, wie viel Toleranz man sich in der Praxis leisten kann.</dd>
+            <dt>Muss</dt><dd><ul>
+              <li>Eine Kette mit mindestens fünf Gliedern: Nennmaß, oberes und unteres Abmaß, Richtung (plus oder minus).</li>
+              <li>Schließmaß (Nennmaß), Höchst- und Mindestmaß arithmetisch (Summe der Toleranzen).</li>
+              <li>Statistisch (Wurzel aus der Summe der Toleranzquadrate), dazu der Vergleich beider Ergebnisse.</li>
+              <li>Mindestens fünf Testfälle, von Hand gerechnet, darunter eine Kette mit nur einem Glied.</li>
+            </ul></dd>
+            <dt>Kann</dt><dd><ul>
+              <li>Kette aus einer CSV-Datei lesen.</li>
+              <li>Zufallsversuch: viele Baugruppen simulieren (<code class="k-i">random</code>) und im Histogramm darstellen.</li>
+              <li>Prüfen, ob ein geforderter Spielbereich eingehalten wird.</li>
+            </ul></dd>
+            <dt>Lektionen und Labore</dt><dd><a href="lektionen/v03-fliesskommazahlen.html">V03 Fließkommazahlen</a> · <a href="lektionen/v08-datenstrukturen.html">V08 Datenstrukturen</a> · <a href="lektionen/v11-copilot.html">V11 Module (random, statistics)</a> · <a href="lektionen/v14-visualisierung.html">V14 Histogramm</a></dd>
+            <dt>Datenquelle</dt><dd>Eine eigene Kette, zum Beispiel ein Lager im Gehäuse mit Deckel und Distanzscheiben. Maße und Abmaße aus Zeichnungen oder Tabellenbuch.</dd>
+          </dl>
+        </article>
+
+        <article class="prj-thema" id="thema-4" aria-labelledby="h-thema-4">
+          <h3 id="h-thema-4"><span class="prj-thema__num">4</span>Stücklisten-Tool</h3>
+          <p>Ein Programm, das eine Stückliste aus einer CSV-Datei liest und daraus Gesamtgewicht, Gesamtkosten und eine Bestellliste der fehlenden Teile berechnet.</p>
+          <dl>
+            <dt>Nutzen für Ingenieure</dt><dd>Stücklisten stecken in jedem Produkt. Gewicht und Kosten aus der Liste automatisch zu ziehen ist Alltag in Konstruktion und Einkauf.</dd>
+            <dt>Muss</dt><dd><ul>
+              <li>Stückliste als CSV (mindestens 12 Positionen: Nummer, Benennung, Anzahl, Masse in kg, Preis in Euro, Bestand).</li>
+              <li>Gesamtgewicht und Gesamtkosten, auch je Baugruppe.</li>
+              <li>Bestellliste: alle Positionen, bei denen der Bestand kleiner als der Bedarf ist, mit fehlender Menge.</li>
+              <li>Fehlerbehandlung für fehlende Datei und unlesbare Zeilen.</li>
+              <li>Mindestens vier Testfälle mit kleinen Listen, von Hand gerechnet.</li>
+            </ul></dd>
+            <dt>Kann</dt><dd><ul>
+              <li>Sortierte Ausgabe (teuerste Positionen zuerst), Ausgabe als neue CSV.</li>
+              <li>Balkendiagramm: Kosten je Baugruppe.</li>
+              <li>Stückliste in einer SQLite-Datenbank und Abfragen mit SQL (V19).</li>
+            </ul></dd>
+            <dt>Lektionen und Labore</dt><dd><a href="lektionen/v08-datenstrukturen.html">V08 Listen und Dictionaries</a> · <a href="lektionen/v09-dateien-und-fehler.html">V09 Dateien und Fehler</a> · <a href="lektionen/v14-visualisierung.html">V14 Balkendiagramm</a> · <a href="index.html#lernpfad">V19 Datenbanken (Lernpfad)</a></dd>
+            <dt>Datenquelle</dt><dd>Eine selbst erstellte Stückliste eines Geräts, das ihr kennt (Getriebe, Fahrradnabe, Bohrmaschine). Gewichte und Preise dürfen geschätzt sein, dann steht das als Hinweis in der Datei.</dd>
+          </dl>
+        </article>
+
+        <article class="prj-thema" id="thema-5" aria-labelledby="h-thema-5">
+          <h3 id="h-thema-5"><span class="prj-thema__num">5</span>SPC-Auswertung</h3>
+          <p>Ein Programm, das Fertigungsdaten einer Drehmaschine statistisch auswertet: Prozessfähigkeit (Cp, Cpk) und Regelkarte.</p>
+          <dl>
+            <dt>Nutzen für Ingenieure</dt><dd>Die statistische Prozessregelung (SPC) zeigt, ob ein Prozess seine Toleranz sicher einhält und ob er schleichend abdriftet, bevor Ausschuss entsteht. Sie gehört zu jeder Qualitätsabteilung.</dd>
+            <dt>Muss</dt><dd><ul>
+              <li>Daten einlesen (<a href="assets/data/v15/wellen.csv" download>wellen.csv</a>: 25 Stichproben je 10 Teile, Durchmesser in mm, zwei Maschinen, zwei Schichten).</li>
+              <li>Mittelwert und Standardabweichung gesamt und je Stichprobe.</li>
+              <li>Cp und Cpk mit den Spezifikationsgrenzen aus V15.</li>
+              <li>Regelkarte der Stichprobenmittelwerte mit Mittellinie und Eingriffsgrenzen (Diagramm, V14).</li>
+              <li>Mindestens vier Testfälle mit kleinen Datensätzen, deren Kennwerte ihr von Hand rechnet.</li>
+            </ul></dd>
+            <dt>Kann</dt><dd><ul>
+              <li>Maschinen und Schichten getrennt auswerten und vergleichen.</li>
+              <li>Trend und Ausreißer automatisch melden.</li>
+              <li>Histogramm der Einzelwerte mit eingezeichneten Spezifikationsgrenzen.</li>
+            </ul></dd>
+            <dt>Lektionen und Labore</dt><dd><a href="lektionen/v09-dateien-und-fehler.html">V09 Dateien</a> · <a href="lektionen/v13-laufzeit.html">V13 NumPy</a> · <a href="lektionen/v14-visualisierung.html">V14 Visualisierung</a> · <a href="index.html#lernpfad">V15 Datenanalyse (Lernpfad)</a></dd>
+            <dt>Datenquelle</dt><dd><code class="k-i">assets/data/v15/wellen.csv</code> (in Lektionen als <code class="k-i">../assets/data/v15/wellen.csv</code>). Spalten: stichprobe, maschine, schicht, teil, durchmesser_mm.</dd>
+          </dl>
+        </article>
+
+        <article class="prj-thema" id="thema-6" aria-labelledby="h-thema-6">
+          <h3 id="h-thema-6"><span class="prj-thema__num">6</span>Schraubenberechnung</h3>
+          <p>Ein Programm, das mit vereinfachten Ideen aus der VDI-Richtlinie 2230 eine Schraubenverbindung auslegt: Vorspannkraft, Anzugsmoment aus einer Tabelle und eine Prüfung, ob die Schraube hält.</p>
+          <dl>
+            <dt>Nutzen für Ingenieure</dt><dd>Schrauben sind das häufigste Verbindungselement. Wer das Anzugsmoment und die Vorspannkraft versteht, vermeidet gelöste oder überlastete Verbindungen.</dd>
+            <dt>Muss</dt><dd><ul>
+              <li>Tabelle der Schrauben (Größe, Festigkeitsklasse, Spannungsquerschnitt, Vorspannkraft, Anzugsmoment) als CSV oder Dictionary, mindestens vier Größen. Die Werte stammen aus einem Tabellenbuch oder Datenblatt, die Quelle steht im Programm.</li>
+              <li>Eingaben: Betriebskraft, Größe, Festigkeitsklasse, Anzahl der Schrauben.</li>
+              <li>Prüfung: Zugspannung in der Schraube höchstens so groß wie die zulässige, Vorspannkraft mindestens so groß wie die erforderliche Klemmkraft.</li>
+              <li>Ausgabe mit Einheiten und klarer Aussage („Verbindung ausreichend“ oder die Begründung, warum nicht).</li>
+              <li>Mindestens fünf Testfälle, darunter einer genau an der Grenze.</li>
+            </ul></dd>
+            <dt>Kann</dt><dd><ul>
+              <li>Kleinste passende Schraube automatisch suchen.</li>
+              <li>Anzugsmoment aus Steigung, Reibwerten und Durchmessern berechnen statt aus der Tabelle und beide vergleichen.</li>
+              <li>Diagramm: Sicherheit über der Schraubengröße.</li>
+            </ul></dd>
+            <dt>Lektionen und Labore</dt><dd><a href="lektionen/v07-funktionen.html">V07 Funktionen</a> · <a href="lektionen/v08-datenstrukturen.html">V08 Dictionaries</a> · <a href="lektionen/v12-testen-und-debuggen.html">V12 Grenzfälle testen</a> · <a href="lektionen/v14-visualisierung.html">V14 Visualisierung</a></dd>
+            <dt>Datenquelle</dt><dd>Tabellenbuch oder VDI 2230 (Tabellenwerte abschreiben, nicht von der KI erfinden lassen). Das Modell ist <strong>vereinfacht</strong> und ersetzt keine Berechnung nach VDI 2230. Das steht im Programm als Hinweis.</dd>
+          </dl>
+        </article>
+      </section>
+
+      <!-- Meilensteine -->
+      <section class="prj-sec" id="meilensteine" aria-labelledby="h-mile">
+        <h2 id="h-mile">Meilensteine V14 bis V21</h2>
+        <p>Am Ende jedes Termins sollen in der Projektzeit (letzte 30 Minuten, mit Copilot) diese Punkte stehen. Hake ab, was ihr geschafft habt. Der Stand bleibt in diesem Browser gespeichert (nicht beim Dozenten und nicht bei deinem Partner).</p>
+        <p class="prj-sum" id="prj-sum" role="status" aria-live="polite"></p>
+        <div class="prj-miles" id="prj-miles"></div>
+        <noscript><p>Zum Abhaken der Meilensteine wird JavaScript benötigt.</p></noscript>
+      </section>
+
+      <!-- Präsentation -->
+      <section class="prj-sec" id="praesentation" aria-labelledby="h-prae">
+        <h2 id="h-prae">Präsentation in V22</h2>
+        <p>Jede Gruppe stellt ihr Projekt in <strong>5 Minuten</strong> vor, danach gibt es kurz Fragen. Der Ablauf:</p>
+        <ol class="k-steps">
+          <li><strong>Problem:</strong> Was soll das Werkzeug können, wer braucht es, welche Eingaben und Ausgaben mit welchen Einheiten? (etwa 45 Sekunden)</li>
+          <li><strong>PAP:</strong> Euer Programmablaufplan, kurz erklärt: Wo sind die Entscheidungen, wo die Schleife? (etwa 45 Sekunden)</li>
+          <li><strong>Live-Demo:</strong> Das Programm mit einem echten Beispiel laufen lassen, inklusive einer Fehleingabe. (etwa 2 Minuten)</li>
+          <li><strong>Ein geprüfter Testfall:</strong> Zeigt einen Testfall, den ihr von Hand gerechnet habt, und wie das Programm ihn besteht. (etwa 45 Sekunden)</li>
+          <li><strong>Was hat die KI falsch gemacht?</strong> Mindestens ein konkreter Fehler von Copilot, wie ihr ihn gefunden habt und was ihr geändert habt. (etwa 45 Sekunden)</li>
+        </ol>
+        <div class="hinweis hinweis--achtung"><strong class="hinweis__title">Vorher probieren</strong><p>Fünf Minuten sind kurz. Probt die Präsentation in V21 mit der Uhr, und startet das Programm vorher einmal frisch (alle Dateien im selben Ordner, keine Pfade von eurem Laptop). Die Demo-Daten liegen bereit.</p></div>
+      </section>
+
+      <!-- Bewertung -->
+      <section class="prj-sec" id="bewertung" aria-labelledby="h-bew">
+        <h2 id="h-bew">Bewertungsraster</h2>
+        <p>Das Raster zeigt sechs Kriterien. Die Gewichtung ist ein Vorschlag für die Orientierung. Ob und wie das Projekt in die Gesamtbewertung eingeht, legt der Dozent fest.</p>
+        <div class="k-tablewrap"><table class="prj-grid">
+          <caption class="k-sr">Bewertungsraster Projekt</caption>
+          <thead><tr><th scope="col">Kriterium</th><th scope="col">Gewicht</th><th scope="col">Sehr gut</th><th scope="col">Ausreichend</th><th scope="col">Nicht ausreichend</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Fachliche Korrektheit</th><td>25 %</td><td>Formeln, Einheiten und Ergebnisse stimmen, auch an den Grenzen. Annahmen und Vereinfachungen sind genannt.</td><td>Die Hauptrechnung stimmt. Einzelne Einheiten oder Grenzfälle sind unklar oder falsch.</td><td>Ergebnisse sind falsch oder nicht nachvollziehbar. Einheiten fehlen.</td></tr>
+            <tr><th scope="row">Tests</th><td>20 %</td><td>Mindestens fünf von Hand gerechnete Testfälle, darunter Grenz- und Fehlerfälle, alle bestanden. Die Tests sind vor dem Code entstanden.</td><td>Einige Testfälle laufen. Grenzfälle fehlen oder die Erwartungen stammen vom Programm selbst.</td><td>Keine oder nur Tests, die immer bestehen.</td></tr>
+            <tr><th scope="row">Struktur und Lesbarkeit</th><td>15 %</td><td>Kleine Funktionen mit sprechenden Namen und Docstring, keine doppelten Stellen, Hauptprogramm übersichtlich, Eingaben werden geprüft.</td><td>Funktionen vorhanden, aber lange Blöcke oder unklare Namen. Fehler werden teilweise abgefangen.</td><td>Ein einziger Codeblock, kaum Namen, Programm bricht bei einfachen Fehleingaben ab.</td></tr>
+            <tr><th scope="row">PAP und Dokumentation</th><td>15 %</td><td>PAP passt zum Code, README erklärt Bedienung, Eingaben, Ausgaben und Grenzen des Modells in wenigen Sätzen.</td><td>PAP vorhanden, weicht in Teilen vom Code ab. Dokumentation ist knapp.</td><td>Kein PAP oder keine Dokumentation.</td></tr>
+            <tr><th scope="row">Umgang mit KI</th><td>15 %</td><td>Prompt aus PAP und Spezifikation, Ergebnis geprüft, mehrere KI-Fehler gefunden und im KI-Protokoll beschrieben (erfundene Funktion, Grenzfall, falsche Einheit). Verantwortung liegt erkennbar bei der Gruppe.</td><td>Copilot wurde genutzt und der Code geprüft, aber kaum dokumentiert.</td><td>KI-Code ungeprüft übernommen oder nicht erklärbar. Vertrauliche Daten im Prompt.</td></tr>
+            <tr><th scope="row">Präsentation</th><td>10 %</td><td>Fünf Minuten eingehalten, alle fünf Teile vorhanden, Live-Demo läuft, beide Personen sprechen und beantworten Fragen zum Code.</td><td>Teile fehlen oder die Zeit wird überschritten. Die Demo läuft mit Hilfe.</td><td>Keine Demo oder keine Antworten zum eigenen Code.</td></tr>
+          </tbody>
+        </table></div>
+        <p class="k-small k-muted">Die Summe der Gewichte ist 100 %. Das Raster ist ein Hilfsmittel, keine Notenvorgabe.</p>
+      </section>
+
+      <p><a class="k-btn k-btn--ghost" href="lektionen/v14-visualisierung.html#projekt">Zurück zur Lerneinheit V14, Abschnitt Projekt-Kickoff</a></p>
+    </div>
+  </main>
+
+  <footer class="dhbw-footer k-footer">
+    <div class="dhbw-footer__inner">
+      <span><span class="dhbw-footer__brand">DHBW Stuttgart</span> · Campus Horb</span>
+      <span><a href="index.html">Zurück zum Lernpfad</a> · Projekt</span>
+    </div>
+  </footer>
+
+  <script src="assets/js/speicher.js"></script>
+  <script src="assets/js/icons.js"></script>
+  <script src="assets/js/kurs.js"></script>
+  <script>
+  (function () {
+    'use strict';
+    var MILES = [
+      { id: 'v14', t: 'V14 · Thema und PAP', z: 'Gruppe, Thema und der Plan dazu.', p: [
+        'Zweiergruppe steht, beide haben Zugang zu Codespaces und Copilot',
+        'Thema aus dem Katalog gewählt (oder eigene Idee mit Freigabe des Dozenten)',
+        'Aufgabe in drei Sätzen aufgeschrieben: Problem, Eingaben mit Einheiten, Ausgaben mit Einheiten',
+        'PAP gezeichnet (PAP-Editor) und als Bild oder SVG gespeichert',
+        'Gemeinsamen Ordner oder ein Repository angelegt, Datei KI-PROTOKOLL.md begonnen'] },
+      { id: 'v15', t: 'V15 · Daten, Eingaben und Testfälle von Hand', z: 'Woher kommen die Zahlen, und was soll herauskommen?', p: [
+        'Datenquelle beschafft und die Quelle notiert (Datei, Tabellenbuch, eigene Messung)',
+        'Alle Eingaben mit Einheit und sinnvollem Wertebereich aufgelistet',
+        'Mindestens fünf Testfälle von Hand gerechnet, darunter zwei Grenzfälle',
+        'Testfälle als Python-Liste oder als Datei test_projekt.py festgehalten (noch ohne Code)',
+        'Copilot gefragt, die Daten einzulesen, und das Ergebnis mit einer Handrechnung verglichen'] },
+      { id: 'v16', t: 'V16 · Grundgerüst mit Funktionen', z: 'Das Skelett steht, die Tests sind noch rot.', p: [
+        'Dateien angelegt: Hauptprogramm und ein Modul mit den Funktionen',
+        'Je Rechenschritt eine Funktion mit Namen, Parametern, Docstring und Platzhalter-Rückgabe laut PAP',
+        'Hauptprogramm ruft die Funktionen in der Reihenfolge des PAP auf',
+        'Tests starten und zeigen erwartbar rot (der Rechenkern fehlt noch)',
+        'Prompt aus dem PAP formuliert und im KI-Protokoll abgelegt'] },
+      { id: 'v17', t: 'V17 · Kernrechnung und Tests bestehen', z: 'Das Programm rechnet richtig.', p: [
+        'Kernfunktionen implementiert (selbst oder mit Copilot, geprüft Zeile für Zeile)',
+        'Alle Testfälle bestehen, auch die Grenzfälle',
+        'Einheiten stehen als Kommentar an jeder Größe',
+        'Mindestens einen Fehler von Copilot gefunden und im KI-Protokoll beschrieben'] },
+      { id: 'v18', t: 'V18 · Eingaben prüfen und Fehler abfangen', z: 'Das Programm bricht bei falschen Eingaben nicht ab.', p: [
+        'Ungültige Eingaben (negativ, null, Text, leere Datei) werden erkannt',
+        'Fehlende oder kaputte Dateien werden abgefangen, mit verständlicher Meldung auf Deutsch',
+        'try und except sind gezielt eingesetzt (keine leeren Handler)',
+        'Mindestens drei Tests für Fehlerfälle bestehen'] },
+      { id: 'v19', t: 'V19 · Ausgabe und Diagramm', z: 'Das Ergebnis ist lesbar.', p: [
+        'Ausgabe mit Einheiten, sinnvoll gerundet und mit klarer Aussage',
+        'Mindestens ein Diagramm mit Achsentiteln samt Einheit, ehrlicher y-Achse und Titel',
+        'Ergebnisse werden in eine Datei geschrieben (CSV oder Text)',
+        'Ausgabe gegen den Auftrag von V14 geprüft: Ist alles beantwortet?'] },
+      { id: 'v20', t: 'V20 · Feinschliff und Code-Review im Team', z: 'Eine andere Gruppe liest euren Code.', p: [
+        'Namen, Kommentare und doppelte Stellen aufgeräumt, Tests laufen weiter',
+        'Code-Review mit einer anderen Gruppe (Lesbarkeit, Tests, Grenzfälle, erfundene Funktionen) durchgeführt und selbst eins gegeben',
+        'Befunde aus dem Review abgearbeitet',
+        'README mit Zweck, Bedienung, Eingaben, Ausgaben und Grenzen des Modells (fünf bis zehn Zeilen)'] },
+      { id: 'v21', t: 'V21 · Fertigstellen und Präsentation vorbereiten', z: 'Alles läuft frisch, die Präsentation ist geprobt.', p: [
+        'Programm läuft nach einem frischen Start ohne Fehler, alle Tests grün',
+        'Demo-Daten und eine Fehleingabe für die Live-Demo bereitgelegt',
+        'Ein von Hand gerechneter Testfall für die Präsentation ausgewählt',
+        'Mindestens ein KI-Fehler mit Geschichte (wie gefunden, wie behoben) ausgewählt',
+        'Fünf Minuten mit der Uhr geprobt, beide Personen sprechen'] }
+    ];
+    var host = document.getElementById('prj-miles'), sum = document.getElementById('prj-sum');
+    if (!host) return;
+    var S = window.KursSpeicher, stand = {};
+    function pfad(id) { return 'inf-mb/projekt/meilenstein:' + id; }
+    function zaehle() {
+      var tot = 0, ok = 0;
+      MILES.forEach(function (m) { tot += m.p.length; (stand[m.id] || []).forEach(function (v, i) { if (v && i < m.p.length) ok++; }); });
+      sum.textContent = ok + ' von ' + tot + ' Punkten abgehakt.';
+    }
+    function schreibe(id) {
+      var w = MILES.filter(function (m) { return m.id === id; })[0].p.map(function (_, i) { return !!(stand[id] && stand[id][i]); });
+      stand[id] = w;
+      if (S && S.speichern) { try { S.speichern(pfad(id), w); } catch (e) { /* ohne Speicher weiter */ } }
+    }
+    function baue() {
+      host.textContent = '';
+      MILES.forEach(function (m) {
+        var box = document.createElement('div'); box.className = 'prj-mile'; box.id = 'ms-' + m.id;
+        var h = document.createElement('h3'); h.textContent = m.t; box.appendChild(h);
+        var z = document.createElement('p'); z.className = 'k-small k-muted'; z.textContent = m.z + ' Letzte 30 Minuten des Termins, mit Copilot.'; box.appendChild(z);
+        var ul = document.createElement('ul');
+        var st = document.createElement('p'); st.className = 'prj-mile__stand';
+        function aktualisiere() {
+          var n = 0; (stand[m.id] || []).forEach(function (v, i) { if (v && i < m.p.length) n++; });
+          st.textContent = n + ' von ' + m.p.length;
+          box.classList.toggle('is-done', n === m.p.length);
+        }
+        m.p.forEach(function (txt, i) {
+          var li = document.createElement('li'), lab = document.createElement('label'), cb = document.createElement('input'), sp = document.createElement('span');
+          lab.className = 'prj-chk'; cb.type = 'checkbox'; cb.checked = !!(stand[m.id] && stand[m.id][i]);
+          cb.setAttribute('aria-label', m.t + ': ' + txt);
+          sp.textContent = txt;
+          cb.addEventListener('change', function () {
+            if (!stand[m.id]) stand[m.id] = [];
+            stand[m.id][i] = cb.checked; schreibe(m.id); aktualisiere(); zaehle();
+          });
+          lab.appendChild(cb); lab.appendChild(sp); li.appendChild(lab); ul.appendChild(li);
+        });
+        box.appendChild(ul); box.appendChild(st); aktualisiere(); host.appendChild(box);
+      });
+      zaehle();
+    }
+    function lade() {
+      if (!S || !S.laden) { baue(); return; }
+      var jobs = MILES.map(function (m) {
+        return S.laden(pfad(m.id)).then(function (w) { if (w && w.length !== undefined) stand[m.id] = w.slice(); }, function () {});
+      });
+      Promise.all(jobs).then(baue, baue);
+    }
+    lade();
+  })();
+  </script>
+</body>
+</html>
