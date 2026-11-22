@@ -11,7 +11,7 @@ SRC = [
   "Die zweite Grenze: 85 gehört noch zur Warnung, [[85,1|fünfundachtzig Komma eins]] ist schon abschalten."],
  ["Dann die Grenzen der Sensorfehler. Minus 40 ist noch eine gültige Messung, also normal. [[-40,1|minus vierzig Komma eins]] ist schon ein Sensorfehler.",
   "200 Grad ist noch gültig, also abschalten. [[200,1|zweihundert Komma eins]] ist ein Sensorfehler.",
-  "Neun `assert`-Zeilen, und keine hat geschwiegen oder abgebrochen: Alle neun Tests bestanden."],
+  "Neun `assert`-Zeilen, und keine hat abgebrochen: Alle neun Tests bestanden."],
  ["Nun die Version der KI. Sie sieht fast genauso aus.",
   "Aber in Zeile 35 steht `t < 85` statt `t <= 85`, und der Sensorfehler fehlt.",
   "Beim Durchlesen fällt das kaum auf. Bei 20, 75 und 90 Grad macht sie alles richtig."],
