@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>V13 Laufzeit-Intuition: Schleife oder Vektor? · Lerneinheit · Informatik Maschinenbau</title>
+  <meta name="description" content="Wie lange dauert das? Die Laufzeit wächst mit der Datenmenge, NumPy rechnet ein ganzes Array mit einem Befehl, und Zeit misst man mehrfach. Mit Schrittzahl-Explorable, Überschlagsrechner, NumPy-Grundlagen und Zeitmessung.">
+  <link rel="stylesheet" href="../assets/css/dhbw-base.css">
+  <link rel="stylesheet" href="../assets/css/kurs.css">
+  <link rel="stylesheet" href="../assets/css/aufgaben.css">
+  <link rel="stylesheet" href="../assets/css/editor.css">
+  <link rel="stylesheet" href="../assets/css/v05.css">
+  <link rel="stylesheet" href="../assets/css/v13.css">
+</head>
+<body data-lesson="V13" data-page="lerneinheit">
+  <a class="k-skip" href="#inhalt">Zum Inhalt springen</a>
+
+  <header class="dhbw-header k-header">
+    <div class="dhbw-header__inner">
+      <a class="k-logo" href="../index.html" aria-label="Zur Startseite">
+        <span class="k-logo__mark" aria-hidden="true">DHBW</span>
+        <span class="k-logo__text">Informatik Maschinenbau<small>Campus Horb · 2026/27</small></span>
+      </a>
+      <nav class="k-nav" aria-label="Hauptnavigation">
+        <a href="../index.html">Start</a>
+        <a href="../index.html#lernpfad">Lernpfad</a>
+        <a href="../bibliothek.html">Bibliothek</a>
+        <a href="../pap-editor.html">PAP-Editor</a>
+        <a href="v13-laufzeit.html" aria-current="page">V13 Lerneinheit</a>
+        <a href="v13-labor.html">V13 Labor</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="l-page">
+    <nav class="k-toc" aria-label="Inhalt dieser Lerneinheit">
+      <p class="k-toc__title">Lerneinheit V13</p>
+      <ol class="k-toc__list">
+        <li><a href="#warum"><span class="k-toc__n">1</span>Warum?</a></li>
+        <li><a href="#theorie"><span class="k-toc__n">2</span>Theorie</a></li>
+        <li><a href="#ausprobieren"><span class="k-toc__n">3</span>Ausprobieren</a></li>
+        <li><a href="#selbstcheck"><span class="k-toc__n">4</span>Selbstcheck</a></li>
+        <li><a href="#deepdive"><span class="k-toc__n">5</span>Deep Dive</a></li>
+      </ol>
+      <div class="k-progress" data-progress-for="V13">
+        <span class="k-progress__bar"><span class="k-progress__fill"></span></span>
+        <span class="k-progress__text">0 von 5 Abschnitten</span>
+      </div>
+      <a class="k-toc__lab" href="v13-labor.html">Weiter ins Programmierlabor →</a>
+    </nav>
+
+    <main id="inhalt" class="l-content">
+
+      <header class="k-title">
+        <p class="k-title__label">V13 · Phase 2 Werkzeug · Lerneinheit</p>
+        <h1 id="h-titel">Laufzeit-Intuition: Schleife oder Vektor?</h1>
+        <p class="k-title__lead">Ein Programm, das für 100 Messwerte in einem Wimpernschlag fertig ist, kann für eine Million Messwerte Sekunden brauchen und für zehntausend Bohrungen im Vergleich „jede mit jeder“ Minuten. Du lernst, <abbr class="k-begriff" data-erklaerung="Die Laufzeit ist die Zeit, die ein Programm von Start bis Ende braucht. Sie hängt vom Rechner ab, vor allem aber davon, wie viele Rechenschritte das Programm für die gegebene Datenmenge machen muss.">Laufzeiten</abbr> grob zu überschlagen, mit <abbr class="k-begriff" data-erklaerung="NumPy ist eine Python-Bibliothek für Zahlenfelder (Arrays). Sie rechnet mit ganzen Feldern auf einmal und ist dafür sehr viel schneller als eine selbst geschriebene Schleife. Sie ist der Standard für Messdaten und Berechnungen in Wissenschaft und Technik.">NumPy</abbr> ein ganzes Array mit einem Befehl zu bearbeiten und Zeit richtig zu messen.</p>
+        <p class="k-title__goals">Nach dieser Lerneinheit kannst du:</p>
+        <ul class="k-title__list">
+          <li>an einem Beispiel zeigen, wie die Zahl der Schritte mit der Datenmenge wächst (<abbr class="k-begriff" data-erklaerung="Linear heißt: doppelt so viele Daten, doppelt so viele Schritte. Der Zusammenhang ist eine Gerade.">linear</abbr> bei einer Schleife, <abbr class="k-begriff" data-erklaerung="Quadratisch heißt: doppelt so viele Daten, viermal so viele Schritte. Das passiert, wenn jedes Element mit jedem anderen verglichen wird, also bei einer Schleife in einer Schleife.">quadratisch</abbr> bei „jeder mit jedem“),</li>
+          <li>mit Zehnerpotenzen überschlagen, ob eine Rechnung Millisekunden, Sekunden oder Stunden dauert,</li>
+          <li>erklären, warum eine <abbr class="k-begriff" data-erklaerung="Vektorisierung heißt: statt jedes Element einzeln in einer Python-Schleife zu bearbeiten, schreibst du eine einzige Operation auf das ganze Array. Die eigentliche Schleife läuft dann in schnellem, vorübersetztem Code.">vektorisierte</abbr> NumPy-Rechnung schneller ist als eine Python-Schleife,</li>
+          <li>Laufzeit mit <code class="k-i">time.perf_counter()</code> messen und begründen, warum du mehrfach misst (Minimum, Median),</li>
+          <li>NumPy-Code lesen und schreiben: <code class="k-i">np.array</code>, elementweise Rechnung, <code class="k-i">np.mean</code>, <code class="k-i">np.sqrt</code> und Masken wie <code class="k-i">a[a &gt; 3]</code>.</li>
+        </ul>
+        <p class="k-small k-muted">Das Schreiben der NumPy-Befehle übst du danach im <a href="v13-labor.html">Programmierlabor</a>. Funktionen (V07), Listen (V08), Dateien (V09), String-Methoden und List Comprehension (V10), Module (V11) und <code class="k-i">assert</code> (V12) setzen wir voraus.</p>
+      </header>
+
+      <!-- 1 ───────────── WARUM ───────────── -->
+      <section class="k-section" id="warum" data-section="warum" aria-labelledby="h-warum">
+        <h2 class="k-section__title" id="h-warum"><span class="k-section__num" aria-hidden="true">1</span> Warum?</h2>
+
+        <p>Du hast an einer Maschine die Schwinggeschwindigkeit gemessen: 10 Sekunden lang, 100 000 Messpunkte pro Sekunde, also <strong>1 Million Messpunkte</strong>. Gesucht ist der <abbr class="k-begriff" data-erklaerung="Der Effektivwert (englisch RMS) ist die Wurzel aus dem Mittelwert der Quadrate. Er beschreibt, wie „stark“ eine schwingende Größe im Mittel ist. Bei einer Sinusschwingung mit Amplitude A ist er A geteilt durch Wurzel 2. In der Maschinenüberwachung wird so die Schwingstärke in mm/s bewertet.">Effektivwert</abbr>: Wurzel aus dem Mittelwert der Quadrate. Zwei Wege führen zum gleichen Ergebnis, einer dauert deutlich länger.</p>
+
+        <figure class="k-figure">
+          <picture>
+            <source srcset="../assets/img/v13-hook.webp" type="image/webp">
+            <img src="../assets/img/v13-hook.png" alt="Illustration: Eine Schwingungskurve aus sehr vielen Messpunkten, daneben eine Stoppuhr und zwei Wege, die unterschiedlich lang zum Ziel führen" width="1600" height="900" loading="lazy" onerror="this.closest('figure').hidden=true">
+          </picture>
+        </figure>
+
+        <h3>Szene 1: eine Million Messpunkte, zwei Wege</h3>
+        <p>Weg 1 kennst du: eine Schleife, die jeden Messpunkt einzeln berechnet und aufsummiert. Weg 2 benutzt <strong>NumPy</strong>, eine Bibliothek (ein Modul wie <code class="k-i">math</code>, V11), die ganze Zahlenfelder auf einmal rechnet. Wie das geht, erklärt Abschnitt 2, hier schauen wir nur auf die Stoppuhr. (<code class="k-i">1_000_000</code> ist die Zahl 1000000, die Unterstriche machen sie nur lesbar.) Führe beide Blöcke aus. Beim ersten NumPy-Lauf lädt der Browser die Bibliothek nach (ein paar MB, nur beim ersten Mal), das zählt nicht zur gemessenen Zeit.</p>
+
+        <pre data-timeout="90000"><code>import math
+import time
+
+N = 1_000_000          # 1 Mio. Messpunkte: 100 kHz Abtastrate, 10 s Messung
+f = 50.0               # Hz
+A = 2.0                # Amplitude in mm/s
+
+start = time.perf_counter()
+werte = []
+for i in range(N):
+    t = i / 100_000
+    werte.append(A * math.sin(2 * math.pi * f * t))
+summe = 0.0
+for v in werte:
+    summe = summe + v * v
+rms = math.sqrt(summe / N)
+dauer = time.perf_counter() - start
+print(f"Schleife: {rms:.4f} mm/s in {dauer:.3f} s")</code></pre>
+        <pre data-timeout="90000"><code>import time
+import numpy as np
+
+N = 1_000_000
+f = 50.0
+A = 2.0
+
+start = time.perf_counter()
+t = np.arange(N) / 100_000
+v = A * np.sin(2 * np.pi * f * t)
+rms = np.sqrt(np.mean(v ** 2))
+dauer = time.perf_counter() - start
+print(f"NumPy:    {rms:.4f} mm/s in {dauer:.3f} s")</code></pre>
+
+        <p>Beide Blöcke geben denselben Effektivwert aus: 2 mm/s Amplitude geteilt durch Wurzel 2 sind 1,4142 mm/s. Die Zeiten unterscheiden sich, und sie hängen von deinem Rechner und vom Browser ab. Genau deshalb behaupten wir hier keine Zahl, sondern lassen dich messen.</p>
+
+        <h3>Szene 2: Bohrungen auf Kollision prüfen</h3>
+        <p>Ein Bauteil hat 10 000 Bohrungen (Lochblech, Rasterplatte). Ein Programm soll prüfen, ob irgendwelche zwei Bohrungen zu dicht beieinanderliegen. Der naheliegende Weg: jede Bohrung mit jeder anderen vergleichen. Das sind knapp <strong>50 Millionen Paare</strong>. Bei 100 Bohrungen waren es nur 4 950. Die Datenmenge ist um das Hundertfache gewachsen, die Arbeit um das Zehntausendfache. Wo diese Zahlen herkommen, siehst du in Abschnitt 2.</p>
+
+        <div class="k-try" aria-labelledby="t-hook">
+          <h3 id="t-hook">Selbst schätzen: wie viel schneller ist NumPy?</h3>
+          <div class="k-predict">
+            <p class="k-predict__q">Beide Blöcke rechnen dasselbe. Wie viel schneller ist die NumPy-Variante ungefähr?</p>
+            <div class="k-predict__opts"><button type="button">Etwa gleich schnell, denn beide rechnen eine Million Mal dasselbe</button><button type="button" data-correct>Deutlich schneller, grob um einen Faktor 10 bis 100</button><button type="button">Um den Faktor eine Million schneller</button></div>
+            <div class="k-predict__result"></div>
+            <div class="k-predict__expl" hidden>Deutlich schneller, in der Größenordnung von zehn bis hundert. Den genauen Faktor kennen wir nicht, er hängt von Rechner, Browser und Programm ab: Miss selbst und vergleiche mit deinen Nachbarn. Beide Wege führen dieselben Rechenoperationen aus. Der Unterschied liegt darin, <em>wer</em> sie ausführt: bei der Schleife der Python-Interpreter, der sich um jeden Messpunkt einzeln kümmert, bei NumPy vorübersetzter Code für das ganze Feld. Der Rest dieser Lerneinheit zeigt, warum.</div>
+          </div>
+        </div>
+
+        <h3>Wissens-Ampel für V13</h3>
+        <ul class="k-ampel-list" aria-label="Wissens-Ampel zu V13">
+          <li><span class="k-ampel k-ampel--kopf"><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-head"/></svg> Im Kopf</span><span>Die Laufzeit wächst mit der Datenmenge: linear bei einer Schleife, quadratisch bei „jeder mit jedem“. Eine NumPy-Operation auf dem ganzen Array schlägt die Python-Schleife, weil der Interpreter nicht jedes Element einzeln anfasst. Laufzeit schätzt du mit Zehnerpotenzen und misst sie mehrfach, denn eine einzelne Messung schwankt.</span></li>
+          <li><span class="k-ampel k-ampel--lesen"><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-book"/></svg> Lesen &amp; erkennen</span><span>NumPy-Grundlagen: <code class="k-i">import numpy as np</code>, <code class="k-i">np.array</code>, <code class="k-i">np.arange</code>, <code class="k-i">np.linspace</code>, elementweise Rechnung (<code class="k-i">a * 2</code>, <code class="k-i">a + b</code>, <code class="k-i">np.sin</code>), <code class="k-i">np.mean</code>, <code class="k-i">np.max</code>, <code class="k-i">np.sqrt</code>, Masken (<code class="k-i">a[a &gt; 3]</code>), <code class="k-i">.shape</code>, <code class="k-i">len</code> und die Zeitmessung mit <code class="k-i">time.perf_counter()</code>. Du erkennst auch den Unterschied zwischen Liste und Array.</span></li>
+          <li><span class="k-ampel k-ampel--deleg"><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-handover"/></svg> Delegieren</span><span>Wie NumPy intern gebaut ist (C-Code, Speicheranordnung, Prozessor-Tricks), die formale Big-O-Notation und Werkzeuge wie Profiler, Numba oder die Grafikkarte. Das musst du nicht selbst können, nur wissen, dass es sie gibt und wann ein anderer Algorithmus mehr bringt als ein schnellerer Rechner.</span></li>
+        </ul>
+
+        <div class="hinweis hinweis--warum"><strong class="hinweis__title">Warum muss ich das wissen?</strong><p>Messdaten, Simulationen und Auswertungen werden schnell groß. Wer nur kleine Testdaten probiert, merkt nicht, dass das Programm bei echten Daten stundenlang läuft. Mit Laufzeit-Intuition erkennst du das vorher, fragst die KI gezielt nach der vektorisierten Variante und prüfst, ob sie dasselbe rechnet wie deine Schleife. In der Klausur kommt das als „Was gibt dieses NumPy-Programm aus?“, als Überschlag („Wie oft läuft die innere Schleife?“) und als kleine Funktion mit NumPy.</p></div>
+      </section>
+
+      <!-- 2 ───────────── THEORIE ───────────── -->
+      <section class="k-section" id="theorie" data-section="theorie" aria-labelledby="h-theorie">
+        <h2 class="k-section__title" id="h-theorie"><span class="k-section__num" aria-hidden="true">2</span> Theorie</h2>
+
+        <h3>Erklärvideo (ca. 3 Min)</h3>
+        <figure class="k-video" id="video-theorie">
+          <video controls preload="metadata" poster="../assets/video/v13-theorie-poster.png" aria-label="Erklärvideo Laufzeit-Intuition: Schrittzahl, Größenordnungen, warum NumPy schneller ist, Zeit messen">
+            <source src="../assets/video/v13-theorie.mp4" type="video/mp4">
+            <track kind="subtitles" srclang="de" label="Deutsch" src="../assets/video/v13-theorie.vtt" default>
+            Dein Browser kann dieses Video nicht abspielen.
+          </video>
+          <div class="k-video__missing" hidden>Video folgt. Bis dahin: die Explorables und der Lesetext unten decken alles ab.</div>
+          <figcaption>Untertitel sind eingeschaltet (Deutsch).</figcaption>
+        </figure>
+
+        <h3>Die Laufzeit wächst mit der Datenmenge</h3>
+        <p>Ein Rechner führt pro Sekunde sehr viele einfache Schritte aus. Wie lange ein Programm braucht, hängt deshalb vor allem davon ab, <strong>wie viele Schritte</strong> es machen muss, und das hängt von der Datenmenge <em>n</em> ab. Zwei Muster siehst du ständig.</p>
+        <p><strong>Eine Schleife über alle Daten</strong> (jede Bohrung einmal prüfen, jeden Messwert einmal aufsummieren): Es sind <em>n</em> Schritte. Doppelt so viele Daten, doppelt so viele Schritte: Die Zahl wächst <em>linear</em>.</p>
+        <p><strong>Eine Schleife in einer Schleife</strong> („jeder mit jedem“, etwa die Kollisionsprüfung von Bohrungen): Für jede Bohrung läuft die innere Schleife über alle anderen. Bei <em>n</em> Bohrungen gibt es <em>n</em>·(<em>n</em>−1)/2 verschiedene Paare (das „/2“, weil das Paar A–B dasselbe ist wie B–A). Doppelt so viele Bohrungen, ungefähr <strong>viermal</strong> so viele Paare: Die Zahl wächst <em>quadratisch</em>. Zieh am Regler und beobachte, wie die rote Kurve davonläuft, während die schwarze Gerade kaum noch sichtbar ist.</p>
+
+        <div class="k-explorable">
+          <h3>Schrittzahl: eine Schleife gegen „jeder mit jedem“</h3>
+          <p class="k-explorable__lead">Stell die Zahl der Bohrungen <em>n</em> ein. Die Balken zeigen, wie viele Schritte die einfache Schleife und die doppelte Schleife machen müssen. Im Diagramm sind beide Kurven von 0 bis <em>n</em> gezeichnet, die gestrichelte Linie markiert die halbe Datenmenge. Probiere: (1) Wie viele Paare gibt es bei 10 Bohrungen? (2) Bei welchem <em>n</em> sieht man die einfache Schleife im Balkendiagramm kaum noch? (3) Was passiert mit der Schrittzahl, wenn du von 1 000 auf 2 000 Bohrungen gehst?</p>
+          <div data-explorable="schritte"></div>
+          <noscript><p>Für das Explorable „Schrittzahl“ wird JavaScript benötigt.</p></noscript>
+          <p class="k-small k-muted">Beobachtung: Die Gerade und die Parabel gehen bei kleinen <em>n</em> fast zusammen, deshalb funktionieren Tests mit zehn Bohrungen immer. Erst bei großen <em>n</em> trennen sich die beiden Wege dramatisch. Das ist der Grund, warum ein Programm, das beim Testen „schnell genug“ war, im Betrieb unbrauchbar sein kann.</p>
+        </div>
+
+        <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke</strong><p>Die Laufzeit hängt vom Muster ab, nicht nur vom Rechner: Eine Schleife über <em>n</em> Elemente wächst linear, zwei ineinander geschachtelte Schleifen über alle Elemente wachsen quadratisch. Wer das erkennt, sieht schon im Code, ob die Datenmenge zum Problem werden kann. Die formale Schreibweise dafür heißt <abbr class="k-begriff" data-erklaerung="Big-O ist eine Kurzschreibweise dafür, wie die Zahl der Schritte mit der Datenmenge n wächst: O(n) linear, O(n²) quadratisch. Konstante Faktoren und Kleinkram werden weggelassen. In diesem Kurs nur als Ausblick.">Big-O</abbr> (O(<em>n</em>), O(<em>n</em>²)). Sie ist in diesem Kurs nur ein Ausblick (siehe Deep Dive), die Idee dahinter ist das Entscheidende.</p></div>
+
+        <h3>Wie lange dauert das? Größenordnungen</h3>
+        <p>Um aus der Schrittzahl eine Zeit zu machen, brauchst du das Tempo: Wie viele Schritte schafft der Rechner pro Sekunde? Genau musst du das nicht wissen, es reicht die <abbr class="k-begriff" data-erklaerung="Die Größenordnung gibt an, in welcher Zehnerpotenz eine Zahl liegt: 3 000 und 8 000 haben die gleiche Größenordnung (Tausender), 300 000 ist zwei Größenordnungen größer. Ingenieure überschlagen damit schnell, ob ein Ergebnis plausibel ist.">Größenordnung</abbr>. Hier die Leiter, auf der du dich orientieren kannst (grobe Faustwerte für heutige Rechner):</p>
+        <div class="k-tablewrap">
+        <table class="k-types">
+          <thead><tr><th scope="col">Zeit</th><th scope="col">Name</th><th scope="col">Beispiel (Faustwert)</th></tr></thead>
+          <tbody>
+            <tr><td>10<sup>−9</sup> s</td><td>Nanosekunde (ns)</td><td>ein Takt der CPU (bei 3 GHz etwa 0,3 ns), eine einfache Rechenoperation im Prozessor</td></tr>
+            <tr><td>10<sup>−7</sup> s</td><td>100 ns</td><td>ein Zugriff auf den Arbeitsspeicher; ein Schleifendurchlauf in Python mit kleiner Rechnung liegt grob im Bereich von 0,05 bis 0,2 µs</td></tr>
+            <tr><td>10<sup>−6</sup> s</td><td>Mikrosekunde (µs)</td><td>ein paar Python-Anweisungen; ein Funktionsaufruf</td></tr>
+            <tr><td>10<sup>−3</sup> s</td><td>Millisekunde (ms)</td><td>ein Zugriff auf eine SSD dauert Zehntel-Millisekunden, ein Ping ins Internet meist einige zehn Millisekunden; ein Bild bei 60 Hz dauert 16,7 ms</td></tr>
+            <tr><td>10<sup>0</sup> s</td><td>Sekunde (s)</td><td>ein Programmstart, das Laden einer großen Datei; ab etwa 0,1 s spürt man Warten</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <p>Ingenieurmäßig überschlagen heißt: Schrittzahl als Zehnerpotenz schreiben, durch das Tempo teilen, Größenordnung ablesen. Beispiel: 1 Million (10<sup>6</sup>) Schleifendurchläufe bei etwa 10<sup>7</sup> Durchläufen pro Sekunde ergeben 10<sup>6</sup> / 10<sup>7</sup> = 0,1 s. Für 50 Millionen Paare (5·10<sup>7</sup>) sind es 5 s, und für 5·10<sup>9</sup> Paare (100 000 Bohrungen) 500 s, also fast zehn Minuten. Im Rechner kannst du die Annahmen verändern.</p>
+
+        <div class="k-explorable">
+          <h3>Überschlagsrechner</h3>
+          <p class="k-explorable__lead">Wähle die Aufgabe, die Datenmenge und eine Tempo-Annahme. Der rote Punkt zeigt auf der Leiter, in welcher Größenordnung die Dauer liegt. Probiere: (1) Eine Schleife über 1 Million Elemente mit der Python-Schleife. (2) Dieselbe Aufgabe mit einer NumPy-Operation. (3) „Jeder mit jedem“ bei 100 000 Elementen: Hilft es hier, nur schnellere Hardware zu nehmen?</p>
+          <div data-explorable="ueberschlag"></div>
+          <noscript><p>Für den Überschlagsrechner wird JavaScript benötigt.</p></noscript>
+          <p class="k-small k-muted">Beobachtung: Ein hundertfach schnellerer Rechner holt bei „jeder mit jedem“ nur einen Faktor 100 heraus. Verzehnfachst du die Datenmenge, braucht die doppelte Schleife hundertmal so viele Schritte: Der Gewinn der Hardware ist damit aufgebraucht. Bei quadratischem Wachstum bringt ein besserer Algorithmus meist mehr als schnellere Hardware.</p>
+        </div>
+
+        <h3>Warum NumPy schneller ist</h3>
+        <p>Ein <abbr class="k-begriff" data-erklaerung="Ein Array ist ein Zahlenfeld: viele Werte gleichen Typs lückenlos hintereinander im Speicher. In NumPy heißt es ndarray. Anders als eine Liste kann es nur Zahlen eines Typs enthalten, dafür ist es schnell und rechnet elementweise.">Array</abbr> sieht aus wie eine Liste, ist aber etwas anderes. Für das Tempo sind drei Eigenschaften verantwortlich.</p>
+        <ol>
+          <li><strong>Ein Befehl für das ganze Array.</strong> <code class="k-i">a * 2</code> ist <em>eine</em> Anweisung, die alle Elemente verdoppelt. Es gibt keine Python-Schleife mit einem Durchlauf je Element.</li>
+          <li><strong>Die Rechnung läuft in vorübersetztem C-Code.</strong> Python wird von einem <abbr class="k-begriff" data-erklaerung="Der Interpreter liest den Python-Code Zeile für Zeile und führt ihn aus. Für jede Anweisung muss er nachschauen, welche Typen im Spiel sind. Das ist flexibel, kostet aber Zeit je Anweisung.">Interpreter</abbr> zeilenweise ausgeführt, und der muss bei jedem Durchlauf nachsehen, was für Objekte vor ihm liegen. NumPy übergibt die Arbeit an <abbr class="k-begriff" data-erklaerung="Kompilierter Code ist vorab vollständig in Maschinensprache übersetzt. Er läuft direkt auf dem Prozessor, ohne dass ein Interpreter jede Anweisung neu deuten muss.">kompilierten</abbr> Code, der die Schleife über das Array in einem Zug erledigt.</li>
+          <li><strong>Die Daten liegen dicht im Speicher.</strong> Alle Zahlen eines Arrays haben denselben Typ (zum Beispiel <code class="k-i">float64</code>, 8 Byte) und liegen lückenlos hintereinander. Der Prozessor kann sie in großen Blöcken lesen. Eine Python-Liste dagegen enthält nur Verweise auf einzelne Zahlen-Objekte, die irgendwo im Speicher liegen.</li>
+        </ol>
+        <div class="k-explorable">
+          <h3>Schleife gegen Vektor</h3>
+          <p class="k-explorable__lead">Zehn Werte sollen verdoppelt werden. Oben arbeitet eine Python-Schleife jedes Element einzeln ab, unten bekommt NumPy einen einzigen Befehl. Geh die Schritte durch oder lass die Animation laufen und achte auf die Zähler. Die unregelmäßigen Abstände oben zeigen die verstreuten Objekte der Liste, der Block unten liegt lückenlos.</p>
+          <div data-explorable="vektor"></div>
+          <noscript><p>Für das Explorable „Schleife gegen Vektor“ wird JavaScript benötigt.</p></noscript>
+          <p class="k-small k-muted">Beobachtung: Beide Wege rechnen am Ende zehnmal „mal 2“. NumPy spart nicht die Rechnung, sondern die Verwaltungsarbeit des Interpreters je Element. Bei zehn Elementen ist das kaum spürbar, bei einer Million summiert es sich zu dem Unterschied aus dem Hook.</p>
+        </div>
+        <div class="hinweis hinweis--achtung"><strong class="hinweis__title">Achtung</strong><p>„Vektorisieren“ heißt <strong>nicht</strong>, die Schleife ins Array zu verlegen, sondern <em>die Operation auf dem ganzen Array</em> zu schreiben. Eine Schleife <code class="k-i">for x in a:</code> über ein NumPy-Array ist oft sogar <em>langsamer</em> als über eine Liste, weil jedes Element erst in ein Python-Objekt verpackt wird. Und: Bei sehr kleinen Arrays (zehn Elemente) kostet schon der NumPy-Aufruf selbst etwas, hier lohnt sich NumPy nicht. Der Vorteil zeigt sich bei vielen Daten.</p></div>
+
+        <h3>Zeit messen: perf_counter und warum Messungen schwanken</h3>
+        <p>Schätzen ist gut, messen ist besser. Python bietet dafür im Modul <code class="k-i">time</code> die Funktion <code class="k-i">time.perf_counter()</code>: Sie liefert einen Zeitstempel in Sekunden, dessen Anfangspunkt egal ist. Erst die <em>Differenz</em> zweier Aufrufe, vor und nach dem Code, ergibt die Dauer.</p>
+        <pre><code>import time
+
+start = time.perf_counter()
+summe = 0
+for i in range(100_000):
+    summe = summe + i * i
+dauer = time.perf_counter() - start
+print(summe, f"{dauer * 1000:.2f} ms")</code></pre>
+        <p>Führe den Block mehrmals hintereinander aus: Die Zeit ist nie genau gleich. Der Rechner macht nebenbei anderes (Browser, Hintergrundprogramme), der Prozessor ändert seinen Takt, Zwischenspeicher sind beim ersten Lauf noch leer. Die Messung enthält also die „reine“ Rechenzeit <em>plus Störungen</em>, und Störungen machen sie nur länger, nie kürzer. Daraus folgen fünf Regeln:</p>
+        <ul>
+          <li><strong>Mehrfach messen</strong> (fünf- bis zehnmal), nicht einmal.</li>
+          <li><strong>Minimum oder Median</strong> berichten. Das Minimum zeigt, was der Rechner ungestört kann, der <abbr class="k-begriff" data-erklaerung="Der Median ist der mittlere Wert einer sortierten Reihe: die Hälfte der Werte liegt darunter, die Hälfte darüber. Einzelne Ausreißer ändern ihn kaum, anders als den Mittelwert.">Median</abbr> ist robust gegen einzelne Ausreißer. Der Mittelwert wird von jedem Ausreißer nach oben gezogen.</li>
+          <li><strong>Nur das Gemessene in den Messbereich</strong>: kein <code class="k-i">print</code> zwischen Start und Ende, kein Laden von Dateien, wenn du nur die Rechnung messen willst.</li>
+          <li><strong>Gleiche Bedingungen</strong>: gleiche Daten, gleicher Rechner, gleiche Umgebung. Zeiten aus dem Browser und aus Codespaces sind nicht vergleichbar.</li>
+          <li><strong>Nie eine Zeit als Naturkonstante behaupten.</strong> Schreibe immer „auf meinem Rechner, im Browser, gemessen mit …“.</li>
+        </ul>
+
+        <div class="k-explorable">
+          <h3>Messungen schwanken</h3>
+          <p class="k-explorable__lead">Eine Messreihe: dieselbe Rechnung zehnmal gemessen. Blende Minimum, Median und Mittelwert ein und aus. Mit „10 weitere Messungen simulieren“ siehst du, wie sich die Kennwerte entwickeln. Probiere: (1) Welcher Kennwert reagiert am stärksten auf die zwei großen Ausreißer? (2) Wird das Minimum mit mehr Messungen größer oder kleiner? (3) Wo liegt der Median im Verhältnis zum Minimum?</p>
+          <div data-explorable="messreihe"></div>
+          <noscript><p>Für das Explorable „Messungen schwanken“ wird JavaScript benötigt.</p></noscript>
+          <p class="k-small k-muted">Beobachtung: Das Minimum kann mit mehr Messungen nur sinken oder gleich bleiben, der Mittelwert dagegen zittert mit jedem Ausreißer. Median und Minimum sind darum die üblichen Kennwerte beim Zeitmessen.</p>
+        </div>
+
+        <h3>Dieselbe Rechnung im Programmablaufplan</h3>
+        <p>Den Effektivwert aus dem Hook kennst du als Ablauf: eine Zählschleife über alle Messpunkte, in jedem Durchlauf ein Messwert und seine Quadrierung. Der Programmablaufplan der Schleifen-Variante hat darum eine Raute mit Rückführung (V06). Der Plan der NumPy-Variante hat gar keine Schleife: ein Rechteck steht für die Rechnung auf dem ganzen Array. Das ist die Vektorisierung im Plan.</p>
+        <div class="k-explorable">
+          <h3>Schleife und Vektor als PAP</h3>
+          <p class="k-explorable__lead">Links die Schleifen-Variante, rechts die NumPy-Variante. Zähle die Symbole und finde die Stelle, an der links die Raute steht.</p>
+          <div data-explorable="pap-vergleich"></div>
+          <noscript><p>Für den Programmablaufplan werden JavaScript und die PAP-Engine benötigt.</p></noscript>
+          <p class="k-small k-muted">Beobachtung: Der Plan zeigt den <em>Ablauf</em>, nicht die <em>Kosten</em>. Das Rechteck „v = A * np.sin(…)“ sieht aus wie ein einzelner Schritt, steht aber für eine Million Rechnungen. Wie lange ein Symbol dauert, sagt dir der PAP nicht, das misst oder überschlägst du.</p>
+        </div>
+        <p>Im Labor zeichnest du den PAP der Schleifen-Variante selbst und lässt den daraus erzeugten Python-Code prüfen.</p>
+
+        <h3>Python in Kürze: NumPy-Grundlagen</h3>
+        <p>NumPy ist ein Modul, das du mit <code class="k-i">import numpy as np</code> lädst (V11). <code class="k-i">as np</code> gibt ihm den Kurznamen <code class="k-i">np</code>, den alle Welt verwendet. Dein Browser lädt es beim ersten Lauf nach, das dauert einen Moment. Ein Array erzeugst du aus einer Liste mit <code class="k-i">np.array</code>. <code class="k-i">.shape</code> gibt die Form an (bei einer Zeile von Zahlen ein Tupel mit der Länge), <code class="k-i">len</code> funktioniert wie bei Listen.</p>
+        <pre><code>import numpy as np
+
+liste = [2.0, 4.0, 6.0]
+a = np.array(liste)
+print(a, a.shape, len(a))
+print(liste * 2)          # Liste: verdoppelt die LISTE
+print(a * 2)              # Array: verdoppelt die WERTE</code></pre>
+        <p>Mit <code class="k-i">np.arange</code> (wie <code class="k-i">range</code>, aber als Array, auch mit Kommazahlen) und <code class="k-i">np.linspace</code> (so viele gleichmäßig verteilte Werte zwischen Start und Ende, <em>beide eingeschlossen</em>) baust du Zeitachsen:</p>
+        <pre><code>import numpy as np
+
+print(np.arange(5))                 # 0 bis 4
+print(np.arange(0, 1, 0.25))        # Start, Stopp (ausgeschlossen), Schritt
+print(np.linspace(0, 1, 5))         # 5 Werte von 0 bis 1, beide Enden dabei</code></pre>
+        <p>Rechnen geht <strong>elementweise</strong>: <code class="k-i">a * 2</code>, <code class="k-i">a + b</code>, <code class="k-i">a ** 2</code> und Funktionen wie <code class="k-i">np.sin(a)</code> wirken auf jedes Element. Zwei Arrays gleicher Länge werden Paar für Paar verrechnet. Kennwerte liefern <code class="k-i">np.mean</code>, <code class="k-i">np.max</code>, <code class="k-i">np.min</code>, <code class="k-i">np.sum</code> und <code class="k-i">np.sqrt</code> (die Wurzel jedes Elements). Daraus entsteht der Effektivwert in einer Zeile. Auf die <em>Reihenfolge</em> kommt es an: erst quadrieren, dann mitteln, dann die Wurzel.</p>
+        <pre><code>import numpy as np
+
+v = np.array([3.0, -4.0, 5.0])      # Schwinggeschwindigkeit in mm/s
+print(v ** 2)                       # elementweise quadrieren
+print(np.mean(v ** 2))              # Mittelwert der Quadrate
+print(np.sqrt(np.mean(v ** 2)))     # Effektivwert
+print(np.sqrt(np.mean(v) ** 2))     # FALSCH: erst mitteln, dann quadrieren</code></pre>
+        <p>Mit einer <abbr class="k-begriff" data-erklaerung="Eine Maske (boolesche Maske) ist ein Array aus Wahr/Falsch-Werten, das beim Vergleich entsteht, zum Beispiel a > 3. Setzt du sie in eckige Klammern hinter das Array, bleiben nur die Elemente übrig, an denen sie wahr ist.">Maske</abbr> wählst du Elemente nach einer Bedingung aus. <code class="k-i">a &gt; 3</code> liefert ein Wahr/Falsch-Array, <code class="k-i">a[a &gt; 3]</code> behält nur die passenden Werte. Das ersetzt die Schleife mit <code class="k-i">if</code> und <code class="k-i">append</code> aus V10, nur schneller.</p>
+        <pre><code>import numpy as np
+
+a = np.array([1, 5, 2, 8, 3])
+print(a &gt; 3)                      # Wahr/Falsch je Element
+print(a[a &gt; 3])                   # nur die Werte über 3
+print(len(a[a &gt; 3]) / len(a))     # Anteil der Werte über 3</code></pre>
+        <p>Zum Messen reicht das Gelernte: <code class="k-i">time.perf_counter()</code> vor und nach dem Code, mehrfach in einer Schleife, dann <code class="k-i">min(zeiten)</code> (V08) oder <code class="k-i">np.median(zeiten)</code> (der Median als Array-Funktion):</p>
+        <pre data-timeout="60000"><code>import time
+import numpy as np
+
+def messe(n):
+    start = time.perf_counter()
+    summe = 0
+    for i in range(n):
+        summe = summe + i * i
+    return time.perf_counter() - start
+
+zeiten = []
+for versuch in range(7):
+    zeiten.append(messe(100_000))
+print(f"Minimum: {min(zeiten) * 1000:.2f} ms, Median: {np.median(zeiten) * 1000:.2f} ms")</code></pre>
+        <p>Mehr Karten dazu, etwa zu <code class="k-i">np.arange</code>, Masken und zu typischen Fehlern, gibt es im <a href="v13-labor.html#a-werkzeugkasten">Werkzeugkasten im Labor</a>. Das schauen wir uns dort genauer an →</p>
+      </section>
+
+      <!-- 3 ───────────── AUSPROBIEREN ───────────── -->
+      <section class="k-section" id="ausprobieren" data-section="ausprobieren" aria-labelledby="h-aus">
+        <h2 class="k-section__title" id="h-aus"><span class="k-section__num" aria-hidden="true">3</span> Ausprobieren</h2>
+
+        <p>Python läuft direkt hier im Browser. Jeder Codeblock hat einen Editor: Du kannst ihn ändern, ausführen, zurücksetzen und mit „Schritt für Schritt“ verfolgen. Erst tippen, was herauskommt, dann ausführen. Das Tippen ist der Lernmoment. Beim ersten Block mit NumPy dauert das Laden einen Moment.</p>
+
+      <div class="k-try">
+        <h3>Liste oder Array: wer verdoppelt?</h3>
+        <div class="k-predict">
+          <p class="k-predict__q">Was gibt das Programm in der zweiten Ausgabezeile aus?</p>
+          <div class="k-predict__opts"><button type="button">[2 4 6]</button><button type="button" data-correct>[1, 2, 3, 1, 2, 3]</button><button type="button">einen Fehler</button></div>
+          <div class="k-predict__result"></div>
+          <div class="k-predict__expl" hidden>Die zweite Zeile ist <code>[1, 2, 3, 1, 2, 3]</code>. Bei einer <em>Liste</em> bedeutet <code>* 2</code> „zweimal hintereinander“, die Liste wird an sich selbst angehängt. Es gibt keine Fehlermeldung, nur ein falsches Ergebnis. Bei einem <em>Array</em> (erste Zeile) wird jeder Wert verdoppelt: <code>[2 4 6]</code>. Das ist der häufigste Fehler beim Wechsel von Liste zu NumPy.</div>
+        </div>
+        <pre><code>import numpy as np
+
+zahlen = [1, 2, 3]
+print(np.array(zahlen) * 2)
+print(zahlen * 2)</code></pre>
+      </div>
+
+      <div class="k-try">
+        <h3>Elementweise: a + b</h3>
+        <div class="k-predict">
+          <p class="k-predict__q">Was gibt <code class="k-i">print(a + b)</code> aus, und was <code class="k-i">print(la + lb)</code>?</p>
+          <div class="k-predict__opts"><button type="button" data-correct>[11 22 33] und [1, 2, 3, 10, 20, 30]</button><button type="button">[11 22 33] und [11, 22, 33]</button><button type="button">[1, 2, 3, 10, 20, 30] und [11 22 33]</button></div>
+          <div class="k-predict__result"></div>
+          <div class="k-predict__expl" hidden>Bei Arrays addiert <code>+</code> Paar für Paar: <code>[11 22 33]</code>. Bei Listen bedeutet <code>+</code> „aneinanderhängen“: <code>[1, 2, 3, 10, 20, 30]</code>. Dasselbe Zeichen, zwei Bedeutungen. Wer Listen und Arrays mischt, bekommt schnell Unsinn ohne Fehlermeldung. Hast du zwei Arrays <em>verschiedener Länge</em>, gibt es dagegen eine Fehlermeldung (ValueError), probier es aus.</div>
+        </div>
+        <pre><code>import numpy as np
+
+la = [1, 2, 3]
+lb = [10, 20, 30]
+a = np.array(la)
+b = np.array(lb)
+print(a + b)
+print(la + lb)</code></pre>
+      </div>
+
+      <div class="k-try">
+        <h3>Maske: Werte über der Grenze</h3>
+        <div class="k-predict">
+          <p class="k-predict__q">Was gibt <code class="k-i">print(a[a &gt; 3])</code> aus?</p>
+          <div class="k-predict__opts"><button type="button">[False False True True True]</button><button type="button" data-correct>[5 8 4]</button><button type="button">[1, 5, 2, 8, 4]</button></div>
+          <div class="k-predict__result"></div>
+          <div class="k-predict__expl" hidden><code>[5 8 4]</code>: Die Maske <code>a &gt; 3</code> ist <code>[False True False True True]</code> (an den Stellen 5, 8 und 4 wahr, bei 1 und 2 falsch). In eckigen Klammern hinter <code>a</code> behält sie nur die Elemente, an denen sie wahr ist, in ihrer ursprünglichen Reihenfolge. Die erste Antwort wäre die Maske selbst, ohne <code>a[...]</code>.</div>
+        </div>
+        <pre><code>import numpy as np
+
+a = np.array([1, 5, 2, 8, 4])
+print(a &gt; 3)
+print(a[a &gt; 3])
+print(len(a[a &gt; 3]) / len(a))</code></pre>
+        <p class="k-small k-muted">Ändere die Grenze auf 4 und auf 10. Was liefert der letzte Ausdruck jeweils, und was passiert bei 10 mit dem Array hinter der Maske?</p>
+      </div>
+
+      <div class="k-try">
+        <h3>Effektivwert von Hand</h3>
+        <div class="k-predict">
+          <p class="k-predict__q">Der Effektivwert der Messwerte 3 und 4 soll berechnet werden. Welche Zahl gibt die erste Ausgabezeile ungefähr aus?</p>
+          <div class="k-predict__opts"><button type="button">3,5 (der Mittelwert)</button><button type="button" data-correct>3,54 (die Wurzel aus 12,5)</button><button type="button">12,5 (der Mittelwert der Quadrate)</button></div>
+          <div class="k-predict__result"></div>
+          <div class="k-predict__expl" hidden>3,54. Von Hand: Quadrate 9 und 16, Mittelwert 12,5, Wurzel daraus ≈ 3,5355. Die Variante <code>np.sqrt(np.mean(a) ** 2)</code> in der zweiten Zeile mittelt zuerst (3,5) und quadriert danach: Wurzel aus 12,25 ist wieder 3,5. Das ist <em>nicht</em> der Effektivwert, und sie sieht fast richtig aus. Bei Werten mit wechselndem Vorzeichen (Schwingungen!) wird der Unterschied dramatisch: Probiere <code>[-1.0, 1.0]</code>.</div>
+        </div>
+        <pre><code>import numpy as np
+
+a = np.array([3.0, 4.0])
+print(np.sqrt(np.mean(a ** 2)))
+print(np.sqrt(np.mean(a) ** 2))</code></pre>
+      </div>
+
+      <div class="k-try">
+        <h3>Wie viele Vergleiche?</h3>
+        <div class="k-predict">
+          <p class="k-predict__q">Wie oft wird <code class="k-i">zaehler = zaehler + 1</code> bei 4 Bohrungen ausgeführt?</p>
+          <div class="k-predict__opts"><button type="button">4</button><button type="button" data-correct>6</button><button type="button">16</button></div>
+          <div class="k-predict__result"></div>
+          <div class="k-predict__expl" hidden>6 Paare: 0–1, 0–2, 0–3, 1–2, 1–3, 2–3. Die Formel n·(n−1)/2 ergibt 4·3/2 = 6. Die innere Schleife beginnt bei <code>i + 1</code>, damit jedes Paar nur einmal vorkommt. Hätte sie bei 0 begonnen, wären es 16 (n²) Schritte, auch bei Paaren mit sich selbst und doppelt gezählten Paaren.</div>
+        </div>
+        <pre><code>n = 4
+zaehler = 0
+for i in range(n):
+    for j in range(i + 1, n):
+        zaehler = zaehler + 1
+print(zaehler)</code></pre>
+        <p class="k-small k-muted">Ändere <code class="k-i">n</code> auf 10, 100 und 1000 und vergleiche mit <em>n</em>·(<em>n</em>−1)/2. Drück bei n = 4 auf „Schritt für Schritt“ und beobachte, wie <code class="k-i">i</code> und <code class="k-i">j</code> zusammen laufen.</p>
+      </div>
+
+      <div class="k-try">
+        <h3>Eine Million Schritte: wie lange?</h3>
+        <div class="k-predict">
+          <p class="k-predict__q">Eine Python-Schleife braucht grob 0,1 µs je Durchlauf (10<sup>−7</sup> s). Wie lange dauern 1 Million Durchläufe ungefähr?</p>
+          <div class="k-predict__opts"><button type="button">0,1 ms</button><button type="button" data-correct>0,1 s</button><button type="button">100 s</button></div>
+          <div class="k-predict__result"></div>
+          <div class="k-predict__expl" hidden>0,1 s: 10<sup>6</sup> Durchläufe mal 10<sup>−7</sup> s ergeben 10<sup>−1</sup> s. Ein Überschlag mit Zehnerpotenzen, mehr nicht: Je nach Rechner und Rechnung im Schleifenkörper können es auch 0,05 oder 0,5 s sein. Entscheidend ist die Größenordnung, ob also Zehntelsekunden, Sekunden oder Minuten herauskommen. Die Gegenprobe machst du mit dem Messblock.</div>
+        </div>
+        <pre data-timeout="60000"><code>import time
+
+start = time.perf_counter()
+summe = 0
+for i in range(1_000_000):
+    summe = summe + i
+dauer = time.perf_counter() - start
+print(f"{dauer:.3f} s")</code></pre>
+        <p class="k-small k-muted">Führe den Block drei- bis fünfmal aus und schreib die Zeiten auf. Wie stark schwanken sie, und welche würdest du berichten (Abschnitt 2, Regeln beim Zeitmessen)? Ändere die Anzahl auf 10 Millionen: Wächst die Zeit linear?</p>
+      </div>
+      </section>
+
+      <!-- 4 ───────────── SELBSTCHECK ───────────── -->
+      <section class="k-section" id="selbstcheck" data-section="selbstcheck" aria-labelledby="h-sc">
+        <h2 class="k-section__title" id="h-sc"><span class="k-section__num" aria-hidden="true">4</span> Selbstcheck</h2>
+
+        <p>Acht Quizaufgaben im Stil der Probeklausur (22 Punkte) und eine Code-Schreib-Aufgabe (6 Punkte, T9). Plane etwa 15 Minuten für das Quiz und 10 Minuten für T9 ein, ohne Hilfsmittel. Quiz-Punkte gibt es für den ersten Versuch; danach darfst du es nochmal probieren.</p>
+
+      <div class="k-quiz" data-quiz="v13">
+
+        <div class="k-q" data-type="output" data-points="2" data-id="t1" data-answer="[2 4 6]">
+          <div class="k-q__head"><span class="k-q__title">T1 · Array verdoppeln</span><span class="k-q__pts">2 Punkte</span></div>
+          <div class="k-q__text">Was gibt das Programm aus? (So, wie Python es druckt.)<pre class="k-code" data-run="nach-antwort"><code>import numpy as np
+a = np.array([1, 2, 3])
+print(a * 2)</code></pre></div>
+          <div class="k-q__expl">Bei einem Array wirkt <code>* 2</code> elementweise: <code>[2 4 6]</code>. NumPy druckt Arrays ohne Kommas.</div>
+        </div>
+
+        <div class="k-q" data-type="output" data-points="2" data-id="t2" data-answer="[1, 2, 3, 1, 2, 3]">
+          <div class="k-q__head"><span class="k-q__title">T2 · Liste verdoppeln</span><span class="k-q__pts">2 Punkte</span></div>
+          <div class="k-q__text">Was gibt das Programm aus?<pre class="k-code" data-run="nach-antwort"><code>liste = [1, 2, 3]
+print(liste * 2)</code></pre></div>
+          <div class="k-q__expl">Bei einer Liste hängt <code>* 2</code> die Liste zweimal hintereinander: <code>[1, 2, 3, 1, 2, 3]</code>. Es werden keine Werte verdoppelt, und es gibt keine Fehlermeldung.</div>
+        </div>
+
+        <div class="k-q" data-type="num" data-points="2" data-id="t3" data-answer="5" data-tol="0">
+          <div class="k-q__head"><span class="k-q__title">T3 · Mittelwert</span><span class="k-q__pts">2 Punkte</span></div>
+          <div class="k-q__text">Welche Zahl gibt das Programm aus?<pre class="k-code" data-run="nach-antwort"><code>import numpy as np
+a = np.array([2, 4, 6, 8])
+print(np.mean(a))</code></pre></div>
+          <div class="k-q__expl">Summe 20, geteilt durch 4 Werte: 5. Ausgegeben wird <code>5.0</code>, denn <code>np.mean</code> liefert eine Kommazahl.</div>
+        </div>
+
+        <div class="k-q" data-type="output" data-points="3" data-id="t4" data-answer="[5 8 3]">
+          <div class="k-q__head"><span class="k-q__title">T4 · Maske</span><span class="k-q__pts">3 Punkte</span></div>
+          <div class="k-q__text">Was gibt das Programm aus?<pre class="k-code" data-run="nach-antwort"><code>import numpy as np
+a = np.array([1, 5, 2, 8, 3])
+print(a[a &gt; 2])</code></pre></div>
+          <div class="k-q__expl">Die Maske <code>a &gt; 2</code> ist wahr bei 5, 8 und 3, falsch bei 1 und 2 (der Wert 2 ist nicht größer als 2). Die Auswahl behält die Reihenfolge des Arrays: <code>[5 8 3]</code>.</div>
+        </div>
+
+        <div class="k-q" data-type="num" data-points="3" data-id="t5" data-answer="15" data-tol="0">
+          <div class="k-q__head"><span class="k-q__title">T5 · Schrittzahl</span><span class="k-q__pts">3 Punkte</span></div>
+          <div class="k-q__text">Sechs Bohrungen werden auf Kollision geprüft: jede mit jeder anderen, jedes Paar einmal. Wie viele Paarvergleiche sind das? Gib die Zahl an.</div>
+          <div class="k-q__expl">n·(n−1)/2 = 6·5/2 = 15. Zum Nachzählen: Die erste Bohrung wird mit 5 anderen verglichen, die zweite mit den 4 übrigen, dann 3, 2, 1: 5+4+3+2+1 = 15.</div>
+        </div>
+
+        <div class="k-q" data-type="mc" data-points="4" data-id="t6">
+          <div class="k-q__head"><span class="k-q__title">T6 · NumPy und Laufzeit (mehrere richtig)</span><span class="k-q__pts">4 Punkte</span></div>
+          <div class="k-q__text">Welche Aussagen sind richtig? Alle richtigen ankreuzen.</div>
+          <ul class="k-q__options">
+            <li data-correct>Ein NumPy-Befehl wie <code>a * 2</code> bearbeitet das ganze Array, die Schleife darüber läuft in vorübersetztem Code.</li>
+            <li>NumPy ist schneller, weil der Computer dabei weniger Rechenoperationen ausführt als die Schleife.</li>
+            <li data-correct>Verdoppelt man die Zahl der Bohrungen, braucht „jede mit jeder“ ungefähr das Vierfache an Schritten.</li>
+            <li>Eine einzige Zeitmessung mit <code>time.perf_counter()</code> genügt, die Messung ist genau.</li>
+            <li data-correct>Bei einer Liste verdoppelt <code>liste * 2</code> nicht die Werte, sondern hängt die Liste an sich selbst an.</li>
+          </ul>
+          <div class="k-q__expl">Dieselben Rechenoperationen fallen an, NumPy spart die Interpreter-Arbeit je Element (zweite Aussage falsch). Eine Messung schwankt, du misst mehrfach (vierte Aussage falsch). Richtig sind: ein Befehl für das ganze Array, quadratisches Wachstum bei „jeder mit jedem“ und die Verwechslung von Liste und Array.</div>
+        </div>
+
+        <div class="k-q" data-type="mc" data-points="3" data-id="t7">
+          <div class="k-q__head"><span class="k-q__title">T7 · Messreihe</span><span class="k-q__pts">3 Punkte</span></div>
+          <div class="k-q__text">Du misst dieselbe Rechnung fünfmal: 12,1 ms, 12,0 ms, 12,2 ms, 31,5 ms, 12,1 ms. Du willst berichten, wie schnell das Programm auf deinem Rechner ungestört läuft. Welcher Wert ist sinnvoll?</div>
+          <ul class="k-q__options">
+            <li>Der Mittelwert (rund 16 ms), weil er alle Messungen berücksichtigt.</li>
+            <li data-correct>Der Median (12,1 ms) oder das Minimum (12,0 ms), denn der Ausreißer 31,5 ms ist eine Störung.</li>
+            <li>Das Maximum (31,5 ms), um auf der sicheren Seite zu sein.</li>
+            <li>Die erste Messung (12,1 ms), denn spätere Messungen sind nicht mehr „frisch“.</li>
+          </ul>
+          <div class="k-q__expl">Störungen machen eine Messung nur länger. Minimum und Median sind darum robuste Kennwerte, der Mittelwert wird vom Ausreißer nach oben gezogen. Das Maximum beschreibt den schlechtesten Fall, nicht die typische Laufzeit. Auf die erste Messung allein ist kein Verlass, genau deshalb misst du mehrfach.</div>
+        </div>
+
+        <div class="k-q" data-type="mc" data-points="3" data-id="t8">
+          <div class="k-q__head"><span class="k-q__title">T8 · KI-Code freigeben?</span><span class="k-q__pts">3 Punkte</span></div>
+          <div class="k-q__text">Die KI soll den Effektivwert (Wurzel aus dem Mittelwert der Quadrate) der Messwerte 3, 4 und 5 berechnen (richtig wäre rund 4,08) und liefert:<pre class="k-code" data-run="nach-antwort"><code>import numpy as np
+messung = np.array([3.0, 4.0, 5.0])
+rms = np.sqrt(np.mean(messung) ** 2)
+print(rms)</code></pre>Würdest du das freigeben?</div>
+          <ul class="k-q__options">
+            <li>Ja, <code>np.sqrt</code>, <code>np.mean</code> und das Quadrat kommen alle vor.</li>
+            <li data-correct>Nein: Es wird erst gemittelt und dann quadriert. Richtig wäre <code>np.mean(messung ** 2)</code>. Das Programm gibt 4.0 statt etwa 4.08 aus, ohne Fehlermeldung.</li>
+            <li>Nein, <code>np.mean</code> darf nicht auf ein Array angewendet werden, es braucht eine Schleife.</li>
+            <li>Nein, <code>**</code> ist bei NumPy-Arrays nicht erlaubt.</li>
+          </ul>
+          <div class="k-q__expl">Die Bausteine stimmen, die Reihenfolge nicht: <code>np.mean(messung) ** 2</code> quadriert den Mittelwert (4,0 zum Quadrat), gesucht ist aber der Mittelwert der Quadrate (50/3 ≈ 16,67, Wurzel ≈ 4,08). Bei Schwingungen mit wechselndem Vorzeichen wäre das Ergebnis fast null. <code>**</code> und <code>np.mean</code> funktionieren auf Arrays einwandfrei. Teste solchen Code mit einem Fall, den du von Hand nachrechnen kannst (hier: 3, 4, 5).</div>
+        </div>
+
+        <div class="k-score" data-score aria-live="polite"></div>
+      </div>
+
+        <h3>Code schreiben im Klausurstil</h3>
+        <p class="k-small k-muted">Wie in der Klausur: erst von Hand schreiben, ohne Ausführen und ohne Auto-Vervollständigung. Dann abgeben, die Tests laufen lassen und dich selbst nach dem Punkteschema bewerten. Richtzeit 10 Minuten.</p>
+      <div class="a-task" data-a="klausur" data-id="sc-klausur" data-mode="funktion" data-minutes="10">
+        <div class="a-task__head"><span class="a-task__title">T9 · Kennwerte mit NumPy</span><span class="a-pts">6 Punkte</span></div>
+        <div class="a-task__text">
+          <p>Schreibe (mit <code>import numpy as np</code> am Anfang) zwei Funktionen, die jeweils eine Liste von Messwerten bekommen und das Ergebnis <strong>zurückgeben</strong> (kein <code>print</code>). Benutze NumPy, keine Schleife. (a) <code>effektivwert(werte)</code>: die Wurzel aus dem Mittelwert der Quadrate. (b) <code>anteil_ueber(werte, grenze)</code>: der Anteil der Werte, die <em>größer als</em> <code>grenze</code> sind, als Zahl zwischen 0 und 1.</p>
+          <div class="a-spec"><strong>Beispiele (Rückgabewerte):</strong><pre data-run="no">effektivwert([3.0, 4.0])          -&gt;  3.5355339...
+effektivwert([-1.0, 1.0])         -&gt;  1.0
+anteil_ueber([1, 2, 3, 4], 2)     -&gt;  0.5</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V13" data-assist="off" aria-label="Python-Code von Hand schreiben, ohne Ausführen"></textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _fn(name):
+    assert name in globals(), "Die Funktion %s ist nicht definiert. Beginne mit: def %s(...):" % (name, name)
+    return globals()[name]
+
+def _zahl(erg, soll, aufruf, tol=1e-6):
+    assert erg is not None, "%s gibt None zurück: Steht im Rumpf ein return (kein print)?" % aufruf
+    assert abs(float(erg) - soll) < tol, "%s soll %r liefern, deine Funktion liefert %r" % (aufruf, soll, erg)
+
+def test_effektiv_beispiel():
+    """effektivwert([3.0, 4.0]) ist rund 3.5355"""
+    _zahl(_fn("effektivwert")([3.0, 4.0]), 3.5355339, "effektivwert([3.0, 4.0])")
+
+def test_effektiv_vorzeichen():
+    """effektivwert([-1.0, 1.0]) ist 1.0 (erst quadrieren, dann mitteln)"""
+    _zahl(_fn("effektivwert")([-1.0, 1.0]), 1.0, "effektivwert([-1.0, 1.0])")
+
+def test_effektiv_konstant():
+    """effektivwert([2.0, 2.0, 2.0, 2.0, 2.0]) ist 2.0"""
+    _zahl(_fn("effektivwert")([2.0] * 5), 2.0, "effektivwert([2.0] * 5)")
+
+def test_anteil_beispiel():
+    """anteil_ueber([1, 2, 3, 4], 2) ist 0.5 (nur 3 und 4 sind größer als 2)"""
+    _zahl(_fn("anteil_ueber")([1, 2, 3, 4], 2), 0.5, "anteil_ueber([1, 2, 3, 4], 2)")
+
+def test_anteil_grenzen():
+    """Grenze über dem Maximum: 0.0, unter dem Minimum: 1.0"""
+    f = _fn("anteil_ueber")
+    _zahl(f([1, 2, 3], 10), 0.0, "anteil_ueber([1, 2, 3], 10)")
+    _zahl(f([1, 2, 3], 0), 1.0, "anteil_ueber([1, 2, 3], 0)")
+
+def test_anteil_gleich():
+    """Ein Wert genau auf der Grenze zählt nicht mit (größer als)"""
+    _zahl(_fn("anteil_ueber")([2, 2, 5, 1], 2), 0.25, "anteil_ueber([2, 2, 5, 1], 2)")
+        </script>
+        <script type="text/x-python" data-role="solution">
+import numpy as np
+
+def effektivwert(werte):
+    a = np.array(werte)
+    return np.sqrt(np.mean(a ** 2))
+
+def anteil_ueber(werte, grenze):
+    a = np.array(werte)
+    return len(a[a > grenze]) / len(a)
+        </script>
+        <script type="application/json" data-role="scheme">[
+{"p":1,"t":"import numpy as np steht am Anfang und NumPy wird in beiden Funktionen benutzt"},
+{"p":1,"t":"Die Liste wird mit np.array in ein Array umgewandelt, bevor elementweise gerechnet wird (eine Liste lässt sich nicht mit ** 2 quadrieren)"},
+{"p":2,"t":"effektivwert: Wurzel aus dem Mittelwert der Quadrate in der richtigen Reihenfolge: np.sqrt(np.mean(a ** 2)) (nicht np.mean(a) ** 2)"},
+{"p":1,"t":"anteil_ueber: Maske a > grenze (echt größer) und Anteil = Anzahl der passenden Werte durch Gesamtzahl, ohne Schleife"},
+{"p":1,"t":"Beide Funktionen haben einen richtigen Kopf (def, Parameter, Doppelpunkt) und geben ihr Ergebnis mit return zurück (kein print)"}
+]</script>
+      </div>
+      </section>
+
+      <!-- 5 ───────────── DEEP DIVE ───────────── -->
+      <section class="k-section" id="deepdive" data-section="deepdive" aria-labelledby="h-dd">
+        <h2 class="k-section__title" id="h-dd"><span class="k-section__num" aria-hidden="true">5</span> Deep Dive <span class="k-muted">(freiwillig)</span></h2>
+
+        <p>Für Neugierige. Nichts davon kommt in der Klausur dran.</p>
+
+      <details class="k-deep">
+        <summary>Big-O in fünf Sätzen</summary>
+        <div class="k-deep__body">
+          <p>Big-O beschreibt, wie die Zahl der Schritte mit der Datenmenge <em>n</em> wächst, und lässt Faktoren und Kleinkram weg: 3<em>n</em> + 20 schreibt man O(<em>n</em>), <em>n</em>·(<em>n</em>−1)/2 schreibt man O(<em>n</em>²). Häufige Klassen: O(1) (konstant, etwa ein Zugriff <code>liste[5]</code>), O(log <em>n</em>) (logarithmisch, etwa Halbieren beim Suchen in einer sortierten Liste), O(<em>n</em>) (linear), O(<em>n</em> log <em>n</em>) (gutes Sortieren) und O(<em>n</em>²) (quadratisch). Verdoppelst du <em>n</em>, wächst die Arbeit um 0 (konstant), einen kleinen Betrag (log), den Faktor 2 (linear), etwas über 2 (<em>n</em> log <em>n</em>) oder den Faktor 4 (quadratisch). Big-O sagt <em>nicht</em>, wie schnell ein Programm absolut ist, nur wie es mit der Datenmenge skaliert. Das Vorjahresmaterial (25/26) hat dazu ein eigenes Kapitel, hier genügt dir die Idee.</p>
+        </div>
+      </details>
+
+      <details class="k-deep">
+        <summary>Warum dicht im Speicher schneller ist: Cache und SIMD</summary>
+        <div class="k-deep__body">
+          <p>Der Prozessor holt Daten nicht Zahl für Zahl aus dem Arbeitsspeicher, sondern in Blöcken (Cache-Zeilen, meist 64 Byte). Liegen die nächsten Zahlen direkt dahinter, sind sie schon da: Bei einem Array mit 8-Byte-Zahlen kommen acht Werte mit einem Zugriff. Bei einer Liste liegen die Zahlen-Objekte verstreut, jeder Zugriff kann ein neuer Block sein. Außerdem können Prozessoren mit SIMD-Befehlen („eine Anweisung, mehrere Daten“) mehrere Zahlen gleichzeitig verrechnen, aber nur, wenn sie gleichartig und lückenlos im Speicher liegen. Das nutzt NumPy aus. Du siehst es an einer Zahl: <code>a.nbytes</code> sagt, wie viele Byte das Array belegt.</p>
+          <pre><code>import numpy as np
+
+a = np.arange(1_000_000, dtype=float)
+print(a.nbytes)       # 8 Byte je Zahl: genau 8 000 000</code></pre>
+          <p>Eine Python-Liste mit einer Million Kommazahlen braucht deutlich mehr, weil zu jeder Zahl noch ein Objekt mit Typangabe und der Verweis darauf kommen.</p>
+        </div>
+      </details>
+
+      <details class="k-deep">
+        <summary>Wann ist die Schleife besser?</summary>
+        <div class="k-deep__body">
+          <p>Immer dann, wenn die Datenmenge klein ist oder die Schleife viel lesbarer bleibt. Vektorisiert wird, was langsam <em>ist</em>, nicht was langsam <em>sein könnte</em>. Die Regel der Praxis: erst korrekt und lesbar, dann messen, dann gezielt beschleunigen („vorzeitige Optimierung ist die Wurzel allen Übels“, ein bekannter Satz von Donald Knuth). Messe vorher mit einem realistischen Datenumfang und prüfe, dass beide Wege dieselben Ergebnisse liefern, wie im vorgerechneten Beispiel des Labors.</p>
+        </div>
+      </details>
+
+      <details class="k-deep">
+        <summary>Wenn es noch schneller sein muss</summary>
+        <div class="k-deep__body">
+          <p>Reicht NumPy nicht, gibt es Werkzeuge, die Python-Code vorübersetzen (Numba, Cython), man schreibt den heißen Teil in C oder C++, oder man rechnet auf der Grafikkarte. Meistens bringt aber ein besserer <em>Algorithmus</em> mehr als jede Hardware: Bei der Kollisionsprüfung teilst du das Bauteil in ein Raster und vergleichst nur Bohrungen aus benachbarten Zellen. Dann sind es nicht mehr 50 Millionen Paare, sondern nur noch ein paar zehntausend. Das ist die eigentliche Lehre der Laufzeit-Intuition: erst die Schrittzahl senken, dann die Zeit je Schritt.</p>
+        </div>
+      </details>
+      </section>
+
+      <!-- Videos zur Nachbereitung -->
+      <section class="k-section" id="videos" aria-labelledby="h-videos">
+        <h2 class="k-section__title" id="h-videos">Videos zur Nachbereitung</h2>
+        <p>Alle drei Erklärvideos zu V13 zum Wiederholen, jeweils mit deutschen Untertiteln.</p>
+        <ul class="k-video-list">
+          <li><a href="#video-theorie">Laufzeit-Intuition: Schrittzahl, Größenordnungen, Vektorisierung und Zeitmessung erklärt</a> <span class="k-muted">(ca. 3 Min, Theorie, Abschnitt 2 dieser Lerneinheit)</span></li>
+          <li><a href="v13-labor.html#a-werkzeugkasten">Python-Werkstatt: NumPy-Arrays, elementweise Rechnung, Masken, Zeitmessung</a> <span class="k-muted">(ca. 3 Min, im Labor bei „Werkzeugkasten“)</span></li>
+          <li><a href="v13-labor.html#a-vorgemacht">Vorgerechnet: Effektivwert von einer Million Messpunkten, Schleife gegen NumPy</a> <span class="k-muted">(ca. 3 Min, im Labor bei „Vorgerechnetes Beispiel“)</span></li>
+        </ul>
+      </section>
+
+      <!-- Übergang -->
+      <section class="k-next" aria-labelledby="h-next">
+        <h2 id="h-next">Wie geht es weiter?</h2>
+        <p>Verstanden ist noch nicht geschrieben. Im Programmierlabor tippst du den Code selbst: erst mit Hilfen (Werkzeugkasten, Beispiel, Lückencode), dann allein. Du rechnest mit NumPy-Arrays, wertest die Messdaten aus der Waschmaschine (V09) aus, prüfst in zwei Code-Reviews KI-Antworten zu NumPy und Laufzeit, und zu Hause folgt das Training mit acht automatisch geprüften Aufgaben (ca. 60 Min), darunter das Zeichnen eines Programmablaufplans und das Messen von Laufzeiten.</p>
+        <p><a class="k-btn" href="v13-labor.html">Weiter ins Programmierlabor →</a></p>
+      </section>
+
+      <!-- Für Dozierende -->
+      <section class="k-section k-section--dozent" aria-labelledby="h-doz">
+        <h2 id="h-doz" class="k-sr">Für Dozierende</h2>
+      <details class="k-dozent">
+        <summary>Für Dozierende: Ablaufplan 135 Minuten Präsenz + 60 Minuten zu Hause</summary>
+        <div class="k-dozent__body">
+          <p class="k-small k-muted">Ein Termin besteht aus zwei Seiten: dieser <strong>Lerneinheit</strong> (verstehen) und dem <a href="v13-labor.html">Programmierlabor</a> (selbst programmieren). Die Tabelle sagt, wo welche Phase stattfindet. Phase 2, letzter Termin: Danach beginnt das Projekt (V14).</p>
+          <div class="k-tablewrap"><table class="k-plan">
+            <thead><tr><th scope="col">Minuten</th><th scope="col">Wo</th><th scope="col">Was zu tun ist</th></tr></thead>
+            <tbody>
+              <tr><td>0–10</td><td>Lerneinheit 1<br>Warum</td><td><strong>Warm-up und Hook.</strong> Wiederholung V12 per Handzeichen: Was macht <code>assert x &gt; 0</code>, wenn x negativ ist? Dann der Hook: Studierende führen beide Blöcke (Schleife, NumPy) selbst aus und tragen ihre Zeiten an der Tafel ein: Zeiten und Faktor <em>variieren stark</em> (Gerät, Browser), und genau das wird besprochen. Vorab: Beim ersten NumPy-Lauf lädt der Browser ca. 8 MB, vorher einmal ausführen lassen.</td></tr>
+              <tr><td>10–35</td><td>Lerneinheit 2<br>Theorie</td><td><strong>Informatik-Theorie mit Explorables.</strong> Schrittzahl-Explorable (6 Min, zentral): Regler auf 10, 100, 1000 und die Frage „Was passiert bei doppelt so vielen Bohrungen?“. Überschlagsrechner (5): „jeder mit jedem“ bei 100 000 Elementen, Tempo-Annahmen wechseln. Schleife gegen Vektor (4), Messreihe (4), PAP-Vergleich (2). Ampel-Diskussion: Big-O als „Delegieren/Ausblick“ einordnen.</td></tr>
+              <tr><td>35–80</td><td>Labor Teil A<br>Aufgaben 1 bis 6</td><td><strong>Python-Werkstatt, Teil 1 (ca. 45 Min).</strong> Werkzeugkasten kurz überfliegen (5), vorgerechnetes Beispiel (10): erwartete Ausgabe prüfen (beide Effektivwerte 1.4142, Theorie A/sqrt(2) = 1.4142, Zeiten und Faktor variieren), Ablauf verfolgen (7), beide Parsons in Paaren (8), Lückencode (5), „Messdaten auswerten“ (Waschmaschine) als erste eigene Aufgabe (10). Typische Fehler: <code>np</code> nicht importiert, Liste statt Array, <code>np.mean(a) ** 2</code>.</td></tr>
+              <tr><td>80–90</td><td>–</td><td><strong>Pause.</strong> Runner und NumPy vorab einmal ausführen lassen (Ladezeit; im Hörsaal-WLAN sonst zäh).</td></tr>
+              <tr><td>90–120</td><td>Labor Teil A<br>Aufgaben 7 und 8</td><td><strong>Python-Werkstatt, Teil 2.</strong> Code-Review (KI-Spiegel) gemeinsam am Beamer: Szenario 1 (NumPy-Code mit Liste statt Array, falschem Effektivwert und einmaliger Zeitmessung mit Ausgabe im Messbereich) markieren und auflösen, Szenario 2 (KI-Antwort mit festem „100-mal schneller“ und weiteren falschen Aussagen) als Textprüfung (20). Danach typische Fehlermeldungen (5). Reserve (5): Lerneinheit, Abschnitt 3.</td></tr>
+              <tr><td>120–135</td><td>Lerneinheit 4<br>Selbstcheck</td><td><strong>Selbstcheck, Exit-Ticket, Auftrag.</strong> Exit-Ticket: Quiz T2, T5, T8 (je 1 Min. tippen, dann auflösen). T9 als Hausaufgabe oder auf Papier. Auftrag: Labor Teil B. Ausblick V14: Visualisierung und Projekt-Kickoff, bitte Zweiergruppen bilden.</td></tr>
+              <tr><td>zu Hause (ca. 60)</td><td>Labor Teil B<br>Aufgaben 1 bis 8</td><td><strong>Training.</strong> Sieben Code-Aufgaben mit automatischen Tests und ein Programmablaufplan zum Zeichnen (automatisch geprüft), darunter Wiederholungsaufgabe (Schleife gegen NumPy, V08), Datei-Aufgabe (Waschmaschine, V09), eine Zeitmess-Funktion und Klausur-Modus (ca. 50 Min). Danach nach Wahl Notebook und Deep Dive. Der Fortschritt bleibt im Browser der Studierenden; er ist für dich nicht einsehbar, also bei Bedarf zu Beginn des nächsten Termins abfragen.</td></tr>
+            </tbody>
+          </table></div>
+          <p class="k-small k-muted">Material: Beamer, Handzeichen-Karten, stabiles WLAN. Alle Zeitangaben und Tempo-Annahmen in den Explorables sind Faustwerte zum Überschlagen. Gemessene Zeiten im Browser (Pyodide) liegen meist über denen eines nativen Python und streuen zwischen Geräten; nie Zahlen vorgeben, immer messen lassen.</p>
+        </div>
+      </details>
+      </section>
+
+    </main>
+  </div>
+
+  <footer class="dhbw-footer k-footer">
+    <div class="dhbw-footer__inner">
+      <span><span class="dhbw-footer__brand">DHBW Stuttgart</span> · Campus Horb</span>
+      <span><a href="../index.html">Zurück zum Lernpfad</a> · V13 Laufzeit-Intuition · Lerneinheit</span>
+    </div>
+  </footer>
+
+  <script src="../assets/js/speicher.js"></script>
+  <script src="../assets/js/icons.js"></script>
+  <script src="../assets/js/editor.js" defer></script>
+  <script src="../assets/js/pap-engine.js"></script>
+  <script src="../assets/js/explorables-v13.js"></script>
+  <script src="../assets/js/kurs.js"></script>
+  <script src="../assets/js/aufgaben.js"></script>
+</body>
+</html>
