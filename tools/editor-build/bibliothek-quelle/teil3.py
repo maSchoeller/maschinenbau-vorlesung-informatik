@@ -1255,3 +1255,25 @@ for maschine, summe in cur.fetchall():
   ["sql-select", "sql-fetch", "dict"],
   bez=["GROUP BY", "SUM", "COUNT", "AVG", "MIN", "MAX"],
   aliase=["Aggregatfunktion", "gruppieren", "zählen", "Summe je"])
+
+_FZ_M = _FZ + '''cur.execute("CREATE TABLE maschinen (id TEXT PRIMARY KEY, typ TEXT)")
+cur.executemany("INSERT INTO maschinen VALUES (?, ?)", [("D2", "Drehmaschine"), ("F1", "Fraesmaschine")])
+'''
+
+E("sql-join", "JOIN zweier Tabellen", DB, "V19", "lesen",
+  "Verknüpft Zeilen zweier Tabellen über eine gemeinsame Spalte, z. B. Auftrag und Maschine.",
+  "SELECT a.nr, m.typ FROM auftraege a JOIN maschinen m ON a.maschine = m.id",
+  "In einer Datenbank steht jede Information nur einmal: Der Maschinentyp steht in der Tabelle maschinen, ein Auftrag verweist nur mit der Maschinen-ID darauf (Fremdschlüssel). JOIN ... ON setzt die Zeilen beider Tabellen zusammen, bei denen die Bedingung passt. Die Kürzel a und m sind Abkürzungen für die Tabellennamen. Aufträge, deren Maschine in der anderen Tabelle fehlt, fallen beim einfachen JOIN heraus.",
+  _FZ_M + '''cur.execute("SELECT a.nr, a.teil, m.typ FROM auftraege a JOIN maschinen m ON a.maschine = m.id WHERE a.status = ? ORDER BY a.nr", ("offen",))
+for nr, teil, typ in cur.fetchall():
+    print(nr, teil, "auf", typ)
+''',
+  "Sobald zusammengehörige Daten in mehreren Tabellen liegen: Aufträge und Maschinen, Stücklisten und Teile.",
+  [("Menge je Maschinentyp", _FZ_M + 'cur.execute("SELECT m.typ, SUM(a.menge) FROM auftraege a JOIN maschinen m ON a.maschine = m.id GROUP BY m.typ ORDER BY m.typ")\nprint(cur.fetchall())'),
+   ("Mit vollen Tabellennamen statt Kürzeln", _FZ_M + 'cur.execute("SELECT auftraege.nr, maschinen.typ FROM auftraege JOIN maschinen ON auftraege.maschine = maschinen.id")\nprint(len(cur.fetchall()), "Treffer")')],
+  [("Spaltenname in beiden Tabellen: nicht eindeutig", 'import sqlite3\ndb = sqlite3.connect(":memory:")\ndb.execute("CREATE TABLE a (id TEXT, x INTEGER)")\ndb.execute("CREATE TABLE b (id TEXT, y INTEGER)")\ndb.execute("SELECT id FROM a JOIN b ON a.id = b.id")'),
+   ("ON vergessen: jede Zeile mit jeder kombiniert", _FZ_M + 'cur.execute("SELECT a.nr, m.typ FROM auftraege a JOIN maschinen m")\nprint(len(cur.fetchall()), "Zeilen")',
+    "(keine Fehlermeldung) 10 Zeilen statt 5: Ohne ON kombiniert der JOIN jeden Auftrag mit jeder Maschine.")],
+  ["sql-select", "sql-group-by", "sql-insert"],
+  bez=["JOIN", "ON"],
+  aliase=["verknüpfen", "Fremdschlüssel", "zwei Tabellen"])
