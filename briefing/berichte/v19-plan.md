@@ -75,13 +75,13 @@ Teil A „Im Labor“:
 - Code-Review (KI-Spiegel): KI-Funktion `auftrag_suchen(cur, teil)` und `status_setzen(db, nr, status)` mit eingebauten Fehlern: f-String im SQL (Injection), fehlendes `commit()`, `UPDATE auftraege SET status = ?` ohne WHERE (setzt alle!), `fetchone()` ohne None-Prüfung. „Würdest du das freigeben?“ – Fehler ankreuzen/finden + korrigierte Fassung als Code-Aufgabe mit Tests (inkl. Injection-Eingabe `x' OR '1'='1` → 0 Treffer, und nach `status_setzen` hat nur der eine Auftrag den neuen Status).
 - Typische Fehlermeldungen: die Liste aus „Fakten“ (no such table, no such column, syntax error, Incorrect number of bindings, UNIQUE constraint failed, 5 columns but 3 values, one statement at a time), jeweils Ursache + Abhilfe, mit ausführbarem Auslöser.
 Teil B „Training zu Hause“ (6–8 gestufte Aufgaben, 1–4 Sterne, automatisch geprüft):
-1. ★ Anzahl fertiger Aufträge mit COUNT (fz3.db).
-2. ★★ Menge je Maschine mit GROUP BY und ORDER BY, als „D2: 3900 Stück“ ausgeben (Werte aus fz3.db berechnen lassen, nicht vorgeben).
-3. ★★ UPDATE: Auftrag per Eingabe-Nummer auf „fertig“ setzen, commit, prüfen mit fetchone; unbekannte Nummer → „Auftrag nicht gefunden“ (`cur.rowcount` oder vorher SELECT).
-4. ★★★ Funktion `auftraege_fuer(cur, maschine, status)` → Liste der Auftragsnummern (sortiert), mit Platzhaltern; Tests inkl. Injection.
-5. ★★★ Wiederholung V09: `auftraege-kw48.csv` mit `csv` einlesen, kaputte Zeile per `try/except ValueError` überspringen (Meldung ausgeben), gültige mit `executemany` in fz3.db einfügen, danach Anzahl offener Aufträge von D2 ausgeben. Tests variieren die CSV.
-6. ★★★ JOIN: Liste „4711 WELLE_20H6 auf Drehmaschine“ für alle offenen Aufträge (JOIN maschinen). JOIN-Gerüst darf im Starter stehen.
-7. ★★★★ Klausur-Modus (`data-a="klausur"`, erst auf Papier): Funktion `auftrag_anlegen(db, nr, teil, maschine, menge)` prüft Menge 1..2000 und Maschine in der Tabelle maschinen (Platzhalter), fängt `sqlite3.IntegrityError` bei doppelter Nummer ab, gibt "angelegt"/"Menge ungültig"/"Maschine unbekannt"/"Nummer vergeben" zurück, commit. Mit Punkteschema.
+1. * Anzahl fertiger Aufträge mit COUNT (fz3.db).
+2. ** Menge je Maschine mit GROUP BY und ORDER BY, als „D2: 3900 Stück“ ausgeben (Werte aus fz3.db berechnen lassen, nicht vorgeben).
+3. ** UPDATE: Auftrag per Eingabe-Nummer auf „fertig“ setzen, commit, prüfen mit fetchone; unbekannte Nummer → „Auftrag nicht gefunden“ (`cur.rowcount` oder vorher SELECT).
+4. *** Funktion `auftraege_fuer(cur, maschine, status)` → Liste der Auftragsnummern (sortiert), mit Platzhaltern; Tests inkl. Injection.
+5. *** Wiederholung V09: `auftraege-kw48.csv` mit `csv` einlesen, kaputte Zeile per `try/except ValueError` überspringen (Meldung ausgeben), gültige mit `executemany` in fz3.db einfügen, danach Anzahl offener Aufträge von D2 ausgeben. Tests variieren die CSV.
+6. *** JOIN: Liste „4711 WELLE_20H6 auf Drehmaschine“ für alle offenen Aufträge (JOIN maschinen). JOIN-Gerüst darf im Starter stehen.
+7. **** Klausur-Modus (`data-a="klausur"`, erst auf Papier): Funktion `auftrag_anlegen(db, nr, teil, maschine, menge)` prüft Menge 1..2000 und Maschine in der Tabelle maschinen (Platzhalter), fängt `sqlite3.IntegrityError` bei doppelter Nummer ab, gibt "angelegt"/"Menge ungültig"/"Maschine unbekannt"/"Nummer vergeben" zurück, commit. Mit Punkteschema.
 Notebook-Link. Projekt-Hinweis auf `../projekt.html`.
 
 ## Notebook `site/notebooks/V19-Datenbanken-und-SQL.ipynb`
