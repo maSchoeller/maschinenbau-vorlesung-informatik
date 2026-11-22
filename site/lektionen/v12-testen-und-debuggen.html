@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>V12 Testen &amp; Debuggen: Prüfen, bevor du vertraust · Lerneinheit · Informatik Maschinenbau</title>
+  <meta name="description" content="KI erzeugt den Code, du prüfst ihn: erwartet gegen tatsächlich, assert und AssertionError, Testfälle systematisch mit Bereichen und Grenzwerten, Fehlerarten, Traceback von unten nach oben lesen und Fehler mit Hypothese, Beobachtung und Debugger finden.">
+  <link rel="stylesheet" href="../assets/css/dhbw-base.css">
+  <link rel="stylesheet" href="../assets/css/kurs.css">
+  <link rel="stylesheet" href="../assets/css/aufgaben.css">
+  <link rel="stylesheet" href="../assets/css/editor.css">
+  <link rel="stylesheet" href="../assets/css/v05.css">
+  <link rel="stylesheet" href="../assets/css/v12.css">
+</head>
+<body data-lesson="V12" data-page="lerneinheit">
+  <a class="k-skip" href="#inhalt">Zum Inhalt springen</a>
+
+  <header class="dhbw-header k-header">
+    <div class="dhbw-header__inner">
+      <a class="k-logo" href="../index.html" aria-label="Zur Startseite">
+        <span class="k-logo__mark" aria-hidden="true">DHBW</span>
+        <span class="k-logo__text">Informatik Maschinenbau<small>Campus Horb · 2026/27</small></span>
+      </a>
+      <nav class="k-nav" aria-label="Hauptnavigation">
+        <a href="../index.html">Start</a>
+        <a href="../index.html#lernpfad">Lernpfad</a>
+        <a href="../bibliothek.html">Bibliothek</a>
+        <a href="../pap-editor.html">PAP-Editor</a>
+        <a href="v12-testen-und-debuggen.html" aria-current="page">V12 Lerneinheit</a>
+        <a href="v12-labor.html">V12 Labor</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="l-page">
+    <nav class="k-toc" aria-label="Inhalt dieser Lerneinheit">
+      <p class="k-toc__title">Lerneinheit V12</p>
+      <ol class="k-toc__list">
+        <li><a href="#warum"><span class="k-toc__n">1</span>Warum?</a></li>
+        <li><a href="#theorie"><span class="k-toc__n">2</span>Theorie</a></li>
+        <li><a href="#ausprobieren"><span class="k-toc__n">3</span>Ausprobieren</a></li>
+        <li><a href="#selbstcheck"><span class="k-toc__n">4</span>Selbstcheck</a></li>
+        <li><a href="#deepdive"><span class="k-toc__n">5</span>Deep Dive</a></li>
+      </ol>
+      <div class="k-progress" data-progress-for="V12">
+        <span class="k-progress__bar"><span class="k-progress__fill"></span></span>
+        <span class="k-progress__text">0 von 5 Abschnitten</span>
+      </div>
+      <a class="k-toc__lab" href="v12-labor.html">Weiter ins Programmierlabor →</a>
+    </nav>
+
+    <main id="inhalt" class="l-content">
+
+      <header class="k-title">
+        <p class="k-title__label">V12 · Phase 2 Werkzeug · Lerneinheit</p>
+        <h1 id="h-titel">Testen &amp; Debuggen: prüfen, bevor du vertraust</h1>
+        <p class="k-title__lead">Ab jetzt darf die KI Code erzeugen. Dann ist dein Beitrag das Prüfen, und das Prüfen beginnt <em>vor</em> dem Generieren: Du schreibst die <abbr class="k-begriff" data-erklaerung="Ein Testfall ist ein Eingabewert zusammen mit dem Ergebnis, das du dafür erwartest. Wie eine Prüfvorschrift: Messe hier, und es müssen so viel Millimeter herauskommen.">Testfälle</abbr> von Hand, an den Stellen, an denen Fehler wirklich sitzen: an den Grenzen. Und wenn ein Test scheitert, findest du den Fehler mit Methode statt mit Raten.</p>
+        <p class="k-title__goals">Nach dieser Lerneinheit kannst du:</p>
+        <ul class="k-title__list">
+          <li>einen <abbr class="k-begriff" data-erklaerung="Ein Test vergleicht das Ergebnis, das ein Programm tatsächlich liefert, mit dem Ergebnis, das du erwartest. Er sagt dir ja oder nein, ohne dass du hinschauen musst.">Test</abbr> als Vergleich von <em>erwartet</em> gegen <em>tatsächlich</em> erklären und mit <code class="k-i">assert</code> schreiben,</li>
+          <li>Testfälle systematisch ableiten: je <abbr class="k-begriff" data-erklaerung="Eine Äquivalenzklasse ist ein Bereich von Eingaben, bei dem sich das Programm gleich verhält, zum Beispiel alle Temperaturen unter 70 Grad. Ein Vertreter pro Bereich genügt, wie eine Stichprobe je Fertigungslos.">Bereich</abbr> ein Vertreter, an jeder <abbr class="k-begriff" data-erklaerung="Ein Grenzwert ist der Wert genau an der Kante eines Bereichs, zum Beispiel 70 Grad dort, wo normal in Warnung übergeht. Hier passieren die meisten Programmierfehler, weil man zwischen kleiner und kleiner-gleich leicht danebenliegt.">Grenze</abbr> beide Seiten,</li>
+          <li>die drei Fehlerarten unterscheiden: <abbr class="k-begriff" data-erklaerung="Ein Syntaxfehler verstößt gegen die Schreibregeln von Python (fehlender Doppelpunkt, falsche Einrückung). Python meldet ihn, bevor das Programm überhaupt läuft.">Syntaxfehler</abbr>, <abbr class="k-begriff" data-erklaerung="Ein Laufzeitfehler tritt erst auf, wenn die Zeile drankommt: Division durch null, fehlende Datei, falscher Typ. Python bricht ab und druckt einen Traceback.">Laufzeitfehler</abbr> und <abbr class="k-begriff" data-erklaerung="Ein Logikfehler ist ein Denkfehler im Programm: Es läuft ohne Meldung durch, liefert aber ein falsches Ergebnis. Nur ein Test oder dein Kopf findet ihn.">Logikfehler</abbr>,</li>
+          <li>einen <abbr class="k-begriff" data-erklaerung="Der Traceback ist der Bericht, den Python bei einem Abbruch druckt: der Weg durch die Funktionsaufrufe bis zur Fehlerstelle. Die letzte Zeile nennt die Fehlerart. Man liest ihn von unten nach oben.">Traceback</abbr> über mehrere Funktionsaufrufe von unten nach oben lesen,</li>
+          <li>Fehler mit dem Zyklus Hypothese, Beobachten, Korrigieren, Test erneut finden, mit <code class="k-i">print</code> und mit dem Schritt-für-Schritt-Visualisierer, und wissen, was ein <abbr class="k-begriff" data-erklaerung="Ein Debugger ist ein Werkzeug der Entwicklungsumgebung, das dein Programm anhält und Zeile für Zeile ablaufen lässt, während du alle Variablen siehst. Wie eine Zeitlupe für Programme.">Debugger</abbr> in VS Code tut.</li>
+        </ul>
+        <p class="k-small k-muted">Das Schreiben der Tests übst du danach im <a href="v12-labor.html">Programmierlabor</a>. Funktionen (V07), Listen und Tupel (V08), <code class="k-i">try</code>/<code class="k-i">except</code> (V09) und das Arbeiten mit der KI (V10, V11) setzen wir voraus.</p>
+      </header>
+
+      <!-- 1 ───────────── WARUM ───────────── -->
+      <section class="k-section" id="warum" data-section="warum" aria-labelledby="h-warum">
+        <h2 class="k-section__title" id="h-warum"><span class="k-section__num" aria-hidden="true">1</span> Warum?</h2>
+
+        <p>Ein Lager in einer Förderanlage meldet seine Temperatur. Die <abbr class="k-begriff" data-erklaerung="Die Spezifikation beschreibt genau, was ein Programm tun soll: welche Eingaben, welche Ergebnisse, welche Grenzen. Wie das Lastenheft für ein Bauteil. In V11 hast du gelernt, sie als Prompt für die KI zu schreiben.">Spezifikation</abbr> aus dem Lastenheft: unter 70 °C <em>normal</em>, von 70 °C bis <strong>einschließlich</strong> 85 °C <em>Warnung</em>, über 85 °C <em>abschalten</em>. Messwerte unter −40 °C oder über 200 °C sind <em>Sensorfehler</em>, etwa ein Kabelbruch.</p>
+
+        <figure class="k-figure">
+          <picture>
+            <source srcset="../assets/img/v12-hook.webp" type="image/webp">
+            <img src="../assets/img/v12-hook.png" alt="Illustration: ein Lagerbock mit Thermometer, daneben Programmcode unter einer Lupe mit einem roten Käfer und eine Prüfliste mit drei Haken und einem Kreuz" width="1600" height="900" loading="lazy" onerror="this.closest('figure').hidden=true">
+          </picture>
+        </figure>
+
+        <h3>Die KI liefert in Sekunden</h3>
+        <p>Du lässt die KI die Funktion schreiben, so wie in V11 gelernt. Sie antwortet sofort, der Code sieht sauber aus, und die ersten Werte, die du ausprobierst, passen: 20 °C normal, 75 °C Warnung, 90 °C abschalten. Würdest du freigeben?</p>
+
+        <div class="k-try" aria-labelledby="t-hook">
+          <h3 id="t-hook">Selbst sehen: drei Werte, drei Treffer</h3>
+          <p class="k-small k-muted">Der Code ist die Antwort der KI (ohne den Sensorfehler-Zweig, den hast du im Prompt vergessen). Die Schleife unten läuft über eine Liste (V08) und ruft die Funktion für jeden Wert auf. Führe sie aus.</p>
+          <pre><code>def zustand_ki(t):
+    if t &lt; 70:
+        return "normal"
+    elif t &lt; 85:
+        return "warnung"
+    else:
+        return "abschalten"
+
+for t in [20, 75, 90]:
+    print(t, "°C:", zustand_ki(t))</code></pre>
+          <div class="k-predict">
+            <p class="k-predict__q">Alle drei Werte stimmen. Was liefert <code class="k-i">zustand_ki(85)</code>, genau auf der Grenze?</p>
+            <div class="k-predict__opts"><button type="button">„warnung“, so steht es in der Spezifikation</button><button type="button" data-correct>„abschalten“</button><button type="button">einen Fehler (Traceback)</button></div>
+            <div class="k-predict__result"></div>
+            <div class="k-predict__expl" hidden>„abschalten“. Die KI hat <code>t &lt; 85</code> geschrieben, die Spezifikation sagt aber „bis einschließlich 85“, also <code>t &lt;= 85</code>. Bei 84,9 °C ist alles gut, bei 85,0 °C schaltet die Anlage ab, obwohl nur Warnung vorgesehen ist. Kein Traceback, keine Fehlermeldung: ein Logikfehler. Er fällt nur auf, wenn du genau diesen Wert testest. Probiere es aus: Ändere die Liste auf <code>[85]</code>.</div>
+          </div>
+        </div>
+
+        <h3>Genau 85 °C</h3>
+        <p>Messwerte sind oft gerundet, und 85,0 kommt in der Praxis ständig vor. Die Anlage schaltet ohne Not ab, und niemand versteht, warum, denn der Code „funktioniert“. Dieser eine Fehler ist typisch für alles, was die KI schreibt: Sie liefert den Normalfall richtig und patzt an den Kanten. <strong>Nur ein Test an der Grenze findet ihn</strong>, und diesen Test musst du schreiben, am besten bevor du den Code überhaupt gesehen hast. Heute lernst du, wie.</p>
+
+        <h3>Wissens-Ampel für V12</h3>
+        <ul class="k-ampel-list" aria-label="Wissens-Ampel zu V12">
+          <li><span class="k-ampel k-ampel--kopf"><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-head"/></svg> Im Kopf</span><span>Ein Test ist <em>erwartet gegen tatsächlich</em>. Testfälle kommen aus der Spezifikation, nicht aus dem Code: je Bereich ein Wert, an jeder Grenze <em>beide</em> Seiten. Ein bestandener Test beweist keine Fehlerfreiheit. Der Traceback wird von unten gelesen, und ein Logikfehler hat keinen Traceback.</span></li>
+          <li><span class="k-ampel k-ampel--lesen"><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-book"/></svg> Lesen &amp; erkennen</span><span><code class="k-i">assert bedingung, "Meldung"</code>, <code class="k-i">AssertionError</code>, Testfunktionen <code class="k-i">def test_...():</code>, Testfälle als Liste von Tupeln, <code class="k-i">except AssertionError as fehler</code>, die Oberfläche des VS-Code-Debuggers (Haltepunkt, Variablenfenster, Schritt über und hinein).</span></li>
+          <li><span class="k-ampel k-ampel--deleg"><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-handover"/></svg> Delegieren</span><span>Test-Gerüste wie <code class="k-i">pytest</code> und die Messung, wie viel Code die Tests berühren (Abdeckung), übernehmen Werkzeuge. Auch Vorschläge für Testfälle darf die KI machen, aber du prüfst, ob die Grenzen dabei sind. Du musst wissen, dass es sie gibt.</span></li>
+        </ul>
+
+        <div class="hinweis hinweis--warum"><strong class="hinweis__title">Warum muss ich das wissen?</strong><p>Phase 2 dieses Kurses heißt: Die KI erzeugt, du prüfst. Das Prüfen ist das eigentliche Ingenieurhandwerk, denn die Haftung liegt bei dir, nicht bei der KI. Wer die Tests <em>nach</em> dem Code schreibt, schreibt unbewusst Tests, die der Code besteht. Wer sie vorher aus der Spezifikation ableitet, prüft wirklich. Und lässt du die KI die Tests schreiben, bekommst du fast immer nur Normalfälle. In der Klausur erscheint das als „Welche Testfälle prüfen die Grenzen?“, als Traceback zum Lesen oder als Code mit einem versteckten Fehler.</p></div>
+      </section>
+
+      <!-- 2 ───────────── THEORIE ───────────── -->
+      <section class="k-section" id="theorie" data-section="theorie" aria-labelledby="h-theorie">
+        <h2 class="k-section__title" id="h-theorie"><span class="k-section__num" aria-hidden="true">2</span> Theorie</h2>
+
+        <h3>Erklärvideo (ca. 3 Min)</h3>
+        <figure class="k-video" id="video-theorie">
+          <video controls preload="metadata" poster="../assets/video/v12-theorie-poster.png" aria-label="Erklärvideo Testen und Debuggen: erwartet gegen tatsächlich, Grenzwerte, Fehlerarten, Traceback, Debugger">
+            <source src="../assets/video/v12-theorie.mp4" type="video/mp4">
+            <track kind="subtitles" srclang="de" label="Deutsch" src="../assets/video/v12-theorie.vtt" default>
+            Dein Browser kann dieses Video nicht abspielen.
+          </video>
+          <div class="k-video__missing" hidden>Video folgt. Bis dahin: die Explorables und der Lesetext unten decken alles ab.</div>
+          <figcaption>Untertitel sind eingeschaltet (Deutsch).</figcaption>
+        </figure>
+
+        <h3>Ein Test: erwartet gegen tatsächlich</h3>
+        <p>Bisher hast du Programme getestet, indem du sie ausgeführt und das Ergebnis angeschaut hast. Das ist ein Test mit dem Auge, und er hat zwei Schwächen: Er kostet jedes Mal Zeit, und du siehst nur, was du erwartest zu sehen. Ein richtiger Test legt <em>vorher</em> fest, was herauskommen soll (<strong>erwartet</strong>), führt das Programm aus (<strong>tatsächlich</strong>) und vergleicht beides von selbst. Das Erwartete steht dabei nie im Programm, sondern in der Spezifikation: Du rechnest es vorher von Hand aus.</p>
+
+        <pre><code>def zustand(t):
+    if t &lt; -40 or t &gt; 200:
+        return "sensorfehler"
+    if t &lt; 70:
+        return "normal"
+    elif t &lt;= 85:
+        return "warnung"
+    else:
+        return "abschalten"
+
+erwartet = "warnung"             # aus der Spezifikation, von Hand bestimmt
+tatsaechlich = zustand(85)       # was das Programm liefert
+print("erwartet:", erwartet, "| tatsächlich:", tatsaechlich)
+print(erwartet == tatsaechlich)</code></pre>
+
+        <h3>assert: der Computer vergleicht für dich</h3>
+        <p>Python hat dafür ein eigenes Wort. <abbr class="k-begriff" data-erklaerung="assert heißt behaupten: assert bedingung stellt eine Behauptung auf. Stimmt sie, passiert nichts. Stimmt sie nicht, bricht Python ab und meldet einen AssertionError. Wie ein Prüfstand, der nur bei einem Fehler Alarm schlägt.">assert</abbr> stellt eine <em>Behauptung</em> auf: <code class="k-i">assert bedingung</code>. Ist die Bedingung wahr, passiert <strong>nichts</strong>, das Programm läuft still weiter. Ist sie falsch, bricht Python ab und löst einen <abbr class="k-begriff" data-erklaerung="Ein AssertionError ist die Ausnahme, die ein gescheitertes assert auslöst. Er heißt: eine Behauptung im Test war falsch.">AssertionError</abbr> aus. Hinter ein Komma kannst du eine Meldung schreiben, die im Fehlerfall erscheint: <code class="k-i">assert bedingung, "Meldung"</code>. Schreibe die Meldung so, dass sie dir in drei Wochen noch sagt, was los ist: Wert, erwartet, bekommen.</p>
+
+        <pre><code>def kmh_in_ms(v):
+    return v * 3.6        # der Fehler steckt hier, die KI hat mal statt durch geschrieben
+
+assert kmh_in_ms(0) == 0.0
+print("Der erste Test schweigt, denn 0 mal 3,6 ist auch 0.")
+assert kmh_in_ms(36) == 10.0, "36 km/h müssen 10 m/s sein"
+print("Diese Zeile erreicht Python nicht mehr.")</code></pre>
+        <p>Der erste <code class="k-i">assert</code> besteht, der zweite scheitert, und die Meldung steht im Traceback. Der Fehler wäre beim Ausprobieren mit 0 nicht aufgefallen: ein Beispiel dafür, dass <em>welche</em> Werte du testest, entscheidend ist. Bei Kommazahlen vergleichst du nicht mit <code class="k-i">==</code>, sondern mit <code class="k-i">math.isclose</code> (V03), weil <code class="k-i">0.1 + 0.2 == 0.3</code> falsch ist: <code class="k-i">assert math.isclose(kmh_in_ms(100), 27.7778, rel_tol=1e-4)</code>.</p>
+
+        <div class="hinweis hinweis--achtung"><strong class="hinweis__title">Achtung</strong><p>Ein bestandener Test beweist nicht, dass das Programm richtig ist, nur, dass es für <em>diese</em> Werte richtig ist. Der Test findet Fehler, er garantiert keine Fehlerfreiheit. Darum kommt es darauf an, <em>welche</em> Werte du wählst. Und: Nimm als erwarteten Wert nie das, was die Funktion selbst liefert („das Ergebnis steht ja auf dem Bildschirm“). Dann prüft der Test nur, ob die Funktion sich selbst gleicht, und besteht immer.</p></div>
+
+        <h3>Testfunktionen und Testfälle als Liste</h3>
+        <p>Mehrere <code class="k-i">assert</code>-Zeilen packst du in eine Funktion, deren Name mit <code class="k-i">test_</code> beginnt, und rufst sie selbst auf. So kannst du sie in ein Programm einbauen, immer wieder ausführen und mit einer Zeile alle Tests starten. Reicht eine Zeile je Fall nicht mehr, schreibst du die Testfälle als <strong>Liste von Tupeln</strong> (V08): jedes Tupel ist ein Paar aus Eingabe und erwartetem Ergebnis. Eine Schleife geht sie durch. Mit <code class="k-i">for t, erwartet in faelle:</code> wird jedes Tupel in zwei Namen ausgepackt, wie bei <code class="k-i">items()</code> in V08.</p>
+
+        <pre><code>def zustand(t):
+    if t &lt; -40 or t &gt; 200:
+        return "sensorfehler"
+    if t &lt; 70:
+        return "normal"
+    elif t &lt;= 85:
+        return "warnung"
+    else:
+        return "abschalten"
+
+def test_zustand():
+    faelle = [
+        (20, "normal"),
+        (69.9, "normal"),
+        (70, "warnung"),
+        (85, "warnung"),
+        (85.1, "abschalten"),
+        (-40.1, "sensorfehler"),
+    ]
+    for t, erwartet in faelle:
+        tatsaechlich = zustand(t)
+        assert tatsaechlich == erwartet, f"{t} °C: erwartet {erwartet}, bekommen {tatsaechlich}"
+    print(len(faelle), "Testfälle bestanden")
+
+test_zustand()</code></pre>
+
+        <p>Im Fehlerfall bricht der erste gescheiterte <code class="k-i">assert</code> alles ab. Willst du <em>alle</em> Ergebnisse sehen, fängst du den <code class="k-i">AssertionError</code> mit <code class="k-i">try</code>/<code class="k-i">except</code> (V09). Neu ist das kleine Wort <abbr class="k-begriff" data-erklaerung="as gibt etwas einen Namen: except AssertionError as fehler heißt: Wenn dieser Fehler auftritt, nenne ihn fehler. Danach kannst du mit print(fehler) seine Meldung ausgeben. Wie ein Etikett, das du an das Fundstück hängst.">as</abbr>: <code class="k-i">except AssertionError as fehler:</code> gibt der Ausnahme den Namen <code class="k-i">fehler</code>, und <code class="k-i">print(fehler)</code> zeigt deine Meldung aus dem <code class="k-i">assert</code>.</p>
+
+        <pre><code>def zustand_ki(t):
+    if t &lt; 70:
+        return "normal"
+    elif t &lt; 85:
+        return "warnung"
+    else:
+        return "abschalten"
+
+fehlgeschlagen = 0
+for t, erwartet in [(20, "normal"), (70, "warnung"), (85, "warnung"), (90, "abschalten")]:
+    try:
+        assert zustand_ki(t) == erwartet, f"{t} °C: erwartet {erwartet}, bekommen {zustand_ki(t)}"
+    except AssertionError as fehler:
+        fehlgeschlagen = fehlgeschlagen + 1
+        print("GESCHEITERT:", fehler)
+print(fehlgeschlagen, "von 4 Tests gescheitert")</code></pre>
+
+        <h3>Testfälle systematisch: Bereiche und Grenzen</h3>
+        <p>Welche Werte testest du? Nicht „irgendwelche“, sondern nach zwei Regeln. <strong>Erstens: Bereiche.</strong> Die Spezifikation zerlegt die Eingaben in Bereiche, in denen sich die Funktion gleich verhält. Hier sind es fünf: Sensorfehler unten, normal, Warnung, abschalten, Sensorfehler oben. Ein Vertreter je Bereich genügt, denn wenn die Funktion bei 20 °C richtig arbeitet, tut sie es auch bei 21 °C (diese Bereiche heißen <em>Äquivalenzklassen</em>). <strong>Zweitens: Grenzen.</strong> Fehler sitzen fast immer an den Kanten, weil man dort zwischen <code class="k-i">&lt;</code> und <code class="k-i">&lt;=</code> entscheiden muss. Darum testest du jede Grenze <em>von beiden Seiten</em>: den letzten Wert, der noch drin ist, und den ersten, der schon draußen ist. Hier: 69,9 und 70, 85 und 85,1, −40,1 und −40, 200 und 200,1. Dazu kommen Sonderfälle wie 0, negative Zahlen oder eine leere Liste.</p>
+
+        <div class="k-explorable">
+          <h3>Testpunkte setzen: wie viele Fehler findest du?</h3>
+          <p class="k-explorable__lead">Setze Testpunkte (Klick in den Zahlenstrahl oder einen Wert eintippen). Rechts siehst du <em>Mutanten</em>: Das sind Kopien der Funktion mit je <strong>einem absichtlich eingebauten Fehler</strong>, zum Beispiel <code class="k-i">&lt;</code> statt <code class="k-i">&lt;=</code>. Ein guter Test findet jeden Mutanten, weil mindestens ein Testpunkt ein anderes Ergebnis bekommt als erwartet. Probiere zuerst „Nur typische Werte“ (die Mitte jedes Bereichs), dann „Die 9 Tests aus dem Beispiel“, dann baue dir selbst die kleinste Menge, die alle acht findet.</p>
+          <div data-explorable="grenzen"></div>
+          <noscript><p>Für das Explorable „Grenzwerte“ wird JavaScript benötigt.</p></noscript>
+          <p class="k-small k-muted">Beobachtung: Mit den typischen Werten aus der Mitte jedes Bereichs findest du nur wenige Mutanten, vor allem die groben. Die feinen Fehler an den Grenzen (<code class="k-i">&lt;</code> statt <code class="k-i">&lt;=</code>) findet nur ein Testpunkt <em>genau auf</em> der Grenze, und für verschobene Grenzen einer knapp dahinter. Mutanten sind die Idee, mit der man auch in der Industrie die Qualität von Tests prüft. Im Labor machst du genau das: Deine Tests laufen gegen die richtige Funktion und gegen mehrere fehlerhafte.</p>
+        </div>
+
+        <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke</strong><p>Testfälle leitest du aus der <em>Spezifikation</em> ab, nicht aus dem Code, und schreibst sie <em>vor</em> dem Generieren. Je Bereich ein typischer Wert, an jeder Grenze beide Seiten (der letzte Wert drinnen, der erste draußen), dazu Sonderfälle. Das erwartete Ergebnis rechnest du von Hand. Ein Test, der alle Mutanten findet, ist ein guter Test.</p></div>
+
+        <h3>Aus dem Programmablaufplan werden Testfälle</h3>
+        <p>Den Programmablaufplan (V05) hast du als Bauplan für den Prompt benutzt. Er ist auch der Bauplan für die Tests: Jeder Weg vom Start zum Ende ist ein Pfad, und jeder Pfad braucht mindestens einen Testfall. Jede Raute ist eine Grenze, und an jeder Raute testest du beide Seiten. Die Funktion <code class="k-i">zustand</code> hat drei Rauten hintereinander und vier Wege.</p>
+        <div class="k-explorable">
+          <h3>Der PAP der Funktion zustand und seine Testfälle</h3>
+          <p class="k-explorable__lead">Gib einen Wert für t ein oder klicke einen Wert in der Tabelle an: Der Plan zeigt den Pfad durch die Rauten. Die Tabelle ist die Ausbeute des Plans: je Pfad ein typischer Wert, dazu die Grenzwerte an den Rauten. Die neun Tests aus dem Beispiel im Labor sind eine Auswahl daraus.</p>
+          <div data-explorable="pap-pfade"></div>
+          <noscript><p>Für das Explorable „PAP-Pfade“ werden JavaScript und die PAP-Engine benötigt.</p></noscript>
+        </div>
+
+        <h3>Fehlerarten: Syntax, Laufzeit, Logik</h3>
+        <p>Es gibt drei Arten von Fehlern, und sie verhalten sich völlig verschieden. Ein <strong>Syntaxfehler</strong> verstößt gegen die Schreibregeln: Python meldet ihn, bevor das Programm anläuft, mit Zeilennummer. Ein <strong>Laufzeitfehler</strong> tritt erst auf, wenn die Zeile drankommt: Das Programm bricht ab und druckt einen Traceback. Ein <strong>Logikfehler</strong> ist ein Denkfehler: Das Programm läuft ohne Meldung durch und liefert ein falsches Ergebnis. Die ersten beiden meldet Python von selbst. Den dritten findet nur ein Test oder dein Kopf, und er ist der gefährlichste, denn er sieht aus wie ein Erfolg. Der KI-Fehler aus dem Hook gehört dazu.</p>
+
+        <div class="k-explorable">
+          <h3>Welche Fehlerart ist das?</h3>
+          <p class="k-explorable__lead">Sechs kurze Beispiele. Entscheide für jedes, ob Python den Fehler vor dem Start meldet, beim Laufen mit Traceback oder gar nicht.</p>
+          <div data-explorable="fehlerart"></div>
+          <noscript><p>Für das Explorable „Fehlerart“ wird JavaScript benötigt.</p></noscript>
+        </div>
+
+        <h3>Einen Traceback lesen: von unten nach oben</h3>
+        <p>Aus V09 weißt du: Der Traceback wird von unten nach oben gelesen. In echten Programmen ruft eine Funktion die nächste auf, und der Traceback zeigt die ganze Kette. <strong>Ganz unten</strong> steht die Fehlerart mit der Meldung: das <em>Was</em>. Die Zeile darüber ist die <strong>Fehlerstelle</strong>: das <em>Wo</em>. Jeder Eintrag weiter oben ist der Aufrufer, der die Funktion darunter gestartet hat: das <em>Wie kam es dazu</em>. Ganz oben steht das Hauptprogramm, <code class="k-i">&lt;module&gt;</code>. Die Ursache liegt oft nicht in der untersten Zeile, sondern weiter oben oder in den Daten.</p>
+
+        <div class="k-explorable">
+          <h3>Mehrstufiger Traceback, Zeile für Zeile</h3>
+          <p class="k-explorable__lead">Drei Beispiele mit mehreren Funktionen. Gehe mit „Nächste Zeile lesen“ von unten nach oben und beobachte, welche Codezeile jeweils leuchtet. Im dritten Beispiel scheitert ein <code class="k-i">assert</code>: Achte darauf, welche Funktion im Traceback <em>fehlt</em>.</p>
+          <div data-explorable="traceback"></div>
+          <noscript><p>Für das Explorable „Traceback“ wird JavaScript benötigt.</p></noscript>
+        </div>
+
+        <h3>Debuggen: mit Methode statt mit Raten</h3>
+        <p>Ein Test hat dir gesagt: Da ist ein Fehler. Das Wort <em>Debuggen</em> (englisch bug, der Käfer) meint die Suche nach der Ursache. Wildes Ändern („vielleicht hilft ein <code class="k-i">+ 1</code>“) macht Programme schlechter. Besser ist ein Kreislauf: Test scheitert, <strong>Hypothese</strong> aufstellen (eine prüfbare Vermutung, was die Ursache ist), <strong>Beobachten</strong> (sichtbar machen, was wirklich passiert), <strong>Korrigieren</strong> (eine Sache ändern), <strong>Test erneut</strong> (alle Tests, nicht nur den einen). Bestehen sie nicht alle, beginnt der Kreislauf von vorn.</p>
+
+        <div class="k-explorable">
+          <h3>Der Debug-Zyklus am KI-Fehler</h3>
+          <p class="k-explorable__lead">Gehe die fünf Schritte durch, am Beispiel des Fehlers an der Grenze 85. Beachte, was jeweils ausgetauscht wird: Die Beobachtung macht aus der Vermutung ein Wissen.</p>
+          <div data-explorable="zyklus"></div>
+          <noscript><p>Für das Explorable „Debug-Zyklus“ wird JavaScript benötigt.</p></noscript>
+        </div>
+
+        <h3>Beobachten: print und Schritt für Schritt</h3>
+        <p>Zum Beobachten gibt es zwei einfache Werkzeuge. Mit <code class="k-i">print</code> lässt du dir an der verdächtigen Stelle Werte ausgeben (die zweite Variable ist oft die wichtigste: nicht nur <code class="k-i">t</code>, sondern auch das Ergebnis der Bedingung). Und der Knopf <strong>„Schritt für Schritt“</strong> unter jedem Codefeld in diesem Kurs ist ein kleiner Debugger: Er führt dein Programm Zeile für Zeile aus und zeigt, welche Zeile als Nächstes dran ist, was in den Variablen steht und was ausgegeben wurde. Probiere ihn gleich an diesem Code, und beachte, welche Zeile bei 85 übersprungen wird.</p>
+        <pre><code>def zustand_ki(t):
+    if t &lt; 70:
+        return "normal"
+    elif t &lt; 85:
+        return "warnung"
+    return "abschalten"
+
+t = 85
+print("t =", t, "| t &lt; 85 ist", t &lt; 85)
+print(zustand_ki(t))</code></pre>
+
+        <h3>Der Debugger in VS Code</h3>
+        <p>In der Entwicklungsumgebung (VS Code, in Codespaces aus V11) gibt es denselben Gedanken in groß: den <abbr class="k-begriff" data-erklaerung="Der Debugger ist ein Werkzeug der Entwicklungsumgebung, das dein Programm an einer Stelle anhält und dich Zeile für Zeile weitergehen lässt. Dabei siehst du alle Variablen und die Kette der Funktionsaufrufe.">Debugger</abbr>. Du setzt einen <abbr class="k-begriff" data-erklaerung="Ein Haltepunkt ist ein roter Punkt am Zeilenrand: Dort hält das Programm an, bevor die Zeile läuft. Wie ein Stopp-Schild für das Programm.">Haltepunkt</abbr> (roter Punkt am Zeilenrand), startest das Programm im Debug-Modus, und es hält dort an. Du siehst im Fenster <em>Variablen</em> alle Werte, in der <em>Aufrufliste</em> die Kette der Funktionen, und gehst mit <strong>Schritt über</strong> (die Zeile ganz ausführen, auch einen Funktionsaufruf in einem Schritt) oder <strong>Schritt hinein</strong> (in die aufgerufene Funktion springen) weiter. Du musst ihn nicht bedienen können, aber erkennen, was er zeigt. Das Schema:</p>
+
+        <figure class="v12-svgfig">
+          <svg viewBox="0 0 860 340" role="img" aria-labelledby="dbg-t dbg-d">
+            <title id="dbg-t">Schema der Oberfläche des Debuggers in VS Code</title>
+            <desc id="dbg-d">Oben eine Symbolleiste mit Weiter F5, Schritt über F10, Schritt hinein F11, Schritt heraus Umschalt F11, Neustart und Stopp. Links der Editor mit rotem Haltepunkt in Zeile 10 und gelb markierter aktueller Zeile. Rechts die Fenster Variablen mit t gleich 85.0, Aufrufliste mit zustand über Modul und Haltepunkte.</desc>
+            <rect x="1" y="1" width="858" height="338" fill="#fff" stroke="#374151"/>
+            <rect x="180" y="10" width="560" height="34" rx="6" fill="#F3F4F6" stroke="#374151" stroke-width="1.5"/>
+            <text x="194" y="32" class="mono">Weiter F5</text>
+            <text x="270" y="32" class="mono">Über F10</text>
+            <text x="352" y="32" class="mono">Hinein F11</text>
+            <text x="446" y="32" class="mono">Heraus Umschalt+F11</text>
+            <text x="610" y="32" class="mono">Neu  Stopp</text>
+            <text x="20" y="32" class="tit">Symbolleiste</text>
+            <rect x="20" y="60" width="520" height="260" fill="#1F2937" stroke="#374151"/>
+            <text x="30" y="80" class="edt">&#160;&#160;8&#160;&#160;messwerte = [62.0, 85.0]</text>
+            <text x="30" y="102" class="edt">&#160;&#160;9&#160;&#160;for w in messwerte:</text>
+            <circle cx="36" cy="120" r="6" fill="#E2001A"/>
+            <rect x="48" y="108" width="486" height="20" fill="#FACC15" opacity=".85"/>
+            <text x="58" y="123" class="mono" style="fill:#111827">10&#160;&#160;&#160;&#160;&#160;s = zustand(w)</text>
+            <text x="30" y="146" class="edt">&#160;11&#160;&#160;&#160;&#160;&#160;print(w, s)</text>
+            <text x="30" y="190" class="edt">&#160;&#160;1&#160;&#160;def zustand(t):</text>
+            <text x="30" y="212" class="edt">&#160;&#160;2&#160;&#160;&#160;&#160;&#160;if t &lt; 70:</text>
+            <text x="30" y="234" class="edt">&#160;&#160;4&#160;&#160;&#160;&#160;&#160;elif t &lt; 85:</text>
+            <text x="30" y="300" class="tit" style="fill:#fff">Editor</text>
+            <line x1="130" y1="115" x2="130" y2="75" stroke="#E2001A" stroke-width="0"/>
+            <path d="M600 78 L560 112" stroke="#9B1213" stroke-width="2" fill="none"/>
+            <text x="565" y="70" class="lab">roter Punkt: Haltepunkt</text>
+            <path d="M600 138 L545 120" stroke="#9B1213" stroke-width="2" fill="none"/>
+            <text x="605" y="146" class="lab">gelb: aktuelle Zeile</text>
+            <rect x="560" y="170" width="280" height="64" fill="#fff" stroke="#374151"/>
+            <text x="570" y="190" class="tit">VARIABLEN (lokal)</text>
+            <text x="570" y="212" class="mono">t = 85.0</text>
+            <rect x="560" y="244" width="280" height="76" fill="#fff" stroke="#374151"/>
+            <text x="570" y="264" class="tit">AUFRUFLISTE</text>
+            <text x="570" y="286" class="mono">zustand, Zeile 4</text>
+            <text x="570" y="306" class="mono">&lt;module&gt;, Zeile 10</text>
+          </svg>
+          <figcaption class="k-small k-muted">Schema, kein Bildschirmfoto: Haltepunkt, aktuelle Zeile, Variablenfenster und Aufrufliste. In Codespaces siehst du genau das mit deinem eigenen Programm, im Video am Anfang dieser Lerneinheit läuft es einmal vor.</figcaption>
+        </figure>
+
+        <div class="k-explorable">
+          <h3>Der Debugger als Schema zum Durchklicken</h3>
+          <p class="k-explorable__lead">Das Programm ist die KI-Version mit dem Fehler. Der Haltepunkt steht in Zeile 10 (Klick auf den Rand setzt oder löscht Haltepunkte). Starte das Debuggen, dann gehe mit „Schritt hinein“ in die Funktion. Beobachte das Fenster „Variablen“ und die Aufrufliste, und finde beim zweiten Messwert die Stelle, an der es schiefgeht. Probiere auch „Schritt über“ (der ganze Aufruf in einem Schritt) und „Schritt heraus“.</p>
+          <div data-explorable="debugger"></div>
+          <noscript><p>Für das Explorable „Debugger“ wird JavaScript benötigt.</p></noscript>
+          <p class="k-small k-muted">Beobachtung: Mit „Schritt über“ siehst du nur das Ergebnis, mit „Schritt hinein“ die Entscheidungen in der Funktion. Der Fehler zeigte sich erst im zweiten Durchlauf, bei t = 85.0, in Zeile 4. Ein Haltepunkt mit Bedingung (<code class="k-i">w == 85.0</code>) hätte dich sofort dorthin gebracht, aber das ist Stoff für den Deep Dive.</p>
+        </div>
+
+        <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke</strong><p><code class="k-i">assert bedingung, "Meldung"</code> schweigt, wenn die Bedingung stimmt, und löst sonst <code class="k-i">AssertionError</code> aus. Testfälle: je Bereich ein Vertreter, an jeder Grenze beide Seiten, als Liste von Tupeln mit Schleife. Syntax- und Laufzeitfehler meldet Python, einen Logikfehler findet nur ein Test. Der Traceback wird von unten nach oben gelesen: erst Fehlerart, dann Stelle, dann Aufrufer. Debuggen heißt Hypothese, Beobachten, Korrigieren, Test erneut.</p></div>
+        <p>Die Testfälle selbst schreibst du im <a href="v12-labor.html#a-werkzeugkasten">Werkzeugkasten im Labor</a>. Das schauen wir uns dort genauer an →</p>
+      </section>
+
+      <!-- 3 ───────────── AUSPROBIEREN ───────────── -->
+      <section class="k-section" id="ausprobieren" data-section="ausprobieren" aria-labelledby="h-aus">
+        <h2 class="k-section__title" id="h-aus"><span class="k-section__num" aria-hidden="true">3</span> Ausprobieren</h2>
+
+        <p>Python läuft direkt hier im Browser. Jeder Codeblock hat einen Editor: Du kannst ihn ändern, ausführen, zurücksetzen und mit „Schritt für Schritt“ verfolgen. Erst tippen, was herauskommt, dann ausführen. Das Tippen ist der Lernmoment. Mit „Zurücksetzen“ holst du das Original (Strg+Enter führt aus).</p>
+
+      <div class="k-try">
+        <h3>assert schweigt</h3>
+        <div class="k-predict">
+          <p class="k-predict__q">Was gibt das Programm aus?</p>
+          <div class="k-predict__opts"><button type="button">Alle Meldungen, einschließlich „Behauptung stimmt“</button><button type="button" data-correct>Nur „Ende“</button><button type="button">Nur einen AssertionError</button></div>
+          <div class="k-predict__result"></div>
+          <div class="k-predict__expl" hidden>Nur „Ende“. Beide Behauptungen sind wahr, <code>assert</code> tut dann gar nichts: Es druckt keinen Erfolg, es meldet sich nur im Fehlerfall. Darum steht bei Tests oft am Ende ein <code>print("Alle Tests bestanden")</code>. Ändere die zweite Behauptung zu <code>len("ab") == 3</code> und lies den Fehler.</div>
+        </div>
+        <pre><code>assert 2 + 2 == 4
+assert len("ab") == 2, "ab hat zwei Zeichen"
+print("Ende")</code></pre>
+      </div>
+
+      <div class="k-try">
+        <h3>Die Meldung im Traceback</h3>
+        <div class="k-predict">
+          <p class="k-predict__q">Was steht in der letzten Zeile des Tracebacks?</p>
+          <div class="k-predict__opts"><button type="button">AssertionError ohne Text</button><button type="button" data-correct>AssertionError: 100 km/h müssen etwa 27,8 m/s sein</button><button type="button">TypeError</button></div>
+          <div class="k-predict__result"></div>
+          <div class="k-predict__expl" hidden>Die Meldung hinter dem Komma erscheint hinter dem Doppelpunkt. Der Wert von <code>kmh_in_ms(100)</code> ist 360.0 statt 27.78: Die Funktion rechnet mal 3,6 statt durch 3,6. Mit der Meldung siehst du sofort, welcher Test gescheitert ist. Repariere die Funktion und führe nochmal aus: Der Test schweigt. Beachte <code>math.isclose</code>: Bei Kommazahlen vergleichst du mit einer Toleranz.</div>
+        </div>
+        <pre><code>import math
+
+def kmh_in_ms(v):
+    return v * 3.6
+
+assert math.isclose(kmh_in_ms(100), 27.7778, rel_tol=1e-4), "100 km/h müssen etwa 27,8 m/s sein"
+print("bestanden")</code></pre>
+      </div>
+
+      <div class="k-try">
+        <h3>Testfälle als Liste von Tupeln</h3>
+        <div class="k-predict">
+          <p class="k-predict__q">Wie viele der vier Testfälle scheitern?</p>
+          <div class="k-predict__opts"><button type="button">0</button><button type="button" data-correct>1</button><button type="button">2</button></div>
+          <div class="k-predict__result"></div>
+          <div class="k-predict__expl" hidden>1: Der Fall (50, 1.60) scheitert, weil die Funktion mit <code>&lt; 50</code> die Grenze ausschließt und bei 50 das Porto der nächsten Stufe liefert (2.75). Die anderen drei stimmen. Das Muster mit einem Zähler statt <code>assert</code> zeigt dir <em>alle</em> gescheiterten Fälle statt nur den ersten. Setze in Zeile 4 das Gleichheitszeichen dazu (<code>&lt;=</code>) und alle vier bestehen.</div>
+        </div>
+        <pre><code>def porto(gramm):
+    if gramm &lt;= 20:
+        return 0.95
+    elif gramm &lt; 50:
+        return 1.60
+    return 2.75
+
+faelle = [(20, 0.95), (21, 1.60), (50, 1.60), (51, 2.75)]
+gescheitert = 0
+for gramm, erwartet in faelle:
+    if porto(gramm) != erwartet:
+        gescheitert = gescheitert + 1
+        print("Fall", gramm, "g: erwartet", erwartet, "bekommen", porto(gramm))
+print(gescheitert, "von", len(faelle), "Fällen gescheitert")</code></pre>
+      </div>
+
+      <div class="k-try">
+        <h3>except AssertionError as fehler</h3>
+        <div class="k-predict">
+          <p class="k-predict__q">Was gibt das Programm aus?</p>
+          <div class="k-predict__opts"><button type="button">Nur „Test bestanden“</button><button type="button" data-correct>„Test gescheitert: Wurzel falsch“ und danach „weiter“</button><button type="button">Einen Traceback und nichts weiter</button></div>
+          <div class="k-predict__result"></div>
+          <div class="k-predict__expl" hidden>9 ** 0.5 ist 3.0, nicht 4: Der <code>assert</code> scheitert, Python springt in den <code>except</code>-Block, und <code>fehler</code> enthält die Meldung „Wurzel falsch“. Das Programm läuft danach weiter, es bricht nicht ab. In einem Testprogramm ist das nützlich, weil du alle Ergebnisse siehst. In Anwendungen fängt man AssertionErrors nicht.</div>
+        </div>
+        <pre><code>try:
+    assert 9 ** 0.5 == 4, "Wurzel falsch"
+    print("Test bestanden")
+except AssertionError as fehler:
+    print("Test gescheitert:", fehler)
+print("weiter")</code></pre>
+      </div>
+
+      <div class="k-try">
+        <h3>Einen Traceback lesen</h3>
+        <div class="k-predict">
+          <p class="k-predict__q">In welcher Funktion und welcher Zeile tritt der Fehler auf?</p>
+          <div class="k-predict__opts"><button type="button">In <code>auswerten</code>, Zeile 6</button><button type="button" data-correct>In <code>mittelwert</code>, Zeile 2</button><button type="button">Im Hauptprogramm, Zeile 8</button></div>
+          <div class="k-predict__result"></div>
+          <div class="k-predict__expl" hidden>Die unterste Zeile des Tracebacks zeigt die Fehlerstelle: <code>mittelwert</code>, Zeile 2, <code>ZeroDivisionError</code>. <code>auswerten</code> und das Hauptprogramm stehen darüber, weil sie <code>mittelwert</code> aufgerufen haben. Die Ursache ist aber eine leere Liste, die weiter oben übergeben wurde. Ergänze in <code>mittelwert</code> eine Prüfung für die leere Liste.</div>
+        </div>
+        <pre><code>def mittelwert(werte):
+    return sum(werte) / len(werte)
+
+def auswerten(messreihen):
+    for reihe in messreihen:
+        print(mittelwert(reihe))
+
+auswerten([[20, 22], []])</code></pre>
+      </div>
+
+      <div class="k-try">
+        <h3>Den Fehler mit print und „Schritt für Schritt“ finden</h3>
+        <div class="k-predict">
+          <p class="k-predict__q">Der Mittelwert von 10, 20 und 30 müsste 20.0 sein. Was gibt das Programm aus?</p>
+          <div class="k-predict__opts"><button type="button">20.0</button><button type="button" data-correct>etwa 16.67</button><button type="button">einen Fehler</button></div>
+          <div class="k-predict__result"></div>
+          <div class="k-predict__expl" hidden>16.666666666666668: <code>range(1, len(werte))</code> beginnt bei Index 1, das erste Element (10) wird übersprungen. Es steht 50 in der Summe statt 60, geteilt durch 3. Ein Logikfehler ohne Traceback. Finde ihn mit „Schritt für Schritt“: Beobachte <code>i</code> und <code>summe</code> in jedem Durchlauf. Hypothese, Beobachten, Korrigieren: <code>range(len(werte))</code>.</div>
+        </div>
+        <pre><code>def mittelwert(werte):
+    summe = 0
+    for i in range(1, len(werte)):
+        summe = summe + werte[i]
+    return summe / len(werte)
+
+print(mittelwert([10, 20, 30]))</code></pre>
+      </div>
+      </section>
+
+      <!-- 4 ───────────── SELBSTCHECK ───────────── -->
+      <section class="k-section" id="selbstcheck" data-section="selbstcheck" aria-labelledby="h-sc">
+        <h2 class="k-section__title" id="h-sc"><span class="k-section__num" aria-hidden="true">4</span> Selbstcheck</h2>
+
+        <p>Acht Quizaufgaben im Stil der Probeklausur (22 Punkte) und eine Code-Schreib-Aufgabe (6 Punkte, T9). Plane etwa 15 Minuten für das Quiz und 12 Minuten für T9 ein, ohne Hilfsmittel. Quiz-Punkte gibt es für den ersten Versuch; danach darfst du es nochmal probieren.</p>
+
+      <div class="k-quiz" data-quiz="v12">
+
+        <div class="k-q" data-type="output" data-points="2" data-id="t1" data-answer="B Rechenfehler">
+          <div class="k-q__head"><span class="k-q__title">T1 · assert und except von Hand</span><span class="k-q__pts">2 Punkte</span></div>
+          <div class="k-q__text">Was gibt das Programm aus?<pre class="k-code" data-run="nach-antwort"><code>try:
+    assert 2 + 2 == 5, "Rechenfehler"
+    print("A")
+except AssertionError as fehler:
+    print("B", fehler)</code></pre></div>
+          <div class="k-q__expl"><code>2 + 2 == 5</code> ist falsch, der <code>assert</code> löst einen AssertionError mit der Meldung „Rechenfehler“ aus. Das <code>print("A")</code> wird übersprungen, der <code>except</code>-Block läuft, <code>fehler</code> enthält die Meldung. Ausgabe: <code>B Rechenfehler</code>.</div>
+        </div>
+
+        <div class="k-q" data-type="mc" data-points="2" data-id="t2">
+          <div class="k-q__head"><span class="k-q__title">T2 · Was assert tut</span><span class="k-q__pts">2 Punkte</span></div>
+          <div class="k-q__text">Was geschieht bei <code>assert x &gt; 0, "x muss positiv sein"</code>, wenn <code>x</code> den Wert 5 hat?</div>
+          <ul class="k-q__options">
+            <li>Python gibt „x muss positiv sein“ aus.</li>
+            <li data-correct>Nichts: Die Behauptung ist wahr, das Programm läuft still weiter.</li>
+            <li>Python löst einen AssertionError aus.</li>
+            <li>Python setzt <code>x</code> auf 0.</li>
+          </ul>
+          <div class="k-q__expl">Die Meldung erscheint nur, wenn die Bedingung falsch ist. Ist sie wahr, schweigt <code>assert</code>. Darum bedeutet „keine Ausgabe“ bei Tests: alles in Ordnung.</div>
+        </div>
+
+        <div class="k-q" data-type="mc" data-points="2" data-id="t3">
+          <div class="k-q__head"><span class="k-q__title">T3 · Grenzwerte wählen</span><span class="k-q__pts">2 Punkte</span></div>
+          <div class="k-q__text">Die Funktion <code>ist_gut(d)</code> soll für Durchmesser von 24,98 mm bis einschließlich 25,02 mm <code>True</code> liefern, sonst <code>False</code>. Welche Testwerte prüfen die Grenzen am besten?</div>
+          <ul class="k-q__options">
+            <li>25,00 und 25,01</li>
+            <li data-correct>24,97 und 24,98 sowie 25,02 und 25,03</li>
+            <li>24,0 und 25,0 und 26,0</li>
+            <li>0 und 100</li>
+          </ul>
+          <div class="k-q__expl">An jeder der beiden Grenzen testest du beide Seiten: 24,98 (noch gut) und 24,97 (schon zu klein), 25,02 (noch gut) und 25,03 (schon zu groß). Werte aus der Mitte (25,00) finden Fehler an der Grenze nicht, und weit entfernte Werte (0 und 100) auch nicht.</div>
+        </div>
+
+        <div class="k-q" data-type="output" data-points="3" data-id="t4" data-answer="1">
+          <div class="k-q__head"><span class="k-q__title">T4 · Testfälle von Hand durchrechnen</span><span class="k-q__pts">3 Punkte</span></div>
+          <div class="k-q__text">Was gibt das Programm aus?<pre class="k-code" data-run="nach-antwort"><code>def porto(g):
+    if g &lt;= 20:
+        return 0.95
+    elif g &lt;= 50:
+        return 1.60
+    return 2.75
+
+faelle = [(20, 0.95), (21, 1.60), (50, 1.60), (51, 1.60)]
+fehler = 0
+for g, soll in faelle:
+    if porto(g) != soll:
+        fehler = fehler + 1
+print(fehler)</code></pre></div>
+          <div class="k-q__expl">Fall 1: <code>porto(20)</code> ist 0.95, passt. Fall 2: 21 g gehört zu <code>&lt;= 50</code>, 1.60, passt. Fall 3: 50 g, 1.60, passt. Fall 4: 51 g ist größer als 50, also 2.75, erwartet war 1.60: gescheitert. Ausgabe: <code>1</code>. Der Testfall 4 hat den falschen erwarteten Wert: Auch Tests können Fehler haben.</div>
+        </div>
+
+        <div class="k-q" data-type="mc" data-points="4" data-id="t5">
+          <div class="k-q__head"><span class="k-q__title">T5 · Aussagen (mehrere richtig)</span><span class="k-q__pts">4 Punkte</span></div>
+          <div class="k-q__text">Welche Aussagen sind richtig? Alle richtigen ankreuzen.</div>
+          <ul class="k-q__options">
+            <li data-correct>Ein bestandener Test beweist nicht, dass das Programm fehlerfrei ist.</li>
+            <li>Ein Logikfehler erzeugt immer einen Traceback.</li>
+            <li data-correct>Ein Syntaxfehler wird gemeldet, bevor das Programm läuft.</li>
+            <li>Es genügt, je Bereich einen Wert aus der Mitte zu testen.</li>
+            <li data-correct>Ein Test, der als Erwartung das Ergebnis der getesteten Funktion selbst nimmt, prüft nichts.</li>
+          </ul>
+          <div class="k-q__expl">Ein Logikfehler läuft ohne Meldung durch. Aus der Mitte der Bereiche findest du nur grobe Fehler, die Fehler an den Grenzen übersiehst du. Die drei richtigen Aussagen sind die Kernsätze der Lerneinheit.</div>
+        </div>
+
+        <div class="k-q" data-type="output" data-points="3" data-id="t6" data-answer="13">
+          <div class="k-q__head"><span class="k-q__title">T6 · assert in der Schleife</span><span class="k-q__pts">3 Punkte</span></div>
+          <div class="k-q__text">Was gibt das Programm aus?<pre class="k-code" data-run="nach-antwort"><code>def pruefe(t):
+    assert t &gt;= 0, "negativ"
+    return t * 2
+
+werte = [3, -1, 4]
+summe = 0
+for w in werte:
+    try:
+        summe = summe + pruefe(w)
+    except AssertionError:
+        summe = summe - 1
+print(summe)</code></pre></div>
+          <div class="k-q__expl">w = 3: <code>pruefe(3)</code> ist 6, summe 6. w = −1: der <code>assert</code> scheitert, Python springt in den <code>except</code>-Block, summe = 6 − 1 = 5 (die Addition hat nicht stattgefunden). w = 4: 8, summe 13. Ausgabe: <code>13</code>.</div>
+        </div>
+
+        <div class="k-q" data-type="mc" data-points="3" data-id="t7">
+          <div class="k-q__head"><span class="k-q__title">T7 · Traceback lesen</span><span class="k-q__pts">3 Punkte</span></div>
+          <div class="k-q__text">Python meldet:<pre class="k-code" data-run="no"><code>Traceback (most recent call last):
+  File "auswertung.py", line 14, in &lt;module&gt;
+    ergebnis = mittelwert(daten)
+  File "auswertung.py", line 8, in mittelwert
+    return summe / len(werte)
+ZeroDivisionError: division by zero</code></pre>Wo ist der Fehler aufgetreten, und was ist die wahrscheinlichste Ursache?</div>
+          <ul class="k-q__options">
+            <li>In Zeile 14 im Hauptprogramm: Die Funktion <code>mittelwert</code> gibt es nicht.</li>
+            <li data-correct>In Zeile 8 in <code>mittelwert</code>: <code>len(werte)</code> ist 0, die Liste war leer.</li>
+            <li>In Zeile 8: <code>summe</code> ist 0, deshalb ist das Ergebnis 0.</li>
+            <li>Es ist ein Syntaxfehler in Zeile 14.</li>
+          </ul>
+          <div class="k-q__expl">Die Fehlerstelle ist der unterste Eintrag: Zeile 8 in <code>mittelwert</code>. Geteilt wird durch <code>len(werte)</code>, und eine Division durch null entsteht nur, wenn die Liste leer ist. Zeile 14 ist der Aufrufer, nicht die Fehlerstelle. Die Ursache liegt in den Daten oder in der fehlenden Prüfung für die leere Liste.</div>
+        </div>
+
+        <div class="k-q" data-type="mc" data-points="3" data-id="t8">
+          <div class="k-q__head"><span class="k-q__title">T8 · KI-Tests freigeben?</span><span class="k-q__pts">3 Punkte</span></div>
+          <div class="k-q__text">Du hast der KI die Spezifikation der Lagertemperatur (Bereiche 70 und 85, Sensorfehler unter −40 und über 200) gegeben und Tests verlangt. Sie liefert:<pre class="k-code" data-run="no"><code>def test_zustand():
+    assert zustand(20) == "normal"
+    assert zustand(75) == "warnung"
+    assert zustand(90) == "abschalten"</code></pre>Würdest du die Tests freigeben?</div>
+          <ul class="k-q__options">
+            <li>Ja, alle drei Bereiche sind abgedeckt.</li>
+            <li data-correct>Nein, es fehlen die Grenzwerte (70, 85 und Nachbarwerte) und die Sensorfehler.</li>
+            <li>Nein, <code>assert</code> darf nicht in einer Funktion stehen.</li>
+            <li>Nein, die Tests müssen mit <code>print</code> arbeiten.</li>
+          </ul>
+          <div class="k-q__expl">Die drei Werte stehen in der Mitte der Bereiche. Der Fehler <code>&lt;</code> statt <code>&lt;=</code> bei 85 würde alle drei Tests bestehen. Gute Tests prüfen 69,9 und 70, 85 und 85,1, und die Sensorfehler. <code>assert</code> in Testfunktionen ist üblich.</div>
+        </div>
+
+        <div class="k-score" data-score aria-live="polite"></div>
+      </div>
+
+        <h3>Code schreiben im Klausurstil</h3>
+        <p class="k-small k-muted">Wie in der Klausur: erst von Hand schreiben, ohne Ausführen und ohne Auto-Vervollständigung. Dann abgeben, die Tests laufen lassen und dich selbst nach dem Punkteschema bewerten. Richtzeit 12 Minuten. Die Funktion <code class="k-i">gebuehr</code> steht schon im Editor, du schreibst die Testfunktion darunter. Die Prüfung lässt deine Tests gegen die richtige Funktion und gegen mehrere fehlerhafte laufen: Gute Tests bestehen bei der richtigen und scheitern bei jeder fehlerhaften.</p>
+      <div class="a-task" data-a="klausur" data-id="sc-klausur" data-mode="code" data-minutes="12">
+        <div class="a-task__head"><span class="a-task__title">T9 · Testfälle für die Versandgebühr</span><span class="a-pts">6 Punkte</span></div>
+        <div class="a-task__text">
+          <p>Ein Online-Händler berechnet die Versandgebühr nach Gewicht in kg: bis einschließlich 5 kg kostet es 4,90 €, über 5 bis einschließlich 10 kg 6,90 €, über 10 bis einschließlich 31,5 kg 12,90 €. Ein Gewicht von 0 oder weniger und alles über 31,5 kg ist nicht versendbar: Die Funktion liefert dann <code>None</code>. Schreibe die Testfunktion <code>test_gebuehr()</code> mit mindestens acht <code>assert</code>-Zeilen, die jeden Bereich und jede Grenze von beiden Seiten prüft, und rufe sie am Ende auf. Die erwarteten Werte rechnest du aus der Beschreibung von Hand aus.</p>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V12" data-assist="off" aria-label="Python-Code von Hand schreiben, ohne Ausführen">def gebuehr(gewicht):
+    """Versandgebühr in Euro, None wenn nicht versendbar."""
+    if gewicht &lt;= 0 or gewicht &gt; 31.5:
+        return None
+    elif gewicht &lt;= 5:
+        return 4.90
+    elif gewicht &lt;= 10:
+        return 6.90
+    else:
+        return 12.90
+
+
+# schreibe hier test_gebuehr() und rufe sie auf
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _variante(art):
+    def f(gewicht):
+        if art == "g5":
+            if gewicht <= 0 or gewicht > 31.5: return None
+            elif gewicht < 5: return 4.90
+            elif gewicht <= 10: return 6.90
+            return 12.90
+        if art == "g10":
+            if gewicht <= 0 or gewicht > 31.5: return None
+            elif gewicht <= 5: return 4.90
+            elif gewicht < 10: return 6.90
+            return 12.90
+        if art == "g31":
+            if gewicht <= 0 or gewicht >= 31.5: return None
+            elif gewicht <= 5: return 4.90
+            elif gewicht <= 10: return 6.90
+            return 12.90
+        if art == "g0":
+            if gewicht < 0 or gewicht > 31.5: return None
+            elif gewicht <= 5: return 4.90
+            elif gewicht <= 10: return 6.90
+            return 12.90
+        if art == "preis":
+            if gewicht <= 0 or gewicht > 31.5: return None
+            elif gewicht <= 5: return 4.90
+            elif gewicht <= 10: return 6.90
+            return 12.09
+        if art == "schwer":
+            if gewicht <= 0 or gewicht > 40: return None
+            elif gewicht <= 5: return 4.90
+            elif gewicht <= 10: return 6.90
+            return 12.90
+    return f
+
+def _gegen(f):
+    g = globals()
+    orig = g["gebuehr"]
+    g["gebuehr"] = f
+    try:
+        g["test_gebuehr"]()
+        return "unentdeckt"
+    except AssertionError:
+        return "entdeckt"
+    except Exception:
+        return "entdeckt"
+    finally:
+        g["gebuehr"] = orig
+
+def _da():
+    assert "test_gebuehr" in globals() and callable(globals()["test_gebuehr"]), "Es gibt keine Funktion test_gebuehr(). Schreibe def test_gebuehr(): mit den assert-Zeilen darin."
+
+def test_richtige_funktion():
+    """Deine Tests bestehen bei der richtigen Funktion"""
+    _da()
+    try:
+        globals()["test_gebuehr"]()
+    except AssertionError as e:
+        raise AssertionError("Dein Test scheitert schon bei der richtigen Funktion (%s). Prüfe die erwarteten Werte: Du hast dich bei einem Fall verrechnet." % e)
+
+def _mutant(art, text):
+    _da()
+    r = _gegen(_variante(art))
+    assert r == "entdeckt", "Deine Tests bemerken diese fehlerhafte Variante nicht: %s. Welcher Testfall fehlt?" % text
+
+def test_grenze_5():
+    """Fehlerhafte Variante: bei genau 5 kg wird schon die nächste Stufe berechnet"""
+    _mutant("g5", "bei genau 5 kg kommt 6,90 statt 4,90")
+
+def test_grenze_10():
+    """Fehlerhafte Variante: bei genau 10 kg wird schon die nächste Stufe berechnet"""
+    _mutant("g10", "bei genau 10 kg kommt 12,90 statt 6,90")
+
+def test_grenze_31_5():
+    """Fehlerhafte Variante: 31,5 kg gelten schon als nicht versendbar"""
+    _mutant("g31", "bei genau 31,5 kg kommt None statt 12,90")
+
+def test_null():
+    """Fehlerhafte Variante: ein Gewicht von 0 wird berechnet statt abgelehnt"""
+    _mutant("g0", "bei 0 kg kommt 4,90 statt None")
+
+def test_preis():
+    """Fehlerhafte Variante: falscher Preis in der obersten Stufe"""
+    _mutant("preis", "in der Stufe über 10 kg ist der Preis falsch")
+
+def test_obergrenze():
+    """Fehlerhafte Variante: die Obergrenze liegt bei 40 kg statt 31,5 kg"""
+    _mutant("schwer", "bei 32 kg kommt 12,90 statt None")
+        </script>
+        <script type="text/x-python" data-role="solution">
+def gebuehr(gewicht):
+    """Versandgebühr in Euro, None wenn nicht versendbar."""
+    if gewicht <= 0 or gewicht > 31.5:
+        return None
+    elif gewicht <= 5:
+        return 4.90
+    elif gewicht <= 10:
+        return 6.90
+    else:
+        return 12.90
+
+
+def test_gebuehr():
+    assert gebuehr(-1) is None, "negatives Gewicht ist nicht versendbar"
+    assert gebuehr(0) is None, "0 kg ist nicht versendbar"
+    assert gebuehr(0.1) == 4.90, "kleinstes Gewicht"
+    assert gebuehr(3) == 4.90, "typisch bis 5 kg"
+    assert gebuehr(5) == 4.90, "Grenze 5 kg gehört noch zur ersten Stufe"
+    assert gebuehr(5.1) == 6.90, "gerade über 5 kg"
+    assert gebuehr(8) == 6.90, "typisch bis 10 kg"
+    assert gebuehr(10) == 6.90, "Grenze 10 kg gehört noch zur zweiten Stufe"
+    assert gebuehr(10.1) == 12.90, "gerade über 10 kg"
+    assert gebuehr(20) == 12.90, "typisch bis 31,5 kg"
+    assert gebuehr(31.5) == 12.90, "Grenze 31,5 kg ist noch versendbar"
+    assert gebuehr(31.6) is None, "über 31,5 kg nicht versendbar"
+    print("Alle Tests bestanden")
+
+
+test_gebuehr()
+        </script>
+        <script type="application/json" data-role="scheme">[
+{"p":1,"t":"Eine Funktion test_gebuehr() mit assert-Zeilen, jeweils Aufruf == erwarteter Wert (mit Meldung oder ohne), am Ende wird sie aufgerufen"},
+{"p":1,"t":"Je Bereich ein typischer Wert mit richtigem erwartetem Ergebnis (bis 5 kg, bis 10 kg, bis 31,5 kg und ein nicht versendbarer Wert)"},
+{"p":1,"t":"Die Grenze 5 kg wird von beiden Seiten geprüft (5 gibt 4,90 und ein Wert knapp darüber gibt 6,90)"},
+{"p":1,"t":"Die Grenzen 10 kg und 31,5 kg werden von beiden Seiten geprüft (10 und knapp darüber, 31,5 und knapp darüber)"},
+{"p":1,"t":"Die Sonderfälle 0 kg und ein negatives Gewicht werden geprüft, erwartet wird None (Vergleich mit is None oder == None)"},
+{"p":1,"t":"Alle erwarteten Werte stimmen mit der Beschreibung überein, die Tests bestehen bei der richtigen Funktion und scheitern bei den fehlerhaften Varianten"}
+]</script>
+      </div>
+      </section>
+
+      <!-- 5 ───────────── DEEP DIVE ───────────── -->
+      <section class="k-section" id="deepdive" data-section="deepdive" aria-labelledby="h-dd">
+        <h2 class="k-section__title" id="h-dd"><span class="k-section__num" aria-hidden="true">5</span> Deep Dive <span class="k-muted">(freiwillig)</span></h2>
+
+        <p>Für Neugierige. Nichts davon kommt in der Klausur dran.</p>
+
+      <details class="k-deep">
+        <summary>pytest: das Test-Gerüst der Praxis (Ausblick)</summary>
+        <div class="k-deep__body">
+          <p class="k-small k-muted">Hinweis: <code class="k-i">pytest</code> ist ein zusätzliches Paket und läuft in Codespaces oder auf deinem Rechner, nicht im Browser dieser Seite. Ampel: Delegieren. Du musst wissen, dass es das gibt.</p>
+          <pre data-run="no"><code># datei: test_lager.py   (Aufruf im Terminal: pytest)
+from lager import zustand
+
+def test_grenze_85():
+    assert zustand(85) == "warnung"
+
+def test_grenzen_schleife():
+    faelle = [(69.9, "normal"), (70, "warnung"), (85.1, "abschalten")]
+    for t, erwartet in faelle:
+        assert zustand(t) == erwartet</code></pre>
+          <p>Das Muster kennst du: Funktionen mit <code class="k-i">test_</code> am Anfang, darin <code class="k-i">assert</code>. <code class="k-i">pytest</code> findet alle solchen Funktionen in allen Dateien selbst, führt sie aus, zeigt je Test einen Punkt oder ein F und bei einem Fehler genau, welcher Wert erwartet und welcher bekommen wurde. Du musst dich nicht selbst um den Aufruf der Testfunktionen kümmern. Mit der Option <code class="k-i">--cov</code> (Zusatzpaket) misst es, welcher Anteil deines Codes die Tests überhaupt durchlaufen.</p>
+        </div>
+      </details>
+
+      <details class="k-deep">
+        <summary>Testgetrieben entwickeln und Regressionstests</summary>
+        <div class="k-deep__body">
+          <p>Bei der <em>testgetriebenen Entwicklung</em> (englisch TDD, test-driven development) schreibst du zuerst den Test, dann den Code, der ihn besteht. Das ist die Arbeitsweise dieses Kurses ab V11: Spezifikation, Testfälle, dann generieren, dann prüfen. Ein <em>Regressionstest</em> ist ein Test, den du aufhebst, nachdem du einen Fehler gefunden hast: Der Fall, der den Fehler gezeigt hat (bei uns 85 °C), bleibt für immer in der Liste. Wer später am Code ändert, merkt sofort, wenn derselbe Fehler zurückkommt.</p>
+        </div>
+      </details>
+
+      <details class="k-deep">
+        <summary>Der Debugger in VS Code im Detail</summary>
+        <div class="k-deep__body">
+          <p>In Codespaces genügt es, die Datei zu öffnen, am Zeilenrand zu klicken (roter Punkt) und oben rechts auf „Python-Datei debuggen“ zu drücken. Mit einem Rechtsklick auf den Punkt kannst du einen <em>bedingten Haltepunkt</em> setzen, zum Beispiel <code class="k-i">w == 85.0</code>: Das Programm hält erst dort, wenn die Bedingung stimmt. Im Fenster <em>Überwachung</em> trägst du Ausdrücke ein (<code class="k-i">t &lt; 85</code>), die bei jedem Schritt neu berechnet werden. In der <em>Debug-Konsole</em> darfst du Ausdrücke eintippen und sofort auswerten lassen. Das ist das Werkzeug der Wahl, wenn <code class="k-i">print</code> zu unübersichtlich wird.</p>
+        </div>
+      </details>
+
+      <details class="k-deep">
+        <summary>assert ist kein Prüfer für Benutzereingaben</summary>
+        <div class="k-deep__body">
+          <p class="k-small k-muted">Hinweis: Das geht über V12 hinaus (Klausur nicht erforderlich).</p>
+          <pre><code>def wurzel_aus(x):
+    if x &lt; 0:
+        raise ValueError("x darf nicht negativ sein")
+    return x ** 0.5
+
+try:
+    wurzel_aus(-4)
+except ValueError as fehler:
+    print("Eingabefehler:", fehler)</code></pre>
+          <p>Python kann mit der Option <code class="k-i">-O</code> alle <code class="k-i">assert</code>-Zeilen überspringen. Verlass dich darum nie auf ein <code class="k-i">assert</code>, um Eingaben von Menschen oder Dateien zu prüfen. Dafür gibt es <code class="k-i">if</code> mit <code class="k-i">raise</code>, wie hier. Das <code class="k-i">assert</code> ist für Tests und für Annahmen im Entwickler-Kopf da: „Hier muss die Liste mindestens ein Element haben.“</p>
+        </div>
+      </details>
+
+      <details class="k-deep">
+        <summary>Was du noch nicht brauchst</summary>
+        <div class="k-deep__body">
+          <p>Bewusst noch nicht dabei: das Modul <code class="k-i">unittest</code> mit Testklassen (V20 führt Klassen ein), Mocking (Testen mit vorgetäuschten Messgeräten), zufallsgesteuerte Tests (Property-based Testing) und automatische Testläufe bei jedem Speichern in der Cloud (Continuous Integration). Wenn die KI dir einen Testordner mit solchen Dateien liefert, erkennst du jetzt, wo Testfunktionen, <code class="k-i">assert</code> und die Grenzwerte stecken.</p>
+        </div>
+      </details>
+      </section>
+
+      <!-- Videos zur Nachbereitung -->
+      <section class="k-section" id="videos" aria-labelledby="h-videos">
+        <h2 class="k-section__title" id="h-videos">Videos zur Nachbereitung</h2>
+        <p>Alle drei Erklärvideos zu V12 zum Wiederholen, jeweils mit deutschen Untertiteln.</p>
+        <ul class="k-video-list">
+          <li><a href="#video-theorie">Testen und Debuggen: erwartet gegen tatsächlich, Grenzwerte, Traceback, Debugger erklärt</a> <span class="k-muted">(ca. 3 Min, Theorie, Abschnitt 2 dieser Lerneinheit)</span></li>
+          <li><a href="v12-labor.html#a-werkzeugkasten">Python-Werkstatt: assert, Testfunktionen, Testfälle als Liste, except as</a> <span class="k-muted">(ca. 3 Min, im Labor bei „Werkzeugkasten“)</span></li>
+          <li><a href="v12-labor.html#a-vorgemacht">Vorgerechnet: Lagertemperatur mit neun Testfällen, der KI-Fehler bei 85 °C</a> <span class="k-muted">(ca. 3 Min, im Labor bei „Vorgerechnetes Beispiel“)</span></li>
+        </ul>
+      </section>
+
+      <!-- Übergang -->
+      <section class="k-next" aria-labelledby="h-next">
+        <h2 id="h-next">Wie geht es weiter?</h2>
+        <p>Verstanden ist noch nicht geschrieben. Im Programmierlabor schreibst du die Testfälle selbst: erst mit Hilfen (Werkzeugkasten, Beispiel, Lückencode), dann allein, und die Prüfung lässt sie gegen fehlerhafte Varianten antreten. Zu Hause folgt das Training mit automatisch geprüften Aufgaben (ca. 60 Min), darunter das Zeichnen eines Programmablaufplans und Fehlersuche mit dem Visualisierer. In V13 geht es danach darum, wie lange ein Programm braucht.</p>
+        <p><a class="k-btn" href="v12-labor.html">Weiter ins Programmierlabor →</a></p>
+      </section>
+
+      <!-- Für Dozierende -->
+      <section class="k-section k-section--dozent" aria-labelledby="h-doz">
+        <h2 id="h-doz" class="k-sr">Für Dozierende</h2>
+      <details class="k-dozent">
+        <summary>Für Dozierende: Ablaufplan 135 Minuten Präsenz + 60 Minuten zu Hause</summary>
+        <div class="k-dozent__body">
+          <p class="k-small k-muted">Ein Termin besteht aus zwei Seiten: dieser <strong>Lerneinheit</strong> (verstehen) und dem <a href="v12-labor.html">Programmierlabor</a> (selbst programmieren). Die Tabelle sagt, wo welche Phase stattfindet.</p>
+          <div class="k-tablewrap"><table class="k-plan">
+            <thead><tr><th scope="col">Minuten</th><th scope="col">Wo</th><th scope="col">Was zu tun ist</th></tr></thead>
+            <tbody>
+              <tr><td>0–10</td><td>Lerneinheit 1<br>Warum</td><td><strong>Warm-up.</strong> Wiederholung V09 per Handzeichen: Wie liest man einen Traceback? Was fängt <code>except ValueError</code> nicht? Dann der Hook: Code der KI an den Beamer, drei Werte (20, 75, 90) abstimmen lassen, dann die Vorhersage „Was liefert <code>zustand_ki(85)</code>?“ erst abstimmen, dann ausführen. Der Fehler wird erst bei genau 85 sichtbar.</td></tr>
+              <tr><td>10–35</td><td>Lerneinheit 2<br>Theorie</td><td><strong>Informatik-Theorie mit Explorables.</strong> Erwartet gegen tatsächlich, assert, Testfunktion und Liste von Tupeln am Code der Lerneinheit. Explorable „Testpunkte setzen“: zuerst nur typische Werte (3 von 8 Mutanten), dann die neun Tests aus dem Beispiel (alle 8), dann eine Gruppe die kleinste vollständige Menge suchen lassen (mindestens 8 Punkte, einer je Grenzseite). PAP-Pfade: Testfälle aus dem Plan ableiten. Fehlerarten (Syntax, Laufzeit, Logik) als Handzeichen-Quiz. Traceback: das dritte Beispiel (AssertionError) mit der Frage, welche Funktion im Traceback fehlt. Debug-Zyklus und Debugger-Schema (Haltepunkt, hinein, über). Ampel: pytest und Abdeckung sind „Delegieren“.</td></tr>
+              <tr><td>35–80</td><td>Labor Teil A<br>Aufgaben 1 bis 6</td><td><strong>Python-Werkstatt, Teil 1 (ca. 45 Min).</strong> Werkzeugkasten überfliegen (5), Vorgerechnetes Beispiel vormachen (10): erst die neun Tests, dann die KI-Version, die bei 85 °C scheitert. Ablauf verfolgen (7), beide Parsons in Paaren (8), Lückencode (5), „Erste eigene Aufgabe“ (10): Testfälle für die Funktion <code>drehzahl_ampel</code>, geprüft gegen fehlerhafte Varianten. Rundgang; typische Fehler: nur Werte aus der Mitte, erwartete Werte aus dem Programm abgeschrieben, die Grenzen nur von einer Seite.</td></tr>
+              <tr><td>80–90</td><td>–</td><td><strong>Pause.</strong> Runner vorab einmal ausführen lassen (lädt ca. 10 MB von jsDelivr; im Hörsaal-WLAN sonst zäh).</td></tr>
+              <tr><td>90–120</td><td>Labor Teil A<br>Aufgaben 7 und 8</td><td><strong>Python-Werkstatt, Teil 2.</strong> Code-Review (KI-Spiegel) gemeinsam am Beamer: Die KI-Tests prüfen nur den Normalfall, einer nimmt das Ergebnis der Funktion als Erwartung, und ein <code>assert</code> mit Klammern ist immer wahr. Studierende markieren in Paaren, Auflösung, die Versionen ausführen (20). Danach typische Fehlermeldungen ausführen und von unten nach oben lesen lassen (5). Reserve (5): Lerneinheit, Abschnitt 3 „Ausprobieren“.</td></tr>
+              <tr><td>120–135</td><td>Lerneinheit 4<br>Selbstcheck</td><td><strong>Selbstcheck, Exit-Ticket, Auftrag.</strong> Exit-Ticket: Quiz T3, T6, T8 (je 1 Min. tippen, dann auflösen). T9 (Testfunktion schreiben) als Hausaufgabe oder auf Papier. Auftrag: Labor Teil B. Ausblick V13: Laufzeit-Intuition.</td></tr>
+              <tr><td>zu Hause (ca. 60)</td><td>Labor Teil B<br>Aufgaben 1 bis 8</td><td><strong>Training.</strong> Mehrere „Schreibe Testfälle“-Aufgaben mit Mutanten-Prüfung, zwei Fehlersuchen mit dem Visualisierer, Wiederholungsaufgabe (Funktionen mit Listen aus V07/V08), ein Programmablaufplan zum Zeichnen und der Klausur-Modus (ca. 60 Min). Danach nach Wahl Notebook und Deep Dive (pytest, nur in Codespaces). Der Fortschritt bleibt im Browser der Studierenden; er ist für dich nicht einsehbar, also bei Bedarf zu Beginn des nächsten Termins abfragen.</td></tr>
+            </tbody>
+          </table></div>
+          <p class="k-small k-muted">Material: Beamer, Handzeichen-Karten, stabiles WLAN. Das Notebook (Codespaces) ist Vertiefung im Training, nicht Pflicht in der Präsenzzeit. Die Prüfung der Test-Aufgaben („Mutanten“): Die studentischen Tests laufen gegen die richtige Funktion (müssen bestehen) und gegen mehrere fehlerhafte Varianten (müssen jeweils scheitern). Die Fehlermeldung nennt die unentdeckte Variante.</p>
+        </div>
+      </details>
+      </section>
+
+    </main>
+  </div>
+
+  <footer class="dhbw-footer k-footer">
+    <div class="dhbw-footer__inner">
+      <span><span class="dhbw-footer__brand">DHBW Stuttgart</span> · Campus Horb</span>
+      <span><a href="../index.html">Zurück zum Lernpfad</a> · V12 Testen &amp; Debuggen · Lerneinheit</span>
+    </div>
+  </footer>
+
+  <script src="../assets/js/speicher.js"></script>
+  <script src="../assets/js/icons.js"></script>
+  <script src="../assets/js/editor.js" defer></script>
+  <script src="../assets/js/pap-engine.js"></script>
+  <script src="../assets/js/explorables-v12.js"></script>
+  <script src="../assets/js/kurs.js"></script>
+  <script src="../assets/js/aufgaben.js"></script>
+</body>
+</html>
