@@ -3,7 +3,7 @@
 Repo/Worktree (nur hier arbeiten, nie ins Haupt-Repo darüber wechseln, NICHT committen):
 C:\_Data\01_sourcecode\github\maschinenbau-vorlesung-informatik\.claude\worktrees\v16-betriebssystem-7d6499
 
-Testserver läuft schon: http://localhost:8116/ (Wurzel = `site/`). Nicht selbst starten/stoppen. Im eingebauten Browser (mcp__Claude_Browser__*) einen EIGENEN neuen Tab öffnen (tabs_create), am Ende schließen; Cache mit `?v=<zahl>` umgehen; Viewport mit resize_window testen und danach `preset: "desktop"` zurücksetzen.
+Testserver läuft schon: http://localhost:8166/ (Wurzel = `site/`). Nicht selbst starten/stoppen. Im eingebauten Browser (mcp__Claude_Browser__*) einen EIGENEN neuen Tab öffnen (tabs_create), am Ende schließen; Cache mit `?v=<zahl>` umgehen; Viewport mit resize_window testen und danach `preset: "desktop"` zurücksetzen.
 
 ## Dateinamen (fest, alle Agenten verlinken genau so)
 - Lerneinheit: `site/lektionen/v16-rechner-und-betriebssystem.html`
@@ -61,3 +61,8 @@ Wissens-Ampel: Im Kopf – Bausteine CPU/RAM/SSD/GPU und welche Anzeige im Task-
 ## PAP-Anteil
 - Lerneinheit: PAP (per `KursPAP.figure`) zum Durchsuchen der Logs: Start → Ein-/Ausgabe/Operation „fehler = 0“ → Schleife „für jede Log-Datei“ → darin Schleife „für jede Zeile“ → Raute „Stufe == ERROR?“ ja → „fehler = fehler + 1“ → Ausgabe → Ende.
 - Labor: mindestens eine Aufgabe „PAP zeichnen“ (Aufgabentyp aus `docs/PAP-EDITOR.md`), Vorschlag „Speicher-Ampel“: Eingabe RAM gesamt in GB (float), Anzahl Programme n (int), Schleife: je Programm Bedarf in GB einlesen und summieren; Ausgabe „ok“ (Summe ≤ 80 % RAM), „knapp“ (≤ 100 %), sonst „Auslagerung“. Grenzwerte testen (genau 80 %, genau 100 %).
+
+## Nachtrag nach Rebase (V12–V14 und projekt.html sind jetzt da)
+- **Neueste Vorlage ist V14**: `site/lektionen/v14-visualisierung.html`, `v14-labor.html` (inkl. Station „Projekt: Meilenstein V14“ und PAP-zeichnen im Training), Bericht `briefing/berichte/v14.md`. V12/V13 ebenfalls fertig (`briefing/berichte/v12.md`, `v13.md` lesen: Erfahrungen/Fallstricke).
+- `site/projekt.html` existiert (Meilensteine V14–V21). Das Labor bekommt wie V14 eine Station „Projekt: Meilenstein V16“ (Inhalt passend zu projekt.html, Meilenstein V16 dort nachlesen) und verlinkt `../projekt.html`.
+- Bereits eingeführt bis V14 zusätzlich: `assert`, Testfälle, Tupel-Entpacken (`a, b = ...`, `for x, y in ...`), NumPy, matplotlib. V15 (pandas) wird parallel gebaut, gilt aber als eingeführt.

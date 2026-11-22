@@ -1,0 +1,110 @@
+/* =============================================================
+   v16.css – Lerneinheit V16 (Rechner & Betriebssystem kompakt): Explorables Speicherhierarchie, Task-Manager-Simulator,
+   Scheduler, Dateibaum der Zelle FZ-3, PAP der Log-Suche. Baut auf kurs.css und v05.css (PAP-Stile) auf. Präfix v16-.
+   Rot nur für aktiven Zustand und den überlasteten Kern. Der Labor-Agent schreibt nicht in diese Datei.
+   ============================================================= */
+
+/* ── Abschnitt: Lerneinheit V16 ─────────────────────────── */
+.v16-lbl { font-size: var(--fs-sm); font-weight: 600; display: block; margin-bottom: 4px; }
+.v16-ctl { margin: 0 0 var(--sp-3); }
+.v16-seg { flex-wrap: wrap; max-width: 100%; }
+.v16-ctrlbar { align-items: center; margin: 0 0 var(--sp-3); }
+.v16-ctrlbar .k-btn { min-height: 44px; }
+.v16-val { display: block; font-weight: 400; font-size: var(--fs-sm); color: var(--k-muted); }
+.v16-small { font-size: var(--fs-sm); margin: var(--sp-2) 0 0; max-width: none; }
+
+/* (A) Speicherhierarchie */
+.v16-hier { list-style: none; margin: 0 0 var(--sp-3); padding: 0; display: grid; gap: var(--sp-2); max-width: 900px; }
+.v16-row { display: grid; grid-template-columns: minmax(150px, 1fr) minmax(0, 2fr) minmax(110px, auto); gap: var(--sp-3); align-items: center; width: 100%; min-height: 44px; padding: var(--sp-2) var(--sp-3); text-align: left; font: inherit; font-size: var(--fs-sm); background: #fff; border: 2px solid var(--border); border-left-width: 4px; cursor: pointer; color: var(--text); }
+.v16-row:hover { background: var(--canvas); }
+.v16-row[aria-pressed="true"] { border-color: #E2001A; background: var(--red-tint); }
+.v16-row:focus-visible { outline: 3px solid #E2001A; outline-offset: 2px; }
+.v16-row__n { font-weight: 600; }
+.v16-row__t { font-family: var(--dhbw-font-mono); font-size: var(--fs-xs); text-align: right; }
+.v16-bar { display: block; height: 14px; background: #E5E7EB; }
+.v16-bar__fill { display: block; height: 100%; background: #4B5563; }
+.v16-row[aria-pressed="true"] .v16-bar__fill { background: #B00014; }
+@media (max-width: 600px) {
+  .v16-row { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .v16-row__t { text-align: left; }
+}
+.v16-detail { margin: var(--sp-3) 0 0; padding: var(--sp-3) var(--sp-4); border-left: 3px solid var(--k-info); background: var(--k-info-bg); max-width: 900px; }
+.v16-detail p { max-width: none; }
+.v16-detail__t { margin: 0 0 var(--sp-2); }
+.v16-detail__f { font-weight: 600; }
+.v16-dl { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: var(--sp-3); margin: var(--sp-3) 0; }
+.v16-dl dt { font-size: var(--fs-xs); font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--k-muted); }
+.v16-dl dd { margin: 2px 0 0; font-weight: 600; overflow-wrap: anywhere; }
+.v16-dl--pfad { grid-template-columns: minmax(0, 1fr); gap: var(--sp-2); }
+.v16-dl--pfad dd code { word-break: break-all; }
+
+/* (B) Task-Manager */
+.v16-tmwrap { display: grid; grid-template-columns: minmax(0, 340px) minmax(0, 1fr); gap: var(--sp-5); align-items: start; margin-bottom: var(--sp-3); max-width: none; }
+@media (max-width: 1000px) { .v16-tmwrap { grid-template-columns: minmax(0, 1fr); } }
+.v16-tmctl { display: grid; gap: var(--sp-2); }
+.v16-tmgrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-4); }
+@media (max-width: 700px) { .v16-tmgrid { grid-template-columns: minmax(0, 1fr); } }
+.v16-block { padding: var(--sp-3); background: var(--canvas); border-top: 3px solid #374151; min-width: 0; }
+.v16-block h4 { margin: 0 0 var(--sp-2); }
+.v16-meter { margin: 0 0 var(--sp-2); }
+.v16-meter__h { display: flex; justify-content: space-between; gap: var(--sp-2); font-size: var(--fs-sm); flex-wrap: wrap; }
+.v16-meter__bar { height: 14px; background: #D1D5DB; margin-top: 3px; }
+.v16-meter__fill { display: block; height: 100%; background: #2563A8; transition: width .25s; }
+.v16-meter__fill.is-warn { background: #B45309; }
+.v16-meter__fill.is-bad { background: #B00014; }
+.v16-cores { display: flex; flex-wrap: wrap; gap: 6px; margin-top: var(--sp-2); }
+.v16-core { display: grid; justify-items: center; gap: 2px; width: 34px; }
+.v16-core__bar { display: flex; align-items: flex-end; width: 22px; height: 64px; background: #D1D5DB; }
+.v16-core__fill { display: block; width: 100%; background: #2563A8; transition: height .25s; }
+.v16-core__fill.is-voll { background: #B00014; }
+.v16-core__n { font-size: 11px; font-weight: 700; }
+.v16-core__v { font-size: 10px; color: #4B5563; }
+.v16-diag { margin-top: var(--sp-4); padding: var(--sp-3) var(--sp-4); border-left: 3px solid var(--k-info); background: var(--k-info-bg); }
+.v16-diag p { max-width: none; }
+.v16-diag h4 { margin: 0 0 var(--sp-2); }
+.v16-diag__more { margin: var(--sp-1) 0 0; padding-left: 1.2em; font-size: var(--fs-sm); }
+.v16-note { padding: var(--sp-2) var(--sp-3); border-left: 3px solid #B00014; background: #fff; font-size: var(--fs-sm); }
+
+/* (C) Scheduler */
+.v16-schedctl { display: flex; flex-wrap: wrap; gap: var(--sp-2) var(--sp-5); margin-bottom: var(--sp-2); }
+.v16-sched { overflow-x: auto; max-width: 100%; margin-bottom: var(--sp-3); }
+.v16-sched__t { border-collapse: separate; border-spacing: 3px; }
+.v16-sched__t th { font-size: var(--fs-xs); font-weight: 600; text-align: center; padding: 2px 4px; white-space: nowrap; }
+.v16-sched__t th[scope="row"] { text-align: left; }
+.v16-sched__t th.is-now { color: #B00014; text-decoration: underline; }
+.v16-cell { min-width: 36px; height: 36px; text-align: center; font-weight: 700; font-size: var(--fs-sm); border: 2px solid #374151; background: #fff; color: #1A1A1A; }
+.v16-legend .v16-cell { display: inline-block; min-width: 28px; height: 28px; line-height: 24px; }
+.v16-cell.is-leer { border-color: #E5E7EB; background: #F9FAFB; }
+.v16-cell.is-idle { border-style: dashed; border-color: #9CA3AF; color: #6B7280; font-weight: 400; line-height: 32px; }
+.v16-p-C { background: #1A1A1A; color: #fff; }
+.v16-p-B { background: #DBEAFE; }
+.v16-p-V { background: #FEF3C7; }
+.v16-p-T { background: #E5E7EB; }
+.v16-legend { display: flex; flex-wrap: wrap; gap: var(--sp-2) var(--sp-4); list-style: none; margin: var(--sp-2) 0 0; padding: 0; font-size: var(--fs-sm); max-width: none; }
+.v16-sched__info { min-height: 3em; font-weight: 600; max-width: var(--k-measure); }
+
+/* (D) Dateibaum */
+.v16-two { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: var(--sp-5); align-items: start; max-width: none; }
+@media (max-width: 900px) { .v16-two { grid-template-columns: minmax(0, 1fr); } }
+.v16-two .v16-detail { margin-top: 0; }
+.v16-tree { border: 1px solid var(--border); background: #fff; padding: var(--sp-2) 0; max-height: 440px; overflow: auto; }
+.v16-item { display: flex; align-items: center; gap: 6px; width: 100%; min-height: 36px; padding: 4px 8px; text-align: left; font: inherit; font-size: var(--fs-sm); font-family: var(--dhbw-font-mono); background: transparent; border: 0; border-left: 3px solid transparent; color: var(--text); cursor: pointer; }
+.v16-item:hover { background: var(--canvas); }
+.v16-item.is-sel { border-left-color: #E2001A; background: var(--red-tint); font-weight: 700; }
+.v16-item:focus-visible { outline: 3px solid #E2001A; outline-offset: -3px; }
+.v16-item--dir { font-weight: 600; }
+.v16-item__sym { display: inline-block; width: 8px; height: 8px; flex: none; }
+.v16-item--dir .v16-item__sym { border-right: 2px solid #374151; border-bottom: 2px solid #374151; transform: rotate(-45deg); }
+.v16-item--dir[aria-expanded="true"] .v16-item__sym { transform: rotate(45deg); }
+.v16-item--file .v16-item__sym { border: 1.5px solid #6B7280; background: #fff; width: 8px; height: 10px; }
+.v16-tab { border-collapse: collapse; width: 100%; max-width: 560px; }
+.v16-tab th, .v16-tab td { padding: var(--sp-2) var(--sp-3); border: 1px solid var(--border); text-align: left; font-size: var(--fs-sm); overflow-wrap: anywhere; }
+.v16-tab th { background: var(--canvas); }
+.v16-tab td { font-family: var(--dhbw-font-mono); }
+
+/* (E) PAP */
+.v16-papbox { margin: 0; overflow-x: auto; max-width: 100%; }
+.v16-papbox .pap { max-width: 420px; }
+
+/* Lange Pfade in Fließtext und Quizoptionen umbrechen (375 px) */
+.l-content code, .k-q__opt code { overflow-wrap: anywhere; }
