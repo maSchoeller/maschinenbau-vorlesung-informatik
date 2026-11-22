@@ -731,3 +731,106 @@ E("plt-subplots", "plt.subplots()", DG, "V14", "kopf",
   ["plt-plot", "plt-achsen", "tupel-entpacken"],
   bez=["plt.subplots", ".set_xlabel", ".set_ylabel", ".set_title", "fig", "ax", "sharex", "sharey", ".tight_layout"],
   aliase=["Subplots", "Teilbild", "Axes", "Figure"])
+
+# ───────────── V17 Netzwerke & Industrie 4.0 (JSON, ipaddress) ─────────────
+NJ = "Netzwerk & JSON"
+
+E("json-loads", "json.loads() / json.dumps()", NJ, "V17", "kopf",
+  "Übersetzt JSON-Text in Python-Daten (loads) und Python-Daten in JSON-Text (dumps).",
+  "import json\ndaten = json.loads(text)\ntext = json.dumps(daten)\ntext = json.dumps(daten, indent=2)",
+  "JSON ist ein Textformat für Daten, das Maschinen, Server und Programme untereinander austauschen. json.loads (load string) macht aus dem Text Python-Daten: ein JSON-Objekt {…} wird ein dict, ein Array […] eine Liste, Zahlen werden int oder float, true/false werden True/False und null wird None. json.dumps macht den umgekehrten Weg, zum Beispiel für eine Meldung an einen MQTT-Broker. In JSON stehen Texte immer in doppelten Anführungszeichen, und nach dem letzten Element steht kein Komma.",
+  '''
+  import json
+
+  text = '{"id": "D2", "drehzahl_1_min": 1450, "programm": null, "laeuft": true}'
+  d2 = json.loads(text)
+  print(type(d2))
+  print(d2["drehzahl_1_min"] + 50)
+  print(d2["programm"], d2["laeuft"])
+
+  meldung = {"maschine": "D2", "werkzeug": "T4", "aktion": "wechseln"}
+  print(json.dumps(meldung))
+  ''',
+  "Immer, wenn Daten als Text zwischen Programmen reisen: Web-APIs, MQTT-Nachrichten, Konfigurationsdateien.",
+  [("Array aus JSON: wird eine Liste", 'import json\nwerte = json.loads("[48.5, 49.1, 50.2]")\nprint(max(werte))'),
+   ("Lesbar eingerückt ausgeben", 'import json\nd = {"id": "F1", "verschleiss": {"T1": 47}}\nprint(json.dumps(d, indent=2))'),
+   ("Fehlerhaften Text abfangen (JSONDecodeError ist ein ValueError)", 'import json\ntry:\n    json.loads("{\'id\': \'D2\'}")\nexcept ValueError:\n    print("kein gültiges JSON")')],
+  [("Einfache Anführungszeichen sind in JSON nicht erlaubt", "import json\njson.loads(\"{'id': 'D2'}\")"),
+   ("Komma nach dem letzten Element", 'import json\njson.loads(\'{"id": "D2",}\')'),
+   ("loads bekommt schon ein dict statt Text", 'import json\njson.loads({"id": "D2"})')],
+  ["dict", "liste", "verschachtelt", "json-datei"],
+  bez=["json", "json.loads", "json.dumps", "indent"],
+  aliase=["JSON", "loads", "dumps", "MQTT-Nachricht", "API-Antwort"])
+
+E("json-datei", "json.load() / json.dump()", NJ, "V17", "lesen",
+  "Liest JSON aus einer Datei bzw. schreibt Python-Daten als JSON in eine Datei.",
+  "with open(\"datei.json\", encoding=\"utf-8\") as f:\n    daten = json.load(f)\nwith open(\"datei.json\", \"w\", encoding=\"utf-8\") as f:\n    json.dump(daten, f, indent=2)",
+  "Ohne s am Ende arbeiten load und dump mit einer geöffneten Datei statt mit Text: json.load(f) liest die ganze Datei und liefert dict oder Liste, json.dump(daten, f) schreibt sie hinein. Öffne die Datei wie in V09 mit with open und encoding=\"utf-8\". Merkhilfe: das s in loads und dumps steht für string.",
+  '''
+  import json
+
+  zelle = {"zelle": "FZ-3", "netz": "192.168.30.0/24", "geraete": ["D2", "F1", "R1"]}
+  with open("zelle.json", "w", encoding="utf-8") as f:
+      json.dump(zelle, f, indent=2)
+
+  with open("zelle.json", encoding="utf-8") as f:
+      geladen = json.load(f)
+  print(geladen["netz"], len(geladen["geraete"]))
+  ''',
+  "Für Einstellungen, Zwischenergebnisse und Messdaten, die ein anderes Programm wieder einlesen soll.",
+  [("Liste von Messwerten speichern und wieder laden", 'import json\nwith open("temp.json", "w", encoding="utf-8") as f:\n    json.dump([48.5, 49.1], f)\nwith open("temp.json", encoding="utf-8") as f:\n    print(json.load(f))'),
+   ("JSON-Datei zeilenweise (eine Nachricht je Zeile)", 'import json\nwith open("log.jsonl", "w", encoding="utf-8") as f:\n    f.write(\'{"t": 1}\\n{"t": 2}\\n\')\nwith open("log.jsonl", encoding="utf-8") as f:\n    for zeile in f:\n        print(json.loads(zeile)["t"])')],
+  [("load mit Dateinamen statt geöffneter Datei", 'import json\njson.load("zelle.json")'),
+   ("Datei zum Lesen geöffnet, aber dump aufgerufen", 'import json\nopen("x.json", "w").close()\nwith open("x.json", encoding="utf-8") as f:\n    json.dump({"a": 1}, f)')],
+  ["json-loads", "with-open", "try-except"],
+  bez=["json.load", "json.dump"],
+  aliase=["JSON-Datei", "Konfigurationsdatei", "JSON Lines"])
+
+E("verschachtelt", "Verschachtelte Daten", LD, "V17", "kopf",
+  "Listen von Dicts und Dicts in Dicts: Zugriffe von außen nach innen aneinanderhängen.",
+  "zelle[\"maschinen\"][0][\"id\"]\nfor m in zelle[\"maschinen\"]:\n    print(m[\"id\"])\nd2[\"verschleiss\"][\"T4\"]",
+  "Daten aus JSON sind fast immer verschachtelt: Ein dict enthält eine Liste, die Liste enthält dicts. Du liest einen Zugriff von links nach rechts, jede Klammer geht eine Ebene tiefer. Bei einer Liste brauchst du eine Zahl als Index oder eine for-Schleife, bei einem dict einen Schlüssel. Fehlt ein Schlüssel bei manchen Einträgen, hilft .get(schluessel, ersatz). Drucke im Zweifel erst type(...) der Ebene, auf der du gerade bist.",
+  '''
+  zelle = {
+      "zelle": "FZ-3",
+      "maschinen": [
+          {"id": "D2", "status": "laeuft", "verschleiss": {"T1": 22, "T4": 83}},
+          {"id": "R1", "status": "gestoert"},
+      ],
+  }
+  print(zelle["maschinen"][0]["id"])
+  print(zelle["maschinen"][0]["verschleiss"]["T4"])
+  for m in zelle["maschinen"]:
+      print(m["id"], m["status"], m.get("verschleiss", {}))
+  ''',
+  "Bei jeder API-Antwort und jeder JSON-Datei mit mehr als einer Ebene.",
+  [("Alle gestörten Geräte sammeln", 'zelle = {"maschinen": [{"id": "D2", "status": "laeuft"}, {"id": "R1", "status": "gestoert"}]}\ngestoert = []\nfor m in zelle["maschinen"]:\n    if m["status"] == "gestoert":\n        gestoert.append(m["id"])\nprint(gestoert)'),
+   ("Inneres dict durchlaufen", 'd2 = {"verschleiss": {"T1": 22, "T4": 83}}\nfor werkzeug, prozent in d2["verschleiss"].items():\n    if prozent > 80:\n        print(werkzeug, "wechseln")')],
+  [("Liste mit Schlüssel statt Index angesprochen", 'zelle = {"maschinen": [{"id": "D2"}]}\nprint(zelle["maschinen"]["D2"])'),
+   ("Schlüssel fehlt bei einem Eintrag", 'maschinen = [{"id": "D2", "temperatur_c": 48.5}, {"id": "R1"}]\nfor m in maschinen:\n    print(m["temperatur_c"])')],
+  ["dict", "dict-get", "liste", "json-loads"],
+  bez=["Verschachtelung"],
+  aliase=["Liste von Dicts", "dict im dict", "geschachtelt", "JSON auswerten"])
+
+E("ipaddress", "ipaddress (IP und Subnetz)", NJ, "V17", "lesen",
+  "Prüft IP-Adressen und Netze: Liegt ein Gerät im Netz, wie viele Adressen hat das Netz?",
+  "import ipaddress\nnetz = ipaddress.ip_network(\"192.168.30.0/24\")\nip = ipaddress.ip_address(\"192.168.30.11\")\nip in netz",
+  "Eine IP-Adresse besteht aus 32 Bit, geschrieben als vier Zahlen von 0 bis 255. Die Zahl hinter dem Schrägstrich (Präfix) sagt, wie viele Bit vorne das Netz bezeichnen; der Rest nummeriert die Geräte. Bei /24 gehören alle Adressen mit denselben ersten drei Zahlen zum Netz. ip_network baut ein Netz, ip_address eine Adresse, und mit in prüfst du die Zugehörigkeit. num_addresses zählt alle Adressen des Netzes; die erste (Netzadresse) und die letzte (Broadcast) bekommt kein Gerät.",
+  '''
+  import ipaddress
+
+  netz = ipaddress.ip_network("192.168.30.0/24")
+  print(netz.netmask, netz.num_addresses - 2, "nutzbare Adressen")
+  for text in ["192.168.30.11", "192.168.31.20"]:
+      ip = ipaddress.ip_address(text)
+      print(text, ip in netz)
+  ''',
+  "Beim Prüfen von Gerätelisten, Inbetriebnahme-Protokollen und Netzplänen einer Anlage.",
+  [("Kleineres Netz /26", 'import ipaddress\nnetz = ipaddress.ip_network("192.168.30.64/26")\nprint(netz.network_address, netz.broadcast_address, netz.num_addresses - 2)'),
+   ("Netz zu einer Adresse mit Präfix finden", 'import ipaddress\nprint(ipaddress.ip_interface("192.168.30.77/26").network)')],
+  [("Zahl über 255 in der Adresse", 'import ipaddress\nipaddress.ip_address("192.168.30.300")'),
+   ("Netzadresse mit gesetzten Host-Bits", 'import ipaddress\nipaddress.ip_network("192.168.30.11/24")'),
+   ("Adressen als Text vergleichen statt als Netz", 'print("192.168.31.20".startswith("192.168.3"))', "kein Fehler, aber True: 192.168.31.20 liegt nicht in 192.168.30.0/24", False)],
+  ["import", "json-loads"],
+  bez=["ipaddress", "ipaddress.ip_network", "ipaddress.ip_address", "ipaddress.ip_interface", ".num_addresses", ".network_address", ".broadcast_address", ".netmask"],
+  aliase=["IP-Adresse", "Subnetz", "Netzmaske", "Präfix", "CIDR"])

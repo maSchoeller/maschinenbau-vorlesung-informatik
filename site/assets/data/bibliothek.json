@@ -3880,6 +3880,233 @@
      "meldung": "AttributeError: 'numpy.ndarray' object has no attribute 'plot'"
     }
    ]
+  },
+  {
+   "id": "json-loads",
+   "name": "json.loads() / json.dumps()",
+   "kategorie": "Netzwerk & JSON",
+   "eingefuehrt": "V17",
+   "ampel": "kopf",
+   "kurz": "Übersetzt JSON-Text in Python-Daten (loads) und Python-Daten in JSON-Text (dumps).",
+   "syntax": "import json\ndaten = json.loads(text)\ntext = json.dumps(daten)\ntext = json.dumps(daten, indent=2)",
+   "erklaerung": "JSON ist ein Textformat für Daten, das Maschinen, Server und Programme untereinander austauschen. json.loads (load string) macht aus dem Text Python-Daten: ein JSON-Objekt {…} wird ein dict, ein Array […] eine Liste, Zahlen werden int oder float, true/false werden True/False und null wird None. json.dumps macht den umgekehrten Weg, zum Beispiel für eine Meldung an einen MQTT-Broker. In JSON stehen Texte immer in doppelten Anführungszeichen, und nach dem letzten Element steht kein Komma.",
+   "beispiel": "import json\n\ntext = '{\"id\": \"D2\", \"drehzahl_1_min\": 1450, \"programm\": null, \"laeuft\": true}'\nd2 = json.loads(text)\nprint(type(d2))\nprint(d2[\"drehzahl_1_min\"] + 50)\nprint(d2[\"programm\"], d2[\"laeuft\"])\n\nmeldung = {\"maschine\": \"D2\", \"werkzeug\": \"T4\", \"aktion\": \"wechseln\"}\nprint(json.dumps(meldung))",
+   "wann_nutzen": "Immer, wenn Daten als Text zwischen Programmen reisen: Web-APIs, MQTT-Nachrichten, Konfigurationsdateien.",
+   "transfer": [
+    {
+     "situation": "Array aus JSON: wird eine Liste",
+     "code": "import json\nwerte = json.loads(\"[48.5, 49.1, 50.2]\")\nprint(max(werte))"
+    },
+    {
+     "situation": "Lesbar eingerückt ausgeben",
+     "code": "import json\nd = {\"id\": \"F1\", \"verschleiss\": {\"T1\": 47}}\nprint(json.dumps(d, indent=2))"
+    },
+    {
+     "situation": "Fehlerhaften Text abfangen (JSONDecodeError ist ein ValueError)",
+     "code": "import json\ntry:\n    json.loads(\"{'id': 'D2'}\")\nexcept ValueError:\n    print(\"kein gültiges JSON\")"
+    }
+   ],
+   "verwandt": [
+    "dict",
+    "liste",
+    "verschachtelt",
+    "json-datei"
+   ],
+   "bezeichner": [
+    "json",
+    "json.loads",
+    "json.dumps",
+    "indent"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [
+    "JSON",
+    "loads",
+    "dumps",
+    "MQTT-Nachricht",
+    "API-Antwort"
+   ],
+   "beispiel_ausgabe": "<class 'dict'>\n1500\nNone True\n{\"maschine\": \"D2\", \"werkzeug\": \"T4\", \"aktion\": \"wechseln\"}",
+   "typische_fehler": [
+    {
+     "beschreibung": "Einfache Anführungszeichen sind in JSON nicht erlaubt",
+     "code": "import json\njson.loads(\"{'id': 'D2'}\")",
+     "meldung": "json.decoder.JSONDecodeError: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)"
+    },
+    {
+     "beschreibung": "Komma nach dem letzten Element",
+     "code": "import json\njson.loads('{\"id\": \"D2\",}')",
+     "meldung": "json.decoder.JSONDecodeError: Illegal trailing comma before end of object: line 1 column 12 (char 11)"
+    },
+    {
+     "beschreibung": "loads bekommt schon ein dict statt Text",
+     "code": "import json\njson.loads({\"id\": \"D2\"})",
+     "meldung": "TypeError: the JSON object must be str, bytes or bytearray, not dict"
+    }
+   ]
+  },
+  {
+   "id": "json-datei",
+   "name": "json.load() / json.dump()",
+   "kategorie": "Netzwerk & JSON",
+   "eingefuehrt": "V17",
+   "ampel": "lesen",
+   "kurz": "Liest JSON aus einer Datei bzw. schreibt Python-Daten als JSON in eine Datei.",
+   "syntax": "with open(\"datei.json\", encoding=\"utf-8\") as f:\n    daten = json.load(f)\nwith open(\"datei.json\", \"w\", encoding=\"utf-8\") as f:\n    json.dump(daten, f, indent=2)",
+   "erklaerung": "Ohne s am Ende arbeiten load und dump mit einer geöffneten Datei statt mit Text: json.load(f) liest die ganze Datei und liefert dict oder Liste, json.dump(daten, f) schreibt sie hinein. Öffne die Datei wie in V09 mit with open und encoding=\"utf-8\". Merkhilfe: das s in loads und dumps steht für string.",
+   "beispiel": "import json\n\nzelle = {\"zelle\": \"FZ-3\", \"netz\": \"192.168.30.0/24\", \"geraete\": [\"D2\", \"F1\", \"R1\"]}\nwith open(\"zelle.json\", \"w\", encoding=\"utf-8\") as f:\n    json.dump(zelle, f, indent=2)\n\nwith open(\"zelle.json\", encoding=\"utf-8\") as f:\n    geladen = json.load(f)\nprint(geladen[\"netz\"], len(geladen[\"geraete\"]))",
+   "wann_nutzen": "Für Einstellungen, Zwischenergebnisse und Messdaten, die ein anderes Programm wieder einlesen soll.",
+   "transfer": [
+    {
+     "situation": "Liste von Messwerten speichern und wieder laden",
+     "code": "import json\nwith open(\"temp.json\", \"w\", encoding=\"utf-8\") as f:\n    json.dump([48.5, 49.1], f)\nwith open(\"temp.json\", encoding=\"utf-8\") as f:\n    print(json.load(f))"
+    },
+    {
+     "situation": "JSON-Datei zeilenweise (eine Nachricht je Zeile)",
+     "code": "import json\nwith open(\"log.jsonl\", \"w\", encoding=\"utf-8\") as f:\n    f.write('{\"t\": 1}\\n{\"t\": 2}\\n')\nwith open(\"log.jsonl\", encoding=\"utf-8\") as f:\n    for zeile in f:\n        print(json.loads(zeile)[\"t\"])"
+    }
+   ],
+   "verwandt": [
+    "json-loads",
+    "with-open",
+    "try-except"
+   ],
+   "bezeichner": [
+    "json.load",
+    "json.dump"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [
+    "JSON-Datei",
+    "Konfigurationsdatei",
+    "JSON Lines"
+   ],
+   "beispiel_ausgabe": "192.168.30.0/24 3",
+   "typische_fehler": [
+    {
+     "beschreibung": "load mit Dateinamen statt geöffneter Datei",
+     "code": "import json\njson.load(\"zelle.json\")",
+     "meldung": "AttributeError: 'str' object has no attribute 'read'"
+    },
+    {
+     "beschreibung": "Datei zum Lesen geöffnet, aber dump aufgerufen",
+     "code": "import json\nopen(\"x.json\", \"w\").close()\nwith open(\"x.json\", encoding=\"utf-8\") as f:\n    json.dump({\"a\": 1}, f)",
+     "meldung": "io.UnsupportedOperation: not writable"
+    }
+   ]
+  },
+  {
+   "id": "verschachtelt",
+   "name": "Verschachtelte Daten",
+   "kategorie": "Listen, Tupel & Dicts",
+   "eingefuehrt": "V17",
+   "ampel": "kopf",
+   "kurz": "Listen von Dicts und Dicts in Dicts: Zugriffe von außen nach innen aneinanderhängen.",
+   "syntax": "zelle[\"maschinen\"][0][\"id\"]\nfor m in zelle[\"maschinen\"]:\n    print(m[\"id\"])\nd2[\"verschleiss\"][\"T4\"]",
+   "erklaerung": "Daten aus JSON sind fast immer verschachtelt: Ein dict enthält eine Liste, die Liste enthält dicts. Du liest einen Zugriff von links nach rechts, jede Klammer geht eine Ebene tiefer. Bei einer Liste brauchst du eine Zahl als Index oder eine for-Schleife, bei einem dict einen Schlüssel. Fehlt ein Schlüssel bei manchen Einträgen, hilft .get(schluessel, ersatz). Drucke im Zweifel erst type(...) der Ebene, auf der du gerade bist.",
+   "beispiel": "zelle = {\n    \"zelle\": \"FZ-3\",\n    \"maschinen\": [\n        {\"id\": \"D2\", \"status\": \"laeuft\", \"verschleiss\": {\"T1\": 22, \"T4\": 83}},\n        {\"id\": \"R1\", \"status\": \"gestoert\"},\n    ],\n}\nprint(zelle[\"maschinen\"][0][\"id\"])\nprint(zelle[\"maschinen\"][0][\"verschleiss\"][\"T4\"])\nfor m in zelle[\"maschinen\"]:\n    print(m[\"id\"], m[\"status\"], m.get(\"verschleiss\", {}))",
+   "wann_nutzen": "Bei jeder API-Antwort und jeder JSON-Datei mit mehr als einer Ebene.",
+   "transfer": [
+    {
+     "situation": "Alle gestörten Geräte sammeln",
+     "code": "zelle = {\"maschinen\": [{\"id\": \"D2\", \"status\": \"laeuft\"}, {\"id\": \"R1\", \"status\": \"gestoert\"}]}\ngestoert = []\nfor m in zelle[\"maschinen\"]:\n    if m[\"status\"] == \"gestoert\":\n        gestoert.append(m[\"id\"])\nprint(gestoert)"
+    },
+    {
+     "situation": "Inneres dict durchlaufen",
+     "code": "d2 = {\"verschleiss\": {\"T1\": 22, \"T4\": 83}}\nfor werkzeug, prozent in d2[\"verschleiss\"].items():\n    if prozent > 80:\n        print(werkzeug, \"wechseln\")"
+    }
+   ],
+   "verwandt": [
+    "dict",
+    "dict-get",
+    "liste",
+    "json-loads"
+   ],
+   "bezeichner": [
+    "Verschachtelung"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [
+    "Liste von Dicts",
+    "dict im dict",
+    "geschachtelt",
+    "JSON auswerten"
+   ],
+   "beispiel_ausgabe": "D2\n83\nD2 laeuft {'T1': 22, 'T4': 83}\nR1 gestoert {}",
+   "typische_fehler": [
+    {
+     "beschreibung": "Liste mit Schlüssel statt Index angesprochen",
+     "code": "zelle = {\"maschinen\": [{\"id\": \"D2\"}]}\nprint(zelle[\"maschinen\"][\"D2\"])",
+     "meldung": "TypeError: list indices must be integers or slices, not str"
+    },
+    {
+     "beschreibung": "Schlüssel fehlt bei einem Eintrag",
+     "code": "maschinen = [{\"id\": \"D2\", \"temperatur_c\": 48.5}, {\"id\": \"R1\"}]\nfor m in maschinen:\n    print(m[\"temperatur_c\"])",
+     "meldung": "KeyError: 'temperatur_c'"
+    }
+   ]
+  },
+  {
+   "id": "ipaddress",
+   "name": "ipaddress (IP und Subnetz)",
+   "kategorie": "Netzwerk & JSON",
+   "eingefuehrt": "V17",
+   "ampel": "lesen",
+   "kurz": "Prüft IP-Adressen und Netze: Liegt ein Gerät im Netz, wie viele Adressen hat das Netz?",
+   "syntax": "import ipaddress\nnetz = ipaddress.ip_network(\"192.168.30.0/24\")\nip = ipaddress.ip_address(\"192.168.30.11\")\nip in netz",
+   "erklaerung": "Eine IP-Adresse besteht aus 32 Bit, geschrieben als vier Zahlen von 0 bis 255. Die Zahl hinter dem Schrägstrich (Präfix) sagt, wie viele Bit vorne das Netz bezeichnen; der Rest nummeriert die Geräte. Bei /24 gehören alle Adressen mit denselben ersten drei Zahlen zum Netz. ip_network baut ein Netz, ip_address eine Adresse, und mit in prüfst du die Zugehörigkeit. num_addresses zählt alle Adressen des Netzes; die erste (Netzadresse) und die letzte (Broadcast) bekommt kein Gerät.",
+   "beispiel": "import ipaddress\n\nnetz = ipaddress.ip_network(\"192.168.30.0/24\")\nprint(netz.netmask, netz.num_addresses - 2, \"nutzbare Adressen\")\nfor text in [\"192.168.30.11\", \"192.168.31.20\"]:\n    ip = ipaddress.ip_address(text)\n    print(text, ip in netz)",
+   "wann_nutzen": "Beim Prüfen von Gerätelisten, Inbetriebnahme-Protokollen und Netzplänen einer Anlage.",
+   "transfer": [
+    {
+     "situation": "Kleineres Netz /26",
+     "code": "import ipaddress\nnetz = ipaddress.ip_network(\"192.168.30.64/26\")\nprint(netz.network_address, netz.broadcast_address, netz.num_addresses - 2)"
+    },
+    {
+     "situation": "Netz zu einer Adresse mit Präfix finden",
+     "code": "import ipaddress\nprint(ipaddress.ip_interface(\"192.168.30.77/26\").network)"
+    }
+   ],
+   "verwandt": [
+    "import",
+    "json-loads"
+   ],
+   "bezeichner": [
+    "ipaddress",
+    "ipaddress.ip_network",
+    "ipaddress.ip_address",
+    "ipaddress.ip_interface",
+    ".num_addresses",
+    ".network_address",
+    ".broadcast_address",
+    ".netmask"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [
+    "IP-Adresse",
+    "Subnetz",
+    "Netzmaske",
+    "Präfix",
+    "CIDR"
+   ],
+   "beispiel_ausgabe": "255.255.255.0 254 nutzbare Adressen\n192.168.30.11 True\n192.168.31.20 False",
+   "typische_fehler": [
+    {
+     "beschreibung": "Zahl über 255 in der Adresse",
+     "code": "import ipaddress\nipaddress.ip_address(\"192.168.30.300\")",
+     "meldung": "ValueError: '192.168.30.300' does not appear to be an IPv4 or IPv6 address"
+    },
+    {
+     "beschreibung": "Netzadresse mit gesetzten Host-Bits",
+     "code": "import ipaddress\nipaddress.ip_network(\"192.168.30.11/24\")",
+     "meldung": "ValueError: 192.168.30.11/24 has host bits set"
+    },
+    {
+     "beschreibung": "Adressen als Text vergleichen statt als Netz",
+     "code": "print(\"192.168.31.20\".startswith(\"192.168.3\"))",
+     "meldung": "kein Fehler, aber True: 192.168.31.20 liegt nicht in 192.168.30.0/24"
+    }
+   ]
   }
  ]
 }
