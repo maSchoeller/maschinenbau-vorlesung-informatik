@@ -1,0 +1,1402 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>V13 Programmierlabor · Informatik Maschinenbau</title>
+  <meta name="description" content="Programmierlabor V13: Arbeitsumgebung mit Aufgabenliste, Editor und Befehls-Bibliothek. Teil A im Labor, Teil B Training zu Hause. NumPy-Arrays, Vektorisierung, Messdaten auswerten und Laufzeit messen.">
+  <link rel="stylesheet" href="../assets/css/dhbw-base.css">
+  <link rel="stylesheet" href="../assets/css/kurs.css">
+  <link rel="stylesheet" href="../assets/css/aufgaben.css">
+  <link rel="stylesheet" href="../assets/css/editor.css">
+  <link rel="stylesheet" href="../assets/css/labor.css">
+  <link rel="stylesheet" href="../assets/css/v05.css">
+  <link rel="stylesheet" href="../assets/css/pap-editor.css">
+  <link rel="stylesheet" href="../assets/css/v13.css">
+</head>
+<body data-lesson="V13" data-page="labor">
+  <a class="k-skip" href="#inhalt">Zum Inhalt springen</a>
+
+  <header class="dhbw-header k-header">
+    <div class="dhbw-header__inner">
+      <a class="k-logo" href="../index.html" aria-label="Zur Startseite">
+        <span class="k-logo__mark" aria-hidden="true">DHBW</span>
+        <span class="k-logo__text">Informatik Maschinenbau<small>Campus Horb · 2026/27</small></span>
+      </a>
+      <nav class="k-nav" aria-label="Hauptnavigation">
+        <a href="../index.html">Start</a>
+        <a href="../index.html#lernpfad">Lernpfad</a>
+        <a href="../bibliothek.html">Bibliothek</a>
+        <a href="../pap-editor.html">PAP-Editor</a>
+        <a href="v13-laufzeit.html">V13 Lerneinheit</a>
+        <a href="v13-labor.html" aria-current="page">V13 Labor</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="lab" data-lab>
+
+    <nav class="lab__list" aria-label="Aufgabenliste">
+      <div class="lab__listhead">
+        <p class="lab__title">Programmierlabor V13</p>
+        <a class="lab__back" href="v13-laufzeit.html">← Lerneinheit</a>
+      </div>
+      <div class="a-progress" data-a-progress>
+        <span class="a-progress__bar"><span class="a-progress__fill"></span></span>
+        <span class="a-progress__text">0 von 14 Aufgaben gelöst</span>
+      </div>
+      <p class="lab__legend k-small k-muted"><span><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-circle"/></svg> offen</span><span><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-half"/></svg> begonnen</span><span><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-done"/></svg> gelöst</span></p>
+      <div data-lab-items></div>
+    </nav>
+
+    <main id="inhalt" class="lab__main" tabindex="-1">
+      <div class="lab__bar">
+        <div class="lab__select">
+          <label for="lab-select">Aufgabe</label>
+          <select id="lab-select"></select>
+        </div>
+        <button type="button" class="k-btn k-btn--ghost k-btn--small" id="lab-toolbox-btn" aria-expanded="false" aria-controls="lab-drawer">Werkzeugkasten</button>
+      </div>
+      <section class="lab__drawer" id="lab-drawer" aria-label="Werkzeugkasten" hidden></section>
+
+    <section class="l-task" id="a-werkzeugkasten" data-title="Werkzeugkasten" data-part="A" data-stars="" data-min="5" data-extra="" aria-labelledby="h-a-werkzeugkasten" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-werkzeugkasten" tabindex="-1">Werkzeugkasten</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Heute neu in Python: <abbr class="k-begriff" data-erklaerung="NumPy ist eine Python-Bibliothek für Zahlenfelder (Arrays). Sie rechnet mit ganzen Feldern auf einmal und ist dafür sehr viel schneller als eine selbst geschriebene Schleife."><strong>NumPy</strong></abbr> (<code class="k-i">import numpy as np</code>, <code class="k-i">np.array</code>, <code class="k-i">np.arange</code>, <code class="k-i">np.linspace</code>), <strong>elementweise Rechnung</strong> (<code class="k-i">a * 2</code>, <code class="k-i">a + b</code>, <code class="k-i">np.sin</code>), die Kennwerte <code class="k-i">np.mean</code>, <code class="k-i">np.max</code>, <code class="k-i">np.sqrt</code>, <abbr class="k-begriff" data-erklaerung="Eine Maske ist ein Wahr/Falsch-Array, das bei einem Vergleich wie a > 3 entsteht. In eckigen Klammern hinter dem Array behält sie nur die passenden Elemente."><strong>Masken</strong></abbr> wie <code class="k-i">a[a &gt; 3]</code>, <code class="k-i">np.loadtxt</code> und <strong>Zeitmessung</strong> mit <code class="k-i">time.perf_counter()</code>. Aus V07 setzen wir <code class="k-i">def</code> und <code class="k-i">return</code> voraus, aus V08 Listen, Tupel und Dictionaries, aus V09 Dateien, aus V11 <code class="k-i">import</code>. Die Klausur verlangt, dass du Code von Hand schreibst. Darum gehen wir in kleinen Schritten vom Vormachen zum Selberschreiben, und die Hilfen werden dabei weniger. <strong>Beim ersten Lauf mit NumPy dauert das Laden ein paar Sekunden</strong> (ca. 8 MB, nur beim ersten Mal), die Ladeanzeige unter dem Editor zeigt es dir.</p>
+      <figure class="k-video">
+        <video controls preload="metadata" poster="../assets/video/v13-python-poster.png" aria-label="Python-Werkstatt: NumPy-Arrays, elementweise Rechnung, Masken, Zeitmessung (ca. 3 Min)">
+          <source src="../assets/video/v13-python.mp4" type="video/mp4">
+          <track kind="subtitles" srclang="de" label="Deutsch" src="../assets/video/v13-python.vtt" default>
+          Dein Browser kann dieses Video nicht abspielen.
+        </video>
+        <div class="k-video__missing" hidden>Video folgt. Bis dahin: Lies den Code unten Zeile für Zeile und probiere ihn aus.</div>
+        <figcaption>Python-Werkstatt: NumPy-Arrays, elementweise Rechnung, Masken, Zeitmessung (ca. 3 Min). Untertitel sind eingeschaltet (Deutsch).</figcaption>
+      </figure>
+      <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke</strong><p>Diese sieben <abbr class="k-begriff" data-erklaerung="Die Syntax ist die Schreibweise einer Programmiersprache, wie die Grammatik einer Sprache: Reihenfolge, Klammern, Anführungszeichen. Ein Tippfehler dort heißt Syntaxfehler.">Syntax</abbr>-Karten sind dein Spickzettel, bis es sitzt. Du erreichst sie in jeder Aufgabe über den Knopf „Werkzeugkasten“ oben. Alle Befehle des Kurses stehen außerdem rechts in der Befehls-Bibliothek. Führe jede Karte aus. Bei den Karten mit Schleife hilft „Schritt für Schritt“.</p></div>
+      <div class="lab__toolbox" id="lab-toolbox">
+<div class="a-syntax-list">
+  <article class="a-syntax" aria-labelledby="sk-array">
+    <span class="a-syntax__label">Syntax-Karte 1</span>
+    <h4 id="sk-array">NumPy laden und ein Array erzeugen</h4>
+<pre><code>import numpy as np
+
+liste = [2.0, 4.0, 6.0]
+a = np.array(liste)            # Liste -&gt; Array
+print(a)
+print(a.shape, len(a))         # Form (3,) und Länge 3
+print(liste * 2)               # Liste: wird zweimal hintereinander gehängt
+print(a * 2)                   # Array: jeder Wert wird verdoppelt</code></pre>
+    <ul>
+      <li><code class="k-i">import numpy as np</code> steht ganz oben im Programm. <code class="k-i">np</code> ist der übliche Kurzname. Ohne diese Zeile gibt es <code class="k-i">NameError: name 'np' is not defined</code>.</li>
+      <li><code class="k-i">np.array(liste)</code> macht aus einer Liste ein <strong>Array</strong>: ein Zahlenfeld mit lauter Werten gleichen Typs. <code class="k-i">print</code> zeigt es <em>ohne Kommas</em>: <code class="k-i">[2. 4. 6.]</code> (der Punkt zeigt: Kommazahlen).</li>
+      <li><code class="k-i">a.shape</code> ist die Form als Tupel, bei einer Zahlenreihe <code class="k-i">(3,)</code>. <code class="k-i">len(a)</code> liefert die Länge wie bei Listen.</li>
+      <li><strong>Liste und Array verhalten sich verschieden:</strong> <code class="k-i">liste * 2</code> hängt die Liste an sich selbst, <code class="k-i">a * 2</code> verdoppelt die Werte, und <code class="k-i">liste + liste</code> hängt aneinander, <code class="k-i">a + a</code> addiert Paar für Paar.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-reihen">
+    <span class="a-syntax__label">Syntax-Karte 2</span>
+    <h4 id="sk-reihen">Zahlenreihen: np.arange und np.linspace</h4>
+<pre><code>import numpy as np
+
+print(np.arange(5))                  # 0 bis 4, wie range
+print(np.arange(0, 1, 0.25))         # Start, Stopp (nicht dabei), Schritt
+print(np.linspace(0, 1, 5))          # 5 Werte von 0 bis 1, beide Enden dabei
+
+N = 8
+fs = 100                             # Abtastrate in Hz
+t = np.arange(N) / fs                # Zeitachse in s: 0, 0.01, 0.02, ...
+print(t)</code></pre>
+    <ul>
+      <li><code class="k-i">np.arange(stopp)</code> oder <code class="k-i">np.arange(start, stopp, schritt)</code> arbeitet wie <code class="k-i">range</code>, liefert aber ein Array und erlaubt auch Kommazahlen als Schritt. Der Stopp gehört <strong>nicht</strong> mehr dazu.</li>
+      <li><code class="k-i">np.linspace(start, ende, anzahl)</code> liefert <em>anzahl</em> gleichmäßig verteilte Werte, <strong>beide Enden eingeschlossen</strong>. Praktisch, wenn du die Punktzahl vorgibst.</li>
+      <li>Eine Zeitachse aus Abtastrate: <code class="k-i">np.arange(N) / fs</code>. Die Division wirkt auf jedes Element (Karte 3).</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-elementweise">
+    <span class="a-syntax__label">Syntax-Karte 3</span>
+    <h4 id="sk-elementweise">Elementweise rechnen</h4>
+<pre><code>import numpy as np
+
+a = np.array([1.0, 2.0, 3.0])
+b = np.array([10.0, 20.0, 30.0])
+print(a * 2)               # jedes Element mal 2
+print(a + b)               # Paar für Paar addieren
+print(a ** 2)              # jedes Element quadrieren
+print(np.sin(a))           # Funktion wirkt auf jedes Element
+print(a / 1000)            # z. B. mm -&gt; m
+
+c = np.array([1.0, 2.0, 3.0, 4.0])
+print(a + c)               # Fehler: Längen passen nicht</code></pre>
+    <ul>
+      <li>Rechenzeichen und NumPy-Funktionen wie <code class="k-i">np.sin</code>, <code class="k-i">np.cos</code>, <code class="k-i">np.sqrt</code> wirken <strong>auf jedes Element</strong>. Du schreibst keine Schleife. Das ist die <strong>Vektorisierung</strong>.</li>
+      <li>Zwei Arrays werden Paar für Paar verrechnet und müssen <strong>gleich lang</strong> sein. Sonst: <code class="k-i">ValueError: operands could not be broadcast together with shapes (3,) (4,)</code>. Mit einer einzelnen Zahl geht es immer.</li>
+      <li>Der Winkel in <code class="k-i">np.sin</code> ist im Bogenmaß (rad). Für f = 50 Hz: <code class="k-i">np.sin(2 * np.pi * 50 * t)</code> mit der Konstante <code class="k-i">np.pi</code>.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-kennwerte">
+    <span class="a-syntax__label">Syntax-Karte 4</span>
+    <h4 id="sk-kennwerte">Kennwerte: mean, max, min, sum, sqrt</h4>
+<pre><code>import numpy as np
+
+v = np.array([3.0, -4.0, 5.0])        # Schwinggeschwindigkeit in mm/s
+print(np.mean(v), np.max(v), np.min(v), np.sum(v))
+print(np.sqrt(np.array([4.0, 9.0])))  # Wurzel jedes Elements
+
+quadrate = v ** 2
+print(np.mean(quadrate))
+print(np.sqrt(np.mean(v ** 2)))       # Effektivwert: Wurzel aus dem Mittelwert der Quadrate
+print(np.sqrt(np.mean(v) ** 2))       # FALSCH: erst mitteln, dann quadrieren</code></pre>
+    <ul>
+      <li><code class="k-i">np.mean</code> (Mittelwert), <code class="k-i">np.max</code>, <code class="k-i">np.min</code> und <code class="k-i">np.sum</code> fassen ein ganzes Array zu <strong>einer Zahl</strong> zusammen. Vorher mussten es <code class="k-i">sum(liste) / len(liste)</code> und <code class="k-i">max(liste)</code> tun.</li>
+      <li><strong>Effektivwert</strong> (RMS): erst <em>jedes</em> Element quadrieren, dann mitteln, dann die Wurzel: <code class="k-i">np.sqrt(np.mean(v ** 2))</code>. Die Reihenfolge ist entscheidend. Bei Schwingungen mit wechselndem Vorzeichen ist <code class="k-i">np.mean(v)</code> fast null.</li>
+      <li>Rechne einen Wert immer von Hand gegen: für 3, −4, 5 sind die Quadrate 9, 16, 25, der Mittelwert 50/3 ≈ 16,67, die Wurzel ≈ 4,08.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-maske">
+    <span class="a-syntax__label">Syntax-Karte 5</span>
+    <h4 id="sk-maske">Masken: Werte nach Bedingung auswählen</h4>
+<pre><code>import numpy as np
+
+a = np.array([1, 5, 2, 8, 3])
+print(a &gt; 2)                         # Wahr/Falsch je Element: die Maske
+print(a[a &gt; 2])                      # nur die Werte, bei denen die Maske wahr ist
+print(len(a[a &gt; 2]))                 # wie viele
+print(len(a[a &gt; 2]) / len(a))        # Anteil von 0 bis 1
+print(np.mean(a &gt; 2))                # Kurzform: Mittelwert von Wahr(1)/Falsch(0)
+
+grenze = 4
+auswahl = a[(a &gt; 1) &amp; (a &lt; grenze)]  # zwei Bedingungen: & statt and, Klammern setzen
+print(auswahl)</code></pre>
+    <ul>
+      <li>Ein Vergleich wie <code class="k-i">a &gt; 2</code> wirkt auf <em>alle</em> Elemente und ergibt ein <strong>Wahr/Falsch-Array</strong> (die Maske). <code class="k-i">a[maske]</code> behält die Elemente, bei denen sie wahr ist, in ihrer Reihenfolge.</li>
+      <li>Das ersetzt die Schleife mit <code class="k-i">if</code> und <code class="k-i">append</code> aus V10: <code class="k-i">len(a[a &gt; 2])</code> zählt, <code class="k-i">len(...) / len(a)</code> gibt den Anteil. <code class="k-i">np.mean(a &gt; 2)</code> ist dieselbe Zahl als Kurzform (wahr zählt als 1, falsch als 0).</li>
+      <li>Zwei Bedingungen verbindest du mit <code class="k-i">&amp;</code> (und) bzw. <code class="k-i">|</code> (oder), jede in <strong>Klammern</strong>. Das Wort <code class="k-i">and</code> funktioniert hier nicht.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-laden">
+    <span class="a-syntax__label">Syntax-Karte 6</span>
+    <h4 id="sk-laden">Messdaten laden: np.loadtxt</h4>
+<pre data-files="../assets/data/v09/waschmaschine.csv"><code>import numpy as np
+
+tabelle = np.loadtxt("waschmaschine.csv", delimiter=",", skiprows=1)
+print(tabelle.shape)                          # (Zeilen, Spalten)
+spalte = tabelle[:, 4]                        # alle Zeilen, Spalte mit Index 4
+print(len(spalte), spalte[:3])
+
+a = np.loadtxt("waschmaschine.csv", delimiter=",", skiprows=1, usecols=4)
+print(a.shape, np.max(a))                     # nur diese Spalte als einfaches Array</code></pre>
+    <ul>
+      <li><code class="k-i">np.loadtxt(datei, delimiter=",", skiprows=1)</code> liest eine Textdatei mit Zahlen direkt als Array: <code class="k-i">delimiter</code> ist das Trennzeichen, <code class="k-i">skiprows=1</code> überspringt die Kopfzeile. Ein Dezimalkomma und ein Semikolon als Trenner müsstest du erst umbauen (V09). Die phyphox-Datei aus V09 hat Punkte und Kommas als Trenner und passt.</li>
+      <li>Das Ergebnis ist eine <strong>Tabelle</strong> (zweidimensionales Array). <code class="k-i">tabelle[:, 4]</code> heißt „alle Zeilen, Spalte 4“ (gezählt ab 0). Mit <code class="k-i">usecols=4</code> bekommst du gleich nur diese Spalte.</li>
+      <li>Bei <em>einer</em> Datenzeile liefert <code class="k-i">loadtxt</code> kein Array mit Länge, sondern eine einzelne Zahl. Prüfe <code class="k-i">.shape</code>, wenn du Fehlermeldungen wie „len() of unsized object“ siehst.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-zeit">
+    <span class="a-syntax__label">Syntax-Karte 7</span>
+    <h4 id="sk-zeit">Zeit messen: perf_counter, mehrfach, Minimum</h4>
+<pre data-timeout="60000"><code>import time
+import numpy as np
+
+def messe(f):
+    start = time.perf_counter()
+    f()                                       # nur das Gemessene zwischen Start und Ende
+    return time.perf_counter() - start
+
+def schleife():
+    summe = 0
+    for i in range(200_000):
+        summe = summe + i * i
+
+def vektor():
+    a = np.arange(200_000)
+    np.sum(a * a)
+
+zeiten_s = [messe(schleife) for versuch in range(5)]
+zeiten_v = [messe(vektor) for versuch in range(5)]
+print(f"Schleife: Minimum {min(zeiten_s) * 1000:.2f} ms, Median {np.median(zeiten_s) * 1000:.2f} ms")
+print(f"Vektor:   Minimum {min(zeiten_v) * 1000:.2f} ms, Median {np.median(zeiten_v) * 1000:.2f} ms")</code></pre>
+    <ul>
+      <li><code class="k-i">time.perf_counter()</code> liefert Sekunden. Erst die <strong>Differenz</strong> aus zwei Aufrufen (nach minus vor) ist die Dauer. Reihenfolge <code class="k-i">ende - start</code>, nicht umgekehrt.</li>
+      <li><strong>Mehrfach messen</strong> und <code class="k-i">min(zeiten)</code> oder <code class="k-i">np.median(zeiten)</code> berichten, nicht den Mittelwert und nicht eine einzelne Messung.</li>
+      <li>Zwischen Start und Ende steht nur die Rechnung: kein <code class="k-i">print</code>, kein Laden einer Datei. Die Werte hängen von Rechner und Browser ab, schreibe nie „NumPy ist immer genau n-mal schneller“.</li>
+    </ul>
+  </article>
+</div>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-vorgemacht" data-title="Vorgerechnetes Beispiel: Effektivwert, Schleife gegen NumPy" data-part="A" data-stars="" data-min="10" data-extra="" aria-labelledby="h-a-vorgemacht" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-vorgemacht" tabindex="-1">Vorgerechnetes Beispiel: Effektivwert, Schleife gegen NumPy</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Aufgabe: Eine Schwingung mit 50 Hz und 2 mm/s Amplitude wurde 10 Sekunden lang mit 100 kHz abgetastet, das sind 1 Million Messpunkte. Das <abbr class="k-begriff" data-erklaerung="Ein Programm ist eine Liste von Anweisungen, die Python von oben nach unten Zeile für Zeile abarbeitet.">Programm</abbr> berechnet den Effektivwert zweimal: mit einer Schleife über eine Liste und mit einer NumPy-Rechnung auf dem ganzen Array. Es misst dabei jeweils die Zeit und vergleicht mit der Theorie A/√2. Lies den Code Zeile für Zeile, dann führe ihn aus. Das dauert ein paar Sekunden (und beim ersten Mal kommt das Laden von NumPy dazu). Welche Zeiten bei dir herauskommen, weißt du vorher nicht: Sie hängen von Rechner und Browser ab. Der Effektivwert muss aber bei beiden Wegen 1.4142 sein.</p>
+      <figure class="k-video">
+        <video controls preload="metadata" poster="../assets/video/v13-beispiel-poster.png" aria-label="Vorgerechnet: Effektivwert von einer Million Messpunkten, Schleife gegen NumPy (ca. 3 Min)">
+          <source src="../assets/video/v13-beispiel.mp4" type="video/mp4">
+          <track kind="subtitles" srclang="de" label="Deutsch" src="../assets/video/v13-beispiel.vtt" default>
+          Dein Browser kann dieses Video nicht abspielen.
+        </video>
+        <div class="k-video__missing" hidden>Video folgt. Bis dahin: Lies den Code unten Zeile für Zeile und probiere ihn aus.</div>
+        <figcaption>Vorgerechnet: Effektivwert von einer Million Messpunkten, Schleife gegen NumPy (ca. 3 Min). Untertitel sind eingeschaltet (Deutsch).</figcaption>
+      </figure>
+      <div class="a-task" data-a="run" data-id="w-vorgemacht" data-count="0" data-mode="programm" data-timeout="150000">
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V13" aria-label="Python-Code: Effektivwert, Schleife gegen NumPy"># 1 Million Messpunkte: Effektivwert einer Schwingung - Schleife gegen NumPy
+# (V13: NumPy-Arrays, Vektorisierung, Zeit messen)
+
+import math
+import time
+import numpy as np
+
+N = 1_000_000                   # 1 Mio. Messpunkte, Abtastrate 100 kHz -> 10 s Messung
+f = 50.0                        # Hz
+A = 2.0                         # Amplitude in mm/s (Schwinggeschwindigkeit)
+
+# Variante 1: Python-Schleife über eine Liste
+start = time.perf_counter()
+werte = []
+for i in range(N):
+    t = i / 100_000
+    werte.append(A * math.sin(2 * math.pi * f * t))
+summe = 0.0
+for v in werte:
+    summe = summe + v * v
+rms_schleife = math.sqrt(summe / N)
+dauer_schleife = time.perf_counter() - start
+
+# Variante 2: NumPy - eine Rechnung für das ganze Array
+start = time.perf_counter()
+t = np.arange(N) / 100_000
+v = A * np.sin(2 * np.pi * f * t)
+rms_numpy = np.sqrt(np.mean(v ** 2))
+dauer_numpy = time.perf_counter() - start
+
+print(f"Effektivwert Schleife: {rms_schleife:.4f} mm/s in {dauer_schleife:.3f} s")
+print(f"Effektivwert NumPy:    {rms_numpy:.4f} mm/s in {dauer_numpy:.3f} s")
+print(f"Theorie A/sqrt(2):     {A / math.sqrt(2):.4f} mm/s")
+print(f"NumPy ist etwa {dauer_schleife / dauer_numpy:.0f}-mal schneller")</textarea></div>
+      </div>
+      <p class="k-small k-muted">Links die Schleifen-Variante als Programmablaufplan (Zählschleife über alle Messpunkte, Summe der Quadrate), rechts die NumPy-Variante ohne Schleife im Plan. Das Rechteck „v = A * np.sin(…)“ steht für eine Million Rechnungen.</p>
+      <div data-explorable="pap-vergleich"></div>
+      <ol class="a-explain">
+        <li><strong>Zeilen 4 bis 6:</strong> Drei Module werden geladen: <code class="k-i">math</code> für <code class="k-i">sin</code> und <code class="k-i">sqrt</code> der Schleife, <code class="k-i">time</code> für die Stoppuhr und <code class="k-i">numpy</code> unter dem Kurznamen <code class="k-i">np</code>. Beim ersten Lauf lädt der Browser NumPy nach.</li>
+        <li><strong>Zeilen 8 bis 10:</strong> Die Daten der Messung. <code class="k-i">N = 1_000_000</code> sind eine Million Punkte (die Unterstriche sind nur Lesehilfe). Bei 100 kHz Abtastrate sind das 10 s. <code class="k-i">f</code> ist die Frequenz in Hz, <code class="k-i">A</code> die Amplitude in mm/s.</li>
+        <li><strong>Zeilen 13 bis 22:</strong> <strong>Variante 1 mit Schleife.</strong> Zeile 13 liest die Stoppuhr (<code class="k-i">start</code>). Die erste Schleife (Zeilen 15 bis 17) berechnet für jeden der <code class="k-i">N</code> Punkte die Zeit <code class="k-i">t</code> in s und den Messwert <code class="k-i">A * sin(2 π f t)</code> und hängt ihn an die Liste <code class="k-i">werte</code>. Die zweite Schleife (Zeilen 19 und 20) summiert die Quadrate. Zeile 21: Wurzel aus dem Mittelwert der Quadrate, das ist der Effektivwert. Zeile 22 liest die Stoppuhr erneut: <strong>nachher minus vorher</strong> ist die Dauer.</li>
+        <li><strong>Zeilen 25 bis 29:</strong> <strong>Variante 2 mit NumPy.</strong> Zeile 26: <code class="k-i">np.arange(N) / 100_000</code> erzeugt die ganze Zeitachse als Array (eine Million Werte) in einem Befehl. Zeile 27 berechnet alle Messwerte auf einmal: <code class="k-i">np.sin</code> wirkt auf jedes Element, das Rechenzeichen <code class="k-i">*</code> ebenso. Zeile 28 ist der Effektivwert in einer Zeile: <code class="k-i">v ** 2</code> quadriert jedes Element, <code class="k-i">np.mean</code> mittelt, <code class="k-i">np.sqrt</code> zieht die Wurzel. Zeile 29: Stoppuhr.</li>
+        <li><strong>Zeilen 31 bis 34:</strong> Die Ausgabe. Beide Effektivwerte müssen 1.4142 sein, die Theorie liefert A/√2 = 2/1,4142 = 1,4142 (für eine Sinusschwingung über ganze Perioden). Die Zeilen mit den Zeiten sind <strong>bei jedem Lauf anders</strong>. Die letzte Zeile teilt die beiden Zeiten: Der Faktor hängt von Rechner und Browser ab und ist <em>nur ein Messwert</em>, keine Naturkonstante.</li>
+        <li><strong>Selbsterklärung:</strong> Führe das Programm dreimal aus und schreib die beiden Zeiten auf. Wie stark schwanken sie, und welche Zeit würdest du berichten (Minimum oder Median)? Ändere dann <code class="k-i">N</code> auf 100 000 und auf 10 Millionen (Achtung, dauert länger) und prüfe: Wächst die Schleifenzeit etwa linear mit <code class="k-i">N</code>? Und was ändert sich beim Faktor?</li>
+      </ol>
+    </section>
+
+    <section class="l-task" id="a-ablauf" data-title="Ablauf verfolgen" data-part="A" data-stars="" data-min="7" data-extra="" aria-labelledby="h-a-ablauf" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-ablauf" tabindex="-1">Ablauf verfolgen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Bevor du NumPy-Code schreibst, musst du ihn lesen können. Führe das Programm im Kopf aus, <strong>Zeile für Zeile, so wie Python es tut</strong>. Trage ein, was danach in den hervorgehobenen Variablen steht. <strong>Arrays schreibst du so, wie <code class="k-i">print</code> sie zeigt:</strong> eckige Klammern und Leerzeichen statt Kommas, zum Beispiel <code class="k-i">[1 2 3]</code>. Listen schreibst du mit Kommas, wie Python sie ausgibt. Die Zeile <code class="k-i">import</code> hat keinen eigenen Schritt. Wenn du unsicher bist, lass den Code vorher in einer Karte des Werkzeugkastens laufen.</p>
+      <div class="a-task" data-a="trace" data-id="w-trace">
+        <script type="application/json">{"code":["import numpy as np","a = np.array([1, 2, 3])","b = a * 3","c = b[b > 4]","n = len(c)","print(c, n)"],
+"vars":["a","b","c","n"],
+"steps":[
+{"line":2,"set":{"a":"[1 2 3]"},"hint":"np.array macht aus der Liste ein Array. print zeigt es ohne Kommas: [1 2 3]."},
+{"line":3,"set":{"b":"[3 6 9]"},"hint":"a * 3 wirkt auf jedes Element: 1·3, 2·3, 3·3. Das Ergebnis ist wieder ein Array, geschrieben [3 6 9]."},
+{"line":4,"set":{"c":"[6 9]"},"hint":"Die Maske b > 4 ist [False True True]: 3 ist nicht größer als 4, 6 und 9 schon. b[maske] behält nur 6 und 9."},
+{"line":5,"set":{"n":"2"},"hint":"len(c) zählt die Elemente von c: zwei. Das Ergebnis ist eine Zahl."},
+{"line":6,"out":"[6 9] 2","hint":"print gibt das Array (ohne Kommas) und die Zahl aus, getrennt durch ein Leerzeichen."}
+]}</script>
+      </div>
+      <p class="l-task__intro">Zweiter Ablauf: der klassische Fehler beim Wechsel von Liste zu Array. Dasselbe <code class="k-i">* 2</code> bedeutet bei der Liste etwas anderes als beim Array. Listen schreibst du mit Kommas, Arrays ohne.</p>
+      <div class="a-task" data-a="trace" data-id="w-trace2">
+        <script type="application/json">{"code":["import numpy as np","werte = [1, 2, 3]","a = np.array(werte)","doppelt = a * 2","aneinander = werte * 2","print(len(doppelt), len(aneinander))"],
+"vars":["werte","a","doppelt","aneinander"],
+"steps":[
+{"line":2,"set":{"werte":"[1, 2, 3]"},"hint":"Eine Liste mit drei Zahlen. Bei Listen stehen Kommas."},
+{"line":3,"set":{"a":"[1 2 3]"},"hint":"np.array(werte) macht ein Array mit denselben Zahlen. Arrays zeigt print ohne Kommas."},
+{"line":4,"set":{"doppelt":"[2 4 6]"},"hint":"Beim Array wirkt * 2 elementweise: jeder Wert wird verdoppelt."},
+{"line":5,"set":{"aneinander":"[1, 2, 3, 1, 2, 3]"},"hint":"Bei der Liste bedeutet * 2 „zweimal hintereinander“: Die Liste wird an sich selbst gehängt. Keine Fehlermeldung, aber sechs Elemente."},
+{"line":6,"out":"3 6","hint":"len(doppelt) ist 3, len(aneinander) ist 6. Genau das ist der Unterschied, den du beim Prüfen mit len bemerkst."}
+]}</script>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-zeilen" data-title="Zeilen ordnen" data-part="A" data-stars="" data-min="8" data-extra="" aria-labelledby="h-a-zeilen" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-zeilen" tabindex="-1">Zeilen ordnen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Alle Zeilen sind da, aber durcheinander. Bring sie in die richtige Reihenfolge <strong>und rücke die Zeilen im Rumpf ein</strong> (Pfeil nach rechts oder Mausziehen). Manche Zeilen sind <strong>Ablenker</strong>: Sie gehören nicht ins Programm.</p>
+      <div class="a-task" data-a="parsons" data-id="w-parsons1">
+        <div class="a-task__head"><h3 class="a-task__title">Effektivwert als Funktion</h3></div>
+        <p>Die Funktion bekommt eine Liste von Messwerten und gibt den Effektivwert zurück: erst ein Array bauen, dann elementweise quadrieren, dann mitteln und die Wurzel ziehen. Überlege: Was muss zuerst passieren, und in welcher Reihenfolge stehen Mittelwert und Wurzel?</p>
+        <script type="application/json">{"solution":["import numpy as np","def effektivwert(werte):","    a = np.array(werte)","    quadrate = a ** 2","    return np.sqrt(np.mean(quadrate))"],
+"distractors":["    return np.mean(np.sqrt(quadrate))","    return np.sqrt(np.mean(a) ** 2)"],
+"alts":[]}</script>
+      </div>
+
+      <div class="a-task" data-a="parsons" data-id="w-parsons2">
+        <div class="a-task__head"><h3 class="a-task__title">Eine Laufzeit messen</h3></div>
+        <p>Das Programm misst, wie lange eine Schleife für 100 000 Durchläufe braucht, und gibt die Dauer in Sekunden aus. Achte darauf, dass die Stoppuhr <em>vor</em> der Schleife gestartet und <em>nach</em> der Schleife abgelesen wird, und auf die Reihenfolge bei der Differenz.</p>
+        <script type="application/json">{"solution":["import time","summe = 0","start = time.perf_counter()","for i in range(100000):","    summe = summe + i","dauer = time.perf_counter() - start","print(f'{dauer:.4f} s')"],
+"distractors":["dauer = start - time.perf_counter()","    start = time.perf_counter()"],
+"alts":[["import time","start = time.perf_counter()","summe = 0","for i in range(100000):","    summe = summe + i","dauer = time.perf_counter() - start","print(f'{dauer:.4f} s')"]]}</script>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-luecken" data-title="Lücken füllen" data-part="A" data-stars="" data-min="5" data-extra="" aria-labelledby="h-a-luecken" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-luecken" tabindex="-1">Lücken füllen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Jetzt tippst du Teile selbst. Ergänze die fünf Lücken, sodass das Programm Messwerte einliest (durch Leerzeichen getrennt, in mm/s), ein Array daraus baut und den Effektivwert, den größten Wert und die Zahl der Werte über 2 mm/s ausgibt. Geprüft wird nicht nur dein Wortlaut, sondern ob das Programm bei mehreren Eingaben das Richtige tut.</p>
+      <div class="a-task" data-a="gap" data-id="w-luecken" data-mode="programm">
+        <pre class="a-gap__src">import numpy as np
+
+eingabe = input("Messwerte in mm/s: ")
+a = np.@@array@@([float(x) for x in eingabe.split()])
+rms = np.@@sqrt@@(np.@@mean@@(a ** 2))
+print(f"Effektivwert: {rms:.3f} mm/s")
+print(f"Größter Wert: {np.@@max@@(a)} mm/s")
+print(f"Werte über 2 mm/s: {@@len@@(a[a &gt; 2])}")</pre>
+        <script type="text/x-python" data-role="tests">
+import math
+
+def _lauf(eingabe):
+    return zeilen(run_program([eingabe]))
+
+def _soll(eingabe):
+    w = [float(x) for x in eingabe.split()]
+    return ["Effektivwert: %.3f mm/s" % math.sqrt(sum(x * x for x in w) / len(w)),
+            "Größter Wert: %s mm/s" % max(w),
+            "Werte über 2 mm/s: %d" % len([x for x in w if x > 2])]
+
+def _pruefe(eingabe):
+    z = _lauf(eingabe)
+    for t in _soll(eingabe):
+        assert t in z, "Bei der Eingabe %r wird die Zeile %r erwartet. Dein Programm gibt aus: %r" % (eingabe, t, z)
+
+def test_beispiel():
+    """3 4 5: Effektivwert 4.082, größter Wert 5.0, drei Werte über 2"""
+    _pruefe("3 4 5")
+
+def test_kommazahlen():
+    """1.5 2.5 3.5 0.5"""
+    _pruefe("1.5 2.5 3.5 0.5")
+
+def test_negativ():
+    """Wechselndes Vorzeichen: -3 3 -3 3"""
+    _pruefe("-3 3 -3 3")
+
+def test_keiner_ueber():
+    """Kein Wert über 2: 1 1 1"""
+    _pruefe("1 1 1")
+        </script>
+        <ol class="a-hints">
+          <li>Lücke 1: Welche Funktion macht aus einer Liste ein Array (Syntax-Karte 1)?</li>
+          <li>Lücke 2 und 3: Der Effektivwert ist die <em>Wurzel</em> aus dem <em>Mittelwert</em> der Quadrate. Von außen nach innen: erst die Wurzel, dann der Mittelwert (Karte 4).</li>
+          <li>Lücke 4: Welche Funktion liefert den größten Wert eines Arrays (Karte 4)?</li>
+          <li>Lücke 5: Die Maske <code>a &gt; 2</code> wählt die Werte aus, gesucht ist deren <em>Anzahl</em>. Welche Funktion zählt Elemente (Karte 5)?</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-daten" data-title="Erste eigene Aufgabe: Messdaten auswerten" data-part="A" data-stars="1" data-min="10" data-extra="" aria-labelledby="h-a-daten" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-daten" tabindex="-1">Erste eigene Aufgabe: Messdaten auswerten</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Jetzt schreibst du die Auswertung selbst, mit <abbr class="k-begriff" data-erklaerung="Ein Test ist ein kleines Prüfprogramm. Es startet dein Programm mit festen Eingaben und vergleicht die Ausgabe mit dem erwarteten Ergebnis.">Tests</abbr> als Sicherheitsnetz. Die Datei ist die phyphox-Messung der Waschmaschine aus V09. Die Tests laufen auch mit anderen Dateien, die du nicht siehst.</p>
+      <div class="a-task" data-a="code" data-id="w-daten" data-mode="programm" data-files="../assets/data/v09/waschmaschine.csv" data-upload data-timeout="60000">
+        <div class="a-task__text">
+          <p>Das Programm lädt die Spalte <em>Absolute acceleration</em> (die fünfte Spalte, Index 4) der Datei in das Array <code class="k-i">a</code> und gibt drei Zeilen aus: die Zahl der Messpunkte, den <strong>Effektivwert</strong> in m/s² (drei Nachkommastellen) und den Anteil der Messpunkte <strong>über dem Grenzwert</strong> in Prozent (eine Nachkommastelle). Benutze <code class="k-i">np.loadtxt</code> und eine Maske, keine Schleife.</p>
+          <div class="a-spec"><strong>Ausgabe genau so (für die mitgelieferte Datei waschmaschine.csv, Grenzwert 1.5 m/s²):</strong><pre data-run="no">Messpunkte: 600
+Effektivwert: 1.242 m/s²
+Über 1.5 m/s²: 25.8 %</pre></div>
+          <p class="k-small k-muted">Gegenprobe von Hand: Die Datei hat 601 Zeilen, die erste ist die Kopfzeile. 155 der 600 Messpunkte liegen über 1,5 m/s²: 155/600 = 0,2583, also 25,8 Prozent.</p>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V13" aria-label="Python-Code: Messdaten auswerten">import numpy as np
+
+dateiname = "waschmaschine.csv"     # für deine eigene Datei: Namen hier eintragen
+GRENZE = 1.5                        # Grenzwert in m/s²
+
+# lade Spalte 4 als Array a: delimiter, skiprows und usecols angeben
+
+# Ausgabe: Messpunkte, Effektivwert, Anteil über der Grenze in Prozent
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+import math
+
+KOPF = '"Time (s)","Linear Acceleration x (m/s^2)","Linear Acceleration y (m/s^2)","Linear Acceleration z (m/s^2)","Absolute acceleration (m/s^2)"'
+
+def _soll(w):
+    ueber = len([x for x in w if x > 1.5])
+    return ["Messpunkte: %d" % len(w),
+            "Effektivwert: %.3f m/s²" % math.sqrt(sum(x * x for x in w) / len(w)),
+            "Über 1.5 m/s²: %.1f %%" % (100.0 * ueber / len(w))]
+
+def _pruefe(w):
+    z = zeilen(run_program([]))
+    for t in _soll(w):
+        assert t in z, "Es wird die Zeile %r erwartet. Dein Programm gibt aus: %r" % (t, z)
+
+def _schreibe(w):
+    with open("waschmaschine.csv", "w", encoding="utf-8") as f:
+        f.write(KOPF + "\n")
+        for i in range(len(w)):
+            f.write("%.6E,0.0,0.0,0.0,%.6E\n" % (i * 0.01, w[i]))
+
+def test_mitgelieferte_datei():
+    """waschmaschine.csv: 600 Messpunkte, Effektivwert 1.242, 25.8 % über 1.5"""
+    z = zeilen(run_program([]))
+    for t in ["Messpunkte: 600", "Effektivwert: 1.242 m/s²", "Über 1.5 m/s²: 25.8 %"]:
+        assert t in z, "Es wird die Zeile %r erwartet. Dein Programm gibt aus: %r" % (t, z)
+
+def test_andere_datei():
+    """Andere Datei mit 4 Messpunkten (1.0, 2.0, 3.0, 0.5)"""
+    w = [1.0, 2.0, 3.0, 0.5]
+    _schreibe(w)
+    _pruefe(w)
+
+def test_keiner_ueber():
+    """Kein Messpunkt über dem Grenzwert: 0.0 %"""
+    w = [0.5, 1.0, 1.5, 0.25, 0.75]
+    _schreibe(w)
+    _pruefe(w)
+
+def test_alle_ueber():
+    """Alle Messpunkte über dem Grenzwert: 100.0 %"""
+    w = [2.0, 2.5, 3.0]
+    _schreibe(w)
+    _pruefe(w)
+        </script>
+        <script type="text/x-python" data-role="solution">
+import numpy as np
+
+dateiname = "waschmaschine.csv"
+GRENZE = 1.5
+
+a = np.loadtxt(dateiname, delimiter=",", skiprows=1, usecols=4)
+effektiv = np.sqrt(np.mean(a ** 2))
+anteil = len(a[a > GRENZE]) / len(a) * 100
+
+print(f"Messpunkte: {len(a)}")
+print(f"Effektivwert: {effektiv:.3f} m/s²")
+print(f"Über {GRENZE} m/s²: {anteil:.1f} %")
+        </script>
+        <ol class="a-hints">
+          <li>Laden (Syntax-Karte 6): <code>np.loadtxt(dateiname, delimiter=",", skiprows=1, usecols=4)</code> liefert gleich ein einfaches Array.</li>
+          <li>Effektivwert (Karte 4): <code>np.sqrt(np.mean(a ** 2))</code>. Erst quadrieren, dann mitteln, dann die Wurzel.</li>
+          <li>Anteil (Karte 5): <code>len(a[a &gt; GRENZE]) / len(a) * 100</code>. Die Ausgabe mit <code>{anteil:.1f}</code> hat eine Nachkommastelle, <code>{GRENZE}</code> im Text gibt 1.5 aus.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-review" data-seen="manual" data-title="Code-Review: KI-Antworten prüfen" data-part="A" data-stars="" data-min="20" data-extra="" aria-labelledby="h-a-review" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-review" tabindex="-1">Code-Review: KI-Antworten prüfen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Die KI erzeugt, du prüfst. Zwei Szenarien. Erst ein NumPy-Programm mit drei typischen Fehlern, dann eine Text-Antwort zu Laufzeit und NumPy mit vier falschen Aussagen. Klick die Zeilen an, die du für fehlerhaft hältst, dann lass auflösen.</p>
+      <figure class="k-figure">
+        <picture>
+          <source srcset="../assets/img/ki-spiegel.webp" type="image/webp">
+          <img src="../assets/img/ki-spiegel.png" alt="Illustration: KI-Code wird von einem Ingenieur geprüft" width="1600" height="901" loading="lazy" onerror="this.closest('figure').hidden=true">
+        </picture>
+      </figure>
+
+      <div class="k-mirror">
+        <h3>Szenario 1: Schwingungsmessung auswerten</h3>
+        <p class="k-prompt__who">Prompt eines Studierenden</p>
+        <blockquote class="k-prompt">Schreib mir ein kleines Python-Programm mit NumPy für die Schwingungsmessung [1.2, -0.8, 2.0, -1.5, 0.9, -1.1, 1.7, -2.0] in mm/s: (1) den Effektivwert berechnen, (2) die dafür nötige Zeit messen, (3) alle Werte in µm/s umrechnen (1 mm = 1000 µm).</blockquote>
+        <p class="k-prompt__who">KI-Antwort (Python)</p>
+          <ol class="k-codelines" aria-label="Code der KI, Zeilen anklickbar">
+            <li><button type="button" class="k-line">import time</button></li>
+            <li><button type="button" class="k-line">import numpy as np</button></li>
+            <li><button type="button" class="k-line"> </button></li>
+            <li><button type="button" class="k-line">messung = [1.2, -0.8, 2.0, -1.5, 0.9, -1.1, 1.7, -2.0]      # mm/s</button></li>
+            <li><button type="button" class="k-line"> </button></li>
+            <li><button type="button" class="k-line">start = time.perf_counter()</button></li>
+            <li><button type="button" class="k-line" data-bug="a">rms = np.sqrt(np.mean(messung) ** 2)</button></li>
+            <li><button type="button" class="k-line" data-bug="b">print(&quot;Effektivwert:&quot;, round(rms, 3), &quot;mm/s&quot;)</button></li>
+            <li><button type="button" class="k-line">dauer = time.perf_counter() - start</button></li>
+            <li><button type="button" class="k-line">print(&quot;Dauer:&quot;, dauer, &quot;s&quot;)</button></li>
+            <li><button type="button" class="k-line"> </button></li>
+            <li><button type="button" class="k-line" data-bug="c">in_um = messung * 1000</button></li>
+            <li><button type="button" class="k-line">print(len(in_um), &quot;Werte in µm/s&quot;)</button></li>
+          </ol>
+        <p class="k-small k-muted">Tipp: Es sind drei Fehler eingebaut, einer je Teilaufgabe. Nicht jede Zeile ist falsch. Zeile 4 allein ist kein Fehler, aber sie hat Folgen.</p>
+
+        <div class="k-mirror__task">
+          <p><strong>Würdest du das freigeben?</strong> Markiere die fehlerhaften Zeilen, dann lass auflösen.</p>
+          <button type="button" class="k-btn" data-mirror-check>Auflösen</button>
+          <p class="k-verdict" role="status" hidden></p>
+
+          <div data-mirror-after hidden>
+            <h4>Die drei Fehler</h4>
+            <h4>Fehler 1: erst mitteln, dann quadrieren (Zeile 7)</h4>
+            <p><code class="k-i">np.sqrt(np.mean(messung) ** 2)</code> bildet zuerst den Mittelwert (0,05 mm/s) und quadriert ihn danach. Das Ergebnis ist der Betrag des Mittelwerts, also fast null, nicht der Effektivwert. Gefragt war die Wurzel aus dem Mittelwert der <em>Quadrate</em>: <code class="k-i">np.sqrt(np.mean(messung ** 2))</code> ergibt 1,468 mm/s. Das Programm läuft ohne Fehlermeldung. Gegenprobe von Hand: Quadrate 1,44 + 0,64 + 4 + 2,25 + 0,81 + 1,21 + 2,89 + 4 = 17,24, geteilt durch 8 ist 2,155, die Wurzel 1,468. Dazu kommt ein Folgefehler: <code class="k-i">messung ** 2</code> funktioniert nur mit einem <em>Array</em>. Mit der Liste aus Zeile 4 gäbe es einen <code class="k-i">TypeError</code>.</p>
+            <h4>Fehler 2: Zeitmessung nur einmal, mit Ausgabe im gemessenen Bereich (Zeile 8)</h4>
+            <p>Zwischen <code class="k-i">start</code> und <code class="k-i">dauer</code> steht ein <code class="k-i">print</code>. Die Ausgabe dauert oft länger als die Rechnung selbst, die „Dauer“ misst also vor allem das Drucken. Dazu wurde nur <em>einmal</em> gemessen: Bei so einer kurzen Rechnung (Mikrosekunden) schwankt das stark. Besser: nur die Rechnung zwischen die beiden Zeitstempel, mehrfach wiederholen, das Minimum berichten, ausgeben erst danach.</p>
+            <h4>Fehler 3: Liste statt Array, die Umrechnung vervielfacht die Liste (Zeile 12)</h4>
+            <p><code class="k-i">messung</code> ist eine <em>Liste</em> (Zeile 4). <code class="k-i">messung * 1000</code> hängt die Liste tausendmal hintereinander: 8000 Werte statt 8, und keine einzige Zahl ist umgerechnet. Die Ausgabe in Zeile 13 verrät es („8000 Werte“), wenn man hinsieht. Lösung: <code class="k-i">messung = np.array([...])</code> in Zeile 4, dann wirkt <code class="k-i">* 1000</code> elementweise und die Länge bleibt 8.</p>
+
+            <h4>Die KI-Version zum Ausprobieren</h4>
+            <p class="k-small k-muted">Die Ausgaben sind falsch: Effektivwert 0.05 statt 1.468, eine Dauer, die vor allem das print misst, und 8000 statt 8 Werte.</p>
+            <pre><code>import time
+import numpy as np
+
+messung = [1.2, -0.8, 2.0, -1.5, 0.9, -1.1, 1.7, -2.0]      # mm/s
+
+start = time.perf_counter()
+rms = np.sqrt(np.mean(messung) ** 2)
+print("Effektivwert:", round(rms, 3), "mm/s")
+dauer = time.perf_counter() - start
+print("Dauer:", dauer, "s")
+
+in_um = messung * 1000
+print(len(in_um), "Werte in µm/s")</code></pre>
+
+            <h4>Korrigierte Version</h4>
+            <pre><code>import time
+import numpy as np
+
+messung = np.array([1.2, -0.8, 2.0, -1.5, 0.9, -1.1, 1.7, -2.0])      # mm/s
+
+zeiten = []
+for versuch in range(7):
+    start = time.perf_counter()
+    rms = np.sqrt(np.mean(messung ** 2))
+    zeiten.append(time.perf_counter() - start)
+print("Effektivwert:", round(rms, 3), "mm/s")
+print("Beste Zeit:", min(zeiten), "s")
+
+in_um = messung * 1000
+print(len(in_um), "Werte in µm/s")</code></pre>
+            <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke</strong><p>Bei NumPy-Code fragst du: „Liste oder Array? Stimmt die Reihenfolge von Quadrat, Mittelwert und Wurzel? Wurde die Länge geprüft?“ Beim Zeitmessen: „Steht nur die Rechnung zwischen den Zeitstempeln, und wurde mehrfach gemessen?“ Rechne einen Wert von Hand nach, und prüfe <code class="k-i">len</code> und <code class="k-i">.shape</code>. Deine Testfälle schreibst du vorher von Hand auf, die KI liefert den Fall aus ihrem Beispiel, nicht den aus deiner Anlage.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="k-mirror">
+        <h3>Szenario 2: Schleife oder NumPy? (reine Text-Antwort)</h3>
+        <p class="k-prompt__who">Prompt eines Studierenden</p>
+        <blockquote class="k-prompt">Ich muss 5 Millionen Messwerte auswerten und die Reihe verdoppeln. Soll ich eine Schleife oder NumPy nehmen, und wie viel schneller ist NumPy genau?</blockquote>
+        <p class="k-prompt__who">KI-Antwort (Text, einige Aussagen sind im Szenario falsch)</p>
+          <ol class="k-codelines" aria-label="Antwort der KI, Zeilen anklickbar">
+            <li><button type="button" class="k-line">Nimm NumPy: Ein Befehl wie <code>a * 2</code> bearbeitet das ganze Array auf einmal, die Schleife läuft in vorübersetztem Code.</button></li>
+            <li><button type="button" class="k-line" data-bug="a">NumPy ist immer genau 100-mal schneller als eine Python-Schleife.</button></li>
+            <li><button type="button" class="k-line" data-bug="b">Der Vorteil ist bei kleinen Arrays von etwa 10 Elementen am größten.</button></li>
+            <li><button type="button" class="k-line" data-bug="c">Zum Verdoppeln der Messreihe schreibst du einfach <code>liste * 2</code>.</button></li>
+            <li><button type="button" class="k-line" data-bug="d">Messen musst du das nicht: Eine einzelne Messung mit <code>time.perf_counter()</code> ist bereits genau.</button></li>
+            <li><button type="button" class="k-line">Prüfe zum Schluss, dass beide Wege dasselbe Ergebnis liefern.</button></li>
+          </ol>
+        <p class="k-small k-muted">Tipp: Es sind vier Fehler eingebaut. Nicht jede Zeile ist falsch. Die Sprache klingt überall gleich sicher.</p>
+
+        <div class="k-mirror__task">
+          <p><strong>Würdest du das freigeben?</strong> Markiere die fehlerhaften Zeilen, dann lass auflösen.</p>
+          <button type="button" class="k-btn" data-mirror-check>Auflösen</button>
+          <p class="k-verdict" role="status" hidden></p>
+
+          <div data-mirror-after hidden>
+            <h4>Die vier Fehler</h4>
+            <h4>Fehler 1: eine feste Zahl für etwas, das man messen muss (Zeile 2)</h4>
+            <p>Der Faktor hängt von Rechner, Browser, Datenmenge und Rechnung ab. Er kann 5, 20 oder 200 sein. „Immer genau 100“ hat die Form einer Tatsache, ist aber erfunden: ein Sprachmodell erzeugt wahrscheinlich klingende Zahlen. Richtig: „oft deutlich schneller, in der Größenordnung von zehn bis hundert, miss selbst“.</p>
+            <h4>Fehler 2: kleine Arrays (Zeile 3)</h4>
+            <p>Bei 10 Elementen ist die Schleife genauso schnell, oft schneller, denn schon der NumPy-Aufruf kostet etwas. Der Vorteil wächst mit der Datenmenge und ist bei Millionen von Werten groß.</p>
+            <h4>Fehler 3: Liste statt Array (Zeile 4)</h4>
+            <p><code class="k-i">liste * 2</code> hängt die Liste zweimal hintereinander (10 Millionen Elemente statt 5 Millionen verdoppelter Werte) und gibt keine Fehlermeldung. Gemeint war <code class="k-i">np.array(liste) * 2</code>.</p>
+            <h4>Fehler 4: eine einzelne Messung genügt nicht (Zeile 5)</h4>
+            <p>Messungen schwanken (andere Programme, Takt, Zwischenspeicher). Ein einzelner Wert kann ein Ausreißer sein. Mehrfach messen und Minimum oder Median berichten. Die Zeilen 1 und 6 sind in Ordnung: Das Prinzip ist richtig beschrieben, und das Gegenprüfen der Ergebnisse ist guter Stil.</p>
+            <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke</strong><p>Vier Prüffragen an KI-Aussagen zur Laufzeit: Steht da eine feste Zahl, die nur Messung liefern kann? Gilt die Aussage für kleine <em>und</em> große Datenmengen? Verwechselt sie Liste und Array? Wurde mehrfach gemessen? Die KI ist ein schneller Entwurf, die Messung machst du.</p></div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-fehler" data-title="Typische Fehlermeldungen" data-part="A" data-stars="" data-min="5" data-extra="" aria-labelledby="h-a-fehler" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-fehler" tabindex="-1">Typische Fehlermeldungen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Fehlermeldungen sind keine Strafe, sondern ein Wegweiser. Bei NumPy gibt es allerdings auch Fehler, die <em>keine</em> Meldung auslösen. Diese fünf siehst du garantiert. Jedes Beispiel lässt sich ausführen: Schau dir die echte Meldung an und lies sie von unten nach oben (zuerst die letzte Zeile).</p>
+      <div class="a-errors">
+        <div class="a-error">
+          <h3><code class="k-i">NameError</code>: np nicht importiert</h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="5000">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V13" aria-label="Fehlerbeispiel NameError">a = np.array([1, 2, 3])
+print(a * 2)</textarea></div>
+          </div>
+          <p>Meldung: <code class="k-i">NameError: name 'np' is not defined</code>. Python kennt den Namen <code>np</code> nicht, weil die Zeile <code>import numpy as np</code> fehlt. Sie steht immer ganz oben im Programm. Füge sie ein und führe erneut aus.</p>
+        </div>
+        <div class="a-error">
+          <h3><code class="k-i">ValueError</code>: Arrays verschieden lang</h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="5000">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V13" aria-label="Fehlerbeispiel ValueError bei Längen">import numpy as np
+
+a = np.array([1.0, 2.0, 3.0])
+b = np.array([10.0, 20.0, 30.0, 40.0])
+print(a + b)</textarea></div>
+          </div>
+          <p>Meldung: <code class="k-i">ValueError: operands could not be broadcast together with shapes (3,) (4,)</code>. Elementweise Rechnung braucht Arrays gleicher Länge: drei Werte hier, vier dort. Die Meldung nennt die beiden Formen in Klammern. Prüfe mit <code>len(a)</code> und <code>len(b)</code>, woher die Längen kommen (falscher Bereich, eine Zeile zu viel in der Datei).</p>
+        </div>
+        <div class="a-error">
+          <h3><code class="k-i">TypeError</code>: Liste mal Kommazahl</h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="5000">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V13" aria-label="Fehlerbeispiel TypeError Liste mal float">messung_mm = [1.2, 2.5, 0.8]
+messung_m = messung_mm * 0.001
+print(messung_m)</textarea></div>
+          </div>
+          <p>Meldung: <code class="k-i">TypeError: can't multiply sequence by non-int of type 'float'</code>. Mit einer ganzen Zahl wüsste Python, was <code>liste * 3</code> bedeutet (dreimal hintereinander), mit einer Kommazahl nicht. Wandle erst in ein Array um: <code>np.array(messung_mm) * 0.001</code>.</p>
+        </div>
+        <div class="a-error">
+          <h3><code class="k-i">TypeError</code>: Liste hoch 2</h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="5000">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V13" aria-label="Fehlerbeispiel TypeError Liste hoch zwei">werte = [3.0, 4.0, 5.0]
+quadrate = werte ** 2
+print(quadrate)</textarea></div>
+          </div>
+          <p>Meldung: <code class="k-i">TypeError: unsupported operand type(s) for ** or pow(): 'list' and 'int'</code>. Eine Liste kann man nicht hochnehmen, ein Array schon. Die Meldung nennt die beteiligten Typen: <code>'list'</code> und <code>'int'</code>. Lösung: <code>np.array(werte) ** 2</code> oder eine List Comprehension <code>[w ** 2 for w in werte]</code> (V10).</p>
+        </div>
+        <div class="a-error">
+          <h3>Falsches Ergebnis ohne Meldung: Liste verdoppelt sich</h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="5000">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V13" aria-label="Beispiel Liste mal 2 ohne Meldung">werte = [1.0, 2.0, 3.0]
+doppelt = werte * 2
+summe = werte + werte
+print(doppelt)
+print(summe)
+print(len(doppelt))</textarea></div>
+          </div>
+          <p>Ausgabe: <code>[1.0, 2.0, 3.0, 1.0, 2.0, 3.0]</code> zweimal und die Länge 6. Python meldet nichts, denn bei Listen bedeuten <code>*</code> und <code>+</code> „wiederholen“ und „aneinanderhängen“. Solche Fehler fängst du nur mit einer Gegenprobe: Stimmt die Länge (<code>len</code>), stimmt ein Wert von Hand?</p>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-1" data-title="Zeitachse und Umrechnung" data-part="B" data-stars="1" data-min="5" data-extra="" aria-labelledby="h-t-1" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-1" tabindex="-1">Zeitachse und Umrechnung</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Programmieren lernst du mit den Fingern, nicht mit den Augen. Das Training ist ein fester Teil jedes Termins und gehört zum Selbststudium. Du musst nicht alles an einem Stück machen, aber alles bis zum nächsten Termin. Die Aufgaben laufen komplett im Browser und werden automatisch geprüft.</p>
+      <div class="hinweis hinweis--achtung"><strong class="hinweis__title">Achtung</strong><p>Phase 2 geht zu Ende: Ab V14 arbeitest du im Projekt mit Copilot. Voraussetzung ist, dass du die Testfälle <em>vorher</em> von Hand aufschreibst und jeden Vorschlag Zeile für Zeile liest. Für diese Trainingsaufgaben gilt: Erst selbst versuchen. Die KI nur, um dir eine Fehlermeldung erklären zu lassen oder deine fertige Lösung gegenzuprüfen.</p></div>
+
+      <div class="a-task" data-a="code" data-id="tr-1" data-mode="code">
+        <div class="a-task__text">
+          <p>Eine Schwingung wird fünfmal abgetastet. Erzeuge die Zeitachse, rechne die Messwerte um und quadriere sie, jeweils <strong>mit einem NumPy-Ausdruck</strong> ohne Schleife.</p>
+          <div class="a-spec"><strong>Ausgabe (so druckt NumPy die Arrays):</strong><pre data-run="no">[0.    0.005 0.01  0.015 0.02 ] [ 0.      0.0015  0.     -0.0015  0.    ] [0.   2.25 0.   2.25 0.  ]</pre></div>
+          <p class="k-small k-muted">Die genaue Darstellung der Ausgabe ist Sache von NumPy. Geprüft werden die Werte der drei Variablen.</p>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V13" aria-label="Python-Code Aufgabe 1">import numpy as np
+
+v_mm = np.array([0.0, 1.5, 0.0, -1.5, 0.0])    # Schwinggeschwindigkeit in mm/s
+t = None          # 5 Zeitpunkte von 0 bis 0.02 s (np.linspace, beide Enden dabei)
+v_m = None        # v_mm in m/s (durch 1000 teilen)
+quadrate = None   # v_mm elementweise quadriert
+print(t, v_m, quadrate)
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _pruefe_array(name, soll):
+    ist = globals()[name]
+    assert ist is not None, "%s ist noch None. Ersetze None durch einen NumPy-Ausdruck." % name
+    assert type(ist).__name__ == "ndarray", "%s ist vom Typ %s, erwartet wird ein NumPy-Array (nicht eine Liste)." % (name, type(ist).__name__)
+    assert len(ist) == len(soll), "%s hat %d Elemente, erwartet werden %d." % (name, len(ist), len(soll))
+    for a, b in zip(ist, soll):
+        assert abs(float(a) - b) < 1e-9, "%s ist %s, erwartet wird %s." % (name, list(ist), soll)
+
+def test_zeitachse():
+    """t ist [0, 0.005, 0.01, 0.015, 0.02] (np.linspace)"""
+    _pruefe_array("t", [0.0, 0.005, 0.01, 0.015, 0.02])
+
+def test_umrechnung():
+    """v_m ist v_mm durch 1000: [0, 0.0015, 0, -0.0015, 0]"""
+    _pruefe_array("v_m", [0.0, 0.0015, 0.0, -0.0015, 0.0])
+
+def test_quadrate():
+    """quadrate ist [0, 2.25, 0, 2.25, 0]"""
+    _pruefe_array("quadrate", [0.0, 2.25, 0.0, 2.25, 0.0])
+
+def test_original():
+    """v_mm bleibt unverändert, die Ausgabe wurde erzeugt"""
+    assert list(v_mm) == [0.0, 1.5, 0.0, -1.5, 0.0], "v_mm darf nicht verändert werden."
+    assert len(zeilen(AUSGABE)) >= 1, "Das Programm soll mit print die drei Arrays ausgeben."
+        </script>
+        <script type="text/x-python" data-role="solution">
+import numpy as np
+
+v_mm = np.array([0.0, 1.5, 0.0, -1.5, 0.0])
+t = np.linspace(0, 0.02, 5)
+v_m = v_mm / 1000
+quadrate = v_mm ** 2
+print(t, v_m, quadrate)
+        </script>
+        <ol class="a-hints">
+          <li>Zeitachse: <code>np.linspace(start, ende, anzahl)</code> mit Start 0, Ende 0.02 und 5 Werten (Syntax-Karte 2). Beide Enden gehören dazu.</li>
+          <li>Umrechnung: Die Division wirkt auf jedes Element: <code>v_mm / 1000</code> (Karte 3).</li>
+          <li>Quadrate: <code>v_mm ** 2</code>. Eine Schleife brauchst du nicht.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-2" data-title="Fehler finden: Kennwerte-Funktionen" data-part="B" data-stars="2" data-min="7" data-extra="" aria-labelledby="h-t-2" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-2" tabindex="-1">Fehler finden: Kennwerte-Funktionen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="code" data-id="tr-2" data-mode="funktion">
+        <div class="a-task__text">
+          <p>Eine KI hat zwei Funktionen geschrieben. <code class="k-i">effektivwert(werte)</code> soll die Wurzel aus dem Mittelwert der Quadrate liefern, <code class="k-i">in_mikrometer(werte_mm)</code> die Werte in mm in Werte in µm umrechnen (Faktor 1000). Beide Funktionen bekommen eine <em>Liste</em> und liefern falsche Ergebnisse. Finde die Fehler und repariere die Funktionen (sie sollen den Wert <strong>zurückgeben</strong>, nicht ausgeben).</p>
+          <div class="a-spec"><strong>Erwartet (Rückgabewerte):</strong><pre data-run="no">effektivwert([3.0, 4.0])             -&gt;  3.5355...
+effektivwert([-1.0, 1.0])            -&gt;  1.0
+in_mikrometer([1.2, 2.0])            -&gt;  Werte 1200.0 und 2000.0 (zwei Elemente)</pre></div>
+          <p class="k-small k-muted">Schau dir zuerst die Ausgabe der Beispielaufrufe an: Welche Zahl kommt bei <code>effektivwert([-1.0, 1.0])</code> heraus, und wie lang ist das Ergebnis von <code>in_mikrometer</code>?</p>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V13" aria-label="Python-Code Aufgabe 2">import numpy as np
+
+def effektivwert(werte):
+    return np.sqrt(np.mean(werte) ** 2)
+
+def in_mikrometer(werte_mm):
+    return werte_mm * 1000
+
+print(effektivwert([-1.0, 1.0]))
+print(len(in_mikrometer([1.2, 2.0])))
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _fn(name):
+    assert name in globals(), "Die Funktion %s ist nicht definiert." % name
+    return globals()[name]
+
+def test_effektiv_beispiel():
+    """effektivwert([3.0, 4.0]) ist rund 3.5355"""
+    erg = _fn("effektivwert")([3.0, 4.0])
+    assert erg is not None, "effektivwert gibt None zurück: Steht ein return im Rumpf?"
+    assert abs(float(erg) - 3.5355339) < 1e-6, "effektivwert([3.0, 4.0]) soll 3.5355... liefern, deine Funktion liefert %r. Erst alle Werte quadrieren, dann mitteln, dann die Wurzel." % (erg,)
+
+def test_effektiv_vorzeichen():
+    """effektivwert([-1.0, 1.0]) ist 1.0, nicht 0"""
+    erg = _fn("effektivwert")([-1.0, 1.0])
+    assert abs(float(erg) - 1.0) < 1e-9, "effektivwert([-1.0, 1.0]) soll 1.0 liefern, deine Funktion liefert %r. Mittelst du vor dem Quadrieren? Bei wechselndem Vorzeichen kommt dann fast null heraus." % (erg,)
+
+def test_effektiv_liste():
+    """effektivwert arbeitet mit einer Liste (np.array nötig)"""
+    erg = _fn("effektivwert")([5.0, 5.0, 5.0, 5.0])
+    assert abs(float(erg) - 5.0) < 1e-9, "effektivwert([5.0, 5.0, 5.0, 5.0]) soll 5.0 liefern, deine Funktion liefert %r." % (erg,)
+
+def test_mikrometer_laenge():
+    """in_mikrometer([1.2, 2.0]) hat genau zwei Elemente"""
+    erg = _fn("in_mikrometer")([1.2, 2.0])
+    assert erg is not None, "in_mikrometer gibt None zurück: Steht ein return im Rumpf?"
+    assert len(erg) == 2, "in_mikrometer([1.2, 2.0]) hat %d Elemente, erwartet werden 2. Bei einer Liste hängt * 1000 die Liste vielfach an sich selbst. Wandle erst mit np.array um." % len(erg)
+
+def test_mikrometer_werte():
+    """in_mikrometer([1.2, 2.0]) liefert 1200.0 und 2000.0"""
+    erg = _fn("in_mikrometer")([1.2, 2.0])
+    assert len(erg) == 2 and abs(float(erg[0]) - 1200.0) < 1e-6 and abs(float(erg[1]) - 2000.0) < 1e-6, "in_mikrometer([1.2, 2.0]) soll die Werte 1200.0 und 2000.0 liefern, deine Funktion liefert %r." % (list(erg)[:5],)
+        </script>
+        <script type="text/x-python" data-role="solution">
+import numpy as np
+
+def effektivwert(werte):
+    a = np.array(werte)
+    return np.sqrt(np.mean(a ** 2))
+
+def in_mikrometer(werte_mm):
+    return np.array(werte_mm) * 1000
+        </script>
+        <ol class="a-hints">
+          <li>Beispiel <code>effektivwert([-1.0, 1.0])</code>: Der Mittelwert ist 0, die Wurzel aus 0 ist 0. Der Effektivwert muss aber 1 sein. Welcher Schritt kommt zu früh?</li>
+          <li>Die Reihenfolge: <code>np.sqrt(np.mean(a ** 2))</code>. Und <code>** 2</code> geht nur bei einem Array, also vorher <code>a = np.array(werte)</code>.</li>
+          <li>In <code>in_mikrometer</code> ist <code>werte_mm</code> eine Liste: <code>liste * 1000</code> wiederholt sie tausendmal. Mit <code>np.array(werte_mm) * 1000</code> wird jeder Wert umgerechnet.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-3" data-title="Wiederholung: Schleife und NumPy im Vergleich" data-part="B" data-stars="2" data-min="8" data-extra="Wiederholung V08" aria-labelledby="h-t-3" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-3" tabindex="-1">Wiederholung: Schleife und NumPy im Vergleich</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="code" data-id="tr-3" data-mode="funktion">
+        <div class="a-task__text">
+          <p>Eine Messreihe Bohrungsdurchmesser (Sollmaß 12,000 mm, Toleranz ±0,015 mm, also gut von 11,985 bis 12,015) wird ausgewertet, wie in V08, und jetzt zweimal: <code class="k-i">pruefe_schleife(werte)</code> arbeitet mit einer Liste, <code class="k-i">for</code> und <code class="k-i">sum</code>, <code class="k-i">len</code>, <code class="k-i">max</code>, <code class="k-i">min</code>. <code class="k-i">pruefe_numpy(werte)</code> macht dasselbe mit NumPy ohne Schleife. Beide <strong>geben</strong> ein Tupel <code class="k-i">(mittelwert, spannweite, anzahl_ausserhalb)</code> <strong>zurück</strong>: Mittelwert, Spannweite (größter minus kleinster Wert) und die Zahl der Werte außerhalb der Toleranz (kleiner als 11,985 oder größer als 12,015).</p>
+          <div class="a-spec"><strong>Beispiel (Rückgabewert, beide Funktionen):</strong><pre data-run="no">pruefe_schleife([12.004, 11.998, 12.019, 12.011, 11.980])
+  -&gt;  (12.0024, 0.039, 2)</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V13" aria-label="Python-Code Aufgabe 3">import numpy as np
+
+def pruefe_schleife(werte):
+    # Liste, for-Schleife, sum, len, max, min
+    pass
+
+def pruefe_numpy(werte):
+    # np.array, np.mean, np.max, np.min, Maske
+    pass
+
+messreihe = [12.004, 11.998, 12.019, 12.011, 11.980]
+print(pruefe_schleife(messreihe))
+print(pruefe_numpy(messreihe))
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _fn(name):
+    assert name in globals(), "Die Funktion %s ist nicht definiert." % name
+    return globals()[name]
+
+def _soll(w):
+    return (sum(w) / len(w), max(w) - min(w), len([x for x in w if x < 11.985 or x > 12.015]))
+
+def _pruefe(name, w):
+    erg = _fn(name)(w)
+    assert erg is not None, "%s gibt None zurück: Steht im Rumpf ein return (kein print)?" % name
+    assert len(erg) == 3, "%s soll ein Tupel mit drei Werten liefern (mittelwert, spannweite, anzahl_ausserhalb), liefert aber %r" % (name, erg)
+    s = _soll(w)
+    assert abs(float(erg[0]) - s[0]) < 1e-9, "%s(%r): Mittelwert soll %.6f sein, deine Funktion liefert %r" % (name, w, s[0], erg[0])
+    assert abs(float(erg[1]) - s[1]) < 1e-9, "%s(%r): Spannweite soll %.6f sein, deine Funktion liefert %r" % (name, w, s[1], erg[1])
+    assert int(erg[2]) == s[2] and float(erg[2]) == s[2], "%s(%r): Anzahl außerhalb soll %d sein, deine Funktion liefert %r" % (name, w, s[2], erg[2])
+
+def test_schleife_beispiel():
+    """pruefe_schleife: Beispielreihe, 2 Werte außerhalb"""
+    _pruefe("pruefe_schleife", [12.004, 11.998, 12.019, 12.011, 11.980])
+
+def test_numpy_beispiel():
+    """pruefe_numpy: Beispielreihe, 2 Werte außerhalb"""
+    _pruefe("pruefe_numpy", [12.004, 11.998, 12.019, 12.011, 11.980])
+
+def test_alle_in_toleranz():
+    """Alle Werte in der Toleranz: 0 außerhalb (beide Funktionen)"""
+    w = [12.000, 12.003, 11.997, 12.010]
+    _pruefe("pruefe_schleife", w)
+    _pruefe("pruefe_numpy", w)
+
+def test_nur_unten():
+    """Nur zu kleine Werte (unter 11.985), auch einelementig"""
+    for w in ([11.970, 11.960, 12.000], [11.900]):
+        _pruefe("pruefe_schleife", w)
+        _pruefe("pruefe_numpy", w)
+
+def test_liste_bleibt_liste():
+    """Die übergebene Liste wird nicht verändert"""
+    w = [12.001, 11.99, 12.02]
+    kopie = list(w)
+    _fn("pruefe_schleife")(w)
+    _fn("pruefe_numpy")(w)
+    assert w == kopie, "Die übergebene Liste darf nicht verändert werden."
+        </script>
+        <script type="text/x-python" data-role="solution">
+import numpy as np
+
+def pruefe_schleife(werte):
+    mittelwert = sum(werte) / len(werte)
+    spannweite = max(werte) - min(werte)
+    anzahl = 0
+    for w in werte:
+        if w < 11.985 or w > 12.015:
+            anzahl = anzahl + 1
+    return (mittelwert, spannweite, anzahl)
+
+def pruefe_numpy(werte):
+    a = np.array(werte)
+    ausserhalb = a[(a < 11.985) | (a > 12.015)]
+    return (np.mean(a), np.max(a) - np.min(a), len(ausserhalb))
+        </script>
+        <ol class="a-hints">
+          <li>Schleife: Mittelwert <code>sum(werte) / len(werte)</code>, Spannweite <code>max(werte) - min(werte)</code>, und ein Zähler, den die Schleife bei jedem Wert außerhalb um 1 erhöht (V06, V08).</li>
+          <li>NumPy: erst <code>a = np.array(werte)</code>. Dann <code>np.mean(a)</code> und <code>np.max(a) - np.min(a)</code>.</li>
+          <li>Anzahl außerhalb als Maske: <code>a[(a &lt; 11.985) | (a &gt; 12.015)]</code> mit <code>|</code> (oder) und Klammern um jede Bedingung (Karte 5). Die Anzahl ist <code>len(...)</code> davon. Rückgabe als Tupel: <code>return (x, y, z)</code>.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-4" data-title="Welche Achse schwingt am stärksten?" data-part="B" data-stars="2" data-min="8" data-extra="mit Datei" aria-labelledby="h-t-4" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-4" tabindex="-1">Welche Achse schwingt am stärksten?</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="code" data-id="tr-4" data-mode="funktion" data-files="../assets/data/v09/waschmaschine.csv" data-timeout="60000">
+        <div class="a-task__text">
+          <p>Die phyphox-Datei hat fünf Spalten: Zeit, Beschleunigung in x, y, z und den Betrag. Schreibe die Funktion <code class="k-i">effektiv_je_achse(dateiname)</code>. Sie lädt die Spalten 1 bis 3 (x, y, z) mit <code class="k-i">np.loadtxt</code> und <strong>gibt</strong> ein Dictionary <strong>zurück</strong>, das jeder Achse (<code class="k-i">"x"</code>, <code class="k-i">"y"</code>, <code class="k-i">"z"</code>) ihren Effektivwert in m/s² zuordnet. Danach siehst du, welche Achse die Waschmaschine am stärksten anregt.</p>
+          <div class="a-spec"><strong>Beispiel (Rückgabewert für die mitgelieferte Datei, gerundet):</strong><pre data-run="no">effektiv_je_achse("waschmaschine.csv")
+  -&gt;  {'x': 1.1069, 'y': 0.5546, 'z': 0.0968}</pre></div>
+          <p class="k-small k-muted">Tipp: Mit <code>usecols=(1, 2, 3)</code> bekommst du eine Tabelle mit drei Spalten, <code>tabelle[:, i]</code> ist die i-te davon (Karte 6).</p>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V13" aria-label="Python-Code Aufgabe 4">import numpy as np
+
+def effektiv_je_achse(dateiname):
+    # lade die Spalten 1, 2, 3, berechne je Achse den Effektivwert
+    pass
+
+ergebnis = effektiv_je_achse("waschmaschine.csv")
+print(ergebnis)
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+import math
+
+KOPF = '"Time (s)","Linear Acceleration x (m/s^2)","Linear Acceleration y (m/s^2)","Linear Acceleration z (m/s^2)","Absolute acceleration (m/s^2)"'
+
+def _fn(name):
+    assert name in globals(), "Die Funktion %s ist nicht definiert." % name
+    return globals()[name]
+
+def _schreibe(name, zeilen_xyz):
+    with open(name, "w", encoding="utf-8") as f:
+        f.write(KOPF + "\n")
+        for i, (x, y, z) in enumerate(zeilen_xyz):
+            f.write("%.6E,%.6E,%.6E,%.6E,%.6E\n" % (i * 0.01, x, y, z, math.sqrt(x * x + y * y + z * z)))
+
+def _rms(w):
+    return math.sqrt(sum(v * v for v in w) / len(w))
+
+def _pruefe(erg, daten):
+    assert erg is not None, "Die Funktion gibt None zurück: Steht im Rumpf ein return?"
+    assert isinstance(erg, dict), "Die Funktion soll ein Dictionary liefern, liefert aber %s." % type(erg).__name__
+    for i, achse in enumerate(["x", "y", "z"]):
+        assert achse in erg, "Im Dictionary fehlt der Schlüssel %r. Vorhanden: %r" % (achse, list(erg))
+        soll = _rms([z[i] for z in daten])
+        assert abs(float(erg[achse]) - soll) < 1e-4, "Achse %s: Effektivwert soll %.5f sein, deine Funktion liefert %r" % (achse, soll, erg[achse])
+
+def test_mitgelieferte_datei():
+    """waschmaschine.csv: x 1.1069, y 0.5546, z 0.0968"""
+    erg = _fn("effektiv_je_achse")("waschmaschine.csv")
+    assert erg is not None, "Die Funktion gibt None zurück: Steht im Rumpf ein return?"
+    soll = {"x": 1.10686, "y": 0.55456, "z": 0.09677}
+    for k, v in soll.items():
+        assert k in erg and abs(float(erg[k]) - v) < 1e-3, "Achse %s: erwartet wird rund %.4f, deine Funktion liefert %r" % (k, v, erg.get(k))
+
+def test_andere_datei():
+    """Andere Datei: vier Messpunkte mit unterschiedlichen Achsen"""
+    daten = [(3.0, 0.0, 1.0), (-3.0, 0.5, -1.0), (3.0, -0.5, 1.0), (-3.0, 0.0, -1.0)]
+    _schreibe("andere.csv", daten)
+    _pruefe(_fn("effektiv_je_achse")("andere.csv"), daten)
+
+def test_wechselndes_vorzeichen():
+    """Wechselndes Vorzeichen: der Mittelwert wäre null, der Effektivwert nicht"""
+    daten = [(1.0, -2.0, 0.5), (-1.0, 2.0, -0.5), (1.0, -2.0, 0.5)]
+    _schreibe("vorzeichen.csv", daten)
+    _pruefe(_fn("effektiv_je_achse")("vorzeichen.csv"), daten)
+        </script>
+        <script type="text/x-python" data-role="solution">
+import numpy as np
+
+def effektiv_je_achse(dateiname):
+    tabelle = np.loadtxt(dateiname, delimiter=",", skiprows=1, usecols=(1, 2, 3))
+    ergebnis = {}
+    namen = {"x": 0, "y": 1, "z": 2}
+    for achse, spalte in namen.items():
+        werte = tabelle[:, spalte]
+        ergebnis[achse] = np.sqrt(np.mean(werte ** 2))
+    return ergebnis
+        </script>
+        <ol class="a-hints">
+          <li>Laden: <code>np.loadtxt(dateiname, delimiter=",", skiprows=1, usecols=(1, 2, 3))</code>. Die Tabelle hat dann drei Spalten mit den Indizes 0, 1, 2.</li>
+          <li>Eine Spalte holst du mit <code>tabelle[:, i]</code>. Ein Dictionary <code>{"x": 0, "y": 1, "z": 2}</code> und <code>.items()</code> (V08) hilft dir, über die drei Achsen zu laufen.</li>
+          <li>Für jede Spalte: <code>np.sqrt(np.mean(werte ** 2))</code>. Das Ergebnis kommt unter dem Namen der Achse ins Ergebnis-Dictionary; am Ende <code>return ergebnis</code>.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-zeichnen" data-title="PAP zeichnen: Effektivwert mit Schleife" data-part="B" data-stars="3" data-min="10" data-extra="mit Prüfung" aria-labelledby="h-t-zeichnen" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-zeichnen" tabindex="-1">PAP zeichnen: Effektivwert mit Schleife</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task k-pap-aufgabe" data-a="pap-zeichnen" data-id="tr-zeichnen" data-timeout="8000" data-erlaubt="in,out,op,while,for">
+        <div class="a-task__head"><h3 class="a-task__title">Effektivwert von n Messwerten (Schleifen-Variante)</h3></div>
+        <div class="a-task__text">
+          <p>Zeichne den Programmablaufplan der <strong>Schleifen-Variante</strong> aus dem Hook: Der Plan liest erst die Anzahl <em>n</em> (ganze Zahl) ein, setzt die Summe auf 0 und liest dann in einer <strong>Zählschleife</strong> <em>n</em> Messwerte nacheinander ein (Kommazahlen). In jedem Durchlauf kommt das Quadrat des Messwerts zur Summe. Nach der Schleife gibt der Plan den Effektivwert <code class="k-i">(summe / n) ** 0.5</code> aus.</p>
+          <div class="a-spec"><strong>Beispiele (Eingaben nacheinander):</strong><pre data-run="no">n = 3, Werte 3, 4, 5   -&gt;  4.0825 (Wurzel aus 50/3)
+n = 2, Werte -3, 3     -&gt;  3.0</pre></div>
+          <p class="k-small k-muted">Tipp: Die Zählschleife ist <em>eine</em> Raute mit Rückführung. Im Rumpf stehen die Eingabe eines Messwerts und eine Operation. Die Wurzel ziehst du als Potenz <code>** 0.5</code>, dann brauchst du kein <code>import</code>.</p>
+        </div>
+        <script type="text/x-python" data-role="tests">
+def _lauf(n, werte):
+    return zahlen(run_program([str(n)] + [str(w) for w in werte]))
+
+def test_beispiel():
+    """n = 3, Werte 3, 4, 5: Effektivwert 4.0825"""
+    z = _lauf(3, [3, 4, 5])
+    assert z, "Es wurde nichts ausgegeben."
+    assert abs(z[-1] - 4.0824829) < 1e-3, "Bei n = 3 und den Werten 3, 4, 5 wird 4.0825 erwartet. Dein Plan gibt aus: %r" % (z[-1],)
+
+def test_vorzeichen():
+    """n = 2, Werte -3, 3: Effektivwert 3.0"""
+    z = _lauf(2, [-3, 3])
+    assert z and abs(z[-1] - 3.0) < 1e-3, "Bei n = 2 und den Werten -3 und 3 wird 3.0 erwartet (erst quadrieren). Dein Plan gibt aus: %r" % (z[-1:] ,)
+
+def test_ein_wert():
+    """n = 1, Wert 7: Effektivwert 7.0"""
+    z = _lauf(1, [7])
+    assert z and abs(z[-1] - 7.0) < 1e-3, "Bei n = 1 und dem Wert 7 wird 7.0 erwartet. Dein Plan gibt aus: %r" % (z[-1:],)
+
+def test_kommazahlen():
+    """n = 4, Werte 0.5, 1.5, 0.5, 1.5: Effektivwert 1.1180"""
+    z = _lauf(4, [0.5, 1.5, 0.5, 1.5])
+    assert z and abs(z[-1] - 1.118034) < 1e-3, "Bei n = 4 und den Werten 0.5, 1.5, 0.5, 1.5 wird 1.118 erwartet. Dein Plan gibt aus: %r" % (z[-1:],)
+        </script>
+        <script type="application/json" data-role="solution">{"baum":[{"k":"in","v":"n","typ":"int"},{"k":"op","v":"summe = 0"},{"k":"for","v":"i in range(n)","body":[{"k":"in","v":"x","typ":"float"},{"k":"op","v":"summe = summe + x * x"}]},{"k":"out","v":"(summe / n) ** 0.5"}]}</script>
+        <ol class="a-hints">
+          <li>Reihenfolge der Symbole: Eingabe <em>n</em>, Operation <code>summe = 0</code>, die Zählschleife, danach die Ausgabe.</li>
+          <li>Die Zählschleife ist das Symbol „Zählschleife“ mit dem Text <code>i in range(n)</code>. Im Rumpf: Eingabe <code>x</code> (Typ Kommazahl) und die Operation <code>summe = summe + x * x</code>.</li>
+          <li>Die Ausgabe steht <em>nach</em> der Schleife und enthält <code>(summe / n) ** 0.5</code>. Die Wurzel gehört nicht in die Schleife.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-5" data-title="Zeit messen: die beste Zeit" data-part="B" data-stars="3" data-min="10" data-extra="" aria-labelledby="h-t-5" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-5" tabindex="-1">Zeit messen: die beste Zeit</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="code" data-id="tr-5" data-mode="funktion">
+        <div class="a-task__text">
+          <p>Schreibe die Funktion <code class="k-i">beste_zeit(f, wiederholungen)</code>. Sie bekommt eine Funktion <code class="k-i">f</code> (ohne Parameter, du rufst sie mit <code class="k-i">f()</code> auf) und eine Zahl <code class="k-i">wiederholungen</code>. Sie ruft <code class="k-i">f()</code> genau so oft auf, <strong>misst jeden Aufruf einzeln</strong> mit <code class="k-i">time.perf_counter()</code> und <strong>gibt</strong> die kleinste gemessene Dauer in Sekunden <strong>zurück</strong>. Zwischen den beiden Zeitstempeln steht nur der Aufruf <code class="k-i">f()</code>.</p>
+          <div class="a-spec"><strong>Beispiel:</strong><pre data-run="no">def arbeit():
+    return sum(range(100000))
+
+beste_zeit(arbeit, 5)   -&gt;  die kleinste von fünf Messungen, z. B. 0.0021 (s)</pre></div>
+          <p class="k-small k-muted">Wichtig für die Prüfung: Schreibe <code>import time</code> und rufe <code>time.perf_counter()</code> auf (nicht <code>from time import perf_counter</code>). Pro Wiederholung genau zwei Aufrufe: einen vor, einen nach <code>f()</code>.</p>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V13" aria-label="Python-Code Aufgabe 5">import time
+
+def beste_zeit(f, wiederholungen):
+    # f() mehrfach aufrufen, jede Dauer messen, die kleinste zurückgeben
+    pass
+
+def arbeit():
+    return sum(range(100000))
+
+print(beste_zeit(arbeit, 5))
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+import time as _zeitmodul
+
+def _fn(name):
+    assert name in globals(), "Die Funktion %s ist nicht definiert." % name
+    return globals()[name]
+
+def _mit_uhr(stempel, fn):
+    echt = _zeitmodul.perf_counter
+    it = iter(stempel)
+    _zeitmodul.perf_counter = lambda: next(it)
+    try:
+        return fn()
+    finally:
+        _zeitmodul.perf_counter = echt
+
+def test_minimum_der_messungen():
+    """Drei Messungen von 1, 3 und 2 s: Rückgabe 1"""
+    stempel = [0.0, 1.0, 10.0, 13.0, 20.0, 22.0]
+    erg = _mit_uhr(stempel, lambda: _fn("beste_zeit")(lambda: None, 3))
+    assert erg is not None, "beste_zeit gibt None zurück: Steht ein return im Rumpf?"
+    assert abs(float(erg) - 1.0) < 1e-9, "Mit den (künstlichen) Zeitstempeln 0/1, 10/13, 20/22 sind die Dauern 1, 3 und 2 s. Die beste Zeit ist 1.0, deine Funktion liefert %r. Benutzt du import time und time.perf_counter() genau zweimal je Wiederholung (vor und nach f())? Nimmst du das Minimum?" % (erg,)
+
+def test_minimum_nicht_erste():
+    """Die kleinste Messung steht am Ende: 5, 4, 0.5 s"""
+    stempel = [0.0, 5.0, 10.0, 14.0, 20.0, 20.5]
+    erg = _mit_uhr(stempel, lambda: _fn("beste_zeit")(lambda: None, 3))
+    assert erg is not None and abs(float(erg) - 0.5) < 1e-9, "Dauern 5, 4 und 0.5 s: Die beste Zeit ist 0.5, deine Funktion liefert %r." % (erg,)
+
+def test_aufrufe_gezaehlt():
+    """f wird genau wiederholungen-mal aufgerufen"""
+    zaehler = []
+    def f():
+        zaehler.append(1)
+    _fn("beste_zeit")(f, 4)
+    assert len(zaehler) == 4, "f() soll bei wiederholungen = 4 genau viermal aufgerufen werden, deine Funktion ruft es %d-mal auf." % len(zaehler)
+
+def test_echte_zeit():
+    """Eine echte Messung liefert eine kleine positive Zahl"""
+    erg = _fn("beste_zeit")(lambda: sum(range(20000)), 3)
+    assert erg is not None, "beste_zeit gibt None zurück: Steht ein return im Rumpf?"
+    assert 0 < float(erg) < 5, "Die gemessene Zeit %r ist keine plausible Dauer in Sekunden. Rechne nach minus vor, nicht umgekehrt." % (erg,)
+
+def test_eine_wiederholung():
+    """wiederholungen = 1: die einzige Messung"""
+    stempel = [100.0, 100.25]
+    erg = _mit_uhr(stempel, lambda: _fn("beste_zeit")(lambda: None, 1))
+    assert erg is not None and abs(float(erg) - 0.25) < 1e-9, "Bei einer Wiederholung mit den Zeitstempeln 100.0 und 100.25 wird 0.25 erwartet, deine Funktion liefert %r." % (erg,)
+        </script>
+        <script type="text/x-python" data-role="solution">
+import time
+
+def beste_zeit(f, wiederholungen):
+    zeiten = []
+    for versuch in range(wiederholungen):
+        start = time.perf_counter()
+        f()
+        zeiten.append(time.perf_counter() - start)
+    return min(zeiten)
+        </script>
+        <ol class="a-hints">
+          <li>Leere Liste <code>zeiten = []</code>, dann eine Schleife <code>for versuch in range(wiederholungen):</code>.</li>
+          <li>In der Schleife: <code>start = time.perf_counter()</code>, dann <code>f()</code>, dann <code>time.perf_counter() - start</code> an die Liste anhängen. Nach minus vor, nicht umgekehrt.</li>
+          <li>Nach der Schleife das Minimum zurückgeben: <code>return min(zeiten)</code>.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-6" data-title="Kollisionsprüfung: Schritte zählen und überschlagen" data-part="B" data-stars="3" data-min="12" data-extra="" aria-labelledby="h-t-6" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-6" tabindex="-1">Kollisionsprüfung: Schritte zählen und überschlagen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="code" data-id="tr-6" data-mode="funktion">
+        <div class="a-task__text">
+          <p>Auf einem Lochblech liegen Bohrungen als Punkte <code class="k-i">(x, y)</code> in mm. Schreibe drei Funktionen. (a) <code class="k-i">zu_dicht(bohrungen, mindestabstand)</code> bekommt eine Liste von Punkten und <strong>gibt</strong> die Zahl der <em>Paare</em> <strong>zurück</strong>, deren Abstand <strong>kleiner als</strong> <code class="k-i">mindestabstand</code> ist. Jedes Paar zählt einmal: die innere Schleife beginnt bei <code class="k-i">i + 1</code>. Der Abstand zweier Punkte ist <code class="k-i">((x1 - x2) ** 2 + (y1 - y2) ** 2) ** 0.5</code>. (b) <code class="k-i">anzahl_paare(n)</code> liefert die Zahl der Paare bei <em>n</em> Bohrungen mit der Formel <em>n</em>·(<em>n</em>−1)/2 (als ganze Zahl, <code class="k-i">//</code>). (c) <code class="k-i">schaetze_sekunden(n, ns_je_paar)</code> überschlägt die Dauer in Sekunden, wenn ein Paarvergleich <code class="k-i">ns_je_paar</code> Nanosekunden braucht (1 ns = 10<sup>−9</sup> s).</p>
+          <div class="a-spec"><strong>Beispiele (Rückgabewerte):</strong><pre data-run="no">zu_dicht([(0, 0), (3, 0), (3, 4), (10, 10)], 4.5)   -&gt;  2    (Abstände 3 und 4)
+anzahl_paare(1000)                                  -&gt;  499500
+schaetze_sekunden(100000, 100)                      -&gt;  499.995   (rund 8 Minuten)</pre></div>
+          <p class="k-small k-muted">Die Gegenfrage danach: Wie lange würde (a) für 100 000 Bohrungen dauern, wenn ein Vergleich in Python 100 ns braucht? Und warum nützt dir ein hundertfach schnellerer Rechner kaum, wenn die Bohrungen zehnmal mehr werden?</p>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V13" aria-label="Python-Code Aufgabe 6">def zu_dicht(bohrungen, mindestabstand):
+    # alle Paare (i, j) mit j > i prüfen und die zu dichten zählen
+    pass
+
+def anzahl_paare(n):
+    # n * (n - 1) / 2 als ganze Zahl
+    pass
+
+def schaetze_sekunden(n, ns_je_paar):
+    # Paare mal Nanosekunden je Paar, umgerechnet in Sekunden
+    pass
+
+punkte = [(0, 0), (3, 0), (3, 4), (10, 10)]
+print(zu_dicht(punkte, 4.5), anzahl_paare(1000), schaetze_sekunden(100000, 100))
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _fn(name):
+    assert name in globals(), "Die Funktion %s ist nicht definiert." % name
+    return globals()[name]
+
+def _ok(erg, name):
+    assert erg is not None, "%s gibt None zurück: Steht im Rumpf ein return (kein print)?" % name
+
+def test_zu_dicht_beispiel():
+    """zu_dicht(Beispielpunkte, 4.5) ist 2"""
+    erg = _fn("zu_dicht")([(0, 0), (3, 0), (3, 4), (10, 10)], 4.5)
+    _ok(erg, "zu_dicht")
+    assert erg == 2, "zu_dicht([(0, 0), (3, 0), (3, 4), (10, 10)], 4.5) soll 2 liefern (Abstände 3 und 4), deine Funktion liefert %r" % (erg,)
+
+def test_zu_dicht_grenze():
+    """Abstand 5 ist nicht kleiner als 5: mindestabstand 5 zählt 2, 5.1 zählt 3"""
+    f = _fn("zu_dicht")
+    p = [(0, 0), (3, 0), (3, 4), (10, 10)]
+    assert f(p, 5) == 2, "Bei mindestabstand 5 zählen nur die Abstände 3 und 4 (kleiner als, nicht kleiner gleich), deine Funktion liefert %r" % (f(p, 5),)
+    assert f(p, 5.1) == 3, "Bei mindestabstand 5.1 zählen die Abstände 3, 4 und 5, deine Funktion liefert %r" % (f(p, 5.1),)
+
+def test_zu_dicht_keine():
+    """Kein Paar zu dicht, und nur ein Punkt"""
+    f = _fn("zu_dicht")
+    assert f([(0, 0), (10, 0), (0, 10)], 1) == 0, "Kein Paar liegt dichter als 1 mm."
+    assert f([(5, 5)], 100) == 0, "Mit einer einzigen Bohrung gibt es kein Paar."
+
+def test_zu_dicht_jedes_paar_einmal():
+    """Drei Punkte dicht beieinander: 3 Paare"""
+    erg = _fn("zu_dicht")([(0, 0), (1, 0), (0, 1)], 5)
+    assert erg == 3, "Drei Punkte ergeben drei Paare, jedes nur einmal: erwartet 3, deine Funktion liefert %r. Beginnt die innere Schleife bei i + 1?" % (erg,)
+
+def test_anzahl_paare():
+    """anzahl_paare: n = 4 -> 6, n = 1000 -> 499500, n = 1 -> 0"""
+    f = _fn("anzahl_paare")
+    for n, soll in ((4, 6), (10, 45), (1000, 499500), (1, 0)):
+        erg = f(n)
+        _ok(erg, "anzahl_paare")
+        assert erg == soll, "anzahl_paare(%d) soll %d liefern, deine Funktion liefert %r" % (n, soll, erg)
+
+def test_schaetze():
+    """schaetze_sekunden(1000, 100) ist 0.04995, (100000, 100) ist 499.995"""
+    f = _fn("schaetze_sekunden")
+    erg = f(1000, 100)
+    _ok(erg, "schaetze_sekunden")
+    assert abs(float(erg) - 0.04995) < 1e-9, "schaetze_sekunden(1000, 100) soll 0.04995 liefern (499 500 Paare mal 100 ns), deine Funktion liefert %r" % (erg,)
+    erg2 = f(100000, 100)
+    assert abs(float(erg2) - 499.995) < 1e-6, "schaetze_sekunden(100000, 100) soll 499.995 liefern, deine Funktion liefert %r" % (erg2,)
+        </script>
+        <script type="text/x-python" data-role="solution">
+def zu_dicht(bohrungen, mindestabstand):
+    anzahl = 0
+    n = len(bohrungen)
+    for i in range(n):
+        for j in range(i + 1, n):
+            x1, y1 = bohrungen[i]
+            x2, y2 = bohrungen[j]
+            abstand = ((x1 - x2) ** 2 + (y1 - y2) ** 2) ** 0.5
+            if abstand < mindestabstand:
+                anzahl = anzahl + 1
+    return anzahl
+
+def anzahl_paare(n):
+    return n * (n - 1) // 2
+
+def schaetze_sekunden(n, ns_je_paar):
+    return anzahl_paare(n) * ns_je_paar * 1e-9
+        </script>
+        <ol class="a-hints">
+          <li><code>zu_dicht</code>: zwei geschachtelte Schleifen <code>for i in range(n)</code> und <code>for j in range(i + 1, n)</code> (Syntax-Karte in V06, hier wie im Beispiel der Lerneinheit). Die Punkte holst du mit <code>x1, y1 = bohrungen[i]</code> (Tupel entpacken, V08).</li>
+          <li>Der Abstand ist <code>((x1 - x2) ** 2 + (y1 - y2) ** 2) ** 0.5</code>. Gezählt wird bei <code>abstand &lt; mindestabstand</code> (kleiner als, nicht kleiner gleich). Der Zähler startet bei 0, nach den Schleifen <code>return anzahl</code>.</li>
+          <li><code>anzahl_paare</code>: <code>n * (n - 1) // 2</code>. <code>schaetze_sekunden</code>: Paare mal <code>ns_je_paar</code> mal <code>1e-9</code> (das ist 10<sup>−9</sup> in Python). Du darfst <code>anzahl_paare</code> darin aufrufen.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-7" data-title="Klausur-Modus: Effektivwert zweimal und Grenzwert-Auswahl" data-part="B" data-stars="4" data-min="15" data-extra="8 Punkte" aria-labelledby="h-t-7" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-7" tabindex="-1">Klausur-Modus: Effektivwert zweimal und Grenzwert-Auswahl</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="klausur" data-id="tr-7" data-mode="funktion" data-minutes="15">
+        <div class="a-task__text">
+          <p><strong>So wie in der Klausur:</strong> Schreibe den Code ohne Ausführen und ohne <abbr class="k-begriff" data-erklaerung="Die Auto-Vervollständigung schlägt dir beim Tippen passende Wörter vor. In der Klausur gibt es sie nicht.">Auto-Vervollständigung</abbr>, wenn möglich zuerst auf Papier. Erst danach „Abgeben und prüfen“, dann bewertest du dich selbst.</p>
+          <p>Schreibe drei Funktionen, jede bekommt eine Liste von Messwerten (Zahlen). (a) <code>effektivwert_schleife(werte)</code> <strong>gibt</strong> den Effektivwert <strong>zurück</strong> und benutzt dafür <strong>eine Schleife</strong> und <code>math.sqrt</code> (Summe der Quadrate, durch die Anzahl teilen, Wurzel). (b) <code>effektivwert_numpy(werte)</code> macht dasselbe <strong>ohne Schleife</strong> mit NumPy. (c) <code>ueber_grenze(werte, grenze)</code> <strong>gibt</strong> ein NumPy-Array mit allen Werten <strong>zurück</strong>, die <em>größer als</em> <code>grenze</code> sind, in der Reihenfolge der Messreihe. Die nötigen <code>import</code>-Zeilen schreibst du selbst.</p>
+          <div class="a-spec"><strong>Beispiele (Rückgabewerte):</strong><pre data-run="no">effektivwert_schleife([3.0, 4.0])      -&gt;  3.5355339...
+effektivwert_numpy([3.0, 4.0])         -&gt;  3.5355339...
+ueber_grenze([1, 5, 2, 8, 3], 2)       -&gt;  [5 8 3]</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V13" data-assist="off" aria-label="Python-Code von Hand schreiben, ohne Ausführen"></textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _fn(name):
+    assert name in globals(), "Die Funktion %s ist nicht definiert." % name
+    return globals()[name]
+
+def _zahl(erg, soll, aufruf):
+    assert erg is not None, "%s gibt None zurück: Steht im Rumpf ein return (kein print)?" % aufruf
+    assert abs(float(erg) - soll) < 1e-6, "%s soll %r liefern, deine Funktion liefert %r" % (aufruf, soll, erg)
+
+def test_schleife_beispiel():
+    """effektivwert_schleife([3.0, 4.0]) ist rund 3.5355"""
+    _zahl(_fn("effektivwert_schleife")([3.0, 4.0]), 3.5355339, "effektivwert_schleife([3.0, 4.0])")
+
+def test_schleife_vorzeichen():
+    """effektivwert_schleife([-1.0, 1.0, -1.0, 1.0]) ist 1.0"""
+    _zahl(_fn("effektivwert_schleife")([-1.0, 1.0, -1.0, 1.0]), 1.0, "effektivwert_schleife([-1.0, 1.0, -1.0, 1.0])")
+
+def test_numpy_beispiel():
+    """effektivwert_numpy([3.0, 4.0]) ist rund 3.5355"""
+    _zahl(_fn("effektivwert_numpy")([3.0, 4.0]), 3.5355339, "effektivwert_numpy([3.0, 4.0])")
+
+def test_numpy_vorzeichen():
+    """effektivwert_numpy([-1.0, 1.0, -1.0, 1.0]) ist 1.0"""
+    _zahl(_fn("effektivwert_numpy")([-1.0, 1.0, -1.0, 1.0]), 1.0, "effektivwert_numpy([-1.0, 1.0, -1.0, 1.0])")
+
+def test_beide_gleich():
+    """Beide Wege liefern dasselbe: [2.0, -1.0, 0.5, 4.0, 3.0]"""
+    w = [2.0, -1.0, 0.5, 4.0, 3.0]
+    a = _fn("effektivwert_schleife")(w)
+    b = _fn("effektivwert_numpy")(w)
+    assert a is not None and b is not None, "Mindestens eine Funktion gibt None zurück."
+    assert abs(float(a) - float(b)) < 1e-9, "Beide Funktionen sollen dasselbe liefern: Schleife %r, NumPy %r." % (a, b)
+
+def test_grenze_beispiel():
+    """ueber_grenze([1, 5, 2, 8, 3], 2) ist [5, 8, 3]"""
+    erg = _fn("ueber_grenze")([1, 5, 2, 8, 3], 2)
+    assert erg is not None, "ueber_grenze gibt None zurück: Steht im Rumpf ein return?"
+    assert list(erg) == [5, 8, 3], "ueber_grenze([1, 5, 2, 8, 3], 2) soll [5, 8, 3] liefern, deine Funktion liefert %r" % (list(erg),)
+
+def test_grenze_leer():
+    """Wert auf der Grenze zählt nicht: ueber_grenze([5, 5], 5) ist leer"""
+    erg = _fn("ueber_grenze")([5, 5], 5)
+    assert erg is not None and len(erg) == 0, "ueber_grenze([5, 5], 5) soll leer sein (nur echt größere Werte), deine Funktion liefert %r" % (None if erg is None else list(erg),)
+        </script>
+        <script type="text/x-python" data-role="solution">
+import math
+import numpy as np
+
+def effektivwert_schleife(werte):
+    summe = 0.0
+    for w in werte:
+        summe = summe + w * w
+    return math.sqrt(summe / len(werte))
+
+def effektivwert_numpy(werte):
+    a = np.array(werte)
+    return np.sqrt(np.mean(a ** 2))
+
+def ueber_grenze(werte, grenze):
+    a = np.array(werte)
+    return a[a > grenze]
+        </script>
+        <script type="application/json" data-role="scheme">[
+{"p":1,"t":"Imports vorhanden: import math und import numpy as np, Köpfe der drei Funktionen richtig (def, Parameter, Doppelpunkt)"},
+{"p":2,"t":"effektivwert_schleife: Zähler/Summe startet bei 0, in der Schleife wird das Quadrat jedes Werts addiert (nicht der Wert selbst)"},
+{"p":1,"t":"effektivwert_schleife: Teilen durch len(werte) und Wurzel mit math.sqrt (oder ** 0.5), Rückgabe mit return"},
+{"p":2,"t":"effektivwert_numpy: Liste mit np.array umgewandelt und die Reihenfolge stimmt: np.sqrt(np.mean(a ** 2)), keine Schleife"},
+{"p":2,"t":"ueber_grenze: Liste mit np.array umgewandelt, Maske a > grenze (echt größer) und a[maske] mit return zurückgegeben"}
+]</script>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-notebook" data-nonumber="1" data-title="Notebook und Deep Dive" data-part="B" data-stars="" data-min="" data-extra="ohne Wertung" aria-labelledby="h-t-notebook" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-notebook" tabindex="-1">Notebook und Deep Dive</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Mehr üben mit NumPy-Arrays, Masken, Messdaten und Laufzeitmessung, auch mit Schätzaufgaben („Wie lange dauert …?“). Das Notebook nutzt nur Python aus V01 bis V13. Es hat drei Stufen (Aufwärmen, Anwenden, Knobeln), keine Lösungen, dafür Selbsttests.</p>
+      <p><a class="k-btn k-btn--ghost" href="../notebooks/V13-Laufzeit.ipynb" download>V13-Laufzeit.ipynb herunterladen</a></p>
+      <ol class="k-steps">
+        <li><strong>In Codespaces öffnen:</strong> Im Kurs-Repository auf GitHub „Code“ → „Codespaces“ → „Create codespace“. Die Umgebung (Python 3.12, NumPy, Matplotlib, Jupyter) ist vorbereitet. Dann <code class="k-i">notebooks/V13-Laufzeit.ipynb</code> öffnen.</li>
+        <li><strong>Oder lokal:</strong> <code class="k-i">pip install numpy matplotlib jupyter</code>, dann <code class="k-i">jupyter lab</code>.</li>
+        <li>Immer erst die Vorhersage-Zellen ausfüllen, dann ausführen. Die Zeiten im Notebook sind <em>deine</em> Zeiten: Sie unterscheiden sich von denen im Browser.</li>
+      </ol>
+      <h3>Danach</h3>
+      <p><a href="v13-laufzeit.html#deepdive">Zum Deep Dive</a> (freiwillig): Big-O, Cache und SIMD, wann die Schleife besser ist, wenn es noch schneller sein muss. Oder zurück zur <a href="v13-laufzeit.html">Lerneinheit</a>, um etwas nachzulesen.</p>
+
+    </section>
+
+      <nav class="lab__pager" aria-label="Zwischen Aufgaben wechseln">
+        <a class="k-btn k-btn--ghost" id="lab-prev" href="#a-werkzeugkasten">← Zurück</a>
+        <a class="k-btn k-btn--ghost" id="lab-next" href="#a-vorgemacht">Weiter →</a>
+      </nav>
+    </main>
+
+    <div class="lab__dock" data-library-dock data-state="off"></div>
+  </div>
+
+  <footer class="dhbw-footer k-footer">
+    <div class="dhbw-footer__inner">
+      <span><span class="dhbw-footer__brand">DHBW Stuttgart</span> · Campus Horb</span>
+      <span><a href="../index.html">Zurück zum Lernpfad</a> · V13 Programmierlabor</span>
+    </div>
+  </footer>
+
+  <script src="../assets/js/speicher.js"></script>
+  <script src="../assets/js/icons.js"></script>
+  <script src="../assets/js/editor.js" defer></script>
+  <script src="../assets/js/kurs.js"></script>
+  <script src="../assets/js/aufgaben.js"></script>
+  <script src="../assets/js/pap-engine.js"></script>
+  <script src="../assets/js/pap-editor.js"></script>
+  <script src="../assets/js/explorables-v13.js"></script>
+  <script src="../assets/js/labor.js"></script>
+</body>
+</html>

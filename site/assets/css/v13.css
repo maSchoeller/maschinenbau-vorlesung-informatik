@@ -1,0 +1,78 @@
+/* =============================================================
+   v13.css – Lektion V13 (Laufzeit-Intuition): Explorables Schrittzahl, Schleife gegen Vektor,
+   Überschlagsrechner, Messreihe und PAP-Vergleich. Baut auf kurs.css und v05.css (PAP-Stile) auf.
+   Präfix v13-. Rot nur für den aktiven Zustand bzw. die hervorgehobene Größe.
+   ============================================================= */
+
+.v13-msg { min-height: 3.3em; margin: var(--sp-3) 0; font-weight: 600; max-width: var(--k-measure); }
+.v13-msg.is-on { padding: var(--sp-3) var(--sp-4); border-left: 3px solid var(--k-info); background: var(--k-info-bg); }
+.v13-note { margin: var(--sp-3) 0 0; max-width: none; }
+.v13-ctl { align-items: center; margin: 0 0 var(--sp-3); }
+.v13-ctl .k-btn { min-height: 44px; }
+.v13-out { font-weight: 600; font-family: var(--dhbw-font-mono); font-size: var(--fs-sm); }
+
+/* zwei Spalten: Balken + Diagramm */
+.v13-two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--sp-5); align-items: start; }
+@media (max-width: 900px) { .v13-two { grid-template-columns: minmax(0, 1fr); } }
+.v13-chartwrap { min-width: 0; }
+.v13-chart, .v13-dots, .v13-ladder { display: block; width: 100%; height: auto; max-width: 620px; }
+
+/* Balken */
+.v13-bar { margin: 0 0 var(--sp-4); }
+.v13-bar__lbl { margin: 0 0 4px; font-size: var(--fs-sm); max-width: none; }
+.v13-bar__track { height: 22px; background: var(--canvas); border: 1px solid var(--border); position: relative; }
+.v13-bar__fill { position: absolute; left: 0; top: 0; bottom: 0; background: #1A1A1A; min-width: 3px; transition: width .25s; }
+.v13-bar__fill--b { background: #E2001A; }
+.v13-bar__val { display: block; margin-top: 4px; font-family: var(--dhbw-font-mono); font-size: var(--fs-sm); font-weight: 600; }
+
+/* Diagramme */
+.v13-axis { stroke: #6B7280; stroke-width: 1.2; }
+.v13-tick { font-size: 11px; fill: #4B5563; font-family: var(--dhbw-font-sans, inherit); }
+.v13-tick--b { fill: #B00014; font-weight: 700; font-size: 12px; }
+.v13-line { stroke-width: 2.4; }
+.v13-line--a { stroke: #1A1A1A; }
+.v13-line--b { stroke: #E2001A; }
+.v13-half { stroke: #9CA3AF; stroke-width: 1; stroke-dasharray: 4 4; }
+.v13-dot--a { fill: #1A1A1A; }
+.v13-dot--b { fill: #E2001A; }
+.v13-mark { stroke: #E2001A; stroke-width: 2; }
+.v13-pt { fill: #1A1A1A; fill-opacity: .8; }
+.v13-ref { stroke-width: 2; }
+.v13-ref--min { stroke: #0B6B3A; }
+.v13-ref--med { stroke: #164B8C; stroke-dasharray: 6 3; }
+.v13-ref--avg { stroke: #E2001A; }
+.v13-tick--min { fill: #0B6B3A; font-weight: 700; }
+.v13-tick--med { fill: #164B8C; font-weight: 700; }
+.v13-tick--avg { fill: #B00014; font-weight: 700; }
+
+.v13-checks { display: flex; flex-wrap: wrap; gap: var(--sp-2) var(--sp-4); margin: 0 0 var(--sp-3); }
+.v13-check { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font-size: var(--fs-sm); font-weight: 600; cursor: pointer; }
+.v13-check input { width: 20px; height: 20px; accent-color: var(--red-dark); }
+.v13-dl { display: flex; flex-wrap: wrap; gap: var(--sp-2) var(--sp-5); margin: var(--sp-3) 0 0; }
+.v13-dl > div { min-width: 90px; }
+.v13-dl dt { font-size: var(--fs-sm); color: var(--k-muted); }
+.v13-dl dd { margin: 0; font-family: var(--dhbw-font-mono); font-weight: 700; }
+
+/* Schleife gegen Vektor */
+.v13-lane { margin: 0 0 var(--sp-4); padding: 0 0 0 var(--sp-3); border-left: 3px solid var(--border); }
+.v13-lane__t { margin: 0 0 4px; max-width: none; }
+.v13-lane__code { margin: 0 0 var(--sp-2); font-size: var(--fs-sm); }
+.v13-cells { display: flex; flex-wrap: wrap; align-items: flex-start; margin: 0 0 var(--sp-2); padding: 0; list-style: none; max-width: none; }
+.v13-cell { display: inline-block; min-width: 30px; padding: 4px 0; text-align: center; border: 1px solid #6B7280; background: #fff; font-family: var(--dhbw-font-mono); font-size: var(--fs-sm); line-height: 1.5; }
+.v13-cells.v13-cells > .v13-cell { margin-top: 0; margin-bottom: 0; }
+.v13-cells--list .v13-cell { margin-right: 4px; }
+.v13-cells--arr .v13-cell { margin-right: -1px; background: #F3F4F6; }
+.v13-cell.is-done { background: #1A1A1A; color: #fff; border-color: #1A1A1A; }
+.v13-cell.is-cur { background: #E2001A; border-color: #E2001A; color: #fff; font-weight: 700; }
+.v13-cells--arr .v13-cell.is-all { background: #E2001A; border-color: #B00014; color: #fff; transition: background .3s; }
+.v13-count { margin: 0 0 var(--sp-2); font-family: var(--dhbw-font-mono); font-size: var(--fs-sm); font-weight: 600; max-width: none; }
+.v13-lane__memo { margin: 0; max-width: none; }
+
+/* PAP-Vergleich */
+.v13-papgrid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--sp-5); align-items: start; }
+@media (max-width: 900px) { .v13-papgrid { grid-template-columns: minmax(0, 1fr); } }
+.v13-papbox { min-width: 0; }
+
+@media (max-width: 760px) {
+  .v13-cell { min-width: 28px; }
+}
