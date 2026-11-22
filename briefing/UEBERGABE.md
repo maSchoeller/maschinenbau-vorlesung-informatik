@@ -43,3 +43,9 @@ Lokal noch nicht committet: V04–V06 (Seiten, Notebooks, explorables-v04/05/06,
 - Geprüft (Browser 1600/375 px, Konsole, Code-Aufgaben, Parsons, Schritt für Schritt, Popover, nach-antwort): ok.
 - Veröffentlicht am 2026-11-21 (Commit 52b9b5d auf `main`), online geprüft. Weiter: Nachtlauf nach `briefing/NACHTLAUF-V07-V22.md`.
 - Bekannte Kleinigkeiten: in v05-beispiel-Video angeschnittene Linienstummel am Ausschnittrand; auf 375 px ist das Bedienfeld des Ablauf-Explorables in V05 recht groß.
+
+## Stand 2026-11-22 nachmittags: alle 22 Lektionen online
+- Online: V01–V22 (Lerneinheit, Labor bis V20, Notebooks), Infrastruktur (Speicherschicht, PAP-Editor `pap-editor.html`, CSV-Upload, NumPy/pandas/matplotlib, sqlite3, HTTP, 3D-Vorschau), `projekt.html`, `probeklausur-2026-27.html`, `klausurtrainer.html`. Berichte je Lektion: `briefing/berichte/vXX.md`.
+- Videos: V01–V06 komplett, V07–V11 nur Theorie-Video vertont. V07–V11 Python/Beispiel sowie alle Videos V12–V22 sind als Quellen vorbereitet (`video-src/vXX-*`), aber nicht vertont (ElevenLabs-Credits aufgebraucht, neue im Dezember). Vertonen: je Video `render.py vertonen` und rendern, TTS strikt nacheinander.
+- Arbeitsweise: Lektionen in eigenen Sub-Sessions, höchstens 3 gleichzeitig (Rechnerlast), je Session max. 2 Subagenten.
+- Offene Fragen an Marvin (Details in den Berichten): Projekt Note oder Bonus (V14); Probeklausur gegenlesen, Tiefe von SQL/Subnetz/NumPy in der Klausur (V22); pandas in der Klausur nur lesen oder auch schreiben (V15); np.median und „Funktion als Argument“ in V13; echtes MQTT live (V17); PostgreSQL-Ausblick (V19); Wortlaut Maschinenverordnung (V18); Bibliotheks-Vollausbau assert/traceback/XOR (V12, V18); echte VS-Code-Debugger-Screenshots (V12).
