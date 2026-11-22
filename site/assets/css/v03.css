@@ -1,0 +1,44 @@
+/* =============================================================
+   v03.css – neue Explorables der Lektion V03 (Float-Lineal, Toleranzband)
+   Float-Lupe und Fehler-Akkumulator stehen in kurs.css (.k-bit, .k-chart).
+   Baut auf dhbw-base.css und kurs.css auf.
+   ============================================================= */
+.v03-acts { margin: var(--sp-3) 0 0; align-items: center; }
+.v03-lineal__start { margin-top: var(--sp-2); }
+.v03-msg { min-height: 1.65em; margin: var(--sp-3) 0; font-weight: 600; max-width: var(--k-measure); }
+.v03-msg.is-on { padding: var(--sp-3) var(--sp-4); border-left: 3px solid var(--k-bad); background: var(--k-bad-bg); color: var(--k-bad); }
+
+.v03-lineal__axis { stroke: var(--text); stroke-width: 2; }
+.v03-lineal__tick { stroke: var(--red-dark); stroke-width: 2.5; }
+.v03-lineal__int { stroke: #9CA3AF; stroke-width: 1.25; }
+.v03-lineal__dense { fill: var(--red-mid); }
+.v03-lineal__densetxt { font-family: var(--dhbw-font); font-size: 14px; font-weight: 600; fill: var(--red-dark); }
+.v03-lineal__lbl { font-family: var(--dhbw-font); font-size: 14px; fill: var(--text); }
+.v03-lineal__lbl--muted { fill: var(--k-muted); font-size: 13px; }
+.v03-lineal__soll { fill: #fff; stroke: #4B5563; stroke-width: 2; }
+.v03-lineal__ist { fill: var(--red-dark); stroke: #fff; stroke-width: 2; }
+.v03-lineal__err { stroke: var(--k-bad); stroke-width: 2; stroke-dasharray: 4 3; }
+.v03-lineal__errtxt { font-family: var(--dhbw-font); font-size: 13px; font-weight: 700; fill: var(--k-bad); }
+.v03-sw { display: inline-block; vertical-align: middle; margin-right: 6px; }
+.v03-sw--tick { width: 3px; height: 16px; background: var(--red-dark); }
+.v03-sw--soll { width: 0; height: 0; border-left: 7px solid transparent; border-right: 7px solid transparent; border-top: 11px solid #4B5563; }
+.v03-sw--ist { width: 12px; height: 12px; border-radius: 50%; background: var(--red-dark); }
+
+.v03-tol__band { fill: var(--k-ok-bg); stroke: var(--k-ok); stroke-width: 1.5; }
+.v03-tol__nenn { stroke: #4B5563; stroke-width: 1.5; stroke-dasharray: 5 4; }
+.v03-tol__mess { stroke-width: 3; }
+.v03-tol__mess.is-ok { stroke: var(--k-ok); }
+.v03-tol__mess.is-bad { stroke: var(--k-bad); }
+.v03-tol__pin.is-ok { fill: var(--k-ok); }
+.v03-tol__pin.is-bad { fill: var(--k-bad); }
+.v03-tol__messtxt { font-family: var(--dhbw-font); font-size: 14px; font-weight: 700; }
+.v03-tol__messtxt.is-ok { fill: var(--k-ok); }
+.v03-tol__messtxt.is-bad { fill: var(--k-bad); }
+.v03-tol__okstrip { fill: var(--k-ok-bg); stroke: var(--k-ok); stroke-width: 1; }
+.v03-tol__badstrip { fill: var(--k-bad-bg); stroke: var(--k-bad); stroke-width: 1; }
+.v03-tol__striptxt { font-family: var(--dhbw-font-mono); font-size: 13px; fill: var(--text); }
+.v03-tol__dot { fill: var(--k-bad); stroke: #fff; stroke-width: 2; }
+.v03-tol__note { min-height: 1.5em; max-width: var(--k-measure); margin: var(--sp-3) 0; }
+.v03-tol__out dt { font-family: var(--dhbw-font-mono); font-weight: 500; }
+.v03-tol__out dl { grid-template-columns: 1fr; gap: 2px; }
+.v03-tol__out dd { margin-bottom: var(--sp-2); }

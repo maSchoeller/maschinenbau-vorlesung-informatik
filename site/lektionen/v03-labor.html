@@ -106,6 +106,7 @@ round(3.9)    # 4 (rundet)</code></pre>
     <ul>
       <li>Drück auf „Schritt für Schritt“: Du siehst jede Umwandlung einzeln und welchen Typ das Ergebnis hat.</li>
       <li><code class="k-i">int()</code> schneidet ab, <code class="k-i">round()</code> rundet.</li>
+      <li>Alle Umwandlungen auf einen Blick zeigt das <a href="v03-fliesskommazahlen.html#h-datentypen">Typ-Schaubild in der Lerneinheit</a>.</li>
       <li><code class="k-i">int("2.5")</code> geht nicht (ValueError, siehe „Typische Fehlermeldungen“). Erst <code class="k-i">float</code>, dann <code class="k-i">int</code>.</li>
       <li>Text und Zahl lassen sich nicht addieren: erst umwandeln.</li>
     </ul>
@@ -196,7 +197,7 @@ print(f"Messwert {messwert:.2f} mm in Toleranz: {ok}")</textarea></div>
       <ol class="a-explain">
         <li><strong>Zeilen 4 bis 6:</strong> <code class="k-i">input()</code> gibt Text zurück, <code class="k-i">float()</code> macht daraus eine Zahl. Ohne <code class="k-i">float()</code> würde <code class="k-i">nennmass - abmass</code> mit einem <abbr class="k-begriff" data-erklaerung="Ein TypeError ist eine Fehlermeldung: Du hast einen Wert mit dem falschen Typ verwendet, zum Beispiel Text statt Zahl."><code class="k-i">TypeError</code></abbr> abbrechen.</li>
         <li><strong>Zeile 13:</strong> <code class="k-i">:.2f</code> zeigt zwei Nachkommastellen. Die Variablen selbst bleiben unverändert.</li>
-        <li><strong>Zeile 16:</strong> <code class="k-i">math.isclose</code> mit <code class="k-i">rel_tol=0.0</code> und <code class="k-i">abs_tol</code> prüft, ob der Abstand höchstens <code class="k-i">abmass</code> beträgt. Das <code class="k-i">+ 1e-9</code> fängt den <abbr class="k-begriff" data-erklaerung="Der Rechner speichert nur endlich viele Stellen. Ist eine Zahl länger, wird sie gerundet, so wie ein Taschenrechner 1/3 nur als 0,3333333 zeigt.">Rundungsfehler</abbr> ab: <code class="k-i">25.05 - 25.0</code> ergibt 0.05000000000000071, also knapp mehr als 0.05. Ohne den Zuschlag würde der Grenzwert fälschlich durchfallen. Probiere es aus: Lösche <code class="k-i"> + 1e-9</code> und führe nochmal aus.</li>
+        <li><strong>Zeile 16:</strong> <code class="k-i">math.isclose</code> mit <code class="k-i">rel_tol=0.0</code> und <code class="k-i">abs_tol</code> prüft, ob der Abstand höchstens <code class="k-i">abmass</code> beträgt. Das <code class="k-i">+ 1e-9</code> fängt den <abbr class="k-begriff" data-erklaerung="Der Rechner speichert nur endlich viele Stellen. Ist eine Zahl länger, wird sie gerundet, so wie ein Taschenrechner 1/3 nur als 0,3333333 zeigt.">Rundungsfehler</abbr> ab: <code class="k-i">25.05 - 25.0</code> ergibt 0.05000000000000071, also knapp mehr als 0.05. Ohne den Zuschlag würde der Grenzwert fälschlich durchfallen. Probiere es aus: Lösche <code class="k-i"> + 1e-9</code> und führe nochmal aus. Wie das auf der Zahlengeraden aussieht, zeigt das <a href="v03-fliesskommazahlen.html#h-toleranzband">Toleranzband in der Lerneinheit</a> (mit Lupe auf die Grenze).</li>
         <li><strong>Selbsterklärung:</strong> Setze den Messwert auf 25.06. Was erwartest du? Warum ist das Ergebnis jetzt anders?</li>
       </ol>
     </section>

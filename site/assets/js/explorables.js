@@ -2,6 +2,8 @@
    explorables.js – interaktive Bausteine für V03 (reines JS, kein Framework)
    (A) Float-Lupe: Bits <-> exakter Wert, float64/float32
    (B) Fehler-Akkumulator: n-mal 0.1 addieren, float32 vs float64
+   (C) Float-Lineal: Abstand benachbarter Zahlen wächst mit der Größe (Portalachse in µm)
+   (D) Toleranzband: Messwert gegen Nennmaß ± Abmaß, Lupe auf die Grenze
    Der Rechenkern ist ohne DOM per node testbar (siehe module.exports).
    ============================================================= */
 (function (root) {
@@ -169,7 +171,7 @@
     var segBtns = ['float64', 'float32'].map(function (n) { return el('button', { type: 'button', 'aria-pressed': n === 'float64' ? 'true' : 'false', 'data-fmt': n, text: n }); });
     var seg = el('div', { class: 'k-seg', role: 'group', 'aria-label': 'Zahlenformat' }, segBtns);
     var presets = el('div', { class: 'k-presets', role: 'group', 'aria-label': 'Beispielwerte' });
-    ['0.1', '0.5', '0.3', '1/3', '16777217', '100.1', '1e-320', '1e308*10'].forEach(function (p) {
+    ['0.1', '0.5', '6.5', '0.3', '1/3', '16777217', '100.1', '1e-320', '1e308*10'].forEach(function (p) {
       var b = el('button', { type: 'button', class: 'k-chip', text: p === '1e308*10' ? '1e309' : p, 'data-v': p === '1/3' ? '0.3333333333333333' : (p === '1e308*10' ? '1e309' : p) });
       presets.appendChild(b);
     });
@@ -346,9 +348,218 @@
     draw();
   }
 
+  /* ── gemeinsame Helfer für (C) und (D) ───────────────────── */
+  var svgNS = 'http://www.w3.org/2000/svg';
+  function S(tag, attrs, text) { var n = document.createElementNS(svgNS, tag); Object.keys(attrs).forEach(function (k) { n.setAttribute(k, attrs[k]); }); if (text !== undefined) n.textContent = text; return n; }
+  function segment(labels, label, activeIdx, onPick) {
+    var btns = labels.map(function (t, i) { return el('button', { type: 'button', 'aria-pressed': i === activeIdx ? 'true' : 'false', text: t }); });
+    btns.forEach(function (b, i) {
+      b.addEventListener('click', function () { btns.forEach(function (o) { o.setAttribute('aria-pressed', o === b ? 'true' : 'false'); }); onPick(i); });
+    });
+    return el('div', { class: 'k-seg', role: 'group', 'aria-label': label }, btns);
+  }
+  /* Zahl im deutschen Format: Tausender mit schmalem Abstand, Dezimalkomma, Minus als Zeichen */
+  function deNum(v) {
+    if (Math.abs(v) >= 1 || v === 0) {
+      var p = String(Math.round(v * 1e6) / 1e6).split('.');
+      return (p[0].replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + (p[1] ? ',' + p[1] : '')).replace('-', '−');
+    }
+    var digits = Math.min(20, Math.ceil(-Math.log10(Math.abs(v))) + 2);
+    return v.toFixed(digits).replace(/0+$/, '').replace('.', ',').replace('-', '−');
+  }
+  /* Wie Python eine Kommazahl ausgibt (repr): 25.0 statt 25, 1e-07 statt 1e-7 */
+  function pyRepr(x) {
+    var s = String(x);
+    if (/^-?\d+$/.test(s)) return s + '.0';
+    return s.replace(/e([+-])(\d)$/, 'e$10$2');
+  }
+  function pyBool(b) { return b ? 'True' : 'False'; }
+
+  /* ── (C) Float-Lineal: Abstand benachbarter Zahlen wächst mit der Größe ─ */
+  function spacing(x, fmt) {
+    var a = Math.abs(x);
+    if (a === 0) return Math.pow(2, 1 - fmt.bias - fmt.m);
+    var e = Math.floor(Math.log2(a));
+    if (Math.pow(2, e) > a) e--;
+    if (Math.pow(2, e + 1) <= a) e++;
+    return Math.pow(2, e - fmt.m);
+  }
+  function store(x, fmt) { return fmt.width === 32 ? Math.fround(x) : x; }
+
+  function initLineal(host) {
+    var fmt = FMT.float32, start = 16777214, soll = start, ist = store(start, fmt), last = '';
+    host.textContent = '';
+    var seg = segment(['float32 (SPS REAL)', 'float64 (Python float)'], 'Zahlenformat', 0, function (i) { fmt = i ? FMT.float64 : FMT.float32; reset(start); });
+    host.appendChild(el('div', { class: 'k-controls' }, [el('div', { class: 'k-field' }, [el('span', { text: 'Format' }), seg])]));
+    var chips = el('div', { class: 'k-presets', role: 'group', 'aria-label': 'Startposition der Achse' });
+    [['1 mm', 1000], ['1 m', 1000000], ['8,4 m', 8388608], ['kurz vor 16,8 m', 16777214], ['33,6 m', 33554432]].forEach(function (p) {
+      var b = el('button', { type: 'button', class: 'k-chip', text: p[0] });
+      b.addEventListener('click', function () { reset(p[1]); });
+      chips.appendChild(b);
+    });
+    host.appendChild(el('div', { class: 'k-field v03-lineal__start' }, [el('span', { text: 'Startposition der Achse' }), chips]));
+    var bStep = el('button', { type: 'button', class: 'k-btn k-btn--small', text: '+ 1 µm fahren' });
+    var bStep5 = el('button', { type: 'button', class: 'k-btn k-btn--ghost k-btn--small', text: '+ 5 µm fahren' });
+    var bReset = el('button', { type: 'button', class: 'k-btn k-btn--link k-btn--small', text: 'Zurück auf Start' });
+    host.appendChild(el('div', { class: 'k-presets v03-acts' }, [bStep, bStep5, bReset]));
+    var msg = el('p', { class: 'v03-msg', role: 'status', 'aria-live': 'polite' });
+    host.appendChild(msg);
+    var svg = S('svg', { viewBox: '0 0 640 170', class: 'k-chart v03-lineal__svg', role: 'img' });
+    host.appendChild(svg);
+    host.appendChild(el('div', { class: 'k-legend' }, [
+      el('span', {}, [el('i', { class: 'v03-sw v03-sw--tick' }), 'Teilstrich: Zahl, die das Format speichern kann']),
+      el('span', {}, [el('i', { class: 'v03-sw v03-sw--soll' }), 'gewünschte Position']),
+      el('span', {}, [el('i', { class: 'v03-sw v03-sw--ist' }), 'gespeicherte Position'])
+    ]));
+    var out = el('div', { class: 'k-readout' });
+    host.appendChild(out);
+
+    function reset(v) { start = v; soll = v; ist = store(v, fmt); last = ''; draw(); }
+    function step(k) {
+      var before = ist;
+      for (var i = 0; i < k; i++) { soll += 1; ist = store(ist + 1, fmt); }
+      if (ist === before) last = 'Die Achse meldet + ' + k + ' µm, die gespeicherte Position bleibt bei ' + deNum(ist) + ' µm: Der nächste Teilstrich liegt ' + deNum(spacing(ist, fmt)) + ' µm weiter, ' + deNum(before) + ' + 1 wird auf ' + deNum(ist) + ' zurückgerundet.';
+      else if (soll !== ist) last = 'Die Position bewegt sich, aber nicht mehr genau: Abweichung ' + deNum(soll - ist) + ' µm.';
+      else last = '';
+      draw();
+    }
+    function draw() {
+      var W = 640, L = 30, R = 30, AY = 108;
+      var half = Math.max(6, Math.abs(soll - ist) + 3);
+      var lo = ist - half, hi = ist + half;
+      var X = function (x) { return L + (W - L - R) * (x - lo) / (hi - lo); };
+      while (svg.firstChild) svg.removeChild(svg.firstChild);
+      var sp = spacing(ist, fmt), count = (hi - lo) / sp;
+      if (count > 140) {
+        svg.appendChild(S('rect', { x: L, y: AY - 30, width: W - L - R, height: 30, class: 'v03-lineal__dense' }));
+        svg.appendChild(S('text', { x: W / 2, y: AY - 10, 'text-anchor': 'middle', class: 'v03-lineal__densetxt' }, 'Teilstriche lückenlos dicht: Abstand ' + deNum(sp) + ' µm'));
+      } else {
+        var v = store(lo, fmt); if (v < lo) v += spacing(v, fmt);
+        var guard = 0;
+        while (v <= hi && guard++ < 400) { svg.appendChild(S('line', { x1: X(v), x2: X(v), y1: AY - 30, y2: AY, class: 'v03-lineal__tick' })); v += spacing(v, fmt); }
+      }
+      svg.appendChild(S('line', { x1: L, x2: W - R, y1: AY, y2: AY, class: 'v03-lineal__axis' }));
+      for (var k = Math.ceil(lo); k <= Math.floor(hi); k++) svg.appendChild(S('line', { x1: X(k), x2: X(k), y1: AY, y2: AY + 8, class: 'v03-lineal__int' }));
+      svg.appendChild(S('text', { x: L, y: AY + 26, 'text-anchor': 'start', class: 'v03-lineal__lbl' }, deNum(Math.ceil(lo)) + ' µm'));
+      svg.appendChild(S('text', { x: W - R, y: AY + 26, 'text-anchor': 'end', class: 'v03-lineal__lbl' }, deNum(Math.floor(hi)) + ' µm'));
+      svg.appendChild(S('text', { x: W / 2, y: AY + 50, 'text-anchor': 'middle', class: 'v03-lineal__lbl v03-lineal__lbl--muted' }, 'kleine graue Striche: ganze µm'));
+      var xs = X(soll), xi = X(ist);
+      svg.appendChild(S('path', { d: 'M' + (xs - 9) + ' 46L' + (xs + 9) + ' 46L' + xs + ' 62Z', class: 'v03-lineal__soll' }));
+      svg.appendChild(S('circle', { cx: xi, cy: AY, r: 7, class: 'v03-lineal__ist' }));
+      if (soll !== ist) {
+        svg.appendChild(S('line', { x1: xi, x2: xs, y1: 30, y2: 30, class: 'v03-lineal__err' }));
+        svg.appendChild(S('text', { x: (xi + xs) / 2, y: 22, 'text-anchor': 'middle', class: 'v03-lineal__errtxt' }, 'Abweichung ' + deNum(soll - ist) + ' µm'));
+      }
+      svg.setAttribute('aria-label', 'Float-Lineal ' + fmt.name + ' um ' + deNum(ist) + ' Mikrometer. Abstand der Teilstriche ' + deNum(sp) + ' Mikrometer. Gewünscht ' + deNum(soll) + ', gespeichert ' + deNum(ist) + '.');
+      var dl = el('dl');
+      function r(k2, val, big) { dl.appendChild(el('dt', { text: k2 })); dl.appendChild(el('dd', { class: big ? 'k-big' : '', text: val })); }
+      r('Abstand der Teilstriche hier', deNum(sp) + ' µm', true);
+      r('gewünschte Position', deNum(soll) + ' µm (' + deNum(soll / 1e6) + ' m)');
+      r('gespeicherte Position', deNum(ist) + ' µm');
+      r('Abweichung', deNum(soll - ist) + ' µm');
+      out.innerHTML = ''; out.appendChild(dl);
+      msg.textContent = last;
+      msg.className = 'v03-msg' + (last ? ' is-on' : '');
+    }
+    bStep.addEventListener('click', function () { step(1); });
+    bStep5.addEventListener('click', function () { step(5); });
+    bReset.addEventListener('click', function () { reset(start); });
+    draw();
+  }
+
+  /* ── (D) Toleranzband: Prüfen wie auf der Zeichnung, mit Lupe auf die Grenze ─ */
+  function initToleranz(host) {
+    var id = 'tol' + (++uid), lupe = false;
+    host.textContent = '';
+    function field(label, val, key) {
+      var inp = el('input', { type: 'text', id: id + key, value: val, inputmode: 'decimal', autocomplete: 'off', spellcheck: 'false', size: '7' });
+      inp.addEventListener('input', draw);
+      return { inp: inp, wrap: el('div', { class: 'k-field' }, [el('label', { 'for': inp.id, text: label }), inp]) };
+    }
+    var fN = field('Nennmaß in mm', '25.0', 'n'), fA = field('Abmaß ± in mm', '0.05', 'a'), fM = field('Messwert in mm', '25.05', 'm');
+    var seg = segment(['Gesamtansicht', 'Lupe auf die Grenze'], 'Ansicht', 0, function (i) { lupe = i === 1; draw(); });
+    host.appendChild(el('div', { class: 'k-controls' }, [fN.wrap, fA.wrap, fM.wrap, el('div', { class: 'k-field' }, [el('span', { text: 'Ansicht' }), seg])]));
+    var chips = el('div', { class: 'k-presets', role: 'group', 'aria-label': 'Beispiel-Messwerte' });
+    ['24.95', '25.0', '25.03', '25.05', '25.06'].forEach(function (p) {
+      var b = el('button', { type: 'button', class: 'k-chip', text: p });
+      b.addEventListener('click', function () { fM.inp.value = p; draw(); });
+      chips.appendChild(b);
+    });
+    host.appendChild(el('div', { class: 'k-field' }, [el('span', { text: 'Messwert wählen' }), chips]));
+    var svg = S('svg', { viewBox: '0 0 640 170', class: 'k-chart v03-tol__svg', role: 'img' });
+    host.appendChild(svg);
+    var note = el('p', { class: 'k-small k-muted v03-tol__note' });
+    host.appendChild(note);
+    var out = el('div', { class: 'k-readout v03-tol__out', 'aria-live': 'polite' });
+    host.appendChild(out);
+
+    function num(inp) { var t = inp.value.trim().replace(',', '.'); return /^[-+]?(\d+\.?\d*|\.\d+)$/.test(t) ? Number(t) : null; }
+    function draw() {
+      var n = num(fN.inp), a = num(fA.inp), m = num(fM.inp);
+      while (svg.firstChild) svg.removeChild(svg.firstChild);
+      out.innerHTML = ''; note.textContent = '';
+      if (n === null || a === null || m === null || a <= 0) { note.textContent = 'Bitte drei Zahlen mit Dezimalpunkt eingeben, das Abmaß größer als 0.'; return; }
+      var d = Math.abs(m - n), naiv = d <= a, gut = d <= a + 1e-9;
+      var W = 640, L = 40, R = 40, AY = 100;
+      if (!lupe) {
+        var lo = Math.min(n - 2 * a, m - a * 0.4), hi = Math.max(n + 2 * a, m + a * 0.4);
+        var X = function (x) { return L + (W - L - R) * (x - lo) / (hi - lo); };
+        svg.appendChild(S('rect', { x: X(n - a), y: 50, width: X(n + a) - X(n - a), height: AY - 50, class: 'v03-tol__band' }));
+        svg.appendChild(S('line', { x1: L, x2: W - R, y1: AY, y2: AY, class: 'v03-lineal__axis' }));
+        svg.appendChild(S('line', { x1: X(n), x2: X(n), y1: 50, y2: AY + 6, class: 'v03-tol__nenn' }));
+        svg.appendChild(S('text', { x: X(n), y: AY + 44, 'text-anchor': 'middle', class: 'v03-lineal__lbl' }, 'Nennmaß ' + deNum(n)));
+        svg.appendChild(S('text', { x: X(n - a), y: AY + 22, 'text-anchor': 'middle', class: 'v03-lineal__lbl' }, 'Untermaß ' + deNum(n - a)));
+        svg.appendChild(S('text', { x: X(n + a), y: AY + 22, 'text-anchor': 'middle', class: 'v03-lineal__lbl' }, 'Obermaß ' + deNum(n + a)));
+        var xm = X(m), cls = gut ? 'is-ok' : 'is-bad';
+        svg.appendChild(S('line', { x1: xm, x2: xm, y1: 40, y2: AY, class: 'v03-tol__mess ' + cls }));
+        svg.appendChild(S('path', { d: 'M' + (xm - 8) + ' 30L' + (xm + 8) + ' 30L' + xm + ' 44Z', class: 'v03-tol__pin ' + cls }));
+        var tx = Math.max(L + 60, Math.min(W - R - 60, xm));
+        svg.appendChild(S('text', { x: tx, y: 22, 'text-anchor': 'middle', class: 'v03-tol__messtxt ' + cls }, 'Messwert ' + deNum(m) + (gut ? ' (in Toleranz)' : ' (außerhalb)')));
+        svg.setAttribute('aria-label', 'Toleranzband von ' + deNum(n - a) + ' bis ' + deNum(n + a) + ' Millimeter. Messwert ' + deNum(m) + (gut ? ' liegt im Band.' : ' liegt außerhalb.'));
+        if (Math.abs(d - a) < 1e-9 && naiv !== gut) note.textContent = 'Der Messwert liegt genau auf der Grenze. Auf der Zeichnung ist das in Ordnung, aber der einfache Vergleich mit <= sagt False. Schalte auf „Lupe auf die Grenze“.';
+      } else {
+        var delta = Math.abs(d - a);
+        if (delta > 1e-6) {
+          svg.appendChild(S('text', { x: W / 2, y: 90, 'text-anchor': 'middle', class: 'v03-lineal__lbl' }, 'Die Lupe lohnt sich nur genau an der Grenze. Wähle 25.05 oder 24.95.'));
+          svg.setAttribute('aria-label', 'Lupe: Der Messwert liegt nicht auf der Grenze.');
+        } else {
+          var w = Math.max(delta * 2.5, 8 * spacing(a, FMT.float64));
+          var lo2 = a - w, hi2 = a + w;
+          var X2 = function (x) { return L + (W - L - R) * (x - lo2) / (hi2 - lo2); };
+          svg.appendChild(S('rect', { x: L, y: 40, width: X2(a) - L, height: 22, class: 'v03-tol__okstrip' }));
+          svg.appendChild(S('rect', { x: X2(a), y: 40, width: W - R - X2(a), height: 22, class: 'v03-tol__badstrip' }));
+          svg.appendChild(S('text', { x: L + 6, y: 56, class: 'v03-tol__striptxt' }, 'Abstand <= Abmaß: True'));
+          svg.appendChild(S('text', { x: W - R - 6, y: 56, 'text-anchor': 'end', class: 'v03-tol__striptxt' }, 'False'));
+          svg.appendChild(S('rect', { x: L, y: 70, width: W - L - R, height: 22, class: 'v03-tol__okstrip' }));
+          svg.appendChild(S('text', { x: L + 6, y: 86, class: 'v03-tol__striptxt' }, 'Abstand <= Abmaß + 1e-9: überall True →'));
+          svg.appendChild(S('line', { x1: L, x2: W - R, y1: AY + 10, y2: AY + 10, class: 'v03-lineal__axis' }));
+          svg.appendChild(S('line', { x1: X2(a), x2: X2(a), y1: 34, y2: AY + 18, class: 'v03-tol__nenn' }));
+          svg.appendChild(S('text', { x: X2(a), y: AY + 36, 'text-anchor': 'middle', class: 'v03-lineal__lbl' }, 'Grenze: Abmaß ' + pyRepr(a)));
+          var xd = X2(d);
+          svg.appendChild(S('circle', { cx: xd, cy: AY + 10, r: 7, class: 'v03-tol__dot' }));
+          svg.appendChild(S('text', { x: Math.max(L + 90, Math.min(W - R - 90, xd)), y: AY + 58, 'text-anchor': 'middle', class: 'v03-tol__messtxt is-bad' }, 'berechneter Abstand ' + pyRepr(d)));
+          svg.setAttribute('aria-label', 'Lupe auf die Grenze: Die Grenze liegt bei ' + pyRepr(a) + ', der berechnete Abstand bei ' + pyRepr(d) + '. Mit der Rechentoleranz 1e-9 gilt der Wert trotzdem als in Toleranz.');
+          note.textContent = d > a
+            ? 'Die Lupe zeigt nur ein winziges Stück um die Grenze. Der Rechner hat 25.05 − 25.0 nicht als genau 0.05 gespeichert, sondern ' + pyRepr(d) + '. Das liegt knapp rechts der Grenze. Die Rechentoleranz 1e-9 schiebt die Grenze ein gutes Stück nach rechts, weit über diesen Ausschnitt hinaus, aber immer noch eine Million Mal feiner als jede Messung.'
+            : 'Hier liegt der berechnete Abstand zufällig nicht über der Grenze. Probier den anderen Grenzwert.';
+        }
+      }
+      var dl = el('dl');
+      function r(k, v, big) { dl.appendChild(el('dt', { text: k })); dl.appendChild(el('dd', { class: big ? 'k-big' : '', text: v })); }
+      r('abs(messwert - nennmass)', pyRepr(d));
+      r('… <= abmass', pyBool(naiv));
+      r('… <= abmass + 1e-9', pyBool(gut));
+      r('math.isclose(messwert, nennmass, rel_tol=0.0, abs_tol=abmass + 1e-9)', pyBool(gut));
+      out.appendChild(dl);
+    }
+    draw();
+  }
+
   function init() {
     Array.prototype.forEach.call(document.querySelectorAll('[data-explorable="lupe"]'), initLupe);
     Array.prototype.forEach.call(document.querySelectorAll('[data-explorable="akku"]'), initAkku);
+    Array.prototype.forEach.call(document.querySelectorAll('[data-explorable="lineal"]'), initLineal);
+    Array.prototype.forEach.call(document.querySelectorAll('[data-explorable="toleranz"]'), initToleranz);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -2,6 +2,8 @@
    explorables-v02.js – interaktive Bausteine für V02 (reines JS, kein Framework)
    (A) Bit-Schalter: 8/16 Bit anklickbar, Anzeige dezimal (ohne/mit Vorzeichen) und hex
    (B) Überlauf-Zähler: 16-Bit-Zähler, Impulse addieren, Wrap-around sichtbar
+   (C) Divisionsrestverfahren: Zerlegung Schritt für Schritt, Reste von unten nach oben lesen
+   (D) Zahlenkreis: 4-Bit-Register als Uhr, außen ohne, innen mit Vorzeichen
    Der Rechenkern ist ohne DOM per node testbar (siehe module.exports).
    ============================================================= */
 (function (root) {
@@ -264,9 +266,204 @@
     draw();
   }
 
+  /* ── (C) Divisionsrestverfahren Schritt für Schritt ──────── */
+  /* Schritte der Zerlegung: [{q, next, r}], die Reste von unten nach oben ergeben die Ziffern */
+  function restSteps(n, base) {
+    var st = [], q = n;
+    if (q === 0) return [{ q: 0, next: 0, r: 0 }];
+    while (q > 0) { st.push({ q: q, next: Math.floor(q / base), r: q % base }); q = Math.floor(q / base); }
+    return st;
+  }
+  function digitChar(r) { return r.toString(16).toUpperCase(); }
+
+  function initRest(host) {
+    var id = 'rest' + (++uid);
+    var base = 2, n = 37, st = restSteps(n, base), shown = 0;
+    host.textContent = '';
+    var input = el('input', { type: 'text', id: id + '-in', value: '37', inputmode: 'numeric', autocomplete: 'off', spellcheck: 'false', size: '8' });
+    var seg = segment(['nach Binär (Basis 2)', 'nach Hex (Basis 16)'], 'Zielsystem', 0, function (i) { base = i ? 16 : 2; restart(); });
+    host.appendChild(el('div', { class: 'k-controls' }, [
+      el('div', { class: 'k-field' }, [el('label', { 'for': input.id, text: 'Dezimalzahl (0 bis 65 535)' }), input]),
+      el('div', { class: 'k-field' }, [el('span', { text: 'Umrechnen' }), seg])
+    ]));
+    var presets = el('div', { class: 'k-presets', role: 'group', 'aria-label': 'Beispielzahlen' });
+    ['37', '165', '255', '500', '1000'].forEach(function (p) {
+      var b = el('button', { type: 'button', class: 'k-chip', text: p });
+      b.addEventListener('click', function () { input.value = p; restart(); });
+      presets.appendChild(b);
+    });
+    host.appendChild(presets);
+    var bNext = el('button', { type: 'button', class: 'k-btn k-btn--small', text: 'Nächster Schritt' });
+    var bAll = el('button', { type: 'button', class: 'k-btn k-btn--ghost k-btn--small', text: 'Alle Schritte' });
+    var bReset = el('button', { type: 'button', class: 'k-btn k-btn--link k-btn--small', text: 'Von vorn' });
+    host.appendChild(el('div', { class: 'k-presets v02-rest__acts' }, [bNext, bAll, bReset]));
+    var msg = el('p', { class: 'v02-rest__msg', role: 'status', 'aria-live': 'polite' });
+    host.appendChild(msg);
+    var tableWrap = el('div', { class: 'k-tablewrap' });
+    host.appendChild(tableWrap);
+    var result = el('div', { class: 'v02-rest__result', 'aria-live': 'polite' });
+    host.appendChild(result);
+
+    function restart() {
+      var v = parseInt(String(input.value).replace(/\s/g, ''), 10);
+      if (isNaN(v) || v < 0 || v > 65535 || !/^\s*\d[\d\s]*$/.test(input.value)) {
+        st = []; shown = 0; msg.textContent = 'Bitte eine ganze Zahl von 0 bis 65 535 eingeben.'; tableWrap.innerHTML = ''; result.innerHTML = ''; syncButtons(); return;
+      }
+      n = v; st = restSteps(n, base); shown = 0; render();
+    }
+    function syncButtons() {
+      var done = !st.length || shown >= st.length;
+      bNext.disabled = done; bAll.disabled = done;
+    }
+    function render() {
+      var b = base;
+      var tbl = el('table', { class: 'k-types v02-rest__table' });
+      tbl.appendChild(el('caption', { class: 'k-sr', text: 'Divisionsrestverfahren für ' + n + ' zur Basis ' + b }));
+      var head = el('tr', {}, [el('th', { scope: 'col', text: 'Rechnung' }), el('th', { scope: 'col', text: 'Ergebnis' }), el('th', { scope: 'col', text: 'Rest' }), el('th', { scope: 'col', text: 'wird zur Ziffer' })]);
+      var done = shown >= st.length;
+      if (done) head.appendChild(el('th', { scope: 'col', class: 'v02-rest__readhead', text: 'lesen' }));
+      tbl.appendChild(el('thead', {}, [head]));
+      var body = el('tbody');
+      for (var i = 0; i < shown; i++) {
+        var s = st[i];
+        var place = 'Stelle ' + i + (i === 0 ? ' (ganz rechts)' : '') + (i === st.length - 1 && i > 0 ? ' (ganz links)' : '');
+        var rest = b === 16 && s.r > 9 ? s.r + ' (' + digitChar(s.r) + ')' : String(s.r);
+        var tr = el('tr', { class: i === shown - 1 && !done ? 'is-cur' : '' }, [
+          el('td', { text: s.q + ' : ' + b }), el('td', { text: String(s.next) }), el('td', { class: 'v02-rest__r', text: rest }), el('td', { class: 'k-muted', text: place })
+        ]);
+        if (done && i === 0) {
+          var arrowCell = el('td', { class: 'v02-rest__arrow', rowspan: String(st.length), 'aria-label': 'von unten nach oben lesen' });
+          arrowCell.appendChild(el('span', { 'aria-hidden': 'true' }));
+          tr.appendChild(arrowCell);
+        }
+        body.appendChild(tr);
+      }
+      tbl.appendChild(body);
+      tableWrap.innerHTML = '';
+      if (shown > 0) tableWrap.appendChild(tbl);
+      result.innerHTML = '';
+      if (shown === 0) {
+        msg.textContent = 'Drück „Nächster Schritt“: Teile ' + n + ' ganzzahlig durch ' + b + ' und notiere den Rest.';
+      } else if (!done) {
+        var c = st[shown - 1];
+        msg.textContent = c.q + ' : ' + b + ' = ' + c.next + ' Rest ' + c.r + '. In Python: ' + c.q + ' // ' + b + ' ergibt ' + c.next + ', ' + c.q + ' % ' + b + ' ergibt ' + c.r + '. Weiter mit ' + c.next + '.';
+      } else {
+        msg.textContent = 'Das Ergebnis ist 0, fertig. Jetzt die Reste von unten nach oben lesen.';
+        var digits = st.slice().reverse().map(function (s) { return digitChar(s.r); });
+        var word = digits.join('');
+        var chips = el('span', { class: 'v02-rest__digits' }, digits.map(function (d) { return el('b', { text: d }); }));
+        var pre = b === 2 ? '0b' : '0x';
+        var terms = [];
+        st.forEach(function (s, i) { if (s.r) terms.unshift((b === 2 ? '' : s.r + ' · ') + Math.pow(b, i)); });
+        var probe = (terms.length ? terms.join(' + ') : '0') + ' = ' + n;
+        result.appendChild(el('p', {}, [el('strong', { text: 'Ergebnis: ' }), chips, el('span', { class: 'v02-rest__py', text: ' also ' + pre + word.toLowerCase() + ' in Python-Schreibweise' })]));
+        result.appendChild(el('p', { class: 'k-small' }, [el('strong', { text: 'Probe: ' }), probe]));
+      }
+      syncButtons();
+    }
+    bNext.addEventListener('click', function () { if (shown < st.length) { shown++; render(); } });
+    bAll.addEventListener('click', function () { shown = st.length; render(); });
+    bReset.addEventListener('click', function () { shown = 0; render(); });
+    input.addEventListener('change', restart);
+    input.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); restart(); } });
+    render();
+  }
+
+  /* ── (D) Zahlenkreis: 4-Bit-Register als Uhr ─────────────── */
+  function initKreis(host) {
+    var N = 4, M = size(N), STEP = 360 / M;
+    var C = 220, R1 = 150, R2 = 198, R3 = 98, R4 = 146;
+    var pos = 11, turn = pos * STEP, last = '';
+    host.textContent = '';
+    var acts = el('div', { class: 'k-presets', role: 'group', 'aria-label': 'Zähler bewegen' });
+    [['− 1', -1], ['+ 1', 1], ['+ 5', 5]].forEach(function (p) {
+      var b = el('button', { type: 'button', class: 'k-chip', text: p[0] });
+      b.addEventListener('click', function () { move(p[1]); });
+      acts.appendChild(b);
+    });
+    var jumps = el('div', { class: 'k-presets', role: 'group', 'aria-label': 'Zahl einstellen' });
+    [['0', 0], ['7', 7], ['8', 8], ['15', 15], ['−5', -5], ['−1', -1]].forEach(function (p) {
+      var b = el('button', { type: 'button', class: 'k-chip', text: p[0] });
+      b.addEventListener('click', function () { var u = toUnsigned(p[1], N); var d = u - pos; turn += d * STEP; pos = u; last = ''; draw(); });
+      jumps.appendChild(b);
+    });
+    host.appendChild(el('div', { class: 'k-controls' }, [
+      el('div', { class: 'k-field' }, [el('span', { text: 'Zähler bewegen' }), acts]),
+      el('div', { class: 'k-field' }, [el('span', { text: 'Zahl einstellen' }), jumps])
+    ]));
+    var wrap = el('div', { class: 'v02-kreis' });
+    var svg = S('svg', { viewBox: '0 0 440 440', class: 'v02-kreis__svg', role: 'img' });
+    wrap.appendChild(svg);
+    var side = el('div', { class: 'v02-kreis__side' });
+    var msg = el('p', { class: 'v02-msg', role: 'status', 'aria-live': 'polite' });
+    var out = el('div', { class: 'k-readout' });
+    side.appendChild(out); side.appendChild(msg);
+    side.appendChild(el('ul', { class: 'v02-kreis__legend k-small' }, [
+      el('li', {}, [el('i', { class: 'v02-kreis__sw v02-kreis__sw--out' }), 'Außen: ohne Vorzeichen, 0 bis 15']),
+      el('li', {}, [el('i', { class: 'v02-kreis__sw v02-kreis__sw--in' }), 'Innen: mit Vorzeichen, −8 bis 7 (unten negativ)']),
+      el('li', {}, [el('i', { class: 'v02-kreis__sw v02-kreis__sw--seam' }), 'Rote Nahtstellen: Hier läuft der Zähler über'])
+    ]));
+    wrap.appendChild(side);
+    host.appendChild(wrap);
+
+    function pt(r, deg) { var a = (deg - 90) * Math.PI / 180; return [C + r * Math.cos(a), C + r * Math.sin(a)]; }
+    function sector(rIn, rOut, k) {
+      var a0 = (k - 0.5) * STEP, a1 = (k + 0.5) * STEP;
+      var p0 = pt(rOut, a0), p1 = pt(rOut, a1), p2 = pt(rIn, a1), p3 = pt(rIn, a0);
+      return 'M' + p0[0].toFixed(2) + ' ' + p0[1].toFixed(2) + 'A' + rOut + ' ' + rOut + ' 0 0 1 ' + p1[0].toFixed(2) + ' ' + p1[1].toFixed(2) +
+        'L' + p2[0].toFixed(2) + ' ' + p2[1].toFixed(2) + 'A' + rIn + ' ' + rIn + ' 0 0 0 ' + p3[0].toFixed(2) + ' ' + p3[1].toFixed(2) + 'Z';
+    }
+    function seam(rIn, rOut, deg) { var a = pt(rIn - 6, deg), b = pt(rOut + 6, deg); return S('line', { x1: a[0], y1: a[1], x2: b[0], y2: b[1], class: 'v02-kreis__seam' }); }
+    function move(d) {
+      var u0 = pos, s0 = toSigned(pos, N), msgs = [];
+      var rawU = u0 + d, rawS = s0 + d;
+      if (rawU > M - 1 || rawU < 0) msgs.push('Überlauf ohne Vorzeichen: ' + u0 + (d < 0 ? ' − ' + (-d) : ' + ' + d) + ' springt auf ' + toUnsigned(rawU, N) + '.');
+      if (rawS > M / 2 - 1 || rawS < -M / 2) msgs.push('Überlauf mit Vorzeichen: ' + fmt(s0) + (d < 0 ? ' − ' + (-d) : ' + ' + d) + ' springt auf ' + fmt(toSigned(toUnsigned(rawS, N), N)) + '.');
+      pos = toUnsigned(rawU, N); turn += d * STEP; last = msgs.join(' ');
+      draw();
+    }
+    function draw() {
+      while (svg.firstChild) svg.removeChild(svg.firstChild);
+      for (var k = 0; k < M; k++) {
+        var cur = k === pos, neg = k >= M / 2;
+        svg.appendChild(S('path', { d: sector(R1, R2, k), class: 'v02-kreis__seg' + (cur ? ' is-cur' : '') }));
+        svg.appendChild(S('path', { d: sector(R3, R4, k), class: 'v02-kreis__seg v02-kreis__seg--in' + (neg ? ' is-neg' : '') + (cur ? ' is-cur' : '') }));
+        var po = pt((R1 + R2) / 2, k * STEP), pi = pt((R3 + R4) / 2, k * STEP);
+        svg.appendChild(S('text', { x: po[0], y: po[1] + 6, 'text-anchor': 'middle', class: 'v02-kreis__num' + (cur ? ' is-cur' : '') }, String(k)));
+        svg.appendChild(S('text', { x: pi[0], y: pi[1] + 6, 'text-anchor': 'middle', class: 'v02-kreis__num v02-kreis__num--in' + (cur ? ' is-cur' : '') }, fmt(toSigned(k, N))));
+      }
+      svg.appendChild(seam(R1, R2, -STEP / 2));
+      svg.appendChild(seam(R3, R4, (M / 2 - 0.5) * STEP));
+      var l1 = pt(R2 + 16, -STEP / 2);
+      svg.appendChild(S('text', { x: l1[0] - 4, y: l1[1] - 2, 'text-anchor': 'end', class: 'v02-kreis__note' }, '15 → 0'));
+      var l2 = pt(R3 - 22, (M / 2 - 0.5) * STEP);
+      svg.appendChild(S('text', { x: l2[0] + 4, y: l2[1] - 2, 'text-anchor': 'start', class: 'v02-kreis__note' }, '7 → −8'));
+      var hand = S('g', { class: 'v02-kreis__hand' });
+      hand.style.transform = 'rotate(' + turn + 'deg)';
+      hand.appendChild(S('line', { x1: C, y1: C - 38, x2: C, y2: C - R3 + 8, class: 'v02-kreis__handline' }));
+      hand.appendChild(S('path', { d: 'M' + (C - 7) + ' ' + (C - R3 + 16) + 'L' + C + ' ' + (C - R3 + 4) + 'L' + (C + 7) + ' ' + (C - R3 + 16) + 'Z', class: 'v02-kreis__handtip' }));
+      svg.appendChild(hand);
+      svg.appendChild(S('text', { x: C, y: C + 4, 'text-anchor': 'middle', class: 'v02-kreis__bits' }, pad(pos.toString(2), N)));
+      svg.appendChild(S('text', { x: C, y: C + 26, 'text-anchor': 'middle', class: 'v02-kreis__bitslbl' }, 'Bitmuster'));
+      svg.setAttribute('aria-label', 'Zahlenkreis für 4 Bit. Der Zeiger steht auf dem Bitmuster ' + pad(pos.toString(2), N) + ': ohne Vorzeichen ' + pos + ', mit Vorzeichen ' + fmt(toSigned(pos, N)) + '.');
+      var dl = el('dl');
+      function r(k, v, big) { dl.appendChild(el('dt', { text: k })); dl.appendChild(el('dd', { class: big ? 'k-big' : '', text: v })); }
+      r('Bitmuster', pad(pos.toString(2), N), true);
+      r('ohne Vorzeichen (außen)', String(pos));
+      r('mit Vorzeichen (innen)', fmt(toSigned(pos, N)));
+      if (pos >= M / 2) r('Zweierkomplement', fmt(toSigned(pos, N)) + ' liegt dort, wo außen ' + M + ' − ' + (M - pos) + ' = ' + pos + ' steht');
+      out.innerHTML = ''; out.appendChild(dl);
+      msg.textContent = last;
+      msg.className = 'v02-msg' + (last ? ' is-on' : '');
+    }
+    draw();
+  }
+
   function init() {
     Array.prototype.forEach.call(document.querySelectorAll('[data-explorable="bitschalter"]'), initBits);
     Array.prototype.forEach.call(document.querySelectorAll('[data-explorable="ueberlauf"]'), initCounter);
+    Array.prototype.forEach.call(document.querySelectorAll('[data-explorable="restverfahren"]'), initRest);
+    Array.prototype.forEach.call(document.querySelectorAll('[data-explorable="zahlenkreis"]'), initKreis);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
 })(typeof window !== 'undefined' ? window : globalThis);
