@@ -1,0 +1,1621 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>V16 Programmierlabor · Informatik Maschinenbau</title>
+  <meta name="description" content="Programmierlabor V16: Arbeitsumgebung mit Aufgabenliste, Editor und Befehls-Bibliothek. Teil A im Labor, Teil B Training zu Hause. Dateien und Ordner der Fertigungszelle mit pathlib durchsuchen, Dateigröße lesen, Laufzeit messen.">
+  <link rel="stylesheet" href="../assets/css/dhbw-base.css">
+  <link rel="stylesheet" href="../assets/css/kurs.css">
+  <link rel="stylesheet" href="../assets/css/aufgaben.css">
+  <link rel="stylesheet" href="../assets/css/editor.css">
+  <link rel="stylesheet" href="../assets/css/labor.css">
+  <link rel="stylesheet" href="../assets/css/v05.css">
+  <link rel="stylesheet" href="../assets/css/pap-editor.css">
+  <link rel="stylesheet" href="../assets/css/v14.css">
+  <link rel="stylesheet" href="../assets/css/v16.css">
+</head>
+<body data-lesson="V16" data-page="labor">
+  <a class="k-skip" href="#inhalt">Zum Inhalt springen</a>
+
+  <header class="dhbw-header k-header">
+    <div class="dhbw-header__inner">
+      <a class="k-logo" href="../index.html" aria-label="Zur Startseite">
+        <span class="k-logo__mark" aria-hidden="true">DHBW</span>
+        <span class="k-logo__text">Informatik Maschinenbau<small>Campus Horb · 2026/27</small></span>
+      </a>
+      <nav class="k-nav" aria-label="Hauptnavigation">
+        <a href="../index.html">Start</a>
+        <a href="../index.html#lernpfad">Lernpfad</a>
+        <a href="../bibliothek.html">Bibliothek</a>
+        <a href="../pap-editor.html">PAP-Editor</a>
+        <a href="../projekt.html">Projekt</a>
+        <a href="v16-rechner-und-betriebssystem.html">V16 Lerneinheit</a>
+        <a href="v16-labor.html" aria-current="page">V16 Labor</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="lab" data-lab>
+
+    <nav class="lab__list" aria-label="Aufgabenliste">
+      <div class="lab__listhead">
+        <p class="lab__title">Programmierlabor V16</p>
+        <a class="lab__back" href="v16-rechner-und-betriebssystem.html">← Lerneinheit</a>
+      </div>
+      <div class="a-progress" data-a-progress>
+        <span class="a-progress__bar"><span class="a-progress__fill"></span></span>
+        <span class="a-progress__text">0 von 15 Aufgaben gelöst</span>
+      </div>
+      <p class="lab__legend k-small k-muted"><span><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-circle"/></svg> offen</span><span><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-half"/></svg> begonnen</span><span><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-done"/></svg> gelöst</span></p>
+      <div data-lab-items></div>
+    </nav>
+
+    <main id="inhalt" class="lab__main" tabindex="-1">
+      <div class="lab__bar">
+        <div class="lab__select">
+          <label for="lab-select">Aufgabe</label>
+          <select id="lab-select"></select>
+        </div>
+        <button type="button" class="k-btn k-btn--ghost k-btn--small" id="lab-toolbox-btn" aria-expanded="false" aria-controls="lab-drawer">Werkzeugkasten</button>
+      </div>
+      <section class="lab__drawer" id="lab-drawer" aria-label="Werkzeugkasten" hidden></section>
+
+    <section class="l-task" id="a-werkzeugkasten" data-title="Werkzeugkasten" data-part="A" data-stars="" data-min="5" data-extra="" aria-labelledby="h-a-werkzeugkasten" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-werkzeugkasten" tabindex="-1">Werkzeugkasten</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Heute neu in Python: Dateien und Ordner der Fertigungszelle FZ-3 suchen und lesen. Dafür gibt es das Modul <abbr class="k-begriff" data-erklaerung="pathlib (englisch path = Pfad, lib = Bibliothek) ist ein Modul der Standardbibliothek. Es beschreibt Pfade als Objekte, die du mit / verbinden und mit Methoden wie glob oder exists befragen kannst. Es funktioniert unter Windows, Linux und macOS gleich."><strong>pathlib</strong></abbr> mit <code class="k-i">Path</code>, <code class="k-i">glob</code> und <code class="k-i">rglob</code>, dazu <code class="k-i">stat().st_size</code> für die Dateigröße, <code class="k-i">read_text</code>, das ältere Modul <code class="k-i">os</code> (zum Lesen, denn es steckt in viel KI-Code) und <code class="k-i">time.perf_counter</code> zum Messen der Laufzeit. Alle Karten arbeiten mit demselben Ordner <code class="k-i">zelle/</code>: Er wird vor jedem Lauf frisch aus <code class="k-i">zelle.zip</code> in den <abbr class="k-begriff" data-erklaerung="Der Arbeitsordner (auch Arbeitsverzeichnis) ist der Ordner, in dem ein Programm gerade steht. Ein relativer Pfad wie zelle/LIESMICH.txt wird von dort aus gesucht, so wie du im Hallenplan von deinem Standort aus losgehst.">Arbeitsordner</abbr> gelegt. Das Labor läuft in einer Sandbox im Browser: Es ist ein Linux-System, und der Ordner ist ein Übungsordner, nicht dein Rechner. Auf deinem eigenen Rechner zeigt der Task-Manager und der Explorer die echte Umgebung.</p>
+      <figure class="k-video">
+        <video controls preload="metadata" poster="../assets/video/v16-python-poster.png" aria-label="Python-Werkstatt: Pfade, Ordner durchsuchen, Dateigröße und Laufzeit messen (ca. 3 Min)">
+          <source src="../assets/video/v16-python.mp4" type="video/mp4">
+          <track kind="subtitles" srclang="de" label="Deutsch" src="../assets/video/v16-python.vtt" default>
+          Dein Browser kann dieses Video nicht abspielen.
+        </video>
+        <div class="k-video__missing" hidden>Video folgt. Bis dahin: Lies den Code unten Zeile für Zeile und probiere ihn aus.</div>
+        <figcaption>Python-Werkstatt: Pfade, Ordner durchsuchen, Dateigröße und Laufzeit (ca. 3 Min). Untertitel sind eingeschaltet (Deutsch).</figcaption>
+      </figure>
+      <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke</strong><p>Diese sechs <abbr class="k-begriff" data-erklaerung="Die Syntax ist die Schreibweise einer Programmiersprache, wie die Grammatik einer Sprache: Reihenfolge, Klammern, Anführungszeichen. Ein Tippfehler dort heißt Syntaxfehler.">Syntax</abbr>-Karten sind dein Spickzettel, bis es sitzt. Du erreichst sie in jeder Aufgabe über den Knopf „Werkzeugkasten“ oben. Alle Befehle des Kurses stehen außerdem rechts in der Befehls-Bibliothek. Führe jede Karte aus und lies die Ausgabe. Jede Karte hat ihren eigenen frischen Arbeitsordner mit <code class="k-i">zelle/</code>.</p></div>
+      <div class="lab__toolbox" id="lab-toolbox">
+<div class="a-syntax-list">
+  <article class="a-syntax" aria-labelledby="sk-pfad">
+    <span class="a-syntax__label">Syntax-Karte 1</span>
+    <h4 id="sk-pfad">Pfade bauen und zerlegen</h4>
+<pre data-files="../assets/data/v16/zelle.zip"><code>from pathlib import Path
+
+zelle = Path("zelle")                                          # relativer Pfad: ab dem Arbeitsordner
+log = zelle / "maschinen" / "D2" / "logs" / "2026-11-16.log"   # Teile mit / verbinden
+
+print(log)                      # der ganze Pfad
+print(log.name)                 # Dateiname mit Endung: 2026-11-16.log
+print(log.stem)                 # Dateiname ohne Endung: 2026-11-16
+print(log.suffix)               # die Endung mit Punkt: .log
+print(log.parent)               # der Ordner darüber: .../D2/logs
+print(log.parent.parent.name)   # zwei Ebenen höher, nur der Name: D2</code></pre>
+    <ul>
+      <li><code class="k-i">Path("zelle")</code> macht aus einem Text einen <abbr class="k-begriff" data-erklaerung="Ein Pfad ist die Adresse einer Datei: die Folge der Ordner, die man öffnen muss, bis man bei der Datei ist, zum Beispiel zelle/maschinen/D2/logs/2026-11-16.log. Ein relativer Pfad beginnt im Arbeitsordner, ein absoluter Pfad ganz oben (C:\ oder /).">Pfad</abbr>. Der Schrägstrich <code class="k-i">/</code> verbindet Teile, <strong>auf jedem Betriebssystem</strong>. Rechnen mit Text (<code class="k-i">"zelle" / "maschinen"</code>) geht nicht: Mindestens ein Teil muss ein <code class="k-i">Path</code> sein.</li>
+      <li><code class="k-i">.name</code>, <code class="k-i">.stem</code>, <code class="k-i">.suffix</code> und <code class="k-i">.parent</code> sind <em>keine</em> Funktionen (keine Klammern). <code class="k-i">.parent</code> liefert wieder einen Pfad, deshalb geht <code class="k-i">.parent.parent</code>.</li>
+      <li>Ausgegeben wird unter Windows mit <code class="k-i">\</code>, hier im Browser (Linux) mit <code class="k-i">/</code>. Im Programm schreibst du trotzdem immer <code class="k-i">/</code>.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-ordner">
+    <span class="a-syntax__label">Syntax-Karte 2</span>
+    <h4 id="sk-ordner">Ordner durchsuchen: iterdir, glob, rglob, sorted</h4>
+<pre data-files="../assets/data/v16/zelle.zip"><code>from pathlib import Path
+
+zelle = Path("zelle")
+
+for eintrag in sorted(zelle.iterdir()):          # alles direkt in zelle/
+    print(eintrag.name, eintrag.is_dir())
+
+logs = sorted(zelle.glob("maschinen/*/logs/*.log"))     # * = beliebiger Text, genau eine Ebene
+print(len(logs), "Log-Dateien, die erste:", logs[0].name)
+
+nc = [p.name for p in sorted(zelle.rglob("*.nc"))]      # rglob = in allen Unterordnern
+print(nc)</code></pre>
+    <ul>
+      <li><code class="k-i">iterdir()</code> liefert den Inhalt <strong>eines</strong> Ordners. <code class="k-i">glob("muster")</code> liefert Treffer nach einem <abbr class="k-begriff" data-erklaerung="Ein Muster (englisch glob) enthält Platzhalter: * steht für beliebig viele beliebige Zeichen, ? für genau eins. So findet *.log alle Dateien, die auf .log enden.">Muster</abbr>: <code class="k-i">*</code> steht für beliebigen Text <em>innerhalb eines Namens</em>, der Schrägstrich im Muster trennt Ordnerebenen. <code class="k-i">rglob("*.nc")</code> sucht <em>in allen Unterordnern</em> (wie <code class="k-i">glob("**/*.nc")</code>).</li>
+      <li>Die Ergebnisse kommen in <strong>keiner festgelegten Reihenfolge</strong>. Wer eine feste Reihenfolge braucht, schreibt <code class="k-i">sorted(...)</code> davor: Es ordnet alphabetisch (Groß- und Kleinbuchstaben zählen auf Linux getrennt, Großbuchstaben zuerst; Windows ignoriert den Unterschied).</li>
+      <li>Wie in V09 sagt <code class="k-i">for … in</code> „für jeden Treffer“. Möchtest du die Zahl der Treffer, zähle in der Schleife oder nimm <code class="k-i">len(list(...))</code>.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-pruefen">
+    <span class="a-syntax__label">Syntax-Karte 3</span>
+    <h4 id="sk-pruefen">Prüfen, Größe, Inhalt lesen</h4>
+<pre data-files="../assets/data/v16/zelle.zip"><code>from pathlib import Path
+
+datei = Path("zelle/LIESMICH.txt")
+print(datei.exists(), datei.is_file(), datei.is_dir())     # True True False
+print(Path("zelle").is_dir(), Path("zelle/gibt-es-nicht.txt").exists())
+
+groesse = datei.stat().st_size          # Größe in Bytes
+print(groesse, "Bytes =", round(groesse / 1024, 2), "KiB")
+
+text = datei.read_text(encoding="utf-8")
+print(len(text.splitlines()), "Zeilen:")
+print(text)</code></pre>
+    <ul>
+      <li><code class="k-i">exists()</code> fragt: „Gibt es das?“, <code class="k-i">is_file()</code>: „Ist das eine Datei?“, <code class="k-i">is_dir()</code>: „Ist das ein Ordner?“ Die Antwort ist <code class="k-i">True</code> oder <code class="k-i">False</code>. Prüfe das <em>vor</em> dem Öffnen, dann gibt es kein <code class="k-i">FileNotFoundError</code>.</li>
+      <li><code class="k-i">stat().st_size</code> ist die Größe in <abbr class="k-begriff" data-erklaerung="1 Byte sind 8 Bit, genug für einen Buchstaben. Ein Kibibyte (KiB) sind 1024 Byte, weil der Rechner binär zählt (2 hoch 10). Ein Kilobyte (kB) sind 1000 Byte. Das Betriebssystem zeigt Größen meist in KiB, nennt sie aber oft „KB“.">Bytes</abbr>. Durch <strong>1024</strong> teilen ergibt KiB, nicht durch 1000.</li>
+      <li><code class="k-i">read_text(encoding="utf-8")</code> liest die ganze Datei als <em>einen</em> Text (Kurzform von <code class="k-i">with open(…)</code> und <code class="k-i">read()</code>). Für große Dateien lieber zeilenweise mit <code class="k-i">with open</code> wie in V09.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-os">
+    <span class="a-syntax__label">Syntax-Karte 4</span>
+    <h4 id="sk-os">Das ältere Modul os (zum Lesen)</h4>
+<pre data-files="../assets/data/v16/zelle.zip"><code>import os
+
+print(os.getcwd())                                # aktueller Arbeitsordner (hier: der Übungsordner im Browser)
+print(sorted(os.listdir("zelle")))                # Namen im Ordner, als Textliste
+print(os.path.join("zelle", "maschinen", "D2"))   # Pfadteile zu einem Text verbinden
+
+for ordner, unterordner, dateien in os.walk("zelle/maschinen/D2"):   # läuft durch den ganzen Baum
+    print(ordner, "enthält", len(dateien), "Dateien")</code></pre>
+    <ul>
+      <li><code class="k-i">os</code> ist die ältere Schreibweise. Du findest sie in vielen Beispielen und in KI-Code. <code class="k-i">os.listdir</code> und <code class="k-i">os.path.join</code> liefern <em>Text</em>, <code class="k-i">pathlib</code> liefert <code class="k-i">Path</code>-Objekte mit Methoden. Du musst <code class="k-i">os.path.join</code> und <code class="k-i">os.walk</code> nur <strong>lesen</strong> können.</li>
+      <li><code class="k-i">os.walk(ordner)</code> liefert für jeden Ordner im Baum ein Tripel: Pfad, Liste der Unterordner, Liste der Dateien. Das Entpacken in drei Namen kennst du aus V14.</li>
+      <li><code class="k-i">os.getcwd()</code> (englisch current working directory) zeigt den Arbeitsordner. Auf deinem Rechner steht dort ein echter Pfad wie <code class="k-i">C:\Users\…</code>.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-zeit">
+    <span class="a-syntax__label">Syntax-Karte 5</span>
+    <h4 id="sk-zeit">Laufzeit messen</h4>
+<pre data-files="../assets/data/v16/zelle.zip"><code>import time
+from pathlib import Path
+
+zeiten = []
+for versuch in range(5):                      # mehrmals messen: die Werte schwanken
+    start = time.perf_counter()               # Stoppuhr starten (Sekunden als Kommazahl)
+    anzahl = len(list(Path("zelle").rglob("*.log")))     # nur das messen, was du messen willst
+    ende = time.perf_counter()
+    zeiten.append(1000 * (ende - start))      # Sekunden mal 1000 = Millisekunden
+
+print(anzahl, "Dateien gefunden")
+print(f"schnellste {min(zeiten):.2f} ms, langsamste {max(zeiten):.2f} ms")</code></pre>
+    <ul>
+      <li><code class="k-i">time.perf_counter()</code> ist eine <strong>Stoppuhr</strong>: Der absolute Wert sagt nichts, nur die <em>Differenz</em> zweier Aufrufe ist die Laufzeit in Sekunden. Das ist etwas anderes als die <abbr class="k-begriff" data-erklaerung="Die Uhrzeit (Wanduhr) sagt, wie spät es ist, zum Beispiel 14:32. Die Laufzeit ist die Dauer, die ein Programmteil braucht. Für die Laufzeit nimmst du eine Stoppuhr (perf_counter), nicht die Wanduhr.">Uhrzeit</abbr>.</li>
+      <li>Die Werte <strong>schwanken von Lauf zu Lauf</strong>, weil das Betriebssystem zwischendurch andere Programme bedient. Deshalb mehrmals messen und den schnellsten Wert (<code class="k-i">min</code>) nehmen. Der erste Lauf ist oft der langsamste.</li>
+      <li>Die Messung muss <strong>um genau den Teil</strong> stehen, den du vergleichen willst, nicht um die Ausgabe und nicht um das Einlesen von Eingaben.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-rueckstrich">
+    <span class="a-syntax__label">Syntax-Karte 6</span>
+    <h4 id="sk-rueckstrich">Der Rückstrich in Windows-Pfaden</h4>
+<pre><code>print("C:\temp\neu")      # \t ist ein Tabulator, \n ein Zeilenumbruch: der Pfad ist kaputt
+print(r"C:\temp\neu")     # r vor dem Text: der Rückstrich bleibt ein Rückstrich
+print("C:\\temp\\neu")    # oder jeden Rückstrich verdoppeln
+print("C:/temp/neu")      # oder besser: / benutzen, das versteht auch Windows</code></pre>
+    <ul>
+      <li>In normalen Texten leitet <code class="k-i">\</code> eine Sonderzeichen-Folge ein (<code class="k-i">\n</code> kennst du aus V09). Ein Windows-Pfad aus dem Explorer enthält Rückstriche und bricht deshalb leicht.</li>
+      <li>Der beste Rat: <strong>relative Pfade mit <code class="k-i">/</code></strong> und <code class="k-i">Path</code>. Dann läuft das Programm auf jedem Rechner. Ein fest eingetippter absoluter Pfad wie <code class="k-i">C:\Daten\zelle</code> läuft nur auf dem Rechner, auf dem er stimmt.</li>
+    </ul>
+  </article>
+</div>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-vorgemacht" data-title="Vorgerechnetes Beispiel: Logs der Zelle durchsuchen" data-part="A" data-stars="" data-min="10" data-extra="" aria-labelledby="h-a-vorgemacht" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-vorgemacht" tabindex="-1">Vorgerechnetes Beispiel: Logs der Zelle durchsuchen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Aufgabe: Auf dem Zellenrechner der Fertigungszelle FZ-3 liegt für jede Maschine (D2 Drehmaschine, F1 Fräsmaschine, R1 Roboter, M1 Messmaschine) und jeden Tag eine <abbr class="k-begriff" data-erklaerung="Eine Log-Datei (Protokoll) ist eine Textdatei, in die eine Maschine oder ein Programm jedes Ereignis mit Uhrzeit schreibt. Hier: Zeit;Stufe;Meldung, die Stufe ist INFO (Hinweis), WARN (Warnung) oder ERROR (Fehler).">Log-Datei</abbr> im Ordner <code class="k-i">zelle/maschinen/&lt;Maschine&gt;/logs/</code>. Das Programm findet alle Logs, zählt je Maschine die Fehler (Stufe <code class="k-i">ERROR</code>), nennt den ersten Fehler, summiert die Dateigrößen, listet die NC-Programme und misst, wie lange die Suche dauert. Lies den Code Zeile für Zeile, dann führe ihn aus. Drück danach auf „Schritt für Schritt“ und beobachte, wie der Zähler wächst.</p>
+      <figure class="k-video">
+        <video controls preload="metadata" poster="../assets/video/v16-beispiel-poster.png" aria-label="Vorgerechnet: Logs der Fertigungszelle durchsuchen (ca. 3 Min)">
+          <source src="../assets/video/v16-beispiel.mp4" type="video/mp4">
+          <track kind="subtitles" srclang="de" label="Deutsch" src="../assets/video/v16-beispiel.vtt" default>
+          Dein Browser kann dieses Video nicht abspielen.
+        </video>
+        <div class="k-video__missing" hidden>Video folgt. Bis dahin: Lies den Code unten Zeile für Zeile und probiere ihn aus.</div>
+        <figcaption>Vorgerechnet: Logs der Fertigungszelle durchsuchen (ca. 3 Min). Untertitel sind eingeschaltet (Deutsch).</figcaption>
+      </figure>
+      <div class="a-task" data-a="run" data-id="w-vorgemacht" data-count="0" data-mode="programm" data-timeout="20000" data-files="../assets/data/v16/zelle.zip">
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V16" aria-label="Python-Code: Logs der Zelle durchsuchen"># Fertigungszelle FZ-3: Log-Dateien aller Maschinen durchsuchen
+# (V16: pathlib, Dateien und Ordner durchsuchen, Dateigröße, Zeit messen)
+# Ordner zelle/ (im Labor aus zelle.zip entpackt)
+
+import time
+from pathlib import Path
+
+start = time.perf_counter()
+zelle = Path("zelle")
+
+fehler_je_maschine = {}
+anzahl_dateien = 0
+groesse = 0
+for log in sorted(zelle.glob("maschinen/*/logs/*.log")):
+    anzahl_dateien = anzahl_dateien + 1
+    groesse = groesse + log.stat().st_size
+    maschine = log.parent.parent.name        # .../D2/logs/2026-11-16.log -> D2
+    with open(log, encoding="utf-8") as datei:
+        for zeile in datei:
+            teile = zeile.strip().split(";")
+            if teile[1] == "ERROR":
+                if maschine not in fehler_je_maschine:
+                    fehler_je_maschine[maschine] = []
+                fehler_je_maschine[maschine].append(log.stem + " " + teile[0][11:] + " " + teile[2])
+
+print(f"{anzahl_dateien} Log-Dateien, zusammen {groesse / 1024:.1f} KiB")
+for maschine, liste in fehler_je_maschine.items():
+    print(f"{maschine}: {len(liste)} Fehler, zuerst: {liste[0]}")
+
+nc = [p.name for p in sorted(zelle.rglob("*.nc"))]
+print("NC-Programme:", nc)
+print(f"Suche dauerte {1000 * (time.perf_counter() - start):.1f} ms")</textarea></div>
+      </div>
+      <p class="k-small k-muted">Erwartete Ausgabe im Browser: 20 Log-Dateien (4 Maschinen mal 5 Tage), zusammen 47,2 KiB; D2: 5, F1: 4, M1: 11, R1: 7 Fehler; drei NC-Programme; die Dauer der Suche ist bei jedem Lauf anders.</p>
+      <ol class="a-explain">
+        <li><strong>Zeilen 5 und 6:</strong> <code class="k-i">time</code> liefert die Stoppuhr, <code class="k-i">Path</code> aus <code class="k-i">pathlib</code> beschreibt Pfade. Beide stehen am Anfang, damit der Rest sie benutzen kann.</li>
+        <li><strong>Zeilen 8 und 9:</strong> Die Stoppuhr startet <em>vor</em> der Arbeit, die gemessen werden soll. <code class="k-i">Path("zelle")</code> ist der Ausgangspunkt der Suche: ein relativer Pfad, also ab dem Arbeitsordner.</li>
+        <li><strong>Zeilen 11 bis 13:</strong> Ein leeres Wörterbuch für die Fehler (Schlüssel ist die Maschine, Wert eine Liste von Meldungen) und zwei Zähler für Dateien und Bytes (V08).</li>
+        <li><strong>Zeile 14:</strong> <code class="k-i">glob("maschinen/*/logs/*.log")</code> sucht nach einem Muster: unter <code class="k-i">maschinen</code> jeder Ordner (<code class="k-i">*</code> steht für D2, F1, M1, R1), darin <code class="k-i">logs</code>, darin jede Datei auf <code class="k-i">.log</code>. <code class="k-i">sorted</code> bringt die Treffer in eine feste Reihenfolge, denn <code class="k-i">glob</code> verspricht keine.</li>
+        <li><strong>Zeilen 15 und 16:</strong> Pro Datei einen Treffer mehr zählen und <code class="k-i">log.stat().st_size</code> (Größe in Bytes) aufaddieren.</li>
+        <li><strong>Zeile 17:</strong> Welche Maschine ist das? Der Pfad endet auf <code class="k-i">D2/logs/2026-11-16.log</code>. <code class="k-i">log.parent</code> ist der Ordner <code class="k-i">logs</code>, <code class="k-i">log.parent.parent</code> der Ordner <code class="k-i">D2</code>, <code class="k-i">.name</code> sein Name <code class="k-i">"D2"</code>.</li>
+        <li><strong>Zeilen 18 bis 24:</strong> Die Datei wird zeilenweise gelesen (V09). <code class="k-i">zeile.strip().split(";")</code> zerlegt eine Zeile in Zeit, Stufe und Meldung (V08). Ist <code class="k-i">teile[1]</code> gleich <code class="k-i">"ERROR"</code>, kommt die Meldung in die Liste dieser Maschine; hat die Maschine noch keine Liste, wird sie in Zeile 23 angelegt. <code class="k-i">log.stem</code> ist das Datum aus dem Dateinamen, <code class="k-i">teile[0][11:]</code> die Uhrzeit (die Zeichen ab Position 11 der Zeit).</li>
+        <li><strong>Zeilen 26 bis 28:</strong> Die Summe geteilt durch <strong>1024</strong> ergibt KiB, auf eine Nachkommastelle. Dann eine Zeile je Maschine mit Anzahl und erstem Fehler.</li>
+        <li><strong>Zeilen 30 und 31:</strong> <code class="k-i">rglob("*.nc")</code> sucht in <em>allen</em> Unterordnern, findet also auch das Programm im Ordner <code class="k-i">alt</code>. Die Schreibweise in Zeile 30 ist eine List Comprehension (V08) mit nur den Namen.</li>
+        <li><strong>Zeile 32:</strong> Die Differenz der Stoppuhr ist die Laufzeit in Sekunden, mal 1000 sind Millisekunden. Führe das Programm mehrmals aus: Die Zahl ändert sich jedes Mal, weil das Betriebssystem zwischendurch andere Dinge erledigt.</li>
+        <li><strong>Selbsterklärung:</strong> Ändere Zeile 14 in <code class="k-i">zelle.glob("*.log")</code>. Was zeigt das Programm jetzt, und warum gibt es <em>keine</em> Fehlermeldung? Dann stelle <code class="k-i">"ERROR"</code> auf <code class="k-i">"WARN"</code> und vergleiche die Zahlen.</li>
+      </ol>
+      <div class="hinweis hinweis--achtung"><strong class="hinweis__title">Achtung</strong><p>Die Reihenfolge von <code class="k-i">sorted</code> hängt vom <abbr class="k-begriff" data-erklaerung="Das Betriebssystem (Windows, Linux, macOS) ist das Grundprogramm des Rechners. Es verwaltet Hardware, Speicher, Dateien und die Rechenzeit der anderen Programme.">Betriebssystem</abbr> ab: Hier im Browser (Linux) steht <code class="k-i">WELLE_20H6.nc</code> vor <code class="k-i">WELLE_20H6_v1.nc</code>, und der Ordner <code class="k-i">alt</code> kommt zuletzt. Windows vergleicht Pfade ohne Rücksicht auf Groß- und Kleinschreibung und liefert eine andere Reihenfolge. Verlass dich bei Pfaden deshalb nie auf eine bestimmte Reihenfolge, wenn du sie nicht selbst festlegst.</p></div>
+    </section>
+
+    <section class="l-task" id="a-ablauf" data-title="Ablauf verfolgen" data-part="A" data-stars="" data-min="5" data-extra="" aria-labelledby="h-a-ablauf" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-ablauf" tabindex="-1">Ablauf verfolgen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Bevor du Ordner durchsuchst, musst du Pfadteile lesen können. Führe das Programm im Kopf aus, <strong>Zeile für Zeile, so wie Python es tut</strong>. Trage ein, was danach in den hervorgehobenen Variablen steht. <code class="k-i">import</code>-Zeilen und die Zeile mit dem Pfad bekommen keinen eigenen Schritt. Texte schreibst du mit Anführungszeichen (<code class="k-i">'D2'</code>).</p>
+      <div class="a-task" data-a="trace" data-id="w-trace">
+        <script type="application/json">{"code":["from pathlib import Path","p = Path(\"zelle/maschinen/D2/logs/2026-11-16.log\")","name = p.stem","m = p.parent.parent.name","endung = p.suffix","print(m, name, endung)"],
+"vars":["name","m","endung"],
+"steps":[
+{"line":3,"set":{"name":"'2026-11-16'"},"hint":"p.stem ist der Dateiname ohne Endung: aus 2026-11-16.log wird 2026-11-16. Es ist ein Text, also in Anführungszeichen."},
+{"line":4,"set":{"m":"'D2'"},"hint":"p.parent ist der Ordner logs, p.parent.parent der Ordner D2. .name gibt nur dessen Namen: 'D2'."},
+{"line":5,"set":{"endung":"'.log'"},"hint":"p.suffix ist die Endung mit dem Punkt: '.log'."},
+{"line":6,"out":"D2 2026-11-16 .log","hint":"print gibt die drei Texte ohne Anführungszeichen mit je einem Leerzeichen dazwischen aus."}
+]}</script>
+      </div>
+      <p class="l-task__intro">Zweiter Ablauf: Dateigrößen aufsummieren und in KiB umrechnen, wie im Beispiel. Drei Logs mit 1536, 3072 und 512 Bytes.</p>
+      <div class="a-task" data-a="trace" data-id="w-trace2">
+        <script type="application/json">{"code":["groessen = [1536, 3072, 512]","gesamt = 0","for g in groessen:","    gesamt = gesamt + g","kib = gesamt / 1024","print(f\"{kib:.1f} KiB\")"],
+"vars":["groessen","gesamt","g","kib"],
+"steps":[
+{"line":1,"set":{"groessen":"[1536, 3072, 512]"},"hint":"Eine Liste mit drei Größen in Bytes (im Programm kämen sie aus stat().st_size)."},
+{"line":2,"set":{"gesamt":"0"},"hint":"Der Zähler startet bei 0."},
+{"line":3,"set":{"g":"1536"},"hint":"Erster Durchlauf: g ist der erste Wert der Liste."},
+{"line":4,"set":{"gesamt":"1536"},"hint":"0 + 1536 = 1536."},
+{"line":3,"set":{"g":"3072"},"hint":"Zweiter Durchlauf: g ist 3072."},
+{"line":4,"set":{"gesamt":"4608"},"hint":"1536 + 3072 = 4608."},
+{"line":3,"set":{"g":"512"},"hint":"Dritter Durchlauf: g ist 512."},
+{"line":4,"set":{"gesamt":"5120"},"hint":"4608 + 512 = 5120 Bytes."},
+{"line":5,"set":{"kib":"5.0"},"hint":"5120 / 1024 ist genau 5. Die Division mit / liefert immer eine Kommazahl, also 5.0. Mit 1000 statt 1024 hättest du 5.12 bekommen: ein häufiger Fehler."},
+{"line":6,"out":"5.0 KiB","hint":"Der f-String zeigt kib mit einer Nachkommastelle, dahinter steht der Text KiB."}
+]}</script>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-zeilen" data-title="Zeilen ordnen" data-part="A" data-stars="" data-min="7" data-extra="" aria-labelledby="h-a-zeilen" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-zeilen" tabindex="-1">Zeilen ordnen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Alle Zeilen sind da, aber durcheinander. Bring sie in die richtige Reihenfolge <strong>und rücke die Zeilen im Schleifenrumpf ein</strong> (Pfeil nach rechts oder Mausziehen). Manche Zeilen gehören nicht ins Programm.</p>
+      <div class="a-task" data-a="parsons" data-id="w-parsons1">
+        <div class="a-task__head"><h3 class="a-task__title">Log-Dateien einer Maschine zählen</h3></div>
+        <p>Das Programm zählt die Log-Dateien im Ordner der Drehmaschine D2. Überlege vorher: Was muss ganz oben stehen, damit <code class="k-i">Path</code> bekannt ist? Welches Muster findet Log-Dateien? Welche Zeile gehört in die Schleife?</p>
+        <script type="application/json">{"solution":["from pathlib import Path","ordner = Path(\"zelle/maschinen/D2/logs\")","anzahl = 0","for datei in sorted(ordner.glob(\"*.log\")):","    anzahl = anzahl + 1","print(anzahl, \"Dateien\")"],
+"distractors":["for datei in sorted(ordner.glob(\"*.txt\")):","    anzahl = anzahl + datei"],
+"alts":[["from pathlib import Path","anzahl = 0","ordner = Path(\"zelle/maschinen/D2/logs\")","for datei in sorted(ordner.glob(\"*.log\")):","    anzahl = anzahl + 1","print(anzahl, \"Dateien\")"]]}</script>
+      </div>
+
+      <div class="a-task" data-a="parsons" data-id="w-parsons2">
+        <div class="a-task__head"><h3 class="a-task__title">Größe aller Logs der Fräsmaschine in KiB</h3></div>
+        <p>Die Größen der Log-Dateien von F1 werden aufsummiert und in KiB ausgegeben, auf eine Nachkommastelle. Achte auf die Umrechnung von Bytes in KiB und darauf, was vor der Schleife und was nach der Schleife steht.</p>
+        <script type="application/json">{"solution":["from pathlib import Path","gesamt = 0","for datei in Path(\"zelle/maschinen/F1/logs\").glob(\"*.log\"):","    gesamt = gesamt + datei.stat().st_size","print(f\"{gesamt / 1024:.1f} KiB\")"],
+"distractors":["    gesamt = gesamt + datei.st_size","print(f\"{gesamt / 1000:.1f} KiB\")"],
+"alts":[]}</script>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-luecken" data-title="Lücken füllen" data-part="A" data-stars="" data-min="5" data-extra="" aria-labelledby="h-a-luecken" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-luecken" tabindex="-1">Lücken füllen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Jetzt tippst du Teile selbst. Ergänze die vier Lücken, sodass das Programm <strong>alle</strong> NC-Programme der Zelle mit Namen und Größe in Bytes ausgibt, also auch die im Unterordner <code class="k-i">alt</code>. Geprüft wird das Verhalten, nicht nur dein Wort: Die Tests legen weitere NC-Programme an und starten dein Programm noch einmal.</p>
+      <div class="a-task" data-a="gap" data-id="w-luecken" data-mode="programm" data-files="../assets/data/v16/zelle.zip">
+        <pre class="a-gap__src">from pathlib import Path
+
+nc = Path("zelle") / "@@nc-programme@@"
+for p in sorted(nc.@@rglob@@("*.nc")):
+    groesse = p.@@stat@@().st_size
+    print(p.@@name@@, groesse, "Bytes")</pre>
+        <script type="text/x-python" data-role="tests">
+import os
+
+def _schreibe(pfad, text):
+    with open(pfad, "w", encoding="utf-8", newline="\n") as f:
+        f.write(text)
+
+def _lese(out):
+    erg = {}
+    for z in _zeilen(out):
+        teile = z.split()
+        assert len(teile) == 3 and teile[2] == "Bytes", "Jede Zeile soll 'Name Größe Bytes' lauten. Gefunden: %r" % z
+        erg[teile[0]] = int(teile[1])
+    return erg
+
+def test_vorhandene():
+    """Die drei NC-Programme mit ihrer Größe (auch das im Ordner alt)"""
+    erg = _lese(_run_program([]))
+    assert erg == {"FLANSCH_80.nc": 107, "WELLE_20H6.nc": 107, "WELLE_20H6_v1.nc": 47}, "Erwartet drei Programme (FLANSCH_80.nc 107, WELLE_20H6.nc 107, WELLE_20H6_v1.nc 47). Dein Programm gibt aus: %r" % erg
+
+def test_neue_programme():
+    """Neue NC-Programme in nc-programme und alt (und eine .txt-Datei, die nicht zählt)"""
+    _schreibe("zelle/nc-programme/BUCHSE_30.nc", "%\nM30\n%\n")
+    _schreibe("zelle/nc-programme/alt/NABE_5.nc", "%\n" * 20)
+    _schreibe("zelle/nc-programme/notizen.txt", "kein NC-Programm")
+    erg = _lese(_run_program([]))
+    assert erg.get("BUCHSE_30.nc") == 8, "BUCHSE_30.nc hat 8 Bytes, dein Programm gibt aus: %r" % erg
+    assert erg.get("NABE_5.nc") == 40, "NABE_5.nc im Ordner alt hat 40 Bytes, dein Programm gibt aus: %r" % erg
+    assert "notizen.txt" not in erg and len(erg) == 5, "Es sollen genau fünf NC-Programme erscheinen, keine .txt-Datei. Gefunden: %r" % sorted(erg)
+
+def test_tiefer_verschachtelt():
+    """Ein NC-Programm in einem tieferen Unterordner wird auch gefunden"""
+    os.makedirs("zelle/nc-programme/alt/archiv", exist_ok=True)
+    _schreibe("zelle/nc-programme/alt/archiv/ALT_1.nc", "M30\n")
+    erg = _lese(_run_program([]))
+    assert erg.get("ALT_1.nc") == 4, "ALT_1.nc (4 Bytes) in alt/archiv wurde nicht gefunden. Dein Programm gibt aus: %r" % erg
+        </script>
+        <ol class="a-hints">
+          <li>Lücke 1: Der Unterordner der Zelle, in dem die NC-Programme liegen. Schau in die Ausgabe von Syntax-Karte 2 oder in das Beispiel.</li>
+          <li>Lücke 2: Die Methode, die <em>auch in Unterordnern</em> sucht, beginnt mit r (Syntax-Karte 2). Sonst fehlt das Programm im Ordner <code>alt</code>.</li>
+          <li>Lücke 3 und 4: Die Größe steht in <code>stat().st_size</code> (Syntax-Karte 3); der Dateiname ohne Ordner ist <code>.name</code> (Syntax-Karte 1).</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-erste" data-title="Erste eigene Aufgabe: Warnungen je Maschine zählen" data-part="A" data-stars="1" data-min="12" data-extra="" aria-labelledby="h-a-erste" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-erste" tabindex="-1">Erste eigene Aufgabe: Warnungen je Maschine zählen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Jetzt suchst du selbst, mit <abbr class="k-begriff" data-erklaerung="Ein Test ist ein kleines Prüfprogramm. Es startet dein Programm mit festen Eingaben und vergleicht die Ausgabe mit dem erwarteten Ergebnis.">Tests</abbr> als Sicherheitsnetz. Die Tests laufen mit der Zelle, wie sie ist, <strong>und mit veränderten Daten</strong>: Sie legen neue Log-Dateien, eine zusätzliche Maschine und eine Notizdatei an und starten dein Programm noch einmal. Ein Programm, das nur die heutigen Zahlen ausgibt, besteht deshalb nicht.</p>
+      <div class="a-task" data-a="code" data-id="w-erste" data-mode="programm" data-timeout="20000" data-files="../assets/data/v16/zelle.zip">
+        <div class="a-task__text">
+          <p>Gib für <strong>jede Maschine</strong> unter <code class="k-i">zelle/maschinen</code> eine Zeile mit der Zahl der Warnungen aus (Stufe <code class="k-i">WARN</code>), alphabetisch nach dem Maschinennamen, auch wenn die Zahl 0 ist. Gezählt werden nur Dateien mit der Endung <code class="k-i">.log</code> im Unterordner <code class="k-i">logs</code> der Maschine. Das Gerüst läuft schon über die Maschinen, du ergänzt die Schleifen darin.</p>
+          <div class="a-spec"><strong>Ausgabe genau so (für die mitgelieferte Zelle):</strong><pre data-run="no">D2: 13
+F1: 14
+M1: 20
+R1: 15</pre></div>
+          <p class="k-small k-muted">Gegenprobe von Hand: Die Maschine M1 meldet die meisten Warnungen („Messung n. i. O.“), D2 die wenigsten.</p>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V16" aria-label="Python-Code: Warnungen je Maschine zählen">from pathlib import Path
+
+zelle = Path("zelle")
+
+for maschine in sorted((zelle / "maschinen").iterdir()):
+    warnungen = 0
+    # alle .log-Dateien im Unterordner logs dieser Maschine durchgehen,
+    # jede Zeile in ihre Teile zerlegen und die Stufe WARN zählen
+    print(f"{maschine.name}: {warnungen}")
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+import os
+
+def _schreibe(pfad, text):
+    os.makedirs(os.path.dirname(pfad), exist_ok=True)
+    with open(pfad, "w", encoding="utf-8", newline="\n") as f:
+        f.write(text)
+
+def _soll():
+    erg = {}
+    for m in sorted(os.listdir("zelle/maschinen")):
+        n = 0
+        ordner = "zelle/maschinen/" + m + "/logs"
+        if os.path.isdir(ordner):
+            for name in os.listdir(ordner):
+                if name.endswith(".log"):
+                    with open(ordner + "/" + name, encoding="utf-8") as f:
+                        for z in f:
+                            t = z.strip().split(";")
+                            if len(t) > 2 and t[1] == "WARN":
+                                n = n + 1
+        erg[m] = n
+    return erg
+
+def _lese(out):
+    namen = []
+    erg = {}
+    for z in _zeilen(out):
+        assert ":" in z, "Jede Zeile soll 'Maschine: Zahl' lauten. Gefunden: %r" % z
+        name, rest = z.split(":", 1)
+        namen.append(name.strip())
+        erg[name.strip()] = int(_zahlen(rest)[0])
+    assert namen == sorted(namen), "Die Maschinen sollen alphabetisch stehen. Gefunden: %r" % namen
+    return erg
+
+def test_mitgelieferte_zelle():
+    """Zelle wie geliefert: D2 13, F1 14, M1 20, R1 15"""
+    erg = _lese(_run_program([]))
+    assert erg == {"D2": 13, "F1": 14, "M1": 20, "R1": 15}, "Erwartet D2: 13, F1: 14, M1: 20, R1: 15. Dein Programm gibt aus: %r" % erg
+
+def test_neue_logdatei():
+    """F1 bekommt einen weiteren Tag: zwei Warnungen mehr"""
+    _schreibe("zelle/maschinen/F1/logs/2026-11-21.log",
+              "2026-11-21 06:00:00;INFO;Programm FLANSCH_80 gestartet\n2026-11-21 06:10:00;WARN;Spaenebehaelter fast voll\n2026-11-21 06:20:00;ERROR;Achse Z Schleppfehler\n2026-11-21 06:30:00;WARN;Spaenebehaelter fast voll\n")
+    erg = _lese(_run_program([]))
+    soll = _soll()
+    assert soll["F1"] == 16, "Testdaten fehlerhaft"
+    assert erg.get("F1") == 16, "Nach der neuen Datei 2026-11-21.log hat F1 16 Warnungen (14 plus 2). Dein Programm gibt für F1 aus: %r" % erg.get("F1")
+
+def test_notizdatei_zaehlt_nicht():
+    """Eine Notizdatei notizen.txt im Ordner logs zählt nicht"""
+    _schreibe("zelle/maschinen/D2/logs/notizen.txt", "2026-11-21 08:00:00;WARN;nur eine Notiz\n2026-11-21 08:05:00;WARN;noch eine\n")
+    erg = _lese(_run_program([]))
+    assert erg.get("D2") == 13, "Nur Dateien mit der Endung .log zählen. D2 soll bei 13 bleiben, dein Programm gibt aus: %r" % erg.get("D2")
+
+def test_neue_maschine_ohne_warnung():
+    """Neue Maschine S1 ohne Warnung erscheint mit 0, neue Maschine A1 steht vorn"""
+    _schreibe("zelle/maschinen/S1/logs/2026-11-21.log", "2026-11-21 07:00:00;INFO;Start\n2026-11-21 07:10:00;INFO;Ende\n")
+    _schreibe("zelle/maschinen/A1/logs/2026-11-21.log", "2026-11-21 07:00:00;WARN;Test\n")
+    erg = _lese(_run_program([]))
+    assert erg == _soll(), "Erwartet %r, dein Programm gibt aus: %r" % (_soll(), erg)
+    assert erg.get("S1") == 0 and erg.get("A1") == 1, "S1 soll 0 und A1 soll 1 Warnung haben. Dein Programm gibt aus: %r" % erg
+        </script>
+        <script type="text/x-python" data-role="solution">
+from pathlib import Path
+
+zelle = Path("zelle")
+
+for maschine in sorted((zelle / "maschinen").iterdir()):
+    warnungen = 0
+    for log in sorted((maschine / "logs").glob("*.log")):
+        with open(log, encoding="utf-8") as datei:
+            for zeile in datei:
+                teile = zeile.strip().split(";")
+                if teile[1] == "WARN":
+                    warnungen = warnungen + 1
+    print(f"{maschine.name}: {warnungen}")
+        </script>
+        <ol class="a-hints">
+          <li>Innerhalb der Maschinen-Schleife brauchst du eine zweite Schleife über die Log-Dateien: <code>(maschine / "logs").glob("*.log")</code>. Der Schrägstrich verbindet Pfadteile (Syntax-Karte 1 und 2).</li>
+          <li>Für jede Datei: <code>with open(log, encoding="utf-8") as datei:</code> und eine dritte Schleife über die Zeilen, wie im Beispiel (Zeilen 18 bis 21).</li>
+          <li>Eine Zeile zerlegst du mit <code>zeile.strip().split(";")</code>. Die Stufe steht in <code>teile[1]</code>. Ist sie <code>"WARN"</code> (genau so, in Großbuchstaben), zählst du <code>warnungen</code> hoch.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-pap" data-title="PAP zeichnen: Speicher-Ampel" data-part="A" data-stars="2" data-min="10" data-extra="PAP zeichnen" aria-labelledby="h-a-pap" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-pap" tabindex="-1">PAP zeichnen: Speicher-Ampel</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Der Arbeitsspeicher (<abbr class="k-begriff" data-erklaerung="RAM (Arbeitsspeicher) ist der schnelle, aber flüchtige Speicher des Rechners: Darin liegen die Programme und Daten, mit denen die CPU gerade arbeitet. Schaltest du den Rechner aus, ist er leer. Ist er voll, lagert das Betriebssystem Teile auf die langsamere SSD aus.">RAM</abbr>) entscheidet beim CAD, ob das Bauteil flüssig läuft. Du zeichnest den Plan einer Ampel, die aus dem Bedarf der geöffneten Programme eine Aussage macht. Die Prüfung erzeugt aus deinem PAP Python-Code und testet ihn mit Grenzwerten, auch genau auf der Grenze.</p>
+      <div class="a-task k-pap-aufgabe" data-a="pap-zeichnen" data-id="v16-speicher-ampel" data-timeout="8000" data-erlaubt="in,out,op,if,for">
+        <div class="a-task__head"><h3 class="a-task__title">Speicher-Ampel</h3></div>
+        <p>Zeichne einen PAP. Eingaben: der Arbeitsspeicher <code class="k-i">ram_gb</code> (in GB, Kommazahl) und die Anzahl <code class="k-i">n</code> der laufenden Programme (ganze Zahl). Dann liest eine Zählschleife über n Durchläufe jeweils den Bedarf <code class="k-i">bedarf</code> eines Programms (in GB, Kommazahl) ein und addiert ihn auf <code class="k-i">summe</code> (Start 0). Danach prüfst du die Summe: höchstens 80 % des Arbeitsspeichers: Ausgabe <code class="k-i">"ok"</code>; höchstens 100 %: Ausgabe <code class="k-i">"knapp"</code>; sonst Ausgabe <code class="k-i">"Auslagerung"</code> (das Betriebssystem muss Daten auf die SSD verschieben). Schreibe die Ausgabetexte mit Anführungszeichen.</p>
+        <script type="application/json" data-role="start">{"baum":[{"k":"in","v":"ram_gb","typ":"float"},{"k":"in","v":"n","typ":"int"}]}</script>
+        <script type="text/x-python" data-role="tests">
+def _urteil(ram, bedarfe):
+    eingaben = [str(ram), str(len(bedarfe))] + [str(b) for b in bedarfe]
+    z = _zeilen(_run_program(eingaben))
+    assert z, "Dein PAP gibt nichts aus. Erwartet wird genau ein Wort: ok, knapp oder Auslagerung."
+    return z[-1].strip().lower()
+
+def test_ok():
+    """20 GB, Bedarf 8 und 5 GB (13 GB, 65 %): ok"""
+    u = _urteil(20, [8, 5])
+    assert u == "ok", "Erwartet wird ok. Dein PAP gibt aus: %r" % u
+
+def test_grenze_80_prozent():
+    """Genau 80 %: 20 GB, Bedarf 8 und 8 GB (16 GB): ok"""
+    u = _urteil(20, [8, 8])
+    assert u == "ok", "Genau 80 % ist noch ok (Bedingung mit kleiner oder gleich). Dein PAP gibt aus: %r" % u
+
+def test_knapp():
+    """16,5 GB von 20 GB (82,5 %): knapp"""
+    u = _urteil(20, [8, 8.5])
+    assert u == "knapp", "Erwartet wird knapp. Dein PAP gibt aus: %r" % u
+
+def test_grenze_100_prozent():
+    """Genau 100 %: 20 GB, Bedarf 10 und 10 GB: knapp"""
+    u = _urteil(20, [10, 10])
+    assert u == "knapp", "Genau 100 % ist noch knapp, nicht Auslagerung. Dein PAP gibt aus: %r" % u
+
+def test_auslagerung():
+    """20,5 GB von 20 GB: Auslagerung"""
+    u = _urteil(20, [10, 10.5])
+    assert u == "auslagerung", "Erwartet wird Auslagerung. Dein PAP gibt aus: %r" % u
+
+def test_kein_programm():
+    """Grenzfall: keine Programme (n = 0): ok"""
+    u = _urteil(16, [])
+    assert u == "ok", "Ohne Programme ist die Summe 0, erwartet wird ok. Dein PAP gibt aus: %r" % u
+        </script>
+        <script type="application/json" data-role="solution">{"baum":[{"k":"in","v":"ram_gb","typ":"float"},{"k":"in","v":"n","typ":"int"},{"k":"op","v":"summe = 0"},{"k":"for","v":"i in range(n)","body":[{"k":"in","v":"bedarf","typ":"float"},{"k":"op","v":"summe = summe + bedarf"}]},{"k":"if","v":"summe <= 0.8 * ram_gb","yes":[{"k":"out","v":"\"ok\""}],"no":[{"k":"if","v":"summe <= ram_gb","yes":[{"k":"out","v":"\"knapp\""}],"no":[{"k":"out","v":"\"Auslagerung\""}]}]}]}</script>
+        <ol class="a-hints">
+          <li>Nach den zwei Eingaben setzt eine Operation <code>summe = 0</code> den Anfang. Die Zählschleife hat die Bedingung <code>i in range(n)</code>, im Rumpf stehen die Eingabe <code>bedarf</code> (Kommazahl) und die Operation <code>summe = summe + bedarf</code>.</li>
+          <li>Nach der Schleife kommt eine Raute mit <code>summe &lt;= 0.8 * ram_gb</code>. Ja: Ausgabe <code>"ok"</code>. Nein: eine zweite Raute mit <code>summe &lt;= ram_gb</code>.</li>
+          <li>Das Gleichheitszeichen gehört zu beiden Vergleichen (<code>&lt;=</code>), denn auf der Grenze selbst gilt noch die bessere Stufe. Die dritte Ausgabe <code>"Auslagerung"</code> steht im Nein-Zweig der zweiten Raute.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-review" data-seen="manual" data-title="Code-Review: KI-Skript für die Logs prüfen" data-part="A" data-stars="" data-min="20" data-extra="" aria-labelledby="h-a-review" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-review" tabindex="-1">Code-Review: KI-Skript für die Logs prüfen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Eine KI hat ein Skript geliefert, das die Logs der Zelle auswertet und alte NC-Programme aufräumt. Auf dem Rechner der Autorin lief es ohne Fehlermeldung. Würdest du es freigeben? Klick die Zeilen an, die du für fehlerhaft hältst, dann lass auflösen.</p>
+      <figure class="k-figure">
+        <picture>
+          <source srcset="../assets/img/ki-spiegel.webp" type="image/webp">
+          <img src="../assets/img/ki-spiegel.png" alt="Illustration: KI-Code wird von einem Ingenieur geprüft" width="1600" height="901" loading="lazy" onerror="this.closest('figure').hidden=true">
+        </picture>
+      </figure>
+
+      <div class="k-mirror">
+        <h3>Szenario: Logs der Zelle auswerten und aufräumen</h3>
+        <p class="k-prompt__who">Prompt einer Kollegin</p>
+        <blockquote class="k-prompt">Schreib mir ein Python-Skript für die Fertigungszelle. Die Logs liegen im Ordner zelle/maschinen/&lt;Maschine&gt;/logs/ als .log-Dateien, jede Zeile heißt Zeit;Stufe;Meldung. Zähle alle Zeilen der Stufe ERROR, gib die Gesamtgröße der Log-Dateien in KiB aus und miss die Laufzeit der Suche. Lösche außerdem die alten NC-Programme im Ordner zelle/nc-programme/alt.</blockquote>
+        <p class="k-prompt__who">KI-Antwort (Python)</p>
+          <ol class="k-codelines" aria-label="Code der KI, Zeilen anklickbar">
+            <li><button type="button" class="k-line">import time</button></li>
+            <li><button type="button" class="k-line">from pathlib import Path</button></li>
+            <li><button type="button" class="k-line"> </button></li>
+            <li><button type="button" class="k-line" data-bug="a">zelle = Path(&quot;C:\Daten\FZ3\zelle&quot;)</button></li>
+            <li><button type="button" class="k-line"> </button></li>
+            <li><button type="button" class="k-line">anzahl_fehler = 0</button></li>
+            <li><button type="button" class="k-line">groesse = 0</button></li>
+            <li><button type="button" class="k-line" data-bug="b">for log in zelle.glob(&quot;*.log&quot;):</button></li>
+            <li><button type="button" class="k-line">    groesse = groesse + log.stat().st_size</button></li>
+            <li><button type="button" class="k-line">    with open(log, encoding=&quot;utf-8&quot;) as datei:</button></li>
+            <li><button type="button" class="k-line">        for zeile in datei:</button></li>
+            <li><button type="button" class="k-line">            teile = zeile.strip().split(&quot;;&quot;)</button></li>
+            <li><button type="button" class="k-line" data-bug="c">            if teile[1] == &quot;Error&quot;:</button></li>
+            <li><button type="button" class="k-line">                anzahl_fehler = anzahl_fehler + 1</button></li>
+            <li><button type="button" class="k-line"> </button></li>
+            <li><button type="button" class="k-line" data-bug="d">start = time.perf_counter()</button></li>
+            <li><button type="button" class="k-line" data-bug="e">print(f&quot;{anzahl_fehler} Fehler in {groesse / 1000:.1f} KiB&quot;)</button></li>
+            <li><button type="button" class="k-line">ende = time.perf_counter()</button></li>
+            <li><button type="button" class="k-line">print(f&quot;Suche dauerte {1000 * (ende - start):.1f} ms&quot;)</button></li>
+            <li><button type="button" class="k-line"> </button></li>
+            <li><button type="button" class="k-line" data-bug="f">for alt in zelle.rglob(&quot;*.nc&quot;):</button></li>
+            <li><button type="button" class="k-line" data-bug="f">    alt.unlink()</button></li>
+          </ol>
+        <p class="k-small k-muted">Tipp: Es sind sechs Fehler eingebaut. Auf dem Rechner der Autorin gibt es keine Fehlermeldung. Nicht jede Zeile ist falsch.</p>
+
+        <div class="k-mirror__task">
+          <p><strong>Würdest du das freigeben?</strong> Markiere die fehlerhaften Zeilen, dann lass auflösen.</p>
+          <button type="button" class="k-btn" data-mirror-check>Auflösen</button>
+          <p class="k-verdict" role="status" hidden></p>
+
+          <div data-mirror-after hidden>
+            <h3>Die sechs Fehler</h3>
+            <h4>Fehler 1: fester absoluter Pfad mit Rückstrichen (Zeile 4)</h4>
+            <p>Der Pfad <code class="k-i">C:\Daten\FZ3\zelle</code> gibt es nur auf dem Rechner der Autorin. Auf jedem anderen Rechner (und hier im Browser) existiert er nicht, das Programm findet keine Datei und meldet trotzdem nichts: Es wird nur 0 gezählt. Dazu steht der Pfad in einem normalen Text mit Rückstrichen: <code class="k-i">\D</code> und <code class="k-i">\F</code> sind keine bekannten Sonderzeichen und bleiben zufällig erhalten, bei <code class="k-i">C:\Users\…</code> bricht Python mit einem <code class="k-i">SyntaxError</code> ab (<code class="k-i">\U</code>), bei <code class="k-i">\new</code> wird ein Zeilenumbruch daraus. Lösung: ein <strong>relativer Pfad mit <code class="k-i">/</code></strong>, <code class="k-i">Path("zelle")</code>, und das Programm im richtigen Arbeitsordner starten.</p>
+            <h4>Fehler 2: das Muster findet nichts (Zeile 8)</h4>
+            <p><code class="k-i">zelle.glob("*.log")</code> sucht nur <em>direkt</em> im Ordner <code class="k-i">zelle</code>. Die Logs liegen aber zwei Ebenen tiefer in <code class="k-i">maschinen/D2/logs/</code>. Die Schleife läuft null Mal, es gibt <strong>keine Fehlermeldung</strong>, das Ergebnis ist 0 Fehler in 0.0 KiB. Lösung: <code class="k-i">zelle.glob("maschinen/*/logs/*.log")</code> oder <code class="k-i">zelle.rglob("*.log")</code>, dazu <code class="k-i">sorted(…)</code> für eine feste Reihenfolge. Prüfe immer, ob die Zahl der gefundenen Dateien zu deiner Erwartung passt (hier 20).</p>
+            <h4>Fehler 3: Groß- und Kleinschreibung der Stufe (Zeile 13)</h4>
+            <p>Die Logs schreiben <code class="k-i">ERROR</code> in Großbuchstaben. <code class="k-i">"Error"</code> ist ein anderer Text, der Vergleich ist nie wahr, der Zähler bleibt 0. Wieder ohne Meldung. Lösung: <code class="k-i">teile[1] == "ERROR"</code>, oder robuster <code class="k-i">teile[1].upper() == "ERROR"</code>.</p>
+            <h4>Fehler 4: Zeitmessung um den falschen Teil (Zeile 16)</h4>
+            <p>Die Stoppuhr startet erst, <em>nachdem</em> die Suche fertig ist, und stoppt nach dem <code class="k-i">print</code>. Gemessen wird nur das Ausgeben, vielleicht 0.1 ms. Das Programm nennt es trotzdem „Suche dauerte“. Lösung: <code class="k-i">start = time.perf_counter()</code> vor die Schleife (Zeile 8), <code class="k-i">ende</code> direkt nach der Schleife.</p>
+            <h4>Fehler 5: Bytes durch 1000 geteilt, aber „KiB“ geschrieben (Zeile 17)</h4>
+            <p>Ein KiB sind 1024 Bytes. Wer durch 1000 teilt, bekommt kB, und die Zahl ist rund 2,4 % zu groß. Bei den 20 Logs wären das 48.4 statt 47.2. Lösung: <code class="k-i">groesse / 1024</code>, oder die Einheit in „kB“ ändern. Wichtig ist, dass Zahl und Einheit zusammenpassen.</p>
+            <h4>Fehler 6: gefährliches Löschen (Zeilen 21 und 22)</h4>
+            <p>Die Aufgabe lautete: alte NC-Programme im Ordner <code class="k-i">alt</code> löschen. Das Muster <code class="k-i">zelle.rglob("*.nc")</code> trifft aber <strong>alle</strong> NC-Programme der Zelle, auch <code class="k-i">WELLE_20H6.nc</code> und <code class="k-i">FLANSCH_80.nc</code>, die gerade in der Fertigung laufen. <code class="k-i">unlink()</code> löscht endgültig, ohne Papierkorb. Das Skript würde die aktuellen Programme vernichten. Regeln: Lösch-Code liest du <em>besonders</em> genau. Den Ordner ganz eng fassen (<code class="k-i">zelle / "nc-programme" / "alt"</code>), erst nur <em>anzeigen</em>, was gelöscht würde, dann nach Rückfrage löschen, und vorher eine Sicherung ziehen.</p>
+
+            <h3>Die Fehler einzeln zum Ausprobieren</h3>
+            <p class="k-small k-muted">Alles läuft hier harmlos: Gezählt und angezeigt wird, gelöscht wird nichts. Jeder Block hat seinen eigenen frischen Ordner <code class="k-i">zelle/</code>.</p>
+            <pre data-files="../assets/data/v16/zelle.zip"><code>from pathlib import Path
+
+zelle = Path("C:\\Daten\\FZ3\\zelle")     # Fehler 1: so geschrieben ohne Syntaxfehler, aber nur auf einem Rechner da
+print(zelle.exists())                        # False: das Programm merkt es nicht von allein
+print(len(list(zelle.glob("*.log"))))        # 0: ohne Meldung</code></pre>
+            <pre data-files="../assets/data/v16/zelle.zip"><code>from pathlib import Path
+
+zelle = Path("zelle")
+print(len(list(zelle.glob("*.log"))))                      # Fehler 2: 0, keine Meldung
+print(len(list(zelle.glob("maschinen/*/logs/*.log"))))     # richtig: 20
+print(len(list(zelle.rglob("*.log"))))                     # auch richtig: 20</code></pre>
+            <pre data-files="../assets/data/v16/zelle.zip"><code>from pathlib import Path
+
+anzahl_falsch = 0
+anzahl_richtig = 0
+for log in sorted(Path("zelle").glob("maschinen/*/logs/*.log")):
+    with open(log, encoding="utf-8") as datei:
+        for zeile in datei:
+            stufe = zeile.strip().split(";")[1]
+            if stufe == "Error":                 # Fehler 3
+                anzahl_falsch = anzahl_falsch + 1
+            if stufe == "ERROR":
+                anzahl_richtig = anzahl_richtig + 1
+print("mit 'Error':", anzahl_falsch, " mit 'ERROR':", anzahl_richtig)</code></pre>
+            <pre data-files="../assets/data/v16/zelle.zip"><code>import time
+from pathlib import Path
+
+start = time.perf_counter()
+anzahl = len(list(Path("zelle").rglob("*.log")))      # die Arbeit
+ende = time.perf_counter()
+print(f"richtig gemessen: {1000 * (ende - start):.2f} ms")
+
+anzahl = len(list(Path("zelle").rglob("*.log")))
+start = time.perf_counter()                           # Fehler 4: Stoppuhr zu spät gestartet
+print(anzahl, "Dateien")
+ende = time.perf_counter()
+print(f"falsch gemessen: {1000 * (ende - start):.2f} ms")</code></pre>
+            <pre data-files="../assets/data/v16/zelle.zip"><code>from pathlib import Path
+
+groesse = sum([p.stat().st_size for p in Path("zelle").rglob("*.log")])
+print(groesse, "Bytes")
+print(f"durch 1000: {groesse / 1000:.1f}   (kB, nicht KiB)")      # Fehler 5
+print(f"durch 1024: {groesse / 1024:.1f}   (KiB)")</code></pre>
+            <pre data-files="../assets/data/v16/zelle.zip"><code>from pathlib import Path
+
+zelle = Path("zelle")
+print("Das Muster rglob('*.nc') trifft:")                 # Fehler 6: nur ANZEIGEN, nicht löschen
+for p in sorted(zelle.rglob("*.nc")):
+    print("  würde löschen:", p.name)
+print("Gemeint waren nur diese:")
+for p in sorted((zelle / "nc-programme" / "alt").glob("*.nc")):
+    print("  alt:", p.name)</code></pre>
+
+            <h3>So sähe die Freigabe-Version aus</h3>
+            <pre data-run="no" class="k-code"><code>zelle = Path("zelle")                                   # relativ, mit /
+start = time.perf_counter()
+for log in sorted(zelle.glob("maschinen/*/logs/*.log")):
+    ...
+    if teile[1] == "ERROR":
+        ...
+ende = time.perf_counter()
+print(f"... {groesse / 1024:.1f} KiB")                         # 1024 für KiB
+for alt in sorted((zelle / "nc-programme" / "alt").glob("*.nc")):
+    print("würde löschen:", alt)                               # erst anzeigen, Löschen nach Rückfrage</code></pre>
+            <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke</strong><p>Bei KI-Code mit Dateien prüfst du: Ist der Pfad relativ und mit <code class="k-i">/</code> geschrieben? Findet das Muster wirklich die erwartete Zahl an Dateien? Stimmen Schreibweise der Stufen und Einheiten (KiB gleich 1024)? Misst die Stoppuhr den richtigen Teil? Und: Alles, was <em>löscht</em>, verschiebt oder überschreibt, liest du dreimal und lässt es zuerst nur anzeigen.</p></div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-fehler" data-title="Typische Fehlermeldungen" data-part="A" data-stars="" data-min="5" data-extra="" aria-labelledby="h-a-fehler" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-fehler" tabindex="-1">Typische Fehlermeldungen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Mit Dateien und Ordnern siehst du neue Fehlermeldungen. Dazu gibt es einen Fehler, der <em>keine</em> Meldung auslöst. Diese sechs siehst du garantiert. Jedes Beispiel lässt sich ausführen: Schau dir die echte Meldung an und lies sie von unten nach oben (zuerst die letzte Zeile).</p>
+      <div class="a-errors">
+        <div class="a-error">
+          <h3><code class="k-i">FileNotFoundError</code>: falscher relativer Pfad</h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="20000" data-files="../assets/data/v16/zelle.zip">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V16" aria-label="Fehlerbeispiel FileNotFoundError">from pathlib import Path
+
+log = Path("zelle/maschinen/D2/log/2026-11-16.log")
+text = log.read_text(encoding="utf-8")
+print(len(text.splitlines()), "Zeilen")</textarea></div>
+          </div>
+          <p>Meldung: <code class="k-i">FileNotFoundError: [Errno 44] No such file or directory: 'zelle/maschinen/D2/log/2026-11-16.log'</code> (die Zahl in eckigen Klammern hängt vom System ab, unter Windows steht <code>Errno 2</code>). Der Ordner heißt <code>logs</code>, nicht <code>log</code>. Die Meldung nennt den Pfad, der <em>wirklich</em> gesucht wurde: Vergleiche ihn Zeichen für Zeichen mit dem Ordnerbaum. Häufig steckt auch ein falscher Arbeitsordner dahinter: Das Programm wurde in einem anderen Ordner gestartet, als du denkst. Dann hilft <code>print(Path.cwd())</code>, und <code>exists()</code> vor dem Öffnen.</p>
+        </div>
+        <div class="a-error">
+          <h3><code class="k-i">SyntaxError</code>: Rückstriche im Windows-Pfad</h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="20000">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V16" aria-label="Fehlerbeispiel unicodeescape">from pathlib import Path
+
+ordner = Path("C:\Users\marvin\zelle")
+print(ordner.exists())</textarea></div>
+          </div>
+          <p>Meldung: <code class="k-i">SyntaxError: (unicode error) 'unicodeescape' codec can't decode bytes in position 2-3: truncated \UXXXXXXXX escape</code>. In einem normalen Text beginnt <code>\U</code> eine Unicode-Zeichenfolge. Der Fehler tritt schon beim <em>Lesen</em> des Programms auf, nichts davon läuft. Lösung: <code>Path("C:/Users/marvin/zelle")</code> mit Schrägstrichen oder <code>r"C:\Users\marvin\zelle"</code> mit <code>r</code> vor dem Text (Syntax-Karte 6). Besser noch: ein relativer Pfad.</p>
+        </div>
+        <div class="a-error">
+          <h3><code class="k-i">TypeError</code>: <code class="k-i">len()</code> auf einem Suchergebnis</h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="20000" data-files="../assets/data/v16/zelle.zip">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V16" aria-label="Fehlerbeispiel len auf generator">from pathlib import Path
+
+treffer = Path("zelle").rglob("*.log")
+print(len(treffer), "Log-Dateien")</textarea></div>
+          </div>
+          <p>Meldung: <code class="k-i">TypeError: object of type 'generator' has no len()</code>. <code>glob</code> und <code>rglob</code> liefern einen <abbr class="k-begriff" data-erklaerung="Ein Generator liefert seine Treffer erst, wenn du danach fragst, einen nach dem anderen. Er hat deshalb keine Länge und lässt sich nur einmal durchlaufen. Mit list(...) holst du alle Treffer auf einmal in eine Liste.">Generator</abbr>, keine Liste. Lösung: <code>len(list(treffer))</code>, oder gleich <code>sorted(...)</code> (das liefert eine Liste) oder eine Schleife, die mitzählt.</p>
+        </div>
+        <div class="a-error">
+          <h3><code class="k-i">TypeError</code>: Text geteilt durch Text</h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="20000" data-files="../assets/data/v16/zelle.zip">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V16" aria-label="Fehlerbeispiel str durch str">ordner = "zelle"
+datei = ordner / "LIESMICH.txt"
+print(datei)</textarea></div>
+          </div>
+          <p>Meldung: <code class="k-i">TypeError: unsupported operand type(s) for /: 'str' and 'str'</code>. Der Schrägstrich verbindet nur dann Pfadteile, wenn mindestens ein Teil ein <code>Path</code> ist. Lösung: <code>ordner = Path("zelle")</code>. Oder mit Text rechnen und <code>"zelle/LIESMICH.txt"</code> schreiben.</p>
+        </div>
+        <div class="a-error">
+          <h3><code class="k-i">IsADirectoryError</code>: einen Ordner wie eine Datei öffnen</h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="20000" data-files="../assets/data/v16/zelle.zip">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V16" aria-label="Fehlerbeispiel IsADirectoryError">with open("zelle/maschinen", encoding="utf-8") as datei:
+    for zeile in datei:
+        print(zeile)</textarea></div>
+          </div>
+          <p>Meldung: <code class="k-i">IsADirectoryError: [Errno 31] Is a directory: 'zelle/maschinen'</code> (die Zahl hängt vom System ab; unter Windows meldet Python stattdessen <code>PermissionError</code>). <code>open</code> öffnet <em>Dateien</em>. Ein Ordner hat keinen Textinhalt. Meist stammt der Pfad aus einer Suche, die auch Ordner liefert: Prüfe mit <code>p.is_file()</code> vor dem Öffnen.</p>
+        </div>
+        <div class="a-error">
+          <h3>Falsches Ergebnis ohne Meldung: die Suche findet nichts</h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="20000" data-files="../assets/data/v16/zelle.zip">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V16" aria-label="Fehlerbeispiel leere Suche">from pathlib import Path
+
+fehler = 0
+for log in Path("zelle").glob("*.log"):
+    with open(log, encoding="utf-8") as datei:
+        for zeile in datei:
+            if zeile.strip().split(";")[1] == "ERROR":
+                fehler = fehler + 1
+print("Fehler in allen Logs:", fehler)</textarea></div>
+          </div>
+          <p>Hier gibt es keine Fehlermeldung, aber das Ergebnis ist falsch: <strong>0</strong> statt 27. Das Muster <code>*.log</code> sucht nur direkt in <code>zelle/</code>, dort liegt keine Log-Datei. Die Schleife läuft null Mal, und eine Schleife, die nicht läuft, ist für Python kein Fehler. Gegenmittel: <strong>die Zahl der gefundenen Dateien ausgeben</strong> und mit der Erwartung vergleichen (hier 20). Ein Ergebnis von 0 ist bei einer Suche immer verdächtig.</p>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-1" data-title="NC-Programme auflisten" data-part="B" data-stars="1" data-min="6" data-extra="" aria-labelledby="h-t-1" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-1" tabindex="-1">NC-Programme auflisten</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Programmieren lernst du mit den Fingern, nicht mit den Augen. Das Training ist ein fester Teil jedes Termins und gehört zum Selbststudium. Du musst nicht alles an einem Stück machen, aber alles bis zum nächsten Termin. Die Aufgaben laufen im Browser und werden automatisch geprüft. In jeder Aufgabe liegt der Ordner <code class="k-i">zelle/</code> frisch im Arbeitsordner. Die Tests prüfen nicht nur die mitgelieferten Dateien, sondern legen auch eigene an: Hardcoding besteht nicht.</p>
+      <div class="hinweis hinweis--achtung"><strong class="hinweis__title">Achtung</strong><p>Phase 3: Beim Projekt arbeitest du mit Copilot. Hier im Training schreibst du die Befehle selbst, damit du sie lesen kannst. Wenn Copilot dir später ein Skript mit Pfaden schreibt, prüfst du es mit den Fragen aus dem Code-Review (relativer Pfad? richtiges Muster? Zahl der Treffer plausibel? Einheiten? Löschen?).</p></div>
+
+      <div class="a-task" data-a="code" data-id="tr-1" data-mode="programm" data-timeout="20000" data-files="../assets/data/v16/zelle.zip">
+        <div class="a-task__text">
+          <p>Gib die Namen aller NC-Programme aus, die <strong>direkt</strong> im Ordner <code class="k-i">zelle/nc-programme</code> liegen (nicht die im Unterordner <code class="k-i">alt</code>), alphabetisch sortiert, ein Name pro Zeile.</p>
+          <div class="a-spec"><strong>Ausgabe genau so (für die mitgelieferte Zelle):</strong><pre data-run="no">FLANSCH_80.nc
+WELLE_20H6.nc</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V16" aria-label="Python-Code Aufgabe 1">from pathlib import Path
+
+ordner = Path("zelle") / "nc-programme"
+# alle .nc-Dateien direkt in diesem Ordner, alphabetisch, nur der Name
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+import os
+
+def _schreibe(pfad, text):
+    os.makedirs(os.path.dirname(pfad), exist_ok=True)
+    with open(pfad, "w", encoding="utf-8", newline="\n") as f:
+        f.write(text)
+
+def test_mitgelieferte_dateien():
+    """FLANSCH_80.nc und WELLE_20H6.nc, alphabetisch"""
+    z = _zeilen(_run_program([]))
+    assert z == ["FLANSCH_80.nc", "WELLE_20H6.nc"], "Erwartet FLANSCH_80.nc und WELLE_20H6.nc, alphabetisch. Dein Programm gibt aus: %r" % z
+
+def test_weitere_dateien():
+    """Weitere Programme, ein Unterordner-Programm und eine .txt-Datei"""
+    _schreibe("zelle/nc-programme/ZAHNRAD_12.nc", "M30\n")
+    _schreibe("zelle/nc-programme/A_TEST.nc", "M30\n")
+    _schreibe("zelle/nc-programme/alt/NUR_ALT.nc", "M30\n")
+    _schreibe("zelle/nc-programme/notiz.txt", "keine NC-Datei\n")
+    z = _zeilen(_run_program([]))
+    soll = ["A_TEST.nc", "FLANSCH_80.nc", "WELLE_20H6.nc", "ZAHNRAD_12.nc"]
+    assert z == soll, "Erwartet %r (ohne alt, ohne .txt), alphabetisch. Dein Programm gibt aus: %r" % (soll, z)
+
+def test_leerer_ordner():
+    """Grenzfall: keine NC-Programme im Ordner: keine Ausgabe"""
+    for name in ["A_TEST.nc", "FLANSCH_80.nc", "WELLE_20H6.nc", "ZAHNRAD_12.nc"]:
+        os.remove("zelle/nc-programme/" + name)
+    z = _zeilen(_run_program([]))
+    assert z == [], "Ohne NC-Programme im Ordner darf nichts ausgegeben werden. Dein Programm gibt aus: %r" % z
+        </script>
+        <script type="text/x-python" data-role="solution">
+from pathlib import Path
+
+ordner = Path("zelle") / "nc-programme"
+for datei in sorted(ordner.glob("*.nc")):
+    print(datei.name)
+        </script>
+        <ol class="a-hints">
+          <li>Das Muster <code>*.nc</code> findet alle Dateien mit dieser Endung direkt im Ordner: <code>ordner.glob("*.nc")</code> (Syntax-Karte 2). Das mit <code>r</code> beginnende <code>rglob</code> wäre hier falsch.</li>
+          <li>Eine feste Reihenfolge bekommst du mit <code>sorted(...)</code> um das Suchergebnis.</li>
+          <li>Ausgegeben wird nur der Dateiname: <code>datei.name</code> (Syntax-Karte 1).</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-2" data-title="Die größte Log-Datei finden" data-part="B" data-stars="2" data-min="8" data-extra="" aria-labelledby="h-t-2" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-2" tabindex="-1">Die größte Log-Datei finden</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Eine große Log-Datei heißt: Hier ist viel passiert, oder eine Maschine meldet sich im Sekundentakt. Du suchst die größte.</p>
+      <div class="a-task" data-a="code" data-id="tr-2" data-mode="programm" data-timeout="20000" data-files="../assets/data/v16/zelle.zip">
+        <div class="a-task__text">
+          <p>Finde unter allen Log-Dateien (<code class="k-i">zelle/maschinen/&lt;Maschine&gt;/logs/*.log</code>) die <strong>größte</strong> und gib eine Zeile aus: Maschine, Datum (der Dateiname ohne Endung) und die Größe in KiB mit einer Nachkommastelle. Andere Dateien in den <code class="k-i">logs</code>-Ordnern zählen nicht.</p>
+          <div class="a-spec"><strong>Ausgabe genau so (für die mitgelieferte Zelle):</strong><pre data-run="no">F1 2026-11-16 3.1 KiB</pre></div>
+          <p class="k-small k-muted">Gegenprobe: Die Datei hat 3158 Bytes, 3158 / 1024 sind 3,08 KiB.</p>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V16" aria-label="Python-Code Aufgabe 2">from pathlib import Path
+
+paare = []        # Paare (Größe in Bytes, Pfad) aller Log-Dateien
+# alle Logs durchgehen, jedes Paar anhängen, dann das größte Paar bestimmen und ausgeben
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+import os
+
+def _schreibe(pfad, text):
+    os.makedirs(os.path.dirname(pfad), exist_ok=True)
+    with open(pfad, "w", encoding="utf-8", newline="\n") as f:
+        f.write(text)
+
+def _pruefe(maschine, datum, groesse):
+    z = _zeilen(_run_program([]))
+    assert len(z) == 1, "Es soll genau eine Zeile erscheinen. Dein Programm gibt aus: %r" % z
+    t = z[0].split()
+    soll = "%s %s %.1f KiB" % (maschine, datum, groesse / 1024)
+    assert t == soll.split(), "Erwartet %r, dein Programm gibt aus: %r" % (soll, z[0])
+
+def test_mitgelieferte_zelle():
+    """F1, 2026-11-16, 3158 Bytes: 3.1 KiB"""
+    _pruefe("F1", "2026-11-16", 3158)
+
+def test_neue_groesste_datei():
+    """Neue, noch größere Datei von R1"""
+    text = "2026-11-21 08:00:00;INFO;Teil fertig und abgelegt\n" * 100
+    _schreibe("zelle/maschinen/R1/logs/2026-11-21.log", text)
+    _pruefe("R1", "2026-11-21", os.path.getsize("zelle/maschinen/R1/logs/2026-11-21.log"))
+
+def test_andere_dateien_zaehlen_nicht():
+    """Eine riesige .txt-Datei in einem logs-Ordner zählt nicht"""
+    _schreibe("zelle/maschinen/D2/logs/export.txt", "x" * 20000)
+    _pruefe("R1", "2026-11-21", os.path.getsize("zelle/maschinen/R1/logs/2026-11-21.log"))
+        </script>
+        <script type="text/x-python" data-role="solution">
+from pathlib import Path
+
+paare = []
+for log in Path("zelle").glob("maschinen/*/logs/*.log"):
+    paare.append((log.stat().st_size, log))
+groesse, log = max(paare)
+print(log.parent.parent.name, log.stem, f"{groesse / 1024:.1f} KiB")
+        </script>
+        <ol class="a-hints">
+          <li>Das Muster für alle Logs kennst du aus dem Beispiel: <code>Path("zelle").glob("maschinen/*/logs/*.log")</code>. Pro Datei hängst du <code>(log.stat().st_size, log)</code> an die Liste an.</li>
+          <li><code>max(paare)</code> vergleicht Paare erst nach dem ersten Wert, also nach der Größe. Das Ergebnis ist wieder ein Paar, das du entpackst: <code>groesse, log = max(paare)</code>.</li>
+          <li>Maschine: <code>log.parent.parent.name</code>. Datum: <code>log.stem</code>. KiB: <code>groesse / 1024</code> mit <code>:.1f</code>.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-3" data-title="Dateiendungen zählen" data-part="B" data-stars="2" data-min="10" data-extra="" aria-labelledby="h-t-3" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-3" tabindex="-1">Dateiendungen zählen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Was liegt eigentlich alles auf dem Zellenrechner? Du zählst die Dateien nach ihrer Endung. Hier musst du aufpassen: Die Suche liefert auch <em>Ordner</em>, und einen Ordner, der <code class="k-i">daten.log</code> heißt, gibt es wirklich.</p>
+      <div class="a-task" data-a="code" data-id="tr-3" data-mode="programm" data-timeout="20000" data-files="../assets/data/v16/zelle.zip">
+        <div class="a-task__text">
+          <p>Zähle alle <strong>Dateien</strong> (keine Ordner) im ganzen Baum unter <code class="k-i">zelle/</code> nach ihrer Endung (<code class="k-i">suffix</code>) und gib je Endung eine Zeile aus, sortiert nach der Endung. Dateien ohne Endung zählst du unter dem Namen <code class="k-i">(ohne)</code>.</p>
+          <div class="a-spec"><strong>Ausgabe genau so (für die mitgelieferte Zelle):</strong><pre data-run="no">.csv: 1
+.log: 20
+.nc: 3
+.txt: 1</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V16" aria-label="Python-Code Aufgabe 3">from pathlib import Path
+
+zaehler = {}      # Endung -> Anzahl
+# alle Einträge unter zelle/ durchgehen, nur Dateien zählen
+# Ausgabe: je Endung eine Zeile "Endung: Anzahl", sortiert
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+import os
+
+def _schreibe(pfad, text):
+    os.makedirs(os.path.dirname(pfad), exist_ok=True)
+    with open(pfad, "w", encoding="utf-8", newline="\n") as f:
+        f.write(text)
+
+def _soll():
+    erg = {}
+    for ordner, unterordner, dateien in os.walk("zelle"):
+        for name in dateien:
+            endung = os.path.splitext(name)[1]
+            if endung == "":
+                endung = "(ohne)"
+            erg[endung] = erg.get(endung, 0) + 1
+    return erg
+
+def _lese(out):
+    schluessel = []
+    erg = {}
+    for z in _zeilen(out):
+        assert ":" in z, "Jede Zeile soll 'Endung: Anzahl' lauten. Gefunden: %r" % z
+        k, rest = z.rsplit(":", 1)
+        schluessel.append(k.strip())
+        erg[k.strip()] = int(_zahlen(rest)[0])
+    assert schluessel == sorted(schluessel), "Die Endungen sollen sortiert stehen. Gefunden: %r" % schluessel
+    return erg
+
+def test_mitgelieferte_zelle():
+    """.csv 1, .log 20, .nc 3, .txt 1"""
+    erg = _lese(_run_program([]))
+    assert erg == {".csv": 1, ".log": 20, ".nc": 3, ".txt": 1}, "Erwartet .csv: 1, .log: 20, .nc: 3, .txt: 1. Dein Programm gibt aus: %r" % erg
+
+def test_neue_dateien():
+    """Neue Dateien: Foto (.png), zweites Messprotokoll, Datei ohne Endung"""
+    _schreibe("zelle/maschinen/R1/foto.png", "bild")
+    _schreibe("zelle/messprotokolle/M1_F1_KW47.csv", "teil;durchmesser_mm;ergebnis\n")
+    _schreibe("zelle/LIESMICH2", "ohne Endung")
+    erg = _lese(_run_program([]))
+    assert erg == _soll(), "Erwartet %r, dein Programm gibt aus: %r" % (_soll(), erg)
+    assert erg.get(".png") == 1 and erg.get(".csv") == 2 and erg.get("(ohne)") == 1, "Prüfe .png (1), .csv (2) und (ohne) (1). Dein Programm gibt aus: %r" % erg
+
+def test_ordner_zaehlen_nicht():
+    """Ein Ordner namens daten.log ist keine Datei"""
+    _schreibe("zelle/maschinen/D2/daten.log/innen.txt", "x")
+    erg = _lese(_run_program([]))
+    assert erg == _soll(), "Der Ordner daten.log darf nicht als .log-Datei zählen (is_file). Erwartet %r, dein Programm gibt aus: %r" % (_soll(), erg)
+        </script>
+        <script type="text/x-python" data-role="solution">
+from pathlib import Path
+
+zaehler = {}
+for eintrag in Path("zelle").rglob("*"):
+    if eintrag.is_file():
+        endung = eintrag.suffix
+        if endung == "":
+            endung = "(ohne)"
+        if endung not in zaehler:
+            zaehler[endung] = 0
+        zaehler[endung] = zaehler[endung] + 1
+for endung in sorted(zaehler):
+    print(f"{endung}: {zaehler[endung]}")
+        </script>
+        <ol class="a-hints">
+          <li><code>Path("zelle").rglob("*")</code> liefert <em>alles</em> im Baum, Dateien und Ordner. Frage in der Schleife mit <code>eintrag.is_file()</code>, ob es eine Datei ist (Syntax-Karte 3).</li>
+          <li>Die Endung ist <code>eintrag.suffix</code>. Ist sie der leere Text <code>""</code>, nimmst du den Namen <code>"(ohne)"</code>. Gezählt wird im Wörterbuch: erst anlegen, wenn der Schlüssel fehlt (V08), dann um 1 erhöhen.</li>
+          <li>Ausgabe: <code>for endung in sorted(zaehler):</code> geht in alphabetischer Reihenfolge durch die Schlüssel.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-4" data-title="Wiederholung: Messprotokoll der Messmaschine auswerten" data-part="B" data-stars="2" data-min="10" data-extra="Wiederholung V09/V15" aria-labelledby="h-t-4" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-4" tabindex="-1">Wiederholung: Messprotokoll der Messmaschine auswerten</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Zurück zu Dateien lesen und Zahlen auswerten (V09 mit <code class="k-i">csv</code> oder V15 mit <code class="k-i">pandas</code>, du darfst wählen). Die Messmaschine M1 hat die Wellen von D2 gemessen. Die Datei liegt in <code class="k-i">zelle/messprotokolle/M1_D2_KW47.csv</code>: Semikolon als Trennzeichen, Dezimalpunkt, die Spalten <code class="k-i">teil</code>, <code class="k-i">durchmesser_mm</code> und <code class="k-i">ergebnis</code> (<code class="k-i">iO</code> oder <code class="k-i">niO</code>, in Ordnung oder nicht in Ordnung).</p>
+      <div class="a-task" data-a="code" data-id="tr-4" data-mode="programm" data-timeout="40000" data-files="../assets/data/v16/zelle.zip">
+        <div class="a-task__text">
+          <p>Lies die Datei und gib drei Zeilen aus: die Zahl der Teile, den Anteil der Teile mit Ergebnis <code class="k-i">niO</code> in Prozent (eine Nachkommastelle) und den Mittelwert des Durchmessers in mm (vier Nachkommastellen).</p>
+          <div class="a-spec"><strong>Ausgabe genau so (für die mitgelieferte Datei):</strong><pre data-run="no">Teile: 20
+Anteil niO: 0.0 %
+Mittelwert: 20.0023 mm</pre></div>
+          <p class="k-small k-muted">Die Tests starten dein Programm auch mit anderen Messprotokollen am selben Pfad.</p>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V16" aria-label="Python-Code Aufgabe 4">datei = "zelle/messprotokolle/M1_D2_KW47.csv"
+
+# Datei lesen (csv oder pandas), Teile zählen, niO zählen, Mittelwert bilden
+# Ausgabe: Teile, Anteil niO in %, Mittelwert in mm
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+PFAD = "zelle/messprotokolle/M1_D2_KW47.csv"
+
+def _schreibe_csv(werte, ergebnisse):
+    with open(PFAD, "w", encoding="utf-8", newline="\n") as f:
+        f.write("teil;durchmesser_mm;ergebnis\n")
+        for i in range(len(werte)):
+            f.write("%d;%.4f;%s\n" % (i + 1, werte[i], ergebnisse[i]))
+
+def _pruefe(werte, ergebnisse):
+    n = len(werte)
+    nio = ergebnisse.count("niO")
+    soll = ["Teile: %d" % n, "Anteil niO: %.1f %%" % (100 * nio / n), "Mittelwert: %.4f mm" % (sum(werte) / n)]
+    z = _zeilen(_run_program([]))
+    assert z == soll, "Erwartet %r, dein Programm gibt aus: %r" % (soll, z)
+
+def test_mitgelieferte_datei():
+    """Mitgeliefert: 20 Teile, 0.0 % niO, Mittelwert 20.0023 mm"""
+    z = _zeilen(_run_program([]))
+    soll = ["Teile: 20", "Anteil niO: 0.0 %", "Mittelwert: 20.0023 mm"]
+    assert z == soll, "Erwartet %r, dein Programm gibt aus: %r" % (soll, z)
+
+def test_mit_ausschuss():
+    """Anderes Protokoll: 8 Teile, 3 niO (37.5 %), Mittelwert 20.0150 mm"""
+    w = [20.0100, 20.0200, 19.9900, 20.0400, 20.0300, 19.9800, 20.0000, 20.0500]
+    e = ["iO", "iO", "niO", "niO", "iO", "niO", "iO", "iO"]
+    _schreibe_csv(w, e)
+    _pruefe(w, e)
+
+def test_ein_teil():
+    """Grenzfall: ein einziges Teil, niO (100.0 %)"""
+    _schreibe_csv([20.0610], ["niO"])
+    _pruefe([20.0610], ["niO"])
+
+def test_alle_io():
+    """Vier Teile, alle iO (0.0 %)"""
+    w = [19.9950, 20.0050, 20.0000, 20.0020]
+    _schreibe_csv(w, ["iO"] * 4)
+    _pruefe(w, ["iO"] * 4)
+        </script>
+        <script type="text/x-python" data-role="solution">
+import csv
+
+datei = "zelle/messprotokolle/M1_D2_KW47.csv"
+
+durchmesser = []
+nio = 0
+with open(datei, encoding="utf-8") as f:
+    leser = csv.reader(f, delimiter=";")
+    next(leser)
+    for zeile in leser:
+        durchmesser.append(float(zeile[1]))
+        if zeile[2] == "niO":
+            nio = nio + 1
+
+n = len(durchmesser)
+print(f"Teile: {n}")
+print(f"Anteil niO: {100 * nio / n:.1f} %")
+print(f"Mittelwert: {sum(durchmesser) / n:.4f} mm")
+        </script>
+        <ol class="a-hints">
+          <li>Mit <code>csv</code>: <code>csv.reader(f, delimiter=";")</code>, die Kopfzeile mit <code>next(leser)</code> überspringen, <code>zeile[1]</code> ist der Durchmesser (mit <code>float</code>), <code>zeile[2]</code> das Ergebnis. Mit <code>pandas</code>: <code>pd.read_csv(datei, sep=";")</code>, dann <code>df["durchmesser_mm"].mean()</code> und <code>(df["ergebnis"] == "niO").mean()</code>.</li>
+          <li>Der Anteil in Prozent ist <code>100 * nio / n</code>. In einem f-String schreibst du ein Prozentzeichen einfach als Text: <code>f"... {anteil:.1f} %"</code>.</li>
+          <li>Der Mittelwert ist die Summe der Durchmesser geteilt durch ihre Anzahl, ausgegeben mit <code>:.4f</code>.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-5" data-title="Funktion: Fehlermeldungen einer Log-Datei" data-part="B" data-stars="3" data-min="12" data-extra="" aria-labelledby="h-t-5" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-5" tabindex="-1">Funktion: Fehlermeldungen einer Log-Datei</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Aus einer Auswertung wird ein wiederverwendbares Werkzeug: eine Funktion, die den Pfad selbst baut und mit fehlenden Dateien klarkommt. Die Tests rufen deine Funktion direkt auf, mit Maschinen und Tagen, die es gibt und die es nicht gibt.</p>
+      <div class="a-task" data-a="code" data-id="tr-5" data-mode="code" data-timeout="20000" data-files="../assets/data/v16/zelle.zip">
+        <div class="a-task__text">
+          <p>Schreibe die Funktion <code class="k-i">fehlermeldungen(maschine, datum)</code>. Sie liest die Datei <code class="k-i">zelle/maschinen/&lt;maschine&gt;/logs/&lt;datum&gt;.log</code> und gibt die <strong>Meldungen</strong> (dritter Teil der Zeile) aller Zeilen der Stufe <code class="k-i">ERROR</code> als Liste zurück, in der Reihenfolge der Datei. Gibt es <strong>keine Datei</strong> dieses Namens (auch ein Ordner mit diesem Namen ist keine Datei), ist das Ergebnis die leere Liste <code class="k-i">[]</code>, ohne Fehlermeldung.</p>
+          <div class="a-spec"><strong>Beispiel</strong><pre data-run="no">fehlermeldungen("D2", "2026-11-16")   ergibt   ['Kuehlmitteldruck zu niedrig']
+fehlermeldungen("D2", "2030-01-01")   ergibt   []</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V16" aria-label="Python-Code Aufgabe 5">from pathlib import Path
+
+
+def fehlermeldungen(maschine, datum):
+    """Meldungen aller ERROR-Zeilen von zelle/maschinen/<maschine>/logs/<datum>.log, sonst []."""
+    return []
+
+
+print(fehlermeldungen("D2", "2026-11-16"))
+print(fehlermeldungen("D2", "2030-01-01"))
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+import os
+
+def _schreibe(pfad, text):
+    os.makedirs(os.path.dirname(pfad), exist_ok=True)
+    with open(pfad, "w", encoding="utf-8", newline="\n") as f:
+        f.write(text)
+
+def _soll(maschine, datum):
+    pfad = "zelle/maschinen/%s/logs/%s.log" % (maschine, datum)
+    erg = []
+    if os.path.isfile(pfad):
+        with open(pfad, encoding="utf-8") as f:
+            for z in f:
+                t = z.strip().split(";")
+                if len(t) > 2 and t[1] == "ERROR":
+                    erg.append(t[2])
+    return erg
+
+def test_vorhandene_datei():
+    """D2 am 2026-11-16: ['Kuehlmitteldruck zu niedrig']"""
+    assert "fehlermeldungen" in globals(), "Die Funktion fehlermeldungen fehlt."
+    erg = fehlermeldungen("D2", "2026-11-16")
+    assert erg == ["Kuehlmitteldruck zu niedrig"], "Erwartet ['Kuehlmitteldruck zu niedrig'], die Funktion gibt zurück: %r" % (erg,)
+
+def test_mehrere_dateien():
+    """Alle 20 Dateien stimmen mit der Handrechnung überein"""
+    for m in ["D2", "F1", "M1", "R1"]:
+        for tag in ["16", "17", "18", "19", "20"]:
+            datum = "2026-11-" + tag
+            erg = fehlermeldungen(m, datum)
+            assert erg == _soll(m, datum), "%s am %s: erwartet %r, die Funktion gibt zurück: %r" % (m, datum, _soll(m, datum), erg)
+
+def test_fehlende_datei():
+    """Unbekannter Tag oder unbekannte Maschine: leere Liste"""
+    assert fehlermeldungen("D2", "2030-01-01") == [], "Für einen Tag ohne Datei soll [] herauskommen."
+    assert fehlermeldungen("X9", "2026-11-16") == [], "Für eine Maschine ohne Ordner soll [] herauskommen."
+
+def test_ordner_statt_datei():
+    """Ein Ordner mit dem Namen der Datei ist keine Datei: []"""
+    os.makedirs("zelle/maschinen/D2/logs/2026-12-01.log", exist_ok=True)
+    erg = fehlermeldungen("D2", "2026-12-01")
+    assert erg == [], "Ein Ordner ist keine Datei: is_file() statt nur exists() verwenden. Die Funktion gibt zurück: %r" % (erg,)
+
+def test_neue_datei():
+    """Eine neue Datei mit zwei Fehlern"""
+    _schreibe("zelle/maschinen/F1/logs/2026-11-21.log", "2026-11-21 06:00:00;INFO;Start\n2026-11-21 06:10:00;ERROR;Achse Z Schleppfehler\n2026-11-21 06:20:00;WARN;Spaenebehaelter fast voll\n2026-11-21 06:30:00;ERROR;Achse X Schleppfehler\n")
+    erg = fehlermeldungen("F1", "2026-11-21")
+    assert erg == ["Achse Z Schleppfehler", "Achse X Schleppfehler"], "Erwartet die beiden ERROR-Meldungen in Dateireihenfolge, die Funktion gibt zurück: %r" % (erg,)
+        </script>
+        <script type="text/x-python" data-role="solution">
+from pathlib import Path
+
+
+def fehlermeldungen(maschine, datum):
+    """Meldungen aller ERROR-Zeilen von zelle/maschinen/<maschine>/logs/<datum>.log, sonst []."""
+    pfad = Path("zelle") / "maschinen" / maschine / "logs" / (datum + ".log")
+    meldungen = []
+    if pfad.is_file():
+        with open(pfad, encoding="utf-8") as datei:
+            for zeile in datei:
+                teile = zeile.strip().split(";")
+                if teile[1] == "ERROR":
+                    meldungen.append(teile[2])
+    return meldungen
+
+
+print(fehlermeldungen("D2", "2026-11-16"))
+print(fehlermeldungen("D2", "2030-01-01"))
+        </script>
+        <ol class="a-hints">
+          <li>Baue den Pfad mit <code>/</code>: <code>Path("zelle") / "maschinen" / maschine / "logs" / (datum + ".log")</code>. Die Klammer ist nötig, weil der Dateiname erst aus zwei Teilen entsteht.</li>
+          <li>Prüfe vor dem Öffnen mit <code>pfad.is_file()</code>. <code>exists()</code> reicht nicht, denn ein Ordner dieses Namens besteht auch.</li>
+          <li>In der Datei: wie im Beispiel Zeile für Zeile zerlegen, bei <code>teile[1] == "ERROR"</code> die Meldung <code>teile[2]</code> an die Liste hängen. Die Liste gibst du am Ende der Funktion mit <code>return</code> zurück, auch wenn sie leer ist.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-6" data-title="Zeitmessung: welche Suche ist schneller?" data-part="B" data-stars="3" data-min="12" data-extra="Laufzeit messen" aria-labelledby="h-t-6" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-6" tabindex="-1">Zeitmessung: welche Suche ist schneller?</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Zwei Funktionen zählen die Log-Dateien, die eine mit einem Muster, das den Aufbau kennt, die andere mit Durchsuchen aller Einträge. Welche ist schneller? <strong>Das sagt dir kein Test mit einer festen Zahl</strong>, denn die Zeit hängt vom Rechner und vom Betriebssystem ab. Die Tests prüfen, ob deine Messung <em>sinnvoll gebaut</em> ist: Zeit in Millisekunden, mehrmals gemessen, der schnellste Wert zählt.</p>
+      <div class="a-task" data-a="code" data-id="tr-6" data-mode="code" data-timeout="40000" data-files="../assets/data/v16/zelle.zip">
+        <div class="a-task__text">
+          <p>Schreibe die Funktion <code class="k-i">messe(funktion, wiederholungen=5)</code>. Sie ruft <code class="k-i">funktion()</code> genau <code class="k-i">wiederholungen</code>-mal auf, misst jeden Aufruf mit <code class="k-i">time.perf_counter()</code> und gibt die <strong>kürzeste</strong> Dauer in <strong>Millisekunden</strong> zurück. Danach gibt das Programm aus, welche Variante schneller war: eine Zeile <code class="k-i">Schneller: A</code> oder <code class="k-i">Schneller: B</code>. Das Gerüst misst und gibt schon A und B aus.</p>
+          <div class="a-spec"><strong>Ausgabe (die Zahlen sind bei dir anders)</strong><pre data-run="no">Variante A: 1.23 ms
+Variante B: 4.56 ms
+Schneller: A</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V16" aria-label="Python-Code Aufgabe 6">import time
+from pathlib import Path
+
+
+def suche_a():
+    """Zählt die Log-Dateien mit einem Muster, das den Aufbau der Zelle kennt."""
+    return len(list(Path("zelle").glob("maschinen/*/logs/*.log")))
+
+
+def suche_b():
+    """Zählt die Log-Dateien, indem alle Einträge der Zelle geprüft werden."""
+    anzahl = 0
+    for eintrag in Path("zelle").rglob("*"):
+        if eintrag.suffix == ".log":
+            anzahl = anzahl + 1
+    return anzahl
+
+
+def messe(funktion, wiederholungen=5):
+    """Ruft funktion mehrmals auf und gibt die kürzeste Dauer in Millisekunden zurück."""
+    return 0.0
+
+
+zeit_a = messe(suche_a)
+zeit_b = messe(suche_b)
+print(f"Variante A: {zeit_a:.2f} ms")
+print(f"Variante B: {zeit_b:.2f} ms")
+# Ausgabe: Schneller: A  oder  Schneller: B
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+import time as _t
+
+def _arbeit(ms):
+    start = _t.perf_counter()
+    while (_t.perf_counter() - start) * 1000 < ms:
+        pass
+
+def test_beide_suchen_gleich():
+    """suche_a und suche_b liefern dasselbe Ergebnis (20 Log-Dateien)"""
+    assert suche_a() == 20 and suche_b() == 20, "Die beiden Suchfunktionen im Gerüst sollen unverändert bleiben."
+
+def test_messe_misst_millisekunden():
+    """messe: eine 20-ms-Arbeit ergibt etwa 20 ms (zwischen 15 und 400)"""
+    def arbeit_20():
+        _arbeit(20)
+    erg = messe(arbeit_20)
+    assert isinstance(erg, (int, float)), "messe soll eine Zahl zurückgeben."
+    assert 15 <= erg <= 400, "Eine Arbeit von 20 ms soll etwa 20 (Millisekunden) ergeben, nicht Sekunden (0.02) und nicht Mikrosekunden. messe gibt zurück: %r" % erg
+
+def test_messe_ruft_so_oft_auf_wie_verlangt():
+    """messe ruft die Funktion genau wiederholungen-mal auf"""
+    zaehler = []
+    def f():
+        zaehler.append(1)
+    messe(f, 3)
+    assert len(zaehler) == 3, "messe(f, 3) soll f genau 3-mal aufrufen. Gezählt: %d" % len(zaehler)
+    messe(f)
+    assert len(zaehler) == 8, "Ohne zweites Argument sind es 5 Wiederholungen. Insgesamt gezählt: %d statt 8" % len(zaehler)
+
+def test_messe_nimmt_den_schnellsten_wert():
+    """messe gibt die kürzeste Dauer zurück, nicht den Mittelwert und nicht die erste"""
+    aufrufe = []
+    def f():
+        aufrufe.append(1)
+        _arbeit(300 if len(aufrufe) == 1 else 10)
+    erg = messe(f, 3)
+    assert erg < 60, "Der erste Aufruf dauert 300 ms, die beiden anderen 10 ms. Die kürzeste Dauer ist etwa 10 ms, messe gibt zurück: %.1f" % erg
+
+def test_ausgabe_schneller():
+    """Die Ausgabe nennt die schnellere Variante passend zu den ausgegebenen Zeiten"""
+    z = _zeilen(AUSGABE)
+    a = [t for t in z if t.startswith("Variante A")]
+    b = [t for t in z if t.startswith("Variante B")]
+    s = [t for t in z if t.startswith("Schneller")]
+    assert a and b, "Die Zeilen 'Variante A: ... ms' und 'Variante B: ... ms' fehlen. Ausgabe: %r" % z
+    assert len(s) == 1 and s[0].replace(" ", "") in ("Schneller:A", "Schneller:B"), "Es soll genau eine Zeile 'Schneller: A' oder 'Schneller: B' geben. Gefunden: %r" % s
+    za = _zahlen(a[0])[0]
+    zb = _zahlen(b[0])[0]
+    soll = "A" if za <= zb else "B"
+    assert s[0].replace(" ", "") == "Schneller:" + soll, "A braucht %.2f ms, B braucht %.2f ms, also ist %s schneller. Dein Programm gibt aus: %r" % (za, zb, soll, s[0])
+        </script>
+        <script type="text/x-python" data-role="solution">
+import time
+from pathlib import Path
+
+
+def suche_a():
+    """Zählt die Log-Dateien mit einem Muster, das den Aufbau der Zelle kennt."""
+    return len(list(Path("zelle").glob("maschinen/*/logs/*.log")))
+
+
+def suche_b():
+    """Zählt die Log-Dateien, indem alle Einträge der Zelle geprüft werden."""
+    anzahl = 0
+    for eintrag in Path("zelle").rglob("*"):
+        if eintrag.suffix == ".log":
+            anzahl = anzahl + 1
+    return anzahl
+
+
+def messe(funktion, wiederholungen=5):
+    """Ruft funktion mehrmals auf und gibt die kürzeste Dauer in Millisekunden zurück."""
+    zeiten = []
+    for versuch in range(wiederholungen):
+        start = time.perf_counter()
+        funktion()
+        ende = time.perf_counter()
+        zeiten.append(1000 * (ende - start))
+    return min(zeiten)
+
+
+zeit_a = messe(suche_a)
+zeit_b = messe(suche_b)
+print(f"Variante A: {zeit_a:.2f} ms")
+print(f"Variante B: {zeit_b:.2f} ms")
+if zeit_a <= zeit_b:
+    print("Schneller: A")
+else:
+    print("Schneller: B")
+        </script>
+        <ol class="a-hints">
+          <li>Gerüst der Funktion: eine leere Liste <code>zeiten</code>, dann <code>for versuch in range(wiederholungen):</code>. Im Rumpf: Stoppuhr starten, <code>funktion()</code> aufrufen (Klammern, sonst passiert nichts), Stoppuhr lesen (Syntax-Karte 5).</li>
+          <li>Die Differenz ist in Sekunden. Mal 1000 sind Millisekunden. Hänge sie an <code>zeiten</code> an. Am Ende <code>return min(zeiten)</code>.</li>
+          <li>Das Programm unter der Funktion: <code>if zeit_a &lt;= zeit_b:</code> gibt <code>Schneller: A</code> aus, sonst <code>Schneller: B</code>.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-7" data-title="Fehlerbericht als CSV-Datei schreiben" data-part="B" data-stars="3" data-min="14" data-extra="" aria-labelledby="h-t-7" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-7" tabindex="-1">Fehlerbericht als CSV-Datei schreiben</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Die Schichtleitung möchte eine Tabelle: Wie viele Fehler gab es je Maschine und Tag? Dein Programm schreibt sie als CSV-Datei (V09), die sich in Excel öffnen lässt. Nach „Ausführen“ erscheint die Datei unter der Ausgabe bei „Erzeugte Dateien“.</p>
+      <div class="a-task" data-a="code" data-id="tr-7" data-mode="programm" data-timeout="20000" data-files="../assets/data/v16/zelle.zip">
+        <div class="a-task__text">
+          <p>Schreibe die Datei <code class="k-i">bericht.csv</code> (Semikolon als Trennzeichen, UTF-8). Die erste Zeile ist die Kopfzeile <code class="k-i">maschine;datum;fehler</code>. Danach kommt <strong>eine Zeile je Log-Datei</strong> mit Maschine, Datum (Dateiname ohne Endung) und der Zahl der Zeilen der Stufe <code class="k-i">ERROR</code> in dieser Datei, sortiert nach Pfad (also nach Maschine, dann nach Datum). Die Datei muss das Programm selbst anlegen.</p>
+          <div class="a-spec"><strong>Die ersten Zeilen von bericht.csv</strong><pre data-run="no">maschine;datum;fehler
+D2;2026-11-16;1
+D2;2026-11-17;...
+...</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V16" aria-label="Python-Code Aufgabe 7">from pathlib import Path
+
+# bericht.csv öffnen (Modus "w"), Kopfzeile schreiben,
+# dann je Log-Datei die ERROR-Zeilen zählen und eine Zeile schreiben
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+import os
+
+def _schreibe(pfad, text):
+    os.makedirs(os.path.dirname(pfad), exist_ok=True)
+    with open(pfad, "w", encoding="utf-8", newline="\n") as f:
+        f.write(text)
+
+def _soll():
+    zeilen = []
+    for m in os.listdir("zelle/maschinen"):
+        ordner = "zelle/maschinen/" + m + "/logs"
+        if not os.path.isdir(ordner):
+            continue
+        for name in os.listdir(ordner):
+            if name.endswith(".log") and os.path.isfile(ordner + "/" + name):
+                n = 0
+                with open(ordner + "/" + name, encoding="utf-8") as f:
+                    for z in f:
+                        t = z.strip().split(";")
+                        if len(t) > 2 and t[1] == "ERROR":
+                            n = n + 1
+                zeilen.append((m, name[:-4], n))
+    zeilen.sort()
+    return ["%s;%s;%d" % z for z in zeilen]
+
+def _lauf():
+    if os.path.exists("bericht.csv"):
+        os.remove("bericht.csv")
+    _run_program([])
+    assert os.path.exists("bericht.csv"), "Es gibt keine Datei bericht.csv. Öffne sie mit open(\"bericht.csv\", \"w\", encoding=\"utf-8\")."
+    with open("bericht.csv", encoding="utf-8") as f:
+        return f.read().splitlines()
+
+def _pruefe():
+    z = _lauf()
+    assert z and z[0] == "maschine;datum;fehler", "Die erste Zeile soll die Kopfzeile 'maschine;datum;fehler' sein. Gefunden: %r" % (z[:1],)
+    soll = _soll()
+    assert z[1:] == soll, "Erwartet %d Zeilen nach der Kopfzeile, zum Beispiel %r. Gefunden: %d Zeilen, zum Beispiel %r" % (len(soll), soll[:2], len(z) - 1, z[1:3])
+
+def test_mitgelieferte_zelle():
+    """20 Zeilen plus Kopfzeile, richtige Fehlerzahlen, sortiert"""
+    z = _lauf()
+    assert len(z) == 21, "Erwartet 21 Zeilen (Kopfzeile plus 20 Log-Dateien). Gefunden: %d" % len(z)
+    assert "D2;2026-11-16;1" in z, "Die Zeile 'D2;2026-11-16;1' fehlt. Gefunden: %r" % (z[:3],)
+    _pruefe()
+
+def test_neue_datei_und_maschine():
+    """Neue Log-Datei bei D2 und neue Maschine A1, dazu eine Notiz-Datei"""
+    _schreibe("zelle/maschinen/D2/logs/2026-11-21.log", "2026-11-21 06:00:00;ERROR;Test\n2026-11-21 06:01:00;ERROR;Test\n2026-11-21 06:02:00;INFO;ok\n")
+    _schreibe("zelle/maschinen/A1/logs/2026-11-21.log", "2026-11-21 06:00:00;INFO;ok\n")
+    _schreibe("zelle/maschinen/D2/logs/notizen.txt", "2026-11-21 07:00:00;ERROR;keine Log-Datei\n")
+    _pruefe()
+    z = _lauf()
+    assert "D2;2026-11-21;2" in z and "A1;2026-11-21;0" in z, "Erwartet D2;2026-11-21;2 und A1;2026-11-21;0. Gefunden: %r" % z[:4]
+    assert len(z) == 23, "Erwartet 23 Zeilen (Kopf plus 22 Logs), die Notizdatei zählt nicht. Gefunden: %d" % len(z)
+        </script>
+        <script type="text/x-python" data-role="solution">
+from pathlib import Path
+
+with open("bericht.csv", "w", encoding="utf-8") as aus:
+    aus.write("maschine;datum;fehler\n")
+    for log in sorted(Path("zelle/maschinen").glob("*/logs/*.log")):
+        fehler = 0
+        with open(log, encoding="utf-8") as datei:
+            for zeile in datei:
+                if zeile.strip().split(";")[1] == "ERROR":
+                    fehler = fehler + 1
+        aus.write(f"{log.parent.parent.name};{log.stem};{fehler}\n")
+        </script>
+        <ol class="a-hints">
+          <li>Öffne die Ausgabedatei außen: <code>with open("bericht.csv", "w", encoding="utf-8") as aus:</code> (V09, Syntax-Karte 3). Darin schreibst du zuerst die Kopfzeile mit <code>aus.write("maschine;datum;fehler\n")</code>.</li>
+          <li>Die Schleife über die Logs: <code>sorted(Path("zelle/maschinen").glob("*/logs/*.log"))</code>. Pro Log: <code>fehler = 0</code>, die Datei lesen, bei <code>ERROR</code> hochzählen.</li>
+          <li>Pro Log eine Zeile schreiben: <code>aus.write(f"{log.parent.parent.name};{log.stem};{fehler}\n")</code>. Das <code>\n</code> musst du selbst anhängen.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-8" data-title="Klausur-Modus: Pfade lesen, Dateien zählen" data-part="B" data-stars="4" data-min="15" data-extra="8 Punkte" aria-labelledby="h-t-8" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-8" tabindex="-1">Klausur-Modus: Pfade lesen, Dateien zählen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task__text">
+        <p><strong>So wie in der Klausur:</strong> Der erste Teil läuft auf Papier, der zweite im Editor ohne Ausführen und ohne <abbr class="k-begriff" data-erklaerung="Die Auto-Vervollständigung schlägt dir beim Tippen passende Wörter vor. In der Klausur gibt es sie nicht.">Auto-Vervollständigung</abbr>.</p>
+        <h3>Teil 1 (Papier, 3 Punkte): Code lesen</h3>
+        <pre data-run="no" class="k-code"><code>from pathlib import Path
+
+p = Path("zelle") / "maschinen" / "R1" / "logs" / "2026-11-18.log"
+print(p.name)
+print(p.stem)
+print(p.suffix)
+print(p.parent.name)
+print(p.parent.parent.name)
+print(p.exists())
+
+paar = (2048, p)
+groesse, datei = paar
+print(groesse / 1024, "KiB")</code></pre>
+        <p>Was gibt das Programm aus? Schreibe die acht Ausgabezeilen auf (die Datei <code class="k-i">p</code> existiert, das Programm läuft im Arbeitsordner der Zelle). Wie ändert sich die letzte Ausgabe, wenn du <code class="k-i">1000</code> statt <code class="k-i">1024</code> teilst, und wie müsste die Einheit dann heißen? Decke danach auf und vergleiche.</p>
+        <details class="k-deep">
+          <summary>Auflösung aufdecken und ausführen</summary>
+          <div class="k-deep__body">
+            <p>Ausgabe: <code class="k-i">2026-11-18.log</code>, <code class="k-i">2026-11-18</code>, <code class="k-i">.log</code>, <code class="k-i">logs</code>, <code class="k-i">R1</code>, <code class="k-i">True</code>, und zuletzt <code class="k-i">2.0 KiB</code>. Mit 1000 käme <code class="k-i">2.048</code> heraus, das wäre die Einheit <em>kB</em> (Kilobyte), nicht KiB.</p>
+            <pre data-files="../assets/data/v16/zelle.zip"><code>from pathlib import Path
+
+p = Path("zelle") / "maschinen" / "R1" / "logs" / "2026-11-18.log"
+print(p.name)
+print(p.stem)
+print(p.suffix)
+print(p.parent.name)
+print(p.parent.parent.name)
+print(p.exists())
+
+paar = (2048, p)
+groesse, datei = paar
+print(groesse / 1024, "KiB")</code></pre>
+          </div>
+        </details>
+        <h3>Teil 2 (Code schreiben, 8 Punkte)</h3>
+      </div>
+      <div class="a-task" data-a="klausur" data-id="tr-8" data-mode="programm" data-minutes="15" data-timeout="20000" data-files="../assets/data/v16/zelle.zip">
+        <div class="a-task__text">
+          <p>Schreibe ein Programm mit <code>from pathlib import Path</code>, das für <strong>jede Maschine</strong> unter <code>zelle/maschinen</code> (alphabetisch nach Maschinenname) eine Zeile ausgibt: <code>Maschine: n Dateien, k KiB</code>. Dabei ist n die Zahl der <code>.log</code>-Dateien im Unterordner <code>logs</code> der Maschine und k die Summe ihrer Größen in KiB (Summe der Bytes durch 1024, eine Nachkommastelle). Zuletzt gibt das Programm eine Zeile <code>Gesamt: N Dateien</code> aus. Beispiel für eine Maschine: <code>D2: 5 Dateien, 12.2 KiB</code>.</p>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V16" data-assist="off" aria-label="Python-Code von Hand schreiben, ohne Ausführen"></textarea></div>
+        <script type="text/x-python" data-role="tests">
+import os
+
+def _schreibe(pfad, text):
+    os.makedirs(os.path.dirname(pfad), exist_ok=True)
+    with open(pfad, "w", encoding="utf-8", newline="\n") as f:
+        f.write(text)
+
+def _soll():
+    zeilen = []
+    gesamt = 0
+    for m in sorted(os.listdir("zelle/maschinen")):
+        n = 0
+        b = 0
+        ordner = "zelle/maschinen/" + m + "/logs"
+        if os.path.isdir(ordner):
+            for name in os.listdir(ordner):
+                if name.endswith(".log") and os.path.isfile(ordner + "/" + name):
+                    n = n + 1
+                    b = b + os.path.getsize(ordner + "/" + name)
+        zeilen.append("%s: %d Dateien, %.1f KiB" % (m, n, b / 1024))
+        gesamt = gesamt + n
+    zeilen.append("Gesamt: %d Dateien" % gesamt)
+    return zeilen
+
+def test_mitgelieferte_zelle():
+    """D2 5 Dateien 12.2 KiB, F1 5 Dateien 13.5 KiB, M1 11.5, R1 10.0, Gesamt 20"""
+    z = _zeilen(_run_program([]))
+    soll = ["D2: 5 Dateien, 12.2 KiB", "F1: 5 Dateien, 13.5 KiB", "M1: 5 Dateien, 11.5 KiB", "R1: 5 Dateien, 10.0 KiB", "Gesamt: 20 Dateien"]
+    assert z == soll, "Erwartet %r, dein Programm gibt aus: %r" % (soll, z)
+
+def test_nach_aenderung():
+    """Neue Log-Datei, neue Maschine ohne Logs, Notizdatei: Zahlen passen sich an"""
+    _schreibe("zelle/maschinen/D2/logs/2026-11-21.log", "2026-11-21 06:00:00;INFO;Start\n" * 40)
+    _schreibe("zelle/maschinen/D2/logs/notizen.txt", "kein Log" * 500)
+    os.makedirs("zelle/maschinen/A1/logs", exist_ok=True)
+    z = _zeilen(_run_program([]))
+    soll = _soll()
+    assert z == soll, "Erwartet %r, dein Programm gibt aus: %r" % (soll, z)
+    assert z[0].startswith("A1: 0 Dateien, 0.0 KiB") and z[1].startswith("D2: 6 Dateien"), "A1 (ohne Logs) steht vorn mit 0 Dateien, D2 hat jetzt 6 Dateien. Dein Programm gibt aus: %r" % z[:2]
+
+def test_nur_log_dateien():
+    """Nur .log zählt: eine weitere .txt-Datei und ein Unterordner ändern nichts"""
+    _schreibe("zelle/maschinen/F1/logs/alt/2026-01-01.log", "x\n")
+    _schreibe("zelle/maschinen/F1/logs/bericht.txt", "y" * 3000)
+    z = _zeilen(_run_program([]))
+    assert z == _soll(), "Erwartet %r, dein Programm gibt aus: %r" % (_soll(), z)
+        </script>
+        <script type="text/x-python" data-role="solution">
+from pathlib import Path
+
+gesamt = 0
+for maschine in sorted((Path("zelle") / "maschinen").iterdir()):
+    n = 0
+    groesse = 0
+    for log in (maschine / "logs").glob("*.log"):
+        n = n + 1
+        groesse = groesse + log.stat().st_size
+    print(f"{maschine.name}: {n} Dateien, {groesse / 1024:.1f} KiB")
+    gesamt = gesamt + n
+print(f"Gesamt: {gesamt} Dateien")
+        </script>
+        <script type="application/json" data-role="scheme">[
+{"p":1,"t":"from pathlib import Path steht am Anfang; der Ordner wird mit Path(\"zelle\") / \"maschinen\" gebildet (Pfadteile mit / verbunden)"},
+{"p":1,"t":"Äußere Schleife über die Maschinen: iterdir() (oder glob) und sorted für die alphabetische Reihenfolge"},
+{"p":1,"t":"Innere Schleife über die .log-Dateien im Unterordner logs (glob mit Muster *.log, nicht rglob und nicht alle Einträge)"},
+{"p":1,"t":"Zähler n und Bytes werden je Maschine auf 0 gesetzt (innerhalb der äußeren Schleife) und in der inneren hochgezählt"},
+{"p":1,"t":"Größe über stat().st_size (Bytes), dann durch 1024 (nicht 1000) geteilt"},
+{"p":1,"t":"Ausgabezeile je Maschine im verlangten Format mit .name und einer Nachkommastelle (:.1f)"},
+{"p":1,"t":"Gesamtzähler vor der Schleife auf 0, in der Schleife erhöht, nach der Schleife als eigene Zeile ausgegeben"},
+{"p":1,"t":"Keine Syntaxfehler, richtige Einrückung; die Reihenfolge der Ausgabe stimmt (Maschinen, dann Gesamt)"}
+]</script>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-projekt" data-nonumber="1" data-title="Projekt: Meilenstein V16" data-part="B" data-stars="" data-min="" data-extra="ohne Wertung" aria-labelledby="h-t-projekt" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-projekt" tabindex="-1">Projekt: Meilenstein V16</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Die <strong>letzten 30 Minuten</strong> dieses Termins gehören dem Projekt. Falls nicht alles geschafft wurde: Hier ist die Liste für diesen Meilenstein, das <strong>Grundgerüst mit Funktionen</strong>. Das Skelett steht, die Tests sind noch rot. Alle Themen, die weiteren Meilensteine und das Bewertungsraster stehen auf der <a href="../projekt.html">Projektseite</a>.</p>
+      <ol class="k-steps">
+        <li><strong>Dateien anlegen:</strong> ein Hauptprogramm und ein Modul mit den Funktionen (V11). Pfade zu Daten und Ordnern <em>relativ</em> mit <code class="k-i">Path</code> und <code class="k-i">/</code> schreiben, nicht fest verdrahtet.</li>
+        <li><strong>Eine Funktion je Rechenschritt:</strong> Name, Parameter, Docstring und eine Platzhalter-Rückgabe, wie dein PAP (V14) es vorgibt.</li>
+        <li><strong>Hauptprogramm:</strong> Es ruft die Funktionen in der Reihenfolge des PAP auf.</li>
+        <li><strong>Tests starten:</strong> Sie sollen erwartbar <em>rot</em> sein, denn der Rechenkern fehlt noch. Rot aus dem richtigen Grund ist ein gutes Zeichen.</li>
+        <li><strong>Prompt aus dem PAP formulieren</strong> und im <code class="k-i">KI-PROTOKOLL.md</code> ablegen. Antwort noch <em>nicht</em> übernehmen: Das ist der nächste Meilenstein.</li>
+        <li><strong>Abhaken:</strong> Den Stand trägst du auf der <a href="../projekt.html#meilensteine">Projektseite</a> ein.</li>
+      </ol>
+      <p>Nächster Meilenstein (V17): Kernrechnung und Tests bestehen.</p>
+
+    </section>
+
+    <section class="l-task" id="t-notebook" data-nonumber="1" data-title="Notebook und Deep Dive" data-part="B" data-stars="" data-min="" data-extra="ohne Wertung" aria-labelledby="h-t-notebook" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-notebook" tabindex="-1">Notebook und Deep Dive</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Mehr üben mit Pfaden, Ordnersuche und Zeitmessung. Das Notebook nutzt Python aus V01 bis V16, hat drei Stufen (Aufwärmen, Anwenden, Knobeln), keine Lösungen, dafür Selbsttests, und ist für Codespaces gedacht. Dort hast du ein echtes Dateisystem: Du kannst die Zelle als Ordner anlegen und auch den Task-Manager (oder <code class="k-i">htop</code>) neben deinem Programm beobachten.</p>
+      <p><a class="k-btn k-btn--ghost" href="../notebooks/V16-Rechner-und-Betriebssystem.ipynb" download>V16-Rechner-und-Betriebssystem.ipynb herunterladen</a></p>
+      <ol class="k-steps">
+        <li><strong>In Codespaces öffnen:</strong> Im Kurs-Repository auf GitHub „Code“ → „Codespaces“ → „Create codespace“ (Schritt für Schritt in der <a href="v11-copilot.html#anleitung">Lerneinheit V11, Abschnitt 3</a>). Dann <code class="k-i">notebooks/V16-Rechner-und-Betriebssystem.ipynb</code> öffnen.</li>
+        <li><strong>Oder lokal:</strong> <code class="k-i">pip install jupyter</code>, dann <code class="k-i">jupyter lab</code>.</li>
+        <li>Entpacke <code class="k-i">zelle.zip</code> in den Ordner des Notebooks (<a href="../assets/data/v16/zelle.zip" download>zelle.zip herunterladen</a>), damit die Pfade <code class="k-i">zelle/…</code> stimmen.</li>
+      </ol>
+      <h3>Danach</h3>
+      <p><a href="v16-rechner-und-betriebssystem.html#deepdive">Zum Deep Dive</a> (freiwillig): Prozesse und Threads, Auslagerung, Echtzeit-Betriebssysteme. Oder zurück zur <a href="v16-rechner-und-betriebssystem.html">Lerneinheit</a>. Die letzten 30 Minuten des Termins gehören dem <a href="../projekt.html">Projekt</a>.</p>
+
+    </section>
+
+      <nav class="lab__pager" aria-label="Zwischen Aufgaben wechseln">
+        <a class="k-btn k-btn--ghost" id="lab-prev" href="#a-werkzeugkasten">← Zurück</a>
+        <a class="k-btn k-btn--ghost" id="lab-next" href="#a-vorgemacht">Weiter →</a>
+      </nav>
+    </main>
+
+    <div class="lab__dock" data-library-dock data-state="off"></div>
+  </div>
+
+  <footer class="dhbw-footer k-footer">
+    <div class="dhbw-footer__inner">
+      <span><span class="dhbw-footer__brand">DHBW Stuttgart</span> · Campus Horb</span>
+      <span><a href="../index.html">Zurück zum Lernpfad</a> · <a href="../projekt.html">Projekt</a> · V16 Programmierlabor</span>
+    </div>
+  </footer>
+
+  <script src="../assets/js/speicher.js"></script>
+  <script src="../assets/js/icons.js"></script>
+  <script src="../assets/js/editor.js" defer></script>
+  <script src="../assets/js/pap-engine.js"></script>
+  <script src="../assets/js/kurs.js"></script>
+  <script src="../assets/js/aufgaben.js"></script>
+  <script src="../assets/js/pap-editor.js"></script>
+  <script src="../assets/js/labor.js"></script>
+</body>
+</html>
