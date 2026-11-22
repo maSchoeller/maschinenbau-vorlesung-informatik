@@ -1,7 +1,7 @@
 """Sprechertext V21 Theorie: Projektwerkstatt, Fertig ist, was frisch läuft (Quelltext mit Markup)."""
 SRC = [
  ["Dein Werkzeug läuft auf deinem Laptop. Dann kommt die Präsentation, und auf dem anderen Rechner steht in Rot: `FileNotFoundError`.",
-  "Der Grund: Dein Programm öffnet die Datei mit einem Pfad von deinem eigenen Rechner, zum Beispiel [[C:\Users\...\messung.csv|C Doppelpunkt Users, dein Name, messung Punkt c s v]].",
+  "Der Grund: Dein Programm öffnet die Datei mit einem Pfad von deinem eigenen Rechner, zum Beispiel [[C:\\Users\\...\\messung.csv|C Doppelpunkt Users, dein Name, messung Punkt c s v]].",
   "Diesen Ordner gibt es auf dem anderen Rechner nicht.",
   "Heute prüfst du dein Werkzeug nach einem Satz: Fertig ist, was frisch läuft."],
  ["Der erste Test heißt frischer Start. Lege einen neuen, leeren Ordner an und kopiere alle Dateien deines Werkzeugs hinein.",
@@ -22,12 +22,12 @@ SRC = [
   "Denn die [[KI|Ka I]] verantwortet nichts. Das Ergebnis verantwortest du als Ingenieur."],
  ["Die Präsentation dauert fünf Minuten. Du zeigst das Problem, den Programmablaufplan und eine Live-Demo mit einer Fehleingabe.",
   "Dazu kommt ein von Hand gerechneter Testfall und das, was die [[KI|Ka I]] falsch gemacht hat.",
-  "Die Fehleingabe zeigt, dass die Prüfschleife greift. Der Handrechnung zeigt, dass das Ergebnis stimmt.",
+  "Die Fehleingabe zeigt, dass die Prüfschleife greift. Die Handrechnung zeigt, dass das Ergebnis stimmt.",
   "Probt mit der Uhr, und beide sprechen. Fertig ist, was frisch läuft und in fünf Minuten erklärt ist."],
 ]
 
 SZENEN = [
- "Laptop links mit grünem Haken, rechts ein Beamer-Rechner mit roter Meldung FileNotFoundError. Darunter der Pfad C:\Users\...\messung.csv, der rot durchgestrichen wird; ein Ordner-Symbol existiert nur links. Am Ende der Leitsatz: Fertig ist, was frisch läuft.",
+ "Laptop links mit grünem Haken, rechts ein Beamer-Rechner mit roter Meldung FileNotFoundError. Darunter der Pfad C:\\Users\\...\\messung.csv, der rot durchgestrichen wird; ein Ordner-Symbol existiert nur links. Am Ende der Leitsatz: Fertig ist, was frisch läuft.",
  "Ein neuer, leerer Ordner füllt sich mit Dateien (werkzeug.py, messung.csv, Pakete). Zwei Pfade gegenübergestellt: absolut (rot) und relativ (grün). Dann ein Start-Pfeil von der ersten Zeile; ein Zettel Pakete notiert mit Häkchen.",
  "Testtabelle mit vier Handfällen, der letzte als Grenzfall markiert; alle grün. Eine Änderung (Rundung) erscheint, der Grenzfall wird rot; Pfeil zurück: alle Tests erneut, wieder grün.",
  "Links ein kleiner Programmablaufplan (Eingabe, Raute Durchmesser <= 0 mit Schleife, Rechnung, Ausgabe), rechts der passende Code. Entsprechende Teile werden nacheinander verbunden; dann weicht der Code ab, die Verbindung wird rot, Plan wertlos.",
