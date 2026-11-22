@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>V15 Datenanalyse: Prozessfähigkeit und Regelkarte mit pandas · Lerneinheit · Informatik Maschinenbau</title>
+  <meta name="description" content="Messdaten mit pandas einlesen, filtern und mit groupby auswerten; Cp und Cpk berechnen und lesen; eine Regelkarte (SPC) aufbauen. Dazu die Projektzeit mit dem Meilenstein Daten, Eingaben und Testfälle von Hand.">
+  <link rel="stylesheet" href="../assets/css/dhbw-base.css">
+  <link rel="stylesheet" href="../assets/css/kurs.css">
+  <link rel="stylesheet" href="../assets/css/aufgaben.css">
+  <link rel="stylesheet" href="../assets/css/editor.css">
+  <link rel="stylesheet" href="../assets/css/v05.css">
+  <link rel="stylesheet" href="../assets/css/v15.css">
+</head>
+<body data-lesson="V15" data-page="lerneinheit">
+  <a class="k-skip" href="#inhalt">Zum Inhalt springen</a>
+
+  <header class="dhbw-header k-header">
+    <div class="dhbw-header__inner">
+      <a class="k-logo" href="../index.html" aria-label="Zur Startseite">
+        <span class="k-logo__mark" aria-hidden="true">DHBW</span>
+        <span class="k-logo__text">Informatik Maschinenbau<small>Campus Horb · 2026/27</small></span>
+      </a>
+      <nav class="k-nav" aria-label="Hauptnavigation">
+        <a href="../index.html">Start</a>
+        <a href="../index.html#lernpfad">Lernpfad</a>
+        <a href="../bibliothek.html">Bibliothek</a>
+        <a href="../pap-editor.html">PAP-Editor</a>
+        <a href="../projekt.html">Projekt</a>
+        <a href="v15-datenanalyse.html" aria-current="page">V15 Lerneinheit</a>
+        <a href="v15-labor.html">V15 Labor</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="l-page">
+    <nav class="k-toc" aria-label="Inhalt dieser Lerneinheit">
+      <p class="k-toc__title">Lerneinheit V15</p>
+      <ol class="k-toc__list">
+        <li><a href="#warum"><span class="k-toc__n">1</span>Warum?</a></li>
+        <li><a href="#theorie"><span class="k-toc__n">2</span>Theorie</a></li>
+        <li><a href="#ausprobieren"><span class="k-toc__n">3</span>Ausprobieren</a></li>
+        <li><a href="#selbstcheck"><span class="k-toc__n">4</span>Selbstcheck</a></li>
+        <li><a href="#deepdive"><span class="k-toc__n">5</span>Deep Dive</a></li>
+      </ol>
+      <div class="k-progress" data-progress-for="V15">
+        <span class="k-progress__bar"><span class="k-progress__fill"></span></span>
+        <span class="k-progress__text">0 von 5 Abschnitten</span>
+      </div>
+      <a class="k-toc__lab" href="v15-labor.html">Weiter ins Programmierlabor →</a>
+    </nav>
+
+    <main id="inhalt" class="l-content">
+
+      <header class="k-title">
+        <p class="k-title__label">V15 · Phase 3 Projekt · Lerneinheit</p>
+        <h1 id="h-titel">Datenanalyse: Prozessfähigkeit und Regelkarte mit pandas</h1>
+        <p class="k-title__lead">Eine Fertigung liefert Messwerte, und die Frage ist immer dieselbe: Hält der Prozess seine Toleranz sicher ein, und bleibt das so? Du lernst, eine Messdatei mit <abbr class="k-begriff" data-erklaerung="pandas ist ein Python-Paket für Tabellen. Es liest Dateien wie CSV ein und gibt dir Werkzeuge zum Filtern, Gruppieren und Auswerten, ähnlich wie Excel, aber als Programm, das du wiederholen und testen kannst.">pandas</abbr> auszuwerten, die Kennzahlen Cp und Cpk zu berechnen und zu lesen und eine Regelkarte aufzubauen, die eine schleichende Abweichung früh meldet.</p>
+        <p class="k-title__goals">Nach dieser Lerneinheit kannst du:</p>
+        <ul class="k-title__list">
+          <li>eine CSV-Datei mit <code class="k-i">pd.read_csv</code> einlesen und erklären, was ein <abbr class="k-begriff" data-erklaerung="Ein DataFrame ist die Tabelle von pandas: Spalten mit Namen, Zeilen mit einer Nummer (dem Index). Jede Spalte darf einen eigenen Datentyp haben, zum Beispiel Zahlen oder Text.">DataFrame</abbr> und eine <abbr class="k-begriff" data-erklaerung="Eine Series ist eine einzelne Spalte von pandas: eine Reihe von Werten mit Index. Auf ihr rechnest du direkt, zum Beispiel mit mean() für den Mittelwert.">Series</abbr> sind,</li>
+          <li>Zeilen mit einer <abbr class="k-begriff" data-erklaerung="Eine Maske ist eine Spalte aus True und False, die für jede Zeile sagt, ob eine Bedingung erfüllt ist. Mit ihr filterst du eine Tabelle: Es bleiben nur die Zeilen mit True.">Maske</abbr> filtern und mit <code class="k-i">groupby</code> je Gruppe auswerten,</li>
+          <li>Mittelwert und Standardabweichung deuten und mit <code class="k-i">describe()</code> einen Überblick holen,</li>
+          <li>Cp und Cpk berechnen, lesen und bewerten und sagen, warum Cpk der ehrlichere Wert ist,</li>
+          <li>Spezifikationsgrenzen von Eingriffsgrenzen unterscheiden und eine Regelkarte lesen,</li>
+          <li>deine Projektdaten und Testfälle von Hand vorbereiten (Meilenstein V15).</li>
+        </ul>
+        <p class="k-small k-muted">Das Schreiben der pandas-Befehle übst du im <a href="v15-labor.html">Programmierlabor</a>. Vorausgesetzt sind V01 bis V14, besonders Listen und Dictionaries (V08), Dateien (V09), <code class="k-i">import</code> (V11), <code class="k-i">assert</code> (V12), NumPy (V13) und matplotlib (V14). Die Daten für alle Beispiele liegen in der Datei <a href="../assets/data/v15/wellen.csv" download><code class="k-i">wellen.csv</code></a>.</p>
+      </header>
+
+      <!-- 1 ───────────── WARUM ───────────── -->
+      <section class="k-section" id="warum" data-section="warum" aria-labelledby="h-warum">
+        <h2 class="k-section__title" id="h-warum"><span class="k-section__num" aria-hidden="true">1</span> Warum?</h2>
+
+        <p>Zwei Drehmaschinen, D1 und D2, fertigen Wellen mit Ø 20 mm und einer Toleranz von ±0,02 mm, also erlaubt sind 19,980 bis 20,020 mm. Die Qualitätssicherung hat ein Messprotokoll mit 250 Werten angelegt: je Maschine 25 Stichproben zu je 5 Teilen. Der Kunde verlangt einen Cpk-Wert von mindestens 1,33. Die Frage: <strong>Welche Maschine darf liefern?</strong> In Excel bedeutet das eine Stunde Klicken, Formeln ziehen und Diagramme basteln. Mit pandas sind es zehn Zeilen, und beim nächsten Protokoll läuft dasselbe Programm in einer Sekunde.</p>
+
+        <figure class="k-figure">
+          <picture>
+            <source srcset="../assets/img/v15-hook.webp" type="image/webp">
+            <img src="../assets/img/v15-hook.png" alt="Illustration: zwei Drehmaschinen, daneben eine Tabelle mit Messwerten und eine Regelkarte, auf der die Punkte einer Maschine nach oben aus den Grenzen laufen" width="1600" height="900" loading="lazy" onerror="this.closest('figure').hidden=true">
+          </picture>
+        </figure>
+
+        <div class="k-try" aria-labelledby="t-hook">
+          <h3 id="t-hook">Selbst sehen: wo steckt der Ausschuss?</h3>
+          <p class="k-small k-muted">Sag erst voraus, dann lass das Programm rechnen.</p>
+          <div class="k-predict">
+            <p class="k-predict__q">In den 250 Messwerten liegen einige Teile außerhalb der Toleranz (unter 19,980 mm oder über 20,020 mm). Woher kommen sie?</p>
+            <div class="k-predict__opts"><button type="button">etwa gleich viele von D1 und D2, über beide Schichten verteilt</button><button type="button" data-correct>alle von D2, und alle in der Spätschicht</button><button type="button">alle von D1, weil D1 öfter läuft</button></div>
+            <div class="k-predict__result"></div>
+            <div class="k-predict__expl" hidden>Es sind 6 Teile, alle von D2, alle in der Spätschicht (Stichproben 17, 20, 24, 24, 25, 25), und alle zu dick. D1 hat keinen einzigen Ausschuss. D2 liegt von Anfang an etwas hoch und driftet ab etwa Stichprobe 18 weiter nach oben, das typische Bild von Werkzeugverschleiß. Eine <strong>Regelkarte</strong> hätte diese Drift in Stichprobe 20 gemeldet, vier der sechs Ausschussteile wären vermeidbar gewesen. Wie das geht, siehst du in Abschnitt 2.</div>
+          </div>
+          <pre data-files="../assets/data/v15/wellen.csv" data-timeout="20000"><code>import pandas as pd
+
+df = pd.read_csv("wellen.csv")
+d = df["durchmesser_mm"]
+ausschuss = df[(d &gt; 20.020) | (d &lt; 19.980)]
+print(len(ausschuss), "Teile außerhalb der Toleranz")
+print(ausschuss["maschine"].value_counts())
+print(ausschuss["schicht"].value_counts())</code></pre>
+          <p class="k-small k-muted">Beim ersten Ausführen lädt der Browser pandas nach (ca. 24 MB, das dauert einen Moment). Die sieben Zeilen erledigen, was von Hand eine Strichliste über 250 Zeilen wäre.</p>
+        </div>
+
+        <h3>Wissens-Ampel für V15</h3>
+        <ul class="k-ampel-list" aria-label="Wissens-Ampel zu V15">
+          <li><span class="k-ampel k-ampel--kopf"><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-head"/></svg> Im Kopf</span><span>Cp = (OSG − USG) / (6σ) und Cpk = min(OSG − μ; μ − USG) / (3σ) mit ihrer Bedeutung (Cp: passt die Streuung in die Toleranz? Cpk: und liegt die Mitte richtig?). Mittelwert und Standardabweichung. Spezifikationsgrenzen kommen vom Kunden oder aus der Zeichnung, Eingriffsgrenzen aus dem Prozess. Eine Spalte ist eine Series. Filtern mit einer Maske, <code class="k-i">&amp;</code> und <code class="k-i">|</code> mit Klammern um jeden Vergleich. <code class="k-i">groupby</code> heißt aufteilen, anwenden, zusammenführen.</span></li>
+          <li><span class="k-ampel k-ampel--lesen"><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-book"/></svg> Lesen &amp; erkennen</span><span>Die Ausgabe von <code class="k-i">describe()</code> lesen. <code class="k-i">agg</code> und <code class="k-i">groupby</code> in fremdem Code erkennen. Die Regelkarten-Regeln, zum Beispiel sieben Punkte in Folge auf einer Seite der Mittellinie. Den Unterschied zwischen Cp/Cpk und Pp/Ppk kennen.</span></li>
+          <li><span class="k-ampel k-ampel--deleg"><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-handover"/></svg> Delegieren</span><span>Formatierung und Excel-Export, Spezialfunktionen wie <code class="k-i">pivot_table</code> oder <code class="k-i">rolling</code> und große Statistikprogramme wie Minitab oder qs-STAT. Du musst wissen, <em>was</em> berechnet wird und ob das Ergebnis plausibel ist.</span></li>
+        </ul>
+
+        <div class="hinweis hinweis--warum"><strong class="hinweis__title">Warum muss ich das wissen?</strong><p>Fertigung und Qualität arbeiten mit Zahlenkolonnen, und der Kunde fragt nach Cpk, nicht nach Rohdaten. Wer Messwerte schnell und nachvollziehbar auswerten kann, findet Probleme, bevor sie Geld kosten. In der Klausur kommen die Formeln als Rechenaufgabe, pandas-Code als „Was gibt das aus?“ und eine Funktion, die du von Hand schreibst.</p></div>
+      </section>
+
+      <!-- 2 ───────────── THEORIE ───────────── -->
+      <section class="k-section" id="theorie" data-section="theorie" aria-labelledby="h-theorie">
+        <h2 class="k-section__title" id="h-theorie"><span class="k-section__num" aria-hidden="true">2</span> Theorie</h2>
+
+        <h3>Erklärvideo (ca. 3 Min)</h3>
+        <figure class="k-video" id="video-theorie">
+          <video controls preload="metadata" poster="../assets/video/v15-theorie-poster.png" aria-label="Erklärvideo Datenanalyse: Tabellen mit pandas, Prozessfähigkeit Cp und Cpk und die Regelkarte">
+            <source src="../assets/video/v15-theorie.mp4" type="video/mp4">
+            <track kind="subtitles" srclang="de" label="Deutsch" src="../assets/video/v15-theorie.vtt" default>
+            Dein Browser kann dieses Video nicht abspielen.
+          </video>
+          <div class="k-video__missing" hidden>Video folgt. Bis dahin: die Explorables und der Lesetext unten decken alles ab.</div>
+          <figcaption>Untertitel sind eingeschaltet (Deutsch).</figcaption>
+        </figure>
+
+        <h3>Eine Tabelle in Python: DataFrame und Series</h3>
+        <p>Messdaten sind eine Tabelle: Jede Zeile ist ein Teil, jede Spalte eine Eigenschaft (Maschine, Schicht, Durchmesser). In V09 hast du so eine Datei Zeile für Zeile mit dem <code class="k-i">csv</code>-Modul zerlegt. pandas macht das in einem Schritt und gibt dir die Tabelle als ein Objekt, den DataFrame. Mit <code class="k-i">import pandas as pd</code> holst du das Paket unter dem Kurznamen <code class="k-i">pd</code> (wie <code class="k-i">import matplotlib.pyplot as plt</code> in V14). pandas gehört nicht zur Standardbibliothek. In Codespaces ist es installiert, hier im Browser lädt es sich beim ersten Mal selbst nach.</p>
+        <pre data-files="../assets/data/v15/wellen.csv" data-timeout="20000"><code>import pandas as pd
+
+df = pd.read_csv("wellen.csv")        # Datei einlesen, Kopfzeile wird zu Spaltennamen
+print(df.head(3))                     # die ersten drei Zeilen
+print(df.shape)                       # (Zeilen, Spalten)</code></pre>
+        <p>Die Datei <code class="k-i">wellen.csv</code> ist mit Komma getrennt und hat Punkte als Dezimalzeichen, deshalb genügt <code class="k-i">pd.read_csv("wellen.csv")</code>. Bei einer deutschen Excel-Datei (Semikolon, Dezimalkomma) ergänzt du <code class="k-i">sep=";", decimal=","</code>, wie du es aus V09 kennst. Die Kopfzeile wird zu den Spaltennamen, die ganzzahlige Nummer links ist der <abbr class="k-begriff" data-erklaerung="Der Index ist die Zeilennummer eines DataFrames, links ohne Überschrift. Sie beginnt bei 0 und bleibt an der Zeile haften, auch wenn du andere Zeilen herausfilterst.">Index</abbr>.</p>
+
+        <div class="k-explorable">
+          <h3>Anatomie eines DataFrames</h3>
+          <p class="k-explorable__lead">Sechs Zeilen aus <code class="k-i">wellen.csv</code>. Gehe die fünf Ausdrücke der Reihe nach durch (Knopf „Weiter“ oder direkt wählen) und beobachte, was aus der Tabelle wird: eine Spalte, zwei Spalten, eine Maske, ein Filter.</p>
+          <div data-explorable="dataframe"></div>
+          <noscript><p>Für das Explorable „Anatomie eines DataFrames“ wird JavaScript benötigt.</p></noscript>
+          <p class="k-small k-muted">Beobachtung: Die einfache Klammer liefert eine Series, die doppelte einen DataFrame. Und beim Filtern behalten die Zeilen ihren alten Index.</p>
+        </div>
+
+        <p>Eine Spalte ist eine Series, und auf ihr rechnest du mit Methoden: <code class="k-i">.mean()</code> für den Mittelwert, <code class="k-i">.std()</code> für die Standardabweichung, <code class="k-i">.min()</code> und <code class="k-i">.max()</code>. Eine <abbr class="k-begriff" data-erklaerung="Eine Methode ist eine Funktion, die zu einem Objekt gehört und mit einem Punkt dahinter aufgerufen wird: d.mean() berechnet den Mittelwert der Series d. Du kennst das von Listen: liste.append(3).">Methode</abbr> hängst du mit einem Punkt an: <code class="k-i">d.mean()</code>.</p>
+        <pre data-files="../assets/data/v15/wellen.csv" data-timeout="20000"><code>import pandas as pd
+
+df = pd.read_csv("wellen.csv")
+d = df["durchmesser_mm"]              # eine Series
+print("Mittelwert:", round(d.mean(), 4), "mm")
+print("Standardabweichung:", round(d.std(), 4), "mm")
+print("kleinster und größter Wert:", d.min(), d.max())</code></pre>
+
+        <h3>Zeilen filtern mit einer Maske</h3>
+        <p>Ein Vergleich wie <code class="k-i">df["maschine"] == "D2"</code> gilt für die ganze Spalte auf einmal und ergibt die Maske, eine Reihe aus <code class="k-i">True</code> und <code class="k-i">False</code>, eine Zeile pro Teil. Du kennst das Prinzip von den NumPy-Masken aus V13. Schreibst du die Maske in die eckige Klammer, bleiben nur die Zeilen mit <code class="k-i">True</code>: <code class="k-i">df[maske]</code>. Zwei Bedingungen verknüpfst du mit <code class="k-i">&amp;</code> (und) und <code class="k-i">|</code> (oder), und <strong>jeder einzelne Vergleich steht in Klammern</strong>. Das normale <code class="k-i">and</code> und <code class="k-i">or</code> aus V04 funktioniert hier nicht, weil sie nur einzelne Wahrheitswerte kennen, keine ganze Spalte. Was dann passiert, probierst du unten in Abschnitt 3 aus.</p>
+        <pre data-files="../assets/data/v15/wellen.csv" data-timeout="20000"><code>import pandas as pd
+
+df = pd.read_csv("wellen.csv")
+spaet = df[df["schicht"] == "Spät"]
+print(len(spaet), "Zeilen in der Spätschicht")
+
+ausschuss = df[(df["durchmesser_mm"] &gt; 20.020) | (df["durchmesser_mm"] &lt; 19.980)]
+print(ausschuss)</code></pre>
+        <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke</strong><p>Filtern ist immer: Maske bauen, Maske in die Klammer. Mehrere Bedingungen: <code class="k-i">&amp;</code> für „und“, <code class="k-i">|</code> für „oder“, jede Bedingung in runden Klammern.</p></div>
+
+        <h3>Gruppen auswerten: groupby</h3>
+        <p>Die Frage „wie sieht es je Maschine aus?“ taucht ständig auf: je Schicht, je Lieferant, je Werkzeug. <code class="k-i">groupby</code> beantwortet sie in drei Schritten, die in der Fachsprache <em>split – apply – combine</em> heißen: <strong>aufteilen</strong> in Gruppen, auf jede Gruppe eine Funktion <strong>anwenden</strong>, die Ergebnisse <strong>zusammenführen</strong>.</p>
+        <div class="k-explorable">
+          <h3>groupby: aufteilen, anwenden, zusammenführen</h3>
+          <p class="k-explorable__lead">Sechs Messwerte beider Maschinen, bunt gemischt. Gehe die vier Schritte durch und wähle die Funktion, die auf jede Gruppe angewendet wird.</p>
+          <div data-explorable="groupby"></div>
+          <noscript><p>Für das Explorable „groupby“ wird JavaScript benötigt.</p></noscript>
+          <p class="k-small k-muted">Beobachtung: Aus sechs Zeilen werden zwei Ergebniswerte, einer je Gruppe. Die Funktion ist austauschbar, das Verfahren bleibt gleich.</p>
+        </div>
+        <p>Mit <code class="k-i">agg</code> (kurz für „aggregieren“) rechnest du mehrere Kennwerte auf einmal. Das Ergebnis ist wieder ein DataFrame, mit einer Zeile je Gruppe und einer Spalte je Kennwert.</p>
+        <pre data-files="../assets/data/v15/wellen.csv" data-timeout="20000"><code>import pandas as pd
+
+df = pd.read_csv("wellen.csv")
+kennwerte = df.groupby("maschine")["durchmesser_mm"].agg(["mean", "std", "count"])
+print(kennwerte.round(4))</code></pre>
+        <p>Schon jetzt fällt etwas auf: D1 hat einen Mittelwert sehr nah an 20,000 mm und eine kleine Standardabweichung, D2 liegt höher und streut mehr. Wie man das in <em>eine</em> Zahl fasst, ist das nächste Thema.</p>
+
+        <h3>Kennwerte: Mittelwert, Standardabweichung, Normalverteilung</h3>
+        <p>Messwerte einer Fertigung streuen, weil kein Prozess perfekt ist: Werkzeug, Temperatur, Rohteil, Messung. Zwei Zahlen beschreiben diese Streuung gut. Der <strong>Mittelwert</strong> x̄ sagt, wo die Werte im Durchschnitt liegen. Die <abbr class="k-begriff" data-erklaerung="Die Standardabweichung s ist ein Maß dafür, wie weit die Werte typischerweise vom Mittelwert entfernt liegen. Klein heißt: die Teile sind einander sehr ähnlich. Sie hat dieselbe Einheit wie die Messwerte, hier mm.">Standardabweichung</abbr> s sagt, wie weit sie typischerweise davon abweichen.</p>
+        <div class="v15-formblock">
+          <p>x̄ = (x₁ + x₂ + … + xₙ) / n</p>
+          <p>s = √( Σ (xᵢ − x̄)² / (n − 1) )</p>
+        </div>
+        <p>Beim Teilen durch <em>n − 1</em> statt <em>n</em> spricht man von der Stichproben-Standardabweichung: Du kennst nicht den ganzen Prozess, sondern nur eine <abbr class="k-begriff" data-erklaerung="Eine Stichprobe ist eine kleine Auswahl aus allem, was gefertigt wird, zum Beispiel fünf Teile, die alle Stunde entnommen und gemessen werden. Man schließt von ihr auf den ganzen Prozess.">Stichprobe</abbr> davon, und die schätzt die Streuung sonst etwas zu klein. pandas rechnet <code class="k-i">.std()</code> standardmäßig mit <em>n − 1</em>, NumPy <code class="k-i">np.std</code> dagegen mit <em>n</em>. Das ist eine bekannte Stolperfalle.</p>
+        <p>Viele Fertigungsmerkmale folgen näherungsweise einer <abbr class="k-begriff" data-erklaerung="Die Normalverteilung ist die Glockenkurve: Die meisten Werte liegen nahe am Mittelwert, nach außen werden sie schnell seltener. Sie ist durch Mittelwert und Standardabweichung vollständig beschrieben.">Normalverteilung</abbr> (Glockenkurve). Für sie gilt: Zwischen x̄ − σ und x̄ + σ liegen etwa 68,27 % der Werte, zwischen ±2σ etwa 95,45 % und zwischen ±3σ etwa <strong>99,73 %</strong>. Nur 0,27 % liegen weiter draußen, das sind 2.700 von einer Million Teilen. Genau diese ±3σ („Sechs-Sigma-Breite“ 6σ) benutzt man als Maß für „so breit ist der Prozess“.</p>
+        <pre data-files="../assets/data/v15/wellen.csv" data-timeout="20000"><code>import pandas as pd
+
+df = pd.read_csv("wellen.csv")
+print(df["durchmesser_mm"].describe().round(4))</code></pre>
+        <p><code class="k-i">describe()</code> fasst eine Spalte in einer Tabelle zusammen: <code class="k-i">count</code> (Anzahl), <code class="k-i">mean</code> (Mittelwert), <code class="k-i">std</code> (Standardabweichung), <code class="k-i">min</code> und <code class="k-i">max</code> sowie die Quartile <code class="k-i">25%</code>, <code class="k-i">50%</code> (Median) und <code class="k-i">75%</code>. Der Median ist der mittlere Wert der sortierten Reihe. Liegt er nahe am Mittelwert, ist die Verteilung etwa symmetrisch.</p>
+
+        <h3>Toleranz und Spezifikationsgrenzen</h3>
+        <p>Auf der Zeichnung steht ein Maß mit Toleranz: Ø 20 ±0,02 mm. Daraus ergeben sich die <abbr class="k-begriff" data-erklaerung="Spezifikationsgrenzen sind die vorgeschriebenen Grenzen, innerhalb derer ein Maß liegen muss: die untere (USG) und die obere Spezifikationsgrenze (OSG). Sie kommen vom Kunden oder von der Konstruktion, nicht vom Prozess.">Spezifikationsgrenzen</abbr> <strong>USG = 19,980 mm</strong> und <strong>OSG = 20,020 mm</strong>. Ein Teil außerhalb ist Ausschuss, egal wie knapp. Die Grenzen sagen nichts darüber, wie gut der Prozess ist, sie sagen nur, was erlaubt ist. Um beides zu vergleichen, braucht man eine Kennzahl, die die Breite der Toleranz ins Verhältnis zur Breite des Prozesses setzt.</p>
+
+        <h3>Prozessfähigkeit: Cp und Cpk</h3>
+        <p>Die <abbr class="k-begriff" data-erklaerung="Prozessfähigkeit heißt: Der Prozess liefert Teile, die zuverlässig innerhalb der Toleranz liegen. Gemessen wird sie mit Kennzahlen wie Cp und Cpk.">Prozessfähigkeit</abbr> wird mit zwei Kennzahlen beschrieben. Beide teilen etwas Erlaubtes durch etwas Gestreutes, und die 3 im Nenner stammt von den ±3σ.</p>
+        <div class="v15-formblock">
+          <p>Cp = (OSG − USG) / (6σ)</p>
+          <p>Cpk = min(OSG − μ ; μ − USG) / (3σ)</p>
+        </div>
+        <p><strong>Cp</strong> fragt: Passt die Prozessbreite (6σ) in die Toleranzbreite? Cp = 1 heißt, sie passt gerade eben, Cp = 2 heißt, sie passt zweimal hinein. Cp sieht aber nicht, ob der Prozess <em>mittig</em> liegt. <strong>Cpk</strong> fragt deshalb zusätzlich nach der Lage: Es nimmt den Abstand von der Mitte μ zur <em>näheren</em> Grenze (das <code class="k-i">min</code>) und teilt durch 3σ, also die halbe Prozessbreite. Cpk ist nie größer als Cp, und beide sind gleich, wenn der Prozess genau in der Mitte der Toleranz liegt. Ein anschauliches Maß: Cpk × 3 ist der Abstand zur nächsten Grenze, gemessen in σ. Cpk = 1,33 heißt also, die nächste Grenze ist 4σ entfernt, Cpk = 1,67 heißt 5σ.</p>
+        <div class="k-explorable">
+          <h3>Cp/Cpk-Rechner</h3>
+          <p class="k-explorable__lead">Verschiebe den Mittelwert μ und die Standardabweichung σ. Die Glockenkurve zeigt die Verteilung der Durchmesser, die schraffierten Flächen außerhalb von USG und OSG sind Ausschuss. Die Voreinstellungen „D1“ und „D2“ stammen aus <code class="k-i">wellen.csv</code>.</p>
+          <div data-explorable="cpk"></div>
+          <noscript><p>Für das Explorable „Cp/Cpk-Rechner“ wird JavaScript benötigt.</p></noscript>
+          <p class="k-small k-muted">Beobachtung: Schiebst du μ aus der Mitte, fällt Cpk, während Cp gleich bleibt. Ein kleineres σ macht beides größer. D2 „nachgestellt“ (μ zentriert) bleibt bei Cpk ≈ 1,07: Zentrieren allein reicht nicht, die Streuung muss auch sinken. Der angezeigte Ausschussanteil gilt für eine Normalverteilung mit diesen Werten. Er ist eine Rechnung, keine Messung: D2 hat tatsächlich 4,8 % Ausschuss (6 von 125 Teilen), weil die Werte ab Stichprobe 18 wegdriften.</p>
+        </div>
+
+        <p>Wie gut ist gut? Es gibt übliche Richtwerte. Verbindlich ist immer die Vorgabe deines Kunden oder deiner Qualitätsabteilung.</p>
+        <div class="k-tablewrap"><table class="k-plan">
+          <thead><tr><th scope="col">Cpk</th><th scope="col">Bewertung (übliche Richtwerte)</th><th scope="col">Abstand zur nächsten Grenze</th></tr></thead>
+          <tbody>
+            <tr><td>≥ 1,67</td><td>sehr fähig; üblich für Neuprozesse und oft in der Automobilindustrie gefordert</td><td>≥ 5σ</td></tr>
+            <tr><td>1,33 bis 1,67</td><td>fähig; die häufigste Mindestforderung</td><td>4σ bis 5σ</td></tr>
+            <tr><td>1,00 bis 1,33</td><td>bedingt fähig; enge Überwachung, Verbesserung nötig</td><td>3σ bis 4σ</td></tr>
+            <tr><td>&lt; 1,00</td><td>nicht fähig; es entsteht Ausschuss</td><td>&lt; 3σ</td></tr>
+          </tbody>
+        </table></div>
+        <p>Eine solche Bewertung ist eine Abfolge von Verzweigungen. Der Programmablaufplan zeigt die verschachtelte Entscheidung, daneben der Code (das <code class="k-i">elif</code> kennst du aus V04 und V05):</p>
+        <div class="v15-zwei">
+          <div data-explorable="pap-v15" data-pap="bewertung"></div>
+          <pre><code>def bewerte(cpk):
+    if cpk &gt;= 1.67:
+        return "sehr fähig"
+    elif cpk &gt;= 1.33:
+        return "fähig"
+    elif cpk &gt;= 1.0:
+        return "bedingt fähig"
+    else:
+        return "nicht fähig"
+
+print(bewerte(1.58))
+print(bewerte(0.68))</code></pre>
+        </div>
+
+        <p>Mit den Kennwerten je Maschine rechnest du Cp und Cpk in wenigen Zeilen. Bei <code class="k-i">f"{cp:.2f}"</code> steht die Formatangabe aus V03: zwei Nachkommastellen. Probiere es auch mit <code class="k-i">"D1"</code>.</p>
+        <pre data-files="../assets/data/v15/wellen.csv" data-timeout="20000"><code>import pandas as pd
+
+OSG = 20.020           # obere Spezifikationsgrenze in mm
+USG = 19.980           # untere Spezifikationsgrenze in mm
+
+df = pd.read_csv("wellen.csv")
+werte = df[df["maschine"] == "D2"]["durchmesser_mm"]
+mu = werte.mean()
+s = werte.std()
+cp = (OSG - USG) / (6 * s)
+cpk = min(OSG - mu, mu - USG) / (3 * s)
+print(f"D2: Cp = {cp:.2f}, Cpk = {cpk:.2f}")</code></pre>
+        <p>D2 kommt auf Cp ≈ 1,07 und <strong>Cpk ≈ 0,68</strong>: das ist nicht fähig. D1 hat Cp ≈ 1,59 und Cpk ≈ 1,58: fähig, und sogar deutlich über der Forderung von 1,33. Antwort auf die Frage vom Anfang: D1 darf liefern. Bei D2 fällt auf, wie weit Cp (1,07) und Cpk (0,68) auseinanderliegen: Die Streuung allein wäre gerade noch brauchbar, aber D2 läuft nicht mittig, sondern im Mittel 7 µm zu hoch.</p>
+        <div class="hinweis hinweis--achtung"><strong class="hinweis__title">Achtung</strong><p>Cpk ist nur belastbar, wenn der Prozess stabil läuft. D2 driftet, deshalb ist sein Cpk eine Momentaufnahme und kein Merkmal der Maschine: Mit anderen Stichproben käme eine andere Zahl heraus. Außerdem ist Cpk aus wenigen Teilen unsicher. Mit 20 oder 30 Teilen kann die tatsächliche Fähigkeit deutlich anders sein, deshalb fordern Kunden oft 50 bis 100 Messwerte oder mehr. Und die Rechnung setzt eine ungefähre Normalverteilung voraus.</p></div>
+
+        <h3>Fähig oder beherrscht? Zwei verschiedene Fragen</h3>
+        <p>Cp und Cpk beantworten: <em>Liegen die Teile in der Toleranz?</em> Eine zweite Frage ist unabhängig davon: <em>Ist der Prozess stabil?</em> Ein Prozess ist <abbr class="k-begriff" data-erklaerung="Ein Prozess ist beherrscht (statistisch stabil), wenn seine Lage und Streuung über die Zeit gleich bleiben und nur der normale Zufall wirkt. Er wird mit einer Regelkarte überwacht.">beherrscht</abbr>, wenn Mittelwert und Streuung über die Zeit gleich bleiben und nur der normale Zufall wirkt. Beide Eigenschaften gehören zusammen, und sie ergeben vier Fälle:</p>
+        <div class="k-tablewrap"><table class="k-plan v15-matrix">
+          <thead><tr><th scope="col"></th><th scope="col">fähig (Cpk hoch)</th><th scope="col">nicht fähig (Cpk niedrig)</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">beherrscht (stabil)</th><td><strong>Ziel.</strong> Liefern und mit der Regelkarte überwachen. So ist D1.</td><td>Stabil, aber zu breit oder nicht mittig. Prozess verbessern: Mitte nachstellen, Streuung senken.</td></tr>
+            <tr><th scope="row">nicht beherrscht (driftet, springt)</th><td>Heute noch gut, aber der Wert hält nicht. Ursache suchen, bevor es kippt.</td><td>Erst Ursache beheben (bei D2: Werkzeugverschleiß), dann neu messen. Der Cpk-Wert ist nicht aussagekräftig.</td></tr>
+          </tbody>
+        </table></div>
+
+        <h3>SPC und die Regelkarte</h3>
+        <p>Cpk schaut zurück auf eine Datenmenge. Die <abbr class="k-begriff" data-erklaerung="SPC (Statistical Process Control, statistische Prozessregelung) heißt: Man misst während der Fertigung laufend kleine Stichproben und wertet sie statistisch aus, um Veränderungen zu bemerken, bevor Ausschuss entsteht.">statistische Prozessregelung (SPC)</abbr> schaut nach vorn: Man entnimmt in regelmäßigen Abständen eine kleine Stichprobe (hier fünf Teile), bildet ihren Mittelwert und trägt ihn in eine <abbr class="k-begriff" data-erklaerung="Eine Regelkarte (nach Shewhart) ist ein Diagramm, in dem die Kennwerte aufeinanderfolgender Stichproben eingetragen werden, mit einer Mittellinie und zwei Eingriffsgrenzen. Ein Punkt außerhalb meldet: Der Prozess hat sich verändert.">Regelkarte</abbr> ein. Die Karte hat eine Mittellinie und zwei <abbr class="k-begriff" data-erklaerung="Eingriffsgrenzen (OEG und UEG) markieren den Bereich, in dem die Stichprobenmittel bei einem stabilen Prozess liegen sollten. Sie werden aus den Daten des Prozesses berechnet. Liegt ein Punkt außerhalb, greift man in den Prozess ein.">Eingriffsgrenzen</abbr>, die obere (OEG) und die untere (UEG). Liegt ein Punkt außerhalb, hat sich vermutlich etwas verändert, und man greift ein, <em>bevor</em> ein Teil die Toleranz verlässt.</p>
+        <p>Wie breit sind die Eingriffsgrenzen? Mittelwerte von <em>n</em> Teilen streuen weniger als Einzelwerte, nämlich um den Faktor √n: σ<sub>x̄</sub> = σ / √n. Bei fünf Teilen ist das σ / 2,24. Man legt die Grenzen auf ±3σ<sub>x̄</sub> um die Mittellinie, damit bei einem stabilen Prozess nur etwa 0,27 % der Punkte zufällig außerhalb landen.</p>
+        <div class="v15-formblock">
+          <p>Mittellinie = Mittelwert der Bezugsphase</p>
+          <p>σ<sub>x̄</sub> = σ / √n  (n = 5 Teile je Stichprobe)</p>
+          <p>OEG = Mittellinie + 3 · σ<sub>x̄</sub></p>
+          <p>UEG = Mittellinie − 3 · σ<sub>x̄</sub></p>
+        </div>
+        <p>Die Bezugsphase ist eine Anfangsphase, in der man den Prozess für ruhig hält, hier die Stichproben 1 bis 15. Wenn man die Karte aus den Daten <em>mit</em> der Drift berechnen würde, wären die Grenzen aufgebläht und die Drift fiele nicht auf. In der Praxis legt man die Grenzen in einer bestätigten, stabilen Phase fest und friert sie dann ein. Gestrichelt in der Karte stehen die Toleranzgrenzen zum Vergleich.</p>
+        <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke</strong><p><strong>Spezifikationsgrenzen</strong> (USG, OSG) kommen vom Kunden oder aus der Zeichnung und gelten für <em>Einzelteile</em>. <strong>Eingriffsgrenzen</strong> (UEG, OEG) werden aus dem Prozess berechnet und gelten für <em>Stichprobenmittel</em>. Sie liegen viel enger als die Toleranz, und das ist Absicht: Sie sollen warnen, bevor Ausschuss entsteht.</p></div>
+
+        <div class="k-explorable">
+          <h3>Regelkarte (x̄-Karte)</h3>
+          <p class="k-explorable__lead">Trage die Stichprobenmittel nacheinander ein („Nächste Stichprobe“) oder alle auf einmal. Schalte zwischen den Maschinen um und blende die Toleranzgrenzen ein und aus. Auffällige Punkte erscheinen als rote Raute mit ihrer Nummer, und darunter steht die Begründung.</p>
+          <div data-explorable="regelkarte"></div>
+          <noscript><p>Für das Explorable „Regelkarte“ wird JavaScript benötigt.</p></noscript>
+          <p class="k-small k-muted">Beobachtung: Bei D2 melden sich Stichprobe 20, 24 und 25, obwohl alle Mittelwerte noch weit innerhalb der Toleranz liegen. Bei D1 bleibt alles in den Grenzen. Mit den Warngrenzen ±2σ sieht man, dass auch ein ruhiger Prozess gelegentlich einen Punkt dort hat (D1, Stichprobe 21): ein Hinweis, kein Alarm.</p>
+        </div>
+
+        <p>Außer „ein Punkt außerhalb“ gibt es weitere Regeln für auffällige Muster. Die bekannteste ist die <strong>Run-Regel</strong>: Sieben Punkte in Folge auf derselben Seite der Mittellinie sind bei einem stabilen Prozess sehr unwahrscheinlich (bei fairem Zufall 2 · ½⁷ ≈ 1,6 %) und deuten auf eine Verschiebung hin. Ähnlich: sieben Punkte in Folge steigend oder fallend (Trend). Bei D2 liegen die Stichproben 20 bis 25 alle über der Mittellinie, das sind sechs in Folge, einer fehlt noch bis zur Meldung. Welche Regeln gelten, legen die Qualitätsabteilung oder die Norm fest, es gibt Varianten mit 8 oder 9 Punkten. Das Prüfen auf „außerhalb“ ist eine Schleife mit einer Verzweigung:</p>
+        <div class="v15-zwei">
+          <div data-explorable="pap-v15" data-pap="regelkarte"></div>
+          <pre><code>mittel = [20.00540, 20.00594, 20.00188, 20.00992, 20.00464,
+          20.00626, 20.00368, 20.00576, 20.00344, 20.00324,
+          20.00574, 20.00470, 20.00608, 20.00772, 20.00584,
+          20.00630, 20.01028, 20.00384, 20.00520, 20.01184,
+          20.01004, 20.00980, 20.00872, 20.01538, 20.01830]
+mitte = 20.00535
+oeg = 20.01176
+ueg = 19.99894
+
+auffaellig = []
+for nr in range(len(mittel)):
+    m = mittel[nr]
+    if m &gt; oeg or m &lt; ueg:
+        auffaellig.append(nr + 1)
+print("Außerhalb der Eingriffsgrenzen: Stichprobe", auffaellig)</code></pre>
+        </div>
+        <p>Mit pandas besteht die ganze Auswertung aus Bausteinen, die du schon kennst: filtern (nur D2), gruppieren (je Stichprobe den Mittelwert), eine Bezugsphase auswählen (Stichproben bis 15) und mit einer Maske die auffälligen Punkte finden. Das ganze Beispiel mit beiden Maschinen, Cp, Cpk und Regelkarte steht im Labor. Hier der Kern für D2:</p>
+        <pre data-files="../assets/data/v15/wellen.csv" data-timeout="20000"><code>import pandas as pd
+
+df = pd.read_csv("wellen.csv")
+d2 = df[df["maschine"] == "D2"]
+mittel = d2.groupby("stichprobe")["durchmesser_mm"].mean()   # 25 Stichprobenmittel
+
+anfang = d2[d2["stichprobe"] &lt;= 15]                          # ruhige Anfangsphase
+mitte = anfang["durchmesser_mm"].mean()
+sigma_x = anfang["durchmesser_mm"].std() / 5 ** 0.5          # Streuung von 5er-Mittelwerten
+oeg = mitte + 3 * sigma_x
+ueg = mitte - 3 * sigma_x
+auffaellig = mittel[(mittel &gt; oeg) | (mittel &lt; ueg)]
+print(f"Mittellinie {mitte:.4f} mm, OEG {oeg:.4f} mm, UEG {ueg:.4f} mm")
+print("Außerhalb:", list(auffaellig.index))</code></pre>
+        <p>Das Beispiel rechnet „Cp“ und „Cpk“ aus der Gesamtstreuung aller Werte. Streng genommen heißen diese Kennzahlen dann Pp und Ppk; den Unterschied erklärt der Deep Dive. Mehr Befehle, zum Beispiel zum Sortieren, zu mehreren Gruppierungen und zu typischen Fehlern, gibt es im <a href="v15-labor.html#a-werkzeugkasten">Werkzeugkasten im Labor</a>. Das schauen wir uns dort genauer an →</p>
+      </section>
+
+      <!-- 3 ───────────── AUSPROBIEREN ───────────── -->
+      <section class="k-section" id="ausprobieren" data-section="ausprobieren" aria-labelledby="h-aus">
+        <h2 class="k-section__title" id="h-aus"><span class="k-section__num" aria-hidden="true">3</span> Ausprobieren</h2>
+
+        <p>Python läuft direkt hier im Browser, auch pandas. Beim ersten Lauf lädt der Browser die Bibliothek nach (ca. 24 MB), danach geht es schnell. In jedem Block liegt <code class="k-i">wellen.csv</code> schon bereit. Erst tippen, was herauskommt, dann ausführen und die Zeilen verändern.</p>
+
+      <div class="k-try">
+        <h3>Wie groß ist die Tabelle?</h3>
+        <div class="k-predict">
+          <p class="k-predict__q">Die Datei hat 250 Messzeilen und 5 Spalten. Was gibt <code>print(df.shape)</code> aus?</p>
+          <div class="k-predict__opts"><button type="button" data-correct>(250, 5)</button><button type="button">(5, 250)</button><button type="button">250</button></div>
+          <div class="k-predict__result"></div>
+          <div class="k-predict__expl" hidden><code>shape</code> ist ein Tupel aus (Zeilen, Spalten), die Zeilen zuerst. Die Kopfzeile zählt nicht als Zeile: pandas macht sie zu Spaltennamen. <code>len(df)</code> gibt nur die Zeilenzahl, also 250.</div>
+        </div>
+        <pre data-files="../assets/data/v15/wellen.csv" data-timeout="20000"><code>import pandas as pd
+
+df = pd.read_csv("wellen.csv")
+print(df.shape)
+print(len(df))
+print(list(df.columns))</code></pre>
+      </div>
+
+      <div class="k-try">
+        <h3>Wie viele Zeilen gehören zu welcher Maschine?</h3>
+        <div class="k-predict">
+          <p class="k-predict__q">Was liefert <code>df["maschine"].value_counts()</code> für D2?</p>
+          <div class="k-predict__opts"><button type="button">25</button><button type="button" data-correct>125</button><button type="button">250</button></div>
+          <div class="k-predict__result"></div>
+          <div class="k-predict__expl" hidden>125: 25 Stichproben mit je 5 Teilen je Maschine. <code>value_counts()</code> zählt, wie oft jeder Wert in der Spalte vorkommt, und sortiert die häufigsten nach oben.</div>
+        </div>
+        <pre data-files="../assets/data/v15/wellen.csv" data-timeout="20000"><code>import pandas as pd
+
+df = pd.read_csv("wellen.csv")
+print(df["maschine"].value_counts())
+print(df["schicht"].value_counts())</code></pre>
+      </div>
+
+      <div class="k-try">
+        <h3>Filter: die Spätschicht</h3>
+        <div class="k-predict">
+          <p class="k-predict__q">Früh sind die Stichproben 1 bis 13, Spät sind 14 bis 25. Wie viele Zeilen hat <code>df[df["schicht"] == "Spät"]</code>?</p>
+          <div class="k-predict__opts"><button type="button">125</button><button type="button" data-correct>120</button><button type="button">130</button></div>
+          <div class="k-predict__result"></div>
+          <div class="k-predict__expl" hidden>120: Die Spätschicht hat 12 Stichproben (14 bis 25), jede mit 5 Teilen je Maschine, also 12 · 10 = 120. Die Frühschicht hat 13 · 10 = 130 Zeilen.</div>
+        </div>
+        <pre data-files="../assets/data/v15/wellen.csv" data-timeout="20000"><code>import pandas as pd
+
+df = pd.read_csv("wellen.csv")
+spaet = df[df["schicht"] == "Spät"]
+print(len(spaet))
+print(round(spaet["durchmesser_mm"].mean(), 4), "mm")
+print(spaet["durchmesser_mm"].describe().round(4))</code></pre>
+      </div>
+
+      <div class="k-try">
+        <h3>Mehrere Bedingungen: Ausschuss finden</h3>
+        <div class="k-predict">
+          <p class="k-predict__q">Der Filter nimmt jedes Teil, das über der OSG <em>oder</em> unter der USG liegt. Aus welchen Stichproben stammen die Teile?</p>
+          <div class="k-predict__opts"><button type="button">aus allen 25, ungefähr gleich verteilt</button><button type="button" data-correct>nur aus den Stichproben 17, 20, 24 und 25</button><button type="button">nur aus Stichprobe 1</button></div>
+          <div class="k-predict__result"></div>
+          <div class="k-predict__expl" hidden>Die sechs Ausschussteile liegen in Stichprobe 17, 20, 24 (zwei Teile) und 25 (zwei Teile). Das ist die Drift von D2: Ab Stichprobe 17 häufen sich die Teile am oberen Rand. Ändere <code>|</code> in <code>&amp;</code>: Kein Teil kann gleichzeitig über 20,020 und unter 19,980 sein, die Auswahl ist leer.</div>
+        </div>
+        <pre data-files="../assets/data/v15/wellen.csv" data-timeout="20000"><code>import pandas as pd
+
+df = pd.read_csv("wellen.csv")
+d = df["durchmesser_mm"]
+ausschuss = df[(d &gt; 20.020) | (d &lt; 19.980)]
+print(ausschuss["stichprobe"].tolist())
+print(ausschuss["maschine"].tolist())</code></pre>
+      </div>
+
+      <div class="k-try">
+        <h3>Der klassische Fehler: and statt &amp;</h3>
+        <div class="k-predict">
+          <p class="k-predict__q">Was passiert bei <code>df[(df["durchmesser_mm"] &gt; 20.01) and (df["maschine"] == "D2")]</code>?</p>
+          <div class="k-predict__opts"><button type="button">Es werden die D2-Teile über 20,01 mm ausgewählt, wie gewünscht.</button><button type="button" data-correct>ValueError: The truth value of a Series is ambiguous.</button><button type="button">Es wird eine leere Tabelle ausgegeben.</button></div>
+          <div class="k-predict__result"></div>
+          <div class="k-predict__expl" hidden><code>and</code> will genau <em>einen</em> Wahrheitswert pro Seite, die Maske hat aber 250. pandas weiß nicht, ob „die Maske ist wahr“ heißt: alle True, mindestens ein True oder die Länge &gt; 0, und meldet deshalb „mehrdeutig“. Richtig ist <code>&amp;</code> zwischen zwei Masken. Kommen die Klammern weg (<code>a &gt; 20.01 &amp; b == "D2"</code>), gibt es einen anderen Fehler (<code>TypeError: Cannot perform 'rand_' with a dtyped [object] array and scalar of type [bool]</code>), weil <code>&amp;</code> stärker bindet als der Vergleich. Probiere es aus.</div>
+        </div>
+        <pre data-run="no" class="k-code"><code>ValueError: The truth value of a Series is ambiguous. Use a.empty, a.bool(), a.item(), a.any() or a.all().</code></pre>
+        <pre data-files="../assets/data/v15/wellen.csv" data-timeout="20000"><code>import pandas as pd
+
+df = pd.read_csv("wellen.csv")
+# So klappt es nicht (Raute entfernen und ausführen):
+# falsch = df[(df["durchmesser_mm"] &gt; 20.01) and (df["maschine"] == "D2")]
+
+richtig = df[(df["durchmesser_mm"] &gt; 20.01) &amp; (df["maschine"] == "D2")]
+print(len(richtig), "D2-Teile über 20,01 mm")</code></pre>
+      </div>
+
+      <div class="k-try">
+        <h3>groupby mit zwei Spalten</h3>
+        <div class="k-predict">
+          <p class="k-predict__q">Der Mittelwert je Maschine <em>und</em> Schicht: Welche Gruppe hat den größten Mittelwert?</p>
+          <div class="k-predict__opts"><button type="button">D1, Früh</button><button type="button">D1, Spät</button><button type="button">D2, Früh</button><button type="button" data-correct>D2, Spät</button></div>
+          <div class="k-predict__result"></div>
+          <div class="k-predict__expl" hidden>D2 in der Spätschicht, mit etwa 20,0094 mm. D2 liegt schon in der Frühschicht höher (ca. 20,0051 mm), und in der Spätschicht kommt die Drift dazu. D1 bleibt in beiden Schichten bei 20,000 mm. Mit zwei Spaltennamen in einer Liste bildet <code>groupby</code> jede Kombination als eigene Gruppe.</div>
+        </div>
+        <pre data-files="../assets/data/v15/wellen.csv" data-timeout="20000"><code>import pandas as pd
+
+df = pd.read_csv("wellen.csv")
+je_gruppe = df.groupby(["maschine", "schicht"])["durchmesser_mm"].agg(["mean", "std", "count"])
+print(je_gruppe.round(4))</code></pre>
+      </div>
+      </section>
+
+      <!-- 4 ───────────── SELBSTCHECK ───────────── -->
+      <section class="k-section" id="selbstcheck" data-section="selbstcheck" aria-labelledby="h-sc">
+        <h2 class="k-section__title" id="h-sc"><span class="k-section__num" aria-hidden="true">4</span> Selbstcheck</h2>
+
+        <p>Acht Quizaufgaben im Stil der Probeklausur (24 Punkte) und eine Code-Schreib-Aufgabe (6 Punkte, T9). Plane etwa 15 Minuten für das Quiz und 10 Minuten für T9 ein, ohne Hilfsmittel. Quiz-Punkte gibt es für den ersten Versuch; danach darfst du es nochmal probieren.</p>
+
+      <div class="k-quiz" data-quiz="v15">
+
+        <div class="k-q" data-type="num" data-points="2" data-id="t1" data-answer="1.33" data-tol="0.01">
+          <div class="k-q__head"><span class="k-q__title">T1 · Cp berechnen</span><span class="k-q__pts">2 Punkte</span></div>
+          <div class="k-q__text">Eine Welle Ø 10 ±0,05 mm hat die Spezifikationsgrenzen USG = 9,95 mm und OSG = 10,05 mm. Die Standardabweichung der Messwerte beträgt σ = 0,0125 mm. Wie groß ist Cp? (auf zwei Stellen gerundet)</div>
+          <div class="k-q__expl">Cp = (OSG − USG) / (6σ) = 0,10 / (6 · 0,0125) = 0,10 / 0,075 = 1,33. Die Toleranzbreite ist 1,33-mal so breit wie die Prozessbreite 6σ.</div>
+        </div>
+
+        <div class="k-q" data-type="num" data-points="3" data-id="t2" data-answer="0.8" data-tol="0.01">
+          <div class="k-q__head"><span class="k-q__title">T2 · Cpk berechnen</span><span class="k-q__pts">3 Punkte</span></div>
+          <div class="k-q__text">Derselbe Prozess (USG = 9,95 mm, OSG = 10,05 mm, σ = 0,0125 mm) läuft mit dem Mittelwert μ = 10,02 mm. Wie groß ist Cpk? (auf zwei Stellen gerundet)</div>
+          <div class="k-q__expl">Abstand zur oberen Grenze: 10,05 − 10,02 = 0,03 mm, zur unteren: 10,02 − 9,95 = 0,07 mm. Der kleinere zählt: Cpk = 0,03 / (3 · 0,0125) = 0,03 / 0,0375 = 0,80. Cp war 1,33, aber weil der Prozess nicht mittig läuft, ist er mit Cpk = 0,80 nicht fähig.</div>
+        </div>
+
+        <div class="k-q" data-type="mc" data-points="3" data-id="t3">
+          <div class="k-q__head"><span class="k-q__title">T3 · describe() lesen</span><span class="k-q__pts">3 Punkte</span></div>
+          <div class="k-q__text">Ein Kollege zeigt dir die Ausgabe von <code>werte.describe()</code> für Wellendurchmesser in mm (Soll 20,000 ±0,020). Welche Aussage stimmt?<pre class="k-code" data-run="no"><code>count    50.0000
+mean     20.0031
+std       0.0040
+min      19.9942
+25%      20.0003
+50%      20.0030
+75%      20.0058
+max      20.0120</code></pre></div>
+          <ul class="k-q__options">
+            <li data-correct>Es sind 50 Messwerte, und Mittelwert (20,0031) und Median (20,0030) liegen dicht beieinander, die Verteilung ist etwa symmetrisch.</li>
+            <li>Die Standardabweichung 0,0040 mm ist die größte vorgekommene Abweichung vom Sollmaß.</li>
+            <li>Der Wert „25%“ bedeutet, dass 25 % der Teile Ausschuss sind.</li>
+            <li>Der Mittelwert liegt bei 20,0031 mm, also ist der Prozess auf jeden Fall nicht fähig.</li>
+          </ul>
+          <div class="k-q__expl"><code>count</code> ist die Anzahl, <code>50%</code> der Median. Die Standardabweichung ist ein typisches Maß für die Streuung, nicht die größte Abweichung (die größte ist <code>max</code> minus Sollmaß). <code>25%</code> und <code>75%</code> sind Quartile: 25 % der Werte liegen darunter bzw. 75 % darunter. Ob der Prozess fähig ist, hängt von s und der Lage zu den Grenzen ab: Hier ist Cpk = min(0,0169; 0,0231) / 0,012 ≈ 1,41, also fähig.</div>
+        </div>
+
+        <div class="k-q" data-type="num" data-points="3" data-id="t4" data-answer="1" data-tol="0">
+          <div class="k-q__head"><span class="k-q__title">T4 · Maske vorhersagen</span><span class="k-q__pts">3 Punkte</span></div>
+          <div class="k-q__text">Welche Zahl gibt das Programm aus?<pre class="k-code" data-run="nach-antwort"><code>import pandas as pd
+
+df = pd.DataFrame({
+    "maschine": ["D1", "D2", "D2", "D1"],
+    "d": [20.01, 20.03, 19.99, 20.04],
+})
+print(len(df[(df["d"] &gt; 20.00) &amp; (df["maschine"] == "D2")]))</code></pre></div>
+          <div class="k-q__expl">Die erste Maske (<code>d &gt; 20.00</code>) ist wahr für die Zeilen 0, 1 und 3, die zweite (<code>maschine == "D2"</code>) für die Zeilen 1 und 2. Nur Zeile 1 erfüllt <em>beides</em> (<code>&amp;</code>): 20,03 mm von D2. Zeile 2 ist D2, aber 19,99 mm ist nicht größer als 20,00. Ergebnis: <code>1</code>.</div>
+        </div>
+
+        <div class="k-q" data-type="output" data-points="3" data-id="t5" data-answer="4.0">
+          <div class="k-q__head"><span class="k-q__title">T5 · groupby vorhersagen</span><span class="k-q__pts">3 Punkte</span></div>
+          <div class="k-q__text">Was gibt das Programm aus?<pre class="k-code" data-run="nach-antwort"><code>import pandas as pd
+
+df = pd.DataFrame({"m": ["A", "B", "A", "B"], "x": [1, 2, 3, 6]})
+print(df.groupby("m")["x"].mean()["B"])</code></pre></div>
+          <div class="k-q__expl">Aufteilen: Gruppe A hat <code>x</code> = 1 und 3, Gruppe B hat 2 und 6. Anwenden: Der Mittelwert von B ist (2 + 6) / 2 = 4. Zusammenführen: Die Series hat den Index A und B, und <code>["B"]</code> holt den Wert für B. Der Mittelwert ist eine Kommazahl, also wird <code>4.0</code> ausgegeben.</div>
+        </div>
+
+        <div class="k-q" data-type="mc" data-points="4" data-id="t6">
+          <div class="k-q__head"><span class="k-q__title">T6 · Toleranz- und Eingriffsgrenzen (mehrere richtig)</span><span class="k-q__pts">4 Punkte</span></div>
+          <div class="k-q__text">Welche Aussagen sind richtig? Alle richtigen ankreuzen.</div>
+          <ul class="k-q__options">
+            <li data-correct>Die Toleranzgrenzen (USG, OSG) kommen von der Zeichnung oder vom Kunden und gelten für Einzelteile.</li>
+            <li data-correct>Die Eingriffsgrenzen der Regelkarte werden aus den Messdaten des Prozesses berechnet.</li>
+            <li>Liegen alle Stichprobenmittel innerhalb der Toleranz, ist der Prozess auf jeden Fall beherrscht.</li>
+            <li>Die Eingriffsgrenzen sind immer gleich den Toleranzgrenzen.</li>
+          </ul>
+          <div class="k-q__expl">Spezifikationsgrenzen sind eine Vorgabe von außen, Eingriffsgrenzen eine Eigenschaft des Prozesses. D2 zeigt, dass ein Prozess „außer Kontrolle“ sein kann, während die Mittelwerte noch in der Toleranz liegen (Stichprobe 20: 20,012 mm bei OSG 20,020 mm). Die Eingriffsgrenzen sind enger, weil Mittelwerte weniger streuen als Einzelwerte (σ/√n).</div>
+        </div>
+
+        <div class="k-q" data-type="mc" data-points="3" data-id="t7">
+          <div class="k-q__head"><span class="k-q__title">T7 · Cp und Cpk deuten</span><span class="k-q__pts">3 Punkte</span></div>
+          <div class="k-q__text">Für einen Prozess ergibt sich Cp = 1,80 und Cpk = 0,70. Was schließt du daraus?</div>
+          <ul class="k-q__options">
+            <li>Der Prozess ist hervorragend, denn Cp liegt über 1,67.</li>
+            <li data-correct>Die Streuung passt gut in die Toleranz, aber der Mittelwert liegt weit von der Mitte entfernt. Nachstellen (zentrieren) würde Cpk stark verbessern.</li>
+            <li>Die Streuung ist viel zu groß, die Maschine muss ersetzt werden.</li>
+            <li>Die Rechnung ist falsch, denn Cpk darf nicht kleiner als Cp sein.</li>
+          </ul>
+          <div class="k-q__expl">Cpk ≤ Cp gilt immer; der große Abstand zeigt die verschobene Lage. Cp = 1,80 sagt, dass die Prozessbreite 6σ nur etwa die Hälfte der Toleranz braucht. Zentriert hätte der Prozess Cpk = 1,80. Das ist die gute Nachricht: Ein Nachstellen ist meist billiger als eine neue Maschine.</div>
+        </div>
+
+        <div class="k-q" data-type="mc" data-points="3" data-id="t8">
+          <div class="k-q__head"><span class="k-q__title">T8 · Fehlerursache</span><span class="k-q__pts">3 Punkte</span></div>
+          <div class="k-q__text">Die KI liefert diesen Filter für „Teile von D2 über 20,01 mm“. Das Programm bricht mit <code>ValueError: The truth value of a Series is ambiguous</code> ab. Was ist die Ursache?<pre class="k-code" data-run="no"><code>auswahl = df[(df["durchmesser_mm"] &gt; 20.01) and (df["maschine"] == "D2")]</code></pre></div>
+          <ul class="k-q__options">
+            <li>Die Spalte <code>durchmesser_mm</code> gibt es nicht.</li>
+            <li data-correct>Für zwei Masken (Spalten aus True und False) braucht man <code>&amp;</code>, nicht <code>and</code>. <code>and</code> kann nur einzelne Wahrheitswerte verknüpfen.</li>
+            <li>Die Klammern sind falsch gesetzt, sie müssen weg.</li>
+            <li>Die Datei wurde nicht mit <code>read_csv</code> eingelesen.</li>
+          </ul>
+          <div class="k-q__expl"><code>and</code> fragt für jede Maske „ist sie wahr?“ und kann das für 250 Werte nicht beantworten. Die Klammern sind richtig und notwendig (ohne sie bindet <code>&amp;</code> stärker als <code>&gt;</code>). Die Spalte und das Einlesen sind in Ordnung, sonst gäbe es einen <code>KeyError</code> bzw. <code>NameError</code>.</div>
+        </div>
+
+        <div class="k-score" data-score aria-live="polite"></div>
+      </div>
+
+        <h3>Code schreiben im Klausurstil</h3>
+        <p class="k-small k-muted">Wie in der Klausur: erst von Hand schreiben, ohne Ausführen und ohne Auto-Vervollständigung. Dann abgeben, die Tests laufen lassen und dich selbst nach dem Punkteschema bewerten. Richtzeit 10 Minuten.</p>
+      <div class="a-task" data-a="klausur" data-id="sc-klausur" data-mode="code" data-minutes="10" data-timeout="8000">
+        <div class="a-task__head"><span class="a-task__title">T9 · Cpk von Hand berechnen</span><span class="a-pts">6 Punkte</span></div>
+        <div class="a-task__text">
+          <p>Schreibe eine Funktion <code>cpk(werte, usg, osg)</code>. Sie bekommt eine Liste von Messwerten und die Spezifikationsgrenzen und gibt Cpk zurück. Berechne den Mittelwert und die Stichproben-Standardabweichung (durch n − 1 teilen) selbst, mit <code>sum</code> bzw. einer Schleife, ohne pandas oder NumPy. Die Formel: Cpk = min(OSG − Mittelwert; Mittelwert − USG) / (3 · s). Die Funktion gibt den Wert mit <code>return</code> zurück (kein <code>print</code>). Beispiel: <code>cpk([10.0, 10.1, 9.9, 10.0, 10.0], 9.7, 10.3)</code> ist etwa 1,41.</p>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V15" data-assist="off" aria-label="Python-Code von Hand schreiben, ohne Ausführen"></textarea></div>
+        <script type="text/x-python" data-role="tests">
+def nah(a, b, tol=0.001):
+    return abs(a - b) < tol
+
+def test_funktion():
+    """cpk ist als Funktion mit drei Parametern definiert"""
+    assert "cpk" in globals() and callable(cpk), "Es fehlt die Funktion cpk(werte, usg, osg)."
+
+def test_mittig():
+    """Mittig laufender Prozess"""
+    r = cpk([10.0, 10.1, 9.9, 10.0, 10.0], 9.7, 10.3)
+    assert r is not None, "cpk gibt None zurück: return vergessen?"
+    assert nah(r, 1.4142), "cpk([10.0, 10.1, 9.9, 10.0, 10.0], 9.7, 10.3) ist %r, erwartet etwa 1.4142" % (r,)
+
+def test_verschoben():
+    """Prozess nicht mittig: die nähere Grenze zählt"""
+    r = cpk([10.1, 10.2, 10.3, 10.2, 10.2], 9.8, 10.4)
+    assert nah(r, 0.9428), "ist %r, erwartet etwa 0.9428 (nähere Grenze: OSG, Abstand 0.2)" % (r,)
+
+def test_ausserhalb():
+    """Mittelwert außerhalb der Toleranz gibt negativen Cpk"""
+    r = cpk([10.4, 10.5, 10.6], 9.8, 10.4)
+    assert nah(r, -0.3333), "ist %r, erwartet etwa -0.3333" % (r,)
+
+def test_untere_grenze():
+    """Nähere Grenze ist die untere"""
+    r = cpk([9.9, 10.0, 10.1, 10.0, 10.0], 9.8, 10.6)
+    assert nah(r, 0.2 / (3 * (0.02 / 4) ** 0.5)), "ist %r, erwartet etwa 0.9428" % (r,)
+
+def test_n_minus_1():
+    """Stichproben-Standardabweichung: durch n - 1 teilen, nicht durch n"""
+    r = cpk([1.0, 2.0, 3.0], 0.0, 4.0)
+    assert nah(r, 2.0 / 3.0, 0.001), "ist %r, erwartet 0.6667 (s = 1.0 mit n - 1; mit n wäre s = 0.8165)" % (r,)
+
+def test_rueckgabe():
+    """Rückgabe ist eine Zahl (return, nicht print)"""
+    assert isinstance(cpk([1.0, 2.0, 3.0], 0.0, 4.0), float), "Der Rückgabewert soll eine Kommazahl sein."
+        </script>
+        <script type="text/x-python" data-role="solution">
+def cpk(werte, usg, osg):
+    n = len(werte)
+    mittel = sum(werte) / n
+    summe = 0.0
+    for w in werte:
+        summe += (w - mittel) ** 2
+    s = (summe / (n - 1)) ** 0.5
+    return min(osg - mittel, mittel - usg) / (3 * s)
+        </script>
+        <script type="application/json" data-role="scheme">[
+{"p":1,"t":"def cpk(werte, usg, osg): mit drei Parametern, das Ergebnis wird mit return zurückgegeben (kein print)"},
+{"p":1,"t":"Mittelwert korrekt: sum(werte) / len(werte)"},
+{"p":1,"t":"Quadrate der Abweichungen vom Mittelwert in einer Schleife (oder sum mit Comprehension) aufsummiert"},
+{"p":1,"t":"Stichproben-Standardabweichung: durch n - 1 geteilt, dann die Wurzel (** 0.5 oder math.sqrt)"},
+{"p":1,"t":"Zähler: min(osg - mittel, mittel - usg), also die nähere Grenze"},
+{"p":1,"t":"Geteilt durch 3 * s (Klammern richtig gesetzt); alle Tests bestehen"}
+]</script>
+      </div>
+      </section>
+
+      <!-- 5 ───────────── DEEP DIVE ───────────── -->
+      <section class="k-section" id="deepdive" data-section="deepdive" aria-labelledby="h-dd">
+        <h2 class="k-section__title" id="h-dd"><span class="k-section__num" aria-hidden="true">5</span> Deep Dive <span class="k-muted">(freiwillig)</span></h2>
+
+        <p>Für Neugierige. Nichts davon kommt in der Klausur dran.</p>
+
+      <details class="k-deep">
+        <summary>Cp/Cpk gegen Pp/Ppk: welche Streuung?</summary>
+        <div class="k-deep__body">
+          <p>Es gibt zwei Familien von Kennzahlen mit derselben Formel, aber verschiedenem σ. <strong>Cp und Cpk</strong> benutzen die Streuung <em>innerhalb</em> der Stichproben, also die kurzfristige, „eigentliche“ Streuung des Prozesses ohne Drift. Man schätzt sie aus den Stichproben, zum Beispiel als mittlere Standardabweichung geteilt durch einen Faktor (s̄ / c₄, bei n = 5 ist c₄ ≈ 0,940) oder aus der mittleren Spannweite R̄ / d₂ (d₂ = 2,326 bei n = 5). <strong>Pp und Ppk</strong> benutzen die <em>Gesamtstreuung</em> aller Werte, einschließlich Drift und Sprüngen: genau das, was <code class="k-i">.std()</code> über die ganze Spalte liefert.</p>
+          <p>Das Beispiel in der Lerneinheit und im Labor rechnet mit der Gesamtstreuung und ist deshalb streng genommen Pp/Ppk. Bei einem stabilen Prozess (D1) sind beide fast gleich. Bei einem driftenden Prozess (D2) ist Ppk kleiner als Cpk, und der Abstand zeigt, wie viel Fähigkeit die Drift kostet. Kunden fordern oft beides: Cpk für das Potenzial und Ppk für die Wirklichkeit.</p>
+        </div>
+      </details>
+
+      <details class="k-deep">
+        <summary>Ist die Verteilung wirklich normal? Das Histogramm</summary>
+        <div class="k-deep__body">
+          <p>Die ±3σ-Regel und die ppm-Werte im Rechner gelten für eine Normalverteilung. Ob die Daten so aussehen, prüfst du zuerst mit einem Histogramm (V14). Zwei Spitzen deuten auf zwei gemischte Prozesse hin, eine schiefe Form auf eine natürliche Grenze (zum Beispiel Rundheit, die nie negativ wird). Zusätzlich gibt es Tests und das Wahrscheinlichkeitsnetz. Statistikprogramme machen das auf Knopfdruck; entscheidend ist, dass du die Annahme kennst. Das folgende Diagramm zeigt D1 und D2 mit den Toleranzgrenzen:</p>
+          <pre data-files="../assets/data/v15/wellen.csv" data-timeout="40000"><code>import pandas as pd
+import matplotlib.pyplot as plt
+
+df = pd.read_csv("wellen.csv")
+d1 = df[df["maschine"] == "D1"]["durchmesser_mm"]
+d2 = df[df["maschine"] == "D2"]["durchmesser_mm"]
+
+plt.hist(d1, bins=15, alpha=0.6, label="D1")
+plt.hist(d2, bins=15, alpha=0.6, label="D2")
+plt.axvline(19.980, color="black", linestyle="--")
+plt.axvline(20.020, color="black", linestyle="--")
+plt.xlabel("Durchmesser d in mm")
+plt.ylabel("Anzahl Wellen")
+plt.title("Verteilung der Durchmesser (gestrichelt: Toleranzgrenzen)")
+plt.legend()
+plt.show()</code></pre>
+        </div>
+      </details>
+
+      <details class="k-deep">
+        <summary>Messsystemanalyse: kann man überhaupt so genau messen?</summary>
+        <div class="k-deep__body">
+          <p>Alle Zahlen oben setzen voraus, dass das Messen selbst zuverlässig ist. Bei ±0,02 mm Toleranz sind Messschieber (Auflösung 0,01 mm) ungeeignet, gebraucht werden Messschrauben oder Messuhren. Die <strong>Messsystemanalyse</strong> (MSA, oft „Gage R&amp;R“) untersucht, wie viel der beobachteten Streuung vom Messsystem selbst stammt (Wiederholbarkeit am selben Gerät, Vergleichbarkeit zwischen Prüfern). Als übliche Richtwerte gelten: Das Messsystem darf höchstens etwa 10 % der Toleranz „verbrauchen“ (gut), bis 30 % ist es bedingt brauchbar, darüber ungeeignet. Ein Cpk, der mit einem schlechten Messsystem ermittelt wurde, sagt mehr über die Messung als über den Prozess.</p>
+        </div>
+      </details>
+
+      <details class="k-deep">
+        <summary>Ausblick: Minitab, qs-STAT und die Praxis</summary>
+        <div class="k-deep__body">
+          <p>In der Industrie läuft SPC meist in Spezialsoftware wie Minitab oder qs-STAT, oft direkt an die Messmittel angebunden: Die Werte kommen per Schnittstelle in die Karte, und bei einer Regelverletzung gibt es einen Alarm. Auch dort steckt dasselbe: Mittelwert, Standardabweichung, Grenzen und Regeln. Wer die Rechnung einmal selbst gebaut hat, versteht, was die Software tut, erkennt ihre Annahmen (Normalverteilung, Bezugsphase) und kann ihre Ausgabe prüfen. Für eigene Auswertungen, Sonderfälle und Automatisierung ist pandas ein gutes Werkzeug. Weitere Funktionen wie <code class="k-i">pivot_table</code> (Kreuztabellen) oder <code class="k-i">rolling</code> (gleitende Mittelwerte) lässt du dir bei Bedarf von Copilot vorschlagen und prüfst sie an einem kleinen Beispiel, das du von Hand nachrechnen kannst.</p>
+        </div>
+      </details>
+      </section>
+
+      <!-- Projektzeit -->
+      <section class="k-section" id="projektzeit" aria-labelledby="h-projektzeit">
+        <h2 class="k-section__title" id="h-projektzeit">Projektzeit: Meilenstein V15</h2>
+        <p>Die <strong>letzten 30 Minuten</strong> gehören wieder deinem Projekt. Der Meilenstein heute heißt <strong>Daten, Eingaben und Testfälle von Hand</strong>: Woher kommen die Zahlen, und was soll herauskommen? Ihr schreibt noch keinen Code für den Rechenkern. Ihr legt fest, womit er später gefüttert wird und woran ihr erkennt, dass er richtig rechnet.</p>
+        <ol class="k-steps">
+          <li><strong>Datenquelle beschaffen und notieren.</strong> Datei, Tabellenbuch oder eigene Messung. Die Quelle steht im Protokoll.</li>
+          <li><strong>Eingaben auflisten.</strong> Jede Eingabe mit Einheit und sinnvollem Wertebereich.</li>
+          <li><strong>Mindestens fünf Testfälle von Hand rechnen,</strong> darunter zwei Grenzfälle. Klein halten: wenige Werte, deren Ergebnis ihr im Kopf oder mit dem Taschenrechner nachrechnen könnt.</li>
+          <li><strong>Testfälle festhalten</strong> als Python-Liste oder in der Datei <code class="k-i">test_projekt.py</code>, noch ohne Code dahinter.</li>
+          <li><strong>Copilot fragen, die Daten einzulesen,</strong> und das Ergebnis mit eurer Handrechnung vergleichen.</li>
+        </ol>
+        <p>Der Haken zum Abhaken steht auf der Projektseite unter <a href="../projekt.html#meilensteine">Meilensteine</a>. Die Gruppen mit dem Thema <strong>SPC-Auswertung</strong> haben es heute leicht: Die Daten liegen mit <code class="k-i">wellen.csv</code> vor, und die Handrechnung besteht aus Cp, Cpk und Regelkarte für drei bis fünf Werte (zum Beispiel die Aufgabe T1 und T2 aus dem Selbstcheck). Die Beschreibung steht unter <a href="../projekt.html#thema-5">Thema 5: SPC-Auswertung</a>.</p>
+        <p><a class="k-btn k-btn--ghost" href="../projekt.html#meilensteine">Zu den Meilensteinen</a></p>
+      </section>
+
+      <!-- Videos zur Nachbereitung -->
+      <section class="k-section" id="videos" aria-labelledby="h-videos">
+        <h2 class="k-section__title" id="h-videos">Videos zur Nachbereitung</h2>
+        <p>Alle drei Erklärvideos zu V15 zum Wiederholen, jeweils mit deutschen Untertiteln.</p>
+        <ul class="k-video-list">
+          <li><a href="#video-theorie">Datenanalyse: DataFrame, Cp und Cpk, Regelkarte erklärt</a> <span class="k-muted">(ca. 3 Min, Theorie, Abschnitt 2 dieser Lerneinheit)</span></li>
+          <li><a href="v15-labor.html#a-werkzeugkasten">Python-Werkstatt: pandas, Filtern, groupby und describe</a> <span class="k-muted">(ca. 3 Min, im Labor bei „Werkzeugkasten“)</span></li>
+          <li><a href="v15-labor.html#a-vorgemacht">Vorgerechnet: Prozessfähigkeit zweier Drehmaschinen</a> <span class="k-muted">(ca. 3 Min, im Labor bei „Vorgerechnetes Beispiel“)</span></li>
+        </ul>
+      </section>
+
+      <!-- Übergang -->
+      <section class="k-next" aria-labelledby="h-next">
+        <h2 id="h-next">Wie geht es weiter?</h2>
+        <p>Verstanden ist noch nicht geprüft. Im Programmierlabor rechnest du das Beispiel mit beiden Maschinen selbst durch, filterst und gruppierst Messdaten, ordnest Zeilen, füllst Lücken und prüfst einen KI-Vorschlag für die Auswertung. Zu Hause folgt das Training (ca. 60 Min). Dein Projekt: Daten, Eingaben und Testfälle von Hand, siehe die <a href="../projekt.html">Projektseite</a>.</p>
+        <p><a class="k-btn" href="v15-labor.html">Weiter ins Programmierlabor →</a> <a class="k-btn k-btn--ghost" href="../projekt.html">Projektseite</a></p>
+      </section>
+
+      <!-- Für Dozierende -->
+      <section class="k-section k-section--dozent" aria-labelledby="h-doz">
+        <h2 id="h-doz" class="k-sr">Für Dozierende</h2>
+      <details class="k-dozent">
+        <summary>Für Dozierende: Ablaufplan 135 Minuten Präsenz + 60 Minuten zu Hause</summary>
+        <div class="k-dozent__body">
+          <p class="k-small k-muted">Ein Termin besteht aus zwei Seiten: dieser <strong>Lerneinheit</strong> (verstehen) und dem <a href="v15-labor.html">Programmierlabor</a> (selbst programmieren). Die Tabelle sagt, wo welche Phase stattfindet. Die letzten 30 Minuten gehören dem Projekt (Phase 3); die Projektseite <a href="../projekt.html">projekt.html</a> enthält Themenkatalog, Meilensteine und Bewertungsraster. <strong>Vorbereitung:</strong> Beim ersten Ausführen lädt der Browser pandas nach (ca. 24 MB, in der Vorlesungsumgebung einmal vorher ausführen lassen; die Diagramm-Aufgaben laden zusätzlich matplotlib). Die Datei <code class="k-i">wellen.csv</code> ist im Browser schon an jedem Codeblock hinterlegt, für Codespaces liegt sie unter <code class="k-i">site/assets/data/v15/</code>.</p>
+          <p class="k-small"><strong>Lernziele:</strong> Die Studierenden können (1) eine CSV mit pandas einlesen, filtern, gruppieren und mit <code class="k-i">describe</code> beschreiben, (2) Cp und Cpk berechnen, deuten und mit den üblichen Richtwerten bewerten, (3) Spezifikations- und Eingriffsgrenzen unterscheiden und eine x̄-Regelkarte lesen, (4) <code class="k-i">cpk</code> als Funktion von Hand schreiben, (5) für ihr Projekt Daten und Testfälle von Hand festlegen.</p>
+          <div class="k-tablewrap"><table class="k-plan">
+            <thead><tr><th scope="col">Minuten</th><th scope="col">Wo</th><th scope="col">Was zu tun ist</th></tr></thead>
+            <tbody>
+              <tr><td>0–10</td><td>Lerneinheit 1<br>Warum</td><td><strong>Warm-up und Hook.</strong> Kurze Wiederholung V14 (welche Achse gehört wohin?). Dann die Frage: Welche Maschine darf liefern, Cpk ≥ 1,33? Vorhersage „Woher kommen die sechs Ausschussteile?“, dann das Programm ausführen lassen (pandas jetzt schon laden).</td></tr>
+              <tr><td>10–30</td><td>Lerneinheit 2<br>Theorie</td><td><strong>Informatik-Theorie mit Explorables.</strong> Anatomie eines DataFrames (Series gegen DataFrame, Maske). groupby Schritt für Schritt. Cp/Cpk-Rechner: erst D1, dann D2, dann μ verschieben (Cp bleibt, Cpk fällt). Regelkarte: D2 „Nächste Stichprobe“ bis 20, dann Toleranz einblenden: Warum meldet die Karte früher als die Toleranz? Spezifikations- gegen Eingriffsgrenzen klar benennen.</td></tr>
+              <tr><td>30–70</td><td>Labor Teil A<br>Aufgaben 1 bis 6</td><td><strong>Python-Werkstatt, Teil 1 (ca. 40 Min).</strong> Werkzeugkasten (5), Vorgerechnetes Beispiel Prozessfähigkeit (10), Ablauf verfolgen (5), Zeilen ordnen (7), Lückencode (5), Erste eigene Aufgabe (8). Rundgang; typische Fehler: <code>and</code> statt <code>&amp;</code>, Klammern vergessen, <code>df["a", "b"]</code> statt <code>df[["a", "b"]]</code>, Semikolon-Datei ohne <code>sep</code>.</td></tr>
+              <tr><td>70–80</td><td>–</td><td><strong>Pause.</strong></td></tr>
+              <tr><td>80–105</td><td>Labor Teil A<br>Aufgaben 7 und 8, Selbstcheck</td><td><strong>Python-Werkstatt, Teil 2.</strong> Code-Review (KI-Spiegel) gemeinsam am Beamer (10), Typische Fehlermeldungen (5). Exit-Ticket: Quiz T2, T6, T8 (je 1 Minute tippen, dann auflösen). T9 als Hausaufgabe.</td></tr>
+              <tr><td>105–135</td><td><a href="#projektzeit">Lerneinheit<br>Projektzeit</a></td><td><strong>Projekt, Phase 3 (30 Min).</strong> Meilenstein V15 „Daten, Eingaben und Testfälle von Hand“: Quelle, Eingaben mit Einheit und Wertebereich, fünf Testfälle von Hand (zwei Grenzfälle), Copilot lesen lassen und vergleichen. Gruppen mit Thema 5 „SPC-Auswertung“ rechnen Cp und Cpk für wenige Werte nach. Meilenstein abhaken.</td></tr>
+              <tr><td>zu Hause (ca. 60)</td><td>Labor Teil B<br>Aufgaben 1 bis 8</td><td><strong>Training.</strong> Gestufte Aufgaben mit pandas, eine Wiederholung und eine Klausur-Aufgabe (ca. 60 Min). Der Fortschritt bleibt im Browser der Studierenden; er ist für dich nicht einsehbar.</td></tr>
+            </tbody>
+          </table></div>
+          <p class="k-small k-muted">Hinweise: Die Bewertungsstufen für Cpk sind übliche Richtwerte, verbindlich ist die Kundenvorgabe. Die Regelkarten-Grenzen im Beispiel stammen aus den Stichproben 1 bis 15 (Bezugsphase), die Rechnung mit der Gesamtstreuung ist streng genommen Pp/Ppk (Deep Dive). Projektseite: <a href="../projekt.html">projekt.html</a>.</p>
+        </div>
+      </details>
+      </section>
+
+    </main>
+  </div>
+
+  <footer class="dhbw-footer k-footer">
+    <div class="dhbw-footer__inner">
+      <span><span class="dhbw-footer__brand">DHBW Stuttgart</span> · Campus Horb</span>
+      <span><a href="../index.html">Zurück zum Lernpfad</a> · <a href="../projekt.html">Projekt</a> · V15 Datenanalyse · Lerneinheit</span>
+    </div>
+  </footer>
+
+  <script src="../assets/js/speicher.js"></script>
+  <script src="../assets/js/icons.js"></script>
+  <script src="../assets/js/editor.js" defer></script>
+  <script src="../assets/js/pap-engine.js"></script>
+  <script src="../assets/js/explorables-v15.js"></script>
+  <script src="../assets/js/kurs.js"></script>
+  <script src="../assets/js/aufgaben.js"></script>
+</body>
+</html>
