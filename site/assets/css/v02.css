@@ -1,5 +1,5 @@
 /* =============================================================
-   v02.css – Explorables der Lektion V02 (Bit-Schalter, Überlauf-Zähler)
+   v02.css – Explorables der Lektion V02 (Bit-Schalter, Überlauf-Zähler, Divisionsrestverfahren, Zahlenkreis)
    Baut auf kurs.css auf (.k-bit, .k-seg, .k-chip, .k-readout, .k-chart).
    ============================================================= */
 .v02-acts { margin: var(--sp-3) 0 0; align-items: center; }
@@ -19,3 +19,45 @@
   .v02-counter { font-size: var(--fs-lg); padding: var(--sp-3) var(--sp-4); }
   .k-seg { flex-wrap: wrap; }
 }
+
+/* ── Divisionsrestverfahren ─────────────────────────────────── */
+.v02-rest__acts { margin: var(--sp-3) 0 0; align-items: center; }
+.v02-rest__msg { min-height: 1.65em; margin: var(--sp-3) 0; max-width: var(--k-measure); }
+.v02-rest__table { width: auto; min-width: min(100%, 520px); }
+.v02-rest__table td, .v02-rest__table th { font-variant-numeric: tabular-nums; }
+.v02-rest__table tr.is-cur td { background: var(--red-tint); }
+.v02-rest__r { font-family: var(--dhbw-font-mono); font-weight: 700; color: var(--red-dark); }
+.v02-rest__readhead { text-align: center !important; }
+.v02-rest__arrow { position: relative; width: 56px; padding: 0 !important; }
+.v02-rest__arrow span { position: absolute; left: 50%; top: 8px; bottom: 8px; width: 3px; transform: translateX(-50%); background: var(--red-dark); }
+.v02-rest__arrow span::before { content: ""; position: absolute; left: 50%; top: -2px; transform: translateX(-50%); border: 9px solid transparent; border-bottom: 13px solid var(--red-dark); border-top: 0; }
+.v02-rest__result p { margin: var(--sp-3) 0 0; }
+.v02-rest__digits { display: inline-flex; gap: 3px; vertical-align: middle; margin: 0 4px; }
+.v02-rest__digits b { display: grid; place-items: center; min-width: 30px; height: 36px; background: var(--red-dark); color: #fff; font-family: var(--dhbw-font-mono); border-radius: 3px; }
+.v02-rest__py { color: var(--k-muted); }
+
+/* ── Zahlenkreis ─────────────────────────────────────────────── */
+.v02-kreis { display: flex; flex-wrap: wrap; gap: var(--sp-5) var(--sp-6); align-items: center; }
+.v02-kreis__svg { width: min(100%, 400px); height: auto; flex: none; }
+.v02-kreis__side { flex: 1 1 260px; min-width: 0; }
+.v02-kreis__seg { fill: #F3F4F6; stroke: #fff; stroke-width: 2; }
+.v02-kreis__seg--in { fill: #E5E7EB; }
+.v02-kreis__seg--in.is-neg { fill: var(--red-tint); }
+.v02-kreis__seg.is-cur { fill: var(--red-dark); }
+.v02-kreis__num { font-family: var(--dhbw-font-mono); font-size: 17px; fill: var(--text); }
+.v02-kreis__num--in { font-size: 16px; }
+.v02-kreis__num.is-cur { fill: #fff; font-weight: 700; }
+.v02-kreis__seam { stroke: var(--red); stroke-width: 5; stroke-linecap: round; }
+.v02-kreis__note { font-family: var(--dhbw-font); font-size: 14px; font-weight: 700; fill: var(--red-dark); }
+.v02-kreis__hand { transform-box: view-box; transform-origin: 220px 220px; transition: transform .35s ease; }
+.v02-kreis__handline { stroke: var(--text); stroke-width: 3; stroke-linecap: round; }
+.v02-kreis__handtip { fill: var(--text); }
+.v02-kreis__bits { font-family: var(--dhbw-font-mono); font-size: 26px; font-weight: 700; fill: var(--red-dark); }
+.v02-kreis__bitslbl { font-family: var(--dhbw-font); font-size: 13px; fill: var(--k-muted); }
+.v02-kreis__legend { list-style: none; padding: 0; margin: var(--sp-4) 0 0; display: grid; gap: 4px; }
+.v02-kreis__legend li { display: flex; align-items: center; gap: 8px; margin: 0; }
+.v02-kreis__sw { display: inline-block; width: 16px; height: 16px; border-radius: 3px; flex: none; }
+.v02-kreis__sw--out { background: #F3F4F6; border: 1px solid #9CA3AF; }
+.v02-kreis__sw--in { background: linear-gradient(90deg, #E5E7EB 50%, var(--red-tint) 50%); border: 1px solid #9CA3AF; }
+.v02-kreis__sw--seam { background: var(--red); height: 5px; }
+@media (prefers-reduced-motion: reduce) { .v02-kreis__hand { transition: none; } }

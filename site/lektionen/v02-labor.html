@@ -139,7 +139,7 @@ y = 32767
 2 ** 16 - 1                        # 65535</code></pre>
     <ul>
       <li>Zeile 2: 16-Bit-Zähler ohne Vorzeichen. Der Rest nach Division durch 2<sup>16</sup> ist der Wert, der im <abbr class="k-begriff" data-erklaerung="Ein Speicherplatz fester Breite in der Steuerung oder im Prozessor, zum Beispiel 16 Bit breit. Wie ein Fach mit genau 16 Kästchen für Nullen und Einsen.">Register</abbr> bleibt. Drück auf „Schritt für Schritt“, um zu sehen, wie 65536 zu 0 wird.</li>
-      <li>Zeile 4: dasselbe mit Vorzeichen. Erst um 2<sup>15</sup> hochschieben, <abbr class="k-begriff" data-erklaerung="Modulo n heißt: Nur der Rest nach Division durch n zählt. Wie eine Uhr, die nach 12 wieder bei 1 anfängt.">modulo</abbr> rechnen (nur der Rest zählt), wieder zurückschieben. Lässt du das <code class="k-i">+ 1</code> weg, liest du so einen Rohwert als Zahl mit Vorzeichen (Aufgabe 6).</li>
+      <li>Zeile 4: dasselbe mit Vorzeichen. Erst um 2<sup>15</sup> hochschieben, <abbr class="k-begriff" data-erklaerung="Modulo n heißt: Nur der Rest nach Division durch n zählt. Wie eine Uhr, die nach 12 wieder bei 1 anfängt.">modulo</abbr> rechnen (nur der Rest zählt), wieder zurückschieben. Lässt du das <code class="k-i">+ 1</code> weg, liest du so einen Rohwert als Zahl mit Vorzeichen (Aufgabe 6). Am Zahlenkreis der Lerneinheit heißt das: dieselbe Stelle, nur auf dem inneren statt auf dem äußeren Ring abgelesen.</li>
       <li>Zeile 5: Das <code class="k-i">%</code> macht negative Zahlen zum <abbr class="k-begriff" data-erklaerung="Eine Folge aus Nullen und Einsen, zum Beispiel 1010 0101. Was sie bedeutet, hängt von der Deutung ab.">Bitmuster</abbr> im <abbr class="k-begriff" data-erklaerung="Die übliche Art, negative Zahlen in Bits zu speichern: Das oberste Bit zählt negativ. So braucht die CPU zum Subtrahieren nur ihr Addierwerk.">Zweierkomplement</abbr>: −5 wird 251 = <code class="k-i">0b11111011</code>.</li>
       <li>Größter Wert mit <em>n</em> Bit ohne Vorzeichen: <code class="k-i">2 ** n - 1</code>. Die Potenz wird zuerst gerechnet, die Klammer ist nicht nötig.</li>
     </ul>
@@ -371,7 +371,7 @@ print("Mit Vorzeichen:", -2 ** (n - 1), "bis", 2 ** (n - 1) - 1)
         <h2 class="l-task__title" id="h-a-review" tabindex="-1">Code-Review: KI-Code prüfen</h2>
         <p class="l-task__meta"></p>
       </header>
-      <p class="l-task__intro">Eine KI hat Code geliefert. Er sieht sauber aus, hat <abbr class="k-begriff" data-erklaerung="Ein Beschreibungstext direkt unter der Funktionszeile, in dreifachen Anführungszeichen. Python führt ihn nicht aus, er ist Dokumentation.">Docstrings</abbr> und läuft los. Würdest du ihn freigeben? Klick die Zeilen an, die du für fehlerhaft hältst, dann lass auflösen.</p>
+      <p class="l-task__intro">Eine KI hat Code geliefert. Er sieht sauber aus, hat Kommentare und läuft los. Würdest du ihn freigeben? Klick die Zeilen an, die du für fehlerhaft hältst, dann lass auflösen.</p>
       <figure class="k-figure">
         <picture>
           <source srcset="../assets/img/ki-spiegel.webp" type="image/webp">
@@ -379,36 +379,28 @@ print("Mit Vorzeichen:", -2 ** (n - 1), "bis", 2 ** (n - 1) - 1)
         </picture>
       </figure>
 
-      <div class="hinweis hinweis--merke"><strong class="hinweis__title">Vorab: Funktionen lesen (schreiben lernst du sie in V07)</strong><p>Der KI-Code besteht aus <abbr class="k-begriff" data-erklaerung="Ein fertiger Baustein mit Namen: Du gibst ihm in Klammern einen Wert, er rechnet und liefert ein Ergebnis zurück. Wie ein Taschenrechner-Knopf, zum Beispiel für die Wurzel.">Funktionen</abbr>. Eine Funktion beginnt mit <code class="k-i">def name(werte):</code> und ist ein benannter Baustein; die eingerückten Zeilen darunter gehören dazu. <code class="k-i">return</code> gibt das Ergebnis zurück (<code class="k-i">return ganze, rest</code> gibt zwei Werte auf einmal zurück, Python zeigt sie in Klammern). Der Text in dreifachen Anführungszeichen direkt unter <code class="k-i">def</code> ist ein Docstring, also eine Beschreibung, die Python nicht ausführt. Rechnen musst du hier nur mit dem, was du aus V02 kennst.</p></div>
-
       <div class="k-mirror">
         <h3>Szenario: Auswertung eines 16-Bit-Zählers</h3>
         <p class="k-prompt__who">Prompt eines Studierenden</p>
-        <blockquote class="k-prompt">Schreib mir Python-Funktionen für die Auswertung eines 16-Bit-Zählers (ohne Vorzeichen) am Inkrementalgeber, 1024 Impulse pro Umdrehung. (1) Zählerstand nach weiteren Impulsen, mit Überlauf wie in der SPS. (2) Ganze Umdrehungen und Rest-Impulse. (3) Ein Rohwert aus einem 16-Bit-Register (0 bis 65535) als Zahl mit Vorzeichen. (4) Eine Zahl mit Vorzeichen als Hex-Text, so wie die SPS die 16 Bit anzeigt.</blockquote>
+        <blockquote class="k-prompt">Schreib mir ein Python-Programm für die Auswertung eines 16-Bit-Zählers (ohne Vorzeichen) am Inkrementalgeber, 1024 Impulse pro Umdrehung. (1) Der Zähler steht auf 65530, es kommen 10 Impulse dazu: neuer Stand mit Überlauf wie in der SPS, dazu ganze Umdrehungen und Rest-Impulse. (2) Das Temperaturregister liefert den Rohwert 65531 (16 Bit, Zweierkomplement): Gib die Temperatur mit Vorzeichen aus. (3) Gib den Sollwert −20 °C als Hex-Text aus, so wie die SPS die 16 Bit anzeigt.</blockquote>
         <p class="k-prompt__who">KI-Antwort (Python)</p>
           <ol class="k-codelines" aria-label="Code der KI, Zeilen anklickbar">
-            <li><button type="button" class="k-line">def zaehler_weiter(stand, impulse):</button></li>
-            <li><button type="button" class="k-line">    &quot;&quot;&quot;16-Bit-Zähler ohne Vorzeichen: Stand nach weiteren Impulsen.&quot;&quot;&quot;</button></li>
-            <li><button type="button" class="k-line" data-bug="a">    return stand + impulse</button></li>
+            <li><button type="button" class="k-line"># Auswertung 16-Bit-Zähler (ohne Vorzeichen), 1024 Impulse pro Umdrehung</button></li>
+            <li><button type="button" class="k-line">impulse_pro_u = 1024</button></li>
+            <li><button type="button" class="k-line">stand = 65530</button></li>
+            <li><button type="button" class="k-line" data-bug="a">stand = stand + 10                    # 10 neue Impulse</button></li>
+            <li><button type="button" class="k-line">ganze = stand // impulse_pro_u</button></li>
+            <li><button type="button" class="k-line">rest = stand % impulse_pro_u</button></li>
+            <li><button type="button" class="k-line">print(&quot;Stand:&quot;, stand, &quot;Umdrehungen:&quot;, ganze, &quot;Rest:&quot;, rest)</button></li>
             <li><button type="button" class="k-line"> </button></li>
+            <li><button type="button" class="k-line">roh = 65531                           # Rohwert aus dem Temperaturregister</button></li>
+            <li><button type="button" class="k-line" data-bug="b">temperatur = roh + 2 ** 15 % 2 ** 16 - 2 ** 15</button></li>
+            <li><button type="button" class="k-line">print(&quot;Temperatur in °C:&quot;, temperatur)</button></li>
             <li><button type="button" class="k-line"> </button></li>
-            <li><button type="button" class="k-line">def umdrehungen(stand, impulse_pro_u):</button></li>
-            <li><button type="button" class="k-line">    &quot;&quot;&quot;Ganze Umdrehungen und Rest-Impulse.&quot;&quot;&quot;</button></li>
-            <li><button type="button" class="k-line">    ganze = stand // impulse_pro_u</button></li>
-            <li><button type="button" class="k-line">    rest = stand % impulse_pro_u</button></li>
-            <li><button type="button" class="k-line">    return ganze, rest</button></li>
-            <li><button type="button" class="k-line"> </button></li>
-            <li><button type="button" class="k-line"> </button></li>
-            <li><button type="button" class="k-line">def mit_vorzeichen(roh):</button></li>
-            <li><button type="button" class="k-line">    &quot;&quot;&quot;Rohwert 0 bis 65535 eines 16-Bit-Registers als Zahl mit Vorzeichen.&quot;&quot;&quot;</button></li>
-            <li><button type="button" class="k-line" data-bug="b">    return roh + 2 ** 15 % 2 ** 16 - 2 ** 15</button></li>
-            <li><button type="button" class="k-line"> </button></li>
-            <li><button type="button" class="k-line"> </button></li>
-            <li><button type="button" class="k-line">def als_hex(zahl):</button></li>
-            <li><button type="button" class="k-line">    &quot;&quot;&quot;Zahl mit Vorzeichen als 16-Bit-Hex-Text, wie die SPS sie anzeigt.&quot;&quot;&quot;</button></li>
-            <li><button type="button" class="k-line" data-bug="c">    return hex(zahl)</button></li>
+            <li><button type="button" class="k-line">sollwert = -20                        # Sollwert in °C für die SPS</button></li>
+            <li><button type="button" class="k-line" data-bug="c">print(&quot;Sollwert für die SPS:&quot;, hex(sollwert))</button></li>
           </ol>
-        <p class="k-small k-muted">Tipp: Es sind drei Fehler eingebaut, in drei verschiedenen Funktionen. Nicht jede Funktion ist falsch.</p>
+        <p class="k-small k-muted">Tipp: Es sind drei Fehler eingebaut, einer je Teilaufgabe. Jeder steht in genau einer Zeile. Nicht jede Zeile ist falsch.</p>
 
         <div class="k-mirror__task">
           <p><strong>Würdest du das freigeben?</strong> Markiere die fehlerhaften Zeilen, dann lass auflösen.</p>
@@ -417,77 +409,58 @@ print("Mit Vorzeichen:", -2 ** (n - 1), "bis", 2 ** (n - 1) - 1)
 
           <div data-mirror-after hidden>
             <h3>Die drei Fehler</h3>
-            <h4>Fehler 1: <abbr class="k-begriff" data-erklaerung="Ein Zähler wird größer als sein Wertebereich und springt an den Anfang zurück. Wie der Kilometerzähler im Auto, der von 999 999 auf 000 000 springt.">Überlauf</abbr> fehlt (Zeile 3)</h4>
-            <p>Die Funktion soll den Zähler der SPS nachbilden. Python-<code class="k-i">int</code> läuft aber nie über: <code class="k-i">65530 + 10</code> ergibt 65540, der Zähler in der SPS stünde auf 4. Lösung: <code class="k-i">(stand + impulse) % 2 ** 16</code>.</p>
-            <h4>Fehler 2: Rangfolge (Zeile 15)</h4>
-            <p><code class="k-i">%</code> bindet stärker als <code class="k-i">+</code> und <code class="k-i">-</code>. Python rechnet also zuerst <code class="k-i">2 ** 15 % 2 ** 16</code> (= 32768) und dann <code class="k-i">roh + 32768 - 32768</code>, also einfach <code class="k-i">roh</code>. Bei kleinen Rohwerten (0 bis 32767) stimmt das Ergebnis zufällig, nur ab 32768 nicht. Ein Test mit 100 findet den Fehler nicht, einer mit 65531 schon. Lösung: Klammern setzen, <code class="k-i">(roh + 2 ** 15) % 2 ** 16 - 2 ** 15</code>.</p>
-            <h4>Fehler 3: Negative Zahl als Hex (Zeile 20)</h4>
-            <p><code class="k-i">hex(-5)</code> liefert <code class="k-i">'-0x5'</code>, denn Python schreibt das Vorzeichen als Minus. Die SPS zeigt das 16-Bit-Muster <code class="k-i">0xFFFB</code>. Lösung: erst auf das Bitmuster abbilden, <code class="k-i">hex(zahl % 2 ** 16)</code>.</p>
+            <h4>Fehler 1: <abbr class="k-begriff" data-erklaerung="Ein Zähler wird größer als sein Wertebereich und springt an den Anfang zurück. Wie der Kilometerzähler im Auto, der von 999 999 auf 000 000 springt.">Überlauf</abbr> fehlt (Zeile 4)</h4>
+            <p>Der Code soll den Zähler der SPS nachbilden. Python-<code class="k-i">int</code> läuft aber nie über: <code class="k-i">65530 + 10</code> ergibt 65540, der Zähler in der SPS stünde auf 4. Die Folgefehler: 64 statt 0 Umdrehungen. Lösung: <code class="k-i">stand = (stand + 10) % 2 ** 16</code>.</p>
+            <h4>Fehler 2: Rangfolge (Zeile 10)</h4>
+            <p><code class="k-i">%</code> bindet stärker als <code class="k-i">+</code> und <code class="k-i">-</code>. Python rechnet also zuerst <code class="k-i">2 ** 15 % 2 ** 16</code> (= 32768) und dann <code class="k-i">roh + 32768 - 32768</code>, also einfach <code class="k-i">roh</code>. Bei kleinen Rohwerten (0 bis 32767) stimmt das Ergebnis zufällig, nur ab 32768 nicht. Ein Test mit <code class="k-i">roh = 100</code> findet den Fehler nicht, einer mit 65531 schon: Statt −5 °C meldet das Programm 65531 °C, genau wie in Szene 2 der Lerneinheit. Lösung: Klammern setzen, <code class="k-i">(roh + 2 ** 15) % 2 ** 16 - 2 ** 15</code>.</p>
+            <h4>Fehler 3: Negative Zahl als Hex (Zeile 14)</h4>
+            <p><code class="k-i">hex(-20)</code> liefert <code class="k-i">'-0x14'</code>, denn Python schreibt das Vorzeichen als Minus. Die SPS zeigt das 16-Bit-Muster <code class="k-i">0xFFEC</code> (= 65536 − 20 = 65516). Lösung: erst auf das Bitmuster abbilden, <code class="k-i">hex(sollwert % 2 ** 16)</code>.</p>
 
             <h3>Die KI-Version zum Ausprobieren</h3>
-            <p class="k-small k-muted">Sollwerte stehen als Kommentar daneben. Vergleiche, was wirklich ausgegeben wird. Die Funktionen werden unten einfach aufgerufen, wie <code class="k-i">print(bin(5))</code>. Mit „Schritt für Schritt“ siehst du, wie Python in eine Funktion hineinspringt und zurückkehrt.</p>
+            <p class="k-small k-muted">Die Sollwerte stehen als Kommentar am Ende. Vergleiche, was wirklich ausgegeben wird. Mit „Schritt für Schritt“ siehst du, wie sich <code class="k-i">stand</code> und <code class="k-i">temperatur</code> Zeile für Zeile verändern.</p>
             <div class="k-runner" data-timeout="3000">
-<textarea class="k-runner__code py-editor" data-lesson="V02" aria-label="Original-Code der KI mit Tests">def zaehler_weiter(stand, impulse):
-    """16-Bit-Zähler ohne Vorzeichen: Stand nach weiteren Impulsen."""
-    return stand + impulse
+<textarea class="k-runner__code py-editor" data-lesson="V02" aria-label="Original-Code der KI mit Sollwerten"># Auswertung 16-Bit-Zähler (ohne Vorzeichen), 1024 Impulse pro Umdrehung
+impulse_pro_u = 1024
+stand = 65530
+stand = stand + 10                    # 10 neue Impulse
+ganze = stand // impulse_pro_u
+rest = stand % impulse_pro_u
+print("Stand:", stand, "Umdrehungen:", ganze, "Rest:", rest)
 
+roh = 65531                           # Rohwert aus dem Temperaturregister
+temperatur = roh + 2 ** 15 % 2 ** 16 - 2 ** 15
+print("Temperatur in °C:", temperatur)
 
-def umdrehungen(stand, impulse_pro_u):
-    """Ganze Umdrehungen und Rest-Impulse."""
-    ganze = stand // impulse_pro_u
-    rest = stand % impulse_pro_u
-    return ganze, rest
+sollwert = -20                        # Sollwert in °C für die SPS
+print("Sollwert für die SPS:", hex(sollwert))
 
-
-def mit_vorzeichen(roh):
-    """Rohwert 0 bis 65535 eines 16-Bit-Registers als Zahl mit Vorzeichen."""
-    return roh + 2 ** 15 % 2 ** 16 - 2 ** 15
-
-
-def als_hex(zahl):
-    """Zahl mit Vorzeichen als 16-Bit-Hex-Text, wie die SPS sie anzeigt."""
-    return hex(zahl)
-
-
-# Tests (Sollwerte von Hand festgelegt)
-print(zaehler_weiter(65530, 10))      # erwartet 4
-print(umdrehungen(5000, 1024))        # erwartet (4, 904)
-print(mit_vorzeichen(100))            # erwartet 100
-print(mit_vorzeichen(65531))          # erwartet -5
-print(als_hex(-5))                    # erwartet 0xfffb</textarea>
+# Sollwerte von Hand festgelegt:
+# Stand: 4 Umdrehungen: 0 Rest: 4
+# Temperatur in °C: -5
+# Sollwert für die SPS: 0xffec</textarea>
             </div>
 
             <h3>Korrigierte Version</h3>
             <div class="k-runner" data-timeout="5000">
-<textarea class="k-runner__code py-editor" data-lesson="V02" aria-label="Korrigierter Code mit Tests">def zaehler_weiter(stand, impulse):
-    """16-Bit-Zähler ohne Vorzeichen: Stand nach weiteren Impulsen."""
-    return (stand + impulse) % 2 ** 16
+<textarea class="k-runner__code py-editor" data-lesson="V02" aria-label="Korrigierter Code mit Sollwerten"># Auswertung 16-Bit-Zähler (ohne Vorzeichen), 1024 Impulse pro Umdrehung
+impulse_pro_u = 1024
+stand = 65530
+stand = (stand + 10) % 2 ** 16         # 10 neue Impulse, mit Überlauf
+ganze = stand // impulse_pro_u
+rest = stand % impulse_pro_u
+print("Stand:", stand, "Umdrehungen:", ganze, "Rest:", rest)
 
+roh = 65531                           # Rohwert aus dem Temperaturregister
+temperatur = (roh + 2 ** 15) % 2 ** 16 - 2 ** 15
+print("Temperatur in °C:", temperatur)
 
-def umdrehungen(stand, impulse_pro_u):
-    """Ganze Umdrehungen und Rest-Impulse."""
-    ganze = stand // impulse_pro_u
-    rest = stand % impulse_pro_u
-    return ganze, rest
+sollwert = -20                        # Sollwert in °C für die SPS
+print("Sollwert für die SPS:", hex(sollwert % 2 ** 16))
 
-
-def mit_vorzeichen(roh):
-    """Rohwert 0 bis 65535 eines 16-Bit-Registers als Zahl mit Vorzeichen."""
-    return (roh + 2 ** 15) % 2 ** 16 - 2 ** 15
-
-
-def als_hex(zahl):
-    """Zahl mit Vorzeichen als 16-Bit-Hex-Text, wie die SPS sie anzeigt."""
-    return hex(zahl % 2 ** 16)
-
-
-# Tests (Sollwerte von Hand festgelegt)
-print(zaehler_weiter(65530, 10))      # erwartet 4
-print(umdrehungen(5000, 1024))        # erwartet (4, 904)
-print(mit_vorzeichen(100))            # erwartet 100
-print(mit_vorzeichen(65531))          # erwartet -5
-print(mit_vorzeichen(32768))          # erwartet -32768
-print(als_hex(-5))                    # erwartet 0xfffb</textarea>
+# Sollwerte von Hand festgelegt:
+# Stand: 4 Umdrehungen: 0 Rest: 4
+# Temperatur in °C: -5
+# Sollwert für die SPS: 0xffec</textarea>
             </div>
             <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke</strong><p>Die KI hat nicht „falsch gedacht“, sie hat das Muster geliefert, das am häufigsten vorkommt. Wie breit der Zähler ist und ob er ein Vorzeichen hat, steht nur in deiner Spezifikation. Und deine Testfälle (Grenzwerte: 0, 32767, 32768, 65535!) hättest du vorher von Hand aufschreiben sollen.</p></div>
           </div>

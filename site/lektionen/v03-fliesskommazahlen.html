@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="../assets/css/kurs.css">
   <link rel="stylesheet" href="../assets/css/aufgaben.css">
   <link rel="stylesheet" href="../assets/css/editor.css">
+  <link rel="stylesheet" href="../assets/css/v03.css">
 </head>
 <body data-lesson="V03" data-page="lerneinheit">
   <a class="k-skip" href="#inhalt">Zum Inhalt springen</a>
@@ -58,6 +59,7 @@
           <li>erklären, warum <abbr class="k-begriff" data-erklaerung="Der Rechner speichert nur endlich viele Stellen. Ist eine Zahl länger, wird sie gerundet, so wie ein Taschenrechner 1/3 nur als 0,3333333 zeigt.">Rundungsfehler</abbr> entstehen,</li>
           <li><abbr class="k-begriff" data-erklaerung="Eine Fließkommazahl (englisch float) ist eine Zahl mit Nachkommastellen wie 2,5. Das Komma „fließt“: Der Rechner merkt sich die Ziffern und getrennt davon, wo das Komma sitzt.">Floats</abbr> mit <abbr class="k-begriff" data-erklaerung="Der Bereich, um den ein Wert abweichen darf und trotzdem als „passt“ gilt, wie die Toleranz in der Zeichnung. Beim Vergleich von Kommazahlen legst du diesen Bereich selbst fest.">Toleranz</abbr> vergleichen,</li>
           <li>den <abbr class="k-begriff" data-erklaerung="IEEE 754 ist die internationale Norm, nach der fast jeder Rechner Kommazahlen als Folge von Nullen und Einsen speichert. Darum rechnen alle Rechner gleich.">IEEE-754</abbr>-Aufbau lesen,</li>
+          <li>Datentypen erkennen und umwandeln (<code class="k-i">int</code>, <code class="k-i">float</code>, <code class="k-i">str</code>),</li>
           <li>KI-Code auf Float-Fallen prüfen.</li>
         </ul>
         <p class="k-small k-muted">Das Schreiben von Python-Code (<abbr class="k-begriff" data-erklaerung="Eine Fließkommazahl (englisch float) ist eine Zahl mit Nachkommastellen wie 2,5. Das Komma „fließt“: Der Rechner merkt sich die Ziffern und getrennt davon, wo das Komma sitzt."><code class="k-i">float</code></abbr>, <abbr class="k-begriff" data-erklaerung="input() ist ein Befehl, der den Benutzer etwas eintippen lässt und das Eingetippte an das Programm übergibt."><code class="k-i">input</code></abbr>, <abbr class="k-begriff" data-erklaerung="Ein f-String ist ein Text mit einem f davor. In geschweiften Klammern darin setzt Python Werte ein, zum Beispiel f&quot;d = {d}&quot;.">f-Strings</abbr>, <abbr class="k-begriff" data-erklaerung="Ein Modul ist eine Werkzeugkiste mit fertigen Funktionen. math ist die Kiste für Mathematik, etwa Wurzel und Kreiszahl."><code class="k-i">math</code></abbr>) übst du danach im <a href="v03-labor.html">Programmierlabor</a>.</p>
@@ -68,6 +70,7 @@
         <h2 class="k-section__title" id="h-warum"><span class="k-section__num" aria-hidden="true">1</span> Warum?</h2>
 
         <p>Zwei Szenen aus dem Ingenieuralltag. Beide enden mit einem Ergebnis, das „irgendwie stimmt“, aber nicht stimmt.</p>
+        <p>Vorab, ohne Vorwissen: Ein Rechner speichert Kommazahlen mit einer festen Zahl von Ziffern, so wie dein Taschenrechner 1/3 nur als 0,3333333 anzeigt. Was nicht hineinpasst, wird gerundet. Meistens merkst du davon nichts. In den folgenden zwei Fällen schon.</p>
 
         <figure class="k-figure">
           <picture>
@@ -80,6 +83,25 @@
         <p>Eine Portalachse mit 20 m Verfahrweg. Die <abbr class="k-begriff" data-erklaerung="Speicherprogrammierbare Steuerung: ein kleiner Industrie-Computer, der Maschinen und Anlagen steuert, zum Beispiel Achsen und Ventile.">SPS</abbr> speichert die Position als <abbr class="k-begriff" data-erklaerung="REAL heißt in der SPS der Datentyp für Kommazahlen. Er belegt 32 Bit Speicher."><code class="k-i">REAL</code></abbr> in Mikrometern. <code class="k-i">REAL</code> ist ein <abbr class="k-begriff" data-erklaerung="Ein Bit ist die kleinste Speichereinheit des Rechners: 0 oder 1, wie ein Schalter aus oder an. Ein 32-Bit-Float ist eine Kommazahl, die in 32 solchen Schaltern abgelegt wird.">32-Bit-Float</abbr>. Ab 16 777 216 µm (knapp 16,8 m) kann er nicht mehr jeden µm-Schritt darstellen: Die Zahl 16 777 217 gibt es in float32 schlicht nicht. Die Achse meldet „+1 µm“, die Position ändert sich nicht.</p>
 
         <h3>Szene 2: Die Toleranzkette</h3>
+        <p>Zwei Hülsen sitzen hintereinander auf einer Welle. In so einer <span class="k-term">Maßkette</span> addieren sich die Toleranzen der Einzelteile.</p>
+        <figure class="k-diagram">
+          <svg viewBox="0 0 560 230" role="img" aria-labelledby="v03-kette-t">
+            <title id="v03-kette-t">Maßkette aus zwei Hülsen: Hülse A 10 plus minus 0,1 Millimeter, Hülse B 20 plus minus 0,2 Millimeter. Gesamtmaß 30 plus minus 0,3 Millimeter, weil sich die Toleranzen im ungünstigsten Fall addieren.</title>
+            <defs><marker id="v03-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 1L10 5L0 9z" class="d-fill-muted"/></marker></defs>
+            <rect x="60" y="90" width="140" height="56" class="d-body"/>
+            <rect x="200" y="90" width="280" height="56" class="d-body2"/>
+            <text x="130" y="124" text-anchor="middle">Hülse A</text>
+            <text x="340" y="124" text-anchor="middle">Hülse B</text>
+            <g class="d-thin"><path d="M60 86V50M200 86V50M480 86V50M60 150V198M480 150V198"/></g>
+            <line x1="64" y1="66" x2="196" y2="66" class="d-thin" marker-start="url(#v03-ah)" marker-end="url(#v03-ah)"/>
+            <line x1="204" y1="66" x2="476" y2="66" class="d-thin" marker-start="url(#v03-ah)" marker-end="url(#v03-ah)"/>
+            <text x="130" y="56" text-anchor="middle" class="d-mono">10 ± 0,1</text>
+            <text x="340" y="56" text-anchor="middle" class="d-mono">20 ± 0,2</text>
+            <line x1="64" y1="188" x2="476" y2="188" class="d-thin" marker-start="url(#v03-ah)" marker-end="url(#v03-ah)"/>
+            <text x="270" y="218" text-anchor="middle" class="d-b">gesamt: 30 ± (0,1 + 0,2) = 30 ± 0,3 mm</text>
+          </svg>
+          <figcaption>Eine Maßkette aus zwei Hülsen. Im ungünstigsten Fall addieren sich die Einzeltoleranzen: 0,1 + 0,2 = 0,3 mm. Genau diese Rechnung macht dein Prüfprogramm.</figcaption>
+        </figure>
         <p>Du addierst die Teiltoleranzen 0.1 mm und 0.2 mm und prüfst, ob die Summe 0.3 mm ergibt. Python sagt: <abbr class="k-begriff" data-erklaerung="False heißt „falsch“. Auf eine Ja/Nein-Frage antwortet Python mit True (stimmt) oder False (stimmt nicht)."><code class="k-i">False</code></abbr>. Dein Prüfprogramm verwirft Teile, die laut Zeichnung in Ordnung sind.</p>
 
         <div class="k-try" aria-labelledby="t-hook">
@@ -114,11 +136,54 @@ print(0.1 + 0.2 == 0.3) # Vergleich: Antwort True oder False</code></pre>
         <track kind="subtitles" srclang="de" label="Deutsch" src="../assets/video/v03.vtt" default>
         Dein Browser kann dieses Video nicht abspielen.
       </video>
-      <div class="k-video__missing" hidden>Video folgt. Bis dahin: die beiden Explorables und der Lesetext unten decken alles ab.</div>
+      <div class="k-video__missing" hidden>Video folgt. Bis dahin: der Lesetext und die Explorables unten decken alles ab.</div>
       <figcaption>Untertitel sind eingeschaltet (Deutsch).</figcaption>
     </figure>
 
-          <div class="k-explorable">
+    <h3>Kommazahlen wie auf dem Taschenrechner</h3>
+    <p>Dein Taschenrechner zeigt sehr große und sehr kleine Zahlen in Zehnerpotenz-Schreibweise: 1 250 000 erscheint als <code class="k-i">1.25E6</code>, also 1,25 · 10<sup>6</sup>. Er merkt sich die Ziffern (1,25) und getrennt davon, um wie viele Stellen das Komma verschoben ist (die 6). Deshalb heißt so eine Zahl <span class="k-term">Gleitkommazahl</span> oder Fließkommazahl: Das Komma gleitet an die passende Stelle. Und er hat nur eine feste Zahl an Ziffern, meist 10. Der Rechner macht genau dasselbe, nur zur Basis 2 (Binär aus V02):</p>
+    <div class="k-tablewrap">
+    <table class="k-types k-sci">
+      <thead><tr><th scope="col">Wer schreibt?</th><th scope="col">Zahl</th><th scope="col" class="k-sci--s">Vorzeichen</th><th scope="col" class="k-sci--m">Ziffern (Mantisse)</th><th scope="col" class="k-sci--e">Komma-Verschiebung (Exponent)</th></tr></thead>
+      <tbody>
+        <tr><td>Taschenrechner, Basis 10</td><td>1 250 000</td><td class="k-sci--s">+</td><td class="k-sci--m">1,25</td><td class="k-sci--e">· 10<sup>6</sup></td></tr>
+        <tr><td>Taschenrechner, Basis 10</td><td>0,00035</td><td class="k-sci--s">+</td><td class="k-sci--m">3,5</td><td class="k-sci--e">· 10<sup>−4</sup></td></tr>
+        <tr><td>Rechner, Basis 2</td><td>6,5 = 110,1<sub>2</sub></td><td class="k-sci--s">+ (Bit 0)</td><td class="k-sci--m">1,101<sub>2</sub></td><td class="k-sci--e">· 2<sup>2</sup></td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>Die feste Zahl an Ziffern hat zwei Folgen, die du aus den beiden Szenen kennst. Erstens: Große Zahlen lassen sich nicht beliebig fein auflösen. Das zeigt das Float-Lineal. Zweitens: Manche Brüche passen gar nicht exakt in die Ziffern, zum Beispiel 0,1. Das kommt danach.</p>
+
+    <div class="k-explorable">
+      <h3>Float-Lineal</h3>
+      <p class="k-explorable__lead">Stell dir die Zahlen, die ein Float speichern kann, als Teilstriche auf einem Lineal vor. Weil die Zahl der Ziffern fest ist, rücken die Teilstriche bei großen Zahlen auseinander. Das ist die Portalachse aus Szene 1, Position in µm. Drück dreimal „+ 1 µm fahren“ und beobachte die gespeicherte Position. Wähle danach „1 m“ und „33,6 m“, und schalte auf float64.</p>
+      <div data-explorable="lineal"></div>
+      <noscript><p>Für das Float-Lineal wird JavaScript benötigt.</p></noscript>
+      <p class="k-small k-muted">Beobachtung: Unter 8,4 m (2<sup>23</sup> µm) liegen zwischen zwei ganzen µm noch weitere Teilstriche, bis 16,8 m (2<sup>24</sup> µm) genau einer pro µm, danach nur noch bei jedem zweiten µm. float64 hat 29 Mantissen-Bits mehr, dort sind die Teilstriche an dieser Stelle rund 500 Millionen Mal dichter.</p>
+    </div>
+
+    <h3>IEEE 754 in Kurzform</h3>
+    <p>Ein Float besteht aus drei Teilen: <span class="k-term"><abbr class="k-begriff" data-erklaerung="Das Vorzeichen sagt, ob die Zahl positiv oder negativ ist. Es braucht genau 1 Bit.">Vorzeichen</abbr></span>, <span class="k-term"><abbr class="k-begriff" data-erklaerung="Der Exponent sagt, wo das Komma sitzt. Wie bei 1,5 · 10³: Die 3 ist der Exponent.">Exponent</abbr></span> und <span class="k-term"><abbr class="k-begriff" data-erklaerung="Die Mantisse enthält die Ziffern der Zahl. Wie bei 1,5 · 10³: Die 1,5 ist die Mantisse.">Mantisse</abbr></span>.</p>
+    <div class="k-formula">Wert = (−1)^s × 1.m × 2^(e − bias)</div>
+    <p class="k-small k-muted">Dabei ist s das Vorzeichenbit (0 oder 1), m die Mantisse, e der gespeicherte Exponent und <abbr class="k-begriff" data-erklaerung="Der Bias ist eine feste Verschiebung (127 bei float32, 1023 bei float64), damit auch negative Exponenten ohne eigenes Vorzeichen gespeichert werden können.">bias</abbr> eine feste Verschiebung.</p>
+    <p>Beispiel 6,5 aus der Tabelle oben: Vorzeichenbit 0, Mantisse 1,101<sub>2</sub> (gespeichert werden nur die Ziffern nach dem Komma, die führende 1 ist immer da), Exponent 2. Weil der Exponent auch negativ sein kann, wird er verschoben gespeichert: bei float32 als 2 + 127 = 129. Prüf es nach: Gib in der Float-Lupe unten <strong>6.5</strong> ein.</p>
+    <div class="k-tablewrap">
+    <table class="k-types">
+      <thead><tr><th scope="col">Format</th><th scope="col">Bits</th><th scope="col">Vorzeichen / Exponent / Mantisse</th><th scope="col">Gültige Dezimalstellen</th></tr></thead>
+      <tbody>
+        <tr><td><abbr class="k-begriff" data-erklaerung="float32 ist eine Kommazahl mit 32 Bit Speicher. Sie hält etwa 7 Dezimalstellen fest und heißt auch einfache Genauigkeit.">float32</abbr> (SPS <code class="k-i">REAL</code>)</td><td>32</td><td>1 / 8 / 23</td><td>ca. 7</td></tr>
+        <tr><td><abbr class="k-begriff" data-erklaerung="float64 ist eine Kommazahl mit 64 Bit Speicher. Sie hält etwa 15 bis 16 Dezimalstellen fest. So speichert Python jeden float.">float64</abbr> (Python <code class="k-i">float</code>)</td><td>64</td><td>1 / 11 / 52</td><td>ca. 15 bis 16</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>Weil die Mantisse endlich ist, kann nicht jede Zahl exakt vorkommen. Dezimalbrüche wie 0.1 haben in <abbr class="k-begriff" data-erklaerung="Binärdarstellung heißt: nur mit den Ziffern 0 und 1 schreiben, so wie der Rechner intern alles speichert (V02).">Binärdarstellung</abbr> unendlich viele Stellen (wie 1/3 im Dezimalsystem) und werden gerundet. Der Abstand zwischen benachbarten Zahlen wächst mit der Größe der Zahl: In float32 ist er ab 2^24 = 16 777 216 gleich 2. Daher kann der Zähler aus Szene 1 nicht weiterzählen.</p>
+    <div class="k-cut" role="group" aria-label="Abgeschnittene Nachkommastellen bei 1/3 und 0,1">
+      <p><span class="k-cut__lbl">1/3 im Dezimalsystem, Taschenrechner mit 7 Ziffern</span><span class="k-cut__digits">0,333 333 3<span class="k-cut__lost">333 333 …</span></span><span class="k-cut__note k-muted">Gespeichert wird 0,3333333. Der Rest passt nicht hinein.</span></p>
+      <p><span class="k-cut__lbl">0,1 im Binärsystem, float32 mit 24 Ziffern</span><span class="k-cut__digits">0,0001 1001 1001 1001 1001 1001 100<span class="k-cut__lost">1 1001 1001 …</span></span><span class="k-cut__note k-muted">Das Muster 1001 wiederholt sich ohne Ende. Gerundet gespeichert wird ein Wert knapp neben 0,1. Darum ist <code class="k-i">0.1 + 0.2</code> nicht genau <code class="k-i">0.3</code>.</span></p>
+    </div>
+    <p>Sonderwerte: <code class="k-i">inf</code> (Überlauf, z. B. <code class="k-i">1e308 * 10</code>) und <code class="k-i">nan</code> („keine Zahl“; <code class="k-i">nan == nan</code> ist <code class="k-i">False</code>).</p>
+
+    <div class="k-explorable">
       <h3>Float-Lupe</h3>
       <p class="k-explorable__lead">Gib eine Zahl ein und sieh, was der Rechner wirklich speichert. Klick auf einzelne <abbr class="k-begriff" data-erklaerung="Ein Bit ist die kleinste Informationseinheit des Rechners: 0 oder 1, wie ein Schalter aus oder an.">Bits</abbr>, um sie zu kippen. Probiere: <strong>0.5</strong> (warum so wenige Einsen?), <strong>0.1</strong> (warum so viele?), <strong>16777217</strong> in float32.</p>
       <div data-explorable="lupe"></div>
@@ -133,7 +198,54 @@ print(0.1 + 0.2 == 0.3) # Vergleich: Antwort True oder False</code></pre>
       <p class="k-small k-muted">Beobachtung: Der Fehler ist kein Zufall, er wächst mit n. In float32 liegt er rund 10^8- bis 10^9-mal höher als in float64. Deshalb zählt der Datentyp, wenn du viele Werte aufsummierst.</p>
     </div>
 
-    <h3>Datentypen in Python</h3>
+    <h3>Vergleichen: nie mit <code class="k-i">==</code></h3>
+    <p>Ein <abbr class="k-begriff" data-erklaerung="Ein Vergleich fragt: Sind beide Werte gleich? Mit == fragt man das. Die Antwort ist True oder False. Mehr dazu in V04.">Vergleich</abbr> wie <code class="k-i">a == b</code> fragt: „Sind beide gleich?“ Prüfe stattdessen, ob der Abstand klein genug ist: <code class="k-i">abs(a - b) &lt;= tol</code>. Dabei liefert <abbr class="k-begriff" data-erklaerung="abs(x) ist eine Funktion und liefert den Betrag, also die Zahl ohne Vorzeichen: abs(−3) ist 3.">abs</abbr> den Abstand ohne Vorzeichen, <code class="k-i">&lt;=</code> heißt „kleiner oder gleich“ und <code class="k-i">tol</code> ist die Toleranz. Oder fertig mit <code class="k-i">math.isclose(a, b)</code> aus dem <abbr class="k-begriff" data-erklaerung="Ein Modul ist eine Werkzeugkiste mit fertigen Funktionen. math ist die Kiste für Mathematik, etwa Wurzel und Kreiszahl.">Modul</abbr> <code class="k-i">math</code>. Standardmäßig ist <code class="k-i">rel_tol=1e-9</code> (<abbr class="k-begriff" data-erklaerung="Relative Toleranz: erlaubte Abweichung als Anteil der Zahl selbst, zum Beispiel 1 Millionstel von 25.">relative Toleranz</abbr>) und <code class="k-i">abs_tol=0.0</code> (<abbr class="k-begriff" data-erklaerung="Absolute Toleranz: erlaubte Abweichung als fester Abstand, zum Beispiel 0,05 mm.">absolute Toleranz</abbr>). Wähle die Toleranz aus dem Kontext (Messauflösung, Fertigungstoleranz), nicht „irgendwie klein“.</p>
+    <div class="hinweis hinweis--achtung"><strong class="hinweis__title">Achtung</strong><p>Vergleiche gegen 0 brauchen ein <code class="k-i">abs_tol</code>. Sonst liefert <code class="k-i">math.isclose(1e-12, 0.0)</code> <code class="k-i">False</code>, denn die Standard-Toleranz ist relativ zur Größe der Zahlen.</p></div>
+
+    <div class="k-explorable">
+      <h3 id="h-toleranzband">Toleranzband</h3>
+      <p class="k-explorable__lead">Ein Vergleich mit Toleranz ist dasselbe wie die Prüfung gegen ein Toleranzband auf der Zeichnung: Liegt der Messwert zwischen Unter- und Obermaß? Wähle die Messwerte nacheinander. Bei <strong>25.05</strong> liegt der Wert genau auf der Grenze: Schalte dann auf „Lupe auf die Grenze“.</p>
+      <div data-explorable="toleranz"></div>
+      <noscript><p>Für das Toleranzband wird JavaScript benötigt.</p></noscript>
+      <p class="k-small k-muted">Die letzte Zeile ist die Prüfung aus dem Labor (vorgerechnetes Beispiel „Toleranzrechner“). <code class="k-i">rel_tol=0.0</code> schaltet die relative Toleranz ab, <code class="k-i">abs_tol</code> ist das Abmaß plus eine winzige Rechentoleranz.</p>
+    </div>
+
+    <h3>Runden</h3>
+    <p><code class="k-i"><abbr class="k-begriff" data-erklaerung="round ist eine eingebaute Funktion, die rundet: round(2.6) ergibt 3.">round</abbr>(x)</code> rundet in Python auf die nächste <em>gerade</em> Zahl, wenn genau in der Mitte (Banker's Rounding): <code class="k-i">round(0.5) = 0</code>, <code class="k-i">round(1.5) = 2</code>, <code class="k-i">round(2.5) = 2</code>. Und <code class="k-i">round(2.675, 2)</code> ergibt 2.67, weil 2.675 intern knapp unter 2.675 liegt. Runde erst für die Anzeige, nicht mittendrin.</p>
+    <figure class="k-diagram">
+      <svg viewBox="0 0 560 150" role="img" aria-labelledby="v03-runden-t">
+        <title id="v03-runden-t">Zahlenstrahl von 0 bis 4: round rundet 0,5 auf 0, 1,5 auf 2, 2,5 auf 2 und 3,5 auf 4, also immer zur geraden Nachbarzahl.</title>
+        <defs><marker id="v03-ah-r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="d-fill-red"/></marker></defs>
+        <line x1="30" y1="100" x2="530" y2="100" class="d-line"/>
+        <line x1="40" y1="92" x2="40" y2="108" class="d-line"/>
+        <text x="40" y="134" text-anchor="middle" class="d-l d-b d-t-red">0</text>
+        <line x1="160" y1="92" x2="160" y2="108" class="d-line"/>
+        <text x="160" y="134" text-anchor="middle" class="d-l d-b">1</text>
+        <line x1="280" y1="92" x2="280" y2="108" class="d-line"/>
+        <text x="280" y="134" text-anchor="middle" class="d-l d-b d-t-red">2</text>
+        <line x1="400" y1="92" x2="400" y2="108" class="d-line"/>
+        <text x="400" y="134" text-anchor="middle" class="d-l d-b">3</text>
+        <line x1="520" y1="92" x2="520" y2="108" class="d-line"/>
+        <text x="520" y="134" text-anchor="middle" class="d-l d-b d-t-red">4</text>
+        <circle cx="100" cy="100" r="5" class="d-fill-muted"/>
+        <text x="100" y="46" text-anchor="middle" class="d-mono">0.5</text>
+        <path d="M100 90Q70 58 46 90" class="d-red" marker-end="url(#v03-ah-r)"/>
+        <circle cx="220" cy="100" r="5" class="d-fill-muted"/>
+        <text x="220" y="46" text-anchor="middle" class="d-mono">1.5</text>
+        <path d="M220 90Q250 58 274 90" class="d-red" marker-end="url(#v03-ah-r)"/>
+        <circle cx="340" cy="100" r="5" class="d-fill-muted"/>
+        <text x="340" y="46" text-anchor="middle" class="d-mono">2.5</text>
+        <path d="M340 90Q310 58 286 90" class="d-red" marker-end="url(#v03-ah-r)"/>
+        <circle cx="460" cy="100" r="5" class="d-fill-muted"/>
+        <text x="460" y="46" text-anchor="middle" class="d-mono">3.5</text>
+        <path d="M460 90Q490 58 514 90" class="d-red" marker-end="url(#v03-ah-r)"/>
+      </svg>
+      <figcaption>Bei genau .5 rundet <code class="k-i">round()</code> zur geraden Nachbarzahl (rot). So gleichen sich bei vielen Werten Auf- und Abrunden aus.</figcaption>
+    </figure>
+
+    <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke</strong><p>Floats sind gerundete Näherungen. Vergleiche mit Toleranz, summiere mit Verstand, wähle den Typ passend zur Größenordnung.</p></div>
+
+    <h3 id="h-datentypen">Datentypen in Python</h3>
     <p>Jeder Wert in Python hat einen <abbr class="k-begriff" data-erklaerung="Der Datentyp sagt dem Rechner, was ein Wert ist (Ganzzahl, Kommazahl, Text) und was man damit tun darf. Es ist wie bei Einheiten: Meter und Sekunden addiert man nicht.">Datentyp</abbr>. Er legt fest, was der Wert ist und was du damit rechnen darfst.</p>
     <div class="k-tablewrap">
     <table class="k-types">
@@ -147,31 +259,34 @@ print(0.1 + 0.2 == 0.3) # Vergleich: Antwort True oder False</code></pre>
     </table>
     </div>
     <p><code class="k-i">type(x)</code> ist eine <abbr class="k-begriff" data-erklaerung="Eine Funktion ist ein fertiger Befehl mit Namen, zum Beispiel print oder type. Du rufst sie mit Klammern auf.">Funktion</abbr>: Du gibst ihr in den Klammern einen Wert (<abbr class="k-begriff" data-erklaerung="Das Argument ist das, was du einer Funktion in den Klammern übergibst. Bei type(x) ist x das Argument.">Argument</abbr>), sie antwortet mit dessen Typ. Eine <abbr class="k-begriff" data-erklaerung="Typumwandlung heißt: einen Wert in einen anderen Datentyp verwandeln, zum Beispiel den Text &quot;42&quot; in die Zahl 42.">Typumwandlung</abbr> geht mit <code class="k-i">int("42")</code>, <code class="k-i">float("3.5")</code>, <code class="k-i">str(3)</code>. Drück im Ausprobieren-Abschnitt auf „Schritt für Schritt“, dann siehst du, wie sich der Typ einer Variablen von Zeile zu Zeile ändert. Achtung: <code class="k-i">int(3.9)</code> schneidet ab (Ergebnis 3), es rundet nicht. Und <code class="k-i">/</code> liefert immer einen float (<code class="k-i">7 / 2 = 3.5</code>), <code class="k-i">//</code> teilt ganzzahlig (<code class="k-i">7 // 2 = 3</code>).</p>
-
-    <h3>IEEE 754 in Kurzform</h3>
-    <p>Ein Float besteht aus drei Teilen: <span class="k-term"><abbr class="k-begriff" data-erklaerung="Das Vorzeichen sagt, ob die Zahl positiv oder negativ ist. Es braucht genau 1 Bit.">Vorzeichen</abbr></span>, <span class="k-term"><abbr class="k-begriff" data-erklaerung="Der Exponent sagt, wo das Komma sitzt. Wie bei 1,5 · 10³: Die 3 ist der Exponent.">Exponent</abbr></span> und <span class="k-term"><abbr class="k-begriff" data-erklaerung="Die Mantisse enthält die Ziffern der Zahl. Wie bei 1,5 · 10³: Die 1,5 ist die Mantisse.">Mantisse</abbr></span>.</p>
-    <div class="k-formula">Wert = (−1)^s × 1.m × 2^(e − bias)</div>
-    <p class="k-small k-muted">Dabei ist s das Vorzeichenbit (0 oder 1), m die Mantisse, e der gespeicherte Exponent und <abbr class="k-begriff" data-erklaerung="Der Bias ist eine feste Verschiebung (127 bei float32, 1023 bei float64), damit auch negative Exponenten ohne eigenes Vorzeichen gespeichert werden können.">bias</abbr> eine feste Verschiebung.</p>
-    <div class="k-tablewrap">
-    <table class="k-types">
-      <thead><tr><th scope="col">Format</th><th scope="col">Bits</th><th scope="col">Vorzeichen / Exponent / Mantisse</th><th scope="col">Gültige Dezimalstellen</th></tr></thead>
-      <tbody>
-        <tr><td><abbr class="k-begriff" data-erklaerung="float32 ist eine Kommazahl mit 32 Bit Speicher. Sie hält etwa 7 Dezimalstellen fest und heißt auch einfache Genauigkeit.">float32</abbr> (SPS <code class="k-i">REAL</code>)</td><td>32</td><td>1 / 8 / 23</td><td>ca. 7</td></tr>
-        <tr><td><abbr class="k-begriff" data-erklaerung="float64 ist eine Kommazahl mit 64 Bit Speicher. Sie hält etwa 15 bis 16 Dezimalstellen fest. So speichert Python jeden float.">float64</abbr> (Python <code class="k-i">float</code>)</td><td>64</td><td>1 / 11 / 52</td><td>ca. 15 bis 16</td></tr>
-      </tbody>
-    </table>
-    </div>
-    <p>Weil die Mantisse endlich ist, kann nicht jede Zahl exakt vorkommen. Dezimalbrüche wie 0.1 haben in <abbr class="k-begriff" data-erklaerung="Binärdarstellung heißt: nur mit den Ziffern 0 und 1 schreiben, so wie der Rechner intern alles speichert (V02).">Binärdarstellung</abbr> unendlich viele Stellen (wie 1/3 im Dezimalsystem) und werden gerundet. Der Abstand zwischen benachbarten Zahlen wächst mit der Größe der Zahl: In float32 ist er ab 2^24 = 16 777 216 gleich 2. Daher kann der Zähler aus Szene 1 nicht weiterzählen.</p>
-    <p>Sonderwerte: <code class="k-i">inf</code> (Überlauf, z. B. <code class="k-i">1e308 * 10</code>) und <code class="k-i">nan</code> („keine Zahl“; <code class="k-i">nan == nan</code> ist <code class="k-i">False</code>).</p>
-
-    <h3>Vergleichen: nie mit <code class="k-i">==</code></h3>
-    <p>Ein <abbr class="k-begriff" data-erklaerung="Ein Vergleich fragt: Sind beide Werte gleich? Mit == fragt man das. Die Antwort ist True oder False. Mehr dazu in V04.">Vergleich</abbr> wie <code class="k-i">a == b</code> fragt: „Sind beide gleich?“ Prüfe stattdessen, ob der Abstand klein genug ist: <code class="k-i">abs(a - b) &lt;= tol</code>. Dabei liefert <abbr class="k-begriff" data-erklaerung="abs(x) ist eine Funktion und liefert den Betrag, also die Zahl ohne Vorzeichen: abs(−3) ist 3.">abs</abbr> den Abstand ohne Vorzeichen, <code class="k-i">&lt;=</code> heißt „kleiner oder gleich“ und <code class="k-i">tol</code> ist die Toleranz. Oder fertig mit <code class="k-i">math.isclose(a, b)</code> aus dem <abbr class="k-begriff" data-erklaerung="Ein Modul ist eine Werkzeugkiste mit fertigen Funktionen. math ist die Kiste für Mathematik, etwa Wurzel und Kreiszahl.">Modul</abbr> <code class="k-i">math</code>. Standardmäßig ist <code class="k-i">rel_tol=1e-9</code> (<abbr class="k-begriff" data-erklaerung="Relative Toleranz: erlaubte Abweichung als Anteil der Zahl selbst, zum Beispiel 1 Millionstel von 25.">relative Toleranz</abbr>) und <code class="k-i">abs_tol=0.0</code> (<abbr class="k-begriff" data-erklaerung="Absolute Toleranz: erlaubte Abweichung als fester Abstand, zum Beispiel 0,05 mm.">absolute Toleranz</abbr>). Wähle die Toleranz aus dem Kontext (Messauflösung, Fertigungstoleranz), nicht „irgendwie klein“.</p>
-    <div class="hinweis hinweis--achtung"><strong class="hinweis__title">Achtung</strong><p>Vergleiche gegen 0 brauchen ein <code class="k-i">abs_tol</code>. Sonst liefert <code class="k-i">math.isclose(1e-12, 0.0)</code> <code class="k-i">False</code>, denn die Standard-Toleranz ist relativ zur Größe der Zahlen.</p></div>
-
-    <h3>Runden</h3>
-    <p><code class="k-i"><abbr class="k-begriff" data-erklaerung="round ist eine eingebaute Funktion, die rundet: round(2.6) ergibt 3.">round</abbr>(x)</code> rundet in Python auf die nächste <em>gerade</em> Zahl, wenn genau in der Mitte (Banker's Rounding): <code class="k-i">round(0.5) = 0</code>, <code class="k-i">round(1.5) = 2</code>, <code class="k-i">round(2.5) = 2</code>. Und <code class="k-i">round(2.675, 2)</code> ergibt 2.67, weil 2.675 intern knapp unter 2.675 liegt. Runde erst für die Anzeige, nicht mittendrin.</p>
-
-    <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke</strong><p>Floats sind gerundete Näherungen. Vergleiche mit Toleranz, summiere mit Verstand, wähle den Typ passend zur Größenordnung.</p></div>
+    <figure class="k-diagram">
+      <svg viewBox="0 0 560 400" role="img" aria-labelledby="v03-typen-t">
+        <title id="v03-typen-t">Typumwandlung zwischen str, int und float. Von str nach int mit int("42"), zurück mit str(42). Von str nach float mit float("3.5"), zurück mit str(3.5). Von int nach float mit float(2), ergibt 2.0. Von float nach int mit int(3.9), ergibt 3, schneidet ab; round(3.9) ergibt 4.</title>
+        <defs><marker id="v03-ah-t" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 1L10 5L0 9z" class="d-fill-muted"/></marker></defs>
+        <rect x="215" y="20" width="130" height="60" rx="8" class="d-node"/>
+        <text x="280" y="50" text-anchor="middle" class="d-mono d-b d-l">str</text>
+        <text x="280" y="70" text-anchor="middle" class="d-s d-t-muted">Text: "42"</text>
+        <rect x="30" y="290" width="130" height="60" rx="8" class="d-node"/>
+        <text x="95" y="320" text-anchor="middle" class="d-mono d-b d-l">int</text>
+        <text x="95" y="340" text-anchor="middle" class="d-s d-t-muted">Ganzzahl: 42</text>
+        <rect x="400" y="290" width="130" height="60" rx="8" class="d-node"/>
+        <text x="465" y="320" text-anchor="middle" class="d-mono d-b d-l">float</text>
+        <text x="465" y="340" text-anchor="middle" class="d-s d-t-muted">Kommazahl: 3.5</text>
+        <line x1="236" y1="86" x2="112" y2="284" class="d-thin" marker-start="url(#v03-ah-t)" marker-end="url(#v03-ah-t)"/>
+        <line x1="324" y1="86" x2="448" y2="284" class="d-thin" marker-start="url(#v03-ah-t)" marker-end="url(#v03-ah-t)"/>
+        <line x1="166" y1="308" x2="394" y2="308" class="d-thin" marker-end="url(#v03-ah-t)"/>
+        <line x1="394" y1="332" x2="166" y2="332" class="d-thin" marker-end="url(#v03-ah-t)"/>
+        <text x="160" y="150" text-anchor="end" class="d-mono d-s">int("42") → 42</text>
+        <text x="160" y="172" text-anchor="end" class="d-mono d-s">str(42) → '42'</text>
+        <text x="384" y="150" class="d-mono d-s">float("3.5") → 3.5</text>
+        <text x="384" y="172" class="d-mono d-s">str(3.5) → '3.5'</text>
+        <text x="280" y="300" text-anchor="middle" class="d-mono d-s">float(2) → 2.0</text>
+        <text x="280" y="366" text-anchor="middle" class="d-mono d-s d-t-red">int(3.9) → 3  (schneidet ab!)</text>
+        <text x="280" y="390" text-anchor="middle" class="d-mono d-s">round(3.9) → 4  (rundet)</text>
+        <text x="280" y="215" text-anchor="middle" class="d-s d-t-muted">type(x) verrät den Typ</text>
+      </svg>
+      <figcaption>Die Umwandlungen zwischen den drei Zahlen- und Text-Typen. Typische Fallen: <code class="k-i">int("2.5")</code> und <code class="k-i">float("2,5")</code> brechen mit einem <code class="k-i">ValueError</code> ab, <code class="k-i">"42" + 1</code> mit einem <code class="k-i">TypeError</code>.</figcaption>
+    </figure>
       </section>
 
       <!-- 3 ───────────── AUSPROBIEREN ───────────── -->
@@ -505,7 +620,7 @@ print(0.1 + 0.2 == 0.3)</code></pre>
             <thead><tr><th scope="col">Minuten</th><th scope="col">Wo</th><th scope="col">Was zu tun ist</th></tr></thead>
             <tbody>
               <tr><td>0–10</td><td>Lerneinheit 3<br>Ausprobieren</td><td><strong>Warm-up.</strong> Vorhersagequiz per Handzeichen: <code>0.1 + 0.2 == 0.3</code>? <code>2**100</code>? <code>round(2.5)</code>? Jeweils erst abstimmen, dann im Runner ausführen. Dazu Wiederholung V02: <code>7 // 2</code>, <code>7 % 2</code>, <code>2 ** 10</code> im Kopf.</td></tr>
-              <tr><td>10–35</td><td>Lerneinheit 1 und 2<br>Warum, Theorie</td><td><strong>Informatik-Theorie mit Explorable.</strong> Szene 1 (Achse 16 777 217 µm) und Zähler-Block (2.0 ** 53) aus Abschnitt 1, Float-Lupe live (0.5, 0.1, 16777217 in float32), Fehler-Akkumulator (n = 1000, dann 10 000). Ampel-Diskussion: Karten „Rundungsfehler erklären“, „IEEE-Aufbau“, „Bitmuster umrechnen“ den drei Stufen zuordnen lassen (Kopf / Lesen / Delegieren).</td></tr>
+              <tr><td>10–35</td><td>Lerneinheit 1 und 2<br>Warum, Theorie</td><td><strong>Informatik-Theorie mit Explorable.</strong> Szene 1 (Achse 16 777 217 µm) und Zähler-Block (2.0 ** 53) aus Abschnitt 1, Taschenrechner-Brücke (1.25E6), Float-Lineal „kurz vor 16,8 m“ mit dreimal + 1 µm, Float-Lupe live (0.5, 0.1, 6.5, 16777217 in float32), Fehler-Akkumulator (n = 1000, dann 10 000), Toleranzband mit 25.05 und Lupe auf die Grenze. Ampel-Diskussion: Karten „Rundungsfehler erklären“, „IEEE-Aufbau“, „Bitmuster umrechnen“ den drei Stufen zuordnen lassen (Kopf / Lesen / Delegieren).</td></tr>
               <tr><td>35–80</td><td>Labor Teil A<br>Aufgaben 1 bis 6</td><td><strong>Python-Werkstatt, Teil 1 (ca. 45 Min).</strong> Werkzeugkasten kurz überfliegen (5), Toleranzrechner vormachen und Zeile für Zeile erklären (10), Ablauf verfolgen allein, dann Auflösung (5), beide Parsons in Paaren (8), Lückencode (7), Zugstab als erste eigene Aufgabe (10). Rundgang; typische Fehler: <code>float()</code> vergessen, Komma statt Punkt, <code>:.2f</code> mit Doppelpunkt vergessen.</td></tr>
               <tr><td>80–90</td><td>–</td><td><strong>Pause.</strong> Runner vorab einmal ausführen lassen (lädt ca. 10 MB von jsDelivr; im Hörsaal-WLAN sonst zäh).</td></tr>
               <tr><td>90–120</td><td>Labor Teil A<br>Aufgaben 7 und 8</td><td><strong>Python-Werkstatt, Teil 2.</strong> Code-Review (KI-Spiegel) gemeinsam am Beamer: Studierende markieren in Paaren, Auflösung, Original-Code ausführen (zwei falsche Ausgaben, dann TypeError), korrigierte Version (20). Danach typische Fehlermeldungen ausführen und lesen lassen (5). Reserve (5): Lerneinheit, Abschnitt 3 „Ausprobieren“.</td></tr>
