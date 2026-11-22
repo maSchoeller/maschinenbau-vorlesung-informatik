@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>V14 Visualisierung: Diagramme, die stimmen · Lerneinheit · Informatik Maschinenbau</title>
+  <meta name="description" content="Welche Diagrammart wofür, Achsen mit Größe und Einheit, ehrliche Achsen, Subplots mit matplotlib, und die Checkliste für Diagramme, die täuschen. Dazu der Kickoff für das Projekt mit Themenkatalog und Meilensteinen.">
+  <link rel="stylesheet" href="../assets/css/dhbw-base.css">
+  <link rel="stylesheet" href="../assets/css/kurs.css">
+  <link rel="stylesheet" href="../assets/css/aufgaben.css">
+  <link rel="stylesheet" href="../assets/css/editor.css">
+  <link rel="stylesheet" href="../assets/css/v05.css">
+  <link rel="stylesheet" href="../assets/css/v14.css">
+</head>
+<body data-lesson="V14" data-page="lerneinheit">
+  <a class="k-skip" href="#inhalt">Zum Inhalt springen</a>
+
+  <header class="dhbw-header k-header">
+    <div class="dhbw-header__inner">
+      <a class="k-logo" href="../index.html" aria-label="Zur Startseite">
+        <span class="k-logo__mark" aria-hidden="true">DHBW</span>
+        <span class="k-logo__text">Informatik Maschinenbau<small>Campus Horb · 2026/27</small></span>
+      </a>
+      <nav class="k-nav" aria-label="Hauptnavigation">
+        <a href="../index.html">Start</a>
+        <a href="../index.html#lernpfad">Lernpfad</a>
+        <a href="../bibliothek.html">Bibliothek</a>
+        <a href="../pap-editor.html">PAP-Editor</a>
+        <a href="../projekt.html">Projekt</a>
+        <a href="v14-visualisierung.html" aria-current="page">V14 Lerneinheit</a>
+        <a href="v14-labor.html">V14 Labor</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="l-page">
+    <nav class="k-toc" aria-label="Inhalt dieser Lerneinheit">
+      <p class="k-toc__title">Lerneinheit V14</p>
+      <ol class="k-toc__list">
+        <li><a href="#warum"><span class="k-toc__n">1</span>Warum?</a></li>
+        <li><a href="#theorie"><span class="k-toc__n">2</span>Theorie</a></li>
+        <li><a href="#projekt"><span class="k-toc__n">3</span>Projekt-Kickoff</a></li>
+        <li><a href="#ausprobieren"><span class="k-toc__n">4</span>Ausprobieren</a></li>
+        <li><a href="#selbstcheck"><span class="k-toc__n">5</span>Selbstcheck</a></li>
+        <li><a href="#deepdive"><span class="k-toc__n">6</span>Deep Dive</a></li>
+      </ol>
+      <div class="k-progress" data-progress-for="V14">
+        <span class="k-progress__bar"><span class="k-progress__fill"></span></span>
+        <span class="k-progress__text">0 von 6 Abschnitten</span>
+      </div>
+      <a class="k-toc__lab" href="v14-labor.html">Weiter ins Programmierlabor →</a>
+    </nav>
+
+    <main id="inhalt" class="l-content">
+
+      <header class="k-title">
+        <p class="k-title__label">V14 · Phase 3 Projekt · Lerneinheit</p>
+        <h1 id="h-titel">Visualisierung: Diagramme, die stimmen</h1>
+        <p class="k-title__lead">Ein gutes Diagramm beantwortet eine Frage auf einen Blick. Ein schlechtes beantwortet sie falsch, und zwar überzeugend. Du lernst, welche Diagrammart zu welcher Frage passt, wie du Achsen ehrlich beschriftest und wie <abbr class="k-begriff" data-erklaerung="matplotlib ist ein Python-Paket zum Zeichnen von Diagrammen. Du gibst ihm Listen mit Zahlen, es rechnet sie in Bildpunkte um und malt Achsen, Linien und Beschriftung.">matplotlib</abbr> aus Listen ein Bild macht. Am Ende des Termins startet dein Projekt.</p>
+        <p class="k-title__goals">Nach dieser Lerneinheit kannst du:</p>
+        <ul class="k-title__list">
+          <li>für eine Frage die passende Diagrammart wählen: <abbr class="k-begriff" data-erklaerung="Ein Liniendiagramm verbindet die Messpunkte der Reihe nach. Es zeigt, wie sich eine Größe über der Zeit (oder einer anderen geordneten Größe) verändert.">Linie</abbr>, <abbr class="k-begriff" data-erklaerung="Ein Streudiagramm (Punktdiagramm) zeichnet jede Messung als einzelnen Punkt. Es zeigt, ob zwei Größen zusammenhängen, ohne eine Reihenfolge vorzutäuschen.">Punkte</abbr>, Balken oder <abbr class="k-begriff" data-erklaerung="Ein Histogramm teilt den Wertebereich in Klassen und zählt, wie viele Messwerte in jede Klasse fallen. Es zeigt die Verteilung, zum Beispiel die Streuung von Durchmessern.">Histogramm</abbr>,</li>
+          <li>Achsen immer mit Größe und Einheit beschriften („Zeit t in s“) und die y-Achse ehrlich wählen,</li>
+          <li>erklären, wie aus den Listen <code class="k-i">zeit</code> und <code class="k-i">v</code> Bildpunkte werden (Datenkoordinaten, Pixel),</li>
+          <li>mit <code class="k-i">plt.plot</code>, <code class="k-i">scatter</code>, <code class="k-i">bar</code>, <code class="k-i">hist</code> und <code class="k-i">plt.subplots</code> Diagramme schreiben,</li>
+          <li>ein täuschendes Diagramm mit einer Checkliste erkennen,</li>
+          <li>ein Projektthema wählen und den ersten Meilenstein (Thema und PAP) beginnen.</li>
+        </ul>
+        <p class="k-small k-muted">Das Schreiben der Diagramm-Befehle übst du im <a href="v14-labor.html">Programmierlabor</a>. Vorausgesetzt sind V01 bis V13, besonders Listen (V08), Dateien (V09), Copilot und Testfälle (V11, V12) und NumPy (V13). Die Projektseite mit Themen, Meilensteinen und Bewertungsraster ist <a href="../projekt.html">hier</a>.</p>
+      </header>
+
+      <!-- 1 ───────────── WARUM ───────────── -->
+      <section class="k-section" id="warum" data-section="warum" aria-labelledby="h-warum">
+        <h2 class="k-section__title" id="h-warum"><span class="k-section__num" aria-hidden="true">1</span> Warum?</h2>
+
+        <p>In der Qualitätsrunde zeigt jemand ein Diagramm: Die Ausschussquote von Drehmaschine B steigt, die von Maschine A bleibt unten. Die Runde beschließt, B stillzulegen. Später stellt sich heraus: Beide Maschinen liegen bei 2,25 und 2,50 Prozent, B ist nur einen Viertelprozentpunkt schlechter. Das Diagramm hat nicht gelogen, es hat nur die Achse bei 2,0 abgeschnitten und den Achsentitel weggelassen. Dieselben Zahlen, ein anderer Eindruck.</p>
+
+        <figure class="k-figure">
+          <picture>
+            <source srcset="../assets/img/v14-hook.webp" type="image/webp">
+            <img src="../assets/img/v14-hook.png" alt="Illustration: zwei Diagramme mit denselben Daten nebeneinander, eines ehrlich mit Achse ab null, eines mit abgeschnittener Achse und dramatischem Anstieg" width="1600" height="900" loading="lazy" onerror="this.closest('figure').hidden=true">
+          </picture>
+        </figure>
+
+        <div class="k-try" aria-labelledby="t-hook">
+          <h3 id="t-hook">Selbst sehen: Diagramme, die täuschen</h3>
+          <p class="k-small k-muted">Unten steht das Diagramm der Qualitätsrunde. Sag erst voraus, dann schalte um.</p>
+          <div class="k-predict">
+            <p class="k-predict__q">Maschine B hat im Mittel 2,50 % Ausschuss, Maschine A 2,25 %. Wie viel mal so hoch wirkt B im Bild, wenn die y-Achse bei 2,0 beginnt?</p>
+            <div class="k-predict__opts"><button type="button">1,1-mal</button><button type="button" data-correct>2-mal</button><button type="button">10-mal</button></div>
+            <div class="k-predict__result"></div>
+            <div class="k-predict__expl" hidden>2-mal. Die Balkenhöhe oder der Abstand zur Achsenunterkante zählt: B liegt 0,5 über der Achse, A nur 0,25. Das Auge vergleicht diese Abstände, nicht die Zahlen. Mit der Achse ab 0 sind es 2,50 zu 2,25, also 1,1-mal.</div>
+          </div>
+          <div class="k-explorable">
+            <h3>Dieselben Daten, zwei Eindrücke</h3>
+            <p class="k-explorable__lead">Die Zeichnung entsteht live aus den zwölf Monatswerten beider Maschinen. Schalte „y-Achse beginnt bei 0“ ein, den Achsentitel mit Einheit ein und wähle das Seitenverhältnis. Unter dem Bild stehen drei Zahlen: wie hoch B im Bild wirkt, wie hoch B tatsächlich ist, und wie steil der Anstieg im Bild aussieht.</p>
+            <div data-explorable="taeuschung"></div>
+            <noscript><p>Für das Explorable „Diagramme, die täuschen“ wird JavaScript benötigt.</p></noscript>
+            <p class="k-small k-muted">Beobachtung: Kein Schalter ändert die Daten. Der Eindruck entsteht allein durch Achsengrenzen, Beschriftung und Format. Das sind Entscheidungen, die <em>du</em> triffst, wenn du ein Diagramm programmierst.</p>
+          </div>
+        </div>
+
+        <h3>Wissens-Ampel für V14</h3>
+        <ul class="k-ampel-list" aria-label="Wissens-Ampel zu V14">
+          <li><span class="k-ampel k-ampel--kopf"><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-head"/></svg> Im Kopf</span><span>Welche Diagrammart zu welcher Frage passt (Linie: Verlauf, Punkte: Zusammenhang, Balken: Vergleich, Histogramm: Verteilung). Jede Achse hat Größe und Einheit. Die y-Achse bei Balken beginnt bei 0. Die Checkliste für täuschende Diagramme. Wie eine Liste von Zahlen zu Pixeln wird.</span></li>
+          <li><span class="k-ampel k-ampel--lesen"><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-book"/></svg> Lesen &amp; erkennen</span><span>Den Code eines Diagramms lesen und sagen, was darin zu sehen sein wird (<code class="k-i">plot</code>, <code class="k-i">set_ylim</code>, <code class="k-i">subplots</code>), und einen KI-Plot ohne Einheiten, mit abgeschnittener Achse oder vertauschten Achsen erkennen.</span></li>
+          <li><span class="k-ampel k-ampel--deleg"><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-handover"/></svg> Delegieren</span><span>Den Befehlsvorrat von matplotlib (Linienstile, Farben, Schriftgrößen, Formate wie <code class="k-i">tight_layout</code>) nachschlagen oder von Copilot schreiben lassen. Du musst wissen, <em>was</em> das Diagramm zeigen soll, und das Ergebnis prüfen.</span></li>
+        </ul>
+
+        <div class="hinweis hinweis--warum"><strong class="hinweis__title">Warum muss ich das wissen?</strong><p>Im Beruf überzeugst du mit Diagrammen: im Bericht, in der Abnahme, im Gespräch mit dem Vorgesetzten. Wer ein Diagramm falsch liest oder falsch zeichnet, trifft falsche Entscheidungen, und die KI zeichnet gern „schön“ statt „ehrlich“. In der Klausur kommt das als Code, bei dem du sagen sollst, was gezeichnet wird, und als Aufgabe, ein Diagramm mit richtigen Achsen zu schreiben.</p></div>
+      </section>
+
+      <!-- 2 ───────────── THEORIE ───────────── -->
+      <section class="k-section" id="theorie" data-section="theorie" aria-labelledby="h-theorie">
+        <h2 class="k-section__title" id="h-theorie"><span class="k-section__num" aria-hidden="true">2</span> Theorie</h2>
+
+        <h3>Erklärvideo (ca. 3 Min)</h3>
+        <figure class="k-video" id="video-theorie">
+          <video controls preload="metadata" poster="../assets/video/v14-theorie-poster.png" aria-label="Erklärvideo Visualisierung: Diagrammarten, Achsen mit Einheit, vom Datenpunkt zum Pixel und Diagramme, die täuschen">
+            <source src="../assets/video/v14-theorie.mp4" type="video/mp4">
+            <track kind="subtitles" srclang="de" label="Deutsch" src="../assets/video/v14-theorie.vtt" default>
+            Dein Browser kann dieses Video nicht abspielen.
+          </video>
+          <div class="k-video__missing" hidden>Video folgt. Bis dahin: die Explorables und der Lesetext unten decken alles ab.</div>
+          <figcaption>Untertitel sind eingeschaltet (Deutsch).</figcaption>
+        </figure>
+
+        <h3>Welche Diagrammart wofür?</h3>
+        <p>Am Anfang steht keine Befehlsliste, sondern eine Frage: <em>Was will ich zeigen?</em> Vier Fragen decken fast alles ab, was im Maschinenbau gebraucht wird.</p>
+        <div class="k-tablewrap"><table class="k-plan">
+          <thead><tr><th scope="col">Frage</th><th scope="col">Diagrammart</th><th scope="col">Python</th><th scope="col">Beispiel</th></tr></thead>
+          <tbody>
+            <tr><td>Wie verläuft eine Größe über die Zeit?</td><td>Linie</td><td><code class="k-i">plt.plot(x, y)</code></td><td>Beschleunigung beim Bremsen</td></tr>
+            <tr><td>Hängen zwei Größen zusammen?</td><td>Punkte</td><td><code class="k-i">plt.scatter(x, y)</code></td><td>Zugkraft und Dehnung von zwölf Proben</td></tr>
+            <tr><td>Wie unterscheiden sich Kategorien?</td><td>Balken</td><td><code class="k-i">plt.bar(namen, werte)</code></td><td>Ausschussquote je Maschine</td></tr>
+            <tr><td>Wie streuen viele Messwerte?</td><td>Histogramm</td><td><code class="k-i">plt.hist(werte, bins=12)</code></td><td>Durchmesser von 200 Wellen</td></tr>
+          </tbody>
+        </table></div>
+        <p>Der Unterschied zwischen Linie und Punkten ist eine Aussage: Eine Linie behauptet, dass zwischen zwei Messpunkten der Wert stetig verläuft und dass die Reihenfolge eine Bedeutung hat. Bei einer Messreihe über die Zeit stimmt das. Bei zwölf unabhängigen Proben nicht, dort zeigen Punkte ehrlich, was gemessen wurde.</p>
+
+        <div class="k-explorable">
+          <h3>Welche Diagrammart passt?</h3>
+          <p class="k-explorable__lead">Sechs Fragen aus dem Maschinenbau. Wähle die Diagrammart. Bei der richtigen Antwort siehst du das Diagramm, bei einer falschen bekommst du einen Hinweis.</p>
+          <div data-explorable="diagrammart"></div>
+          <noscript><p>Für das Explorable „Welche Diagrammart passt?“ wird JavaScript benötigt.</p></noscript>
+        </div>
+
+        <h3>Achsen: Größe und Einheit, immer</h3>
+        <p>Eine Zahl ohne Einheit ist im Maschinenbau keine Information: 5 kann Millimeter, Newton oder Prozent sein. Deshalb trägt jede Achse <strong>Größe und Einheit</strong>, nach dem Muster „Zeit t in s“. Dazu gehört ein Titel, der sagt, was das Bild zeigt, und bei mehreren Datenreihen eine Legende oder eine Beschriftung direkt an der Linie. In matplotlib sind das <code class="k-i">plt.xlabel</code>, <code class="k-i">plt.ylabel</code>, <code class="k-i">plt.title</code> und <code class="k-i">plt.legend</code>. Ohne diese Zeilen zeichnet das Programm trotzdem, und das Diagramm ist wertlos.</p>
+        <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke</strong><p>Die Beschriftung einer Achse hat zwei Teile: <strong>Größe</strong> (Zeit, Kraft, Temperatur, mit Formelzeichen) und <strong>Einheit</strong> (s, N, °C). Prüfe bei jedem Diagramm: Kann ein Fremder ohne Rückfrage sagen, was die Zahlen bedeuten?</p></div>
+
+        <h3>Wie aus Listen ein Bild wird</h3>
+        <p>Der Befehl <code class="k-i">plt.plot(zeit, v)</code> bekommt zwei Listen gleicher Länge: die <abbr class="k-begriff" data-erklaerung="Datenkoordinaten sind die Werte in der Einheit deiner Messung, zum Beispiel t = 3 s und v = 4,2 m/s. Das Diagramm-Programm rechnet sie in Bildpunkte um.">Datenkoordinaten</abbr> der Punkte, jeweils ein Wert für die waagerechte und einer für die senkrechte Achse. Auf dem Bildschirm gibt es aber nur <abbr class="k-begriff" data-erklaerung="Ein Pixel ist ein einzelner Bildpunkt auf dem Bildschirm oder im Bild. Die Position wird durch zwei ganze Zahlen angegeben: Spalte von links und Zeile von oben.">Pixel</abbr>. Das Programm muss also jeden Datenpunkt umrechnen: Es legt fest, welcher Wertebereich (die Achsengrenzen) auf welchen Pixelbereich fällt, und verteilt die Punkte linear dazwischen. Der Pixel-y-Wert zählt dabei von oben nach unten, deshalb wird er von der Unterkante aus abgezogen. Dieselbe Rechnung steckt hinter jedem Diagramm, und sie erklärt, warum die Achsengrenzen den Eindruck bestimmen: Wählst du andere Grenzen, landen dieselben Zahlen an anderen Pixeln.</p>
+
+        <div class="k-explorable">
+          <h3>Von der Liste zum Pixel</h3>
+          <p class="k-explorable__lead">Die zwei Listen unten werden Punkt für Punkt in Bildpunkte umgerechnet. Drücke „Nächster Punkt“ und lies die Rechnung rechts. Ändere dann die Grenzen der y-Achse: Dieselben Zahlen landen an anderen Pixeln, und manche fallen aus dem Bild.</p>
+          <div data-explorable="koordinaten"></div>
+          <noscript><p>Für das Explorable „Von der Liste zum Pixel“ wird JavaScript benötigt.</p></noscript>
+          <p class="k-small k-muted">Beobachtung: Ein Punkt außerhalb der Achsengrenzen wird <em>stillschweigend nicht gezeichnet</em>. Es gibt keine Fehlermeldung. Wer die Grenzen zu eng setzt, verliert Messwerte, ohne es zu merken.</p>
+        </div>
+
+        <h3>Das erste Diagramm</h3>
+        <p>Mit <code class="k-i">import matplotlib.pyplot as plt</code> holst du das Zeichen-Modul unter dem Kurznamen <code class="k-i">plt</code> (wie <code class="k-i">import math as m</code> in V11). matplotlib ist ein Paket, das nicht zur Standardbibliothek gehört. In Codespaces ist es installiert, hier im Browser lädt es sich beim ersten Mal selbst nach (ca. 30 MB, das dauert einen Moment). Der Befehl <code class="k-i">plt.show()</code> am Ende zeigt das Bild.</p>
+        <pre data-timeout="40000"><code>import matplotlib.pyplot as plt
+
+zeit = [0, 1, 2, 3, 4, 5]                    # Zeit in s
+v = [0.0, 2.2, 3.6, 4.2, 4.5, 4.6]           # Geschwindigkeit in m/s
+
+plt.plot(zeit, v)
+plt.xlabel("Zeit t in s")
+plt.ylabel("Geschwindigkeit v in m/s")
+plt.title("Anfahren eines Wagens")
+plt.grid(True)
+plt.show()</code></pre>
+        <p>Jeder Befehl macht eine Sache: <code class="k-i">plot</code> zeichnet die Linie, <code class="k-i">xlabel</code> und <code class="k-i">ylabel</code> beschriften die Achsen, <code class="k-i">title</code> gibt die Überschrift, <code class="k-i">grid</code> legt ein Gitter hinter die Linie, damit man Werte ablesen kann.</p>
+
+        <h3>Ehrliche Achsen</h3>
+        <p>matplotlib wählt die Achsengrenzen selbst: Es passt sie so an, dass die Daten das Bild füllen. Das ist bequem und führt oft zu einem Bild, das kleine Unterschiede aufbläst. Mit <code class="k-i">plt.ylim(0, 5)</code> (oder <code class="k-i">set_ylim</code> am Teilbild) legst du die Grenzen selbst fest. Faustregeln:</p>
+        <ul>
+          <li><strong>Balken beginnen immer bei 0.</strong> Die Höhe <em>ist</em> der Wert. Ein abgeschnittener Balken lügt.</li>
+          <li>Bei Linien darfst du die Achse abschneiden, wenn es um die <em>Form</em> des Verlaufs geht (zum Beispiel Temperatur zwischen 20 und 25 °C). Dann steht das in der Beschriftung, oder eine Hilfslinie (<code class="k-i">axhline</code>) markiert die Nulllinie oder den Sollwert.</li>
+          <li>Hilfslinien für Sollwert, Grenzwert oder Null machen ein Diagramm lesbar: <code class="k-i">plt.axhline(0, color="gray")</code> zeichnet eine waagerechte Linie bei 0.</li>
+        </ul>
+        <pre data-timeout="40000"><code>import matplotlib.pyplot as plt
+
+zeit = [0, 1, 2, 3, 4, 5]
+v = [0.0, 2.2, 3.6, 4.2, 4.5, 4.6]
+
+plt.plot(zeit, v)
+plt.ylim(0, 5)                      # ehrlich: Achse beginnt bei 0
+plt.axhline(4.6, color="gray", linestyle="--")   # Endwert als Hilfslinie
+plt.xlabel("Zeit t in s")
+plt.ylabel("Geschwindigkeit v in m/s")
+plt.title("Anfahren, Achse ab 0")
+plt.show()</code></pre>
+
+        <h3>Farben und Formen sparsam einsetzen</h3>
+        <p>Farbe ist ein Hilfsmittel, kein Schmuck. Ungefähr jeder zwölfte Mann kann Rot und Grün schlecht unterscheiden, und Ausdrucke sind oft schwarz-weiß. Deshalb gilt:</p>
+        <ul>
+          <li><strong>Höchstens drei bis vier Farben</strong>, nur wo sie etwas bedeuten (zum Beispiel Maschine A gegen Maschine B).</li>
+          <li><strong>Nie nur Farbe:</strong> zusätzlich Linienstil (durchgezogen, gestrichelt), Marker (Punkte, Quadrate) oder eine Beschriftung direkt an der Linie.</li>
+          <li><strong>Rot und Grün nie als einzigen Unterschied.</strong> Gut unterscheidbar sind Schwarz, Blau, Orange und Gelb (die Palette von Okabe und Ito ist dafür entworfen). Schwarz und Rot geht, wenn der Linienstil sich auch unterscheidet.</li>
+          <li><strong>Testen:</strong> Drucke das Diagramm in Graustufen aus (oder tu so). Erkennst du noch, welche Linie welche ist?</li>
+        </ul>
+        <pre data-timeout="40000"><code>import matplotlib.pyplot as plt
+
+monat = [1, 2, 3, 4, 5, 6]
+a = [2.2, 2.1, 2.3, 2.2, 2.4, 2.2]       # Ausschussquote Maschine A in %
+b = [2.4, 2.5, 2.3, 2.5, 2.6, 2.4]       # Ausschussquote Maschine B in %
+
+plt.plot(monat, a, color="black", linestyle="-", marker="o", label="Maschine A")
+plt.plot(monat, b, color="#0072B2", linestyle="--", marker="s", label="Maschine B")
+plt.ylim(0, 3)
+plt.xlabel("Monat")
+plt.ylabel("Ausschussquote in %")
+plt.title("Ausschuss je Maschine")
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.show()</code></pre>
+
+        <h3>Mehrere Diagramme in einem Bild: Subplots</h3>
+        <p>Oft gehört zusammen, was verschiedene Einheiten hat: die Beschleunigung und die daraus berechnete Geschwindigkeit. Dann zeichnest du sie untereinander mit gemeinsamer Zeitachse. <code class="k-i">plt.subplots(2, 1)</code> legt ein Raster mit zwei Zeilen und einer Spalte an und gibt <em>zwei Dinge</em> zurück: die ganze Abbildung (<code class="k-i">fig</code>) und die Teilbilder (<code class="k-i">axes</code>). Die Teilbilder kommen als Gruppe, und die Schreibweise <code class="k-i">fig, (oben, unten) = ...</code> packt sie gleich aus. Das <abbr class="k-begriff" data-erklaerung="Tupel entpacken heißt, mehrere Werte in einem Schritt auf mehrere Namen zu verteilen: a, b = 3, 4 gibt a den Wert 3 und b den Wert 4. Eine Klammer auf der linken Seite entpackt eine Gruppe in der Gruppe.">Tupel-Entpacken</abbr> kennst du im Kleinen: <code class="k-i">a, b = 3, 4</code> weist beide Namen in einer Zeile zu.</p>
+        <div class="k-explorable">
+          <h3>Raster und Namen der Teilbilder</h3>
+          <p class="k-explorable__lead">Wähle Zeilen und Spalten. Du siehst die Zeile mit <code class="k-i">plt.subplots</code> und wie die Teilbilder heißen. Bei einem Raster mit mehreren Zeilen und Spalten bleibt die Gruppe zusammen.</p>
+          <div data-explorable="subplots"></div>
+          <noscript><p>Für das Explorable „Raster und Namen der Teilbilder“ wird JavaScript benötigt.</p></noscript>
+        </div>
+        <p>Mit einem Teilbild arbeitest du über seinen Namen, mit eigenen Methoden: <code class="k-i">oben.plot(...)</code>, <code class="k-i">oben.set_ylabel(...)</code>, <code class="k-i">unten.set_xlabel(...)</code>, <code class="k-i">unten.set_ylim(0, 5)</code>. Das <code class="k-i">set_</code> bedeutet: Hier wird etwas eingestellt. Bei <code class="k-i">sharex=True</code> teilen beide Bilder die Zeitachse, und <code class="k-i">fig.tight_layout()</code> sorgt dafür, dass sich Beschriftungen nicht überdecken. Das vollständige Beispiel (Bremsmessung mit zwei Teilbildern) steht im Labor.</p>
+
+        <h3>Diagramme, die täuschen: die Checkliste</h3>
+        <p>Die meisten täuschenden Diagramme sind nicht gelogen, sondern <em>ungünstig gewählt</em>. Sieh sie dir vor dem Abschicken (und bei jedem fremden Diagramm) mit dieser Checkliste an:</p>
+        <ol class="k-steps">
+          <li><strong>Achse abgeschnitten?</strong> Beginnt die y-Achse nicht bei 0, wirken kleine Unterschiede groß. Bei Balken ist das nie in Ordnung.</li>
+          <li><strong>Einheit und Größe da?</strong> Fehlt der Achsentitel, kann niemand die Zahlen einordnen.</li>
+          <li><strong>Seitenverhältnis fair?</strong> Ein schmales, hohes Bild macht jeden Anstieg steil, ein breites, flaches Bild glättet ihn.</li>
+          <li><strong>Ausschnitt ehrlich?</strong> Nur die letzten drei Monate zu zeigen, kann einen Trend erfinden. Zeige den Zeitraum, der zur Frage gehört.</li>
+          <li><strong>Gleiche Skala beim Vergleich?</strong> Zwei Bilder nebeneinander mit unterschiedlichen y-Achsen lassen gleiche Höhen verschiedene Werte bedeuten (<code class="k-i">sharey=True</code> hilft).</li>
+          <li><strong>Passende Art?</strong> Linie bei unabhängigen Proben, Kreisflächen oder 3D-Balken statt Längen: Sie täuschen den Eindruck von Größe vor.</li>
+          <li><strong>Quelle und Menge?</strong> Wie viele Messungen stecken dahinter, woher stammen sie? Ohne das ist ein Diagramm nur ein Bild.</li>
+        </ol>
+
+        <h3>Der Plan: Messdaten einlesen, aufsummieren, plotten</h3>
+        <p>Das vorgerechnete Beispiel im Labor liest die Messdatei vom Fahrrad-Bremsversuch ein (V09), bestimmt aus der Beschleunigung die Geschwindigkeit durch Aufsummieren (Schleife, V06) und zeichnet beides. Der Programmablaufplan zeigt die Reihenfolge, bevor du eine Zeile schreibst:</p>
+        <div class="k-explorable">
+          <h3>PAP: von der Datei zum Diagramm</h3>
+          <p class="k-explorable__lead">Zwei Schleifen: Die erste liest die Datei Zeile für Zeile, die zweite summiert aus der Beschleunigung die Geschwindigkeit auf (Rechteckregel: neues v ist altes v plus a mal Zeitschritt). Danach wird einmal gezeichnet.</p>
+          <div data-explorable="pap-messdaten"></div>
+          <noscript><p>Für das Explorable „PAP: von der Datei zum Diagramm“ werden JavaScript und die PAP-Engine benötigt.</p></noscript>
+        </div>
+        <p>Das Aufsummieren ist eine Näherung: Eine Beschleunigung <em>a</em> über einen Zeitschritt <em>dt</em> ändert die Geschwindigkeit um <em>a · dt</em>. Die Summe aller Änderungen ist die Geschwindigkeit. In der Mathematik heißt das Integrieren, in der Messdatenverarbeitung Aufsummieren.</p>
+      </section>
+
+      <!-- 3 ───────────── PROJEKT-KICKOFF ───────────── -->
+      <section class="k-section" id="projekt" data-section="projekt" aria-labelledby="h-projekt">
+        <h2 class="k-section__title" id="h-projekt"><span class="k-section__num" aria-hidden="true">3</span> Projekt-Kickoff</h2>
+
+        <p>Mit diesem Termin beginnt Phase 3. Du hast jetzt alle Werkzeuge für ein kleines Ingenieurwerkzeug: Funktionen, Listen, Dateien, Tests, NumPy, Diagramme und Copilot. Ab jetzt arbeitest du in jedem Termin die <strong>letzten 30 Minuten</strong> an einem eigenen Projekt, zu zweit, mit Copilot. In V22 stellt jede Gruppe das Ergebnis in fünf Minuten vor. Die ganze Beschreibung mit Themenkatalog, Meilensteinen zum Abhaken und Bewertungsraster steht auf der <a href="../projekt.html">Projektseite</a>.</p>
+
+        <h3>Die sechs Themen</h3>
+        <ol class="v14-themen">
+          <li><strong><a href="../projekt.html#thema-1">Wellen-Rechner</a></strong> (V07): Torsion und Biegung einer Welle, Vergleichsspannung, Werkstoffauswahl.</li>
+          <li><strong><a href="../projekt.html#thema-2">Messdaten-Auswertung mit phyphox</a></strong> (V09, V13, V14): eigene Messung einlesen, Kennwerte bestimmen, Diagramm zeichnen.</li>
+          <li><strong><a href="../projekt.html#thema-3">Toleranzkette</a></strong> (V03, V08): Maßkette arithmetisch und statistisch.</li>
+          <li><strong><a href="../projekt.html#thema-4">Stücklisten-Tool</a></strong> (V08, V09, V19): CSV einlesen, Gewicht, Kosten, Bestellliste.</li>
+          <li><strong><a href="../projekt.html#thema-5">SPC-Auswertung</a></strong> (V15): Cp und Cpk, Regelkarte, Daten <code class="k-i">wellen.csv</code>.</li>
+          <li><strong><a href="../projekt.html#thema-6">Schraubenberechnung</a></strong> (vereinfacht nach VDI 2230): Vorspannkraft, Anzugsmoment aus Tabelle, Prüfung.</li>
+        </ol>
+        <p>Jedes Thema hat einen Mindestumfang (Muss) und Erweiterungen (Kann). Muss schaffst du bis V21 sicher, Kann machst du, wenn Zeit bleibt.</p>
+
+        <h3>Die Meilensteine</h3>
+        <div class="k-tablewrap"><table class="k-plan">
+          <thead><tr><th scope="col">Termin</th><th scope="col">Meilenstein (letzte 30 Minuten, mit Copilot)</th></tr></thead>
+          <tbody>
+            <tr><td>V14</td><td><strong>Thema und PAP:</strong> Gruppe, Thema, Aufgabe in drei Sätzen, Programmablaufplan.</td></tr>
+            <tr><td>V15</td><td><strong>Daten, Eingaben und Testfälle von Hand:</strong> Woher kommen die Zahlen, was soll herauskommen?</td></tr>
+            <tr><td>V16</td><td><strong>Grundgerüst mit Funktionen:</strong> Skelett steht, Tests sind noch rot.</td></tr>
+            <tr><td>V17</td><td><strong>Kernrechnung, Tests bestehen:</strong> Das Programm rechnet richtig.</td></tr>
+            <tr><td>V18</td><td><strong>Eingaben prüfen, Fehler abfangen:</strong> Das Programm bricht bei Fehleingaben nicht ab.</td></tr>
+            <tr><td>V19</td><td><strong>Ausgabe und Diagramm:</strong> Das Ergebnis ist lesbar und ehrlich dargestellt.</td></tr>
+            <tr><td>V20</td><td><strong>Feinschliff und Code-Review im Team:</strong> Eine andere Gruppe liest euren Code.</td></tr>
+            <tr><td>V21</td><td><strong>Fertigstellen und Präsentation vorbereiten:</strong> alles läuft frisch, Präsentation geprobt.</td></tr>
+            <tr><td>V22</td><td><strong>Präsentation:</strong> fünf Minuten je Gruppe (Problem, PAP, Live-Demo, ein geprüfter Testfall, was hat die KI falsch gemacht).</td></tr>
+          </tbody>
+        </table></div>
+        <p class="k-small k-muted">Wie das Projekt bewertet wird und ob es in die Note oder einen Bonus einfließt, legt der Dozent fest. Das Bewertungsraster auf der <a href="../projekt.html#bewertung">Projektseite</a> zeigt, worauf es ankommt.</p>
+
+        <h3>Heute: Thema und PAP in 30 Minuten</h3>
+        <ol class="k-steps">
+          <li><strong>Gruppe finden (3 Minuten):</strong> Zweiergruppe bilden. Beide brauchen Zugang zu Codespaces (V11, Abschnitt 3).</li>
+          <li><strong>Thema wählen (7 Minuten):</strong> Lest die sechs Themen auf der <a href="../projekt.html#themen">Projektseite</a> und wählt eins. Prüft: Haben wir Zugang zu den Daten? Verstehen wir die Fachformeln, oder müssen wir sie nachschlagen?</li>
+          <li><strong>Aufgabe in drei Sätzen (5 Minuten):</strong> Welches Problem löst das Werkzeug? Welche Eingaben mit Einheiten? Welche Ausgaben mit Einheiten?</li>
+          <li><strong>PAP zeichnen (10 Minuten):</strong> Im <a href="../pap-editor.html">PAP-Editor</a> zeichnet ihr den Ablauf. Ein PAP ist ein guter Prompt (V11), also nehmt euch Zeit für die Rauten und die Grenzfälle.</li>
+          <li><strong>Copilot fragen (5 Minuten):</strong> Gebt Copilot euren PAP (als Text) und fragt: „Welche Grenzfälle oder Fehleingaben fehlen in diesem Ablauf?“ Notiert die Antwort und was davon stimmt, in der Datei <code class="k-i">KI-PROTOKOLL.md</code>.</li>
+        </ol>
+        <div class="hinweis hinweis--achtung"><strong class="hinweis__title">Achtung</strong><p>Heute schreibt ihr noch keinen Code. Erst die Aufgabe und der PAP, dann in V15 die Testfälle von Hand, dann in V16 das Grundgerüst. Dieselbe Reihenfolge wie in V11: spezifizieren, testen, generieren, prüfen, verantworten.</p></div>
+        <p><a class="k-btn" href="../projekt.html">Zur Projektseite mit Meilensteinen</a></p>
+      </section>
+
+      <!-- 4 ───────────── AUSPROBIEREN ───────────── -->
+      <section class="k-section" id="ausprobieren" data-section="ausprobieren" aria-labelledby="h-aus">
+        <h2 class="k-section__title" id="h-aus"><span class="k-section__num" aria-hidden="true">4</span> Ausprobieren</h2>
+
+        <p>Python läuft direkt hier im Browser, auch matplotlib. Beim ersten Diagramm lädt Python die Bibliothek nach (ca. 30 MB), das dauert einen Moment, danach geht es schnell. Jeder Codeblock hat einen Editor: Du kannst ihn ändern, ausführen, zurücksetzen. Erst tippen, was herauskommt, dann ausführen.</p>
+
+      <div class="k-try">
+        <h3>Linie oder Punkte?</h3>
+        <div class="k-predict">
+          <p class="k-predict__q">Fünf Messwerte stehen nicht in zeitlicher Reihenfolge, sondern gehören zu fünf verschiedenen Bauteilen. Was ist ehrlicher?</p>
+          <div class="k-predict__opts"><button type="button">plot (Linie)</button><button type="button" data-correct>scatter (Punkte)</button></div>
+          <div class="k-predict__result"></div>
+          <div class="k-predict__expl" hidden>Punkte. Eine Linie zwischen den Bauteilen würde einen Verlauf behaupten, den es nicht gibt, und die Reihenfolge der Bauteile ist zufällig. Probiere beide aus und ändere die Reihenfolge der Listen: Die Linie ändert ihre Gestalt, die Punkte bleiben.</div>
+        </div>
+        <pre data-timeout="40000"><code>import matplotlib.pyplot as plt
+
+bauteil = [1, 2, 3, 4, 5]
+spiel = [0.012, 0.019, 0.008, 0.021, 0.015]      # Lagerspiel in mm
+
+plt.scatter(bauteil, spiel)
+# Probiere stattdessen: plt.plot(bauteil, spiel, marker="o")
+plt.xlabel("Bauteil Nr.")
+plt.ylabel("Lagerspiel s in mm")
+plt.title("Lagerspiel von fünf Bauteilen")
+plt.show()</code></pre>
+      </div>
+
+      <div class="k-try">
+        <h3>Wie hoch ist die y-Achse?</h3>
+        <div class="k-predict">
+          <p class="k-predict__q">Die Werte liegen zwischen 4,3 und 4,6. Was zeichnet matplotlib ohne <code>ylim</code> als y-Achse?</p>
+          <div class="k-predict__opts"><button type="button">von 0 bis 5</button><button type="button" data-correct>etwa von 4,3 bis 4,6</button></div>
+          <div class="k-predict__result"></div>
+          <div class="k-predict__expl" hidden>matplotlib wählt die Grenzen passend zu den Daten, also etwa 4,3 bis 4,6 (mit kleinem Rand). Die Linie füllt das ganze Bild, und die kleine Schwankung sieht dramatisch aus. Entferne die Raute vor <code>plt.ylim(0, 5)</code>, dann siehst du die ehrliche Größenordnung.</div>
+        </div>
+        <pre data-timeout="40000"><code>import matplotlib.pyplot as plt
+
+zeit = [0, 1, 2, 3, 4, 5]
+temperatur = [4.3, 4.5, 4.4, 4.6, 4.5, 4.4]     # Behältertemperatur in °C
+
+plt.plot(zeit, temperatur)
+# plt.ylim(0, 5)       # Raute entfernen: Achse ab 0
+plt.xlabel("Zeit t in min")
+plt.ylabel("Temperatur T in °C")
+plt.title("Behältertemperatur")
+plt.show()</code></pre>
+      </div>
+
+      <div class="k-try">
+        <h3>Zwei Teilbilder, ein Entpacken</h3>
+        <div class="k-predict">
+          <p class="k-predict__q">Nach <code>fig, (oben, unten) = plt.subplots(2, 1)</code>: Womit zeichnest du in das obere Bild?</p>
+          <div class="k-predict__opts"><button type="button">plt.plot(...)</button><button type="button" data-correct>oben.plot(...)</button><button type="button">fig.plot(...)</button></div>
+          <div class="k-predict__result"></div>
+          <div class="k-predict__expl" hidden><code>oben</code> ist das obere Teilbild, und das Zeichnen läuft über seinen Namen: <code>oben.plot(...)</code>. <code>plt.plot</code> zeichnet in das gerade aktive Teilbild (meist das letzte), und <code>fig</code> ist nur die ganze Abbildung.</div>
+        </div>
+        <pre data-timeout="40000"><code>import matplotlib.pyplot as plt
+
+zeit = [0, 1, 2, 3, 4, 5]
+weg = [0.0, 1.1, 4.4, 9.9, 17.6, 27.5]       # Weg in m
+v = [0.0, 2.2, 4.4, 6.6, 8.8, 11.0]          # Geschwindigkeit in m/s
+
+fig, (oben, unten) = plt.subplots(2, 1, sharex=True)
+oben.plot(zeit, weg)
+oben.set_ylabel("Weg s in m")
+unten.plot(zeit, v)
+unten.set_ylabel("Geschwindigkeit v in m/s")
+unten.set_xlabel("Zeit t in s")
+fig.tight_layout()
+plt.show()</code></pre>
+      </div>
+
+      <div class="k-try">
+        <h3>Histogramm: wie streuen die Durchmesser?</h3>
+        <div class="k-predict">
+          <p class="k-predict__q">200 Wellen mit Sollmaß 20,00 mm und Streuung 0,01 mm. Wo liegt der höchste Balken ungefähr?</p>
+          <div class="k-predict__opts"><button type="button">ganz links</button><button type="button" data-correct>bei 20,00 mm, in der Mitte</button><button type="button">ganz rechts</button></div>
+          <div class="k-predict__result"></div>
+          <div class="k-predict__expl" hidden>In der Mitte, bei 20,00 mm: Die meisten Wellen liegen nahe am Sollmaß, nach außen werden es weniger (Glockenform). Ändere <code>bins=12</code> auf <code>bins=4</code> und auf <code>bins=40</code>: Die Klassenbreite verändert den Eindruck.</div>
+        </div>
+        <pre data-timeout="40000"><code>import random
+import matplotlib.pyplot as plt
+
+random.seed(1)
+durchmesser = [random.gauss(20.0, 0.01) for i in range(200)]
+
+plt.hist(durchmesser, bins=12)
+plt.xlabel("Durchmesser d in mm")
+plt.ylabel("Anzahl Wellen")
+plt.title("Verteilung von 200 Wellendurchmessern")
+plt.show()</code></pre>
+      </div>
+
+      <div class="k-try">
+        <h3>Fehlermeldung: zwei Listen, zwei Längen</h3>
+        <div class="k-predict">
+          <p class="k-predict__q">Was passiert bei <code>plt.plot([0, 1, 2], [4, 5])</code>?</p>
+          <div class="k-predict__opts"><button type="button">Es wird eine Linie mit zwei Punkten gezeichnet.</button><button type="button" data-correct>ValueError: x und y müssen gleich viele Werte haben.</button><button type="button">Es erscheint ein leeres Bild.</button></div>
+          <div class="k-predict__result"></div>
+          <div class="k-predict__expl" hidden>matplotlib kann nicht entscheiden, zu welchem x der dritte Wert gehört, und meldet einen <code>ValueError</code>. Das passiert gern, wenn eine Liste beim Einlesen eine Zeile mehr oder weniger bekommen hat (Kopfzeile!).</div>
+        </div>
+        <pre data-run="no" class="k-code"><code>ValueError: x and y must have same first dimension, but have shapes (3,) and (2,)</code></pre>
+        <pre data-timeout="40000"><code>import matplotlib.pyplot as plt
+
+zeit = [0, 1, 2]
+v = [4, 5]
+plt.plot(zeit, v)
+plt.show()</code></pre>
+      </div>
+      </section>
+
+      <!-- 5 ───────────── SELBSTCHECK ───────────── -->
+      <section class="k-section" id="selbstcheck" data-section="selbstcheck" aria-labelledby="h-sc">
+        <h2 class="k-section__title" id="h-sc"><span class="k-section__num" aria-hidden="true">5</span> Selbstcheck</h2>
+
+        <p>Acht Quizaufgaben im Stil der Probeklausur (22 Punkte) und eine Code-Schreib-Aufgabe (6 Punkte, T9). Plane etwa 15 Minuten für das Quiz und 10 Minuten für T9 ein, ohne Hilfsmittel. Quiz-Punkte gibt es für den ersten Versuch; danach darfst du es nochmal probieren.</p>
+
+      <div class="k-quiz" data-quiz="v14">
+
+        <div class="k-q" data-type="mc" data-points="2" data-id="t1">
+          <div class="k-q__head"><span class="k-q__title">T1 · Diagrammart</span><span class="k-q__pts">2 Punkte</span></div>
+          <div class="k-q__text">Du willst zeigen, ob die Dehnung einer Probe von der Zugkraft abhängt. Du hast zwölf Proben mit je einem Wertepaar. Welche Darstellung passt?</div>
+          <ul class="k-q__options">
+            <li>Balkendiagramm mit zwölf Balken</li>
+            <li data-correct>Punktdiagramm (<code>plt.scatter</code>)</li>
+            <li>Histogramm der Zugkräfte</li>
+            <li>Liniendiagramm über der Probennummer</li>
+          </ul>
+          <div class="k-q__expl">Zwei gemessene Größen je Probe, gefragt ist der Zusammenhang: Punkte. Die Probennummer hat keine Reihenfolge, die eine Linie rechtfertigen würde.</div>
+        </div>
+
+        <div class="k-q" data-type="mc" data-points="2" data-id="t2">
+          <div class="k-q__head"><span class="k-q__title">T2 · Beschriftung</span><span class="k-q__pts">2 Punkte</span></div>
+          <div class="k-q__text">Welche Beschriftung der waagerechten Achse eines Weg-Zeit-Diagramms ist richtig?</div>
+          <ul class="k-q__options">
+            <li><code>plt.xlabel("Zeit")</code></li>
+            <li><code>plt.xlabel("t")</code></li>
+            <li data-correct><code>plt.xlabel("Zeit t in s")</code></li>
+            <li><code>plt.xlabel("s")</code></li>
+          </ul>
+          <div class="k-q__expl">Größe (Zeit), Formelzeichen (t) und Einheit (s). Nur „s“ wäre außerdem missverständlich: Es ist auch das Formelzeichen des Weges.</div>
+        </div>
+
+        <div class="k-q" data-type="output" data-points="2" data-id="t3" data-answer="7.5">
+          <div class="k-q__head"><span class="k-q__title">T3 · Tupel entpacken</span><span class="k-q__pts">2 Punkte</span></div>
+          <div class="k-q__text">Was gibt das Programm aus?<pre class="k-code" data-run="nach-antwort"><code>paar = (3, 4.5)
+a, b = paar
+print(a + b)</code></pre></div>
+          <div class="k-q__expl"><code>a, b = paar</code> verteilt die zwei Werte des Paars auf die Namen: <code>a</code> ist 3, <code>b</code> ist 4.5. Die Summe ist <code>7.5</code>. Genauso entpackt <code>fig, ax = plt.subplots()</code> die zwei Rückgabewerte.</div>
+        </div>
+
+        <div class="k-q" data-type="num" data-points="3" data-id="t4" data-answer="210" data-tol="0">
+          <div class="k-q__head"><span class="k-q__title">T4 · Datenpunkt zum Pixel</span><span class="k-q__pts">3 Punkte</span></div>
+          <div class="k-q__text">Die Zeichenfläche beginnt bei Pixel 50 von links und ist 400 Pixel breit. Die x-Achse läuft von 0 s bis 10 s, linear. Bei welcher Pixelspalte liegt der Punkt t = 4 s? (nur die Zahl)</div>
+          <div class="k-q__expl">Der Punkt liegt bei 4/10 der Strecke: 50 + 4 / 10 · 400 = 50 + 160 = 210. Genau diese Rechnung macht matplotlib für jeden Punkt.</div>
+        </div>
+
+        <div class="k-q" data-type="mc" data-points="4" data-id="t5">
+          <div class="k-q__head"><span class="k-q__title">T5 · Täuschung (mehrere richtig)</span><span class="k-q__pts">4 Punkte</span></div>
+          <div class="k-q__text">Welche Aussagen sind richtig? Alle richtigen ankreuzen.</div>
+          <ul class="k-q__options">
+            <li data-correct>Ein Balkendiagramm mit abgeschnittener y-Achse übertreibt Unterschiede.</li>
+            <li>Ein Diagramm ist ehrlich, wenn die Daten stimmen, egal wie die Achsen gewählt sind.</li>
+            <li data-correct>Fehlt der Achsentitel mit Einheit, kann man die Zahlen nicht einordnen.</li>
+            <li>Rot und Grün sind die beste Wahl, weil sie sich am stärksten unterscheiden.</li>
+          </ul>
+          <div class="k-q__expl">Auch bei richtigen Daten kann der Eindruck falsch sein: Achsengrenzen und Beschriftung bestimmen ihn. Rot-Grün-Schwäche betrifft etwa jeden zwölften Mann, daher zusätzlich Linienstil oder Beschriftung.</div>
+        </div>
+
+        <div class="k-q" data-type="mc" data-points="3" data-id="t6">
+          <div class="k-q__head"><span class="k-q__title">T6 · Code lesen</span><span class="k-q__pts">3 Punkte</span></div>
+          <div class="k-q__text">Was ist in diesem Diagramm zu sehen?<pre class="k-code" data-run="no"><code>import matplotlib.pyplot as plt
+fig, (oben, unten) = plt.subplots(2, 1)
+oben.plot([0, 1, 2], [3, 5, 4])
+unten.bar(["A", "B"], [2, 3])
+unten.set_ylim(0, 4)
+plt.show()</code></pre></div>
+          <ul class="k-q__options">
+            <li>Ein Bild mit zwei Linien übereinander.</li>
+            <li data-correct>Oben eine Linie durch drei Punkte, unten zwei Balken, deren y-Achse bei 0 beginnt und bis 4 reicht.</li>
+            <li>Links zwei Balken, rechts eine Linie.</li>
+            <li>Nur das untere Bild, weil <code>plt.show()</code> nur eins anzeigt.</li>
+          </ul>
+          <div class="k-q__expl"><code>plt.subplots(2, 1)</code> ergibt zwei Zeilen und eine Spalte: <code>oben</code> und <code>unten</code> untereinander. Ins obere Bild kommt eine Linie, ins untere kommen zwei Balken mit y-Grenzen 0 bis 4. <code>show()</code> zeigt die ganze Abbildung.</div>
+        </div>
+
+        <div class="k-q" data-type="mc" data-points="3" data-id="t7">
+          <div class="k-q__head"><span class="k-q__title">T7 · Fehlermeldung</span><span class="k-q__pts">3 Punkte</span></div>
+          <div class="k-q__text">Das Programm bricht mit <code>ValueError: x and y must have same first dimension, but have shapes (4,) and (3,)</code> ab. Was ist die wahrscheinlichste Ursache?<pre class="k-code" data-run="no"><code>zeit = [0.0, 0.1, 0.2, 0.3]
+v = [4.4, 4.3, 4.1]
+plt.plot(zeit, v)</code></pre></div>
+          <ul class="k-q__options">
+            <li><code>plt</code> wurde nicht importiert.</li>
+            <li data-correct>Die Listen haben verschiedene Längen: vier Zeiten, aber nur drei Geschwindigkeiten.</li>
+            <li>Die Werte sind Kommazahlen, <code>plot</code> verlangt ganze Zahlen.</li>
+            <li>Es fehlt <code>plt.show()</code>.</li>
+          </ul>
+          <div class="k-q__expl">Die Formen (4,) und (3,) in der Meldung sind die Längen. Ohne <code>import</code> käme ein <code>NameError</code>, ohne <code>show()</code> nur kein Bild.</div>
+        </div>
+
+        <div class="k-q" data-type="mc" data-points="3" data-id="t8">
+          <div class="k-q__head"><span class="k-q__title">T8 · Ist das ehrlich?</span><span class="k-q__pts">3 Punkte</span></div>
+          <div class="k-q__text">Ein KI-Assistent liefert für den Vergleich der Ausschussquote dreier Maschinen:<pre class="k-code" data-run="no"><code>plt.bar(["A", "B", "C"], [4.1, 4.3, 4.2])
+plt.ylim(4.0, 4.4)
+plt.show()</code></pre>Was beanstandest du?</div>
+          <ul class="k-q__options">
+            <li>Nichts, <code>plt.bar</code> ist die richtige Art.</li>
+            <li data-correct>Die y-Achse beginnt bei 4,0 und die Achsentitel fehlen: Aus Unterschieden von unter 5 % werden Balken, die sich um das Dreifache unterscheiden.</li>
+            <li>Es fehlt nur die Legende.</li>
+            <li><code>plt.ylim</code> darf nur bei Linien benutzt werden, nie bei Balken, und deshalb gibt es einen Fehler.</li>
+          </ul>
+          <div class="k-q__expl">Die Art stimmt (Kategorien vergleichen), aber die abgeschnittene Achse macht aus 4,1 gegen 4,3 einen Balken, der dreimal so hoch ist. <code>ylim</code> geht bei Balken technisch, es täuscht nur. Dazu fehlen Achsentitel mit Einheit.</div>
+        </div>
+
+        <div class="k-score" data-score aria-live="polite"></div>
+      </div>
+
+        <h3>Code schreiben im Klausurstil</h3>
+        <p class="k-small k-muted">Wie in der Klausur: erst von Hand schreiben, ohne Ausführen und ohne Auto-Vervollständigung. Dann abgeben, die Tests laufen lassen und dich selbst nach dem Punkteschema bewerten. Richtzeit 10 Minuten.</p>
+      <div class="a-task" data-a="klausur" data-id="sc-klausur" data-mode="code" data-minutes="10" data-timeout="40000">
+        <div class="a-task__head"><span class="a-task__title">T9 · Temperaturverlauf zeichnen</span><span class="a-pts">6 Punkte</span></div>
+        <div class="a-task__text">
+          <p>Die Temperatur eines Lagers wurde alle 5 Minuten gemessen: Zeiten 0, 5, 10, 15, 20, 25 min, Temperaturen 22.0, 31.5, 38.0, 42.5, 45.0, 46.0 °C. Schreibe ein Programm mit <code>import matplotlib.pyplot as plt</code>, das die zwei Listen <code>zeit</code> und <code>temp</code> anlegt und mit <code>fig, ax = plt.subplots()</code> ein Liniendiagramm zeichnet (<code>ax.plot</code>). Beschrifte die x-Achse mit „Zeit t in min“ und die y-Achse mit „Temperatur T in °C“, gib dem Diagramm einen Titel, lege ein Gitter an und zeige es mit <code>plt.show()</code>. Die y-Achse soll bei 0 beginnen.</p>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V14" data-assist="off" aria-label="Python-Code von Hand schreiben, ohne Ausführen"></textarea></div>
+        <script type="text/x-python" data-role="tests">
+def test_figur():
+    """Es gibt fig und ax (fig, ax = plt.subplots())"""
+    assert "fig" in globals() and "ax" in globals(), "Es fehlt fig, ax = plt.subplots()."
+
+def test_daten():
+    """ax.plot bekommt die Messwerte (Zeit und Temperatur)"""
+    assert len(ax.lines) == 1, "Das Teilbild ax soll genau eine Linie enthalten (ax.plot). Gefunden: %d" % len(ax.lines)
+    x = list(ax.lines[0].get_xdata()); y = list(ax.lines[0].get_ydata())
+    assert x == [0, 5, 10, 15, 20, 25], "x-Werte sind %r, erwartet [0, 5, 10, 15, 20, 25]" % (x,)
+    assert y == [22.0, 31.5, 38.0, 42.5, 45.0, 46.0], "y-Werte sind %r" % (y,)
+
+def test_achsen():
+    """Achsentitel mit Größe und Einheit"""
+    assert ax.get_xlabel().strip() == "Zeit t in min", "x-Achse: erwartet 'Zeit t in min', ist %r" % ax.get_xlabel()
+    assert ax.get_ylabel().strip() == "Temperatur T in °C", "y-Achse: erwartet 'Temperatur T in °C', ist %r" % ax.get_ylabel()
+
+def test_titel():
+    """Titel gesetzt"""
+    assert ax.get_title().strip() != "", "Es fehlt der Titel (ax.set_title oder plt.title)."
+
+def test_gitter():
+    """Gitter eingeschaltet"""
+    assert ax.yaxis.get_gridlines()[0].get_visible() or ax.xaxis.get_gridlines()[0].get_visible(), "Das Gitter ist nicht eingeschaltet (ax.grid(True))."
+
+def test_ylim():
+    """y-Achse beginnt bei 0"""
+    assert ax.get_ylim()[0] == 0, "Die y-Achse beginnt bei %r, erwartet 0 (ax.set_ylim(0, ...))." % (ax.get_ylim()[0],)
+        </script>
+        <script type="text/x-python" data-role="solution">
+import matplotlib.pyplot as plt
+
+zeit = [0, 5, 10, 15, 20, 25]
+temp = [22.0, 31.5, 38.0, 42.5, 45.0, 46.0]
+
+fig, ax = plt.subplots()
+ax.plot(zeit, temp)
+ax.set_xlabel("Zeit t in min")
+ax.set_ylabel("Temperatur T in °C")
+ax.set_title("Lagertemperatur")
+ax.set_ylim(0, 50)
+ax.grid(True)
+plt.show()
+        </script>
+        <script type="application/json" data-role="scheme">[
+{"p":1,"t":"import matplotlib.pyplot as plt steht am Anfang; die Listen zeit und temp enthalten die richtigen Werte"},
+{"p":1,"t":"fig, ax = plt.subplots() wird aufgerufen und mit ax.plot(zeit, temp) gezeichnet (Zeit zuerst)"},
+{"p":1,"t":"x-Achse mit Größe und Einheit beschriftet: Zeit t in min"},
+{"p":1,"t":"y-Achse mit Größe und Einheit beschriftet: Temperatur T in °C"},
+{"p":1,"t":"Titel und Gitter (grid) sind gesetzt"},
+{"p":1,"t":"Die y-Achse beginnt bei 0 (set_ylim mit unterem Wert 0) und plt.show() zeigt das Bild"}
+]</script>
+      </div>
+      </section>
+
+      <!-- 6 ───────────── DEEP DIVE ───────────── -->
+      <section class="k-section" id="deepdive" data-section="deepdive" aria-labelledby="h-dd">
+        <h2 class="k-section__title" id="h-dd"><span class="k-section__num" aria-hidden="true">6</span> Deep Dive <span class="k-muted">(freiwillig)</span></h2>
+
+        <p>Für Neugierige. Nichts davon kommt in der Klausur dran.</p>
+
+      <details class="k-deep">
+        <summary>Zwei Arten, matplotlib zu benutzen: plt und Axes</summary>
+        <div class="k-deep__body">
+          <p>matplotlib kennt zwei Schreibweisen. Die kurze („<code class="k-i">plt.plot</code>, <code class="k-i">plt.xlabel</code>“) merkt sich intern, welches Teilbild gerade aktiv ist, und zeichnet dort hinein. Die ausdrückliche („<code class="k-i">ax.plot</code>, <code class="k-i">ax.set_xlabel</code>“) sagt bei jedem Befehl, in welches Teilbild er geht. Sobald ein Bild mehrere Teilbilder hat, ist die zweite deutlich sicherer, weil sie nicht vom Zustand abhängt. Darum benutzen wir sie ab den Subplots. Hinter den Namen stehen zwei Klassen: <code class="k-i">Figure</code> (die Abbildung) und <code class="k-i">Axes</code> (ein Teilbild mit Achsen). Mit Klassen und Methoden beschäftigen wir uns in V20.</p>
+        </div>
+      </details>
+
+      <details class="k-deep">
+        <summary>Beschriftung nach Norm: „t / s“ und „t in s“</summary>
+        <div class="k-deep__body">
+          <p>In Normen und Fachbüchern findest du Achsen auch als „t / s“ beschriftet: Größe geteilt durch Einheit ergibt eine reine Zahl, und genau die steht an den Teilstrichen. „t in s“ ist im Alltag und in Berichten verbreitet und genauso verständlich. Wichtig ist, dass du in einem Dokument bei einer Schreibweise bleibst. Wenn deine Firma oder die Hochschule eine vorschreibt, gilt die.</p>
+        </div>
+      </details>
+
+      <details class="k-deep">
+        <summary>Logarithmische Achsen und Fehlerbalken</summary>
+        <div class="k-deep__body">
+          <p>Wenn Werte über viele Größenordnungen laufen (Frequenzgang, Lebensdauerkurve), macht <code class="k-i">plt.xscale("log")</code> die Achse logarithmisch: Jeder Teilstrich steht dann für eine Verzehnfachung. Fehlerbalken zeigen die Unsicherheit einer Messung: <code class="k-i">plt.errorbar(x, y, yerr=0.1)</code> zeichnet zu jedem Punkt einen senkrechten Strich von ±0,1. Ohne Hinweis darauf, was der Balken bedeutet (Standardabweichung? Messunsicherheit?), ist er nicht lesbar.</p>
+        </div>
+      </details>
+
+      <details class="k-deep">
+        <summary>Farbenblind-taugliche Paletten</summary>
+        <div class="k-deep__body">
+          <p>Die Palette von Okabe und Ito wurde so gewählt, dass ihre acht Farben auch bei den häufigen Formen der Farbfehlsichtigkeit unterscheidbar bleiben: Schwarz <code class="k-i">#000000</code>, Orange <code class="k-i">#E69F00</code>, Himmelblau <code class="k-i">#56B4E9</code>, Blaugrün <code class="k-i">#009E73</code>, Gelb <code class="k-i">#F0E442</code>, Blau <code class="k-i">#0072B2</code>, Zinnober <code class="k-i">#D55E00</code>, Rotviolett <code class="k-i">#CC79A7</code>. Es gibt Simulatoren, die zeigen, wie ein Bild bei Rot-Grün-Schwäche aussieht. Am zuverlässigsten bleibt die Regel: nie nur Farbe, immer auch Form oder Beschriftung.</p>
+        </div>
+      </details>
+      </section>
+
+      <!-- Videos zur Nachbereitung -->
+      <section class="k-section" id="videos" aria-labelledby="h-videos">
+        <h2 class="k-section__title" id="h-videos">Videos zur Nachbereitung</h2>
+        <p>Alle drei Erklärvideos zu V14 zum Wiederholen, jeweils mit deutschen Untertiteln.</p>
+        <ul class="k-video-list">
+          <li><a href="#video-theorie">Visualisierung: Diagrammarten, Achsen, Pixel und täuschende Diagramme erklärt</a> <span class="k-muted">(ca. 3 Min, Theorie, Abschnitt 2 dieser Lerneinheit)</span></li>
+          <li><a href="v14-labor.html#a-werkzeugkasten">Python-Werkstatt: matplotlib, Achsen und Subplots</a> <span class="k-muted">(ca. 3 Min, im Labor bei „Werkzeugkasten“)</span></li>
+          <li><a href="v14-labor.html#a-vorgemacht">Vorgerechnet: Bremsmessung als ehrliches Diagramm darstellen</a> <span class="k-muted">(ca. 3 Min, im Labor bei „Vorgerechnetes Beispiel“)</span></li>
+        </ul>
+      </section>
+
+      <!-- Übergang -->
+      <section class="k-next" aria-labelledby="h-next">
+        <h2 id="h-next">Wie geht es weiter?</h2>
+        <p>Verstanden ist noch nicht geprüft. Im Programmierlabor schreibst du eigene Diagramme, findest eine Täuschung, prüfst einen KI-Plot ohne Einheiten und mit vertauschten Achsen und zeichnest einen PAP für die Auswertung der Messdaten. Zu Hause folgt das Training (ca. 60 Min). Dein Projekt beginnt mit Thema und PAP: Die Meilensteine stehen auf der <a href="../projekt.html">Projektseite</a>.</p>
+        <p><a class="k-btn" href="v14-labor.html">Weiter ins Programmierlabor →</a> <a class="k-btn k-btn--ghost" href="../projekt.html">Projektseite</a></p>
+      </section>
+
+      <!-- Für Dozierende -->
+      <section class="k-section k-section--dozent" aria-labelledby="h-doz">
+        <h2 id="h-doz" class="k-sr">Für Dozierende</h2>
+      <details class="k-dozent">
+        <summary>Für Dozierende: Ablaufplan 135 Minuten Präsenz + 60 Minuten zu Hause</summary>
+        <div class="k-dozent__body">
+          <p class="k-small k-muted">Ein Termin besteht aus zwei Seiten: dieser <strong>Lerneinheit</strong> (verstehen) und dem <a href="v14-labor.html">Programmierlabor</a> (selbst programmieren). Die Tabelle sagt, wo welche Phase stattfindet. <strong>Neu ab V14:</strong> Die letzten 30 Minuten gehören dem Projekt (Phase 3). Die Projektseite <a href="../projekt.html">projekt.html</a> enthält Themenkatalog, Meilensteine und Bewertungsraster; Bewertung und Bonus legt der Dozent fest. <strong>Vorbereitung:</strong> Das Labor lädt beim ersten Diagramm matplotlib (ca. 30 MB): Einmal vorher in der Vorlesungsumgebung ausführen lassen. Zweiergruppen ggf. vorab einteilen.</p>
+          <div class="k-tablewrap"><table class="k-plan">
+            <thead><tr><th scope="col">Minuten</th><th scope="col">Wo</th><th scope="col">Was zu tun ist</th></tr></thead>
+            <tbody>
+              <tr><td>0–10</td><td>Lerneinheit 1<br>Warum</td><td><strong>Warm-up und Hook.</strong> Kurze Wiederholung V13 (Schleife oder Vektor?). Dann das Diagramm der Qualitätsrunde zeigen, Vorhersage „Wie viel mal so hoch wirkt B?“ (2-mal), dann im Explorable umschalten: Achse ab 0, Einheit, Seitenverhältnis.</td></tr>
+              <tr><td>10–30</td><td>Lerneinheit 2<br>Theorie</td><td><strong>Informatik-Theorie mit Explorables.</strong> Diagrammart-Wahl (zwei, drei Fragen im Plenum). „Von der Liste zum Pixel“: einen Punkt durchrechnen, dann ylim(4, 5) wählen. Die Checkliste für täuschende Diagramme. Subplots und Tupel-Entpacken in zwei Minuten (Explorable).</td></tr>
+              <tr><td>30–70</td><td>Labor Teil A<br>Aufgaben 1 bis 6</td><td><strong>Python-Werkstatt, Teil 1 (ca. 40 Min).</strong> Werkzeugkasten (5), Vorgerechnetes Beispiel Bremsmessung (10), Ablauf verfolgen (5), Zeilen ordnen (7), Lückencode (5), Erste eigene Aufgabe (8). Rundgang; typische Fehler: <code>plt.show()</code> vergessen, Listen verschieden lang, x und y vertauscht, Einheit vergessen.</td></tr>
+              <tr><td>70–80</td><td>–</td><td><strong>Pause.</strong> matplotlib einmal vorab laden lassen.</td></tr>
+              <tr><td>80–105</td><td>Labor Teil A<br>Aufgaben 7 und 8, Selbstcheck</td><td><strong>Python-Werkstatt, Teil 2.</strong> Code-Review (KI-Spiegel) gemeinsam am Beamer: ohne Einheiten, abgeschnittene Achse, vertauschte Achsen (10). Typische Fehlermeldungen (5). Exit-Ticket: Quiz T2, T4, T8 (je 1 Minute tippen, dann auflösen). T9 als Hausaufgabe.</td></tr>
+              <tr><td>105–135</td><td><a href="#projekt">Lerneinheit 3<br>Projekt-Kickoff</a></td><td><strong>Projekt, Phase 3 (30 Min).</strong> Themenkatalog auf <a href="../projekt.html">projekt.html</a> zeigen, Gruppen bilden, Thema wählen, Aufgabe in drei Sätzen, PAP im PAP-Editor, Copilot nach fehlenden Grenzfällen fragen. Meilenstein V14 abhaken. Ausblick: V15 Datenanalyse (pandas); bis dahin Testfälle von Hand überlegen.</td></tr>
+              <tr><td>zu Hause (ca. 60)</td><td>Labor Teil B<br>Aufgaben 1 bis 8</td><td><strong>Training.</strong> Fünf Code-Aufgaben (Diagramm beschriften, Streudiagramm, Histogramm, Subplots, Täuschung finden), ein PAP zum Zeichnen (automatisch geprüft), eine Wiederholung (NumPy) und eine Klausur-Aufgabe (ca. 60 Min). Aufgabe „Projekt: Meilenstein V14“ ohne Wertung. Der Fortschritt bleibt im Browser der Studierenden; er ist für dich nicht einsehbar.</td></tr>
+            </tbody>
+          </table></div>
+          <p class="k-small k-muted">Material: Beamer, Handzeichen-Karten, stabiles WLAN, eigene Beispielmessung mit phyphox als Anregung für Thema 2. Projektseite: <a href="../projekt.html">projekt.html</a>.</p>
+        </div>
+      </details>
+      </section>
+
+    </main>
+  </div>
+
+  <footer class="dhbw-footer k-footer">
+    <div class="dhbw-footer__inner">
+      <span><span class="dhbw-footer__brand">DHBW Stuttgart</span> · Campus Horb</span>
+      <span><a href="../index.html">Zurück zum Lernpfad</a> · <a href="../projekt.html">Projekt</a> · V14 Visualisierung · Lerneinheit</span>
+    </div>
+  </footer>
+
+  <script src="../assets/js/speicher.js"></script>
+  <script src="../assets/js/icons.js"></script>
+  <script src="../assets/js/editor.js" defer></script>
+  <script src="../assets/js/pap-engine.js"></script>
+  <script src="../assets/js/explorables-v14.js"></script>
+  <script src="../assets/js/kurs.js"></script>
+  <script src="../assets/js/aufgaben.js"></script>
+</body>
+</html>
