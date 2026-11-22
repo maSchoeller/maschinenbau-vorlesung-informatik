@@ -1,0 +1,120 @@
+/* =============================================================
+   v17.css – Lektion V17 (Netzwerke & Industrie 4.0): Explorables Zellennetz, Subnetz-Rechner, HTTP, JSON, MQTT, Schichtenmodell.
+   Baut auf kurs.css und v05.css (PAP-Stile) auf. Präfix v17-. Rot nur für aktive Zustände und das falsche Netz.
+   Netzanteil = dunkel gefüllt, Hostanteil = hell mit Rahmen (nie nur Farbe).
+   ============================================================= */
+
+.v17-lbl { font-size: var(--fs-sm); font-weight: 600; }
+.v17-ctl { align-items: center; margin: 0 0 var(--sp-3); }
+.v17-ctl .k-btn { min-height: 44px; }
+.v17-seg { flex-wrap: wrap; max-width: 100%; }
+.v17-h4 { margin: var(--sp-5) 0 var(--sp-2); font-size: var(--fs-base); }
+.v17-text { font: inherit; font-family: var(--dhbw-font-mono); font-size: var(--fs-sm); min-height: 44px; padding: 6px 10px; border: 2px solid var(--border); border-radius: var(--r-base); background: #fff; color: inherit; width: 100%; max-width: 16rem; box-sizing: border-box; }
+.v17-text:focus-visible { outline: 3px solid var(--red-dark); outline-offset: 1px; }
+.v17-rangewrap { display: flex; align-items: center; gap: var(--sp-3); }
+.v17-range { width: 14rem; max-width: 60vw; min-height: 44px; accent-color: var(--red-dark); }
+.v17-out { font-family: var(--dhbw-font-mono); font-weight: 700; min-width: 3ch; }
+.v17-err { color: var(--k-bad); font-weight: 600; min-height: 1.4em; margin: 0 0 var(--sp-2); }
+
+/* SVG */
+.v17-chartwrap { min-width: 0; margin: 0 0 var(--sp-3); }
+.v17-svg { display: block; width: 100%; height: auto; max-width: 720px; background: #fff; }
+.v17-axt { font-size: 13px; fill: #1A1A1A; font-weight: 700; }
+.v17-nid { font-size: 15px; font-weight: 700; fill: #1A1A1A; }
+.v17-nip { font-size: 13px; fill: #4B5563; font-family: var(--dhbw-font-mono); }
+.v17-node { cursor: pointer; }
+.v17-node.is-bad .v17-nid, .v17-node.is-bad .v17-nip { fill: #9B1213; }
+
+/* Panels */
+.v17-panel { margin: 0 0 var(--sp-3); max-width: none; min-width: 0; }
+.v17-panel p { max-width: var(--k-measure); }
+.v17-ptitle { font-weight: 700; margin: 0 0 var(--sp-1); }
+.v17-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; margin: var(--sp-2) 0; max-width: none; }
+.v17-verdict { margin: var(--sp-3) 0; padding: var(--sp-3) var(--sp-4); border-left: 3px solid var(--k-info); background: var(--k-info-bg); max-width: var(--k-measure); }
+.v17-verdict.is-bad { border-color: var(--k-bad); background: var(--k-bad-bg); }
+.v17-verdict.is-ok { border-color: var(--k-ok); background: var(--k-ok-bg); }
+.v17-dl dd { font-size: var(--fs-md); overflow-wrap: anywhere; }
+
+/* Bitzeilen */
+.v17-row { margin: 0 0 var(--sp-3); }
+.v17-rl { font-size: var(--fs-sm); font-weight: 600; margin: 0 0 4px; overflow-wrap: anywhere; }
+.v17-octs { display: flex; flex-wrap: wrap; gap: 6px 10px; }
+.v17-oct { text-align: center; padding: 2px 3px; border-radius: 4px; border: 2px solid transparent; }
+.v17-oct.is-cur { border-color: var(--red-dark); background: #FFF1F2; }
+.v17-bits { display: flex; }
+.v17-bit { display: inline-block; box-sizing: border-box; width: 12px; height: 26px; line-height: 24px; text-align: center; font-family: var(--dhbw-font-mono); font-size: 12px; font-weight: 700; }
+.v17-bit--net { background: #1A1A1A; color: #fff; border: 1px solid #1A1A1A; }
+.v17-bit--host { background: #fff; color: #1A1A1A; border: 1px solid #6B7280; }
+.v17-dec { font-family: var(--dhbw-font-mono); font-size: var(--fs-sm); font-weight: 700; margin-top: 2px; }
+
+/* HTTP */
+.v17-http { margin: 0 0 var(--sp-3); }
+.v17-hstep { margin: 0 0 var(--sp-3); padding: var(--sp-3) var(--sp-4); border-left: 3px solid var(--border); background: var(--canvas); max-width: none; }
+.v17-hstep p, .v17-hstep ul { max-width: var(--k-measure); }
+.v17-hstep.is-okbox { border-color: var(--k-ok); background: var(--k-ok-bg); }
+.v17-hstep.is-badbox { border-color: var(--k-bad); background: var(--k-bad-bg); }
+.v17-hh { font-weight: 700; margin: 0 0 var(--sp-2); }
+.v17-url { font-family: var(--dhbw-font-mono); font-size: var(--fs-sm); overflow-wrap: anywhere; margin: 0 0 var(--sp-2); }
+.v17-u { padding: 1px 2px; }
+.v17-u--schema { border-bottom: 3px solid #1A1A1A; }
+.v17-u--host { border-bottom: 3px double #1A1A1A; font-weight: 700; }
+.v17-u--pfad { border-bottom: 3px dotted #1A1A1A; }
+.v17-ulist { margin: 0; padding-left: 1.2em; }
+.v17-ulist code { overflow-wrap: anywhere; }
+.v17-msg { margin: 0 0 var(--sp-2); padding: var(--sp-3); background: var(--code-bg); color: var(--code-text); font-family: var(--dhbw-font-mono); font-size: var(--fs-sm); border-radius: var(--r-base); white-space: pre-wrap; overflow-wrap: anywhere; max-width: none; }
+.v17-py { margin: 0; }
+tr.is-cur td { background: #FFF1F2; font-weight: 700; }
+
+/* JSON */
+.v17-two { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: var(--sp-5); align-items: start; margin: 0 0 var(--sp-3); }
+@media (max-width: 900px) { .v17-two { grid-template-columns: minmax(0, 1fr); gap: var(--sp-3); } }
+.v17-json { background: #fff; border: 1px solid var(--border); padding: var(--sp-3); font-family: var(--dhbw-font-mono); font-size: 13px; min-width: 0; overflow-wrap: anywhere; }
+.v17-jl { min-height: 34px; display: flex; align-items: center; flex-wrap: wrap; white-space: pre-wrap; }
+.v17-jv { font: inherit; background: #fff; border: 1px dashed #6B7280; border-radius: 3px; padding: 4px 6px; min-height: 32px; cursor: pointer; color: inherit; text-align: left; overflow-wrap: anywhere; }
+.v17-jv:hover { background: #F3F4F6; }
+.v17-jv.is-sel { background: var(--red-dark); color: #fff; border: 2px solid var(--red-dark); font-weight: 700; }
+.v17-jv:focus-visible { outline: 3px solid var(--red-dark); outline-offset: 2px; }
+.v17-calc { min-height: 9em; max-width: none; min-width: 0; }
+.v17-calc p { max-width: none; }
+.v17-calc__t { font-weight: 700; margin: var(--sp-2) 0 0; }
+.v17-calc__f { font-family: var(--dhbw-font-mono); font-size: var(--fs-sm); margin: 2px 0 0; overflow-wrap: anywhere; padding: 4px 8px; background: var(--canvas); border-left: 3px solid var(--border); }
+
+/* MQTT */
+.v17-flow { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.4fr); gap: var(--sp-4); align-items: start; margin: 0 0 var(--sp-3); }
+@media (max-width: 900px) { .v17-flow { grid-template-columns: minmax(0, 1fr); gap: var(--sp-3); } }
+.v17-subs { display: grid; gap: var(--sp-3); min-width: 0; }
+.v17-card { border: 2px solid var(--border); border-radius: var(--r-base); padding: var(--sp-3); background: #fff; min-width: 0; transition: border-color .2s, background-color .2s; }
+.v17-card p { max-width: none; margin: 0 0 var(--sp-1); overflow-wrap: anywhere; }
+.v17-ch { font-weight: 700; }
+.v17-card.is-active { border-color: var(--red-dark); background: #FFF1F2; }
+.v17-card.is-hit { border-color: var(--k-ok); background: var(--k-ok-bg); border-style: solid; border-width: 3px; }
+.v17-card.is-miss { border-style: dashed; color: #4B5563; }
+.v17-card.is-bad { border-color: var(--k-bad); background: var(--k-bad-bg); }
+.v17-filter code { overflow-wrap: anywhere; }
+.v17-res { min-height: 1.4em; font-size: var(--fs-sm); }
+
+/* Schichtenmodell: Brief im Umschlag */
+.v17-layers { display: grid; gap: 0; margin: var(--sp-3) 0; max-width: 36rem; }
+.v17-layer { border: 2px solid #1A1A1A; padding: var(--sp-2) var(--sp-3); background: #fff; font-size: var(--fs-sm); }
+.v17-layer + .v17-layer { border-top: 0; }
+.v17-layer strong { display: block; }
+.v17-layer--1 { background: #fff; }
+.v17-layer--2 { background: #F3F4F6; }
+.v17-layer--3 { background: #E5E7EB; }
+.v17-layer--4 { background: #D1D5DB; }
+
+/* PAP */
+.v17-papbox { min-width: 0; max-width: 520px; }
+
+/* Handy: Die SVG-Diagramme werden auf ca. 340 px verkleinert; Beschriftung in SVG-Einheiten vergrößern, damit sie lesbar bleibt (ca. 10 px) */
+@media (max-width: 600px) {
+  .v17-svg .v17-nid { font-size: 24px; }
+  .v17-svg .v17-nip { font-size: 21px; }
+  .v17-svg .v17-axt { font-size: 22px; }
+}
+@media (max-width: 480px) {
+  .v17-bit { width: 8px; font-size: 10px; }
+  .v17-octs { gap: 6px 6px; }
+  .v17-oct { padding: 2px 1px; }
+  .v17-json { font-size: 12px; padding: var(--sp-2); }
+}

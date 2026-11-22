@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>V17 Netzwerke &amp; Industrie 4.0 · Lerneinheit · Informatik Maschinenbau</title>
+  <meta name="description" content="IP-Adresse und Subnetz lesen, HTTP-Anfragen und Statuscodes verstehen, JSON in Python auswerten, MQTT mit Topics und Wildcards, und warum die Fertigungszelle ihr eigenes Netz hat.">
+  <link rel="stylesheet" href="../assets/css/dhbw-base.css">
+  <link rel="stylesheet" href="../assets/css/kurs.css">
+  <link rel="stylesheet" href="../assets/css/aufgaben.css">
+  <link rel="stylesheet" href="../assets/css/editor.css">
+  <link rel="stylesheet" href="../assets/css/v05.css">
+  <link rel="stylesheet" href="../assets/css/v17.css">
+</head>
+<body data-lesson="V17" data-page="lerneinheit">
+  <a class="k-skip" href="#inhalt">Zum Inhalt springen</a>
+
+  <header class="dhbw-header k-header">
+    <div class="dhbw-header__inner">
+      <a class="k-logo" href="../index.html" aria-label="Zur Startseite">
+        <span class="k-logo__mark" aria-hidden="true">DHBW</span>
+        <span class="k-logo__text">Informatik Maschinenbau<small>Campus Horb · 2026/27</small></span>
+      </a>
+      <nav class="k-nav" aria-label="Hauptnavigation">
+        <a href="../index.html">Start</a>
+        <a href="../index.html#lernpfad">Lernpfad</a>
+        <a href="../bibliothek.html">Bibliothek</a>
+        <a href="../pap-editor.html">PAP-Editor</a>
+        <a href="../projekt.html">Projekt</a>
+        <a href="v17-netzwerke.html" aria-current="page">V17 Lerneinheit</a>
+        <a href="v17-labor.html">V17 Labor</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="l-page">
+    <nav class="k-toc" aria-label="Inhalt dieser Lerneinheit">
+      <p class="k-toc__title">Lerneinheit V17</p>
+      <ol class="k-toc__list">
+        <li><a href="#warum"><span class="k-toc__n">1</span>Warum?</a></li>
+        <li><a href="#theorie"><span class="k-toc__n">2</span>Theorie</a></li>
+        <li><a href="#ausprobieren"><span class="k-toc__n">3</span>Ausprobieren</a></li>
+        <li><a href="#selbstcheck"><span class="k-toc__n">4</span>Selbstcheck</a></li>
+        <li><a href="#deepdive"><span class="k-toc__n">5</span>Deep Dive</a></li>
+      </ol>
+      <div class="k-progress" data-progress-for="V17">
+        <span class="k-progress__bar"><span class="k-progress__fill"></span></span>
+        <span class="k-progress__text">0 von 5 Abschnitten</span>
+      </div>
+      <a class="k-toc__lab" href="v17-labor.html">Weiter ins Programmierlabor →</a>
+    </nav>
+
+    <main id="inhalt" class="l-content">
+
+      <header class="k-title">
+        <p class="k-title__label">V17 · Phase 3 Projekt · Lerneinheit</p>
+        <h1 id="h-titel">Netzwerke &amp; Industrie 4.0</h1>
+        <p class="k-title__lead">Eine Fertigungszelle besteht nicht nur aus Maschinen, sondern auch aus Kabeln, Adressen und Nachrichten. Du lernst, wie ein Gerät im <abbr class="k-begriff" data-erklaerung="Ein Netzwerk ist ein Verbund von Geräten, die über Kabel oder Funk Daten austauschen. In der Fertigungszelle sind das Maschinen, Steuerung, Messgerät und Leitrechner.">Netzwerk</abbr> gefunden wird, wie Programme Daten per <abbr class="k-begriff" data-erklaerung="HTTP (Hypertext Transfer Protocol) ist das Protokoll des Webs: Ein Client schickt eine Anfrage an eine Adresse, der Server schickt eine Antwort mit einem Statuscode zurück.">HTTP</abbr> abfragen und wie <abbr class="k-begriff" data-erklaerung="JSON (JavaScript Object Notation) ist ein Textformat für Daten: Schlüssel und Werte in geschweiften Klammern, Listen in eckigen. Fast jede Programmierschnittstelle liefert JSON.">JSON</abbr> in Python zu Dictionaries und Listen wird. Dazu kommt <abbr class="k-begriff" data-erklaerung="MQTT (Message Queuing Telemetry Transport) ist ein schlankes Protokoll für Maschinendaten. Geräte veröffentlichen Nachrichten zu einem Topic, ein Broker verteilt sie an alle, die dieses Topic abonniert haben.">MQTT</abbr>, das Protokoll, mit dem Maschinen Bescheid geben, wenn sich etwas ändert.</p>
+        <p class="k-title__goals">Nach dieser Lerneinheit kannst du:</p>
+        <ul class="k-title__list">
+          <li>eine IPv4-Adresse und eine Netzmaske lesen und entscheiden, ob ein Gerät im Netz <code class="k-i">192.168.30.0/24</code> liegt,</li>
+          <li>Netzadresse, Broadcast und die Zahl nutzbarer Adressen eines Subnetzes ausrechnen (zum Beispiel /26: 62),</li>
+          <li>eine HTTP-Anfrage in URL, Anfrage und Antwort zerlegen und die Statuscodes 200 und 404 (sowie 401, 403, 500) deuten,</li>
+          <li>JSON-Text lesen und in Python mit <code class="k-i">json.loads</code>, Schlüsseln und Indizes auswerten,</li>
+          <li>erklären, was ein MQTT-Broker tut und welche Topics ein Abo mit <code class="k-i">+</code> oder <code class="k-i">#</code> empfängt,</li>
+          <li>in Python <code class="k-i">requests</code>, <code class="k-i">json</code> und <code class="k-i">ipaddress</code> lesen und einsetzen.</li>
+        </ul>
+        <p class="k-small k-muted">Das Schreiben des Codes übst du im <a href="v17-labor.html">Programmierlabor</a>. Vorausgesetzt sind V01 bis V16, besonders Binärzahlen (V02), <code class="k-i">and</code> (V04), Dictionaries (V08), Dateien und <code class="k-i">try/except</code> (V09). Das Projekt läuft parallel weiter: Die Meilensteine stehen auf der <a href="../projekt.html">Projektseite</a>.</p>
+      </header>
+
+      <!-- 1 ───────────── WARUM ───────────── -->
+      <section class="k-section" id="warum" data-section="warum" aria-labelledby="h-warum">
+        <h2 class="k-section__title" id="h-warum"><span class="k-section__num" aria-hidden="true">1</span> Warum?</h2>
+
+        <p>In der Halle 2 steht die Fertigungszelle FZ-3: eine Drehmaschine D2, eine Fräsmaschine F1, ein Roboter R1, eine Messmaschine M1 und die Zellensteuerung SPS. Den Roboter hast du in V16 schon in den Logs gesehen („Lichtgitter unterbrochen“). Heute zeigt der Leitstand etwas anderes: R1 ist <strong>nicht erreichbar</strong>. Der Techniker hat die Robotersteuerung getauscht, und der Roboter lässt sich nicht ansprechen, obwohl nichts kaputt ist. Der Grund steht in einer einzigen Zahl: Die neue Steuerung hat die Adresse <code class="k-i">192.168.31.20</code>. Alle anderen Geräte der Zelle haben Adressen mit <code class="k-i">192.168.30.</code> am Anfang. Eine Ziffer Unterschied, und R1 liegt in einem anderen Netz.</p>
+
+        <figure class="k-figure">
+          <picture>
+            <source srcset="../assets/img/v17-hook.webp" type="image/webp">
+            <img src="../assets/img/v17-hook.png" alt="Illustration: Fertigungszelle mit mehreren Maschinen an einem Switch, der Roboter hängt mit gestrichelter Leitung an einem anderen Netz" width="1600" height="900" loading="lazy" onerror="this.closest('figure').hidden=true">
+          </picture>
+        </figure>
+
+        <div class="k-try" aria-labelledby="t-hook">
+          <h3 id="t-hook">Selbst sehen: der Roboter, der nicht antwortet</h3>
+          <p class="k-small k-muted">Sag erst voraus. Im Abschnitt Theorie klickst du dich danach durch das Zellennetz.</p>
+          <div class="k-predict">
+            <p class="k-predict__q">Die SPS hat die Adresse 192.168.30.2, die Netzmaske ist 255.255.255.0 (also /24). Der Roboter hat 192.168.31.20. Kann die SPS ihn direkt erreichen?</p>
+            <div class="k-predict__opts"><button type="button">Ja, die Adressen sehen fast gleich aus.</button><button type="button" data-correct>Nein, der dritte Block unterscheidet sich: anderes Netz.</button><button type="button">Ja, aber nur langsamer.</button></div>
+            <div class="k-predict__result"></div>
+            <div class="k-predict__expl" hidden>Nein. Bei /24 gehören die ersten drei Blöcke zum Netzanteil: 192.168.30 gegen 192.168.31 ist nicht dasselbe Netz. Zwischen verschiedenen Netzen kommen Nachrichten nur über ein Gateway (Router), und das müsste die SPS erst dafür einrichten. Der Roboter ist nicht defekt, er ist falsch eingetragen.</div>
+          </div>
+        </div>
+
+        <h3>Wissens-Ampel für V17</h3>
+        <ul class="k-ampel-list" aria-label="Wissens-Ampel zu V17">
+          <li><span class="k-ampel k-ampel--kopf"><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-head"/></svg> Im Kopf</span><span>Eine IP-Adresse und ein Subnetz lesen: Liegt ein Gerät im Netz (bei /24: die ersten drei Blöcke gleich)? JSON lesen und mit Python-Zugriffen auswerten (<code class="k-i">d["schluessel"]</code>, <code class="k-i">liste[0]</code>). Einen HTTP-Statuscode deuten (200: gut, 404: nicht gefunden).</span></li>
+          <li><span class="k-ampel k-ampel--lesen"><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-book"/></svg> Lesen &amp; erkennen</span><span><code class="k-i">requests.get(...).json()</code> lesen, MQTT (Broker, Publish und Subscribe, Topics, die Wildcards <code class="k-i">+</code> und <code class="k-i">#</code>), das einfache Schichtenmodell und das Modul <code class="k-i">ipaddress</code>.</span></li>
+          <li><span class="k-ampel k-ampel--deleg"><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-handover"/></svg> Delegieren</span><span>Kopfzeilen (Header), Anmeldung mit Token, Portfreigaben in der Firewall, die Einzelheiten von OPC UA und MQTT-Bibliotheken wie paho-mqtt. Du musst wissen, dass es sie gibt und wofür, und KI-Code dazu prüfen können.</span></li>
+        </ul>
+
+        <div class="hinweis hinweis--warum"><strong class="hinweis__title">Warum muss ich das wissen?</strong><p>Als Ingenieur in der Produktion oder Inbetriebnahme hängen deine Maschinen im Netz: Wer eine Steuerung tauscht, trägt Adressen ein, und wer Fehler sucht, muss erkennen, ob eine Maschine oder ein Netz das Problem ist. Moderne Fertigung liefert Daten statt Zettel: Stückzahlen, Temperaturen und Werkzeugverschleiß kommen als JSON über HTTP oder MQTT. Und wenn die KI dir ein Programm für eine solche Abfrage schreibt, musst du prüfen können, ob es die Adresse richtig vergleicht und den Statuscode beachtet. In der Klausur kommt das als Rechnung mit Adressen, als JSON-Zugriff und als Code zum Lesen.</p></div>
+      </section>
+
+      <!-- 2 ───────────── THEORIE ───────────── -->
+      <section class="k-section" id="theorie" data-section="theorie" aria-labelledby="h-theorie">
+        <h2 class="k-section__title" id="h-theorie"><span class="k-section__num" aria-hidden="true">2</span> Theorie</h2>
+
+        <h3>Erklärvideo (ca. 3 Min)</h3>
+        <figure class="k-video" id="video-theorie">
+          <video controls preload="metadata" poster="../assets/video/v17-theorie-poster.png" aria-label="Erklärvideo Netzwerke und Industrie 4.0: IP-Adresse und Subnetz, HTTP, JSON, MQTT">
+            <source src="../assets/video/v17-theorie.mp4" type="video/mp4">
+            <track kind="subtitles" srclang="de" label="Deutsch" src="../assets/video/v17-theorie.vtt" default>
+            Dein Browser kann dieses Video nicht abspielen.
+          </video>
+          <div class="k-video__missing" hidden>Video folgt. Bis dahin: die Explorables und der Lesetext unten decken alles ab.</div>
+          <figcaption>Untertitel sind eingeschaltet (Deutsch).</figcaption>
+        </figure>
+
+        <h3>Geräte im Netz: Adresse, Switch, Gateway</h3>
+        <p>Damit Geräte einander Daten schicken können, braucht jedes eine <abbr class="k-begriff" data-erklaerung="Eine IP-Adresse ist die Nummer eines Geräts im Netz. In der Version 4 besteht sie aus 32 Bit, geschrieben als vier Zahlen von 0 bis 255, zum Beispiel 192.168.30.11.">IP-Adresse</abbr>. In IPv4 sind das 32 Bit, geschrieben als vier Zahlen von 0 bis 255, jede steht für 8 Bit (ein Oktett, Binärzahlen kennst du aus V02). Ein <abbr class="k-begriff" data-erklaerung="Ein Switch ist der Verteiler im Netz: Alle Geräte der Zelle stecken an ihm, und er leitet Nachrichten an das Gerät weiter, für das sie bestimmt sind.">Switch</abbr> verbindet die Geräte eines Netzes miteinander. Ein <abbr class="k-begriff" data-erklaerung="Ein Router verbindet verschiedene Netze miteinander und entscheidet, in welches Netz eine Nachricht weitergereicht wird.">Router</abbr> verbindet verschiedene Netze, und die Adresse, unter der ein Gerät den Router erreicht, heißt <abbr class="k-begriff" data-erklaerung="Das Gateway ist die Adresse des Routers im eigenen Netz, über die alle Nachrichten in fremde Netze gehen. In der Zelle ist das 192.168.30.1.">Gateway</abbr>.</p>
+        <p>Woher weiß ein Gerät, ob ein Ziel im eigenen Netz liegt oder über das Gateway muss? Aus dem <abbr class="k-begriff" data-erklaerung="Das Subnetz (Teilnetz) ist die Gruppe von Adressen, die dieselben Netz-Bits haben. Geräte im selben Subnetz erreichen sich direkt, für andere Subnetze braucht man ein Gateway.">Subnetz</abbr>. Hinter der Adresse steht ein <abbr class="k-begriff" data-erklaerung="Das Präfix (zum Beispiel /24) gibt an, wie viele der 32 Bit der Adresse zum Netzanteil gehören. Der Rest ist der Hostanteil, der die Geräte im Netz unterscheidet.">Präfix</abbr> wie <code class="k-i">/24</code>: Die ersten 24 Bit sind der Netzanteil, die übrigen 8 der Hostanteil. Dasselbe sagt die <abbr class="k-begriff" data-erklaerung="Die Netzmaske hat so viele Einsen von links, wie das Präfix angibt: /24 ist 255.255.255.0. Ein bitweises UND mit der Maske lässt nur den Netzanteil der Adresse übrig.">Netzmaske</abbr> <code class="k-i">255.255.255.0</code> (24 Einsen, dann 8 Nullen). Rechne <em>IP-Adresse UND Netzmaske</em> (Bit für Bit, das <code class="k-i">and</code> aus V04): Das Ergebnis ist die Netzadresse. Zwei Geräte liegen im selben Subnetz, wenn dabei dieselbe Netzadresse herauskommt.</p>
+
+        <div class="k-explorable">
+          <h3>Das Zellennetz FZ-3</h3>
+          <p class="k-explorable__lead">Klicke ein Gerät an. Du siehst seine Adresse als Dezimalzahlen und als 32 Bit, farbig getrennt in Netzanteil (dunkel) und Hostanteil (hell). Dann rechnest du IP UND Maske Schritt für Schritt nach. Wähle danach R1.</p>
+          <div data-explorable="zellennetz"></div>
+          <noscript><p>Für das Explorable „Das Zellennetz FZ-3“ wird JavaScript benötigt.</p></noscript>
+          <p class="k-small k-muted">Beobachtung: Beim Roboter kommt im dritten Oktett 31 heraus statt 30, und genau dieses Oktett gehört noch zum Netzanteil. Ein Hostanteil kann beliebig sein, der Netzanteil muss stimmen.</p>
+        </div>
+
+        <h3>Wie viele Adressen hat ein Subnetz?</h3>
+        <p>Ein Präfix <em>n</em> lässt <code class="k-i">32 − n</code> Bit für den Hostanteil. Damit gibt es 2<sup>32−n</sup> Adressen. Zwei davon sind nicht für Geräte: die <strong>Netzadresse</strong> (alle Hostbits 0, sie benennt das Netz) und die <strong>Broadcast-Adresse</strong> (alle Hostbits 1, sie richtet sich an alle). Nutzbar sind also <strong>2<sup>32−n</sup> − 2</strong>. Bei /24 sind das 2<sup>8</sup> − 2 = 254, bei /26 2<sup>6</sup> − 2 = 62.</p>
+        <div class="k-explorable">
+          <h3>Subnetz-Rechner</h3>
+          <p class="k-explorable__lead">Stelle den Präfix von /16 bis /30 ein und gib eine Adresse ein. Du siehst Maske, Netzadresse, Broadcast und die Zahl der nutzbaren Adressen. Probiere „R1 mit /23“: Dann läge der Roboter plötzlich im selben Netz wie D2.</p>
+          <div data-explorable="subnetz"></div>
+          <noscript><p>Für das Explorable „Subnetz-Rechner“ wird JavaScript benötigt.</p></noscript>
+          <p class="k-small k-muted">Beobachtung: Jedes Bit mehr im Präfix halbiert die Zahl der Adressen. Mit /24 gegen /23 wäre R1 erreichbar, aber ein zu großes Netz ist in der Fabrik auch keine Lösung: Die Zelle bekommt ein /24, und die Adressen werden richtig eingetragen.</p>
+        </div>
+
+        <h3>Client und Server: HTTP</h3>
+        <p>Ein <abbr class="k-begriff" data-erklaerung="Ein Client ist das Programm, das eine Anfrage stellt und auf eine Antwort wartet. Dein Python-Programm ist hier der Client.">Client</abbr> fragt, ein <abbr class="k-begriff" data-erklaerung="Ein Server ist das Programm (oder der Rechner), das auf Anfragen wartet und Antworten liefert. Es hört dazu an einem bestimmten Port.">Server</abbr> antwortet. Wie genau, regelt ein <abbr class="k-begriff" data-erklaerung="Ein Protokoll ist die Vereinbarung, wer was in welcher Form sendet, damit zwei Geräte einander verstehen: Reihenfolge, Format, Fehlermeldungen.">Protokoll</abbr>. Im Web ist das HTTP. Eine Adresse wie <code class="k-i">https://maschoeller.github.io/…/D2.json</code> heißt <abbr class="k-begriff" data-erklaerung="Eine URL (Uniform Resource Locator) ist die vollständige Adresse einer Ressource: Schema (https), Host (der Rechner) und Pfad (welche Datei oder welcher Dienst dort).">URL</abbr> und besteht aus <strong>Schema</strong> (wie gesprochen wird), <strong>Host</strong> (wer antwortet) und <strong>Pfad</strong> (was gemeint ist). Dazu kommt der <abbr class="k-begriff" data-erklaerung="Ein Port ist eine Nummer, die auf einem Gerät einen bestimmten Dienst adressiert, so wie eine Tür in einem Gebäude. HTTP nutzt meist 80, HTTPS 443, MQTT 1883.">Port</abbr>, die Nummer des Dienstes auf dem Rechner: HTTP meist 80, HTTPS 443, MQTT 1883.</p>
+        <p>Eine <abbr class="k-begriff" data-erklaerung="Eine API (Programmierschnittstelle) ist eine Sammlung fester Adressen, unter denen ein Programm Daten oder Funktionen anbietet. Wer die Adresse kennt, kann die Daten per Programm abrufen, ohne eine Webseite zu lesen.">API</abbr> ist eine Sammlung fester Adressen, unter denen ein Programm Daten liefert. Hier sind es statische Dateien dieser Website, in der Fabrik wäre es ein Server am Leitrechner, der die Werte der Maschinen aktuell zusammenstellt. Die Antwort beginnt immer mit einem <abbr class="k-begriff" data-erklaerung="Der Statuscode ist eine dreistellige Zahl am Anfang der HTTP-Antwort. 200 heißt erfolgreich, 404 nicht gefunden, 401 und 403 nicht angemeldet oder nicht erlaubt, 500 Fehler im Server.">Statuscode</abbr>.</p>
+        <div class="k-explorable">
+          <h3>Eine HTTP-Anfrage Schritt für Schritt</h3>
+          <p class="k-explorable__lead">Dein Python-Programm (der Client) fragt diese Website (den Server) nach der Datei D2.json. Gehe die drei Schritte durch und schalte danach auf D9.json um: Die gibt es nicht.</p>
+          <div data-explorable="http"></div>
+          <noscript><p>Für das Explorable „Eine HTTP-Anfrage Schritt für Schritt“ wird JavaScript benötigt.</p></noscript>
+          <p class="k-small k-muted">Beobachtung: Auch ein Fehler ist eine gültige Antwort. Der Server meldet 404, und dein Programm muss das prüfen, bevor es mit <code class="k-i">.json()</code> Daten erwartet.</p>
+        </div>
+
+        <h3>JSON: Daten als Text</h3>
+        <p>Die Antwort einer API ist meist <strong>JSON</strong>. Es ist ein Textformat: geschweifte Klammern für Objekte (Schlüssel und Wert), eckige für Listen, Texte in doppelten Anführungszeichen. Mit <code class="k-i">json.loads(text)</code> macht Python daraus ein Dictionary oder eine Liste (V08), mit <code class="k-i">json.dumps(daten)</code> wieder Text. Neu im Vergleich zu V08: Die Daten sind <strong>verschachtelt</strong>. Eine Liste kann Dictionaries enthalten, ein Dictionary kann ein weiteres Dictionary enthalten. Du greifst Schritt für Schritt hinein: <code class="k-i">zelle["maschinen"][0]["id"]</code> ist erst das Dictionary, dann die Liste, dann das erste Element, dann ein Schlüssel.</p>
+        <div class="k-explorable">
+          <h3>JSON-Übersetzer</h3>
+          <p class="k-explorable__lead">Links steht der JSON-Text. Klicke einen Wert an, und rechts siehst du den Python-Ausdruck, das Ergebnis und den Python-Typ. Wechsle auch zu R1.json (dort gibt es <code class="k-i">null</code>) und zur Maschinenliste.</p>
+          <div data-explorable="json"></div>
+          <noscript><p>Für das Explorable „JSON-Übersetzer“ wird JavaScript benötigt.</p></noscript>
+          <p class="k-small k-muted">Beobachtung: Die Verschachtelung im JSON-Text und die Folge der eckigen Klammern im Python-Ausdruck sind dasselbe Bild. Zahlen mit Dezimalpunkt werden <code class="k-i">float</code>, ohne <code class="k-i">int</code>, und <code class="k-i">null</code> wird <code class="k-i">None</code>. JSON verlangt doppelte Anführungszeichen und kein Komma nach dem letzten Eintrag, sonst gibt es einen <code class="k-i">json.JSONDecodeError</code> (ein <code class="k-i">ValueError</code>, also mit <code class="k-i">except ValueError</code> abfangbar).</p>
+        </div>
+
+        <h3>MQTT: Bescheid geben, wenn sich etwas ändert</h3>
+        <p>Mit HTTP <em>fragst</em> du, wenn du etwas wissen willst (Pull). Für Maschinen, die sich selten ändern, ist ständiges Nachfragen Verschwendung. <abbr class="k-begriff" data-erklaerung="MQTT (Message Queuing Telemetry Transport) ist ein schlankes Protokoll für Maschinendaten. Geräte veröffentlichen Nachrichten zu einem Topic, ein Broker verteilt sie an alle, die dieses Topic abonniert haben.">MQTT</abbr> dreht das um (Push): Eine Maschine <em>veröffentlicht</em> (publish) eine Nachricht zu einem <abbr class="k-begriff" data-erklaerung="Ein Topic ist die Adresse einer MQTT-Nachricht, aufgebaut wie ein Pfad mit Schrägstrichen, zum Beispiel fz3/D2/status. Jede Ebene grenzt das Thema weiter ein.">Topic</abbr> wie <code class="k-i">fz3/D2/status</code>. Der <abbr class="k-begriff" data-erklaerung="Der Broker ist der Vermittler bei MQTT: Er nimmt alle Nachrichten an und leitet sie an jeden Client weiter, dessen Abo zum Topic passt. In der Zelle läuft er unter 192.168.30.5 auf Port 1883.">Broker</abbr> (in der Zelle 192.168.30.5, Port 1883) nimmt sie an und leitet sie an alle weiter, die dieses Topic <em>abonniert</em> (subscribe) haben. Sender und Empfänger kennen einander nicht, das ist <abbr class="k-begriff" data-erklaerung="Publish/Subscribe ist das Muster hinter MQTT: Sender (Publisher) und Empfänger (Subscriber) kennen einander nicht, sie sprechen nur über Topics mit dem Broker.">Publish/Subscribe</abbr>.</p>
+        <p>Beim Abonnieren darfst du Platzhalter verwenden: <code class="k-i">+</code> steht für <strong>genau eine</strong> Ebene, <code class="k-i">#</code> für <strong>beliebig viele</strong> Ebenen und steht nur ganz am Ende. Also empfängt <code class="k-i">fz3/+/status</code> den Status jeder Maschine (aber nicht die Wartung), und <code class="k-i">fz3/D2/#</code> alles, was zur Drehmaschine veröffentlicht wird.</p>
+        <div class="k-explorable">
+          <h3>MQTT-Broker</h3>
+          <p class="k-explorable__lead">Eine Maschine veröffentlicht eine Meldung. Der Broker prüft sie gegen jedes Abo und leitet sie nur an passende Abonnenten weiter. Das vierte Abo kannst du selbst ändern: Was passiert bei <code class="k-i">fz3/#</code>, bei <code class="k-i">fz3/+</code> oder bei <code class="k-i">fz3/D+/status</code>?</p>
+          <div data-explorable="mqtt"></div>
+          <noscript><p>Für das Explorable „MQTT-Broker“ wird JavaScript benötigt.</p></noscript>
+          <p class="k-small k-muted">Beobachtung: Der Publisher weiß nicht, wer mithört. Ein neuer Abonnent braucht keine Änderung an der Maschine, ein zusätzliches Abo kostet die Maschine nichts.</p>
+        </div>
+        <div class="k-tablewrap"><table class="k-plan">
+          <thead><tr><th scope="col"></th><th scope="col">HTTP (Pull)</th><th scope="col">MQTT (Push)</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Idee</th><td>„Fragen, wenn ich es wissen will“</td><td>„Bescheid bekommen, wenn sich etwas ändert“</td></tr>
+            <tr><th scope="row">Wer hat die Initiative?</th><td>der Client</td><td>der Sender (Publisher)</td></tr>
+            <tr><th scope="row">Beteiligte</th><td>Client und Server direkt</td><td>Publisher und Subscriber über einen Broker</td></tr>
+            <tr><th scope="row">Passt gut zu</th><td>Daten auf Abruf, Konfiguration, Berichte</td><td>Statusmeldungen, Messwerte, Alarme</td></tr>
+          </tbody>
+        </table></div>
+
+        <h3>Schichten: der Brief im Umschlag</h3>
+        <p>Warum funktioniert das alles zusammen, obwohl jeder etwas anderes zuständig ist? Weil man das Netz in <strong>Schichten</strong> denkt. Jede Schicht packt die Nachricht in einen weiteren Umschlag mit ihrer eigenen Adresse, und beim Empfänger wird in umgekehrter Reihenfolge ausgepackt. Das vereinfachte Modell hat vier Schichten:</p>
+        <div class="v17-layers" role="list" aria-label="Vier Schichten von oben nach unten">
+          <div class="v17-layer v17-layer--1" role="listitem"><strong>1 · Anwendung</strong>der Inhalt: HTTP, MQTT, JSON-Daten („Status von D2“)</div>
+          <div class="v17-layer v17-layer--2" role="listitem"><strong>2 · Transport</strong>TCP mit Port-Nummer: an welchen Dienst (80, 443, 1883)</div>
+          <div class="v17-layer v17-layer--3" role="listitem"><strong>3 · Internet</strong>IP-Adresse: an welches Gerät, auch über Netzgrenzen hinweg</div>
+          <div class="v17-layer v17-layer--4" role="listitem"><strong>4 · Netzzugang</strong>Ethernet oder WLAN: das Kabel oder die Funkstrecke zum nächsten Gerät</div>
+        </div>
+        <p>Der Vorteil: Wer HTTP nutzt, muss nichts über Kabel wissen, und ein Kabel kann ausgetauscht werden, ohne dass sich ein Programm ändert. Dein <code class="k-i">requests.get</code> arbeitet ganz oben, die IP-Adresse aus dem Zellennetz-Explorable liegt in Schicht 3.</p>
+
+        <h3>IT, OT und Industrie 4.0</h3>
+        <p>Im Betrieb gibt es zwei Welten. Die <abbr class="k-begriff" data-erklaerung="OT (Operational Technology) ist die Technik, die Maschinen und Anlagen steuert: SPS, Roboter, Antriebe, Sensoren. Sie muss zuverlässig und in Echtzeit laufen, Updates sind selten.">OT</abbr> steuert Maschinen (SPS, Roboter, Antriebe): Sie muss laufen und rechtzeitig reagieren, Neustarts und Updates sind selten. Die IT betreibt Büro-Rechner, Server und Datenbanken, hier sind Updates und Anmeldungen alltäglich. <strong>Industrie 4.0</strong> heißt, beides zu verbinden: Maschinen liefern ihre Daten an Leitstände, Auswertungen und Datenbanken, Aufträge kommen digital zur Maschine. Dazu gibt es herstellerunabhängige Standards, etwa <abbr class="k-begriff" data-erklaerung="OPC UA ist ein herstellerunabhängiger Standard, mit dem Maschinen ihre Daten und Funktionen strukturiert anbieten. Du musst ihn nur kennen und benennen können.">OPC UA</abbr> (du musst ihn nur nennen können), und für leichte Meldungen MQTT.</p>
+        <p>Deshalb hat die Fertigungszelle ein <strong>eigenes Netz</strong>: Maschinen sollen nicht von jedem Büro-Rechner aus erreichbar sein, und ein Fehler im Büro-Netz soll die Fertigung nicht lahmlegen. Der Übergang läuft über das Gateway. Wie man dieses Netz absichert, kommt in V18.</p>
+
+        <h3>Der Plan: der Zellen-Check</h3>
+        <p>Das vorgerechnete Beispiel im Labor holt die Daten der Zelle, prüft den Status, und prüft für jede Maschine, ob ihre IP im Zellennetz liegt. Der Programmablaufplan zeigt die Reihenfolge, bevor du eine Zeile schreibst:</p>
+        <div class="k-explorable">
+          <h3>PAP: Zellen-Check</h3>
+          <p class="k-explorable__lead">Eine Verzweigung für den Status, darin eine Schleife über die Maschinen, darin wieder eine Verzweigung für die Adresse. Wenn der Status nicht 200 ist, gibt es nur die Fehlermeldung.</p>
+          <div data-explorable="pap-zellencheck"></div>
+          <noscript><p>Für das Explorable „PAP: Zellen-Check“ werden JavaScript und die PAP-Engine benötigt.</p></noscript>
+        </div>
+      </section>
+
+      <!-- 3 ───────────── AUSPROBIEREN ───────────── -->
+      <section class="k-section" id="ausprobieren" data-section="ausprobieren" aria-labelledby="h-aus">
+        <h2 class="k-section__title" id="h-aus"><span class="k-section__num" aria-hidden="true">3</span> Ausprobieren</h2>
+
+        <p>Python läuft direkt hier im Browser, auch <code class="k-i">requests</code>: Es holt die Daten dieser Website, die hier die Fertigungszelle spielt (nur lesen, nur GET). Jeder Codeblock hat einen Editor. Erst tippen, was herauskommt, dann ausführen. Die Python-Werkzeuge <code class="k-i">json</code>, <code class="k-i">requests</code> und <code class="k-i">ipaddress</code> übst du genauer im <a href="v17-labor.html#a-werkzeugkasten">Labor</a>.</p>
+
+        <div class="k-try">
+          <h3>JSON-Text in ein Dictionary</h3>
+          <div class="k-predict">
+            <p class="k-predict__q">Der Text stammt von einer Maschine. Was gibt <code>type(m)</code> aus, und was ist <code>m["drehzahl_1_min"] + 50</code>?</p>
+            <div class="k-predict__opts"><button type="button">str und 145050</button><button type="button" data-correct>dict und 1500</button><button type="button">list und 1500</button></div>
+            <div class="k-predict__result"></div>
+            <div class="k-predict__expl" hidden><code>json.loads</code> macht aus dem Text ein Dictionary (<code>dict</code>), und 1450 ist eine ganze Zahl (<code>int</code>): 1450 + 50 = 1500. Ohne <code>loads</code> wäre es nur ein langer Text, und <code>text["drehzahl_1_min"]</code> würde einen <code>TypeError</code> geben.</div>
+          </div>
+          <pre data-timeout="40000"><code>import json
+
+text = '{"id": "D2", "drehzahl_1_min": 1450}'
+m = json.loads(text)
+print(type(m))
+print(m["id"], m["drehzahl_1_min"] + 50)</code></pre>
+        </div>
+
+        <div class="k-try">
+          <h3>Zahlen, true und null</h3>
+          <div class="k-predict">
+            <p class="k-predict__q">Was gibt <code>print(json.loads('[1, 2.5, true, null]'))</code> aus?</p>
+            <div class="k-predict__opts"><button type="button">[1, 2.5, true, null]</button><button type="button" data-correct>[1, 2.5, True, None]</button><button type="button">[1, 2.5, 'true', 'null']</button></div>
+            <div class="k-predict__result"></div>
+            <div class="k-predict__expl" hidden>Die Typtabelle: JSON-<code>true</code> wird Python-<code>True</code>, JSON-<code>null</code> wird <code>None</code>. Die Zahlen bleiben Zahlen (<code>1</code> ist <code>int</code>, <code>2.5</code> ist <code>float</code>), und das Ganze ist eine Python-Liste.</div>
+          </div>
+          <pre data-timeout="40000"><code>import json
+
+werte = json.loads('[1, 2.5, true, null]')
+print(werte)
+for w in werte:
+    print(w, type(w))</code></pre>
+        </div>
+
+        <div class="k-try">
+          <h3>Von Python in JSON-Text</h3>
+          <div class="k-predict">
+            <p class="k-predict__q">Python-Dictionaries werden mit einfachen Anführungszeichen ausgegeben. Mit welchen Anführungszeichen gibt <code>json.dumps</code> den Text aus?</p>
+            <div class="k-predict__opts"><button type="button">mit einfachen, wie print</button><button type="button" data-correct>mit doppelten: so verlangt es JSON</button></div>
+            <div class="k-predict__result"></div>
+            <div class="k-predict__expl" hidden>JSON erlaubt nur doppelte Anführungszeichen, <code>dumps</code> liefert deshalb gültigen JSON-Text. Das ist ein Text (<code>str</code>), den du per MQTT oder HTTP versenden kannst. Der Ausdruck von <code>print(meldung)</code> sieht ähnlich aus, ist aber Python-Schreibweise und kein gültiges JSON.</div>
+          </div>
+          <pre data-timeout="40000"><code>import json
+
+meldung = {"maschine": "D2", "werkzeug": "T4", "aktion": "wechseln"}
+print(meldung)
+text = json.dumps(meldung)
+print(text)
+print(type(text))</code></pre>
+        </div>
+
+        <div class="k-try">
+          <h3>Fehlermeldung: Schlüssel gibt es nicht</h3>
+          <div class="k-predict">
+            <p class="k-predict__q">Das Dictionary kommt aus D2.json. Was passiert bei <code>d2["temperatur_c"]</code>?</p>
+            <div class="k-predict__opts"><button type="button">Es wird None geliefert.</button><button type="button" data-correct>KeyError: 'temperatur_c'</button><button type="button">Es wird 0 geliefert.</button></div>
+            <div class="k-predict__result"></div>
+            <div class="k-predict__expl" hidden>Ein fehlender Schlüssel ist ein <code>KeyError</code>. In D2.json heißt der Schlüssel <code>temperatur_spindel_c</code>. Mit <code>.get("temperatur_c", None)</code> bekämst du stattdessen den Ersatzwert, aber dann bemerkst du den Tippfehler später und woanders.</div>
+          </div>
+          <pre data-run="no" class="k-code"><code>KeyError: 'temperatur_c'</code></pre>
+          <pre data-timeout="40000"><code>d2 = {"id": "D2", "temperatur_spindel_c": 48.5,
+      "werkzeugverschleiss_prozent": {"T1": 22, "T4": 83}}
+
+print(d2["werkzeugverschleiss_prozent"]["T4"])
+print(d2.get("temperatur_c", "kein Wert"))
+# Probiere: print(d2["temperatur_c"])</code></pre>
+        </div>
+
+        <div class="k-try">
+          <h3>Liegt R1 im Netz der Zelle?</h3>
+          <div class="k-predict">
+            <p class="k-predict__q">Was gibt der Ausdruck <code>adresse in netz</code> für R1 (192.168.31.20) und für D2 (192.168.30.11) aus?</p>
+            <div class="k-predict__opts"><button type="button">True und True</button><button type="button" data-correct>False und True</button><button type="button">False und False</button></div>
+            <div class="k-predict__result"></div>
+            <div class="k-predict__expl" hidden><code>ipaddress</code> rechnet das UND mit der Maske für dich. R1 hat im dritten Oktett 31 statt 30, liegt also nicht im Netz 192.168.30.0/24: <code>False</code>. D2 liegt drin: <code>True</code>. Genau diese Prüfung steckt im Zellen-Check.</div>
+          </div>
+          <pre data-timeout="40000"><code>import ipaddress
+
+netz = ipaddress.ip_network("192.168.30.0/24")
+print(netz.netmask, netz.num_addresses)
+for ip in ["192.168.30.11", "192.168.31.20"]:
+    adresse = ipaddress.ip_address(ip)
+    print(ip, adresse in netz)</code></pre>
+        </div>
+
+        <div class="k-try">
+          <h3>Daten per HTTP holen</h3>
+          <div class="k-predict">
+            <p class="k-predict__q">Was gibt <code>antwort.status_code</code> für D2.json aus, und für D9.json (gibt es nicht)?</p>
+            <div class="k-predict__opts"><button type="button">200 und 200</button><button type="button" data-correct>200 und 404</button><button type="button">200 und eine Fehlermeldung von Python</button></div>
+            <div class="k-predict__result"></div>
+            <div class="k-predict__expl" hidden>Der Server beantwortet jede Anfrage. Existiert die Datei, kommt 200, sonst 404 („nicht gefunden“). Python bricht dabei nicht ab: Du musst den Statuscode selbst prüfen, bevor du <code>.json()</code> aufrufst. Bei der 404-Seite wäre das ein <code>ValueError</code>, weil sie kein JSON enthält.</div>
+          </div>
+          <pre data-timeout="60000"><code>import requests
+
+URL = "../assets/data/v17/api/"
+
+for name in ["D2.json", "D9.json"]:
+    antwort = requests.get(URL + name)
+    print(name, antwort.status_code)
+    if antwort.status_code == 200:
+        daten = antwort.json()
+        print("  Programm:", daten["programm"], "Stück:", daten["stueckzahl_schicht"])
+    else:
+        print("  keine Daten")</code></pre>
+        </div>
+      </section>
+
+      <!-- 4 ───────────── SELBSTCHECK ───────────── -->
+      <section class="k-section" id="selbstcheck" data-section="selbstcheck" aria-labelledby="h-sc">
+        <h2 class="k-section__title" id="h-sc"><span class="k-section__num" aria-hidden="true">4</span> Selbstcheck</h2>
+
+        <p>Acht Quizaufgaben im Stil der Probeklausur (22 Punkte) und eine Code-Schreib-Aufgabe (6 Punkte, T9). Plane etwa 15 Minuten für das Quiz und 10 Minuten für T9 ein, ohne Hilfsmittel. Quiz-Punkte gibt es für den ersten Versuch; danach darfst du es nochmal probieren.</p>
+
+        <div class="k-quiz" data-quiz="v17">
+
+          <div class="k-q" data-type="mc" data-points="2" data-id="t1">
+            <div class="k-q__head"><span class="k-q__title">T1 · Im Netz?</span><span class="k-q__pts">2 Punkte</span></div>
+            <div class="k-q__text">Das Netz der Zelle ist 192.168.30.0/24. Welches Gerät liegt <em>nicht</em> in diesem Netz?</div>
+            <ul class="k-q__options">
+              <li>192.168.30.11</li>
+              <li>192.168.30.254</li>
+              <li data-correct>192.168.31.20</li>
+              <li>192.168.30.1</li>
+            </ul>
+            <div class="k-q__expl">Bei /24 müssen die ersten drei Blöcke übereinstimmen: 192.168.30. Die Adresse 192.168.31.20 hat im dritten Block 31, also liegt sie im Netz 192.168.31.0/24.</div>
+          </div>
+
+          <div class="k-q" data-type="num" data-points="3" data-id="t2" data-answer="62" data-tol="0">
+            <div class="k-q__head"><span class="k-q__title">T2 · Nutzbare Adressen</span><span class="k-q__pts">3 Punkte</span></div>
+            <div class="k-q__text">Ein Subnetz hat das Präfix /26. Wie viele Adressen sind für Geräte nutzbar? (nur die Zahl)</div>
+            <div class="k-q__expl">Hostbits: 32 − 26 = 6, also 2<sup>6</sup> = 64 Adressen. Netzadresse und Broadcast gehören nicht den Geräten: 64 − 2 = 62.</div>
+          </div>
+
+          <div class="k-q" data-type="mc" data-points="3" data-id="t3">
+            <div class="k-q__head"><span class="k-q__title">T3 · Netzadresse</span><span class="k-q__pts">3 Punkte</span></div>
+            <div class="k-q__text">Welche Netzadresse hat das Gerät 192.168.30.77/26?</div>
+            <ul class="k-q__options">
+              <li>192.168.30.0</li>
+              <li data-correct>192.168.30.64</li>
+              <li>192.168.30.77</li>
+              <li>192.168.30.128</li>
+            </ul>
+            <div class="k-q__expl">Bei /26 hat das vierte Oktett zwei Netz-Bits und sechs Host-Bits, die Maske ist 255.255.255.192. 77 = 64 + 13, binär 01001101. UND 11000000 ergibt 01000000 = 64. Die Netze beginnen bei 0, 64, 128, 192, und 77 liegt zwischen 64 und 127.</div>
+          </div>
+
+          <div class="k-q" data-type="mc" data-points="3" data-id="t4">
+            <div class="k-q__head"><span class="k-q__title">T4 · JSON auswerten</span><span class="k-q__pts">3 Punkte</span></div>
+            <div class="k-q__text">Der Text wurde mit <code>d = json.loads(text)</code> eingelesen. Wie erreichst du den Verschleiß von Werkzeug T4 (83)?<pre class="k-code" data-run="no"><code>{"id": "D2",
+ "werkzeugverschleiss_prozent": {"T1": 22, "T4": 83}}</code></pre></div>
+            <ul class="k-q__options">
+              <li><code>d["T4"]</code></li>
+              <li data-correct><code>d["werkzeugverschleiss_prozent"]["T4"]</code></li>
+              <li><code>d.werkzeugverschleiss_prozent.T4</code></li>
+              <li><code>d["werkzeugverschleiss_prozent"][T4]</code></li>
+            </ul>
+            <div class="k-q__expl">Erst das innere Dictionary über seinen Schlüssel, dann der Schlüssel <code>"T4"</code> als Text in Anführungszeichen. Ohne Anführungszeichen (<code>[T4]</code>) wäre T4 ein Variablenname, und der Punkt-Zugriff gibt es bei Dictionaries nicht.</div>
+          </div>
+
+          <div class="k-q" data-type="output" data-points="2" data-id="t5" data-answer="[1, 2.5, True, None]">
+            <div class="k-q__head"><span class="k-q__title">T5 · json.loads</span><span class="k-q__pts">2 Punkte</span></div>
+            <div class="k-q__text">Was gibt das Programm aus?<pre class="k-code" data-run="nach-antwort"><code>import json
+print(json.loads('[1, 2.5, true, null]'))</code></pre></div>
+            <div class="k-q__expl">JSON-<code>true</code> wird <code>True</code>, JSON-<code>null</code> wird <code>None</code>, die Zahlen bleiben. Das Ergebnis ist eine Python-Liste: <code>[1, 2.5, True, None]</code>.</div>
+          </div>
+
+          <div class="k-q" data-type="mc" data-points="2" data-id="t6">
+            <div class="k-q__head"><span class="k-q__title">T6 · Statuscode</span><span class="k-q__pts">2 Punkte</span></div>
+            <div class="k-q__text">Dein Programm ruft <code>requests.get(".../D9.json")</code> auf, und <code>antwort.status_code</code> ist 404. Was bedeutet das?</div>
+            <ul class="k-q__options">
+              <li>Der Server ist abgestürzt.</li>
+              <li data-correct>Unter dieser Adresse gibt es nichts (Tippfehler oder falsche Datei).</li>
+              <li>Du bist nicht angemeldet.</li>
+              <li>Alles in Ordnung, die Daten sind da.</li>
+            </ul>
+            <div class="k-q__expl">404 heißt „Not Found“. Ein abgestürzter Server wäre 500, fehlende Anmeldung 401, fehlende Berechtigung 403, Erfolg 200.</div>
+          </div>
+
+          <div class="k-q" data-type="mc" data-points="4" data-id="t7">
+            <div class="k-q__head"><span class="k-q__title">T7 · MQTT-Abo (mehrere richtig)</span><span class="k-q__pts">4 Punkte</span></div>
+            <div class="k-q__text">Ein Client abonniert <code>fz3/+/status</code>. Welche veröffentlichten Topics empfängt er? Alle richtigen ankreuzen.</div>
+            <ul class="k-q__options">
+              <li data-correct><code>fz3/D2/status</code></li>
+              <li data-correct><code>fz3/M1/status</code></li>
+              <li><code>fz3/D2/wartung</code></li>
+              <li><code>fz3/halle2/D2/status</code></li>
+            </ul>
+            <div class="k-q__expl">Das <code>+</code> steht für genau eine Ebene: D2 und M1 passen. <code>fz3/D2/wartung</code> endet auf „wartung“ statt „status“, und <code>fz3/halle2/D2/status</code> hat zwei Ebenen zwischen fz3 und status, wo <code>+</code> nur eine ersetzt. Erst <code>fz3/#</code> würde alle vier empfangen.</div>
+          </div>
+
+          <div class="k-q" data-type="mc" data-points="3" data-id="t8">
+            <div class="k-q__head"><span class="k-q__title">T8 · Der Broker</span><span class="k-q__pts">3 Punkte</span></div>
+            <div class="k-q__text">Welche Aussage über MQTT stimmt?</div>
+            <ul class="k-q__options">
+              <li>Der Client fragt den Broker regelmäßig, ob es etwas Neues gibt.</li>
+              <li data-correct>Der Broker nimmt Nachrichten an und leitet sie an alle weiter, deren Abo zum Topic passt.</li>
+              <li>Publisher und Subscriber müssen die IP-Adresse des anderen kennen.</li>
+              <li>Das <code>#</code> steht für genau eine Ebene des Topics.</li>
+            </ul>
+            <div class="k-q__expl">Publisher und Subscriber kennen nur den Broker und das Topic. Regelmäßiges Nachfragen ist das Muster von HTTP (Pull), und <code>#</code> steht für beliebig viele Ebenen am Ende, <code>+</code> für genau eine.</div>
+          </div>
+
+          <div class="k-score" data-score aria-live="polite"></div>
+        </div>
+
+        <h3>Code schreiben im Klausurstil</h3>
+        <p class="k-small k-muted">Wie in der Klausur: erst von Hand schreiben, ohne Ausführen und ohne Auto-Vervollständigung. Dann abgeben, die Tests laufen lassen und dich selbst nach dem Punkteschema bewerten. Richtzeit 10 Minuten. Das Dictionary <code class="k-i">zelle</code> steht schon im Editor.</p>
+        <div class="a-task" data-a="klausur" data-id="sc-klausur" data-mode="code" data-minutes="10">
+          <div class="a-task__head"><span class="a-task__title">T9 · Gestörte und wartende Maschinen ausgeben</span><span class="a-pts">6 Punkte</span></div>
+          <div class="a-task__text">
+            <p>Das Dictionary <code>zelle</code> hat die Form der JSON-Antwort einer Zelle. Schreibe ein Programm, das mit einer Schleife über <code>zelle["maschinen"]</code> für jede Maschine, deren Status <em>nicht</em> <code>"laeuft"</code> ist, eine Zeile mit der ID und dem Status ausgibt, getrennt durch ein Leerzeichen, zum Beispiel <code>R1 gestoert</code>. Maschinen mit Status <code>"laeuft"</code> werden nicht ausgegeben. Die Reihenfolge ist die der Liste.</p>
+          </div>
+          <div class="a-editor"><textarea class="py-editor" data-lesson="V17" data-assist="off" aria-label="Python-Code von Hand schreiben, ohne Ausführen">zelle = {
+    "zelle": "FZ-3",
+    "maschinen": [
+        {"id": "D2", "status": "laeuft"},
+        {"id": "R1", "status": "gestoert"},
+        {"id": "F1", "status": "laeuft"},
+        {"id": "M1", "status": "bereit"},
+    ],
+}
+
+# schreibe hier deine Schleife
+</textarea></div>
+          <script type="text/x-python" data-role="tests">
+def test_ausgabe():
+    """Genau die Maschinen mit Status ungleich laeuft werden ausgegeben, in Listenreihenfolge"""
+    z = zeilen(AUSGABE)
+    assert z == ["R1 gestoert", "M1 bereit"], "Ausgabe ist %r, erwartet ['R1 gestoert', 'M1 bereit'] (je Zeile ID, Leerzeichen, Status)" % (z,)
+
+def test_laufende_nicht():
+    """Laufende Maschinen (D2, F1) erscheinen nicht"""
+    assert "D2" not in AUSGABE and "F1" not in AUSGABE, "D2 und F1 laufen und dürfen nicht ausgegeben werden."
+
+def test_daten_unveraendert():
+    """Das Dictionary zelle ist unverändert"""
+    assert [m["id"] for m in zelle["maschinen"]] == ["D2", "R1", "F1", "M1"], "Das Dictionary zelle wurde verändert."
+          </script>
+          <script type="text/x-python" data-role="solution">
+zelle = {
+    "zelle": "FZ-3",
+    "maschinen": [
+        {"id": "D2", "status": "laeuft"},
+        {"id": "R1", "status": "gestoert"},
+        {"id": "F1", "status": "laeuft"},
+        {"id": "M1", "status": "bereit"},
+    ],
+}
+
+for m in zelle["maschinen"]:
+    if m["status"] != "laeuft":
+        print(m["id"], m["status"])
+          </script>
+          <script type="application/json" data-role="scheme">[
+{"p":1,"t":"Schleife über zelle[\"maschinen\"] (for m in zelle[\"maschinen\"]), nicht über das ganze Dictionary"},
+{"p":1,"t":"Zugriff auf die Schlüssel mit Anführungszeichen: m[\"status\"] und m[\"id\"]"},
+{"p":2,"t":"Bedingung: Status ungleich \"laeuft\" (if m[\"status\"] != \"laeuft\"), Vergleich mit Text in Anführungszeichen"},
+{"p":1,"t":"Ausgabe mit print(m[\"id\"], m[\"status\"]) im Format ID, Leerzeichen, Status"},
+{"p":1,"t":"Einrückung stimmt: print innerhalb der if-Bedingung, if innerhalb der Schleife"}
+]</script>
+        </div>
+      </section>
+
+      <!-- 5 ───────────── DEEP DIVE ───────────── -->
+      <section class="k-section" id="deepdive" data-section="deepdive" aria-labelledby="h-dd">
+        <h2 class="k-section__title" id="h-dd"><span class="k-section__num" aria-hidden="true">5</span> Deep Dive <span class="k-muted">(freiwillig)</span></h2>
+
+        <p>Für Neugierige. Nichts davon kommt in der Klausur dran.</p>
+
+        <details class="k-deep">
+          <summary>MQTT mit paho-mqtt in Python</summary>
+          <div class="k-deep__body">
+            <p>Für MQTT gibt es in Python die Bibliothek <code class="k-i">paho-mqtt</code>. Der Code läuft nur, wenn ein Broker erreichbar ist (zum Beispiel in einem Codespace mit einem lokalen Broker), im Browser dieser Seite nicht. Das Muster: verbinden, ein Topic abonnieren, bei jeder Nachricht eine Funktion aufrufen.</p>
+            <pre data-run="no" class="k-code"><code>import json
+import paho.mqtt.client as mqtt
+
+def bei_nachricht(client, userdata, msg):
+    daten = json.loads(msg.payload.decode())
+    print(msg.topic, daten)
+
+client = mqtt.Client()
+client.on_message = bei_nachricht
+client.connect("192.168.30.5", 1883)
+client.subscribe("fz3/+/status")
+client.publish("fz3/D2/wartung", json.dumps({"werkzeug": "T4", "aktion": "wechseln"}))
+client.loop_forever()</code></pre>
+            <p>Du erkennst die Bausteine wieder: Broker-Adresse und Port, ein Abo mit <code class="k-i">+</code>, Nachrichten als JSON-Text mit <code class="k-i">json.dumps</code> und <code class="k-i">json.loads</code>. Eine Funktion als Wert zu übergeben (<code class="k-i">on_message = bei_nachricht</code>) ist ein Muster, das in V20 genauer vorkommt. Die Einzelheiten der Bibliothek lässt du dir von der Dokumentation oder von Copilot erklären.</p>
+          </div>
+        </details>
+
+        <details class="k-deep">
+          <summary>OPC UA in drei Sätzen</summary>
+          <div class="k-deep__body">
+            <p>OPC UA ist ein herstellerunabhängiger Standard, mit dem eine Maschine ihre Daten als Baum aus Knoten anbietet (zum Beispiel Drehzahl, Programmname, Alarme), mit Typen, Einheiten und Zugriffsrechten. Ein Client kann diesen Baum durchsuchen, Werte lesen und abonnieren, ohne dass er die Maschine vorher kennt. Es setzt auf Sicherheit (Zertifikate, Verschlüsselung) und wird deshalb häufig für den Datenaustausch zwischen Maschine und Leitsystem eingesetzt, während MQTT eher für leichte Meldungen steht.</p>
+          </div>
+        </details>
+
+        <details class="k-deep">
+          <summary>Subnetz binär von Hand rechnen</summary>
+          <div class="k-deep__body">
+            <p>Beispiel 192.168.30.77/26. Nur das vierte Oktett ist spannend, die ersten drei sind durch die Maske komplett erhalten. Die Maske /26 hat 26 Einsen: drei volle Oktette (24) und im vierten die zwei höchsten Bits, also <code class="k-i">11000000</code> = 192.</p>
+            <pre data-run="no" class="k-code"><code>   77   =  01001101
+ Maske  =  11000000      (192)
+   UND  =  01000000  =  64     -&gt; Netzadresse 192.168.30.64
+
+ Hostbits auf 1 setzen:
+           01111111  =  127    -&gt; Broadcast 192.168.30.127
+ nutzbar: 192.168.30.65 bis 192.168.30.126  (62 Adressen)</code></pre>
+            <p>Merkhilfe: Die Netze eines /26 beginnen im vierten Oktett bei 0, 64, 128 und 192 (Schrittweite 2<sup>6</sup> = 64). Die Adresse liegt im größten Netz, dessen Anfang nicht über ihr steht.</p>
+          </div>
+        </details>
+
+        <details class="k-deep">
+          <summary>Und IPv6?</summary>
+          <div class="k-deep__body">
+            <p>IPv4 hat nur rund 4,3 Milliarden Adressen (2<sup>32</sup>), das reicht für das heutige Internet nicht. IPv6 hat 128 Bit, geschrieben in acht Gruppen aus Hexadezimalziffern (zum Beispiel <code class="k-i">2001:db8::1</code>), und praktisch unbegrenzt viele Adressen. In Fabriknetzen bleibt IPv4 mit privaten Bereichen wie 192.168.x.x noch lange üblich, <code class="k-i">ipaddress</code> kann aber beide.</p>
+          </div>
+        </details>
+      </section>
+
+      <!-- Videos zur Nachbereitung -->
+      <section class="k-section" id="videos" aria-labelledby="h-videos">
+        <h2 class="k-section__title" id="h-videos">Videos zur Nachbereitung</h2>
+        <p>Alle drei Erklärvideos zu V17 zum Wiederholen, jeweils mit deutschen Untertiteln.</p>
+        <ul class="k-video-list">
+          <li><a href="#video-theorie">Netzwerke: IP-Adresse, Subnetz, HTTP, JSON und MQTT erklärt</a> <span class="k-muted">(ca. 3 Min, Theorie, Abschnitt 2 dieser Lerneinheit)</span></li>
+          <li><a href="v17-labor.html#a-werkzeugkasten">Python-Werkstatt: json, verschachtelte Daten, requests und ipaddress</a> <span class="k-muted">(ca. 3 Min, im Labor bei „Werkzeugkasten“)</span></li>
+          <li><a href="v17-labor.html#a-vorgemacht">Vorgerechnet: Fertigungszelle abfragen und das Netz prüfen</a> <span class="k-muted">(ca. 3 Min, im Labor bei „Vorgerechnetes Beispiel“)</span></li>
+        </ul>
+      </section>
+
+      <!-- Übergang -->
+      <section class="k-next" aria-labelledby="h-next">
+        <h2 id="h-next">Wie geht es weiter?</h2>
+        <p>Verstanden ist noch nicht geprüft. Im Programmierlabor holst du JSON per <code class="k-i">requests</code>, durchsuchst verschachtelte Daten, prüfst Adressen mit <code class="k-i">ipaddress</code>, zeichnest den PAP „Adresse prüfen“ und prüfst einen KI-Netz-Check, der R1 durchlässt. Zu Hause folgt das Training (ca. 60 Min). Die letzten 30 Minuten des Termins gehören wieder deinem Projekt: Meilenstein V17 ist die Kernrechnung mit bestehenden Tests, nachzulesen auf der <a href="../projekt.html">Projektseite</a>.</p>
+        <p><a class="k-btn" href="v17-labor.html">Weiter ins Programmierlabor →</a> <a class="k-btn k-btn--ghost" href="../projekt.html">Projektseite</a></p>
+      </section>
+
+      <!-- Für Dozierende -->
+      <section class="k-section k-section--dozent" aria-labelledby="h-doz">
+        <h2 id="h-doz" class="k-sr">Für Dozierende</h2>
+        <details class="k-dozent">
+          <summary>Für Dozierende: Ablaufplan 135 Minuten Präsenz + 60 Minuten zu Hause</summary>
+          <div class="k-dozent__body">
+            <p class="k-small k-muted">Ein Termin besteht aus zwei Seiten: dieser <strong>Lerneinheit</strong> (verstehen) und dem <a href="v17-labor.html">Programmierlabor</a> (selbst programmieren). Die Tabelle sagt, wo welche Phase stattfindet. Die letzten 30 Minuten gehören dem Projekt (Meilenstein V17 auf <a href="../projekt.html">projekt.html</a>). <strong>Hinweise:</strong> Der Fehler an R1 ist <em>absichtlich</em>: Die Adresse 192.168.31.20 liegt im falschen Subnetz und taucht im Beispiel, im PAP, im Code-Review und im Training auf. Die Abfragen laufen im Browser über <code>requests</code> mit <code>pyodide-http</code> und gehen an statische JSON-Dateien dieser Website (nur GET). Beim ersten Aufruf lädt Pyodide die Pakete nach; einmal vorher ausführen lassen.</p>
+            <div class="k-tablewrap"><table class="k-plan">
+              <thead><tr><th scope="col">Minuten</th><th scope="col">Wo</th><th scope="col">Was zu tun ist</th></tr></thead>
+              <tbody>
+                <tr><td>0–10</td><td>Lerneinheit 1<br>Warum</td><td><strong>Warm-up und Hook.</strong> Kurz Wiederholung V16 (Logs durchsuchen), dann „Der Roboter, der nicht antwortet“: Vorhersage „Kann die SPS R1 erreichen?“ im Plenum abstimmen.</td></tr>
+                <tr><td>10–30</td><td>Lerneinheit 2<br>Theorie</td><td><strong>Netz und Protokolle mit Explorables.</strong> Zellennetz: R1 anklicken, UND-Schritte (5). Subnetz-Rechner: /26 durchrechnen, „R1 mit /23“ zeigen (5). HTTP-Schritte mit D2.json und D9.json (5). JSON-Übersetzer, MQTT-Broker mit Wildcards: Abo <code>fz3/#</code> im vierten Feld ausprobieren lassen (5).</td></tr>
+                <tr><td>30–70</td><td>Labor Teil A<br>Aufgaben 1 bis 6</td><td><strong>Python-Werkstatt, Teil 1 (ca. 40 Min).</strong> Werkzeugkasten (5), Vorgerechnetes Beispiel Zellen-Check (10), Ablauf verfolgen (5), Zeilen ordnen (7), Lückencode (5), PAP „Adresse prüfen“ (8). Typische Fehler: <code>json.load</code> statt <code>.json()</code>, Schlüssel ohne Anführungszeichen, Liste mit Schlüssel statt Index.</td></tr>
+                <tr><td>70–80</td><td>–</td><td><strong>Pause.</strong></td></tr>
+                <tr><td>80–105</td><td>Labor Teil A<br>Aufgaben 7 bis 9, Selbstcheck</td><td><strong>Python-Werkstatt, Teil 2.</strong> Erste eigene Aufgabe <code>gestoerte(zelle)</code> (8). Code-Review (KI-Spiegel) am Beamer: <code>startswith("192.168.3")</code> lässt R1 durch (10). Typische Fehlermeldungen (5). Exit-Ticket: Quiz T2, T3, T7 (je 1 Minute tippen, dann auflösen). T9 als Hausaufgabe.</td></tr>
+                <tr><td>105–135</td><td>Projekt<br>Meilenstein V17</td><td><strong>Projekt, Phase 3 (30 Min).</strong> Kernrechnung mit Copilot, bis die Tests bestehen. Siehe <a href="../projekt.html">projekt.html</a>.</td></tr>
+                <tr><td>zu Hause (ca. 60)</td><td>Labor Teil B<br>Aufgaben 1 bis 8</td><td><strong>Training.</strong> JSON lesen, MQTT-Nutzlast bauen, <code>im_netz</code>, F1.json holen, Wartungsliste, Zellenbericht, Mitschnitt auswerten (V09 wiederholt), Klausur-Aufgabe ohne <code>ipaddress</code>. Der Fortschritt bleibt im Browser der Studierenden; er ist für dich nicht einsehbar.</td></tr>
+              </tbody>
+            </table></div>
+            <p class="k-small k-muted">Material: Beamer, stabiles WLAN (Pyodide lädt Pakete nach), ein Blatt mit Zweierpotenzen bis 2<sup>8</sup>. Projektseite: <a href="../projekt.html">projekt.html</a>.</p>
+          </div>
+        </details>
+      </section>
+
+    </main>
+  </div>
+
+  <footer class="dhbw-footer k-footer">
+    <div class="dhbw-footer__inner">
+      <span><span class="dhbw-footer__brand">DHBW Stuttgart</span> · Campus Horb</span>
+      <span><a href="../index.html">Zurück zum Lernpfad</a> · <a href="../projekt.html">Projekt</a> · V17 Netzwerke &amp; Industrie 4.0 · Lerneinheit</span>
+    </div>
+  </footer>
+
+  <script src="../assets/js/speicher.js"></script>
+  <script src="../assets/js/icons.js"></script>
+  <script src="../assets/js/editor.js" defer></script>
+  <script src="../assets/js/pap-engine.js"></script>
+  <script src="../assets/js/explorables-v17.js"></script>
+  <script src="../assets/js/kurs.js"></script>
+  <script src="../assets/js/aufgaben.js"></script>
+</body>
+</html>
