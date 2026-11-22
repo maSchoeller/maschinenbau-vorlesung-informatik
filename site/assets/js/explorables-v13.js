@@ -196,7 +196,7 @@
   function einordnung(s) {
     if (s < 1e-3) return 'Unmerklich kurz.';
     if (s < 0.1) return 'Fühlt sich sofort an.';
-    if (s < 2) return 'Eine kurze Gedenksekunde.';
+    if (s < 2) return 'Ein spürbarer Moment, aber noch kein Warten.';
     if (s < 60) return 'Du wartest, aber es ist noch zumutbar.';
     if (s < 3600) return 'Kaffeepause. Da lohnt sich ein anderer Ansatz.';
     if (s < 86400) return 'Über Stunden: so nicht, ein anderer Algorithmus ist fällig.';

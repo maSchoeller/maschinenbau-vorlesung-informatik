@@ -211,7 +211,7 @@ def schleife():
         summe = summe + i * i
 
 def vektor():
-    a = np.arange(200_000)
+    a = np.arange(200_000.0)                  # .0: Kommazahlen, sonst läuft a * a über (siehe unten)
     np.sum(a * a)
 
 zeiten_s = [messe(schleife) for versuch in range(5)]
@@ -219,8 +219,10 @@ zeiten_v = [messe(vektor) for versuch in range(5)]
 print(f"Schleife: Minimum {min(zeiten_s) * 1000:.2f} ms, Median {np.median(zeiten_s) * 1000:.2f} ms")
 print(f"Vektor:   Minimum {min(zeiten_v) * 1000:.2f} ms, Median {np.median(zeiten_v) * 1000:.2f} ms")</code></pre>
     <ul>
+      <li><code class="k-i">messe(schleife)</code> übergibt die Funktion selbst, ohne Klammern: Eine Funktion ist auch ein Wert, den man weiterreichen kann. Erst <code class="k-i">f()</code> mit Klammern ruft sie in <code class="k-i">messe</code> auf.</li>
       <li><code class="k-i">time.perf_counter()</code> liefert Sekunden. Erst die <strong>Differenz</strong> aus zwei Aufrufen (nach minus vor) ist die Dauer. Reihenfolge <code class="k-i">ende - start</code>, nicht umgekehrt.</li>
       <li><strong>Mehrfach messen</strong> und <code class="k-i">min(zeiten)</code> oder <code class="k-i">np.median(zeiten)</code> berichten, nicht den Mittelwert und nicht eine einzelne Messung.</li>
+      <li><code class="k-i">np.arange(200_000.0)</code> mit <code class="k-i">.0</code> liefert Kommazahlen. Mit ganzen Zahlen rechnet NumPy im Browser mit 32 Bit, und <code class="k-i">a * a</code> würde ab etwa 46 341 still überlaufen, ohne Fehlermeldung (wie der Encoder-Zähler aus V02). Prüfe große Summen darum gegen einen Überschlag.</li>
       <li>Zwischen Start und Ende steht nur die Rechnung: kein <code class="k-i">print</code>, kein Laden einer Datei. Die Werte hängen von Rechner und Browser ab, schreibe nie „NumPy ist immer genau n-mal schneller“.</li>
     </ul>
   </article>
@@ -1392,11 +1394,11 @@ def ueber_grenze(werte, grenze):
   <script src="../assets/js/speicher.js"></script>
   <script src="../assets/js/icons.js"></script>
   <script src="../assets/js/editor.js" defer></script>
+  <script src="../assets/js/pap-engine.js"></script>
+  <script src="../assets/js/explorables-v13.js"></script>
   <script src="../assets/js/kurs.js"></script>
   <script src="../assets/js/aufgaben.js"></script>
-  <script src="../assets/js/pap-engine.js"></script>
   <script src="../assets/js/pap-editor.js"></script>
-  <script src="../assets/js/explorables-v13.js"></script>
   <script src="../assets/js/labor.js"></script>
 </body>
 </html>

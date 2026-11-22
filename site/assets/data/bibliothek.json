@@ -3524,6 +3524,80 @@
      "meldung": "Kein Fehler, nur eine Warnung: SyntaxWarning: assertion is always true, perhaps remove parentheses?"
     }
    ]
+  },
+  {
+   "id": "numpy-reihen",
+   "name": "np.arange / np.linspace",
+   "kategorie": "Ausblick (ab V10)",
+   "eingefuehrt": "V13",
+   "ampel": "lesen",
+   "kurz": "Zahlenreihen als Array: arange wie range (Stopp nicht dabei), linspace mit fester Anzahl (beide Enden dabei).",
+   "syntax": "np.arange(0, 1, 0.25)\nnp.linspace(0, 1, 5)\nt = np.arange(N) / fs",
+   "stichwort": true,
+   "verwandt": [
+    "numpy-array",
+    "range"
+   ],
+   "bezeichner": [
+    "np.arange",
+    "np.linspace"
+   ]
+  },
+  {
+   "id": "numpy-kennwerte",
+   "name": "np.mean / np.max / np.sqrt",
+   "kategorie": "Ausblick (ab V10)",
+   "eingefuehrt": "V13",
+   "ampel": "lesen",
+   "kurz": "Kennwerte eines Arrays: Mittelwert, Maximum, Minimum, Summe; np.sqrt wirkt auf jedes Element. Effektivwert: np.sqrt(np.mean(a ** 2)).",
+   "syntax": "np.mean(a)    np.max(a)    np.sum(a)\nnp.sqrt(np.mean(a ** 2))",
+   "stichwort": true,
+   "verwandt": [
+    "numpy-array",
+    "sum-min-max"
+   ],
+   "bezeichner": [
+    "np.mean",
+    "np.max",
+    "np.min",
+    "np.sum",
+    "np.sqrt",
+    "np.median"
+   ]
+  },
+  {
+   "id": "numpy-maske",
+   "name": "Maske a[a > 3]",
+   "kategorie": "Ausblick (ab V10)",
+   "eingefuehrt": "V13",
+   "ampel": "lesen",
+   "kurz": "Ein Vergleich auf dem Array ergibt Wahr/Falsch je Element; a[maske] behält nur die passenden Werte. Zwei Bedingungen mit & bzw. | und Klammern.",
+   "syntax": "a[a > 3]\nlen(a[a > 3]) / len(a)\na[(a > 1) & (a < 4)]",
+   "stichwort": true,
+   "verwandt": [
+    "numpy-array",
+    "vergleiche"
+   ],
+   "bezeichner": [
+    "Maske a[a > 3]"
+   ]
+  },
+  {
+   "id": "numpy-loadtxt",
+   "name": "np.loadtxt",
+   "kategorie": "Ausblick (ab V10)",
+   "eingefuehrt": "V13",
+   "ampel": "lesen",
+   "kurz": "Liest eine Textdatei mit Zahlen direkt als Array: Trennzeichen, Kopfzeile überspringen, Spalten wählen.",
+   "syntax": "np.loadtxt('daten.csv', delimiter=',', skiprows=1, usecols=4)",
+   "stichwort": true,
+   "verwandt": [
+    "numpy-array",
+    "csv-reader"
+   ],
+   "bezeichner": [
+    "np.loadtxt"
+   ]
   }
  ]
 }

@@ -581,3 +581,18 @@ E("assertion-error", "AssertionError", TE, "V12", "kopf",
    ("Klammern machen ein Tupel: der Test scheitert nie, obwohl 1 == 2 falsch ist", 'assert (1 == 2, "wird nie geprüft")\nprint("läuft durch, obwohl falsch")', "Kein Fehler, nur eine Warnung: SyntaxWarning: assertion is always true, perhaps remove parentheses?", False)],
   ["assert", "traceback", "except-as", "tupel", "testfunktion"],
   bez=["AssertionError"])
+S("numpy-reihen", "np.arange / np.linspace", AU, "V13", "lesen",
+  "Zahlenreihen als Array: arange wie range (Stopp nicht dabei), linspace mit fester Anzahl (beide Enden dabei).",
+  "np.arange(0, 1, 0.25)\nnp.linspace(0, 1, 5)\nt = np.arange(N) / fs", ["numpy-array", "range"],
+  bez=["np.arange", "np.linspace"])
+S("numpy-kennwerte", "np.mean / np.max / np.sqrt", AU, "V13", "lesen",
+  "Kennwerte eines Arrays: Mittelwert, Maximum, Minimum, Summe; np.sqrt wirkt auf jedes Element. Effektivwert: np.sqrt(np.mean(a ** 2)).",
+  "np.mean(a)    np.max(a)    np.sum(a)\nnp.sqrt(np.mean(a ** 2))", ["numpy-array", "sum-min-max"],
+  bez=["np.mean", "np.max", "np.min", "np.sum", "np.sqrt", "np.median"])
+S("numpy-maske", "Maske a[a > 3]", AU, "V13", "lesen",
+  "Ein Vergleich auf dem Array ergibt Wahr/Falsch je Element; a[maske] behält nur die passenden Werte. Zwei Bedingungen mit & bzw. | und Klammern.",
+  "a[a > 3]\nlen(a[a > 3]) / len(a)\na[(a > 1) & (a < 4)]", ["numpy-array", "vergleiche"])
+S("numpy-loadtxt", "np.loadtxt", AU, "V13", "lesen",
+  "Liest eine Textdatei mit Zahlen direkt als Array: Trennzeichen, Kopfzeile überspringen, Spalten wählen.",
+  "np.loadtxt('daten.csv', delimiter=',', skiprows=1, usecols=4)", ["numpy-array", "csv-reader"],
+  bez=["np.loadtxt"])

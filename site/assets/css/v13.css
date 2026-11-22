@@ -76,3 +76,6 @@
 @media (max-width: 760px) {
   .v13-cell { min-width: 28px; }
 }
+
+/* Größenordnungs-Tabelle: Zehnerpotenz und Einheit nicht umbrechen */
+.k-types td:first-child { white-space: nowrap; }
