@@ -4107,6 +4107,394 @@
      "meldung": "kein Fehler, aber True: 192.168.31.20 liegt nicht in 192.168.30.0/24"
     }
    ]
+  },
+  {
+   "id": "path",
+   "name": "Path (pathlib)",
+   "kategorie": "Dateien & Fehler",
+   "eingefuehrt": "V16",
+   "ampel": "kopf",
+   "kurz": "Ein Pfad als Objekt: Teile verbindest du mit /, geprüft und gelesen wird per Methode.",
+   "syntax": "from pathlib import Path\nordner = Path(\"zelle\")\ndatei = ordner / \"maschinen\" / \"D2\"",
+   "erklaerung": "Path(\"zelle\") erzeugt ein Pfad-Objekt, keinen gewöhnlichen Text. Mit dem Operator / hängst du Teile an, Python setzt das passende Trennzeichen für dein Betriebssystem ein. Ein relativer Pfad (\"zelle/x.log\") gilt ab dem Ordner, in dem das Programm läuft; ein absoluter Pfad beginnt an der Wurzel des Laufwerks. Mit / rechnet nur ein Path: Text / Text ist ein Fehler, mindestens der linke Teil muss ein Path sein.",
+   "beispiel": "from pathlib import Path\n\nzelle = Path(\"zelle\")\nlogs = zelle / \"maschinen\" / \"D2\" / \"logs\"\ndatei = logs / \"2026-11-16.log\"\n\nprint(datei.as_posix())\nprint(datei.name)\nprint(datei.is_absolute())",
+   "wann_nutzen": "Immer wenn dein Programm Dateien oder Ordner anspricht: Messdaten, Logs, NC-Programme der Fertigungszelle.",
+   "transfer": [
+    {
+     "situation": "Pfad aus Teilen bauen",
+     "code": "from pathlib import Path\nbasis = Path(\"zelle\")\nmaschine = \"F1\"\nprint((basis / \"maschinen\" / maschine / \"logs\").as_posix())"
+    },
+    {
+     "situation": "Relativ oder absolut?",
+     "code": "from pathlib import Path\nprint(Path(\"daten/messung.csv\").is_absolute())\nprint(Path(\"daten/messung.csv\").resolve().is_absolute())"
+    }
+   ],
+   "verwandt": [
+    "with-open",
+    "import",
+    "path-teile",
+    "path-pruefen"
+   ],
+   "bezeichner": [
+    "Path",
+    "pathlib",
+    "from pathlib import Path"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [
+    "Pfad",
+    "pfad verbinden",
+    "relativ",
+    "absolut",
+    "pathlib"
+   ],
+   "beispiel_ausgabe": "zelle/maschinen/D2/logs/2026-11-16.log\n2026-11-16.log\nFalse",
+   "typische_fehler": [
+    {
+     "beschreibung": "Text durch Text geteilt",
+     "code": "ordner = \"zelle\"\ndatei = ordner / \"x.log\"",
+     "meldung": "TypeError: unsupported operand type(s) for /: 'str' and 'str'"
+    },
+    {
+     "beschreibung": "Datei liegt nicht im aktuellen Ordner (relativer Pfad)",
+     "code": "from pathlib import Path\ntext = Path(\"messung.csv\").read_text(encoding=\"utf-8\")",
+     "meldung": "FileNotFoundError: [Errno 2] No such file or directory: 'messung.csv'"
+    }
+   ]
+  },
+  {
+   "id": "path-teile",
+   "name": "Path: name, stem, suffix, parent, parts",
+   "kategorie": "Dateien & Fehler",
+   "eingefuehrt": "V16",
+   "ampel": "kopf",
+   "kurz": "Zerlegt einen Pfad in Dateiname, Name ohne Endung, Endung und Ordner.",
+   "syntax": "datei.name    datei.stem    datei.suffix    datei.parent    datei.parts",
+   "erklaerung": "Ein Pfad besteht aus Teilen, die du direkt abfragen kannst. name ist der letzte Teil mit Endung, stem der Name ohne Endung, suffix die Endung samt Punkt. parent ist der Ordner darüber (wieder ein Path, also geht auch parent.parent). parts liefert alle Teile als Tupel. Das Zerlegen passiert nur im Text: Die Datei muss dafür nicht existieren.",
+   "beispiel": "from pathlib import Path\n\ndatei = Path(\"zelle/nc-programme/WELLE_20H6.nc\")\n\nprint(datei.name)\nprint(datei.stem)\nprint(datei.suffix)\nprint(datei.parent.as_posix())\nprint(datei.parent.parent.name)\nprint(datei.parts)",
+   "wann_nutzen": "Wenn du Dateien nach Endung sortierst, Namen ohne Endung brauchst oder wissen willst, in welchem Ordner (welcher Maschine) eine Datei liegt.",
+   "transfer": [
+    {
+     "situation": "Maschine aus dem Logpfad lesen",
+     "code": "from pathlib import Path\nlog = Path(\"zelle/maschinen/R1/logs/2026-11-18.log\")\nprint(log.parent.parent.name)"
+    },
+    {
+     "situation": "Neue Endung für den Namen",
+     "code": "from pathlib import Path\np = Path(\"WELLE_20H6.nc\")\nprint(p.stem + \"_v2\" + p.suffix)\nprint(p.with_suffix(\".txt\").name)"
+    }
+   ],
+   "verwandt": [
+    "path",
+    "glob",
+    "path-pruefen"
+   ],
+   "bezeichner": [
+    ".name",
+    ".stem",
+    ".suffix",
+    ".parent",
+    ".parts",
+    ".with_suffix"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [
+    "dateiname",
+    "endung",
+    "ordner",
+    "elternordner"
+   ],
+   "beispiel_ausgabe": "WELLE_20H6.nc\nWELLE_20H6\n.nc\nzelle/nc-programme\nzelle\n('zelle', 'nc-programme', 'WELLE_20H6.nc')",
+   "typische_fehler": [
+    {
+     "beschreibung": "name mit Klammern aufgerufen",
+     "code": "from pathlib import Path\nprint(Path(\"a/b.nc\").name())",
+     "meldung": "TypeError: 'str' object is not callable"
+    },
+    {
+     "beschreibung": "Endung ohne Punkt verglichen: nie wahr",
+     "code": "from pathlib import Path\nprint(Path(\"a/b.nc\").suffix == \"nc\")",
+     "meldung": "False (die Endung ist \".nc\", mit Punkt)"
+    }
+   ]
+  },
+  {
+   "id": "glob",
+   "name": "glob, rglob, iterdir",
+   "kategorie": "Dateien & Fehler",
+   "eingefuehrt": "V16",
+   "ampel": "lesen",
+   "kurz": "Findet Dateien und Ordner nach Muster, auch in Unterordnern.",
+   "syntax": "ordner.iterdir()    ordner.glob(\"*.log\")    ordner.rglob(\"*.nc\")",
+   "erklaerung": "iterdir() liefert alles, was direkt im Ordner liegt. glob(\"*.log\") liefert nur die Treffer des Musters; * steht für beliebigen Text, auch mitten im Pfad (\"maschinen/*/logs/*.log\"). rglob(\"*.nc\") sucht zusätzlich in allen Unterordnern. Das Ergebnis ist keine Liste, sondern ein Generator: Es hat kein len(), und die Reihenfolge ist nicht festgelegt. Mit sorted(...) oder list(...) bekommst du eine Liste, die du zählen und sortieren kannst.",
+   "beispiel": "from pathlib import Path\n\nfor maschine in [\"D2\", \"F1\"]:\n    logs = Path(\"zelle/maschinen\") / maschine / \"logs\"\n    logs.mkdir(parents=True)\n    for tag in [\"2026-11-17\", \"2026-11-16\"]:\n        (logs / f\"{tag}.log\").write_text(\"x\", encoding=\"utf-8\")\n\nzelle = Path(\"zelle\")\nalle = sorted(p.name for p in zelle.rglob(\"*.log\"))\nprint(len(alle), alle)\n\nnur_d2 = sorted(p.name for p in zelle.glob(\"maschinen/D2/logs/*.log\"))\nprint(nur_d2)",
+   "wann_nutzen": "Wenn du viele Dateien auf einmal bearbeiten willst: alle Logs einer Woche, alle NC-Programme, alle CSV-Dateien eines Ordners.",
+   "transfer": [
+    {
+     "situation": "Nur die Dateien direkt im Ordner",
+     "code": "from pathlib import Path\nproben = Path(\"proben\")\nproben.mkdir()\n(proben / \"a.csv\").write_text(\"1\", encoding=\"utf-8\")\n(proben / \"b.txt\").write_text(\"2\", encoding=\"utf-8\")\nprint(sorted(p.name for p in proben.iterdir()))"
+    },
+    {
+     "situation": "Anzahl der Treffer, mit und ohne Unterordner",
+     "code": "from pathlib import Path\nnc = Path(\"nc\")\n(nc / \"alt\").mkdir(parents=True)\n(nc / \"A.nc\").write_text(\"G0\", encoding=\"utf-8\")\n(nc / \"alt\" / \"A_v1.nc\").write_text(\"G0\", encoding=\"utf-8\")\nprint(len(list(nc.glob(\"*.nc\"))), len(list(nc.rglob(\"*.nc\"))))"
+    }
+   ],
+   "verwandt": [
+    "path",
+    "path-pruefen",
+    "sorted",
+    "liste"
+   ],
+   "bezeichner": [
+    ".glob",
+    ".rglob",
+    ".iterdir",
+    "glob",
+    "rglob",
+    "iterdir"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [
+    "dateien suchen",
+    "dateien finden",
+    "muster",
+    "wildcard",
+    "durchsuchen",
+    "generator"
+   ],
+   "beispiel_ausgabe": "4 ['2026-11-16.log', '2026-11-16.log', '2026-11-17.log', '2026-11-17.log']\n['2026-11-16.log', '2026-11-17.log']",
+   "typische_fehler": [
+    {
+     "beschreibung": "len() auf das glob-Ergebnis",
+     "code": "from pathlib import Path\nordner = Path(\"x\")\nordner.mkdir()\nprint(len(ordner.glob(\"*.txt\")))",
+     "meldung": "TypeError: object of type 'generator' has no len()"
+    },
+    {
+     "beschreibung": "glob findet nichts in Unterordnern",
+     "code": "from pathlib import Path\nordner = Path(\"x/y\")\nordner.mkdir(parents=True)\n(ordner / \"a.nc\").write_text(\"G0\", encoding=\"utf-8\")\nprint(len(list(Path(\"x\").glob(\"*.nc\"))))",
+     "meldung": "0 (glob sucht nur im Ordner selbst; rglob auch in Unterordnern)"
+    }
+   ]
+  },
+  {
+   "id": "path-pruefen",
+   "name": "Path: exists, is_file, stat, read_text",
+   "kategorie": "Dateien & Fehler",
+   "eingefuehrt": "V16",
+   "ampel": "lesen",
+   "kurz": "Prüft, ob es eine Datei oder einen Ordner gibt, liest die Größe und den Inhalt.",
+   "syntax": "p.exists()    p.is_file()    p.is_dir()    p.stat().st_size    p.read_text(encoding=\"utf-8\")",
+   "erklaerung": "exists() fragt, ob der Pfad etwas bezeichnet; is_file() und is_dir() unterscheiden Datei und Ordner. p.stat().st_size gibt die Größe in Bytes (durch 1024 teilen für KiB). read_text(encoding=\"utf-8\") liest die ganze Datei als Text, write_text(...) schreibt sie. Kurz und ohne with; für sehr große Dateien oder zeilenweises Lesen bleibt open() mit with die bessere Wahl.",
+   "beispiel": "from pathlib import Path\n\nordner = Path(\"zelle\")\nordner.mkdir()\ndatei = ordner / \"LIESMICH.txt\"\ndatei.write_text(\"Fertigungszelle FZ-3\\nHalle 2\\n\", encoding=\"utf-8\")\n\nprint(datei.exists(), datei.is_file(), datei.is_dir())\nprint(ordner.is_dir())\nprint(Path(\"gibt_es_nicht.txt\").exists())\nprint(datei.stat().st_size, \"Bytes\")\nprint(datei.read_text(encoding=\"utf-8\").splitlines()[0])",
+   "wann_nutzen": "Vor dem Lesen prüfen, ob die Datei da ist; Dateigrößen vergleichen; kleine Textdateien in einem Schritt einlesen.",
+   "transfer": [
+    {
+     "situation": "Nur lesen, wenn es die Datei gibt",
+     "code": "from pathlib import Path\np = Path(\"config.txt\")\nif p.exists():\n    print(p.read_text(encoding=\"utf-8\"))\nelse:\n    print(\"keine Konfiguration gefunden\")"
+    },
+    {
+     "situation": "Größe in KiB",
+     "code": "from pathlib import Path\np = Path(\"daten.txt\")\np.write_text(\"x\" * 2048, encoding=\"utf-8\")\nprint(p.stat().st_size / 1024, \"KiB\")"
+    }
+   ],
+   "verwandt": [
+    "path",
+    "glob",
+    "with-open",
+    "try-except"
+   ],
+   "bezeichner": [
+    ".exists",
+    ".is_file",
+    ".is_dir",
+    ".stat",
+    ".st_size",
+    ".read_text",
+    ".write_text"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [
+    "datei existiert",
+    "dateigröße",
+    "datei lesen",
+    "ordner prüfen",
+    "FileNotFoundError"
+   ],
+   "beispiel_ausgabe": "True True False\nTrue\nFalse\n31 Bytes\nFertigungszelle FZ-3",
+   "typische_fehler": [
+    {
+     "beschreibung": "Relativer Pfad zeigt ins Leere",
+     "code": "from pathlib import Path\nprint(Path(\"messung.csv\").read_text(encoding=\"utf-8\"))",
+     "meldung": "FileNotFoundError: [Errno 2] No such file or directory: 'messung.csv'"
+    },
+    {
+     "beschreibung": "st_size direkt auf dem Path statt auf stat()",
+     "code": "from pathlib import Path\np = Path(\"a.txt\")\np.write_text(\"x\", encoding=\"utf-8\")\nprint(p.st_size)",
+     "meldung": "AttributeError: 'PosixPath' object has no attribute 'st_size'"
+    }
+   ]
+  },
+  {
+   "id": "os-modul",
+   "name": "os: getcwd, listdir (os.path, os.walk)",
+   "kategorie": "Dateien & Fehler",
+   "eingefuehrt": "V16",
+   "ampel": "lesen",
+   "kurz": "Ältere Schreibweise für Ordner und Dateien; kommt in KI-Code und alten Skripten häufig vor.",
+   "syntax": "import os\nos.getcwd()    os.listdir(\".\")    os.path.join(a, b)    os.walk(ordner)",
+   "erklaerung": "Das Modul os kann vieles, was auch Path kann, aber mit Funktionen und Text statt Objekten. os.getcwd() nennt den aktuellen Arbeitsordner, os.listdir(\".\") liefert die Namen im Ordner als Liste (unsortiert). os.path.join(a, b) verbindet Pfadteile, os.walk(ordner) läuft durch einen ganzen Ordnerbaum. Für eigenen Code ist pathlib meist lesbarer; os.path.join und os.walk musst du nur erkennen und verstehen.",
+   "beispiel": "import os\n\nos.mkdir(\"zelle\")\nfor name in [\"b.txt\", \"a.txt\"]:\n    with open(os.path.join(\"zelle\", name), \"w\", encoding=\"utf-8\") as f:\n        f.write(\"x\")\n\nprint(sorted(os.listdir(\"zelle\")))\nprint(os.getcwd() != \"\")\n\nfor ordner, unterordner, dateien in os.walk(\"zelle\"):\n    print(ordner, sorted(dateien))",
+   "wann_nutzen": "Wenn du fremden Code liest, der os benutzt, oder wissen willst, in welchem Ordner dein Programm gerade läuft.",
+   "transfer": [
+    {
+     "situation": "Nur die Namen im Ordner",
+     "code": "import os\nos.mkdir(\"d\")\nopen(\"d/x.txt\", \"w\").close()\nprint(os.listdir(\"d\"))"
+    },
+    {
+     "situation": "Dieselbe Aufgabe mit pathlib",
+     "code": "from pathlib import Path\np = Path(\"d\")\np.mkdir()\n(p / \"x.txt\").write_text(\"\", encoding=\"utf-8\")\nprint([q.name for q in p.iterdir()])"
+    }
+   ],
+   "verwandt": [
+    "path",
+    "glob",
+    "import",
+    "with-open"
+   ],
+   "bezeichner": [
+    "os",
+    "os.getcwd",
+    "os.listdir",
+    "os.path",
+    "os.path.join",
+    "os.walk"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [
+    "arbeitsordner",
+    "aktueller ordner",
+    "ordnerbaum",
+    "betriebssystem"
+   ],
+   "beispiel_ausgabe": "['a.txt', 'b.txt']\nTrue\nzelle ['a.txt', 'b.txt']",
+   "typische_fehler": [
+    {
+     "beschreibung": "os.listdir auf einen Ordner, den es nicht gibt",
+     "code": "import os\nprint(os.listdir(\"ordner_fehlt\"))",
+     "meldung": "FileNotFoundError: [Errno 2] No such file or directory: 'ordner_fehlt'"
+    },
+    {
+     "beschreibung": "os nicht importiert",
+     "code": "print(os.getcwd())",
+     "meldung": "NameError: name 'os' is not defined. Did you forget to import 'os'?"
+    }
+   ]
+  },
+  {
+   "id": "perf-counter",
+   "name": "time.perf_counter()",
+   "kategorie": "Ausblick (ab V10)",
+   "eingefuehrt": "V16",
+   "ampel": "lesen",
+   "kurz": "Misst, wie lange ein Programmteil läuft: Zeit davor und danach, dann die Differenz.",
+   "syntax": "import time\nstart = time.perf_counter()\n...\ndauer = time.perf_counter() - start",
+   "erklaerung": "perf_counter() liefert eine Zeit in Sekunden, die nur zum Vergleichen taugt: Der absolute Wert ist bedeutungslos, die Differenz zweier Aufrufe ist die Laufzeit. Mal 1000 ergibt Millisekunden. Die Messwerte schwanken von Lauf zu Lauf, weil der Rechner nebenbei anderes erledigt; wiederhole die Messung also einige Male, bevor du etwas daraus schließt. Mit der Uhrzeit (time.time, datetime) hat das nichts zu tun.",
+   "beispiel": "import time\n\nstart = time.perf_counter()\nsumme = 0\nfor i in range(1_000_000):\n    summe += i\nende = time.perf_counter()\n\ndauer_ms = (ende - start) * 1000\nprint(summe)\nprint(dauer_ms > 0)",
+   "wann_nutzen": "Um zwei Lösungen zu vergleichen (Schleife oder NumPy, Suche in Ordnern) oder zu prüfen, ob ein Programm bei großen Datenmengen zu langsam wird.",
+   "transfer": [
+    {
+     "situation": "Zwei Varianten vergleichen",
+     "code": "import time\nzahlen = list(range(200000))\nt0 = time.perf_counter()\ns1 = sum(zahlen)\nt1 = time.perf_counter()\ns2 = 0\nfor z in zahlen:\n    s2 += z\nt2 = time.perf_counter()\nprint(s1 == s2)\nprint(f\"sum: {(t1 - t0) * 1000:.2f} ms, Schleife: {(t2 - t1) * 1000:.2f} ms\")"
+    },
+    {
+     "situation": "Mehrfach messen, kleinsten Wert nehmen",
+     "code": "import time\nwerte = []\nfor _ in range(5):\n    t = time.perf_counter()\n    sorted(range(50000, 0, -1))\n    werte.append(time.perf_counter() - t)\nprint(min(werte) <= max(werte))"
+    }
+   ],
+   "verwandt": [
+    "import",
+    "with-open",
+    "glob",
+    "zeit-messen"
+   ],
+   "bezeichner": [
+    "time",
+    "perf_counter",
+    "time.perf_counter"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [
+    "laufzeit",
+    "zeit messen",
+    "stoppuhr",
+    "millisekunden",
+    "benchmark"
+   ],
+   "beispiel_ausgabe": "499999500000\nTrue",
+   "typische_fehler": [
+    {
+     "beschreibung": "Differenz in falscher Reihenfolge: negative Dauer",
+     "code": "import time\nstart = time.perf_counter()\nende = time.perf_counter()\nprint(start - ende)",
+     "meldung": "negative Zahl (ende - start rechnen)"
+    },
+    {
+     "beschreibung": "time nicht importiert",
+     "code": "start = time.perf_counter()",
+     "meldung": "NameError: name 'time' is not defined. Did you forget to import 'time'?"
+    }
+   ]
+  },
+  {
+   "id": "raw-string",
+   "name": "Roher String r\"C:\\Users\\...\" (Windows-Pfade)",
+   "kategorie": "Dateien & Fehler",
+   "eingefuehrt": "V16",
+   "ampel": "lesen",
+   "kurz": "Windows-Pfade mit \\ als rohen Text schreiben, damit Python den Backslash nicht als Sonderzeichen liest.",
+   "syntax": "pfad = r\"C:\\Users\\name\\daten.csv\"\npfad = Path(\"C:/Users/name/daten.csv\")",
+   "erklaerung": "In normalen Texten leitet der Backslash eine Sonderschreibweise ein: \\n ist ein Zeilenumbruch, \\U beginnt ein Unicode-Zeichen. Ein Windows-Pfad wie \"C:\\Users\\...\" erzeugt daher einen SyntaxError (unicodeescape) oder, bei \\n und \\t, still einen falschen Pfad. Zwei Auswege: ein r vor das Anführungszeichen (roher String, der Backslash bleibt wörtlich) oder Schrägstriche / verwenden, die Python auch unter Windows versteht. Ein roher String darf nicht mit einem einzelnen \\ enden.",
+   "beispiel": "from pathlib import Path\n\nroh = r\"C:\\Users\\marvin\\daten\\messung.csv\"\nprint(roh)\nprint(len(roh))\n\nschraeg = Path(\"C:/Users/marvin/daten/messung.csv\")\nprint(schraeg.name, schraeg.suffix)\n\nnormal = \"Spalte1\\tSpalte2\"\nprint(len(normal))",
+   "wann_nutzen": "Sobald du einen Pfad aus dem Windows-Explorer in den Code kopierst, oder wenn KI-Code Pfade mit Backslash enthält.",
+   "transfer": [
+    {
+     "situation": "Pfad aus dem Explorer als roher String",
+     "code": "pfad = r\"C:\\Daten\\neu\\test.txt\"\nprint(pfad)\nprint(pfad.endswith(\".txt\"))"
+    },
+    {
+     "situation": "Ohne r wird aus \\n ein Zeilenumbruch",
+     "code": "falsch = \"C:\\neu\\test\"\nprint(len(falsch))\nrichtig = r\"C:\\neu\\test\"\nprint(len(richtig))"
+    }
+   ],
+   "verwandt": [
+    "path",
+    "path-teile",
+    "str-text"
+   ],
+   "bezeichner": [
+    "r\"",
+    "unicodeescape",
+    "Backslash"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [
+    "raw string",
+    "backslash",
+    "windows pfad",
+    "unicodeescape",
+    "SyntaxError"
+   ],
+   "beispiel_ausgabe": "C:\\Users\\marvin\\daten\\messung.csv\n33\nmessung.csv .csv\n15",
+   "typische_fehler": [
+    {
+     "beschreibung": "Backslash-U im normalen Text",
+     "code": "pfad = \"C:\\Users\\marvin\\daten.csv\"\nprint(pfad)",
+     "meldung": "SyntaxError: (unicode error) 'unicodeescape' codec can't decode bytes in position 2-3: truncated \\UXXXXXXXX escape"
+    },
+    {
+     "beschreibung": "Roher String endet auf Backslash",
+     "code": "pfad = r\"C:\\Daten\\\"\nprint(pfad)",
+     "meldung": "SyntaxError: unterminated string literal (detected at line 1); perhaps you escaped the end quote?"
+    }
+   ]
   }
  ]
 }
