@@ -9,7 +9,7 @@ from pathlib import Path
 HIER = Path(__file__).resolve().parent
 sys.path.insert(0, str(HIER))
 import helfer  # noqa: E402
-import teil1, teil2, teil3, teil4_v16  # noqa: E402,F401
+import teil1, teil2, teil3, teil4_v16, teil5_v20  # noqa: E402,F401
 
 ZIEL = HIER.parents[2] / "site" / "assets" / "data" / "bibliothek.json"
 PROBLEME = []
