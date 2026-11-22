@@ -1,0 +1,1935 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>V20 Programmierlabor · Informatik Maschinenbau</title>
+  <meta name="description" content="Programmierlabor V20: Arbeitsumgebung mit Aufgabenliste, Editor und Befehls-Bibliothek. Teil A im Labor, Teil B Training zu Hause. Klassen, Objekte, Attribute und Methoden; ein parametrischer Flansch als Skript mit 3D-Vorschau.">
+  <link rel="stylesheet" href="../assets/css/dhbw-base.css">
+  <link rel="stylesheet" href="../assets/css/kurs.css">
+  <link rel="stylesheet" href="../assets/css/aufgaben.css">
+  <link rel="stylesheet" href="../assets/css/editor.css">
+  <link rel="stylesheet" href="../assets/css/labor.css">
+  <link rel="stylesheet" href="../assets/css/v05.css">
+  <link rel="stylesheet" href="../assets/css/pap-editor.css">
+  <link rel="stylesheet" href="../assets/css/vorschau3d.css">
+</head>
+<body data-lesson="V20" data-page="labor">
+  <a class="k-skip" href="#inhalt">Zum Inhalt springen</a>
+
+  <header class="dhbw-header k-header">
+    <div class="dhbw-header__inner">
+      <a class="k-logo" href="../index.html" aria-label="Zur Startseite">
+        <span class="k-logo__mark" aria-hidden="true">DHBW</span>
+        <span class="k-logo__text">Informatik Maschinenbau<small>Campus Horb · 2026/27</small></span>
+      </a>
+      <nav class="k-nav" aria-label="Hauptnavigation">
+        <a href="../index.html">Start</a>
+        <a href="../index.html#lernpfad">Lernpfad</a>
+        <a href="../bibliothek.html">Bibliothek</a>
+        <a href="../pap-editor.html">PAP-Editor</a>
+        <a href="../projekt.html">Projekt</a>
+        <a href="v20-objekte-cad.html">V20 Lerneinheit</a>
+        <a href="v20-labor.html" aria-current="page">V20 Labor</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="lab" data-lab>
+
+    <nav class="lab__list" aria-label="Aufgabenliste">
+      <div class="lab__listhead">
+        <p class="lab__title">Programmierlabor V20</p>
+        <a class="lab__back" href="v20-objekte-cad.html">← Lerneinheit</a>
+      </div>
+      <div class="a-progress" data-a-progress>
+        <span class="a-progress__bar"><span class="a-progress__fill"></span></span>
+        <span class="a-progress__text">0 von 17 Aufgaben gelöst</span>
+      </div>
+      <p class="lab__legend k-small k-muted"><span><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-circle"/></svg> offen</span><span><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-half"/></svg> begonnen</span><span><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-done"/></svg> gelöst</span></p>
+      <div data-lab-items></div>
+    </nav>
+
+    <main id="inhalt" class="lab__main" tabindex="-1">
+      <div class="lab__bar">
+        <div class="lab__select">
+          <label for="lab-select">Aufgabe</label>
+          <select id="lab-select"></select>
+        </div>
+        <button type="button" class="k-btn k-btn--ghost k-btn--small" id="lab-toolbox-btn" aria-expanded="false" aria-controls="lab-drawer">Werkzeugkasten</button>
+      </div>
+      <section class="lab__drawer" id="lab-drawer" aria-label="Werkzeugkasten" hidden></section>
+
+    <section class="l-task" id="a-werkzeugkasten" data-title="Werkzeugkasten" data-part="A" data-stars="" data-min="5" data-extra="" aria-labelledby="h-a-werkzeugkasten" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-werkzeugkasten" tabindex="-1">Werkzeugkasten</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Heute neu in Python: <abbr class="k-begriff" data-erklaerung="Eine Klasse ist ein Bauplan, wie ein Normblatt oder eine Zeichnungsvorlage. Sie legt fest, welche Maße ein Bauteil hat und was man damit rechnen kann. Das Bauteil selbst ist sie noch nicht."><strong>Klassen</strong></abbr> und <abbr class="k-begriff" data-erklaerung="Ein Objekt (auch Instanz oder Exemplar) ist ein konkretes Teil nach diesem Bauplan, wie ein Flansch aus dem Lager. Jedes Objekt hat seine eigenen Maße."><strong>Objekte</strong></abbr>. Eine Klasse bündelt die Maße eines Bauteils (<abbr class="k-begriff" data-erklaerung="Ein Attribut ist eine Eigenschaft eines Objekts, zum Beispiel der Durchmesser. Du erreichst es mit Punkt: w.d.">Attribute</abbr>) und die Rechnungen damit (<abbr class="k-begriff" data-erklaerung="Eine Methode ist eine Funktion, die zu einem Objekt gehört. Du rufst sie mit Punkt und Klammern auf: w.volumen().">Methoden</abbr>). Dazu kommt das Hilfsmodul <code class="k-i">bauteil3d</code>, das aus Maßen ein 3D-Modell macht.</p>
+
+      <figure class="k-video">
+        <video controls preload="metadata" poster="../assets/video/v20-python-poster.png" aria-label="Python-Werkstatt: Klassen, Objekte, Attribute, Methoden und bauteil3d">
+          <source src="../assets/video/v20-python.mp4" type="video/mp4">
+          <track kind="subtitles" srclang="de" label="Deutsch" src="../assets/video/v20-python.vtt" default>
+          Dein Browser kann dieses Video nicht abspielen.
+        </video>
+        <div class="k-video__missing" hidden>Video folgt. Bis dahin: Lies den Code unten Zeile für Zeile und probiere ihn aus.</div>
+        <figcaption>Python-Werkstatt: Klassen, Objekte, Methoden, bauteil3d (ca. 3 Min). Untertitel sind eingeschaltet (Deutsch).</figcaption>
+      </figure>
+      <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke</strong><p>Diese acht Karten sind dein Spickzettel, bis es sitzt. Du erreichst sie in jeder Aufgabe über den Knopf „Werkzeugkasten“ oben. Führe jede Karte aus und ändere etwas daran: Was passiert, wenn du ein Maß änderst oder eine Klammer weglässt?</p></div>
+      <div class="lab__toolbox" id="lab-toolbox">
+<div class="a-syntax-list">
+  <article class="a-syntax" aria-labelledby="sk-klasse">
+    <span class="a-syntax__label">Syntax-Karte 1</span>
+    <h4 id="sk-klasse">Klasse mit __init__ schreiben und ein Objekt erzeugen</h4>
+<pre data-timeout="20000"><code>class Welle:
+    """Eine einfache Welle: Durchmesser d und Länge l in mm."""
+
+    def __init__(self, d, l):
+        self.d = d          # Attribut d: Durchmesser in mm
+        self.l = l          # Attribut l: Länge in mm
+
+
+w = Welle(20, 100)          # Objekt erzeugen: __init__ läuft automatisch
+print(w.d, w.l)             # Attribute lesen: 20 100
+print(type(w))              # w ist ein Objekt der Klasse Welle</code></pre>
+    <ul>
+      <li><code class="k-i">class Welle:</code> legt den <strong>Bauplan</strong> an. Der Name beginnt per Konvention mit einem Großbuchstaben. Darunter, eingerückt, stehen die Methoden.</li>
+      <li><code class="k-i">__init__</code> ist der <abbr class="k-begriff" data-erklaerung="Der Konstruktor __init__ richtet ein neues Objekt ein. Python ruft ihn automatisch auf, wenn du Welle(20, 100) schreibst. Er speichert die Maße im Objekt."><strong>Konstruktor</strong></abbr>: Er läuft jedes Mal, wenn ein Objekt entsteht, und speichert die Maße. Vor und hinter <code class="k-i">init</code> stehen jeweils <strong>zwei</strong> Unterstriche.</li>
+      <li><abbr class="k-begriff" data-erklaerung="self ist das Objekt, mit dem die Methode gerade arbeitet. Bei w.volumen() ist self genau w. Python setzt es beim Aufruf automatisch ein."><code class="k-i">self</code></abbr> steht in jeder Methode als <strong>erster</strong> Parameter. <code class="k-i">self.d = d</code> heißt: „Speichere den Wert d als Attribut d in diesem Objekt.“ Beim Aufruf <code class="k-i">Welle(20, 100)</code> lässt du <code class="k-i">self</code> weg.</li>
+      <li>Ohne <code class="k-i">self.</code> wäre <code class="k-i">d</code> nur eine lokale Variable (V07), die nach dem Ende von <code class="k-i">__init__</code> verschwindet.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-objekt">
+    <span class="a-syntax__label">Syntax-Karte 2</span>
+    <h4 id="sk-objekt">Objekte erzeugen, Attribut lesen und ändern</h4>
+<pre data-timeout="20000"><code>class Welle:
+    def __init__(self, d, l):
+        self.d = d
+        self.l = l
+
+
+w1 = Welle(20, 100)
+w2 = Welle(30, 50)          # zweites, unabhängiges Objekt
+w1.l = 120                  # Attribut ändern: nur w1 ist betroffen
+print(w1.l, w2.l)           # 120 50
+
+w3 = w1                     # kein neues Objekt, nur ein zweiter Name (V08)
+w3.l = 80
+print(w1.l)                 # 80, weil w1 und w3 dasselbe Objekt sind</code></pre>
+    <ul>
+      <li>Jeder Aufruf <code class="k-i">Welle(...)</code> erzeugt ein <strong>neues</strong> Objekt mit eigenen Attributen. <code class="k-i">w1</code> und <code class="k-i">w2</code> beeinflussen sich nicht.</li>
+      <li>Attribute liest du mit <code class="k-i">objekt.attribut</code> und änderst du mit <code class="k-i">objekt.attribut = neuer_wert</code>.</li>
+      <li><code class="k-i">w3 = w1</code> kopiert nicht, sondern gibt demselben Objekt einen zweiten Namen. Das kennst du von Listen aus V08.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-methode">
+    <span class="a-syntax__label">Syntax-Karte 3</span>
+    <h4 id="sk-methode">Methode mit Rückgabe</h4>
+<pre data-timeout="20000"><code>import math
+
+
+class Welle:
+    def __init__(self, d, l):
+        self.d = d                      # in mm
+        self.l = l                      # in mm
+
+    def volumen(self):
+        """Volumen in mm³ (Zylinder)."""
+        return math.pi / 4 * self.d ** 2 * self.l
+
+
+w = Welle(20, 100)
+v = w.volumen()                         # Klammern nicht vergessen
+print(f"{v:.0f} mm³ = {v / 1000:.1f} cm³")</code></pre>
+    <ul>
+      <li>Eine Methode ist eine Funktion (V07) <strong>in</strong> der Klasse. Der erste Parameter ist immer <code class="k-i">self</code>; über <code class="k-i">self.d</code> und <code class="k-i">self.l</code> kommt sie an die Maße des Objekts.</li>
+      <li>Aufruf: <code class="k-i">w.volumen()</code>. Python setzt <code class="k-i">w</code> als <code class="k-i">self</code> ein, du übergibst nichts dafür.</li>
+      <li>Mit <code class="k-i">return</code> gibt die Methode das Ergebnis zurück, genau wie eine Funktion. Ohne <code class="k-i">return</code> wäre der Wert <code class="k-i">None</code>.</li>
+      <li>Einheiten gehören in den Kommentar oder Docstring: Maße in mm, Volumen in mm³.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-default">
+    <span class="a-syntax__label">Syntax-Karte 4</span>
+    <h4 id="sk-default">Methode mit Default-Parameter</h4>
+<pre data-timeout="20000"><code>import math
+
+
+class Welle:
+    def __init__(self, d, l):
+        self.d = d
+        self.l = l
+
+    def volumen(self):
+        return math.pi / 4 * self.d ** 2 * self.l          # mm³
+
+    def masse(self, dichte=7.85):
+        """Masse in kg; Dichte in g/cm³ (Standard: Stahl)."""
+        return self.volumen() / 1000 * dichte / 1000        # mm³ -&gt; cm³ -&gt; g -&gt; kg
+
+
+w = Welle(20, 100)
+print(f"Stahl:     {w.masse():.3f} kg")
+print(f"Aluminium: {w.masse(2.70):.3f} kg")
+print(f"Aluminium: {w.masse(dichte=2.70):.3f} kg")</code></pre>
+    <ul>
+      <li><code class="k-i">dichte=7.85</code> ist ein Default-Wert (V07): Ohne Angabe rechnet die Methode mit Stahl.</li>
+      <li>Eine Methode darf eine andere Methode desselben Objekts aufrufen: <code class="k-i">self.volumen()</code>. Das <code class="k-i">self.</code> davor ist Pflicht.</li>
+      <li>Einheitenkette: mm³ geteilt durch 1000 ergibt cm³; cm³ mal g/cm³ ergibt g; g geteilt durch 1000 ergibt kg.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-zustand">
+    <span class="a-syntax__label">Syntax-Karte 5</span>
+    <h4 id="sk-zustand">Methode, die ein Attribut ändert</h4>
+<pre data-timeout="20000"><code>class Welle:
+    def __init__(self, d, l):
+        self.d = d
+        self.l = l
+
+    def kuerzen(self, mm):
+        """Kürzt die Welle um mm (ändert das Objekt, gibt nichts zurück)."""
+        self.l = self.l - mm
+
+
+w = Welle(20, 100)
+w.kuerzen(15)
+print(w.l)                  # 85
+ergebnis = w.kuerzen(5)
+print(ergebnis, w.l)        # None 80: kein return, darum None</code></pre>
+    <ul>
+      <li>Eine Methode kann den <strong>Zustand</strong> des Objekts verändern: <code class="k-i">self.l = self.l - mm</code> überschreibt das Attribut. Danach hat das Objekt die neue Länge.</li>
+      <li>Solche Methoden haben oft kein <code class="k-i">return</code>. Der Aufruf <code class="k-i">w.kuerzen(15)</code> steht dann allein in einer Zeile.</li>
+      <li>Der Unterschied zu einer Funktion mit lokalen Variablen (V07): Das Attribut lebt weiter, solange das Objekt lebt.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-liste">
+    <span class="a-syntax__label">Syntax-Karte 6</span>
+    <h4 id="sk-liste">Objekte in einer Liste</h4>
+<pre data-timeout="20000"><code>class Welle:
+    def __init__(self, d, l):
+        self.d = d
+        self.l = l
+
+
+wellen = [Welle(20, 100), Welle(30, 50), Welle(25, 80)]
+wellen.append(Welle(40, 20))
+
+gesamt = 0
+for w in wellen:                    # w ist nacheinander jedes Objekt
+    print(w.d, w.l)
+    gesamt = gesamt + w.l
+print("Gesamtlänge:", gesamt, "mm")
+
+laengste = max(wellen, key=lambda w: w.l)
+print("Längste Welle: d =", laengste.d, "mm")</code></pre>
+    <ul>
+      <li>Objekte sind Werte wie alle anderen: Du kannst sie in Listen und Dictionaries legen und mit einer Schleife durchlaufen (V06, V08).</li>
+      <li>In der Schleife ist <code class="k-i">w</code> das jeweilige Objekt; <code class="k-i">w.l</code> liest dessen Attribut.</li>
+      <li>So entsteht aus einer Tabelle (Zeile = Bauteil) eine Liste von Objekten.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-v01">
+    <span class="a-syntax__label">Syntax-Karte 7</span>
+    <h4 id="sk-v01">Du benutzt Objekte seit V01</h4>
+<pre data-timeout="20000"><code>text = "m10"
+print(text.upper())         # Methode der Klasse str: M10
+print(type(text))           # &lt;class 'str'&gt;
+
+teile = []
+teile.append("Welle")       # Methode der Klasse list
+print(teile, type(teile))
+
+d = {"d": 20}
+print(d.get("l", 0), type(d))</code></pre>
+    <ul>
+      <li><code class="k-i">str</code>, <code class="k-i">list</code> und <code class="k-i">dict</code> sind selbst Klassen. <code class="k-i">"m10".upper()</code> und <code class="k-i">teile.append(...)</code> sind Methodenaufrufe auf Objekten.</li>
+      <li>Neu ist heute nur, dass du <strong>eigene</strong> Klassen baust.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-3d">
+    <span class="a-syntax__label">Syntax-Karte 8</span>
+    <h4 id="sk-3d">Kurzreferenz bauteil3d: aus Maßen ein 3D-Modell</h4>
+<pre data-timeout="20000" data-files="../assets/py/bauteil3d.py"><code>import bauteil3d
+
+zyl = bauteil3d.zylinder(30, 80)                         # d, l
+huelse = bauteil3d.ring(40, 20, 10)                      # d_aussen, d_innen, l
+welle = bauteil3d.welle([(30, 40), (20, 60)])            # Liste von (d, l)
+fl = bauteil3d.flansch(120, 40, 15, 90, 6, 11)           # d_aussen, d_innen, dicke, lochkreis, n, d_bohrung
+
+print(f"Zylinder: {bauteil3d.volumen(zyl) / 1000:.1f} cm³")
+print("Abmessungen Flansch (x, y, z) in mm:", bauteil3d.abmessungen(fl))
+
+oben = bauteil3d.verschiebe(huelse, dz=80)               # Kopie, 80 mm nach oben
+gruppe = bauteil3d.vereinige(zyl, oben, name="Zylinder mit Hülse")
+bauteil3d.zeige(gruppe)                                  # 3D-Vorschau unter der Ausgabe</code></pre>
+    <div class="k-tablewrap"><table class="k-types">
+      <thead><tr><th scope="col">Aufruf</th><th scope="col">Ergebnis</th></tr></thead>
+      <tbody>
+        <tr><td><code class="k-i">zylinder(d, l)</code></td><td>Vollzylinder</td></tr>
+        <tr><td><code class="k-i">ring(d_aussen, d_innen, l)</code></td><td>Hohlzylinder (Hülse, Buchse)</td></tr>
+        <tr><td><code class="k-i">welle([(d, l), ...])</code></td><td>gestufte Welle, von unten nach oben</td></tr>
+        <tr><td><code class="k-i">flansch(d_aussen, d_innen, dicke, lochkreis, n, d_bohrung)</code></td><td>Flansch mit Bohrungen</td></tr>
+        <tr><td><code class="k-i">verschiebe(mesh, dx, dy, dz)</code></td><td>verschobene Kopie</td></tr>
+        <tr><td><code class="k-i">vereinige(m1, m2, ...)</code></td><td>mehrere Teile zu einer Baugruppe</td></tr>
+        <tr><td><code class="k-i">volumen(mesh)</code></td><td>Volumen in mm³</td></tr>
+        <tr><td><code class="k-i">zeige(mesh)</code></td><td>3D-Vorschau mit STL-Download</td></tr>
+      </tbody>
+    </table></div>
+    <ul>
+      <li>Alle Maße in <strong>mm</strong>. Die Teile liegen mit der Achse in z-Richtung und beginnen bei z = 0.</li>
+      <li>Das Ergebnis ist ein <abbr class="k-begriff" data-erklaerung="Ein Dreiecksnetz (Mesh) beschreibt die Oberfläche eines Bauteils als viele kleine Dreiecke, ähnlich wie Facetten bei einem geschliffenen Stein. Die Oberfläche ist dadurch nur genähert, nicht exakt rund.">Dreiecksnetz</abbr>. Die Vorschau lässt sich drehen und als <abbr class="k-begriff" data-erklaerung="STL ist ein Dateiformat für Dreiecksnetze. Es reicht für 3D-Druck und Vorschau, enthält aber keine exakten Kreise und keine Maße.">STL</abbr>-Datei herunterladen.</li>
+      <li>Ungültige Maße (zum Beispiel eine Bohrung, die über den Rand ragt) lösen einen <code class="k-i">ValueError</code> mit einer verständlichen Meldung aus.</li>
+      <li>Das Modul liegt dem Labor bei (<code class="k-i">data-files</code>). Wie es ein Dreiecksnetz berechnet, musst du nicht wissen; du <strong>benutzt</strong> es.</li>
+    </ul>
+  </article>
+</div>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-vorgemacht" data-title="Vorgerechnetes Beispiel: Parametrischer Flansch" data-part="A" data-stars="" data-min="10" data-extra="" aria-labelledby="h-a-vorgemacht" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-vorgemacht" tabindex="-1">Vorgerechnetes Beispiel: Parametrischer Flansch</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Aufgabe: Eine Konstrukteurin braucht eine Baureihe von Flanschen. Statt jede Variante im CAD zu zeichnen, beschreibt die Klasse <code class="k-i">Flansch</code> das <abbr class="k-begriff" data-erklaerung="Ein parametrisches Modell ist ein Bauteil, das aus Parametern (Maßen) und Regeln besteht. Ändert man ein Maß, rechnet sich der Rest neu. So arbeiten CAD-Programme intern.">parametrische Modell</abbr>: sechs Maße und die Regeln dazu. Das Programm prüft die Maße, berechnet Volumen und Masse, ändert die Bohrungszahl und zeigt das Bauteil in 3D.</p>
+
+      <figure class="k-video">
+        <video controls preload="metadata" poster="../assets/video/v20-beispiel-poster.png" aria-label="Vorgerechnet: Parametrischer Flansch als Klasse mit 3D-Vorschau">
+          <source src="../assets/video/v20-beispiel.mp4" type="video/mp4">
+          <track kind="subtitles" srclang="de" label="Deutsch" src="../assets/video/v20-beispiel.vtt" default>
+          Dein Browser kann dieses Video nicht abspielen.
+        </video>
+        <div class="k-video__missing" hidden>Video folgt. Bis dahin: Lies den Code unten Zeile für Zeile und probiere ihn aus.</div>
+        <figcaption>Vorgerechnet: Flansch als Klasse mit 3D-Vorschau (ca. 3 Min). Untertitel sind eingeschaltet (Deutsch).</figcaption>
+      </figure>
+      <div class="a-task" data-a="run" data-id="v20-w-vorgemacht" data-count="0" data-mode="programm" data-timeout="20000" data-files="../assets/py/bauteil3d.py">
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V20" aria-label="Python-Code: Parametrischer Flansch"># Parametrischer Flansch als Klasse: Maße prüfen, Masse berechnen, 3D-Vorschau
+# (V20: class, __init__, Attribute, Methoden)
+# Hilfsmodul bauteil3d.py (im Labor mitgeliefert) erzeugt das Dreiecksnetz.
+
+import math
+import bauteil3d
+
+
+class Flansch:
+    """Kreisförmiger Flansch mit Mittelloch und Bohrungen auf einem Lochkreis (Maße in mm)."""
+
+    def __init__(self, d_aussen, d_innen, dicke, lochkreis, n, d_bohrung):
+        self.d_aussen = d_aussen
+        self.d_innen = d_innen
+        self.dicke = dicke
+        self.lochkreis = lochkreis
+        self.n = n
+        self.d_bohrung = d_bohrung
+
+    def ist_gueltig(self):
+        """Bohrungen dürfen weder ins Mittelloch noch über den Rand ragen."""
+        rand_aussen = (self.lochkreis + self.d_bohrung) / 2 &lt; self.d_aussen / 2
+        rand_innen = (self.lochkreis - self.d_bohrung) / 2 &gt; self.d_innen / 2
+        return rand_aussen and rand_innen
+
+    def volumen(self):
+        """Volumen in mm³ (Kreisring minus Bohrungen)."""
+        ring = math.pi / 4 * (self.d_aussen ** 2 - self.d_innen ** 2) * self.dicke
+        bohrungen = self.n * math.pi / 4 * self.d_bohrung ** 2 * self.dicke
+        return ring - bohrungen
+
+    def masse(self, dichte=7.85):
+        """Masse in kg, Dichte in g/cm³ (Standard: Stahl)."""
+        return self.volumen() / 1000 * dichte / 1000
+
+    def mesh(self):
+        return bauteil3d.flansch(self.d_aussen, self.d_innen, self.dicke,
+                                 self.lochkreis, self.n, self.d_bohrung)
+
+
+f = Flansch(120, 40, 15, 90, 6, 11)
+print("Gültig:", f.ist_gueltig())
+print(f"Volumen: {f.volumen() / 1000:.1f} cm³, Masse: {f.masse():.2f} kg")
+
+f.n = 8                                  # Attribut ändern: acht statt sechs Bohrungen
+print(f"Mit {f.n} Bohrungen: {f.masse():.2f} kg")
+
+zu_gross = Flansch(120, 40, 15, 110, 6, 14)
+print("Lochkreis 110 mm, Bohrung 14 mm gültig?", zu_gross.ist_gueltig())
+
+bauteil3d.zeige(f.mesh(), "Flansch DN40")
+</textarea></div>
+      </div>
+      <p class="k-small k-muted">Beim Ausführen siehst du vier Zeilen Text und darunter die 3D-Vorschau des Flanschs (drehbar, mit „STL herunterladen“). Erwartete Ausgabe: <code class="k-i">Gültig: True</code>, dann 142,2 cm³ und 1,12 kg, dann 1,09 kg mit acht Bohrungen, zuletzt <code class="k-i">False</code> für den zweiten Flansch.</p>
+      <ol class="a-explain">
+        <li><strong>Zeilen 5 und 6:</strong> <code class="k-i">math</code> liefert <code class="k-i">math.pi</code>. <code class="k-i">bauteil3d</code> ist das Hilfsmodul des Labors; es erzeugt aus Maßen das Dreiecksnetz.</li>
+        <li><strong>Zeile 9:</strong> <code class="k-i">class Flansch:</code> ist der Bauplan. Die Zeile darunter ist ein Docstring (V07), der sagt, wofür die Klasse da ist und dass alle Maße in mm sind.</li>
+        <li><strong>Zeilen 12 bis 18:</strong> Der Konstruktor <code class="k-i">__init__</code> bekommt die sechs Maße und speichert jedes als Attribut: <code class="k-i">self.d_aussen = d_aussen</code> usw. Danach trägt jedes Objekt seine Maße mit sich.</li>
+        <li><strong>Zeilen 20 bis 24:</strong> <code class="k-i">ist_gueltig</code> prüft die Regel: Der äußere Rand der Bohrung (Lochkreisradius plus Bohrungsradius) muss <em>kleiner</em> sein als der Außenradius, der innere Rand (Lochkreisradius minus Bohrungsradius) <em>größer</em> als der Radius des Mittellochs. <code class="k-i">rand_aussen and rand_innen</code> ist nur dann <code class="k-i">True</code>, wenn beides stimmt.</li>
+        <li><strong>Zeilen 26 bis 30:</strong> <code class="k-i">volumen</code> rechnet den Kreisring (π/4 · (D² − d²) · Dicke) minus <code class="k-i">n</code> Bohrungszylinder. Das Ergebnis steht in mm³.</li>
+        <li><strong>Zeilen 32 bis 34:</strong> <code class="k-i">masse</code> ruft <code class="k-i">self.volumen()</code> auf und rechnet um: mm³ geteilt durch 1000 ergibt cm³, mal Dichte (g/cm³) ergibt g, geteilt durch 1000 ergibt kg. <code class="k-i">dichte=7.85</code> ist der Default für Stahl.</li>
+        <li><strong>Zeilen 36 bis 38:</strong> <code class="k-i">mesh</code> reicht die gespeicherten Maße an <code class="k-i">bauteil3d.flansch</code> weiter und gibt das Dreiecksnetz zurück.</li>
+        <li><strong>Zeilen 41 bis 43:</strong> <code class="k-i">Flansch(120, 40, 15, 90, 6, 11)</code> erzeugt ein Objekt: 120 mm außen, 40 mm Mittelloch, 15 mm dick, Lochkreis 90 mm, sechs Bohrungen mit 11 mm. Die Maße stehen in der Reihenfolge des <code class="k-i">__init__</code>. Dann Prüfung und Ausgabe: 142,2 cm³ und 1,12 kg.</li>
+        <li><strong>Zeile 45:</strong> <code class="k-i">f.n = 8</code> ändert ein Attribut. Mit acht statt sechs Bohrungen sinkt die Masse auf 1,09 kg. Die Methoden rechnen automatisch mit dem neuen Wert, du musst nichts nachziehen.</li>
+        <li><strong>Zeilen 48 und 49:</strong> Ein zweites, unabhängiges Objekt <code class="k-i">zu_gross</code> mit Lochkreis 110 mm und Bohrung 14 mm. Der Rand läge bei (110 + 14) / 2 = 62 mm, der Außenradius ist aber nur 60 mm: <code class="k-i">False</code>. Die Regel hat den Fehler gefunden, ohne dass du zeichnen musstest.</li>
+        <li><strong>Zeile 51:</strong> <code class="k-i">bauteil3d.zeige(f.mesh(), "Flansch DN40")</code> schickt das Netz an die Vorschau.</li>
+        <li><strong>Selbsterklärung:</strong> Ändere in Zeile 41 den Lochkreis auf 110 und führe aus. <code class="k-i">ist_gueltig()</code> meldet <code class="k-i">False</code>. Welche Zeile bricht trotzdem mit einer Fehlermeldung ab, und warum ist das ein Grund, vor dem Erzeugen des 3D-Modells zu prüfen?</li>
+      </ol>
+
+    </section>
+
+    <section class="l-task" id="a-ablauf" data-title="Ablauf verfolgen" data-part="A" data-stars="" data-min="8" data-extra="" aria-labelledby="h-a-ablauf" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-ablauf" tabindex="-1">Ablauf verfolgen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Führe das Programm im Kopf aus, <strong>Zeile für Zeile, so wie Python es tut</strong>. Die Spalten zeigen Attribute der Objekte (<code class="k-i">w1.d</code> heißt: Attribut <code class="k-i">d</code> des Objekts <code class="k-i">w1</code>) und die Spalte <code class="k-i">self</code>: Welches Objekt ist gerade das <code class="k-i">self</code> der Methode? Ein Zahlenwert wie <code class="k-i">5.0</code> ist ein <code class="k-i">float</code> (V02), auch bei einer Division.</p>
+
+      <div class="a-task" data-a="trace" data-id="v20-w-trace">
+        <script type="application/json">{"code": ["class Welle:", "    def __init__(self, d, l):", "        self.d = d", "        self.l = l", "", "    def streckung(self):", "        return self.l / self.d", "", "w1 = Welle(20, 100)", "w2 = Welle(30, 90)", "w2.l = 120", "s1 = w1.streckung()", "s2 = w2.streckung()", "print(s1, s2)"], "vars": ["w1.d", "w1.l", "w2.d", "w2.l", "self", "s1", "s2"], "steps": [{"line": 9, "set": {"w1.d": "20", "w1.l": "100"}, "hint": "Welle(20, 100) ruft __init__ auf. Dort ist self das neue Objekt, das später w1 heißt: self.d = d speichert 20, self.l = l speichert 100."}, {"line": 10, "set": {"w2.d": "30", "w2.l": "90"}, "hint": "Zweites Objekt, eigene Attribute: d ist 30, l ist 90. w1 bleibt unverändert."}, {"line": 11, "set": {"w2.l": "120"}, "hint": "Das Attribut l von w2 wird überschrieben. Nur w2 ändert sich, w1.l bleibt 100."}, {"line": 12, "set": {"self": "w1"}, "hint": "Bei w1.streckung() ist self das Objekt vor dem Punkt, also w1. Schreibe den Namen des Objekts."}, {"line": 7, "set": {"s1": "5.0"}, "hint": "Die Methode rechnet self.l / self.d = 100 / 20. Das Ergebnis geht mit return zurück und landet in s1. Eine Division ergibt immer einen float: 5.0."}, {"line": 13, "set": {"self": "w2"}, "hint": "Jetzt steht w2 vor dem Punkt, also ist self das Objekt w2."}, {"line": 7, "set": {"s2": "4.0"}, "hint": "self.l / self.d = 120 / 30 = 4.0. Es zählt das geänderte l von w2."}, {"line": 14, "out": "5.0 4.0", "hint": "print gibt s1 und s2 durch ein Leerzeichen getrennt aus."}]}</script>
+      </div>
+      <p class="l-task__intro">Zweiter Ablauf: zwei Namen, ein Objekt (Aliasing, wie bei Listen in V08).</p>
+      <div class="a-task" data-a="trace" data-id="v20-w-trace2">
+        <script type="application/json">{"code": ["class Teil:", "    def __init__(self, name, n):", "        self.name = name", "        self.n = n", "", "a = Teil(\"Schraube\", 10)", "b = a", "b.n = 25", "c = Teil(\"Mutter\", 10)", "print(a.n, c.n)"], "vars": ["a.n", "b.n", "c.n"], "steps": [{"line": 6, "set": {"a.n": "10"}, "hint": "Das Objekt Teil(\"Schraube\", 10) entsteht, sein Attribut n ist 10. Der Name a zeigt darauf."}, {"line": 7, "set": {"b.n": "10"}, "hint": "b = a erzeugt kein neues Objekt. b ist nur ein zweiter Name für dasselbe Objekt, also ist b.n ebenfalls 10."}, {"line": 8, "set": {"a.n": "25", "b.n": "25"}, "hint": "b.n = 25 ändert das Objekt, auf das beide Namen zeigen. Darum steht jetzt auch bei a.n der Wert 25."}, {"line": 9, "set": {"c.n": "10"}, "hint": "Ein neues, eigenes Objekt mit n = 10. Es hat mit a und b nichts zu tun."}, {"line": 10, "out": "25 10", "hint": "a.n ist 25 (geändert über b), c.n ist 10."}]}</script>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-zeilen" data-title="Zeilen ordnen" data-part="A" data-stars="" data-min="8" data-extra="" aria-labelledby="h-a-zeilen" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-zeilen" tabindex="-1">Zeilen ordnen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Alle Zeilen sind da, aber durcheinander. Bring sie in die richtige Reihenfolge <strong>und rücke die Zeilen im Block ein</strong> (Pfeil nach rechts oder Mausziehen). Manche Zeilen gehören nicht ins Programm.</p>
+
+      <div class="a-task" data-a="parsons" data-id="v20-w-parsons1">
+        <div class="a-task__head"><h3 class="a-task__title">Klasse Rohr mit Volumen</h3></div>
+        <p>Die Klasse <code class="k-i">Rohr</code> speichert Außendurchmesser, Innendurchmesser und Länge (alle in mm) und berechnet das Volumen des Hohlzylinders. Danach wird ein Rohr erzeugt und sein Volumen ausgegeben. Überlege: Was steht vor der Klasse? Welche Zeile gehört in den <code class="k-i">__init__</code>, welche in die Methode? Zwei Zeilen sind Ablenker.</p>
+        <script type="application/json">{"solution": ["import math", "class Rohr:", "    def __init__(self, d_aussen, d_innen, l):", "        self.d_aussen = d_aussen", "        self.d_innen = d_innen", "        self.l = l", "    def volumen(self):", "        flaeche = math.pi / 4 * (self.d_aussen ** 2 - self.d_innen ** 2)", "        return flaeche * self.l", "r = Rohr(40, 30, 1000)", "print(r.volumen())"], "distractors": ["    def volumen():", "        return flaeche * l"], "alts": [["import math", "class Rohr:", "    def __init__(self, d_aussen, d_innen, l):", "        self.d_innen = d_innen", "        self.d_aussen = d_aussen", "        self.l = l", "    def volumen(self):", "        flaeche = math.pi / 4 * (self.d_aussen ** 2 - self.d_innen ** 2)", "        return flaeche * self.l", "r = Rohr(40, 30, 1000)", "print(r.volumen())"], ["import math", "class Rohr:", "    def __init__(self, d_aussen, d_innen, l):", "        self.l = l", "        self.d_aussen = d_aussen", "        self.d_innen = d_innen", "    def volumen(self):", "        flaeche = math.pi / 4 * (self.d_aussen ** 2 - self.d_innen ** 2)", "        return flaeche * self.l", "r = Rohr(40, 30, 1000)", "print(r.volumen())"]]}</script>
+      </div>
+      <div class="a-task" data-a="parsons" data-id="v20-w-parsons2">
+        <div class="a-task__head"><h3 class="a-task__title">Gesamtlänge einer Wellenliste</h3></div>
+        <p>Das Programm legt eine Liste mit zwei Wellen an, zählt die Längen in einer Schleife zusammen und gibt die Summe aus. Das Attribut wird über das Objekt in der Schleife gelesen, nicht über die ganze Liste. Zwei Zeilen sind Ablenker.</p>
+        <script type="application/json">{"solution": ["class Welle:", "    def __init__(self, d, l):", "        self.d = d", "        self.l = l", "wellen = [Welle(20, 100), Welle(30, 50)]", "gesamt = 0", "for w in wellen:", "    gesamt = gesamt + w.l", "print(gesamt)"], "distractors": ["    gesamt = gesamt + wellen.l", "for w in Welle:"], "alts": [["class Welle:", "    def __init__(self, d, l):", "        self.d = d", "        self.l = l", "gesamt = 0", "wellen = [Welle(20, 100), Welle(30, 50)]", "for w in wellen:", "    gesamt = gesamt + w.l", "print(gesamt)"], ["class Welle:", "    def __init__(self, d, l):", "        self.l = l", "        self.d = d", "wellen = [Welle(20, 100), Welle(30, 50)]", "gesamt = 0", "for w in wellen:", "    gesamt = gesamt + w.l", "print(gesamt)"]]}</script>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-luecken" data-title="Lücken füllen" data-part="A" data-stars="" data-min="6" data-extra="" aria-labelledby="h-a-luecken" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-luecken" tabindex="-1">Lücken füllen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Ergänze die fünf Lücken, sodass die Klasse <code class="k-i">Zylinder</code> ihre Maße speichert, das Volumen zurückgibt und ein Objekt das Volumen ausgibt.</p>
+
+      <div class="a-task" data-a="gap" data-id="v20-w-luecken" data-mode="code" data-timeout="20000">
+        <pre class="a-gap__src">import math
+
+@@class@@ Zylinder:
+    def @@__init__@@(self, d, l):
+        self.d = d
+        @@self.l@@ = l
+
+    def volumen(self):
+        @@return@@ math.pi / 4 * self.d ** 2 * self.l
+
+z = Zylinder(20, 100)
+print(z.@@volumen@@())</pre>
+        <script type="text/x-python" data-role="tests">
+def test_klasse():
+    """Die Klasse Zylinder ist definiert"""
+    assert "Zylinder" in globals() and isinstance(Zylinder, type), "Es fehlt die Klasse Zylinder. Mit welchem Schlüsselwort beginnt eine Klassendefinition?"
+
+def test_init_speichert():
+    """__init__ speichert d und l als Attribute"""
+    z2 = Zylinder(30, 50)
+    assert getattr(z2, "d", None) == 30, "z2.d soll 30 sein. Hast du self.d = d geschrieben?"
+    assert getattr(z2, "l", None) == 50, "z2.l soll 50 sein. In __init__ muss das Attribut l gespeichert werden: self.l = l."
+
+def test_volumen_zurueck():
+    """volumen() gibt das Volumen mit return zurück"""
+    v = Zylinder(20, 100).volumen()
+    assert v is not None, "volumen() gibt None zurück. Fehlt das Schlüsselwort return?"
+    assert abs(v - 31415.9265) < 0.01, "Für d = 20 mm und l = 100 mm wird 31415.93 (mm³) erwartet, volumen() gibt %r zurück." % (v,)
+
+def test_ausgabe():
+    """Die Ausgabe zeigt das Volumen"""
+    z = zahlen(AUSGABE)
+    assert z and abs(z[-1] - 31415.93) < 0.1, "Ausgegeben wurde %r. Rufe die Methode am Ende mit Klammern auf: z.volumen()." % (zeilen(AUSGABE),)
+        </script>
+        <ol class="a-hints">
+          <li>Lücke 1: Welches Schlüsselwort beginnt eine Klasse? Es steht vor dem Namen <code>Zylinder</code>.</li>
+          <li>Lücke 2: Die Methode, die Python beim Erzeugen eines Objekts aufruft. Zwei Unterstriche davor und danach, in der Mitte <code>init</code>.</li>
+          <li>Lücke 3: Das Attribut <code>l</code> speicherst du wie <code>self.d</code> in der Zeile darüber.</li>
+          <li>Lücke 4: Die Methode soll das Volumen an den Aufrufer zurückgeben, nicht ausgeben (V07).</li>
+          <li>Lücke 5: Name der Methode, die am Objekt <code>z</code> aufgerufen wird. Die runden Klammern stehen schon da.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-pap" data-title="PAP: Gültigkeit des Flanschs" data-part="A" data-stars="" data-min="10" data-extra="PAP zeichnen" aria-labelledby="h-a-pap" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-pap" tabindex="-1">PAP: Gültigkeit des Flanschs</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Erst den Ablauf planen, dann die Methode schreiben. Du zeichnest den Plan für die Prüfung <code class="k-i">ist_gueltig</code> aus dem Beispiel, nur mit Meldungstexten statt <code class="k-i">True</code> und <code class="k-i">False</code>. Ein Methodenaufruf wäre im PAP ein Unterprogramm; hier zeichnest du die Rechenschritte selbst. Die Prüfung erzeugt aus deinem PAP Python-Code und testet ihn mit mehreren Maßen, auch mit den Grenzfällen.</p>
+
+      <div class="a-task k-pap-aufgabe" data-a="pap-zeichnen" data-id="v20-ist-gueltig" data-timeout="8000" data-erlaubt="in,out,op,if">
+        <div class="a-task__head"><h3 class="a-task__title">Bohrung auf dem Lochkreis prüfen</h3></div>
+        <p>Zeichne einen PAP. Die vier Maße (in mm) werden eingelesen und stehen schon da. Zuerst prüfst du den äußeren Rand der Bohrung: Ist <code class="k-i">(lochkreis + d_bohrung) / 2 &lt; d_aussen / 2</code> <strong>nicht</strong> erfüllt, gibst du <code class="k-i">"Bohrung ragt über den Rand"</code> aus. Sonst prüfst du den inneren Rand: Ist <code class="k-i">(lochkreis - d_bohrung) / 2 &gt; d_innen / 2</code> erfüllt, lautet die Ausgabe <code class="k-i">"gültig"</code>, andernfalls <code class="k-i">"Bohrung ragt ins Mittelloch"</code>. Texte stehen in Anführungszeichen, die Bedingungen schreibst du als Python-Ausdruck. Eine Bohrung, die den Rand genau berührt, ist ungültig.</p>
+        <script type="application/json" data-role="start">{"baum": [{"k": "in", "v": "d_aussen", "typ": "float", "prompt": "Außendurchmesser in mm: "}, {"k": "in", "v": "d_innen", "typ": "float", "prompt": "Innendurchmesser in mm: "}, {"k": "in", "v": "lochkreis", "typ": "float", "prompt": "Lochkreisdurchmesser in mm: "}, {"k": "in", "v": "d_bohrung", "typ": "float", "prompt": "Bohrungsdurchmesser in mm: "}]}</script>
+        <script type="text/x-python" data-role="tests">
+def _ausgabe(d_aussen, d_innen, lochkreis, d_bohrung):
+    z = _zeilen(_run_program([str(d_aussen), str(d_innen), str(lochkreis), str(d_bohrung)]))
+    assert z, "Dein PAP gibt nichts aus. Erwartet wird genau ein Text: gültig, Bohrung ragt über den Rand oder Bohrung ragt ins Mittelloch."
+    return z[-1].lower()
+
+def test_gueltig():
+    """120/40, Lochkreis 90, Bohrung 11: gültig"""
+    a = _ausgabe(120, 40, 90, 11)
+    assert a == "gültig", "Für 120/40 mm, Lochkreis 90 mm und Bohrung 11 mm wird 'gültig' erwartet. Dein PAP gibt aus: %r" % a
+
+def test_ueber_rand():
+    """Lochkreis 110, Bohrung 14: ragt über den Rand"""
+    a = _ausgabe(120, 40, 110, 14)
+    assert a == "bohrung ragt über den rand", "Der äußere Rand der Bohrung liegt bei (110 + 14) / 2 = 62 mm, der Außenradius ist 60 mm. Erwartet 'Bohrung ragt über den Rand', dein PAP gibt aus: %r" % a
+
+def test_ins_mittelloch():
+    """Lochkreis 50, Bohrung 14: ragt ins Mittelloch"""
+    a = _ausgabe(120, 40, 50, 14)
+    assert a == "bohrung ragt ins mittelloch", "Der innere Rand der Bohrung liegt bei (50 - 14) / 2 = 18 mm, das Mittelloch hat 20 mm Radius. Erwartet 'Bohrung ragt ins Mittelloch', dein PAP gibt aus: %r" % a
+
+def test_grenzfaelle():
+    """Berührung zählt als ungültig; knapp daneben ist gültig"""
+    assert _ausgabe(120, 40, 100, 20) == "bohrung ragt über den rand", "Äußerer Rand genau bei 60 mm = Außenradius: Das ist noch nicht kleiner, also ungültig (Rand)."
+    assert _ausgabe(120, 40, 60, 20) == "bohrung ragt ins mittelloch", "Innerer Rand genau bei 20 mm = Radius des Mittellochs: Das ist noch nicht größer, also ungültig (Mittelloch)."
+    assert _ausgabe(120, 40, 99, 20) == "gültig", "Äußerer Rand bei 59,5 mm ist kleiner als 60 mm, innerer Rand bei 39,5 mm ist größer als 20 mm: gültig."
+
+def test_reihenfolge():
+    """Rand wird zuerst geprüft"""
+    a = _ausgabe(100, 40, 120, 30)
+    assert a == "bohrung ragt über den rand", "Die Bohrung liegt komplett außerhalb. Erst der äußere Rand wird geprüft, also 'Bohrung ragt über den Rand'. Dein PAP gibt aus: %r" % a
+        </script>
+        <script type="application/json" data-role="solution">{"baum": [{"k": "in", "v": "d_aussen", "typ": "float", "prompt": "Außendurchmesser in mm: "}, {"k": "in", "v": "d_innen", "typ": "float", "prompt": "Innendurchmesser in mm: "}, {"k": "in", "v": "lochkreis", "typ": "float", "prompt": "Lochkreisdurchmesser in mm: "}, {"k": "in", "v": "d_bohrung", "typ": "float", "prompt": "Bohrungsdurchmesser in mm: "}, {"k": "if", "v": "(lochkreis + d_bohrung) / 2 < d_aussen / 2", "yes": [{"k": "if", "v": "(lochkreis - d_bohrung) / 2 > d_innen / 2", "yes": [{"k": "out", "v": "\"gültig\""}], "no": [{"k": "out", "v": "\"Bohrung ragt ins Mittelloch\""}]}], "no": [{"k": "out", "v": "\"Bohrung ragt über den Rand\""}]}]}</script>
+        <ol class="a-hints">
+          <li>Nach den vier Eingaben kommt die erste Raute mit <code>(lochkreis + d_bohrung) / 2 &lt; d_aussen / 2</code>. Im „nein“-Zweig steht die Ausgabe <code>"Bohrung ragt über den Rand"</code> (mit Anführungszeichen).</li>
+          <li>Im „ja“-Zweig kommt die zweite Raute: <code>(lochkreis - d_bohrung) / 2 &gt; d_innen / 2</code>. „ja“: Ausgabe <code>"gültig"</code>, „nein“: Ausgabe <code>"Bohrung ragt ins Mittelloch"</code>.</li>
+          <li>Die zweite Raute steckt <em>im „ja“-Zweig</em> der ersten: Der innere Rand ist nur interessant, wenn der äußere in Ordnung ist. Genau so ist <code>and</code> in <code>ist_gueltig</code> aufgebaut.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-erste" data-title="Erste eigene Aufgabe: Klasse Quader" data-part="A" data-stars="1" data-min="10" data-extra="" aria-labelledby="h-a-erste" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-erste" tabindex="-1">Erste eigene Aufgabe: Klasse Quader</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Jetzt schreibst du selbst, mit <abbr class="k-begriff" data-erklaerung="Ein Test ist ein kleines Prüfprogramm. Es startet dein Programm mit festen Eingaben und vergleicht die Ausgabe mit dem erwarteten Ergebnis."><strong>Tests</strong></abbr> als Sicherheitsnetz. Du baust eine Klasse für ein Rohteil: einen Quader aus Stahl oder Aluminium.</p>
+
+      <div class="a-task" data-a="code" data-id="v20-w-erste" data-mode="code" data-timeout="20000">
+        <div class="a-task__text">
+          <p>Schreibe die Klasse <code class="k-i">Quader</code>. Der Konstruktor <code class="k-i">__init__(self, a, b, c)</code> speichert die drei Kantenlängen in mm als Attribute <code class="k-i">a</code>, <code class="k-i">b</code> und <code class="k-i">c</code>. Die Methode <code class="k-i">volumen()</code> gibt das Volumen in <strong>mm³</strong> zurück. Die Methode <code class="k-i">masse(dichte=7.85)</code> gibt die Masse in <strong>kg</strong> zurück; die Dichte steht in g/cm³ (Stahl 7,85; Aluminium 2,70). Beide Methoden geben mit <code class="k-i">return</code> zurück, sie drucken nichts. Die Tests erzeugen mehrere Quader, nicht nur den gezeigten.</p>
+          <div class="a-spec"><strong>Erwartet</strong><pre data-run="no">Quader(100, 50, 20).volumen()     -&gt; 100000 (mm³)
+Quader(100, 50, 20).masse()       -&gt; 0.785 (kg, Stahl)
+Quader(100, 50, 20).masse(2.70)   -&gt; 0.27 (kg, Aluminium)</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V20" aria-label="Python-Code: Klasse Quader">class Quader:
+    def __init__(self, a, b, c):
+        # Kantenlängen in mm als Attribute speichern
+        pass
+
+    def volumen(self):
+        # Volumen in mm³ zurückgeben
+        pass
+
+    def masse(self, dichte=7.85):
+        # Masse in kg zurückgeben (Dichte in g/cm³)
+        pass
+
+
+q = Quader(100, 50, 20)
+print(q.volumen())
+print(q.masse())
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def test_attribute():
+    """__init__ speichert a, b und c"""
+    assert "Quader" in globals(), "Es fehlt die Klasse Quader."
+    q = Quader(100, 50, 20)
+    assert (getattr(q, "a", None), getattr(q, "b", None), getattr(q, "c", None)) == (100, 50, 20), "Die Attribute a, b, c sollen 100, 50, 20 sein. Speicherst du jedes mit self.a = a usw.?"
+
+def test_volumen():
+    """volumen() in mm³"""
+    v = Quader(100, 50, 20).volumen()
+    assert v == 100000, "Erwartet 100000 mm³ (100 · 50 · 20), volumen() gibt %r zurück. (return statt print?)" % (v,)
+
+def test_masse_stahl():
+    """masse() in kg, Standard Stahl"""
+    m = Quader(100, 50, 20).masse()
+    assert m is not None and abs(m - 0.785) < 1e-9, "Erwartet 0.785 kg: 100000 mm³ = 100 cm³, mal 7,85 g/cm³ = 785 g = 0,785 kg. masse() gibt %r zurück." % (m,)
+
+def test_masse_alu():
+    """masse(2.70) für Aluminium"""
+    m = Quader(100, 50, 20).masse(2.70)
+    assert abs(m - 0.27) < 1e-9, "Erwartet 0.27 kg bei 2,70 g/cm³, masse(2.70) gibt %r zurück." % (m,)
+
+def test_unabhaengig():
+    """Zwei Quader sind unabhängig"""
+    q1 = Quader(10, 10, 10)
+    q2 = Quader(20, 20, 20)
+    assert q1.volumen() == 1000 and q2.volumen() == 8000, "Zwei Objekte müssen eigene Maße haben: erwartet 1000 und 8000 mm³, bekommen %r und %r." % (q1.volumen(), q2.volumen())
+    q1.a = 30
+    assert q1.volumen() == 3000 and q2.volumen() == 8000, "Ändert man q1.a, soll sich nur q1 ändern und volumen() soll mit dem neuen Wert rechnen (self.a statt eines festen Werts)."
+        </script>
+        <script type="text/x-python" data-role="solution">
+class Quader:
+    def __init__(self, a, b, c):
+        self.a = a
+        self.b = b
+        self.c = c
+
+    def volumen(self):
+        return self.a * self.b * self.c
+
+    def masse(self, dichte=7.85):
+        return self.volumen() / 1000 * dichte / 1000
+
+
+q = Quader(100, 50, 20)
+print(q.volumen())
+print(q.masse())
+        </script>
+        <ol class="a-hints">
+          <li>Im <code>__init__</code> brauchst du drei Zeilen: <code>self.a = a</code>, <code>self.b = b</code>, <code>self.c = c</code>.</li>
+          <li><code>volumen</code>: <code>return self.a * self.b * self.c</code>. Vergiss nicht das <code>self.</code> vor jedem Maß.</li>
+          <li><code>masse</code>: Rufe <code>self.volumen()</code> auf und rechne um: mm³ durch 1000 ergibt cm³, mal <code>dichte</code> ergibt g, durch 1000 ergibt kg.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-review" data-seen="manual" data-title="Code-Review: KI-Klasse Bolzen prüfen" data-part="A" data-stars="" data-min="15" data-extra="" aria-labelledby="h-a-review" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-review" tabindex="-1">Code-Review: KI-Klasse Bolzen prüfen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Eine KI hat eine Klasse für einen Bolzen geliefert. Sie sieht aufgeräumt aus. Würdest du sie freigeben? Klick die Zeilen an, die du für fehlerhaft hältst, dann lass auflösen.</p>
+
+      <figure class="k-figure">
+        <picture>
+          <source srcset="../assets/img/ki-spiegel.webp" type="image/webp">
+          <img src="../assets/img/ki-spiegel.png" alt="Illustration: KI-Code wird von einem Ingenieur geprüft" width="1600" height="901" loading="lazy" onerror="this.closest('figure').hidden=true">
+        </picture>
+      </figure>
+
+      <div class="k-mirror">
+        <h3>Szenario: Masse eines Bolzens berechnen</h3>
+        <p class="k-prompt__who">Prompt eines Studierenden</p>
+        <blockquote class="k-prompt">Schreib mir eine Python-Klasse Bolzen. Durchmesser d und Länge l in mm sind Attribute. Methoden: volumen() in mm³, masse() in kg für Stahl und info(), die einen Text wie „Bolzen 10 x 50 mm“ zurückgibt. Erzeuge einen Bolzen M10 x 50 und gib seine Masse aus.</blockquote>
+        <p class="k-prompt__who">KI-Antwort (Python)</p>
+          <ol class="k-codelines" aria-label="Code der KI, Zeilen anklickbar">
+            <li><button type="button" class="k-line">import math</button></li>
+            <li><button type="button" class="k-line"> </button></li>
+            <li><button type="button" class="k-line">class Bolzen:</button></li>
+            <li><button type="button" class="k-line">    def __init__(self, d, l):</button></li>
+            <li><button type="button" class="k-line">        self.d = d</button></li>
+            <li><button type="button" class="k-line" data-bug="c">        l = l</button></li>
+            <li><button type="button" class="k-line"> </button></li>
+            <li><button type="button" class="k-line">    def volumen(self):</button></li>
+            <li><button type="button" class="k-line" data-bug="b">        return math.pi / 4 * d ** 2 * self.l</button></li>
+            <li><button type="button" class="k-line"> </button></li>
+            <li><button type="button" class="k-line">    def masse(self, dichte=7850):</button></li>
+            <li><button type="button" class="k-line" data-bug="d">        return self.volumen() * dichte</button></li>
+            <li><button type="button" class="k-line"> </button></li>
+            <li><button type="button" class="k-line" data-bug="a">    def info():</button></li>
+            <li><button type="button" class="k-line">        return f&quot;Bolzen {self.d} x {self.l} mm&quot;</button></li>
+            <li><button type="button" class="k-line"> </button></li>
+            <li><button type="button" class="k-line">b = Bolzen(10, 50)</button></li>
+            <li><button type="button" class="k-line">print(b.info())</button></li>
+            <li><button type="button" class="k-line">print(b.masse(), &quot;kg&quot;)</button></li>
+          </ol>
+        <p class="k-small k-muted">Tipp: Es sind vier Fehler eingebaut, in vier verschiedenen Zeilen. Drei davon lösen einen Fehler aus, einer liefert still eine falsche Zahl. Nicht jede Zeile ist falsch.</p>
+
+        <div class="k-mirror__task">
+          <p><strong>Würdest du das freigeben?</strong> Markiere die fehlerhaften Zeilen, dann lass auflösen.</p>
+          <button type="button" class="k-btn" data-mirror-check>Auflösen</button>
+          <p class="k-verdict" role="status" hidden></p>
+
+          <div data-mirror-after hidden>
+            <h3>Die vier Fehler</h3>
+            <h4>Fehler 1: Attribut nicht gespeichert (Zeile 6)</h4>
+            <p><code class="k-i">l = l</code> weist dem <em>Parameter</em> sich selbst zu und speichert nichts im Objekt. Das Attribut <code class="k-i">l</code> existiert nie. Sobald eine Methode <code class="k-i">self.l</code> liest, kommt ein <code class="k-i">AttributeError: 'Bolzen' object has no attribute 'l'</code>. Lösung: <code class="k-i">self.l = l</code>.</p>
+            <h4>Fehler 2: <code class="k-i">d</code> statt <code class="k-i">self.d</code> (Zeile 9)</h4>
+            <p>Innerhalb einer Methode ist <code class="k-i">d</code> nur ein Name, der dort nicht definiert ist. Das gibt einen <code class="k-i">NameError: name 'd' is not defined</code>. Das Maß gehört dem Objekt, also <code class="k-i">self.d</code>. Lösung: <code class="k-i">math.pi / 4 * self.d ** 2 * self.l</code>. Gäbe es zufällig eine globale Variable <code class="k-i">d</code>, würde der Fehler unsichtbar bleiben und <em>jeder</em> Bolzen mit demselben Wert rechnen.</p>
+            <h4>Fehler 3: Einheitenfehler (Zeile 12, mit der Vorgabe in Zeile 11)</h4>
+            <p>Das Volumen steht in mm³, die Dichte 7850 ist die von Stahl in <em>kg/m³</em>. Wer beides multipliziert, bekommt keine Masse in kg: Ein Kubikmeter hat 10⁹ mm³, das Ergebnis ist um den Faktor 10⁹ zu groß (rund 30,8 Millionen „kg“ statt 0,031 kg). Es gibt <strong>keine Fehlermeldung</strong>, nur eine absurde Zahl. Lösung: Dichte in g/cm³ (7,85) und umrechnen: <code class="k-i">self.volumen() / 1000 * dichte / 1000</code> (mm³ zu cm³, cm³ mal g/cm³ ergibt g, g zu kg).</p>
+            <h4>Fehler 4: <code class="k-i">self</code> fehlt in der Methode (Zeile 14)</h4>
+            <p><code class="k-i">def info():</code> hat keinen Parameter. Beim Aufruf <code class="k-i">b.info()</code> setzt Python das Objekt automatisch als ersten Argument ein: <code class="k-i">TypeError: Bolzen.info() takes 0 positional arguments but 1 was given</code>. Und im Körper käme <code class="k-i">self</code> ohnehin nicht vor. Lösung: <code class="k-i">def info(self):</code>.</p>
+
+            <h3>Die Fehler einzeln zum Ausprobieren</h3>
+            <p class="k-small k-muted">Je ein Aufruf, damit du die echten Meldungen siehst: Attribut nicht gespeichert, <code class="k-i">d</code> statt <code class="k-i">self.d</code>, die Einheiten und das fehlende <code class="k-i">self</code>.</p>
+<pre data-timeout="20000"><code>class Bolzen:
+    def __init__(self, d, l):
+        self.d = d
+        l = l                                   # Fehler 1: l wird nicht im Objekt gespeichert
+
+    def info(self):
+        return f"Bolzen {self.d} x {self.l} mm"
+
+
+b = Bolzen(10, 50)
+print(b.info())</code></pre><pre data-timeout="20000"><code>import math
+
+
+class Bolzen:
+    def __init__(self, d, l):
+        self.d = d
+        self.l = l
+
+    def volumen(self):
+        return math.pi / 4 * d ** 2 * self.l    # Fehler 2: d statt self.d
+
+
+b = Bolzen(10, 50)
+print(b.volumen())</code></pre><pre data-timeout="20000"><code>volumen_mm3 = 3926.99               # Bolzen M10 x 50 in mm³ (Zylinder)
+falsch = volumen_mm3 * 7850         # Fehler 3: mm³ mal kg/m³
+richtig = volumen_mm3 / 1000 * 7.85 / 1000
+
+print("falsch:  ", falsch, "kg")
+print("richtig: ", round(richtig, 4), "kg")</code></pre><pre data-timeout="20000"><code>class Bolzen:
+    def __init__(self, d, l):
+        self.d = d
+        self.l = l
+
+    def info():                                 # Fehler 4: self fehlt
+        return "Bolzen"
+
+
+b = Bolzen(10, 50)
+print(b.info())</code></pre>
+            <h3>Korrigierte Klasse</h3>
+<pre data-timeout="20000"><code>import math
+
+
+class Bolzen:
+    def __init__(self, d, l):
+        self.d = d                                          # in mm
+        self.l = l                                          # in mm
+
+    def volumen(self):
+        return math.pi / 4 * self.d ** 2 * self.l           # in mm³
+
+    def masse(self, dichte=7.85):
+        return self.volumen() / 1000 * dichte / 1000        # in kg, Dichte in g/cm³
+
+    def info(self):
+        return f"Bolzen {self.d} x {self.l} mm"
+
+
+b = Bolzen(10, 50)
+print(b.info())
+print(f"{b.masse():.4f} kg")</code></pre>
+            <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke</strong><p>Bei KI-Code mit Klassen prüfst du: Steht <code class="k-i">self</code> in jeder Methode als erster Parameter? Steht vor jedem Maß <code class="k-i">self.</code>? Werden im <code class="k-i">__init__</code> alle Maße gespeichert? Stimmen die Einheiten (mm, mm³, cm³, g/cm³, kg/m³ nicht vermischen)? Ein Programm, das beim ersten Test läuft, ist noch nicht richtig. Und eine Zahl, die nicht zur Größenordnung passt (30 Millionen Kilogramm für einen Bolzen), prüfst du immer mit einer Überschlagsrechnung.</p></div>
+
+            <h3>Jetzt korrigierst du es</h3>
+            <p>Die Klasse unten enthält alle vier Fehler. Repariere sie, bis die Tests grün sind.</p>
+            <div class="a-task" data-a="code" data-id="v20-w-review-fix" data-mode="code" data-timeout="20000">
+              <div class="a-editor"><textarea class="py-editor" data-lesson="V20" aria-label="Python-Code: Klasse Bolzen korrigieren">import math
+
+
+class Bolzen:
+    def __init__(self, d, l):
+        self.d = d
+        l = l
+
+    def volumen(self):
+        return math.pi / 4 * d ** 2 * self.l
+
+    def masse(self, dichte=7850):
+        return self.volumen() * dichte
+
+    def info():
+        return f"Bolzen {self.d} x {self.l} mm"
+
+
+b = Bolzen(10, 50)
+print(b.info())
+print(b.masse(), "kg")
+</textarea></div>
+              <script type="text/x-python" data-role="tests">
+def test_attribute():
+    """__init__ speichert d und l"""
+    b2 = Bolzen(12, 60)
+    assert getattr(b2, "d", None) == 12 and getattr(b2, "l", None) == 60, "Die Attribute d und l sollen 12 und 60 sein. Beide müssen mit self. gespeichert werden."
+
+def test_volumen():
+    """volumen() in mm³"""
+    v = Bolzen(10, 50).volumen()
+    assert abs(v - 3926.99) < 0.01, "Erwartet 3926.99 mm³ (π/4 · 10² · 50), volumen() gibt %r zurück." % (v,)
+
+def test_masse():
+    """masse() in kg (Stahl, Default)"""
+    m = Bolzen(10, 50).masse()
+    assert abs(m - 0.030825) < 1e-5, "Erwartet etwa 0.0308 kg (3,927 cm³ · 7,85 g/cm³ = 30,8 g), masse() gibt %r zurück. Stimmen Dichte (g/cm³) und Umrechnung?" % (m,)
+
+def test_alu():
+    """masse(2.70) für Aluminium"""
+    m = Bolzen(10, 50).masse(2.70)
+    assert abs(m - 0.010603) < 1e-5, "Erwartet etwa 0.0106 kg bei 2,70 g/cm³, masse(2.70) gibt %r zurück." % (m,)
+
+def test_info():
+    """info() gibt den Text zurück"""
+    t = Bolzen(10, 50).info()
+    assert t == "Bolzen 10 x 50 mm", "Erwartet 'Bolzen 10 x 50 mm', info() gibt %r zurück. Hat die Methode self als Parameter?" % (t,)
+              </script>
+              <script type="text/x-python" data-role="solution">
+import math
+
+
+class Bolzen:
+    def __init__(self, d, l):
+        self.d = d
+        self.l = l
+
+    def volumen(self):
+        return math.pi / 4 * self.d ** 2 * self.l
+
+    def masse(self, dichte=7.85):
+        return self.volumen() / 1000 * dichte / 1000
+
+    def info(self):
+        return f"Bolzen {self.d} x {self.l} mm"
+
+
+b = Bolzen(10, 50)
+print(b.info())
+print(b.masse(), "kg")
+              </script>
+              <ol class="a-hints">
+                <li>Vier Stellen: Zeile mit <code>l = l</code>, die Zeile mit <code>d ** 2</code>, die Methode <code>masse</code> und die Zeile <code>def info():</code>.</li>
+                <li>Attribute im <code>__init__</code> speicherst du mit <code>self.l = l</code>. In Methoden liest du <code>self.d</code>.</li>
+                <li>Dichte als g/cm³ (7.85) und Umrechnung: <code>self.volumen() / 1000 * dichte / 1000</code>.</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-fehler" data-title="Typische Fehlermeldungen" data-part="A" data-stars="" data-min="8" data-extra="" aria-labelledby="h-a-fehler" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-fehler" tabindex="-1">Typische Fehlermeldungen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Mit Klassen kommen neue Fehlermeldungen. Diese sechs siehst du garantiert. Jedes Beispiel lässt sich ausführen: Schau dir die echte Meldung an und lies sie von unten nach oben (zuerst die letzte Zeile).</p>
+
+      <div class="a-errors">
+        <div class="a-error">
+          <h3><code class="k-i">TypeError</code>: self fehlt in der Methode</h3>
+            <div class="a-task" data-a="run" data-mode="programm" data-timeout="20000">
+              <div class="a-editor"><textarea class="py-editor" data-lesson="V20" aria-label="Fehlerbeispiel TypeError takes 0 positional arguments">class Welle:
+    def __init__(self, d, l):
+        self.d = d
+        self.l = l
+
+    def volumen():
+        return 3.14
+
+w = Welle(20, 100)
+print(w.volumen())</textarea></div>
+            </div>
+          <p>Meldung: <code class="k-i">TypeError: Welle.volumen() takes 0 positional arguments but 1 was given</code> (bei älteren Python-Versionen ohne den Klassennamen). Du hast <code>volumen()</code> ohne Argument aufgerufen, aber Python übergibt das Objekt heimlich als erstes Argument. In der Definition fehlt der Parameter dafür. Lösung: <code>def volumen(self):</code>. Das Gleiche passiert in <code>__init__</code>, wenn <code>self</code> fehlt.</p>
+        </div>
+        <div class="a-error">
+          <h3><code class="k-i">TypeError</code>: zu wenige Argumente beim Erzeugen</h3>
+            <div class="a-task" data-a="run" data-mode="programm" data-timeout="20000">
+              <div class="a-editor"><textarea class="py-editor" data-lesson="V20" aria-label="Fehlerbeispiel TypeError missing argument">class Welle:
+    def __init__(self, d, l):
+        self.d = d
+        self.l = l
+
+w = Welle(20)
+print(w.d)</textarea></div>
+            </div>
+          <p>Meldung: <code class="k-i">TypeError: Welle.__init__() missing 1 required positional argument: 'l'</code>. <code>Welle(20)</code> ruft <code>__init__</code> auf, und das erwartet außer <code>self</code> noch <code>d</code> <em>und</em> <code>l</code>. Zähle die Parameter ohne <code>self</code> und vergleiche mit deinem Aufruf. Die Meldung nennt sogar, welcher Parameter fehlt.</p>
+        </div>
+        <div class="a-error">
+          <h3><code class="k-i">AttributeError</code>: Attribut gibt es nicht</h3>
+            <div class="a-task" data-a="run" data-mode="programm" data-timeout="20000">
+              <div class="a-editor"><textarea class="py-editor" data-lesson="V20" aria-label="Fehlerbeispiel AttributeError">class Welle:
+    def __init__(self, d, l):
+        self.d = d
+        self.l = l
+
+w = Welle(20, 100)
+print(w.d)
+print(w.laenge)</textarea></div>
+            </div>
+          <p>Meldung: <code class="k-i">AttributeError: 'Welle' object has no attribute 'laenge'</code>. Das Objekt hat ein Attribut <code>l</code>, aber keins namens <code>laenge</code>. Typische Ursachen: Tippfehler, anderer Name als im <code>__init__</code>, oder das Attribut wurde dort nie mit <code>self.…</code> gespeichert. Mit <code>print(w.__dict__)</code> siehst du alle Attribute eines Objekts.</p>
+        </div>
+        <div class="a-error">
+          <h3><code class="k-i">NameError</code>: d statt self.d</h3>
+            <div class="a-task" data-a="run" data-mode="programm" data-timeout="20000">
+              <div class="a-editor"><textarea class="py-editor" data-lesson="V20" aria-label="Fehlerbeispiel NameError">class Welle:
+    def __init__(self, d, l):
+        self.d = d
+        self.l = l
+
+    def querschnitt(self):
+        return 3.14159 / 4 * d ** 2
+
+w = Welle(20, 100)
+print(w.querschnitt())</textarea></div>
+            </div>
+          <p>Meldung: <code class="k-i">NameError: name 'd' is not defined</code>. In der Methode gibt es kein <code>d</code>; das Maß gehört dem Objekt und heißt <code>self.d</code>. Das Muster: In Methoden stehen Maße immer mit <code>self.</code> davor.</p>
+        </div>
+        <div class="a-error">
+          <h3>Klammern vergessen: <code class="k-i">&lt;bound method …&gt;</code></h3>
+            <div class="a-task" data-a="run" data-mode="programm" data-timeout="20000">
+              <div class="a-editor"><textarea class="py-editor" data-lesson="V20" aria-label="Fehlerbeispiel Klammern vergessen">class Welle:
+    def __init__(self, d, l):
+        self.d = d
+        self.l = l
+
+    def volumen(self):
+        return 3.14159 / 4 * self.d ** 2 * self.l
+
+w = Welle(20, 100)
+print(w.volumen)         # ohne Klammern
+print(w.volumen())       # mit Klammern</textarea></div>
+            </div>
+          <p>Ausgabe: <code class="k-i">&lt;bound method Welle.volumen of &lt;__main__.Welle object at 0x…&gt;&gt;</code>. Das ist <strong>keine Fehlermeldung</strong>, sondern das Methodenobjekt selbst. Ohne runde Klammern wird die Methode nicht ausgeführt, nur genannt. Erscheint in der Ausgabe so ein „bound method“, fehlen die Klammern beim Aufruf. Bei Attributen ist es umgekehrt: <code>w.d</code> hat <strong>keine</strong> Klammern.</p>
+        </div>
+        <div class="a-error">
+          <h3><code class="k-i">ValueError</code> aus bauteil3d: ungültige Maße</h3>
+            <div class="a-task" data-a="run" data-mode="programm" data-timeout="20000" data-files="../assets/py/bauteil3d.py">
+              <div class="a-editor"><textarea class="py-editor" data-lesson="V20" aria-label="Fehlerbeispiel ValueError bauteil3d">import bauteil3d
+
+ok = bauteil3d.flansch(120, 40, 15, 90, 6, 11)
+print("Flansch 1 erzeugt:", len(ok["faces"]), "Dreiecke")
+
+zu_gross = bauteil3d.flansch(120, 40, 15, 110, 6, 14)
+print("Flansch 2 erzeugt")</textarea></div>
+            </div>
+          <p>Meldung: <code class="k-i">ValueError: Die Bohrungen liegen nicht zwischen Innen- und Außenrand</code>. Das Modul prüft die Maße selbst und bricht mit einer verständlichen Meldung ab, bevor ein kaputtes Bauteil entsteht. Mit der Methode <code>ist_gueltig()</code> aus dem Beispiel fragst du <em>vorher</em> ab, statt den Fehler zu riskieren. In V18 hast du gesehen, wie du so einen <code>ValueError</code> mit <code>try</code> und <code>except</code> abfängst.</p>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-1" data-title="Feder: Kraft aus Federrate und Weg" data-part="B" data-stars="1" data-min="8" data-extra="" aria-labelledby="h-t-1" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-1" tabindex="-1">Feder: Kraft aus Federrate und Weg</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Programmieren lernst du mit den Fingern, nicht mit den Augen. Das Training ist ein fester Teil jedes Termins und gehört zum Selbststudium. Du musst nicht alles an einem Stück machen, aber alles bis zum nächsten Termin. Die Aufgaben laufen im Browser und werden automatisch geprüft.</p>
+      <div class="hinweis hinweis--achtung"><strong class="hinweis__title">Achtung</strong><p>Phase 3: Beim Projekt arbeitest du mit Copilot. Hier im Training schreibst du die Klassen selbst, damit du sie lesen kannst. Wenn Copilot dir später eine Klasse schreibt, prüfst du sie mit der Liste aus dem Code-Review: <code class="k-i">self</code> in jeder Methode? <code class="k-i">self.</code> vor jedem Maß? Alles im <code class="k-i">__init__</code> gespeichert? Einheiten stimmig?</p></div>
+
+      <div class="a-task" data-a="code" data-id="v20-tr-1" data-mode="code" data-timeout="20000">
+        <div class="a-task__text">
+          <p>Schreibe die Klasse <code class="k-i">Feder</code>. Der Konstruktor speichert die Federrate <code class="k-i">c</code> in <strong>N/mm</strong>. Die Methode <code class="k-i">kraft(s)</code> gibt die Federkraft F = c · s in <strong>N</strong> zurück, wobei <code class="k-i">s</code> der Federweg in mm ist. Die Methode gibt zurück, sie druckt nichts.</p>
+          <div class="a-spec"><strong>Erwartet</strong><pre data-run="no">Feder(12.5).kraft(8)   -&gt; 100.0   (12,5 N/mm · 8 mm = 100 N)
+Feder(3).kraft(0)      -&gt; 0</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V20" aria-label="Python-Code Aufgabe 1">class Feder:
+    def __init__(self, c):
+        # Federrate c in N/mm speichern
+        pass
+
+    def kraft(self, s):
+        # Kraft in N zurückgeben (s in mm)
+        pass
+
+
+f = Feder(12.5)
+print(f.kraft(8))
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def test_kraft():
+    """12,5 N/mm bei 8 mm: 100 N"""
+    assert "Feder" in globals(), "Es fehlt die Klasse Feder."
+    k = Feder(12.5).kraft(8)
+    assert k is not None and abs(k - 100) < 1e-9, "Erwartet 100 N, kraft(8) gibt %r zurück. Gibst du mit return zurück?" % (k,)
+
+def test_null():
+    """Federweg 0: Kraft 0"""
+    k = Feder(3).kraft(0)
+    assert k == 0, "Bei s = 0 ist die Kraft 0, kraft(0) gibt %r zurück." % (k,)
+
+def test_unabhaengig():
+    """Zwei Federn mit eigener Rate"""
+    a, b = Feder(2), Feder(10)
+    assert a.kraft(5) == 10 and b.kraft(5) == 50, "Jede Feder hat ihre eigene Rate: erwartet 10 N und 50 N, bekommen %r und %r." % (a.kraft(5), b.kraft(5))
+
+def test_attribut():
+    """Die Rate ist ein Attribut c, auch nachträglich änderbar"""
+    f = Feder(4)
+    assert getattr(f, "c", None) == 4, "Das Attribut c soll 4 sein. Speicherst du die Rate mit self.c = c?"
+    f.c = 6
+    assert f.kraft(2) == 12, "Nach f.c = 6 soll kraft(2) = 12 N liefern (self.c verwenden, nicht den Wert aus dem __init__ merken)."
+        </script>
+        <script type="text/x-python" data-role="solution">
+class Feder:
+    def __init__(self, c):
+        self.c = c
+
+    def kraft(self, s):
+        return self.c * s
+
+
+f = Feder(12.5)
+print(f.kraft(8))
+        </script>
+        <ol class="a-hints">
+          <li>Im <code>__init__</code> genügt eine Zeile: <code>self.c = c</code>.</li>
+          <li>In <code>kraft</code> brauchst du die Rate des Objekts: <code>self.c</code>. Der Federweg <code>s</code> ist der Parameter der Methode.</li>
+          <li><code>return self.c * s</code></li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-2" data-title="Rohr: Gültigkeit, Volumen, Masse" data-part="B" data-stars="2" data-min="12" data-extra="" aria-labelledby="h-t-2" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-2" tabindex="-1">Rohr: Gültigkeit, Volumen, Masse</h2>
+        <p class="l-task__meta"></p>
+      </header>
+
+      <div class="a-task" data-a="code" data-id="v20-tr-2" data-mode="code" data-timeout="20000">
+        <div class="a-task__text">
+          <p>Schreibe die Klasse <code class="k-i">Rohr(d_aussen, d_innen, l)</code> (alle Maße in mm). Die Methode <code class="k-i">ist_gueltig()</code> gibt <code class="k-i">True</code> zurück, wenn <code class="k-i">0 &lt; d_innen &lt; d_aussen</code> und <code class="k-i">l &gt; 0</code> gilt, sonst <code class="k-i">False</code>. <code class="k-i">volumen()</code> gibt das Volumen des Hohlzylinders in <strong>mm³</strong> zurück (π/4 · (D² − d²) · l). <code class="k-i">masse(dichte=7.85)</code> gibt die Masse in <strong>kg</strong> zurück (Dichte in g/cm³).</p>
+          <div class="a-spec"><strong>Erwartet</strong><pre data-run="no">r = Rohr(40, 30, 1000)
+r.ist_gueltig()   -&gt; True
+r.volumen()       -&gt; 549778.7... (mm³)
+r.masse()         -&gt; 4.3157... (kg, Stahl)
+Rohr(30, 40, 100).ist_gueltig()   -&gt; False</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V20" aria-label="Python-Code Aufgabe 2">import math
+
+
+class Rohr:
+    def __init__(self, d_aussen, d_innen, l):
+        pass
+
+    def ist_gueltig(self):
+        pass
+
+    def volumen(self):
+        pass
+
+    def masse(self, dichte=7.85):
+        pass
+
+
+r = Rohr(40, 30, 1000)
+print(r.ist_gueltig())
+print(r.volumen())
+print(r.masse())
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def test_volumen():
+    """Rohr 40/30/1000: Volumen in mm³"""
+    assert "Rohr" in globals(), "Es fehlt die Klasse Rohr."
+    v = Rohr(40, 30, 1000).volumen()
+    assert v is not None and abs(v - 549778.714) < 0.01, "Erwartet 549778.7 mm³ (π/4 · (40² − 30²) · 1000), volumen() gibt %r zurück." % (v,)
+
+def test_masse():
+    """Masse in kg: Stahl und Aluminium"""
+    r = Rohr(40, 30, 1000)
+    m = r.masse()
+    assert m is not None and abs(m - 4.31576) < 1e-4, "Erwartet etwa 4.3158 kg: 549,78 cm³ · 7,85 g/cm³ = 4315,8 g. masse() gibt %r zurück." % (m,)
+    m2 = r.masse(2.70)
+    assert abs(m2 - 1.48440) < 1e-4, "Mit Aluminium (2,70 g/cm³) erwartet etwa 1.4844 kg, masse(2.70) gibt %r zurück." % (m2,)
+
+def test_gueltig():
+    """Gültig, wenn 0 < d_innen < d_aussen und l > 0"""
+    assert Rohr(40, 30, 1000).ist_gueltig() is True, "Rohr(40, 30, 1000) ist gültig, ist_gueltig() muss True zurückgeben."
+    assert Rohr(30, 40, 100).ist_gueltig() is False, "d_innen größer als d_aussen ist ungültig: False erwartet."
+    assert Rohr(40, 40, 100).ist_gueltig() is False, "d_innen gleich d_aussen (Wandstärke 0) ist ungültig: False erwartet."
+    assert Rohr(40, 30, 0).ist_gueltig() is False, "Länge 0 ist ungültig: False erwartet."
+    assert Rohr(40, 0, 100).ist_gueltig() is False, "d_innen = 0 ist ein Vollstab und hier kein gültiges Rohr: False erwartet."
+
+def test_unabhaengig():
+    """Mehrere Rohre, eigene Maße"""
+    a, b = Rohr(40, 30, 1000), Rohr(60, 50, 500)
+    assert a.volumen() != b.volumen(), "Zwei Rohre mit verschiedenen Maßen müssen verschiedene Volumen haben."
+    b.l = 1000
+    assert abs(b.volumen() - (3.141592653589793 / 4 * (3600 - 2500) * 1000)) < 0.01, "Nach b.l = 1000 muss volumen() mit dem neuen Wert rechnen (self.l)."
+        </script>
+        <script type="text/x-python" data-role="solution">
+import math
+
+
+class Rohr:
+    def __init__(self, d_aussen, d_innen, l):
+        self.d_aussen = d_aussen
+        self.d_innen = d_innen
+        self.l = l
+
+    def ist_gueltig(self):
+        return 0 < self.d_innen < self.d_aussen and self.l > 0
+
+    def volumen(self):
+        return math.pi / 4 * (self.d_aussen ** 2 - self.d_innen ** 2) * self.l
+
+    def masse(self, dichte=7.85):
+        return self.volumen() / 1000 * dichte / 1000
+
+
+r = Rohr(40, 30, 1000)
+print(r.ist_gueltig())
+print(r.volumen())
+print(r.masse())
+        </script>
+        <ol class="a-hints">
+          <li>Im <code>__init__</code> speicherst du alle drei Maße: <code>self.d_aussen = d_aussen</code> und so weiter.</li>
+          <li><code>ist_gueltig</code>: <code>return 0 &lt; self.d_innen &lt; self.d_aussen and self.l &gt; 0</code>. Python erlaubt die Kette <code>0 &lt; a &lt; b</code> (V04).</li>
+          <li><code>masse</code> ruft <code>self.volumen()</code> auf; mm³ geteilt durch 1000 ergibt cm³, mal <code>dichte</code> ergibt g, geteilt durch 1000 ergibt kg.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-3" data-title="Werkzeug: Standzeit verbrauchen" data-part="B" data-stars="2" data-min="12" data-extra="Methode ändert Zustand" aria-labelledby="h-t-3" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-3" tabindex="-1">Werkzeug: Standzeit verbrauchen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+
+      <div class="a-task" data-a="code" data-id="v20-tr-3" data-mode="code" data-timeout="20000">
+        <div class="a-task__text">
+          <p>Ein Fräser hat eine Standzeit, nach der er verschlissen ist. Schreibe die Klasse <code class="k-i">Werkzeug(standzeit_min)</code>. Sie speichert die Standzeit als Attribut <code class="k-i">standzeit_min</code> und die <strong>Reststandzeit</strong> als Attribut <code class="k-i">rest_min</code> (zu Beginn gleich der Standzeit). Die Methode <code class="k-i">benutze(minuten)</code> verringert <code class="k-i">rest_min</code> um die Minuten, aber nie unter 0, und gibt nichts zurück. <code class="k-i">ist_verschlissen()</code> gibt <code class="k-i">True</code> zurück, sobald <code class="k-i">rest_min</code> gleich 0 ist.</p>
+          <div class="a-spec"><strong>Erwartet</strong><pre data-run="no">w = Werkzeug(60)
+w.benutze(45)
+w.rest_min              -&gt; 15
+w.ist_verschlissen()    -&gt; False
+w.benutze(20)
+w.rest_min              -&gt; 0      (nicht -5)
+w.ist_verschlissen()    -&gt; True</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V20" aria-label="Python-Code Aufgabe 3">class Werkzeug:
+    def __init__(self, standzeit_min):
+        pass
+
+    def benutze(self, minuten):
+        pass
+
+    def ist_verschlissen(self):
+        pass
+
+
+w = Werkzeug(60)
+w.benutze(45)
+print(w.rest_min, w.ist_verschlissen())
+w.benutze(20)
+print(w.rest_min, w.ist_verschlissen())
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def test_start():
+    """Zu Beginn ist die Reststandzeit gleich der Standzeit"""
+    assert "Werkzeug" in globals(), "Es fehlt die Klasse Werkzeug."
+    w = Werkzeug(60)
+    assert getattr(w, "standzeit_min", None) == 60 and getattr(w, "rest_min", None) == 60, "standzeit_min und rest_min sollen zu Beginn beide 60 sein. Beide im __init__ speichern."
+    assert w.ist_verschlissen() is False, "Ein neues Werkzeug ist nicht verschlissen: ist_verschlissen() muss False sein."
+
+def test_benutze():
+    """benutze() verringert rest_min"""
+    w = Werkzeug(60)
+    r = w.benutze(45)
+    assert w.rest_min == 15, "Nach benutze(45) soll rest_min 15 sein, es ist %r. Die Methode muss das Attribut ändern: self.rest_min = ..." % (w.rest_min,)
+    assert r is None, "benutze() soll nichts zurückgeben (ändert nur das Objekt)."
+    assert w.standzeit_min == 60, "standzeit_min darf sich nicht ändern."
+    assert w.ist_verschlissen() is False, "Mit 15 Minuten Rest ist das Werkzeug nicht verschlissen."
+
+def test_nie_unter_null():
+    """rest_min wird nie negativ; dann verschlissen"""
+    w = Werkzeug(60)
+    w.benutze(45)
+    w.benutze(20)
+    assert w.rest_min == 0, "Nach 65 von 60 Minuten soll rest_min 0 sein (nicht negativ), es ist %r." % (w.rest_min,)
+    assert w.ist_verschlissen() is True, "Bei rest_min = 0 ist das Werkzeug verschlissen: True erwartet."
+
+def test_genau_null():
+    """Genau aufgebraucht ist verschlissen"""
+    w = Werkzeug(30)
+    w.benutze(30)
+    assert w.ist_verschlissen() is True, "Bei genau 30 von 30 Minuten ist rest_min = 0 und das Werkzeug verschlissen."
+
+def test_mehrere_aufrufe_und_objekte():
+    """Mehrere Aufrufe addieren sich; Werkzeuge sind unabhängig"""
+    a, b = Werkzeug(100), Werkzeug(100)
+    a.benutze(10)
+    a.benutze(10)
+    a.benutze(10)
+    assert a.rest_min == 70, "Dreimal 10 Minuten: erwartet rest_min = 70, es ist %r." % (a.rest_min,)
+    assert b.rest_min == 100, "Das zweite Werkzeug b wurde nicht benutzt und muss 100 haben, es hat %r. Jedes Objekt hat eigene Attribute." % (b.rest_min,)
+        </script>
+        <script type="text/x-python" data-role="solution">
+class Werkzeug:
+    def __init__(self, standzeit_min):
+        self.standzeit_min = standzeit_min
+        self.rest_min = standzeit_min
+
+    def benutze(self, minuten):
+        self.rest_min = self.rest_min - minuten
+        if self.rest_min < 0:
+            self.rest_min = 0
+
+    def ist_verschlissen(self):
+        return self.rest_min == 0
+
+
+w = Werkzeug(60)
+w.benutze(45)
+print(w.rest_min, w.ist_verschlissen())
+w.benutze(20)
+print(w.rest_min, w.ist_verschlissen())
+        </script>
+        <ol class="a-hints">
+          <li>Im <code>__init__</code> gibt es zwei Attribute: <code>self.standzeit_min = standzeit_min</code> und <code>self.rest_min = standzeit_min</code>.</li>
+          <li><code>benutze</code>: <code>self.rest_min = self.rest_min - minuten</code>. Danach: Wenn <code>self.rest_min &lt; 0</code> ist, setze es auf 0.</li>
+          <li><code>ist_verschlissen</code>: <code>return self.rest_min == 0</code> (zwei Gleichheitszeichen vergleichen, V04).</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-4" data-title="Flansch-Baureihe: leichteste gültige Variante" data-part="B" data-stars="3" data-min="15" data-extra="Objekte in Listen" aria-labelledby="h-t-4" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-4" tabindex="-1">Flansch-Baureihe: leichteste gültige Variante</h2>
+        <p class="l-task__meta"></p>
+      </header>
+
+      <div class="a-task" data-a="code" data-id="v20-tr-4" data-mode="code" data-timeout="20000">
+        <div class="a-task__text">
+          <p>Die Klasse <code class="k-i">Flansch</code> aus dem Beispiel steht schon da (ohne <code class="k-i">mesh</code>). Die Baureihe ist eine Liste von Flansch-Objekten, eines davon hat falsche Maße. Schreibe zwei Funktionen: <code class="k-i">anzahl_ungueltig(liste)</code> gibt zurück, wie viele Flansche der Liste <strong>nicht</strong> gültig sind. <code class="k-i">leichtester_gueltiger(liste)</code> gibt das <strong>Objekt</strong> mit der kleinsten Masse unter allen gültigen Flanschen zurück, oder <code class="k-i">None</code>, wenn kein Flansch gültig ist. Die Liste darf nicht verändert werden.</p>
+          <div class="a-spec"><strong>Erwartet</strong><pre data-run="no">anzahl_ungueltig(baureihe)          -&gt; 1
+leichtester_gueltiger(baureihe)     -&gt; das Flansch-Objekt mit 0.38 kg (kleinster d_aussen)
+leichtester_gueltiger([])           -&gt; None</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V20" aria-label="Python-Code Aufgabe 4">import math
+
+
+class Flansch:
+    def __init__(self, d_aussen, d_innen, dicke, lochkreis, n, d_bohrung):
+        self.d_aussen = d_aussen
+        self.d_innen = d_innen
+        self.dicke = dicke
+        self.lochkreis = lochkreis
+        self.n = n
+        self.d_bohrung = d_bohrung
+
+    def ist_gueltig(self):
+        rand_aussen = (self.lochkreis + self.d_bohrung) / 2 &lt; self.d_aussen / 2
+        rand_innen = (self.lochkreis - self.d_bohrung) / 2 &gt; self.d_innen / 2
+        return rand_aussen and rand_innen
+
+    def volumen(self):
+        ring = math.pi / 4 * (self.d_aussen ** 2 - self.d_innen ** 2) * self.dicke
+        bohrungen = self.n * math.pi / 4 * self.d_bohrung ** 2 * self.dicke
+        return ring - bohrungen
+
+    def masse(self, dichte=7.85):
+        return self.volumen() / 1000 * dichte / 1000
+
+
+baureihe = [
+    Flansch(100, 25, 12, 70, 4, 10),
+    Flansch(120, 40, 15, 90, 6, 11),
+    Flansch(120, 40, 15, 110, 6, 14),     # Bohrung ragt über den Rand
+    Flansch(150, 50, 20, 110, 4, 18),
+    Flansch(185, 65, 20, 145, 8, 18),
+]
+
+
+def anzahl_ungueltig(liste):
+    pass
+
+
+def leichtester_gueltiger(liste):
+    pass
+
+
+print(anzahl_ungueltig(baureihe))
+leicht = leichtester_gueltiger(baureihe)
+print(leicht.d_aussen, round(leicht.masse(), 2))
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _liste():
+    return [
+        Flansch(100, 25, 12, 70, 4, 10),
+        Flansch(120, 40, 15, 90, 6, 11),
+        Flansch(120, 40, 15, 110, 6, 14),
+        Flansch(150, 50, 20, 110, 4, 18),
+        Flansch(185, 65, 20, 145, 8, 18),
+    ]
+
+def test_anzahl():
+    """Ein Flansch der Baureihe ist ungültig"""
+    assert "anzahl_ungueltig" in globals(), "Es fehlt die Funktion anzahl_ungueltig(liste)."
+    n = anzahl_ungueltig(_liste())
+    assert n == 1, "Erwartet 1 ungültigen Flansch, die Funktion gibt %r zurück. (return statt print?)" % (n,)
+
+def test_anzahl_weitere():
+    """Alle gültig, alle ungültig, leere Liste"""
+    gut = [Flansch(120, 40, 15, 90, 6, 11), Flansch(150, 50, 20, 110, 4, 18)]
+    schlecht = [Flansch(120, 40, 15, 110, 6, 14), Flansch(120, 40, 15, 50, 6, 14)]
+    assert anzahl_ungueltig(gut) == 0, "Bei lauter gültigen Flanschen soll 0 herauskommen."
+    assert anzahl_ungueltig(schlecht) == 2, "Beide Flansche sind ungültig (Rand und Mittelloch): 2 erwartet."
+    assert anzahl_ungueltig([]) == 0, "Eine leere Liste hat 0 ungültige Flansche."
+
+def test_leichtester():
+    """Das leichteste gültige Objekt wird zurückgegeben"""
+    assert "leichtester_gueltiger" in globals(), "Es fehlt die Funktion leichtester_gueltiger(liste)."
+    liste = _liste()
+    r = leichtester_gueltiger(liste)
+    assert r is not None, "Die Funktion gibt None zurück, obwohl es gültige Flansche gibt."
+    gueltig = [f for f in liste if f.ist_gueltig()]
+    soll = min(f.masse() for f in gueltig)
+    assert abs(r.masse() - soll) < 1e-9, "Zurückgegeben wurde ein Flansch mit %.3f kg, der leichteste gültige hat %.3f kg." % (r.masse(), soll)
+    assert r.ist_gueltig(), "Der zurückgegebene Flansch muss gültig sein."
+    assert any(r is f for f in liste) or r.d_aussen in [f.d_aussen for f in liste], "Gib das Objekt aus der Liste zurück, nicht eine Zahl."
+
+def test_ungueltig_wird_ignoriert():
+    """Ein ungültiger, aber leichter Flansch darf nicht gewinnen"""
+    leicht_aber_ungueltig = Flansch(60, 40, 5, 80, 4, 5)
+    liste = [Flansch(120, 40, 15, 90, 6, 11), leicht_aber_ungueltig]
+    r = leichtester_gueltiger(liste)
+    assert r is liste[0] or abs(r.masse() - liste[0].masse()) < 1e-9, "Der ungültige Flansch (Masse %.3f kg) ist leichter, zählt aber nicht." % (leicht_aber_ungueltig.masse(),)
+
+def test_keiner_gueltig():
+    """Kein gültiger Flansch: None"""
+    r = leichtester_gueltiger([Flansch(120, 40, 15, 110, 6, 14)])
+    assert r is None, "Ohne gültigen Flansch soll None zurückkommen, die Funktion gibt %r zurück." % (r,)
+    assert leichtester_gueltiger([]) is None, "Bei einer leeren Liste soll None zurückkommen."
+
+def test_liste_unveraendert():
+    """Die Liste wird nicht verändert"""
+    liste = _liste()
+    ids = [id(f) for f in liste]
+    leichtester_gueltiger(liste)
+    anzahl_ungueltig(liste)
+    assert [id(f) for f in liste] == ids and len(liste) == 5, "Die übergebene Liste darf nicht verändert werden (kein sort, remove oder pop auf der Originalliste)."
+        </script>
+        <script type="text/x-python" data-role="solution">
+import math
+
+
+class Flansch:
+    def __init__(self, d_aussen, d_innen, dicke, lochkreis, n, d_bohrung):
+        self.d_aussen = d_aussen
+        self.d_innen = d_innen
+        self.dicke = dicke
+        self.lochkreis = lochkreis
+        self.n = n
+        self.d_bohrung = d_bohrung
+
+    def ist_gueltig(self):
+        rand_aussen = (self.lochkreis + self.d_bohrung) / 2 < self.d_aussen / 2
+        rand_innen = (self.lochkreis - self.d_bohrung) / 2 > self.d_innen / 2
+        return rand_aussen and rand_innen
+
+    def volumen(self):
+        ring = math.pi / 4 * (self.d_aussen ** 2 - self.d_innen ** 2) * self.dicke
+        bohrungen = self.n * math.pi / 4 * self.d_bohrung ** 2 * self.dicke
+        return ring - bohrungen
+
+    def masse(self, dichte=7.85):
+        return self.volumen() / 1000 * dichte / 1000
+
+
+baureihe = [
+    Flansch(100, 25, 12, 70, 4, 10),
+    Flansch(120, 40, 15, 90, 6, 11),
+    Flansch(120, 40, 15, 110, 6, 14),
+    Flansch(150, 50, 20, 110, 4, 18),
+    Flansch(185, 65, 20, 145, 8, 18),
+]
+
+
+def anzahl_ungueltig(liste):
+    zaehler = 0
+    for f in liste:
+        if not f.ist_gueltig():
+            zaehler = zaehler + 1
+    return zaehler
+
+
+def leichtester_gueltiger(liste):
+    beste = None
+    for f in liste:
+        if f.ist_gueltig():
+            if beste is None or f.masse() < beste.masse():
+                beste = f
+    return beste
+
+
+print(anzahl_ungueltig(baureihe))
+leicht = leichtester_gueltiger(baureihe)
+print(leicht.d_aussen, round(leicht.masse(), 2))
+        </script>
+        <ol class="a-hints">
+          <li><code>anzahl_ungueltig</code>: Zähler auf 0, Schleife <code>for f in liste:</code>, dann <code>if not f.ist_gueltig():</code> erhöht den Zähler. Die Methode braucht Klammern.</li>
+          <li><code>leichtester_gueltiger</code>: Merke dir das bisher leichteste Objekt in einer Variable, die mit <code>None</code> startet. Das ist wie die Suche nach dem Maximum in V06, nur mit Objekten.</li>
+          <li>Ein Objekt ersetzt das bisher beste, wenn es gültig ist <strong>und</strong> (<code>beste is None</code> <strong>oder</strong> <code>f.masse() &lt; beste.masse()</code>). Am Ende <code>return beste</code>.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-5" data-title="Stufenwelle mit 3D-Vorschau" data-part="B" data-stars="3" data-min="15" data-extra="mit 3D" aria-labelledby="h-t-5" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-5" tabindex="-1">Stufenwelle mit 3D-Vorschau</h2>
+        <p class="l-task__meta"></p>
+      </header>
+
+      <div class="a-task" data-a="code" data-id="v20-tr-5" data-mode="code" data-timeout="20000" data-files="../assets/py/bauteil3d.py">
+        <div class="a-task__text">
+          <p>Eine gestufte Welle besteht aus Absätzen, jeder mit Durchmesser und Länge in mm. Schreibe die Klasse <code class="k-i">Stufenwelle(absaetze)</code>; <code class="k-i">absaetze</code> ist eine Liste von <code class="k-i">(d, l)</code>-Tupeln, von unten nach oben, gespeichert als Attribut <code class="k-i">absaetze</code>. <code class="k-i">gesamtlaenge()</code> gibt die Summe der Längen zurück (mm). <code class="k-i">volumen()</code> gibt das Volumen in <strong>mm³</strong> zurück, als Summe der Zylindervolumen π/4 · d² · l, <strong>ohne</strong> bauteil3d. <code class="k-i">mesh()</code> gibt <code class="k-i">bauteil3d.welle(self.absaetze)</code> zurück. Am Ende zeigt das Programm die Welle in 3D; die Tests prüfen die Zahlen und vergleichen dein Volumen mit dem des Dreiecksnetzes.</p>
+          <div class="a-spec"><strong>Erwartet</strong><pre data-run="no">w = Stufenwelle([(30, 40), (20, 60), (25, 30)])
+w.gesamtlaenge()   -&gt; 130
+w.volumen()        -&gt; 61850.2... (mm³)</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V20" aria-label="Python-Code Aufgabe 5">import math
+import bauteil3d
+
+
+class Stufenwelle:
+    def __init__(self, absaetze):
+        pass
+
+    def gesamtlaenge(self):
+        pass
+
+    def volumen(self):
+        pass
+
+    def mesh(self):
+        pass
+
+
+w = Stufenwelle([(30, 40), (20, 60), (25, 30)])
+print("Länge:", w.gesamtlaenge(), "mm")
+print(f"Volumen: {w.volumen() / 1000:.1f} cm³")
+bauteil3d.zeige(w.mesh(), "Stufenwelle")
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+import math as _m
+import bauteil3d as _b
+
+def test_laenge():
+    """gesamtlaenge() summiert die Längen"""
+    assert "Stufenwelle" in globals(), "Es fehlt die Klasse Stufenwelle."
+    w = Stufenwelle([(30, 40), (20, 60), (25, 30)])
+    assert w.gesamtlaenge() == 130, "Erwartet 130 mm (40 + 60 + 30), gesamtlaenge() gibt %r zurück." % (w.gesamtlaenge(),)
+    assert Stufenwelle([(10, 5)]).gesamtlaenge() == 5, "Eine Welle mit einem Absatz hat die Länge dieses Absatzes."
+
+def test_volumen():
+    """volumen() in mm³ als Summe der Zylinder"""
+    w = Stufenwelle([(30, 40), (20, 60), (25, 30)])
+    soll = _m.pi / 4 * (30 ** 2 * 40 + 20 ** 2 * 60 + 25 ** 2 * 30)
+    v = w.volumen()
+    assert v is not None and abs(v - soll) < 0.01, "Erwartet %.1f mm³, volumen() gibt %r zurück. Je Absatz π/4 · d² · l." % (soll, v)
+
+def test_einfach():
+    """Ein Zylinder 20 x 100"""
+    v = Stufenwelle([(20, 100)]).volumen()
+    assert abs(v - 31415.9265) < 0.01, "Ein Absatz 20 x 100 mm hat 31415.93 mm³, volumen() gibt %r zurück." % (v,)
+
+def test_mesh():
+    """mesh() liefert das Dreiecksnetz mit passendem Volumen"""
+    w = Stufenwelle([(30, 40), (20, 60), (25, 30)])
+    m = w.mesh()
+    assert isinstance(m, dict) and "vertices" in m and "faces" in m, "mesh() soll das Ergebnis von bauteil3d.welle(...) zurückgeben (ein Dictionary mit vertices und faces), es gibt %r zurück." % (type(m).__name__,)
+    vm = _b.volumen(m)
+    assert abs(vm - w.volumen()) / w.volumen() < 0.01, "Das Volumen des Netzes (%.0f mm³) weicht um mehr als 1 %% von deiner Rechnung (%.0f mm³) ab. Stimmt die Reihenfolge der Absätze und die Formel?" % (vm, w.volumen())
+    ab = _b.abmessungen(m)
+    assert abs(ab[2] - 130) < 1e-6, "Die Welle soll 130 mm hoch sein (z-Richtung), das Netz ist %.2f mm hoch." % ab[2]
+
+def test_attribut():
+    """Die Absätze sind ein Attribut"""
+    a = [(10, 20), (8, 30)]
+    w = Stufenwelle(a)
+    assert getattr(w, "absaetze", None) == a, "Das Attribut absaetze soll die übergebene Liste enthalten: self.absaetze = absaetze."
+        </script>
+        <script type="text/x-python" data-role="solution">
+import math
+import bauteil3d
+
+
+class Stufenwelle:
+    def __init__(self, absaetze):
+        self.absaetze = absaetze
+
+    def gesamtlaenge(self):
+        summe = 0
+        for d, l in self.absaetze:
+            summe = summe + l
+        return summe
+
+    def volumen(self):
+        summe = 0
+        for d, l in self.absaetze:
+            summe = summe + math.pi / 4 * d ** 2 * l
+        return summe
+
+    def mesh(self):
+        return bauteil3d.welle(self.absaetze)
+
+
+w = Stufenwelle([(30, 40), (20, 60), (25, 30)])
+print("Länge:", w.gesamtlaenge(), "mm")
+print(f"Volumen: {w.volumen() / 1000:.1f} cm³")
+bauteil3d.zeige(w.mesh(), "Stufenwelle")
+        </script>
+        <ol class="a-hints">
+          <li><code>self.absaetze = absaetze</code> im <code>__init__</code>. Jeder Absatz ist ein Tupel: <code>for d, l in self.absaetze:</code> packt es in zwei Variablen aus (V08).</li>
+          <li><code>gesamtlaenge</code>: Summe von <code>l</code> über alle Absätze. <code>volumen</code>: Summe von <code>math.pi / 4 * d ** 2 * l</code>.</li>
+          <li><code>mesh</code>: <code>return bauteil3d.welle(self.absaetze)</code>. Danach sollte unter der Ausgabe die 3D-Vorschau erscheinen.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-6" data-title="Wiederholung: Teileliste aus Text einlesen" data-part="B" data-stars="3" data-min="12" data-extra="Wiederholung V09, V18" aria-labelledby="h-t-6" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-6" tabindex="-1">Wiederholung: Teileliste aus Text einlesen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+
+      <div class="a-task" data-a="code" data-id="v20-tr-6" data-mode="code" data-timeout="20000">
+        <div class="a-task__text">
+          <p>Hier wiederholst du Altes: <code class="k-i">split</code>, <code class="k-i">try</code>/<code class="k-i">except</code> und Funktionen, ganz ohne Klassen. Eine Stückliste liegt als Text vor, eine Zeile je Teil: <code class="k-i">name;masse_kg</code>, die Masse mit Dezimalkomma oder Dezimalpunkt. Schreibe <code class="k-i">lese_teile(text)</code>: Die Funktion gibt eine Liste von Tupeln <code class="k-i">(name, masse)</code> zurück (Masse als <code class="k-i">float</code>). Zeilen, die nicht passen (leer, keine zwei Felder, Masse keine Zahl, zum Beispiel die Kopfzeile), werden <strong>übersprungen</strong>, ohne dass das Programm abbricht. Dazu <code class="k-i">gesamtmasse(teile)</code>: Summe der Massen in kg.</p>
+          <div class="a-spec"><strong>Erwartet</strong><pre data-run="no">lese_teile("name;masse_kg\nWelle;2,5\nkaputt\nFlansch;1.12")
+    -&gt; [("Welle", 2.5), ("Flansch", 1.12)]
+gesamtmasse([("Welle", 2.5), ("Flansch", 1.12)])   -&gt; 3.62</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V20" aria-label="Python-Code Aufgabe 6">def lese_teile(text):
+    pass
+
+
+def gesamtmasse(teile):
+    pass
+
+
+stueckliste = """name;masse_kg
+Welle;2,5
+Flansch;1.12
+Bolzen;abc
+Mutter;0,03
+
+kaputt
+"""
+teile = lese_teile(stueckliste)
+print(teile)
+print(gesamtmasse(teile))
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def test_lese():
+    """Gute Zeilen werden gelesen, schlechte übersprungen"""
+    assert "lese_teile" in globals(), "Es fehlt die Funktion lese_teile(text)."
+    text = "name;masse_kg\nWelle;2,5\nFlansch;1.12\nBolzen;abc\nMutter;0,03\n\nkaputt\nzu;viele;felder\n"
+    r = lese_teile(text)
+    assert r == [("Welle", 2.5), ("Flansch", 1.12), ("Mutter", 0.03)], "Erwartet [('Welle', 2.5), ('Flansch', 1.12), ('Mutter', 0.03)], die Funktion gibt %r zurück." % (r,)
+
+def test_leer():
+    """Leerer Text, nur schlechte Zeilen"""
+    assert lese_teile("") == [], "Ein leerer Text ergibt eine leere Liste."
+    assert lese_teile("a\nb;c\n\n") == [], "Wenn keine Zeile passt, bleibt die Liste leer."
+
+def test_typen():
+    """Masse ist eine Zahl, Name ein Text"""
+    r = lese_teile("Welle;2,5")
+    assert len(r) == 1 and isinstance(r[0], tuple), "Die Einträge sollen Tupel (name, masse) sein."
+    assert isinstance(r[0][1], float) and r[0][0] == "Welle", "Name als Text, Masse als float: gefunden %r." % (r[0],)
+
+def test_leerzeichen():
+    """Leerzeichen um die Felder stören nicht"""
+    r = lese_teile("  Welle ; 2,5 \n")
+    assert r == [("Welle", 2.5)], "Leerzeichen um Name und Zahl sollen entfernt werden (strip). Erwartet [('Welle', 2.5)], gefunden %r." % (r,)
+
+def test_summe():
+    """gesamtmasse summiert"""
+    s = gesamtmasse([("Welle", 2.5), ("Flansch", 1.12)])
+    assert s is not None and abs(s - 3.62) < 1e-9, "Erwartet 3.62 kg, gesamtmasse gibt %r zurück." % (s,)
+    assert gesamtmasse([]) == 0, "Die Summe einer leeren Liste ist 0."
+        </script>
+        <script type="text/x-python" data-role="solution">
+def lese_teile(text):
+    teile = []
+    for zeile in text.splitlines():
+        felder = zeile.split(";")
+        if len(felder) != 2:
+            continue
+        try:
+            masse = float(felder[1].strip().replace(",", "."))
+        except ValueError:
+            continue
+        teile.append((felder[0].strip(), masse))
+    return teile
+
+
+def gesamtmasse(teile):
+    summe = 0
+    for name, masse in teile:
+        summe = summe + masse
+    return summe
+
+
+stueckliste = """name;masse_kg
+Welle;2,5
+Flansch;1.12
+Bolzen;abc
+Mutter;0,03
+
+kaputt
+"""
+teile = lese_teile(stueckliste)
+print(teile)
+print(gesamtmasse(teile))
+        </script>
+        <ol class="a-hints">
+          <li><code>text.splitlines()</code> gibt die Zeilen als Liste. Jede Zeile mit <code>zeile.split(";")</code> in Felder zerlegen; sind es nicht genau zwei, gehst du mit <code>continue</code> zur nächsten Zeile.</li>
+          <li>Die Masse: <code>float(felder[1].strip().replace(",", "."))</code> in einem <code>try</code>. Bei <code>except ValueError:</code> überspringst du die Zeile (V09 und V18: gezielt abfangen, nie ein leeres <code>except</code>).</li>
+          <li>Am Ende <code>teile.append((name, masse))</code> mit doppelten Klammern: ein Tupel in der Liste.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-7" data-title="Klausur-Modus: Feder mit Grenze" data-part="B" data-stars="4" data-min="15" data-extra="8 Punkte" aria-labelledby="h-t-7" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-7" tabindex="-1">Klausur-Modus: Feder mit Grenze</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task__text">
+        <p><strong>So wie in der Klausur:</strong> Der erste Teil läuft auf Papier, der zweite im Editor ohne Ausführen und ohne <abbr class="k-begriff" data-erklaerung="Die Auto-Vervollständigung schlägt dir beim Tippen passende Wörter vor. In der Klausur gibt es sie nicht.">Auto-Vervollständigung</abbr>.</p>
+        <h3>Teil 1 (Papier, 3 Punkte): Code lesen</h3>
+        <pre data-run="no" class="k-code"><code>class Behaelter:
+    def __init__(self, name, inhalt):
+        self.name = name
+        self.inhalt = inhalt
+
+    def fuellen(self, menge):
+        self.inhalt = self.inhalt + menge
+        return self.inhalt
+
+
+a = Behaelter("Tank", 10)
+b = a
+b.fuellen(5)
+c = Behaelter("Fass", 20)
+print(a.inhalt, c.fuellen(10), b.name)</code></pre>
+        <p>Was gibt das Programm aus? Wie viele Objekte gibt es am Ende, und wie viele Namen? Welchen Wert hat <code>a.inhalt</code> und warum? Dazu eine Einheitenfrage: Eine Feder mit c = 8 N/mm wird um 5 mm zusammengedrückt. Welche Arbeit steckt in der Feder (W = ½ · c · s²), in N·mm und in J? Rechne auf Papier, decke danach auf und vergleiche.</p>
+        <details class="k-deep">
+          <summary>Auflösung aufdecken und ausführen</summary>
+          <div class="k-deep__body">
+            <p>Ausgabe: <code class="k-i">15 30 Tank</code>. Es gibt zwei Objekte (<code>Tank</code> und <code>Fass</code>) und drei Namen (<code>a</code>, <code>b</code>, <code>c</code>); <code>b = a</code> kopiert nicht, <code>b.fuellen(5)</code> ändert das Objekt, auf das auch <code>a</code> zeigt: 10 + 5 = 15. <code>c.fuellen(10)</code> gibt 20 + 10 = 30 zurück. Arbeit: ½ · 8 N/mm · (5 mm)² = 100 N·mm. Da 1 N·mm = 0,001 N·m = 0,001 J, sind das 0,1 J.</p>
+<pre data-timeout="20000"><code>class Behaelter:
+    def __init__(self, name, inhalt):
+        self.name = name
+        self.inhalt = inhalt
+
+    def fuellen(self, menge):
+        self.inhalt = self.inhalt + menge
+        return self.inhalt
+
+
+a = Behaelter("Tank", 10)
+b = a
+b.fuellen(5)
+c = Behaelter("Fass", 20)
+print(a.inhalt, c.fuellen(10), b.name)
+
+arbeit = 0.5 * 8 * 5 ** 2
+print(arbeit, "N·mm =", arbeit / 1000, "J")</code></pre>
+          </div>
+        </details>
+        <h3>Teil 2 (Code schreiben, 8 Punkte)</h3>
+      </div>
+      <div class="a-task" data-a="klausur" data-id="v20-tr-7" data-mode="code" data-minutes="15" data-timeout="20000">
+        <div class="a-task__text">
+          <p>Schreibe die Klasse <code>Feder(c, s_max)</code>: <code>c</code> ist die Federrate in N/mm, <code>s_max</code> der größte zulässige Federweg in mm; beide werden als Attribute gespeichert. Die Methode <code>kraft(s)</code> gibt die Kraft F = c · s in <strong>N</strong> zurück. Ist <code>s</code> größer als <code>s_max</code>, löst sie einen <code>ValueError</code> aus (<code>raise ValueError("Federweg zu groß")</code>); genau <code>s_max</code> ist erlaubt. Die Methode <code>arbeit(s)</code> gibt die Federarbeit W = ½ · c · s² in <strong>N·mm</strong> zurück und löst bei <code>s &gt; s_max</code> ebenfalls einen <code>ValueError</code> aus. Es genügen die Klasse und ihre Methoden, kein Aufruf.</p>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V20" data-assist="off" aria-label="Python-Code von Hand schreiben, ohne Ausführen"></textarea></div>
+        <script type="text/x-python" data-role="tests">
+def test_attribute():
+    """Attribute c und s_max"""
+    assert "Feder" in globals(), "Es fehlt die Klasse Feder."
+    f = Feder(8, 20)
+    assert getattr(f, "c", None) == 8 and getattr(f, "s_max", None) == 20, "Die Attribute c und s_max sollen 8 und 20 sein (self.c = c, self.s_max = s_max)."
+
+def test_kraft():
+    """kraft(s) = c · s in N"""
+    k = Feder(8, 20).kraft(5)
+    assert k == 40, "Erwartet 40 N (8 N/mm · 5 mm), kraft(5) gibt %r zurück. (return statt print?)" % (k,)
+
+def test_kraft_grenze():
+    """Genau s_max ist erlaubt, darüber ValueError"""
+    f = Feder(8, 20)
+    assert f.kraft(20) == 160, "Genau s_max = 20 mm ist erlaubt: 160 N erwartet."
+    try:
+        f.kraft(20.5)
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("kraft(20.5) soll bei s_max = 20 einen ValueError auslösen, es kam keiner.")
+
+def test_arbeit():
+    """arbeit(s) = ½ · c · s² in N·mm"""
+    w = Feder(8, 20).arbeit(5)
+    assert w == 100, "Erwartet 100 N·mm (0,5 · 8 · 5²), arbeit(5) gibt %r zurück." % (w,)
+
+def test_arbeit_grenze():
+    """arbeit() prüft ebenfalls s_max"""
+    try:
+        Feder(8, 20).arbeit(25)
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("arbeit(25) soll bei s_max = 20 einen ValueError auslösen, es kam keiner.")
+
+def test_unabhaengig():
+    """Federn sind unabhängig"""
+    a, b = Feder(2, 10), Feder(50, 4)
+    assert a.kraft(10) == 20 and b.kraft(4) == 200, "Jede Feder rechnet mit eigener Rate und eigener Grenze."
+    try:
+        b.kraft(5)
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("b hat s_max = 4: kraft(5) soll einen ValueError auslösen, auch wenn a bis 10 erlaubt.")
+        </script>
+        <script type="text/x-python" data-role="solution">
+class Feder:
+    def __init__(self, c, s_max):
+        self.c = c
+        self.s_max = s_max
+
+    def kraft(self, s):
+        if s > self.s_max:
+            raise ValueError("Federweg zu groß")
+        return self.c * s
+
+    def arbeit(self, s):
+        if s > self.s_max:
+            raise ValueError("Federweg zu groß")
+        return 0.5 * self.c * s ** 2
+        </script>
+        <script type="application/json" data-role="scheme">[{"p": 1, "t": "class Feder: mit Doppelpunkt, Methoden eingerückt"}, {"p": 1, "t": "__init__(self, c, s_max) speichert beide Werte als Attribute (self.c, self.s_max)"}, {"p": 1, "t": "kraft(self, s) mit self als erstem Parameter"}, {"p": 1, "t": "kraft gibt self.c * s mit return zurück (nicht print)"}, {"p": 1, "t": "Prüfung s > self.s_max (nicht >=) und raise ValueError"}, {"p": 1, "t": "arbeit(self, s) rechnet 0.5 * self.c * s ** 2 mit return"}, {"p": 1, "t": "arbeit prüft ebenfalls die Grenze"}, {"p": 1, "t": "Immer self. vor Attributen, keine losen Variablen c oder s_max"}]</script>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-8" data-title="Eigenes Bauteil: Distanzhülse und Baugruppe" data-part="B" data-stars="4" data-min="20" data-extra="mit 3D" aria-labelledby="h-t-8" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-8" tabindex="-1">Eigenes Bauteil: Distanzhülse und Baugruppe</h2>
+        <p class="l-task__meta"></p>
+      </header>
+
+      <div class="a-task" data-a="code" data-id="v20-tr-8" data-mode="code" data-timeout="20000" data-files="../assets/py/bauteil3d.py">
+        <div class="a-task__text">
+          <p>Entwirf ein eigenes parametrisches Bauteil. Schreibe die Klasse <code class="k-i">Distanzhuelse(d_aussen, d_innen, l)</code> (Maße in mm, als Attribute gespeichert) mit <code class="k-i">volumen()</code> (mm³, analytisch: π/4 · (D² − d²) · l) und <code class="k-i">mesh()</code> (<code class="k-i">bauteil3d.ring(...)</code>). Dazu die Funktion <code class="k-i">baugruppe(huelsen)</code>: Sie stapelt die Hülsen einer Liste in z-Richtung <strong>direkt aufeinander</strong> (die erste bei z = 0, jede weitere beginnt dort, wo die vorherige endet), indem sie jedes Netz mit <code class="k-i">bauteil3d.verschiebe</code> an seine Stelle setzt und alle mit <code class="k-i">bauteil3d.vereinige</code> zu einem Netz zusammenfügt, und gibt das Netz zurück. Am Ende zeigst du die Baugruppe an. Die Tests vergleichen das Volumen des Netzes mit der analytischen Summe (bei Dreiecksnetzen bis etwa 1 % Abweichung) und prüfen die Höhe.</p>
+          <div class="a-spec"><strong>Erwartet</strong><pre data-run="no">hs = [Distanzhuelse(30, 20, 10), Distanzhuelse(30, 20, 15), Distanzhuelse(30, 20, 5)]
+bauteil3d.abmessungen(baugruppe(hs))   -&gt; (30.0, 30.0, 30.0)</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V20" aria-label="Python-Code Aufgabe 8">import math
+import bauteil3d
+
+
+class Distanzhuelse:
+    def __init__(self, d_aussen, d_innen, l):
+        pass
+
+    def volumen(self):
+        pass
+
+    def mesh(self):
+        pass
+
+
+def baugruppe(huelsen):
+    # Hülsen in z-Richtung aufeinander stapeln und zu einem Netz vereinigen
+    pass
+
+
+huelsen = [Distanzhuelse(30, 20, 10), Distanzhuelse(30, 20, 15), Distanzhuelse(30, 20, 5)]
+netz = baugruppe(huelsen)
+print(bauteil3d.abmessungen(netz))
+bauteil3d.zeige(netz, "Distanzhülsen")
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+import math as _m
+import bauteil3d as _b
+
+def _huelsen():
+    return [Distanzhuelse(30, 20, 10), Distanzhuelse(30, 20, 15), Distanzhuelse(30, 20, 5)]
+
+def test_volumen():
+    """volumen() in mm³"""
+    assert "Distanzhuelse" in globals(), "Es fehlt die Klasse Distanzhuelse."
+    v = Distanzhuelse(30, 20, 10).volumen()
+    soll = _m.pi / 4 * (900 - 400) * 10
+    assert v is not None and abs(v - soll) < 0.01, "Erwartet %.1f mm³ (π/4 · (30² − 20²) · 10), volumen() gibt %r zurück." % (soll, v)
+
+def test_attribute():
+    """Maße als Attribute"""
+    h = Distanzhuelse(30, 20, 10)
+    assert (getattr(h, "d_aussen", None), getattr(h, "d_innen", None), getattr(h, "l", None)) == (30, 20, 10), "Die Attribute d_aussen, d_innen und l sollen 30, 20, 10 sein."
+
+def test_mesh_einzeln():
+    """mesh() einer Hülse passt zum Volumen"""
+    h = Distanzhuelse(30, 20, 10)
+    m = h.mesh()
+    assert isinstance(m, dict) and "faces" in m, "mesh() soll das Netz von bauteil3d.ring zurückgeben."
+    assert abs(_b.volumen(m) - h.volumen()) / h.volumen() < 0.01, "Das Netz hat %.0f mm³, die Rechnung %.0f mm³. Stimmen die Reihenfolge d_aussen, d_innen, l bei bauteil3d.ring?" % (_b.volumen(m), h.volumen())
+
+def test_baugruppe_volumen():
+    """Volumen der Baugruppe = Summe der Hülsen (1 % Toleranz)"""
+    assert "baugruppe" in globals(), "Es fehlt die Funktion baugruppe(huelsen)."
+    hs = _huelsen()
+    netz = baugruppe(hs)
+    assert isinstance(netz, dict) and "vertices" in netz, "baugruppe soll ein Netz zurückgeben (Ergebnis von bauteil3d.vereinige)."
+    soll = sum(h.volumen() for h in hs)
+    ist = _b.volumen(netz)
+    assert abs(ist - soll) / soll < 0.01, "Das Netz der Baugruppe hat %.0f mm³, die Summe der Hülsen %.0f mm³. Hast du alle Hülsen vereinigt?" % (ist, soll)
+
+def test_baugruppe_hoehe():
+    """Die Hülsen stehen aufeinander: Höhe 30 mm"""
+    netz = baugruppe(_huelsen())
+    x, y, z = _b.abmessungen(netz)
+    assert abs(z - 30) < 1e-6, "Die Baugruppe soll 10 + 15 + 5 = 30 mm hoch sein, sie ist %.2f mm hoch. Jede Hülse beginnt dort, wo die vorherige endet (dz = Summe der bisherigen Längen)." % z
+    assert abs(x - 30) < 1e-6 and abs(y - 30) < 0.5, "Die Hülsen sollen auf einer Achse liegen (nur dz verschieben): Breite und Tiefe etwa 30 mm, gefunden %.1f und %.1f." % (x, y)
+
+def test_baugruppe_andere():
+    """Andere Anzahl und Maße"""
+    hs = [Distanzhuelse(40, 30, 20), Distanzhuelse(40, 30, 20)]
+    netz = baugruppe(hs)
+    ab = _b.abmessungen(netz)
+    assert abs(ab[2] - 40) < 1e-6, "Zwei Hülsen mit je 20 mm Länge ergeben 40 mm Höhe, gefunden %.2f mm." % ab[2]
+    einzel = baugruppe([Distanzhuelse(40, 30, 20)])
+    assert abs(_b.abmessungen(einzel)[2] - 20) < 1e-6, "Eine einzelne Hülse ist 20 mm hoch."
+        </script>
+        <script type="text/x-python" data-role="solution">
+import math
+import bauteil3d
+
+
+class Distanzhuelse:
+    def __init__(self, d_aussen, d_innen, l):
+        self.d_aussen = d_aussen
+        self.d_innen = d_innen
+        self.l = l
+
+    def volumen(self):
+        return math.pi / 4 * (self.d_aussen ** 2 - self.d_innen ** 2) * self.l
+
+    def mesh(self):
+        return bauteil3d.ring(self.d_aussen, self.d_innen, self.l)
+
+
+def baugruppe(huelsen):
+    teile = []
+    z = 0
+    for h in huelsen:
+        teile.append(bauteil3d.verschiebe(h.mesh(), dz=z))
+        z = z + h.l
+    return bauteil3d.vereinige(*teile, name="Distanzhülsen")
+
+
+huelsen = [Distanzhuelse(30, 20, 10), Distanzhuelse(30, 20, 15), Distanzhuelse(30, 20, 5)]
+netz = baugruppe(huelsen)
+print(bauteil3d.abmessungen(netz))
+bauteil3d.zeige(netz, "Distanzhülsen")
+        </script>
+        <ol class="a-hints">
+          <li><code>__init__</code> speichert drei Attribute. <code>mesh</code>: <code>return bauteil3d.ring(self.d_aussen, self.d_innen, self.l)</code>.</li>
+          <li>In <code>baugruppe</code>: Starte mit <code>z = 0</code> und einer leeren Liste. In der Schleife über die Hülsen verschiebst du jedes Netz: <code>bauteil3d.verschiebe(h.mesh(), dz=z)</code>, hängst es an die Liste an und erhöhst <code>z</code> um <code>h.l</code>.</li>
+          <li>Am Ende <code>bauteil3d.vereinige(*teile)</code> (der Stern entpackt die Liste in einzelne Argumente) oder <code>bauteil3d.vereinige(teile)</code>; die Funktion akzeptiert auch eine Liste.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-projekt" data-nonumber="1" data-title="Projekt: Meilenstein V20" data-part="B" data-stars="" data-min="" data-extra="ohne Wertung" aria-labelledby="h-t-projekt" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-projekt" tabindex="-1">Projekt: Meilenstein V20</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Die <strong>letzten 30 Minuten</strong> dieses Termins gehören dem Projekt. Falls nicht alles geschafft wurde: Hier ist die Liste für diesen Meilenstein, <strong>Feinschliff und Code-Review im Team</strong>. Alle Themen, die weiteren Meilensteine und das Bewertungsraster stehen auf der <a href="../projekt.html">Projektseite</a>.</p>
+
+      <ol class="k-steps">
+        <li><strong>Aufräumen:</strong> Namen, Kommentare und doppelte Stellen verbessern; die Tests laufen danach weiter. Wenn in deinem Projekt mehrere zusammengehörige Funktionen mit denselben Parametern vorkommen, ist das ein Hinweis auf eine Klasse (muss aber nicht sein).</li>
+        <li><strong>Code-Review mit einer anderen Gruppe:</strong> Lesbarkeit, Tests, Grenzfälle, erfundene Funktionen. Bei Klassen zusätzlich: <code class="k-i">self</code> überall? Alle Maße im <code class="k-i">__init__</code> gespeichert? Einheiten stimmig?</li>
+        <li><strong>Befunde abarbeiten</strong> und ins <code class="k-i">KI-PROTOKOLL.md</code> eintragen.</li>
+        <li><strong>README</strong> mit Zweck, Bedienung, Eingaben, Ausgaben und Grenzen des Modells (fünf bis zehn Zeilen).</li>
+        <li><strong>Abhaken:</strong> Den Stand trägst du auf der <a href="../projekt.html#meilensteine">Projektseite</a> ein.</li>
+      </ol>
+      <p>Nächster Meilenstein (V21): Fertigstellen und Präsentation vorbereiten.</p>
+
+    </section>
+
+    <section class="l-task" id="t-notebook" data-nonumber="1" data-title="Notebook und Deep Dive" data-part="B" data-stars="" data-min="" data-extra="ohne Wertung" aria-labelledby="h-t-notebook" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-notebook" tabindex="-1">Notebook und Deep Dive</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Mehr üben mit Klassen und Objekten. Das Notebook nutzt Python aus V01 bis V20, hat drei Stufen (Aufwärmen, Anwenden, Knobeln), keine Lösungen, dafür Selbsttests, und ist für Codespaces gedacht: Dort ist alles vorinstalliert. Das Hilfsmodul <code class="k-i">bauteil3d.py</code> liegt im Repository und funktioniert auch auf deinem Rechner.</p>
+
+      <p><a class="k-btn k-btn--ghost" href="../notebooks/V20-Objekte-und-CAD.ipynb" download>V20-Objekte-und-CAD.ipynb herunterladen</a></p>
+      <ol class="k-steps">
+        <li><strong>In Codespaces öffnen:</strong> Im Kurs-Repository auf GitHub „Code“ → „Codespaces“ → „Create codespace“ (Schritt für Schritt in der <a href="v11-copilot.html#anleitung">Lerneinheit V11, Abschnitt 3</a>). Dann <code class="k-i">notebooks/V20-Objekte-und-CAD.ipynb</code> öffnen.</li>
+        <li><strong>Oder lokal:</strong> <code class="k-i">pip install jupyter</code>, dann <code class="k-i">jupyter lab</code>. Außer Python brauchst du nichts.</li>
+        <li>Zu jeder Aufgabe: erst lesen, dann die Klasse schreiben, dann die Prüfzelle starten.</li>
+      </ol>
+      <h3>Danach</h3>
+      <p><a href="v20-objekte-cad.html#deepdive">Zum Deep Dive</a> (freiwillig): <code class="k-i">__str__</code>, Vererbung, <code class="k-i">@dataclass</code>, die STL-Datei als Text; dazu CadQuery und FreeCAD mit Python (läuft nur mit installierter Software, z. B. im Codespace). Oder zurück zur <a href="v20-objekte-cad.html">Lerneinheit</a>, oder weiter zum <a href="../projekt.html">Projekt</a>.</p>
+
+    </section>
+
+      <nav class="lab__pager" aria-label="Zwischen Aufgaben wechseln">
+        <a class="k-btn k-btn--ghost" id="lab-prev" href="#a-werkzeugkasten">← Zurück</a>
+        <a class="k-btn k-btn--ghost" id="lab-next" href="#a-vorgemacht">Weiter →</a>
+      </nav>
+    </main>
+
+    <div class="lab__dock" data-library-dock data-state="off"></div>
+  </div>
+
+  <footer class="dhbw-footer k-footer">
+    <div class="dhbw-footer__inner">
+      <span><span class="dhbw-footer__brand">DHBW Stuttgart</span> · Campus Horb</span>
+      <span><a href="../index.html">Zurück zum Lernpfad</a> · <a href="../projekt.html">Projekt</a> · V20 Programmierlabor</span>
+    </div>
+  </footer>
+
+  <script src="../assets/js/speicher.js"></script>
+  <script src="../assets/js/icons.js"></script>
+  <script src="../assets/js/editor.js" defer></script>
+  <script src="../assets/js/pap-engine.js"></script>
+  <script src="../assets/js/vorschau3d.js"></script>
+  <script src="../assets/js/kurs.js"></script>
+  <script src="../assets/js/aufgaben.js"></script>
+  <script src="../assets/js/pap-editor.js"></script>
+  <script src="../assets/js/labor.js"></script>
+</body>
+</html>
