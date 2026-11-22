@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>V20 Objekte &amp; CAD-Automatisierung · Lerneinheit · Informatik Maschinenbau</title>
+  <meta name="description" content="Klassen als Bauplan, Objekte als konkrete Teile: Attribute, Methoden und self verstehen, einen parametrischen Flansch als Klasse lesen und schreiben, und wie Skripte CAD-Teile erzeugen.">
+  <link rel="stylesheet" href="../assets/css/dhbw-base.css">
+  <link rel="stylesheet" href="../assets/css/kurs.css">
+  <link rel="stylesheet" href="../assets/css/aufgaben.css">
+  <link rel="stylesheet" href="../assets/css/editor.css">
+  <link rel="stylesheet" href="../assets/css/v05.css">
+  <link rel="stylesheet" href="../assets/css/vorschau3d.css">
+  <link rel="stylesheet" href="../assets/css/v20.css">
+</head>
+<body data-lesson="V20" data-page="lerneinheit">
+  <a class="k-skip" href="#inhalt">Zum Inhalt springen</a>
+
+  <header class="dhbw-header k-header">
+    <div class="dhbw-header__inner">
+      <a class="k-logo" href="../index.html" aria-label="Zur Startseite">
+        <span class="k-logo__mark" aria-hidden="true">DHBW</span>
+        <span class="k-logo__text">Informatik Maschinenbau<small>Campus Horb · 2026/27</small></span>
+      </a>
+      <nav class="k-nav" aria-label="Hauptnavigation">
+        <a href="../index.html">Start</a>
+        <a href="../index.html#lernpfad">Lernpfad</a>
+        <a href="../bibliothek.html">Bibliothek</a>
+        <a href="../pap-editor.html">PAP-Editor</a>
+        <a href="../projekt.html">Projekt</a>
+        <a href="v20-objekte-cad.html" aria-current="page">V20 Lerneinheit</a>
+        <a href="v20-labor.html">V20 Labor</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="l-page">
+    <nav class="k-toc" aria-label="Inhalt dieser Lerneinheit">
+      <p class="k-toc__title">Lerneinheit V20</p>
+      <ol class="k-toc__list">
+        <li><a href="#warum"><span class="k-toc__n">1</span>Warum?</a></li>
+        <li><a href="#theorie"><span class="k-toc__n">2</span>Theorie</a></li>
+        <li><a href="#ausprobieren"><span class="k-toc__n">3</span>Ausprobieren</a></li>
+        <li><a href="#selbstcheck"><span class="k-toc__n">4</span>Selbstcheck</a></li>
+        <li><a href="#deepdive"><span class="k-toc__n">5</span>Deep Dive</a></li>
+      </ol>
+      <div class="k-progress" data-progress-for="V20">
+        <span class="k-progress__bar"><span class="k-progress__fill"></span></span>
+        <span class="k-progress__text">0 von 5 Abschnitten</span>
+      </div>
+      <a class="k-toc__lab" href="v20-labor.html">Weiter ins Programmierlabor →</a>
+    </nav>
+
+    <main id="inhalt" class="l-content">
+
+      <header class="k-title">
+        <p class="k-title__label">V20 · Phase 3 Projekt · Lerneinheit</p>
+        <h1 id="h-titel">Objekte &amp; CAD-Automatisierung</h1>
+        <p class="k-title__lead">Ein Bauteil besteht aus Maßen und aus Regeln, was mit diesen Maßen geschieht. Eine <abbr class="k-begriff" data-erklaerung="Eine Klasse ist ein Bauplan: Sie legt fest, welche Eigenschaften ein Ding hat und was man damit tun kann. Wie eine Zeichnungsvorlage oder ein Normblatt, aus dem du beliebig viele Teile fertigst.">Klasse</abbr> fasst beides zusammen, und aus ihr entsteht jede Variante mit einer Zeile. So arbeiten <abbr class="k-begriff" data-erklaerung="CAD (Computer Aided Design) ist rechnergestütztes Konstruieren: Du modellierst Bauteile am Rechner, statt sie zu zeichnen.">CAD</abbr>-Programme, und so lassen sie sich per Skript steuern.</p>
+        <p class="k-title__goals">Nach dieser Lerneinheit kannst du:</p>
+        <ul class="k-title__list">
+          <li>den Unterschied zwischen Klasse (Bauplan) und Objekt (konkretes Teil) erklären,</li>
+          <li>eine Klasse mit <code class="k-i">__init__</code>, Attributen und Methoden lesen und eine einfache selbst schreiben,</li>
+          <li>ein Objekt erzeugen, ein Attribut lesen und ändern und eine Methode aufrufen (mit Klammern),</li>
+          <li>vorhersagen, was passiert, wenn zwei Namen auf dasselbe Objekt zeigen,</li>
+          <li>erklären, was <code class="k-i">self</code> in einer Methode ist,</li>
+          <li>beschreiben, wie ein Skript ein parametrisches Bauteil erzeugt, prüft und als 3D-Netz (STL) exportiert.</li>
+        </ul>
+        <p class="k-small k-muted">Das Schreiben übst du im <a href="v20-labor.html">Programmierlabor</a>. Vorausgesetzt sind V01 bis V19, besonders Funktionen mit Default-Werten (V07), Listen und Referenzen (V08) und Module (V10). Das Projekt läuft parallel weiter: Die Meilensteine stehen auf der <a href="../projekt.html">Projektseite</a>.</p>
+      </header>
+
+      <!-- 1 ───────────── WARUM ───────────── -->
+      <section class="k-section" id="warum" data-section="warum" aria-labelledby="h-warum">
+        <h2 class="k-section__title" id="h-warum"><span class="k-section__num" aria-hidden="true">1</span> Warum?</h2>
+
+        <p>Ein Kunde bestellt eine Baureihe von Flanschen für sechs Rohrnennweiten. Jede Variante hat andere Durchmesser, eine andere Zahl von Bohrungen und einen anderen <abbr class="k-begriff" data-erklaerung="Der Lochkreis ist der gedachte Kreis, auf dem die Mittelpunkte der Bohrungen eines Flanschs liegen. Sein Durchmesser ist ein wichtiges Anschlussmaß.">Lochkreis</abbr>. Von Hand im CAD gezeichnet kostet jede Variante Stunden, und ein Tippfehler im Lochkreis fällt erst auf, wenn die Bohrung über den Rand ragt. Im CAD ist ein Bauteil eigentlich ein Satz Parameter plus Regeln: ein <abbr class="k-begriff" data-erklaerung="Ein parametrisches Modell beschreibt ein Bauteil durch Parameter (Maße, Anzahlen) und Regeln. Ändert man einen Parameter, baut sich das Bauteil neu auf, wie bei einer Formel, in die man andere Zahlen einsetzt.">parametrisches Modell</abbr>. Schreibst du dieses Modell als Klasse, erzeugst du jede Variante mit einer Zeile, prüfst die Maße automatisch und exportierst das Ergebnis als 3D-Datei. KI kann dir solche Skripte schreiben. Du musst die Klasse lesen und ihre Regeln prüfen können.</p>
+
+        <figure class="k-figure">
+          <picture>
+            <source srcset="../assets/img/v20-hook.webp" type="image/webp">
+            <img src="../assets/img/v20-hook.png" alt="Illustration: Eine Reihe gleichartiger Flansche in unterschiedlichen Größen, daneben ein Skript, das sie erzeugt" width="1600" height="900" loading="lazy" onerror="this.closest('figure').hidden=true">
+          </picture>
+        </figure>
+
+        <div class="k-try" aria-labelledby="t-hook">
+          <h3 id="t-hook">Selbst sehen: Passt die Bohrung noch?</h3>
+          <p class="k-small k-muted">Sag erst voraus. Im Abschnitt Theorie verstellst du die Maße danach selbst.</p>
+          <div class="k-predict">
+            <p class="k-predict__q">Ein Flansch hat 120 mm Außendurchmesser. Die Bohrungen (Ø 14 mm) sitzen auf einem Lochkreis mit 110 mm Durchmesser. Passen sie noch auf die Scheibe?</p>
+            <div class="k-predict__opts"><button type="button">Ja, 110 mm ist kleiner als 120 mm.</button><button type="button" data-correct>Nein, die Bohrung ragt über den Rand.</button><button type="button">Ja, aber nur knapp.</button></div>
+            <div class="k-predict__result"></div>
+            <div class="k-predict__expl" hidden>Die Mitte der Bohrung liegt bei 110 / 2 = 55 mm vom Zentrum, ihr Rand bei 55 + 14 / 2 = 62 mm. Die Scheibe endet aber bei 120 / 2 = 60 mm: Die Bohrung ragt 2 mm über den Rand. Genau diese Prüfung steckt später als Methode <code>ist_gueltig()</code> in der Klasse.</div>
+          </div>
+        </div>
+
+        <h3>Wissens-Ampel für V20</h3>
+        <ul class="k-ampel-list" aria-label="Wissens-Ampel zu V20">
+          <li><span class="k-ampel k-ampel--kopf"><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-head"/></svg> Im Kopf</span><span>Eine Klasse lesen und eine einfache selbst schreiben: <code class="k-i">__init__</code> speichert Parameter als <code class="k-i">self.…</code>, Methoden rechnen mit <code class="k-i">self.…</code>. Ein Objekt erzeugen, ein Attribut ändern, eine Methode aufrufen (mit Klammern!).</span></li>
+          <li><span class="k-ampel k-ampel--lesen"><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-book"/></svg> Lesen &amp; erkennen</span><span><code class="k-i">__str__</code> und <code class="k-i">__repr__</code>, Vererbung (<code class="k-i">class Normflansch(Flansch)</code>), <code class="k-i">@dataclass</code>, Typ-Hinweise in Klassen. Und dass <code class="k-i">str</code>, <code class="k-i">list</code> und <code class="k-i">dict</code> selbst Klassen sind: Du benutzt Objekte seit V01.</span></li>
+          <li><span class="k-ampel k-ampel--deleg"><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-handover"/></svg> Delegieren</span><span>CAD-Schnittstellen (die Python-Konsole von FreeCAD, CadQuery), das STL-Dateiformat im Detail und Algorithmen für Dreiecksnetze (das erledigt <code class="k-i">bauteil3d.py</code>). Du musst wissen, dass es sie gibt und wofür, und KI-Code dazu prüfen können.</span></li>
+        </ul>
+
+        <div class="hinweis hinweis--warum"><strong class="hinweis__title">Warum muss ich das wissen?</strong><p>Als Ingenieur arbeitest du mit Bauteilfamilien, Stücklisten und Maschinen, die jeweils aus Maßen und Verhalten bestehen. Fast jede Programmierschnittstelle in CAD, Simulation und Messtechnik ist objektorientiert: Du erzeugst ein Objekt, setzt Attribute und rufst Methoden auf. Und wenn die KI dir ein Skript für eine Bauteilreihe schreibt, entscheidest du, ob die Klasse stimmt: Sind die Einheiten richtig, wird jedes Maß als Attribut gespeichert, ist die Gültigkeitsprüfung vollständig?</p></div>
+      </section>
+
+      <!-- 2 ───────────── THEORIE ───────────── -->
+      <section class="k-section" id="theorie" data-section="theorie" aria-labelledby="h-theorie">
+        <h2 class="k-section__title" id="h-theorie"><span class="k-section__num" aria-hidden="true">2</span> Theorie</h2>
+
+        <h3>Erklärvideo (ca. 3 Min)</h3>
+        <figure class="k-video" id="video-theorie">
+          <video controls preload="metadata" poster="../assets/video/v20-theorie-poster.png" aria-label="Erklärvideo Objekte und CAD-Automatisierung: Klasse, Objekt, Attribut, Methode, self">
+            <source src="../assets/video/v20-theorie.mp4" type="video/mp4">
+            <track kind="subtitles" srclang="de" label="Deutsch" src="../assets/video/v20-theorie.vtt" default>
+            Dein Browser kann dieses Video nicht abspielen.
+          </video>
+          <div class="k-video__missing" hidden>Video folgt. Bis dahin: die Explorables und der Lesetext unten decken alles ab.</div>
+          <figcaption>Untertitel sind eingeschaltet (Deutsch).</figcaption>
+        </figure>
+
+        <h3>Daten und Verhalten gehören zusammen</h3>
+        <p>Bisher hast du Maße in einzelnen Variablen gehalten und Rechnungen in Funktionen verpackt. Für einen Flansch sähe das so aus: <code class="k-i">d_aussen</code>, <code class="k-i">d_innen</code>, <code class="k-i">dicke</code> und weitere Variablen, dazu eine Funktion <code class="k-i">flansch_masse(d_aussen, d_innen, dicke, lochkreis, n, d_bohrung)</code> mit sechs Parametern. Das geht, hat aber zwei Schwächen. Bei zwei Flanschen brauchst du zwei Sätze Variablen mit Namen wie <code class="k-i">d_aussen_1</code> und <code class="k-i">d_aussen_2</code>. Und beim Aufruf vertauscht man sechs Zahlen leicht, ohne dass Python etwas merkt.</p>
+        <p>Eine Klasse bündelt beides. Die Maße eines Teils heißen <abbr class="k-begriff" data-erklaerung="Ein Attribut ist eine Eigenschaft eines Objekts, zum Beispiel der Außendurchmesser eines Flanschs. Es ist eine Variable, die zum Objekt gehört, und man erreicht sie mit Punkt: f.dicke.">Attribute</abbr>, die Rechnungen mit diesen Maßen heißen <abbr class="k-begriff" data-erklaerung="Eine Methode ist eine Funktion, die zu einer Klasse gehört. Du rufst sie mit Punkt am Objekt auf: f.masse(). Sie kennt die Attribute dieses Objekts.">Methoden</abbr>. Die Klasse ist der Bauplan, ein <abbr class="k-begriff" data-erklaerung="Ein Objekt (auch Instanz oder Exemplar) ist ein konkretes Teil, das nach dem Bauplan einer Klasse entstanden ist: ein bestimmter Flansch mit seinen eigenen Maßen, wie das Teil aus dem Lager nach der Zeichnung.">Objekt</abbr> ist ein konkretes Teil nach diesem Bauplan, so wie ein Normblatt viele gefertigte Teile beschreibt. Aus einer Klasse entstehen beliebig viele Objekte, jedes mit eigenen Maßen.</p>
+
+        <h3>Du benutzt Objekte seit V01</h3>
+        <p>Neu ist weniger, als es klingt: Text, Listen und Dictionaries sind selbst Klassen, und deine Werte sind Objekte davon. Wenn du <code class="k-i">"m10".upper()</code> oder <code class="k-i">teile.append("Welle")</code> schreibst, rufst du eine Methode auf. Probiere es aus:</p>
+        <pre data-timeout="40000"><code>print("m10".upper())
+
+teile = []
+teile.append("Welle")
+teile.append("Flansch")
+print(teile, len(teile))
+
+print(type("M10"))
+print(type(teile))</code></pre>
+        <p>Das Muster ist immer <em>objekt.methode(Argumente)</em>. Neu in dieser Lerneinheit ist, dass du eigene Klassen schreibst.</p>
+
+        <h3>Eine kleine Klasse</h3>
+        <p>Eine Klasse beginnt mit dem Schlüsselwort <code class="k-i">class</code> und einem Namen, den man großschreibt. Darin stehen Methoden, die wie Funktionen mit <code class="k-i">def</code> geschrieben werden (V07). Die erste, <abbr class="k-begriff" data-erklaerung="__init__ ist der Konstruktor: Python führt diese Methode automatisch aus, sobald ein neues Objekt entsteht. Sie speichert die übergebenen Maße im Objekt.">__init__</abbr>, richtet ein neues Objekt ein. Jede Methode bekommt als ersten Parameter <abbr class="k-begriff" data-erklaerung="self steht in einer Methode für das Objekt, mit dem sie gerade arbeitet. Bei f1.masse() ist self das Objekt, auf das f1 zeigt. Du übergibst self nicht selbst, Python setzt es ein.">self</abbr>: das Objekt, mit dem die Methode gerade arbeitet. Maße speicherst du als <code class="k-i">self.name</code>, und genauso liest du sie wieder.</p>
+        <pre data-timeout="40000"><code>class Platte:
+    def __init__(self, laenge, breite, dicke):
+        self.laenge = laenge
+        self.breite = breite
+        self.dicke = dicke
+
+    def volumen(self):
+        return self.laenge * self.breite * self.dicke
+
+    def masse(self, dichte=7.85):
+        return self.volumen() / 1000 * dichte / 1000
+
+
+p1 = Platte(200, 100, 10)
+p2 = Platte(300, 150, 5)
+print("p1:", p1.volumen(), "mm³,", round(p1.masse(), 2), "kg")
+print("p2:", p2.volumen(), "mm³,", round(p2.masse(), 2), "kg")
+
+p1.dicke = 20
+print("p1 nach der Änderung:", round(p1.masse(), 2), "kg")
+print("p2 unverändert:", round(p2.masse(), 2), "kg")
+print("p1 aus Aluminium:", round(p1.masse(2.70), 2), "kg")</code></pre>
+        <p>Klicke bei diesem Block auf „Schritt für Schritt“: Du siehst, wie <code class="k-i">p1</code> und <code class="k-i">p2</code> als Objekte mit je eigenen Attributen entstehen. Die Einheiten stimmen: Das Volumen kommt in mm³, durch 1000 sind es cm³, mal Dichte in g/cm³ sind es Gramm, durch 1000 sind es Kilogramm. Beachte auch: <code class="k-i">p1.volumen()</code> hat keine Argumente, denn das Objekt <code class="k-i">p1</code> wird als <code class="k-i">self</code> automatisch mitgegeben.</p>
+
+        <div class="k-explorable">
+          <h3>Bauplan und Teile</h3>
+          <p class="k-explorable__lead">Links steht der Bauplan, rechts der Speicher. Erzeuge zwei Flansche (wähle vorher andere Maße), ändere <code class="k-i">f1.n</code>, setze <code class="k-i">f2 = f1</code> und verfolge dann einen Methodenaufruf Schritt für Schritt. Achte darauf, worauf <code class="k-i">self</code> zeigt.</p>
+          <div data-explorable="bauplan"></div>
+          <noscript><p>Für das Explorable „Bauplan und Teile“ wird JavaScript benötigt.</p></noscript>
+          <p class="k-small k-muted">Beobachtung: Jedes Objekt hat eigene Attribute. Ändert man <code class="k-i">f1.n</code>, bleibt ein anderes Objekt unberührt, solange es wirklich ein anderes ist. Nach <code class="k-i">f2 = f1</code> gibt es nur noch ein Objekt mit zwei Namen, genau wie bei Listen in V08 (Aliasing). Und <code class="k-i">self</code> ist immer das Objekt links vom Punkt.</p>
+        </div>
+
+        <h3>Der parametrische Flansch</h3>
+        <p>Jetzt die Klasse aus der Praxis. Der Flansch hat sechs Maße: Außendurchmesser, Innendurchmesser (Mittelloch), Dicke, Lochkreis, Zahl der Bohrungen und Bohrungsdurchmesser. Die Methode <code class="k-i">ist_gueltig()</code> prüft zwei Regeln: Die Bohrung darf weder über den Rand ragen noch ins Mittelloch. <code class="k-i">volumen()</code> rechnet Kreisring minus Bohrungen, <code class="k-i">masse()</code> verrechnet die Einheiten. Verstelle die Maße und beobachte die Prüfung.</p>
+        <div class="k-explorable">
+          <h3>Parametrischer Flansch</h3>
+          <p class="k-explorable__lead">Ändere ein Maß und schau, was sich ändert: die Zeichnung, die Prüfung <code class="k-i">ist_gueltig()</code>, Volumen und Masse. Die vier Knöpfe unter „Maße“ laden Beispiele. „In 3D ansehen“ führt echten Python-Code aus und zeigt das Dreiecksnetz zum Drehen.</p>
+          <div data-explorable="flansch"></div>
+          <noscript><p>Für das Explorable „Parametrischer Flansch“ wird JavaScript benötigt.</p></noscript>
+          <p class="k-small k-muted">Beobachtung: Bei den Standardmaßen (120/40/15/90/6/11) kommt 142,2 cm³ und 1,12 kg heraus; mit acht Bohrungen sind es 1,09 kg. Ein Lochkreis von 110 mm mit Ø 14 mm Bohrung ist ungültig. Eine Gültigkeitsprüfung gehört in die Klasse, damit jede Variante sie automatisch durchläuft.</p>
+        </div>
+
+        <p>Hier die vollständige Klasse zum Ausführen. Sie ist dieselbe wie im Explorable, mit dem Hilfsmodul <code class="k-i">bauteil3d</code> für das Dreiecksnetz. Ändere die Maße im letzten Block, auch <code class="k-i">f.n</code>, und beobachte, wann <code class="k-i">ist_gueltig()</code> <code class="k-i">False</code> liefert.</p>
+        <pre data-timeout="60000" data-files="../assets/py/bauteil3d.py"><code>import math
+import bauteil3d
+
+
+class Flansch:
+    """Kreisförmiger Flansch mit Mittelloch und Bohrungen auf einem Lochkreis (Maße in mm)."""
+
+    def __init__(self, d_aussen, d_innen, dicke, lochkreis, n, d_bohrung):
+        self.d_aussen = d_aussen
+        self.d_innen = d_innen
+        self.dicke = dicke
+        self.lochkreis = lochkreis
+        self.n = n
+        self.d_bohrung = d_bohrung
+
+    def ist_gueltig(self):
+        """Bohrungen dürfen weder ins Mittelloch noch über den Rand ragen."""
+        rand_aussen = (self.lochkreis + self.d_bohrung) / 2 &lt; self.d_aussen / 2
+        rand_innen = (self.lochkreis - self.d_bohrung) / 2 &gt; self.d_innen / 2
+        return rand_aussen and rand_innen
+
+    def volumen(self):
+        """Volumen in mm³ (Kreisring minus Bohrungen)."""
+        ring = math.pi / 4 * (self.d_aussen ** 2 - self.d_innen ** 2) * self.dicke
+        bohrungen = self.n * math.pi / 4 * self.d_bohrung ** 2 * self.dicke
+        return ring - bohrungen
+
+    def masse(self, dichte=7.85):
+        """Masse in kg, Dichte in g/cm³ (Standard: Stahl)."""
+        return self.volumen() / 1000 * dichte / 1000
+
+    def mesh(self):
+        return bauteil3d.flansch(self.d_aussen, self.d_innen, self.dicke,
+                                 self.lochkreis, self.n, self.d_bohrung)
+
+
+f = Flansch(120, 40, 15, 90, 6, 11)
+print("Gültig:", f.ist_gueltig())
+print(f"Volumen: {f.volumen() / 1000:.1f} cm³, Masse: {f.masse():.2f} kg")
+bauteil3d.zeige(f.mesh(), "Flansch DN40")</code></pre>
+
+        <h3>Der Plan: eine Baureihe prüfen</h3>
+        <p>Sechs Nennweiten, jede soll erzeugt, geprüft und gewogen werden. Der Ablauf als Programmablaufplan: Eine Schleife läuft über die Nennweiten, der Flansch wird erzeugt, und die Methode <code class="k-i">ist_gueltig()</code> erscheint als <strong>Unterprogramm</strong> (Rechteck mit Doppellinien). Eine Methode ist im Plan ein Unterprogramm, genau wie eine Funktion in V07. Danach entscheidet eine Raute.</p>
+        <div class="k-explorable">
+          <h3>PAP: Baureihe prüfen</h3>
+          <p class="k-explorable__lead">Kopfgesteuerte Schleife über die Nennweiten, darin ein Aufruf des Unterprogramms und eine Verzweigung. Gültige Flansche werden gewogen, ungültige bekommen eine Warnung.</p>
+          <div data-explorable="pap-baureihe"></div>
+          <noscript><p>Für das Explorable „PAP: Baureihe prüfen“ werden JavaScript und die PAP-Engine benötigt.</p></noscript>
+        </div>
+
+        <h3>Vom Skript zum CAD</h3>
+        <p>Wie speichert ein CAD-Programm ein Bauteil? Nicht als Kamerabild und meistens auch nicht als reine Punktwolke, sondern als <abbr class="k-begriff" data-erklaerung="Der Feature-Baum ist die Liste der Konstruktionsschritte eines CAD-Modells: Grundkörper, Bohrung, Verrundung, jeweils mit Parametern. Ändert man einen Parameter, rechnet das Programm die Schritte neu durch.">Feature-Baum</abbr>: eine Reihe von Schritten (Scheibe, Mittelloch, Bohrungsbild) mit ihren Parametern. Ändert man einen Parameter, rechnet das Programm das Teil neu. Das ist dieselbe Idee wie unsere Klasse: Parameter plus Regeln.</p>
+        <p>Viele CAD-Programme bieten eine <abbr class="k-begriff" data-erklaerung="Eine Skript-API (Programmierschnittstelle) ist eine Sammlung von Klassen und Funktionen, mit der man ein Programm per Skript steuert, statt mit der Maus zu klicken.">Skript-Schnittstelle</abbr>, meist für Python: FreeCAD hat eine eigene Python-Konsole und Makros, und die Bibliothek CadQuery baut CAD-Teile direkt aus Python-Code. Dort schreibst du dieselbe Art Klasse wie hier, nur erzeugt <code class="k-i">mesh()</code> echte CAD-Geometrie. Der Ausschnitt zeigt das Muster mit CadQuery (läuft nur mit installiertem CadQuery, zum Beispiel im Codespace, nicht im Browser):</p>
+        <pre data-run="no" class="k-code"><code>import cadquery as cq
+
+flansch = (
+    cq.Workplane("XY")
+    .circle(60).extrude(15)                 # Scheibe, Ø 120 mm, 15 mm dick
+    .faces("&gt;Z").workplane().hole(40)       # Mittelloch Ø 40 mm
+)
+flansch = (
+    flansch.faces("&gt;Z").workplane()
+    .polarArray(45, 0, 360, 6).hole(11)     # sechs Bohrungen Ø 11 mm auf Lochkreis-Radius 45 mm
+)
+cq.exporters.export(flansch, "flansch.step")</code></pre>
+        <p>Für den Austausch gibt es zwei Arten von Dateien. Ein <abbr class="k-begriff" data-erklaerung="Ein Dreiecksnetz (Mesh) beschreibt die Oberfläche eines Körpers durch viele kleine Dreiecke. Es ist eine Näherung: Runde Flächen werden zu vielen ebenen Facetten.">Dreiecksnetz</abbr> beschreibt die Oberfläche als viele Dreiecke und wird als <abbr class="k-begriff" data-erklaerung="STL ist ein einfaches Dateiformat für Dreiecksnetze. Es speichert nur Dreiecke, keine Maße und keine Einheit. Es ist der Standard für 3D-Druck und schnelle Vorschau.">STL</abbr> gespeichert. Das reicht für 3D-Druck und Vorschau. Für die Fertigung brauchst du exakte Geometrie, etwa als STEP-Datei: Ein Zylinder ist dort wirklich rund, im Netz nur ein Vieleck. Zähle selbst nach:</p>
+        <pre data-timeout="60000" data-files="../assets/py/bauteil3d.py"><code>import bauteil3d
+
+fein = bauteil3d.zylinder(100, 20, segmente=96)
+grob = bauteil3d.zylinder(100, 20, segmente=12)
+print("Dreiecke (fein):", len(fein["faces"]))
+print("Dreiecke (grob):", len(grob["faces"]))
+print("Volumen fein:", round(bauteil3d.volumen(fein)), "mm³")
+print("Volumen grob:", round(bauteil3d.volumen(grob)), "mm³")
+print("Exakt:", round(3.14159265 / 4 * 100 ** 2 * 20), "mm³")
+bauteil3d.zeige(grob, "Zylinder grob")</code></pre>
+        <p>Je mehr Dreiecke, desto genauer die Rundung, desto größer die Datei. Das <code class="k-i">bauteil3d</code>-Modul rechnet das Netz für dich; wie die Dreiecke im Einzelnen entstehen, delegierst du. Die CAD-Schnittstellen schaust du dir bei Bedarf in der Dokumentation an, oder du lässt sie dir von Copilot erklären (V11).</p>
+      </section>
+
+      <!-- 3 ───────────── AUSPROBIEREN ───────────── -->
+      <section class="k-section" id="ausprobieren" data-section="ausprobieren" aria-labelledby="h-aus">
+        <h2 class="k-section__title" id="h-aus"><span class="k-section__num" aria-hidden="true">3</span> Ausprobieren</h2>
+
+        <p>Erst tippen, was herauskommt, dann ausführen. Jeder Block hat einen Editor, und „Schritt für Schritt“ zeigt die Objekte mit ihren Attributen. Das Schreiben eigener Klassen übst du im <a href="v20-labor.html#a-werkzeugkasten">Labor</a>.</p>
+
+        <div class="k-try">
+          <h3>Zwei Objekte, getrennte Attribute</h3>
+          <div class="k-predict">
+            <p class="k-predict__q">Was gibt das Programm aus?</p>
+            <div class="k-predict__opts"><button type="button">8 8</button><button type="button" data-correct>8 4</button><button type="button">4 4</button></div>
+            <div class="k-predict__result"></div>
+            <div class="k-predict__expl" hidden><code>a</code> und <code>b</code> sind zwei verschiedene Objekte der Klasse <code>Teil</code>, jedes mit eigenem Attribut <code>n</code>. <code>a.n = 8</code> ändert nur das Objekt, auf das <code>a</code> zeigt: Ausgabe <code>8 4</code>.</div>
+          </div>
+          <pre data-timeout="40000"><code>class Teil:
+    def __init__(self, n):
+        self.n = n
+
+
+a = Teil(4)
+b = Teil(4)
+a.n = 8
+print(a.n, b.n)</code></pre>
+        </div>
+
+        <div class="k-try">
+          <h3>Zwei Namen, ein Objekt</h3>
+          <div class="k-predict">
+            <p class="k-predict__q">Was gibt <code>print(f1.n, f3.n)</code> aus?</p>
+            <div class="k-predict__opts"><button type="button">6 6</button><button type="button" data-correct>8 6</button><button type="button">6 8</button></div>
+            <div class="k-predict__result"></div>
+            <div class="k-predict__expl" hidden><code>f2 = f1</code> kopiert nichts: <code>f2</code> und <code>f1</code> zeigen auf dasselbe Objekt (wie zwei Namen für eine Liste in V08). <code>f2.n = 8</code> ändert deshalb auch <code>f1.n</code>. <code>f3</code> ist ein eigenes Objekt und bleibt bei 6.</div>
+          </div>
+          <pre data-timeout="40000"><code>class Teil:
+    def __init__(self, n):
+        self.n = n
+
+
+f1 = Teil(6)
+f2 = f1
+f3 = Teil(6)
+f2.n = 8
+print(f1.n, f3.n)</code></pre>
+        </div>
+
+        <div class="k-try">
+          <h3>Klammern vergessen</h3>
+          <div class="k-predict">
+            <p class="k-predict__q">Was gibt <code>print(p.volumen)</code> aus, also ohne Klammern?</p>
+            <div class="k-predict__opts"><button type="button">200000</button><button type="button" data-correct>eine Meldung wie &lt;bound method Platte.volumen of …&gt;</button><button type="button">einen Fehler (TypeError)</button></div>
+            <div class="k-predict__result"></div>
+            <div class="k-predict__expl" hidden>Ohne Klammern wird die Methode nicht aufgerufen, sondern nur als Wert benannt. Python gibt sie als „gebundene Methode“ aus. Es gibt keinen Fehler, aber auch keine Zahl. Das ist der häufigste Anfängerfehler: Methoden brauchen Klammern, Attribute nicht.</div>
+          </div>
+          <pre data-timeout="40000"><code>class Platte:
+    def __init__(self, laenge, breite, dicke):
+        self.laenge = laenge
+        self.breite = breite
+        self.dicke = dicke
+
+    def volumen(self):
+        return self.laenge * self.breite * self.dicke
+
+
+p = Platte(200, 100, 10)
+print(p.dicke)
+print(p.volumen)
+print(p.volumen())</code></pre>
+        </div>
+
+        <div class="k-try">
+          <h3>Eine Methode verändert das Objekt</h3>
+          <div class="k-predict">
+            <p class="k-predict__q">Ein Fräser hat 60 Minuten Standzeit. Er wird 45 und dann 20 Minuten benutzt. Was gibt das Programm aus?</p>
+            <div class="k-predict__opts"><button type="button">60 False</button><button type="button">15 False</button><button type="button" data-correct>-5 True</button></div>
+            <div class="k-predict__result"></div>
+            <div class="k-predict__expl" hidden>Jeder Aufruf von <code>benutze</code> zieht die Minuten von <code>self.rest</code> ab und speichert das Ergebnis wieder im Objekt: 60 − 45 = 15, dann 15 − 20 = −5. Das Objekt „merkt“ sich seinen Zustand zwischen den Aufrufen. <code>ist_verschlissen()</code> liefert <code>True</code>, weil −5 ≤ 0.</div>
+          </div>
+          <pre data-timeout="40000"><code>class Werkzeug:
+    def __init__(self, standzeit):
+        self.rest = standzeit
+
+    def benutze(self, minuten):
+        self.rest = self.rest - minuten
+
+    def ist_verschlissen(self):
+        return self.rest &lt;= 0
+
+
+fraeser = Werkzeug(60)
+fraeser.benutze(45)
+fraeser.benutze(20)
+print(fraeser.rest, fraeser.ist_verschlissen())</code></pre>
+        </div>
+
+        <h3>Typische Stolperstellen</h3>
+        <div class="hinweis hinweis--achtung"><strong class="hinweis__title">Achtung</strong>
+          <ul>
+            <li><code class="k-i">self</code> in der Methodendefinition vergessen: <code class="k-i">def masse():</code> statt <code class="k-i">def masse(self):</code>. Python übergibt das Objekt trotzdem, und es kommt <code class="k-i">TypeError: Flansch.masse() takes 0 positional arguments but 1 was given</code>.</li>
+            <li><code class="k-i">d</code> statt <code class="k-i">self.d</code> in einer Methode: <code class="k-i">NameError</code>, denn die Variable gibt es nur als Attribut des Objekts.</li>
+            <li>Im <code class="k-i">__init__</code> einen Parameter nicht als <code class="k-i">self.…</code> gespeichert: später <code class="k-i">AttributeError: 'Flansch' object has no attribute 'dicke'</code>.</li>
+            <li>Klammern vergessen: <code class="k-i">f.masse</code> gibt die Methode aus, <code class="k-i">f.masse()</code> die Masse.</li>
+            <li>Falsche Zahl Argumente beim Erzeugen: <code class="k-i">TypeError: Flansch.__init__() missing 1 required positional argument</code>. Das <code class="k-i">self</code> zählt dabei nicht mit.</li>
+          </ul>
+        </div>
+        <p>Löse die Fehler einmal selbst aus. Der Block fängt sie mit <code class="k-i">try/except</code> ab (V09), damit du alle vier Meldungen siehst:</p>
+        <pre data-timeout="40000"><code>class Flansch:
+    def __init__(self, d_aussen, dicke):
+        self.d_aussen = d_aussen
+        # self.dicke wird nicht gespeichert
+
+    def masse(self):
+        return self.d_aussen * dicke
+
+    def umfang():
+        return 3.14
+
+
+f = Flansch(120, 15)
+
+for aufruf in ["f.umfang()", "f.dicke", "f.masse()", "Flansch(120)"]:
+    try:
+        eval(aufruf)
+    except Exception as fehler:
+        print(aufruf, "->", type(fehler).__name__ + ":", fehler)</code></pre>
+      </section>
+
+      <!-- 4 ───────────── SELBSTCHECK ───────────── -->
+      <section class="k-section" id="selbstcheck" data-section="selbstcheck" aria-labelledby="h-sc">
+        <h2 class="k-section__title" id="h-sc"><span class="k-section__num" aria-hidden="true">4</span> Selbstcheck</h2>
+
+        <p>Acht Quizaufgaben im Stil der Probeklausur (22 Punkte) und eine Code-Schreib-Aufgabe (6 Punkte, T9). Plane etwa 15 Minuten für das Quiz und 10 Minuten für T9 ein, ohne Hilfsmittel. Quiz-Punkte gibt es für den ersten Versuch; danach darfst du es nochmal probieren.</p>
+
+        <div class="k-quiz" data-quiz="v20">
+
+          <div class="k-q" data-type="mc" data-points="2" data-id="t1">
+            <div class="k-q__head"><span class="k-q__title">T1 · Begriffe zuordnen</span><span class="k-q__pts">2 Punkte</span></div>
+            <div class="k-q__text">Welche Zuordnung stimmt?</div>
+            <ul class="k-q__options">
+              <li>Klasse = ein konkretes Teil, Objekt = der Bauplan</li>
+              <li data-correct>Klasse = der Bauplan, Objekt = ein konkretes Teil nach diesem Bauplan</li>
+              <li>Attribut = eine Funktion der Klasse, Methode = ein Maß</li>
+              <li>Attribut = ein Aufruf mit Klammern, Methode = eine Variable</li>
+            </ul>
+            <div class="k-q__expl">Die Klasse beschreibt, wie ein Teil aufgebaut ist, das Objekt ist ein einzelnes Teil davon. Attribute sind die Maße und Eigenschaften (Variablen des Objekts), Methoden sind die Funktionen der Klasse, die man mit Klammern aufruft.</div>
+          </div>
+
+          <div class="k-q" data-type="output" data-points="3" data-id="t2" data-answer="6 4">
+            <div class="k-q__head"><span class="k-q__title">T2 · Zwei Namen</span><span class="k-q__pts">3 Punkte</span></div>
+            <div class="k-q__text">Was gibt das Programm aus?<pre class="k-code" data-run="nach-antwort"><code>class Teil:
+    def __init__(self, n):
+        self.n = n
+
+
+a = Teil(4)
+b = a
+b.n = 6
+c = Teil(4)
+print(a.n, c.n)</code></pre></div>
+            <div class="k-q__expl"><code>b = a</code> legt kein neues Objekt an: <code>a</code> und <code>b</code> zeigen auf dasselbe. <code>b.n = 6</code> ändert es, also ist <code>a.n</code> auch 6. <code>c</code> ist ein eigenes Objekt mit <code>n = 4</code>. Ausgabe: <code>6 4</code>.</div>
+          </div>
+
+          <div class="k-q" data-type="mc" data-points="3" data-id="t3">
+            <div class="k-q__head"><span class="k-q__title">T3 · Fehler finden</span><span class="k-q__pts">3 Punkte</span></div>
+            <div class="k-q__text">Was passiert beim Ausführen?<pre class="k-code" data-run="nach-antwort"><code>class Platte:
+    def __init__(self, a, b):
+        self.a = a
+        self.b = b
+
+    def flaeche():
+        return self.a * self.b
+
+
+p = Platte(4, 5)
+print(p.flaeche())</code></pre></div>
+            <ul class="k-q__options">
+              <li>Es wird 20 ausgegeben.</li>
+              <li data-correct>TypeError: <code>flaeche()</code> bekommt ein Argument, hat aber keinen Parameter dafür (<code>self</code> fehlt).</li>
+              <li>NameError: <code>Platte</code> ist nicht definiert.</li>
+              <li>AttributeError: <code>p</code> hat kein Attribut <code>a</code>.</li>
+            </ul>
+            <div class="k-q__expl">Beim Aufruf <code>p.flaeche()</code> übergibt Python das Objekt <code>p</code> automatisch als erstes Argument. Die Methode ist aber ohne <code>self</code> definiert und nimmt kein Argument an: <code>TypeError: Platte.flaeche() takes 0 positional arguments but 1 was given</code>. Richtig wäre <code>def flaeche(self):</code>.</div>
+          </div>
+
+          <div class="k-q" data-type="mc" data-points="2" data-id="t4">
+            <div class="k-q__head"><span class="k-q__title">T4 · Lücke im __init__</span><span class="k-q__pts">2 Punkte</span></div>
+            <div class="k-q__text">Was gehört in die Lücke, damit <code>r.d</code> den Durchmesser liefert?<pre class="k-code" data-run="no"><code>class Rohr:
+    def __init__(self, d, l):
+        ________ = d
+        self.l = l</code></pre></div>
+            <ul class="k-q__options">
+              <li><code>d</code></li>
+              <li><code>Rohr.d</code></li>
+              <li data-correct><code>self.d</code></li>
+              <li><code>self(d)</code></li>
+            </ul>
+            <div class="k-q__expl">Ein Attribut legst du mit <code>self.name = wert</code> an. Ohne <code>self.</code> wäre <code>d</code> nur eine lokale Variable, die nach dem <code>__init__</code> verschwindet, und <code>r.d</code> gäbe einen <code>AttributeError</code>.</div>
+          </div>
+
+          <div class="k-q" data-type="num" data-points="3" data-id="t5" data-answer="247" data-tol="1">
+            <div class="k-q__head"><span class="k-q__title">T5 · Masse einer Welle</span><span class="k-q__pts">3 Punkte</span></div>
+            <div class="k-q__text">Eine Stahlwelle (7,85 g/cm³) hat 20 mm Durchmesser und 100 mm Länge. Wie viele Gramm wiegt sie? (auf ganze Gramm gerundet, nur die Zahl)</div>
+            <div class="k-q__expl">Volumen: π/4 · 20² · 100 = 31 416 mm³. Durch 1000 sind das 31,4 cm³. Mal 7,85 g/cm³ ergibt 246,6 g, gerundet 247 g. Als Methode: <code>self.volumen() / 1000 * dichte</code> in Gramm, nochmal durch 1000 in Kilogramm (0,247 kg).</div>
+          </div>
+
+          <div class="k-q" data-type="mc" data-points="2" data-id="t6">
+            <div class="k-q__head"><span class="k-q__title">T6 · Methode aufrufen</span><span class="k-q__pts">2 Punkte</span></div>
+            <div class="k-q__text">Das Objekt <code>f</code> der Klasse <code>Flansch</code> hat eine Methode <code>masse(self)</code>. Welche Zeile gibt die Masse aus?</div>
+            <ul class="k-q__options">
+              <li><code>print(f.masse)</code></li>
+              <li data-correct><code>print(f.masse())</code></li>
+              <li><code>print(masse(f))</code></li>
+              <li><code>print(f.masse(self))</code></li>
+            </ul>
+            <div class="k-q__expl"><code>f.masse()</code> ruft die Methode auf, und Python setzt <code>f</code> selbst als <code>self</code> ein. Ohne Klammern bekommst du nur die Methode als Objekt. <code>masse(f)</code> sucht eine Funktion namens <code>masse</code>, die es nicht gibt (NameError). <code>self</code> übergibst du nie selbst.</div>
+          </div>
+
+          <div class="k-q" data-type="mc" data-points="4" data-id="t7">
+            <div class="k-q__head"><span class="k-q__title">T7 · Klassen und Objekte (mehrere richtig)</span><span class="k-q__pts">4 Punkte</span></div>
+            <div class="k-q__text">Welche Aussagen stimmen? Alle richtigen ankreuzen.</div>
+            <ul class="k-q__options">
+              <li data-correct>Aus einer Klasse kann man beliebig viele Objekte erzeugen.</li>
+              <li data-correct>Jedes Objekt hat seine eigenen Attribute.</li>
+              <li>Ändert man <code>f1.n</code>, ändert sich <code>n</code> bei allen Objekten der Klasse.</li>
+              <li>Man muss <code>self</code> beim Aufruf einer Methode als erstes Argument angeben.</li>
+            </ul>
+            <div class="k-q__expl">Die Klasse ist der Bauplan: beliebig viele Objekte, jedes mit eigenen Attributwerten. Ein Attribut zu ändern betrifft nur dieses Objekt (außer ein zweiter Name zeigt auf dasselbe Objekt). <code>self</code> setzt Python beim Aufruf selbst ein.</div>
+          </div>
+
+          <div class="k-q" data-type="mc" data-points="3" data-id="t8">
+            <div class="k-q__head"><span class="k-q__title">T8 · Du benutzt Objekte schon</span><span class="k-q__pts">3 Punkte</span></div>
+            <div class="k-q__text">Was ist <code>teile.append("Welle")</code> für eine Zeile, wenn <code>teile</code> eine Liste ist?</div>
+            <ul class="k-q__options">
+              <li>Der Aufruf einer Funktion namens <code>append</code>, der die Liste als Parameter bekommt.</li>
+              <li data-correct>Der Aufruf der Methode <code>append</code> des Objekts <code>teile</code>, einer Instanz der Klasse <code>list</code>.</li>
+              <li>Eine Zuweisung an das Attribut <code>append</code>.</li>
+              <li>Die Definition einer neuen Klasse.</li>
+            </ul>
+            <div class="k-q__expl">Eine Liste ist ein Objekt der Klasse <code>list</code>, und <code>append</code> ist eine ihrer Methoden. Das Muster <code>objekt.methode(argumente)</code> ist dasselbe wie bei <code>f.masse()</code>, nur ist die Klasse <code>list</code> schon in Python eingebaut.</div>
+          </div>
+
+          <div class="k-score" data-score aria-live="polite"></div>
+        </div>
+
+        <h3>Code schreiben im Klausurstil</h3>
+        <p class="k-small k-muted">Wie in der Klausur: erst von Hand schreiben, ohne Ausführen und ohne Auto-Vervollständigung. Dann abgeben, die Tests laufen lassen und dich selbst nach dem Punkteschema bewerten. Richtzeit 10 Minuten.</p>
+        <div class="a-task" data-a="klausur" data-id="sc-klausur" data-mode="code" data-minutes="10">
+          <div class="a-task__head"><span class="a-task__title">T9 · Klasse Welle</span><span class="a-pts">6 Punkte</span></div>
+          <div class="a-task__text">
+            <p>Schreibe die Klasse <code>Welle</code> für einen Vollzylinder. Der Konstruktor bekommt den Durchmesser <code>d</code> und die Länge <code>l</code> (beide in mm) und speichert sie. Die Methode <code>volumen()</code> liefert das Volumen in mm³ (benutze <code>math.pi</code>). Die Methode <code>masse(dichte=7.85)</code> liefert die Masse in kg, wobei <code>dichte</code> in g/cm³ angegeben wird. Die Methoden sollen den Wert zurückgeben, nicht ausgeben. Beispiel: <code>Welle(20, 100).masse()</code> ist etwa 0,247.</p>
+          </div>
+          <div class="a-editor"><textarea class="py-editor" data-lesson="V20" data-assist="off" aria-label="Python-Code von Hand schreiben, ohne Ausführen">import math
+
+# schreibe hier die Klasse Welle
+</textarea></div>
+          <script type="text/x-python" data-role="tests">
+import math
+
+def test_volumen():
+    """volumen() liefert mm³: π/4 · d² · l"""
+    w = Welle(20, 100)
+    soll = math.pi / 4 * 20 ** 2 * 100
+    assert abs(w.volumen() - soll) < 0.5, "Welle(20, 100).volumen() ist %r, erwartet etwa %.1f (mm³)" % (w.volumen(), soll)
+
+def test_masse_stahl():
+    """masse() mit Standarddichte 7.85 g/cm³ liefert kg"""
+    w = Welle(20, 100)
+    assert abs(w.masse() - 0.24661) < 0.001, "Welle(20, 100).masse() ist %r, erwartet etwa 0.2466 (kg). Einheiten: mm³ durch 1000 = cm³, mal Dichte = g, durch 1000 = kg." % (w.masse(),)
+
+def test_masse_aluminium():
+    """masse(2.70) und masse(dichte=2.70) liefern die Masse für Aluminium"""
+    w = Welle(20, 100)
+    assert abs(w.masse(2.70) - 0.08482) < 0.001, "masse(2.70) ist %r, erwartet etwa 0.0848 (kg)" % (w.masse(2.70),)
+    assert abs(w.masse(dichte=2.70) - 0.08482) < 0.001, "masse(dichte=2.70) liefert nicht dasselbe wie masse(2.70)"
+
+def test_zwei_objekte():
+    """Zwei Wellen haben getrennte Maße"""
+    a = Welle(10, 50)
+    b = Welle(20, 100)
+    assert abs(a.volumen() - 3926.99) < 0.5, "Welle(10, 50).volumen() ist %r, erwartet etwa 3926.99. Hat das zweite Objekt das erste verändert?" % (a.volumen(),)
+    assert abs(b.volumen() - 31415.93) < 0.5, "Welle(20, 100).volumen() ist %r, erwartet etwa 31415.93" % (b.volumen(),)
+
+def test_rueckgabe_nicht_ausgabe():
+    """Die Methoden geben Zahlen zurück (return), sie geben nichts mit print aus"""
+    w = Welle(20, 100)
+    assert isinstance(w.volumen(), (int, float)) and isinstance(w.masse(), (int, float)), "Die Methoden müssen mit return eine Zahl zurückgeben (nicht None)."
+          </script>
+          <script type="text/x-python" data-role="solution">
+import math
+
+
+class Welle:
+    def __init__(self, d, l):
+        self.d = d
+        self.l = l
+
+    def volumen(self):
+        return math.pi / 4 * self.d ** 2 * self.l
+
+    def masse(self, dichte=7.85):
+        return self.volumen() / 1000 * dichte / 1000
+          </script>
+          <script type="application/json" data-role="scheme">[
+{"p":1,"t":"Klassenkopf class Welle: mit Doppelpunkt und eingerückten Methoden"},
+{"p":1,"t":"__init__(self, d, l) speichert beide Maße als Attribute (self.d = d, self.l = l)"},
+{"p":1,"t":"volumen(self) rechnet mit self.d und self.l (nicht mit freien Variablen d, l) und benutzt math.pi"},
+{"p":1,"t":"volumen() gibt das Ergebnis mit return zurück (π/4 · d² · l in mm³)"},
+{"p":1,"t":"masse(self, dichte=7.85) mit Default-Wert, ruft self.volumen() auf"},
+{"p":1,"t":"Einheiten richtig: mm³ / 1000 = cm³, mal dichte = g, durch 1000 = kg, mit return"}
+]</script>
+        </div>
+      </section>
+
+      <!-- 5 ───────────── DEEP DIVE ───────────── -->
+      <section class="k-section" id="deepdive" data-section="deepdive" aria-labelledby="h-dd">
+        <h2 class="k-section__title" id="h-dd"><span class="k-section__num" aria-hidden="true">5</span> Deep Dive <span class="k-muted">(freiwillig)</span></h2>
+
+        <p>Für Neugierige. Nichts davon kommt in der Klausur dran, erkennen sollst du es aber, wenn die KI es schreibt.</p>
+
+        <details class="k-deep">
+          <summary>Schöne Ausgabe mit __str__</summary>
+          <div class="k-deep__body">
+            <p>Gibt man ein Objekt mit <code class="k-i">print</code> aus, erscheint nur eine Adresse. Definierst du die Methode <code class="k-i">__str__</code>, bestimmst du den Text selbst. Python ruft sie automatisch bei <code class="k-i">print</code> und <code class="k-i">str()</code> auf.</p>
+            <pre data-timeout="40000"><code>class Flansch:
+    def __init__(self, d_aussen, n):
+        self.d_aussen = d_aussen
+        self.n = n
+
+    def __str__(self):
+        return f"Flansch Ø{self.d_aussen} mm mit {self.n} Bohrungen"
+
+
+f = Flansch(120, 6)
+print(f)</code></pre>
+          </div>
+        </details>
+
+        <details class="k-deep">
+          <summary>Vererbung: ein Blindflansch ist ein Flansch ohne Bohrungen</summary>
+          <div class="k-deep__body">
+            <p>Eine Klasse kann die Attribute und Methoden einer anderen übernehmen und erweitern. Die neue Klasse steht in Klammern hinter dem Namen. So spart man, Code zu kopieren. Du musst das nicht schreiben können, aber lesen: <code class="k-i">class Blindflansch(Flansch)</code> heißt „ein Blindflansch ist ein Flansch mit Änderungen“.</p>
+            <pre data-timeout="40000"><code>class Flansch:
+    def __init__(self, d_aussen, dicke, n):
+        self.d_aussen = d_aussen
+        self.dicke = dicke
+        self.n = n
+
+    def beschreibung(self):
+        return f"Ø{self.d_aussen} x {self.dicke} mm, {self.n} Bohrungen"
+
+
+class Blindflansch(Flansch):
+    def __init__(self, d_aussen, dicke):
+        super().__init__(d_aussen, dicke, 0)
+
+
+b = Blindflansch(120, 15)
+print(b.beschreibung())</code></pre>
+          </div>
+        </details>
+
+        <details class="k-deep">
+          <summary>@dataclass: die Kurzschreibweise für reine Maße</summary>
+          <div class="k-deep__body">
+            <p>Besteht eine Klasse fast nur aus Attributen, schreibt die KI oft einen <code class="k-i">@dataclass</code>. Das <code class="k-i">__init__</code> und eine lesbare Ausgabe entstehen dann automatisch. Die Angaben hinter dem Doppelpunkt (<code class="k-i">float</code>, <code class="k-i">int</code>) sind Typ-Hinweise: Sie helfen beim Lesen, Python erzwingt sie nicht.</p>
+            <pre data-timeout="40000"><code>from dataclasses import dataclass
+
+
+@dataclass
+class Flansch:
+    d_aussen: float
+    d_innen: float
+    dicke: float
+    n: int = 6
+
+    def masse(self, dichte=7.85):
+        v = 3.14159265 / 4 * (self.d_aussen ** 2 - self.d_innen ** 2) * self.dicke
+        return v / 1000 * dichte / 1000
+
+
+f = Flansch(120, 40, 15)
+print(f)
+print(round(f.masse(), 2), "kg")</code></pre>
+          </div>
+        </details>
+
+        <details class="k-deep">
+          <summary>Eine STL-Datei im Klartext</summary>
+          <div class="k-deep__body">
+            <p>Die ASCII-Variante von STL ist nur eine Textdatei: für jedes Dreieck eine Normale und drei Eckpunkte, alles in der Einheit, die der Ersteller meint (meist mm, aber die Datei sagt es nicht). Ein Würfel hätte zwölf solcher Einträge, hier einer davon:</p>
+            <pre data-run="no" class="k-code"><code>solid Flansch
+  facet normal 0 0 1
+    outer loop
+      vertex 60.0 0.0 15.0
+      vertex 59.3 8.4 15.0
+      vertex 20.0 0.0 15.0
+    endloop
+  endfacet
+  ...
+endsolid Flansch</code></pre>
+            <p>Der STL-Export der 3D-Vorschau schreibt genau so eine Datei. CAD-Programme lesen sie und der Slicer eines 3D-Druckers auch.</p>
+          </div>
+        </details>
+      </section>
+
+      <!-- Videos zur Nachbereitung -->
+      <section class="k-section" id="videos" aria-labelledby="h-videos">
+        <h2 class="k-section__title" id="h-videos">Videos zur Nachbereitung</h2>
+        <p>Alle drei Erklärvideos zu V20 zum Wiederholen, jeweils mit deutschen Untertiteln.</p>
+        <ul class="k-video-list">
+          <li><a href="#video-theorie">Objekte: Klasse, Objekt, Attribut, Methode und self erklärt</a> <span class="k-muted">(ca. 3 Min, Theorie, Abschnitt 2 dieser Lerneinheit)</span></li>
+          <li><a href="v20-labor.html#a-werkzeugkasten">Python-Werkstatt: Klassen schreiben, Objekte erzeugen und bauteil3d</a> <span class="k-muted">(ca. 3 Min, im Labor bei „Werkzeugkasten“)</span></li>
+          <li><a href="v20-labor.html#a-vorgemacht">Vorgerechnet: parametrischer Flansch prüfen, wiegen und in 3D ansehen</a> <span class="k-muted">(ca. 3 Min, im Labor bei „Vorgerechnetes Beispiel“)</span></li>
+        </ul>
+      </section>
+
+      <!-- Übergang -->
+      <section class="k-next" aria-labelledby="h-next">
+        <h2 id="h-next">Wie geht es weiter?</h2>
+        <p>Verstanden ist noch nicht geprüft. Im Programmierlabor schreibst du eigene Klassen, ordnest und ergänzt Code, zeichnest den PAP „Gültigkeit prüfen“ und prüfst eine KI-Klasse mit eingebauten Fehlern. Zu Hause folgt das Training (ca. 60 Min). Die letzten 30 Minuten des Termins gehören wieder deinem Projekt: Der Meilenstein V20 steht auf der <a href="../projekt.html">Projektseite</a>.</p>
+        <p><a class="k-btn" href="v20-labor.html">Weiter ins Programmierlabor →</a> <a class="k-btn k-btn--ghost" href="../projekt.html">Projektseite</a></p>
+      </section>
+
+      <!-- Für Dozierende -->
+      <section class="k-section k-section--dozent" aria-labelledby="h-doz">
+        <h2 id="h-doz" class="k-sr">Für Dozierende</h2>
+        <details class="k-dozent">
+          <summary>Für Dozierende: Ablaufplan 135 Minuten Präsenz + 60 Minuten zu Hause</summary>
+          <div class="k-dozent__body">
+            <p class="k-small k-muted">Ein Termin besteht aus zwei Seiten: dieser <strong>Lerneinheit</strong> (verstehen) und dem <a href="v20-labor.html">Programmierlabor</a> (selbst programmieren). Die letzten 30 Minuten gehören dem Projekt (Meilenstein V20 auf <a href="../projekt.html">projekt.html</a>). <strong>Hinweise:</strong> Neu ist nur <code>class</code> mit <code>__init__</code>, <code>self</code>, Attributen und Methoden; Vererbung, <code>__str__</code> und <code>@dataclass</code> stehen im Deep Dive und werden nicht verlangt. Der Flansch (120/40/15/90/6/11) taucht in Explorable, Beispiel und Training auf: 142,2 cm³, 1,12 kg, mit acht Bohrungen 1,09 kg; Lochkreis 110 mm mit Ø 14 mm Bohrung ist ungültig. Die 3D-Vorschau braucht WebGL und beim ersten Aufruf das Laden von Pyodide; einmal vorher ausführen lassen.</p>
+            <div class="k-tablewrap"><table class="k-plan">
+              <thead><tr><th scope="col">Minuten</th><th scope="col">Wo</th><th scope="col">Was zu tun ist</th></tr></thead>
+              <tbody>
+                <tr><td>0–10</td><td>Lerneinheit 1<br>Warum</td><td><strong>Warm-up und Hook.</strong> Kurz Wiederholung V19 (Datenbank), dann „Passt die Bohrung noch?“ im Plenum abstimmen. Überleitung: Die Prüfung soll nicht jeder von Hand rechnen, sie gehört ins Bauteil.</td></tr>
+                <tr><td>10–30</td><td>Lerneinheit 2<br>Theorie</td><td><strong>Explorables.</strong> Bauplan und Teile: zwei Flansche erzeugen, <code>f1.n = 8</code>, dann <code>f2 = f1</code> und erneut ändern (7). <code>f1.masse()</code> Schritt für Schritt: was ist <code>self</code>? (5). Parametrischer Flansch: Lochkreis hochdrehen, bis die Bohrung über den Rand ragt; „In 3D ansehen“ (6). PAP Baureihe: Methode als Unterprogramm (2).</td></tr>
+                <tr><td>30–70</td><td>Labor Teil A<br>Aufgaben 1 bis 6</td><td><strong>Python-Werkstatt, Teil 1 (ca. 40 Min).</strong> Werkzeugkasten (5), Vorgerechnetes Beispiel Flansch (10), Ablauf verfolgen (5), Zeilen ordnen (7), Lückencode (5), Erste eigene Aufgabe (8). Typische Fehler: <code>self</code> vergessen, <code>d</code> statt <code>self.d</code>, Klammern bei Methoden vergessen.</td></tr>
+                <tr><td>70–80</td><td>–</td><td><strong>Pause.</strong></td></tr>
+                <tr><td>80–105</td><td>Labor Teil A<br>Aufgaben 7 bis 9, Selbstcheck</td><td><strong>Python-Werkstatt, Teil 2.</strong> PAP zeichnen: Gültigkeitsprüfung (8). Code-Review (KI-Spiegel) am Beamer: die KI-Klasse mit Einheitenfehler Faktor 10<sup>9</sup> (10). Typische Fehlermeldungen (5). Exit-Ticket: Quiz T2, T3, T6 (je 1 Minute tippen, dann auflösen). T9 als Hausaufgabe.</td></tr>
+                <tr><td>105–135</td><td>Projekt<br>Meilenstein V20</td><td><strong>Projekt, Phase 3 (30 Min).</strong> Die Kernrechnung des Projekts als Klasse oder mit Copilot erweitern, bis die Tests bestehen. Siehe <a href="../projekt.html">projekt.html</a>.</td></tr>
+                <tr><td>zu Hause (ca. 60)</td><td>Labor Teil B<br>Aufgaben 1 bis 8</td><td><strong>Training.</strong> Feder, Rohr, Werkzeug mit Zustand, Baureihe in einer Liste, Stufenwelle mit 3D, Wiederholung, Klausur-Modus, Distanzhülse. Der Fortschritt bleibt im Browser der Studierenden; er ist für dich nicht einsehbar.</td></tr>
+              </tbody>
+            </table></div>
+            <p class="k-small k-muted">Material: Beamer, stabiles WLAN (Pyodide lädt nach), ein Rechner mit WebGL für die 3D-Vorschau. Projektseite: <a href="../projekt.html">projekt.html</a>.</p>
+          </div>
+        </details>
+      </section>
+
+    </main>
+  </div>
+
+  <footer class="dhbw-footer k-footer">
+    <div class="dhbw-footer__inner">
+      <span><span class="dhbw-footer__brand">DHBW Stuttgart</span> · Campus Horb</span>
+      <span><a href="../index.html">Zurück zum Lernpfad</a> · <a href="../projekt.html">Projekt</a> · V20 Objekte &amp; CAD-Automatisierung · Lerneinheit</span>
+    </div>
+  </footer>
+
+  <script src="../assets/js/speicher.js"></script>
+  <script src="../assets/js/icons.js"></script>
+  <script src="../assets/js/editor.js" defer></script>
+  <script src="../assets/js/pap-engine.js"></script>
+  <script src="../assets/js/vorschau3d.js"></script>
+  <script src="../assets/js/explorables-v20.js"></script>
+  <script src="../assets/js/kurs.js"></script>
+  <script src="../assets/js/aufgaben.js"></script>
+</body>
+</html>
