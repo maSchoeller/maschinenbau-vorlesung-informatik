@@ -1,0 +1,84 @@
+/* =============================================================
+   v22.css – Code-Walkthroughs und Klausurtraining V22: Variablentabelle, PAPs, Zeitplan,
+   Themenübersicht, Einstiegslinks. Baut auf kurs.css auf. Präfix v22-. Rot nur für den aktiven Zustand.
+   ============================================================= */
+
+/* Methode in fünf Schritten */
+.v22-methode > li > strong:first-child { color: var(--text); }
+
+/* Aufdeckbare Fragen und Musterantworten */
+details.v22-frage > summary { font-weight: 600; }
+details.v22-frage .k-steps { margin-top: 0; }
+
+/* Variablentabelle */
+.v22-vt__cap { margin: 0 0 var(--sp-1); font-size: var(--fs-sm); color: var(--k-muted); max-width: none; }
+.v22-vt__code { max-width: 640px; }
+.v22-vt__code li { padding: 1px 12px 1px 0; color: var(--code-text); border-left: 4px solid transparent; }
+.v22-vt__code li code { white-space: pre; background: none; color: var(--code-text); font-size: var(--fs-sm); line-height: var(--lh-code); padding: 0; }
+.v22-vt__code li.v22-aktiv { background: rgba(255, 255, 255, .08); border-left-color: var(--red); }
+.v22-vt__status { margin: var(--sp-3) 0; font-weight: 600; min-height: 3em; max-width: var(--k-measure); }
+.v22-vt__tab { border-collapse: collapse; width: 100%; max-width: 760px; font-variant-numeric: tabular-nums; }
+.v22-vt__tab th, .v22-vt__tab td { border-bottom: 1px solid var(--border); padding: 6px 8px; text-align: left; vertical-align: middle; }
+.v22-vt__tab thead th { font-size: var(--fs-sm); background: var(--canvas); border-bottom: 2px solid var(--border); }
+.v22-vt__tab tbody th { font-weight: 600; white-space: nowrap; }
+.v22-vt__tab .v22-vt__vor td, .v22-vt__tab .v22-vt__vor th { color: var(--k-muted); }
+.v22-vt__tab tr.is-aktuell { background: var(--red-tint); }
+.v22-vt__tab tr.is-offen td, .v22-vt__tab tr.is-offen th { color: var(--k-muted); }
+.v22-vt__zelle { white-space: nowrap; }
+.v22-vt__in { width: 5.5em; min-height: 44px; padding: 4px 8px; border: 1px solid #6B7280; border-radius: 3px; background: #fff; color: var(--text); font: inherit; font-family: var(--dhbw-font-mono); font-size: var(--fs-sm); }
+.v22-vt__zelle:nth-child(3) .v22-vt__in { width: 8.5em; }
+.v22-vt__in:focus-visible { outline: 3px solid var(--red); outline-offset: 1px; }
+.v22-vt__in.is-ok { border-color: var(--k-ok); background: var(--k-ok-bg); }
+.v22-vt__in.is-bad { border-color: var(--k-bad); background: var(--k-bad-bg); }
+.v22-vt__ic { width: 20px; height: 20px; vertical-align: middle; margin-left: 4px; }
+.v22-vt__ic.is-ok { color: var(--k-ok); }
+.v22-vt__ic.is-bad { color: var(--k-bad); }
+.v22-vt__knoepfe { display: flex; flex-wrap: wrap; gap: var(--sp-2); margin: var(--sp-3) 0; }
+.v22-vt__knoepfe .k-btn { min-height: 44px; }
+.v22-vt__fb { min-height: 1.5em; margin: 0; max-width: var(--k-measure); }
+.v22-vt__sum { margin: var(--sp-2) 0 0; font-weight: 600; color: var(--k-ok); max-width: var(--k-measure); }
+@media (max-width: 640px) {
+  .v22-vt__in { width: 4.5em; }
+  .v22-vt__zelle:nth-child(3) .v22-vt__in { width: 7.5em; }
+  .v22-vt__tab th, .v22-vt__tab td { padding: 4px; }
+}
+
+/* PAPs nebeneinander */
+.v22-paps { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-5); margin: var(--sp-4) 0; max-width: none; align-items: start; }
+.v22-pap { margin: 0; min-width: 0; }
+.v22-pap .pap__cap { font-weight: 700; margin: 0 0 var(--sp-2); }
+@media (max-width: 900px) { .v22-paps { grid-template-columns: minmax(0, 1fr); } }
+
+/* Einstieg zu Probeklausur und Trainer: anklickbare Karten */
+.v22-ziele { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-4); margin: var(--sp-4) 0 var(--sp-5); max-width: none; }
+.v22-ziel { display: block; padding: var(--sp-4); border: 1px solid var(--border); border-left: 4px solid var(--red); background: #fff; color: var(--text); text-decoration: none; min-height: 44px; }
+.v22-ziel strong { display: block; font-size: 1.125rem; color: var(--red-dark); margin-bottom: var(--sp-1); }
+.v22-ziel span { display: block; }
+.v22-ziel:hover, .v22-ziel:focus-visible { background: var(--red-tint); }
+@media (max-width: 700px) { .v22-ziele { grid-template-columns: minmax(0, 1fr); } }
+
+/* Punktverluste */
+.v22-fehler { margin: var(--sp-5) 0 var(--sp-1); font-size: var(--fs-base); }
+
+/* Zeitplan */
+.v22-zp__felder { display: flex; flex-wrap: wrap; gap: var(--sp-4); margin-bottom: var(--sp-2); }
+.v22-zp__felder label { display: flex; align-items: center; gap: var(--sp-2); font-weight: 600; flex-wrap: wrap; }
+.v22-zp__in { width: 5.5em; min-height: 44px; padding: 4px 8px; border: 1px solid #6B7280; border-radius: 3px; font: inherit; background: #fff; color: var(--text); }
+.v22-zp__in:focus-visible { outline: 3px solid var(--red); outline-offset: 1px; }
+.v22-zp__info { margin: var(--sp-2) 0; font-weight: 600; max-width: var(--k-measure); }
+.v22-zp__tab { border-collapse: collapse; width: 100%; max-width: 760px; font-variant-numeric: tabular-nums; }
+.v22-zp__tab th, .v22-zp__tab td { border-bottom: 1px solid var(--border); padding: 6px 8px; text-align: left; }
+.v22-zp__tab thead th { font-size: var(--fs-sm); background: var(--canvas); border-bottom: 2px solid var(--border); }
+.v22-zp__tab tbody th { font-weight: 700; white-space: nowrap; }
+.v22-zp__sum th, .v22-zp__sum td { border-top: 2px solid var(--border); font-weight: 700; }
+
+/* Themenübersicht */
+.v22-themen { list-style: none; padding: 0; margin: 0 0 var(--sp-4); max-width: var(--k-measure); }
+.v22-themen li { display: grid; grid-template-columns: 3em minmax(0, 1fr) auto; gap: var(--sp-3); align-items: baseline; padding: var(--sp-2) 0; border-bottom: 1px solid var(--border); margin: 0; }
+.v22-themen__nr { font-weight: 700; }
+.v22-links { white-space: nowrap; font-size: var(--fs-sm); }
+.v22-links a { display: inline-block; padding: 6px 0; }
+@media (max-width: 560px) {
+  .v22-themen li { grid-template-columns: 3em minmax(0, 1fr); }
+  .v22-links { grid-column: 2; white-space: normal; }
+}

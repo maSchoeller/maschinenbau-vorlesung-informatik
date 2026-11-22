@@ -1,0 +1,37 @@
+"""Sprechertext V22 Theorie: Code erklären (Walkthrough-Methode) und Klausurstrategie (Quelltext mit Markup)."""
+SRC = [
+ ["Erklär mir deinen Code. Diesen Satz hörst du bald dreimal: in der Präsentation, im Code-Review und in der Klausur.",
+  "Wer Code nicht erklären kann, kann ihn nicht verantworten. Das gilt auch für Code von Copilot.",
+  "Die [[KI|Ka I]] schreibt Code. Du prüfst ihn und verantwortest ihn.",
+  "Erklären ist Handwerk. Dafür gibt es fünf feste Schritte."],
+ ["Schritt eins: der Zweck in einem Satz. Was löst der Code, und für wen?",
+  "Schritt zwei: Eingaben und Ausgaben, mit Einheiten und Datentyp.",
+  "Schritt drei: der Ablauf Zeile für Zeile, mit einer Variablentabelle.",
+  "Schritt vier: Grenzfälle und Testfälle. Und Schritt fünf: Was würdest du verbessern?"],
+ ["Das Beispiel: Wellen mit Nennmaß 20 Millimeter und Toleranz plus minus 0,02 Millimeter. Eine Funktion ordnet jede Messung ein: gut, Nacharbeit oder Ausschuss.",
+  "Die Variablentabelle führt mit, was der Rechner tut. Eine Spalte je Variable, eine Zeile je Durchlauf.",
+  "Erster Durchlauf: Durchmesser 20,01, Ergebnis gut, der Zähler gut steht danach auf eins. Zweiter Durchlauf: 20,03 ist zu dick, also nacharbeit.",
+  "Dritter Durchlauf: 19,97 ist zu dünn, also ausschuss. Nach dem fünften Durchlauf stehen die Zähler auf drei, eins und eins."],
+ ["Jetzt der Grenzfall. Genau auf der Grenze gilt gut, weil im Code kleiner-gleich steht.",
+  "Aber Vorsicht bei Kommazahlen: 25,1 minus 25,0 ergibt im Rechner [[0.10000000000000142|null Komma eins, dann dreizehn Nullen und eins vier zwei]]. Das ist größer als 0,1.",
+  "Die Welle liegt genau auf der Grenze und wird trotzdem nicht als gut erkannt. Der Grund steht in Vorlesung 3: Kommazahlen sind Binärbrüche.",
+  "Darum schreibst du den Grenzfall als Testfall auf und vergleichst Kommazahlen mit `math.isclose`."],
+ ["Die Klausur dauert 90 Minuten und hat 90 Punkte. Teil A ist Theorie, Teil B ist Programmieren. Code schreibst du von Hand, und die Einrückung zählt.",
+  "Der Zeitplan richtet sich nach den Punkten: ungefähr eine Minute je Punkt, dazu zehn Minuten Puffer am Ende.",
+  "Beginne mit den sicheren Aufgaben. Eine halbe Aufgabe bringt Teilpunkte, eine nicht begonnene keine.",
+  "Skizziere Code vorher in Stichpunkten, und rechne am Ende einen Grenzfall von Hand durch."],
+ ["Fünf Fehler kosten oft Punkte. Erstens: `print` statt `return`. Die Funktion liefert dann nichts zurück.",
+  "Zweitens: eine fehlende Typumwandlung. `input` liefert Text, mit `float` machst du eine Zahl daraus.",
+  "Drittens: der Zähler im falschen Block. Er gehört vor die Schleife.",
+  "Viertens: Gleichheitszeichen bei Kommazahlen. Fünftens: falsche Einrückung.",
+  "Merke: Ein guter Walkthrough nennt Zahlen. Dann kannst du Code erklären und verantworten."],
+]
+
+SZENEN = [
+ "Drei Bilder nacheinander: Präsentation (Person zeigt auf Code an der Tafel), Code-Review (zwei Personen vor einem Bildschirm), Klausur (Blatt mit Code). Dann der Leitsatz: KI schreibt Code, Ingenieure prüfen und verantworten.",
+ "Fünf nummerierte Karten untereinander: Zweck, Eingaben und Ausgaben, Ablauf mit Variablentabelle, Grenzfälle, Verbesserungen; jede erscheint zum passenden Satz.",
+ "Links der Code (bewerte und Schleife, Zeilen hervorgehoben), rechts die Variablentabelle: je Durchlauf d, ergebnis und Zähler füllen sich Zeile für Zeile bis zum fünften Durchlauf.",
+ "Zahlenstrahl um 25,1 mit der Grenze; Rechnung 25.1 - 25.0 = 0.10000000000000142 größer als 0.1; Etikett 'nacharbeit statt gut'; darunter die Lösungen: Testfall aufschreiben, math.isclose.",
+ "Die Klausur als Zeitleiste: Teil A 35 Punkte, Teil B 55 Punkte; Tabelle Punkte gleich Minuten; vier Strategiekarten (sichere Aufgaben zuerst, skizzieren, Grenzfall prüfen, Puffer).",
+ "Fünf Fehlerkarten mit kleinem Code vorher und nachher: print statt return, Typumwandlung, Zähler im falschen Block, Gleichheitszeichen bei Kommazahlen, Einrückung; am Ende der Leitsatz.",
+]
