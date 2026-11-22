@@ -731,3 +731,158 @@ E("plt-subplots", "plt.subplots()", DG, "V14", "kopf",
   ["plt-plot", "plt-achsen", "tupel-entpacken"],
   bez=["plt.subplots", ".set_xlabel", ".set_ylabel", ".set_title", "fig", "ax", "sharex", "sharey", ".tight_layout"],
   aliase=["Subplots", "Teilbild", "Axes", "Figure"])
+
+# ───────────── V15 Datenanalyse (pandas) ─────────────
+PD = "Datenanalyse (pandas)"
+
+_WELLEN = ('with open("wellen.csv", "w", encoding="utf-8") as f:\n'
+           '    f.write("stichprobe,maschine,teil,durchmesser_mm\\n"\n'
+           '            "1,D1,1,20.001\\n1,D1,2,19.998\\n1,D2,1,20.009\\n1,D2,2,20.012\\n"\n'
+           '            "2,D1,1,20.002\\n2,D1,2,19.997\\n2,D2,1,20.015\\n2,D2,2,20.021\\n")\n')
+_PD = _WELLEN + 'import pandas as pd\ndf = pd.read_csv("wellen.csv")\n'
+
+E("pd-read-csv", "pd.read_csv()", PD, "V15", "kopf",
+  "Liest eine CSV-Datei als Tabelle (DataFrame) mit Spaltennamen ein.",
+  "import pandas as pd\ndf = pd.read_csv(\"datei.csv\")\ndf = pd.read_csv(\"datei.csv\", sep=\";\", decimal=\",\")",
+  "pandas ist das Standardpaket für Tabellendaten. read_csv liest die ganze Datei auf einmal: Die erste Zeile wird zu den Spaltennamen, jede weitere zu einer Zeile der Tabelle, Zahlen werden automatisch zu Zahlen. Das Ergebnis heißt DataFrame. Deutsche Dateien (Excel, phyphox) brauchen meist sep=\";\" und decimal=\",\". df.head() zeigt die ersten fünf Zeilen, len(df) die Anzahl der Zeilen, df.columns die Spaltennamen.",
+  _WELLEN + '''
+import pandas as pd
+df = pd.read_csv("wellen.csv")
+print(df.head(3))
+print(len(df), "Zeilen")
+print(list(df.columns))
+''',
+  "Sobald eine Messreihe oder ein Protokoll als CSV vorliegt und du mehr als ein paar Werte auswerten willst.",
+  [("Deutsche CSV mit Semikolon und Dezimalkomma", 'with open("kraft.csv", "w", encoding="utf-8") as f:\n    f.write("zeit_s;kraft_n\\n0;0,0\\n1;12,5\\n2;24,9\\n")\nimport pandas as pd\ndf = pd.read_csv("kraft.csv", sep=";", decimal=",")\nprint(df["kraft_n"].max())'),
+   ("Größe der Tabelle", _PD + 'print(df.shape)   # (Zeilen, Spalten)')],
+  [("Falsches Trennzeichen: alles landet in einer Spalte", 'with open("kraft.csv", "w", encoding="utf-8") as f:\n    f.write("zeit_s;kraft_n\\n0;0,0\\n1;12,5\\n")\nimport pandas as pd\ndf = pd.read_csv("kraft.csv")\nprint(list(df.columns))',
+    "(keine Fehlermeldung) Es gibt nur eine Spalte 'zeit_s;kraft_n'. Mit sep=\";\" einlesen."),
+   ("Datei nicht im Arbeitsordner", 'import pandas as pd\ndf = pd.read_csv("fehlt.csv")')],
+  ["pd-spalte", "pd-describe", "csv-reader", "pandas-dataframe"],
+  bez=["pd.read_csv", "read_csv", ".head", ".shape", ".columns"],
+  aliase=["pandas", "DataFrame", "Tabelle einlesen", "CSV"])
+
+E("pd-spalte", "Spalte df[\"name\"] (Series)", PD, "V15", "kopf",
+  "Holt eine Spalte aus der Tabelle; mit ihr rechnest du wie mit einer Messreihe.",
+  "df[\"spalte\"]            # eine Spalte (Series)\ndf[[\"a\", \"b\"]]         # mehrere Spalten (DataFrame)\ndf[\"spalte\"].mean()     # auch .std() .min() .max() .count()",
+  "Eine einzelne Spalte heißt Series: eine Reihe von Werten mit Index (der Zeilennummer). Auf ihr gibt es die üblichen Kennwerte: mean() Mittelwert, std() Standardabweichung der Stichprobe (mit n − 1), min(), max(), count() Anzahl der Werte. Doppelte eckige Klammern wählen mehrere Spalten und liefern wieder eine Tabelle. Der Spaltenname muss genau stimmen, auch Groß- und Kleinschreibung.",
+  _PD + '''d = df["durchmesser_mm"]
+print("Mittelwert:", round(d.mean(), 4), "mm")
+print("Standardabweichung:", round(d.std(), 4), "mm")
+print(df[["maschine", "durchmesser_mm"]].head(2))
+''',
+  "Immer wenn du Kennwerte einer Messgröße brauchst oder nur einen Teil der Spalten anzeigen willst.",
+  [("Spannweite einer Messreihe", _PD + 'd = df["durchmesser_mm"]\nprint(round(d.max() - d.min(), 4), "mm")'),
+   ("Eine Series wie eine Liste durchlaufen", _PD + 'for wert in df["durchmesser_mm"].head(3):\n    print(wert)')],
+  [("Spaltenname falsch geschrieben", _PD + 'print(df["Durchmesser"])'),
+   ("Mehrere Spalten mit einfachen Klammern", _PD + 'print(df["maschine", "durchmesser_mm"])')],
+  ["pd-read-csv", "pd-describe", "pd-neue-spalte", "pd-filtern"],
+  bez=["Series", ".mean", ".std", ".count"],
+  aliase=["Series", "Spalte", "Mittelwert", "Standardabweichung"])
+
+E("pd-describe", "describe()", PD, "V15", "lesen",
+  "Zeigt die wichtigsten Kennwerte einer Spalte oder Tabelle auf einen Blick.",
+  "df[\"spalte\"].describe()\ndf.describe()",
+  "describe() liefert count (Anzahl), mean (Mittelwert), std (Standardabweichung), min, 25 %, 50 % (Median), 75 % und max. Die Prozentzeilen sind Quartile: Unter dem 25-%-Wert liegt ein Viertel aller Messwerte. Mit .round(4) wird die Ausgabe lesbarer. Auf der ganzen Tabelle beschreibt describe() alle Zahlenspalten nebeneinander.",
+  _PD + 'print(df["durchmesser_mm"].describe().round(4))\n',
+  "Als erster Blick auf neue Messdaten: Stimmen Anzahl, Bereich und Größenordnung? Ausreißer fallen bei min und max auf.",
+  [("Einen Kennwert aus describe holen", _PD + 'k = df["durchmesser_mm"].describe()\nprint(k["max"])'),
+   ("Median direkt", _PD + 'print(df["durchmesser_mm"].median())')],
+  [("describe ohne Klammern aufgerufen", _PD + 'print(df["durchmesser_mm"].describe["mean"])'),
+   ("std mit statistics.pstdev verwechselt", 'import statistics\nprint(round(statistics.pstdev([1.0, 2.0, 3.0]), 4), round(statistics.stdev([1.0, 2.0, 3.0]), 4))',
+    "(keine Fehlermeldung) pandas std() rechnet wie statistics.stdev mit n − 1, nicht wie pstdev.")],
+  ["pd-spalte", "pd-groupby"],
+  bez=[".describe", ".median", ".round"],
+  aliase=["Kennwerte", "Quartil", "Statistik", "Übersicht"])
+
+E("pd-filtern", "Filtern mit Maske df[bedingung]", PD, "V15", "kopf",
+  "Behält nur die Zeilen, für die eine Bedingung wahr ist.",
+  "maske = df[\"spalte\"] > grenze\ndf[maske]\ndf[(bedingung1) & (bedingung2)]   # und\ndf[(bedingung1) | (bedingung2)]   # oder\ndf[~(bedingung)]                  # nicht",
+  "Ein Vergleich mit einer Spalte prüft jede Zeile einzeln und liefert eine Maske: eine Spalte aus True und False. df[maske] behält die Zeilen mit True. Bedingungen verknüpfst du mit & (und), | (oder) und ~ (nicht), nicht mit and/or/not. Jede Teilbedingung braucht eigene runde Klammern, weil & und | stärker binden als > und ==.",
+  _PD + '''OSG, USG = 20.020, 19.980
+d2 = df[df["maschine"] == "D2"]
+print(len(d2), "Teile von D2")
+ausschuss = df[(df["durchmesser_mm"] > OSG) | (df["durchmesser_mm"] < USG)]
+print(ausschuss)
+''',
+  "Für Teilmengen: eine Maschine, eine Schicht, alle Teile außerhalb der Toleranz.",
+  [("Zwei Bedingungen mit und", _PD + 'auswahl = df[(df["maschine"] == "D2") & (df["stichprobe"] == 2)]\nprint(auswahl["durchmesser_mm"].mean())'),
+   ("Anzahl der True-Werte einer Maske", _PD + 'print((df["durchmesser_mm"] > 20.010).sum(), "Teile über 20,010 mm")')],
+  [("and statt &", _PD + 'print(df[(df["maschine"] == "D2") and (df["durchmesser_mm"] > 20.01)])'),
+   ("Klammern vergessen", _PD + 'print(df[df["durchmesser_mm"] > 20.01 & df["maschine"] == "D2"])')],
+  ["pd-spalte", "pd-groupby", "and-or"],
+  bez=["Maske", "&", "|", "~"],
+  aliase=["filtern", "Bedingung", "boolean indexing", "Auswahl"])
+
+E("pd-groupby", "groupby()", PD, "V15", "kopf",
+  "Teilt die Tabelle in Gruppen auf und berechnet je Gruppe einen Kennwert.",
+  "df.groupby(\"gruppenspalte\")[\"wertspalte\"].mean()\ndf.groupby(\"gruppenspalte\")[\"wertspalte\"].agg([\"mean\", \"std\", \"count\"])",
+  "groupby arbeitet in drei Schritten: aufteilen (alle Zeilen mit gleichem Wert in der Gruppenspalte kommen zusammen), anwenden (je Gruppe wird mean, std, count … berechnet), zusammenführen (das Ergebnis hat eine Zeile je Gruppe, die Gruppenwerte sind der Index). agg mit einer Liste rechnet mehrere Kennwerte auf einmal. Gruppieren nach zwei Spalten: groupby([\"maschine\", \"stichprobe\"]).",
+  _PD + '''print(df.groupby("maschine")["durchmesser_mm"].mean().round(4))
+kennwerte = df.groupby("maschine")["durchmesser_mm"].agg(["mean", "std", "count"])
+print(kennwerte.round(4))
+''',
+  "Wenn du Maschinen, Schichten, Chargen oder Stichproben miteinander vergleichen willst.",
+  [("Stichprobenmittel für eine Regelkarte", _PD + 'd2 = df[df["maschine"] == "D2"]\nprint(d2.groupby("stichprobe")["durchmesser_mm"].mean())'),
+   ("Einen Wert aus dem Ergebnis holen", _PD + 'mittel = df.groupby("maschine")["durchmesser_mm"].mean()\nprint(round(mittel["D2"], 4))')],
+  [("Gruppenspalte falsch geschrieben", _PD + 'print(df.groupby("Maschine")["durchmesser_mm"].mean())'),
+   ("Kennwert vergessen: nur das Gruppen-Objekt", _PD + 'print(type(df.groupby("maschine")["durchmesser_mm"]).__name__)',
+    "(keine Fehlermeldung) Ausgabe: SeriesGroupBy. Erst .mean(), .std() oder .agg([...]) rechnet etwas aus.")],
+  ["pd-filtern", "pd-describe", "pd-cp-cpk"],
+  bez=[".groupby", ".agg"],
+  aliase=["gruppieren", "aggregieren", "split-apply-combine", "Gruppe"])
+
+E("pd-neue-spalte", "Neue Spalte berechnen", PD, "V15", "kopf",
+  "Rechnet aus vorhandenen Spalten eine neue, für alle Zeilen auf einmal.",
+  "df[\"neu\"] = ausdruck_mit_spalten\nkennwerte[\"Cp\"] = (OSG - USG) / (6 * kennwerte[\"std\"])",
+  "Rechnen mit einer Spalte wirkt auf jede Zeile (wie bei NumPy-Arrays), eine Schleife ist nicht nötig. Die Zuweisung an df[\"neuer_name\"] hängt das Ergebnis als Spalte an. Mit min(axis=1) nimmst du je Zeile den kleineren Wert aus mehreren Spalten, das braucht der Cpk.",
+  _PD + '''df["abw_um"] = (df["durchmesser_mm"] - 20.0) * 1000   # Abweichung vom Soll in µm
+print(df[["maschine", "durchmesser_mm", "abw_um"]].round(1).head(4))
+''',
+  "Für Abweichungen vom Sollmaß, Einheiten umrechnen (mm in µm) und Kennzahlen je Gruppe (Cp, Cpk).",
+  [("Ja/Nein-Spalte für außerhalb der Toleranz", _PD + 'df["ausserhalb"] = (df["durchmesser_mm"] > 20.020) | (df["durchmesser_mm"] < 19.980)\nprint(df["ausserhalb"].sum())'),
+   ("Kleinerer Wert je Zeile aus zwei Spalten", 'import pandas as pd\nk = pd.DataFrame({"bis_oben": [0.019, 0.013], "bis_unten": [0.021, 0.027]})\nprint(k[["bis_oben", "bis_unten"]].min(axis=1))')],
+  [("Neue Spalte mit Punkt statt Klammern", _PD + 'df.abw = df["durchmesser_mm"] - 20.0\nprint(df["abw"])'),
+   ("Text-Spalte mit Zahl verrechnet", _PD + 'print(df["maschine"] - 1)')],
+  ["pd-spalte", "pd-cp-cpk", "vektorisierung"],
+  bez=["axis"],
+  aliase=["Spalte hinzufügen", "berechnete Spalte", "min axis=1"])
+
+E("pd-value-counts", "value_counts() und unique()", PD, "V15", "lesen",
+  "Zählt, wie oft jeder Wert in einer Spalte vorkommt.",
+  "df[\"spalte\"].value_counts()\ndf[\"spalte\"].unique()",
+  "value_counts() gibt jeden vorkommenden Wert mit seiner Häufigkeit aus, die häufigsten zuerst. unique() liefert die verschiedenen Werte ohne Wiederholung, nunique() ihre Anzahl. Beides ist ein schneller Plausibilitätstest: Sind alle Maschinen und Schichten dabei, gibt es Tippfehler wie \"d2\" neben \"D2\"?",
+  _PD + '''print(df["maschine"].value_counts())
+print(list(df["maschine"].unique()))
+''',
+  "Zum Prüfen von Kategorien (Maschine, Schicht, Prüfer) direkt nach dem Einlesen.",
+  [("Wie viele Teile über 20,010 mm je Maschine?", _PD + 'print(df[df["durchmesser_mm"] > 20.010]["maschine"].value_counts())'),
+   ("Anzahl verschiedener Werte", _PD + 'print(df["stichprobe"].nunique(), "Stichproben")')],
+  [("unique auf der ganzen Tabelle statt auf einer Spalte", _PD + 'print(df.unique())')],
+  ["pd-spalte", "pd-groupby"],
+  bez=[".value_counts", ".unique", ".nunique"],
+  aliase=["zählen", "Häufigkeit", "Kategorien"])
+
+E("pd-cp-cpk", "Cp und Cpk berechnen", PD, "V15", "kopf",
+  "Prozessfähigkeit: Wie gut passt die Streuung (Cp) und die Lage (Cpk) in die Toleranz?",
+  "Cp  = (OSG - USG) / (6 * s)\nCpk = min(OSG - mittel, mittel - USG) / (3 * s)",
+  "OSG und USG sind die obere und untere Spezifikationsgrenze aus der Zeichnung, mittel und s Mittelwert und Standardabweichung der Messwerte. Cp vergleicht nur die Toleranzbreite mit der Prozessstreuung 6s. Cpk berücksichtigt zusätzlich, wie mittig der Prozess liegt: Es zählt der Abstand zur näheren Grenze, deshalb ist Cpk nie größer als Cp. Üblicher Richtwert: Cpk ab 1,33 gilt als fähig, unter 1 entsteht sicher Ausschuss; verbindlich ist die Vorgabe des Kunden. Aussagekräftig nur bei einem beherrschten Prozess (Regelkarte ohne Auffälligkeiten) und genügend Teilen (z. B. 125).",
+  _WELLEN + '''import pandas as pd
+OSG, USG = 20.020, 19.980
+df = pd.read_csv("wellen.csv")
+k = df.groupby("maschine")["durchmesser_mm"].agg(["mean", "std"])
+k["Cp"] = (OSG - USG) / (6 * k["std"])
+k["bis_oben"] = OSG - k["mean"]
+k["bis_unten"] = k["mean"] - USG
+k["Cpk"] = k[["bis_oben", "bis_unten"]].min(axis=1) / (3 * k["std"])
+print(k[["mean", "std", "Cp", "Cpk"]].round(3))
+''',
+  "Bei der Abnahme einer Maschine oder eines Prozesses und in jedem Qualitätsbericht.",
+  [("Als Funktion für eine Liste von Messwerten", 'import statistics\n\ndef cpk(werte, usg, osg):\n    m = statistics.mean(werte)\n    s = statistics.stdev(werte)\n    return min(osg - m, m - usg) / (3 * s)\n\nprint(round(cpk([20.001, 19.998, 20.003, 19.999, 20.002], 19.98, 20.02), 2))'),
+   ("Eingriffsgrenzen einer Mittelwertkarte (n = 5)", 'mitte, s, n = 20.0053, 0.0048, 5\nsigma_x = s / n ** 0.5\nprint(f"OEG {mitte + 3 * sigma_x:.4f} mm, UEG {mitte - 3 * sigma_x:.4f} mm")')],
+  [("max statt min: der Prozess sieht besser aus, als er ist", 'mittel, s, OSG, USG = 20.0072, 0.0062, 20.020, 19.980\nprint(round(max(OSG - mittel, mittel - USG) / (3 * s), 2))',
+    "(keine Fehlermeldung) Ergebnis 1,45 statt 0,68: Der Cpk nimmt den Abstand zur näheren Grenze."),
+   ("Standardabweichung null (alle Werte gleich)", 'import statistics\nwerte = [20.0, 20.0, 20.0]\nprint((20.02 - 19.98) / (6 * statistics.stdev(werte)))')],
+  ["pd-groupby", "pd-neue-spalte", "pd-describe"],
+  bez=["Cp", "Cpk"],
+  aliase=["Prozessfähigkeit", "Cpk", "Cp", "SPC", "Regelkarte", "Eingriffsgrenze"])
