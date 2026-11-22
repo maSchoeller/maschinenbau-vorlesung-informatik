@@ -1,0 +1,65 @@
+/* =============================================================
+   v21.css – Projektwerkstatt V21: Meilenstein-Überblick, Fertig-Check, Symptom-Liste,
+   Labor-Übersicht, Probe-Uhr. Baut auf kurs.css auf. Präfix v21-. Rot nur für den aktiven Zustand.
+   ============================================================= */
+
+/* Meilenstein-Überblick */
+.v21-uebersicht { list-style: none; margin: 0 0 var(--sp-5); padding: 0; max-width: var(--k-measure); }
+.v21-ms { display: grid; grid-template-columns: minmax(0, 1fr) 120px 9.5em; align-items: center; gap: var(--sp-3); padding: var(--sp-2) 0; border-bottom: 1px solid var(--border); }
+.v21-ms__t { min-height: 44px; display: flex; align-items: center; }
+.v21-ms__bar { height: 8px; background: var(--canvas); border: 1px solid var(--border); position: relative; overflow: hidden; }
+.v21-ms__fill { position: absolute; left: 0; top: 0; bottom: 0; background: #6B7280; }
+.v21-ms.is-done .v21-ms__fill { background: var(--k-ok); }
+.v21-ms__stand { font-size: var(--fs-sm); display: inline-flex; align-items: center; gap: 4px; }
+.v21-ms.is-done .v21-ms__stand { color: var(--k-ok); font-weight: 600; }
+.v21-ms__ic { width: 18px; height: 18px; }
+@media (max-width: 560px) {
+  .v21-ms { grid-template-columns: minmax(0, 1fr) auto; gap: var(--sp-1) var(--sp-3); }
+  .v21-ms__bar { grid-column: 1 / -1; grid-row: 2; }
+}
+
+/* Fertig-Check */
+.v21-summe { font-weight: 600; min-height: 1.5em; }
+.v21-summe.is-done { color: var(--k-ok); }
+.v21-check { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-4) var(--sp-6); max-width: none; margin-bottom: var(--sp-4); }
+@media (max-width: 900px) { .v21-check { grid-template-columns: minmax(0, 1fr); } }
+.v21-gruppe__t { margin: 0 0 var(--sp-2); font-size: var(--fs-base); }
+.v21-liste { list-style: none; margin: 0; padding: 0; }
+.v21-liste li { margin: 0; }
+.v21-chk { display: flex; gap: var(--sp-3); align-items: flex-start; padding: 10px 0; min-height: 44px; cursor: pointer; }
+.v21-chk input { width: 22px; height: 22px; margin: 2px 0 0; flex: 0 0 auto; accent-color: #E2001A; cursor: pointer; }
+.v21-chk input:checked + span { color: #4B5563; text-decoration: line-through; text-decoration-color: #9CA3AF; }
+
+/* Symptome und Labore */
+.v21-faelle { list-style: none; padding: 0; margin: 0 0 var(--sp-5); }
+.v21-faelle li { padding: var(--sp-3) 0; border-bottom: 1px solid var(--border); }
+.v21-links { display: block; margin-top: var(--sp-1); font-size: var(--fs-sm); }
+.v21-links a { display: inline-block; padding: 6px 0; }
+.v21-labore { list-style: none; padding: 0; margin: 0 0 var(--sp-4); max-width: var(--k-measure); }
+.v21-labore li { display: grid; grid-template-columns: 3em minmax(0, 1fr) auto; gap: var(--sp-3); align-items: baseline; padding: var(--sp-1) 0; border-bottom: 1px solid var(--border); }
+.v21-labore__nr { font-weight: 700; }
+.v21-labore .v21-links { display: inline; margin: 0; white-space: nowrap; }
+@media (max-width: 560px) {
+  .v21-labore li { grid-template-columns: 3em minmax(0, 1fr); }
+  .v21-labore .v21-links { grid-column: 2; white-space: normal; }
+}
+
+/* Probe-Uhr */
+.v21-uhr { margin: var(--sp-4) 0 var(--sp-5); max-width: none; }
+.v21-uhr__zeit { font-family: var(--dhbw-font-mono); font-size: 3.5rem; font-weight: 700; line-height: 1.1; margin: 0; font-variant-numeric: tabular-nums; }
+.v21-uhr__zeit.is-over { color: var(--k-bad); }
+.v21-uhr__phase { font-weight: 600; margin: var(--sp-1) 0 var(--sp-3); min-height: 1.5em; }
+.v21-uhr__leiste { display: flex; list-style: none; margin: 0 0 var(--sp-3); padding: 0; gap: 3px; max-width: none; }
+.v21-uhr__teil { flex-basis: 0; min-width: 0; padding: var(--sp-2); background: var(--canvas); border-top: 4px solid var(--border); font-size: var(--fs-sm); }
+.v21-uhr__teil.is-done { border-top-color: #6B7280; color: #4B5563; }
+.v21-uhr__teil.is-active { border-top-color: #E2001A; background: var(--red-tint); }
+.v21-uhr__name { display: block; font-weight: 600; overflow-wrap: anywhere; hyphens: auto; }
+.v21-uhr__dauer { display: block; color: #4B5563; }
+.v21-uhr__knoepfe { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+.v21-uhr__knoepfe .k-btn { min-height: 44px; min-width: 9em; }
+@media (max-width: 560px) {
+  .v21-uhr__leiste { flex-direction: column; }
+  .v21-uhr__teil { flex-grow: 0 !important; display: flex; justify-content: space-between; gap: var(--sp-2); border-top: 0; border-left: 4px solid var(--border); }
+  .v21-uhr__teil.is-done { border-left-color: #6B7280; }
+  .v21-uhr__teil.is-active { border-left-color: #E2001A; }
+}

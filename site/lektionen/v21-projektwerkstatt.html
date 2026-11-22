@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>V21 Projektwerkstatt: das Werkzeug fertigstellen · Informatik Maschinenbau</title>
+  <meta name="description" content="Projektwerkstatt vor der Präsentation: Meilensteine und Fertig-Check zum Abhaken, PAP des eigenen Werkzeugs, Wiederholung nach Bedarf mit Links in die Labore V01 bis V20 und eine Probe-Uhr für die Präsentation in V22.">
+  <link rel="stylesheet" href="../assets/css/dhbw-base.css">
+  <link rel="stylesheet" href="../assets/css/kurs.css">
+  <link rel="stylesheet" href="../assets/css/aufgaben.css">
+  <link rel="stylesheet" href="../assets/css/editor.css">
+  <link rel="stylesheet" href="../assets/css/v05.css">
+  <link rel="stylesheet" href="../assets/css/pap-editor.css">
+  <link rel="stylesheet" href="../assets/css/v21.css">
+</head>
+<body data-lesson="V21" data-page="lerneinheit">
+  <a class="k-skip" href="#inhalt">Zum Inhalt springen</a>
+
+  <header class="dhbw-header k-header">
+    <div class="dhbw-header__inner">
+      <a class="k-logo" href="../index.html" aria-label="Zur Startseite">
+        <span class="k-logo__mark" aria-hidden="true">DHBW</span>
+        <span class="k-logo__text">Informatik Maschinenbau<small>Campus Horb · 2026/27</small></span>
+      </a>
+      <nav class="k-nav" aria-label="Hauptnavigation">
+        <a href="../index.html">Start</a>
+        <a href="../index.html#lernpfad">Lernpfad</a>
+        <a href="../bibliothek.html">Bibliothek</a>
+        <a href="../pap-editor.html">PAP-Editor</a>
+        <a href="../projekt.html">Projekt</a>
+        <a href="v21-projektwerkstatt.html" aria-current="page">V21 Projektwerkstatt</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="l-page">
+    <nav class="k-toc" aria-label="Inhalt dieser Seite">
+      <p class="k-toc__title">Projektwerkstatt V21</p>
+      <ol class="k-toc__list">
+        <li><a href="#warum"><span class="k-toc__n">1</span>Warum?</a></li>
+        <li><a href="#fertig"><span class="k-toc__n">2</span>Fertig ist, was frisch läuft</a></li>
+        <li><a href="#meilensteine"><span class="k-toc__n">3</span>Meilensteine</a></li>
+        <li><a href="#pap"><span class="k-toc__n">4</span>PAP deines Werkzeugs</a></li>
+        <li><a href="#wiederholung"><span class="k-toc__n">5</span>Wiederholung nach Bedarf</a></li>
+        <li><a href="#generalprobe"><span class="k-toc__n">6</span>Generalprobe</a></li>
+      </ol>
+      <div class="k-progress" data-progress-for="V21">
+        <span class="k-progress__bar"><span class="k-progress__fill"></span></span>
+        <span class="k-progress__text">0 von 6 Abschnitten</span>
+      </div>
+      <a class="k-toc__lab" href="../projekt.html">Zur Projektseite →</a>
+    </nav>
+
+    <main id="inhalt" class="l-content">
+
+      <header class="k-title">
+        <p class="k-title__label">V21 · Phase 3 Projekt · Werkstatt</p>
+        <h1 id="h-titel">Projektwerkstatt: das Werkzeug fertigstellen</h1>
+        <p class="k-title__lead">Heute gibt es keine neue Theorie. Du arbeitest mit deinem Partner am Projekt aus <a href="../projekt.html">V14</a> und machst es fertig für die Präsentation in V22. Diese Seite hilft dabei: Sie zeigt, was noch fehlt, führt dich zu den Laboren, in denen du etwas nachschlagen kannst, und hat eine Uhr für die Probe.</p>
+        <p class="k-title__goals">Am Ende dieses Termins:</p>
+        <ul class="k-title__list">
+          <li>läuft euer Werkzeug nach einem <strong>frischen Start</strong> in einem leeren Ordner, und alle Tests sind grün,</li>
+          <li>passt euer <abbr class="k-begriff" data-erklaerung="Ein Programmablaufplan (PAP) zeichnet den Ablauf eines Programms als Symbole, die durch Pfeile verbunden sind (aus V05). Er ist sprachunabhängig, so wie eine Fertigungszeichnung kein bestimmtes CAD-Programm braucht.">Programmablaufplan</abbr> zum Code, so wie er heute wirklich läuft,</li>
+          <li>beschreibt eine kurze README Zweck, Bedienung, Eingaben und Ausgaben mit Einheiten und die Grenzen eures Modells,</li>
+          <li>habt ihr die Präsentation einmal mit der Uhr geprobt.</li>
+        </ul>
+        <div class="hinweis hinweis--merke"><strong class="hinweis__title">Arbeitsstand sichern</strong><p>Alles, was du auf dieser Website abhakst, bleibt nur in diesem Browser. Mit „Arbeitsstand sichern“ im Seitenfuß speicherst du ihn als Datei, zum Beispiel bevor du am Laptop deines Partners weitermachst.</p></div>
+      </header>
+
+      <!-- 1 ───────────── WARUM ───────────── -->
+      <section class="k-section" id="warum" data-section="warum" aria-labelledby="h-warum">
+        <h2 class="k-section__title" id="h-warum"><span class="k-section__num" aria-hidden="true">1</span> Warum?</h2>
+
+        <figure class="k-figure">
+          <picture>
+            <source srcset="../assets/img/v21-hook.webp" type="image/webp">
+            <img src="../assets/img/v21-hook.png" alt="Illustration: Zwei Studierende arbeiten gemeinsam am Laptop, daneben Messschieber, Zahnrad und ein ausgedruckter Programmablaufplan; im Hintergrund ein Weg mit Fähnchen, die letzte rote Fahne markiert das Ziel" width="1600" height="900" loading="lazy" onerror="this.closest('figure').hidden=true">
+          </picture>
+        </figure>
+
+        <p>Ein Programm, das auf deinem Laptop einmal richtig gerechnet hat, ist ein Prototyp. Ein Werkzeug wird es erst, wenn jemand anderes es auf einem anderen Rechner starten kann, wenn falsche Eingaben es nicht umwerfen und wenn klar ist, wofür es gilt und wofür nicht. Genau das prüft ihr heute. Die meisten Präsentationen scheitern nicht an der Rechnung, sondern an Kleinigkeiten: eine Datei mit einem Pfad vom eigenen Rechner, ein Test, der seit einer „kleinen Verschönerung“ rot ist, ein PAP, der zu einer alten Fassung gehört.</p>
+
+        <h3>Ablauf heute</h3>
+        <ol class="k-steps">
+          <li><strong>Stand-up (10 Min):</strong> Jede Gruppe sagt in einer Minute: Was läuft? Was fehlt noch? Wo hängt ihr? Der Dozent notiert die Themen für die Mini-Wiederholungen.</li>
+          <li><strong>Werkstatt (ca. 70 Min):</strong> Fertig-Check abarbeiten (Abschnitt 3), PAP abgleichen (Abschnitt 4). Wer hängt, schlägt in Abschnitt 5 nach oder fragt. Zwischendurch kurze Wiederholungen am Beamer zu den Themen aus dem Stand-up.</li>
+          <li><strong>Pause (10 Min).</strong></li>
+          <li><strong>Generalprobe (ca. 45 Min):</strong> Je zwei Gruppen proben gegenseitig mit der Uhr (Abschnitt 6) und geben sich Rückmeldung.</li>
+        </ol>
+
+        <h3>Wissens-Ampel für V21</h3>
+        <ul class="k-ampel-list" aria-label="Wissens-Ampel zu V21">
+          <li><span class="k-ampel k-ampel--kopf"><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-head"/></svg> Im Kopf</span><span>Woran du erkennst, dass ein Werkzeug fertig ist: frischer Start ohne Fehler, alle Tests grün (auch die Grenzfälle), PAP passt zum Code, Grenzen des Modells benannt. Den eigenen Code Zeile für Zeile erklären können, denn in V22 und in der Klausur fragt niemand Copilot.</span></li>
+          <li><span class="k-ampel k-ampel--lesen"><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-book"/></svg> Lesen &amp; erkennen</span><span>Tracebacks im eigenen Projekt lesen und zur Ursache finden, den Code einer anderen Gruppe lesen und bewerten, in den Laboren V01 bis V20 gezielt nachschlagen.</span></li>
+          <li><span class="k-ampel k-ampel--deleg"><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-handover"/></svg> Delegieren</span><span>Eine Rohfassung der README, Docstrings und einheitliche Formatierung darf Copilot vorschlagen. Prüfen und unterschreiben musst du sie selbst: Stimmen die Einheiten, stimmen die Grenzen?</span></li>
+        </ul>
+
+        <div class="hinweis hinweis--warum"><strong class="hinweis__title">Warum muss ich das wissen?</strong><p>Im Beruf gibst du Berechnungen und Auswerteprogramme an Kollegen weiter, und die verlassen sich darauf. Ein Werkzeug, das nur bei dir läuft oder still falsch rechnet, kostet im Betrieb mehr Zeit, als es spart. In V22 präsentiert ihr das Werkzeug und erklärt euren Code; die Klausur fragt dasselbe Können ohne Rechner ab: Code lesen, Testfälle finden, PAP und Code abgleichen.</p></div>
+      </section>
+
+      <!-- 2 ───────────── FERTIG ───────────── -->
+      <section class="k-section" id="fertig" data-section="fertig" aria-labelledby="h-fertig">
+        <h2 class="k-section__title" id="h-fertig"><span class="k-section__num" aria-hidden="true">2</span> Fertig ist, was frisch läuft</h2>
+
+        <h3>Erklärvideo (ca. 3 Min)</h3>
+        <figure class="k-video" id="video-theorie">
+          <video controls preload="metadata" poster="../assets/video/v21-theorie-poster.png" aria-label="Erklärvideo Fertig ist, was frisch läuft: frischer Start, Regressionstest, PAP und Code abgleichen, README und Präsentation">
+            <source src="../assets/video/v21-theorie.mp4" type="video/mp4">
+            <track kind="subtitles" srclang="de" label="Deutsch" src="../assets/video/v21-theorie.vtt" default>
+            Dein Browser kann dieses Video nicht abspielen.
+          </video>
+          <div class="k-video__missing" hidden>Video folgt. Bis dahin: Der Text unten enthält alles, was im Video vorkommt.</div>
+          <figcaption>Untertitel sind eingeschaltet (Deutsch).</figcaption>
+        </figure>
+
+        <p>Vier Prüfungen trennen den Prototyp vom Werkzeug. Jede dauert nur ein paar Minuten, aber jede findet Fehler, die sonst erst vor Publikum auffallen.</p>
+
+        <h3>Frischer Start</h3>
+        <p>Lege einen neuen, leeren Ordner an, kopiere alle Dateien eures Werkzeugs hinein und starte das Hauptprogramm von dort. Drei Fehler fallen dabei sofort auf: Eine Datei fehlt im Ordner. Das Programm öffnet eine Datei mit einem <abbr class="k-begriff" data-erklaerung="Ein absoluter Pfad beginnt beim Laufwerk, zum Beispiel C:\Users\name\messung.csv. Er gilt nur auf genau diesem Rechner. Ein relativer Pfad wie messung.csv gilt vom Ordner des Programms aus, wie eine Maßangabe von einer Bezugskante.">absoluten Pfad</abbr> vom eigenen Rechner (aus <a href="v09-labor.html">V09</a> und <a href="v16-labor.html">V16</a>). Oder eine Variable existiert nur, weil sie in der offenen Sitzung von einem früheren Lauf übrig ist. Schreibt außerdem auf, welche Pakete ihr braucht, zum Beispiel <code class="k-i">pandas</code> oder <code class="k-i">matplotlib</code>.</p>
+
+        <h3>Regressionstest</h3>
+        <p>Nach jeder Änderung laufen <strong>alle</strong> Tests erneut, nicht nur der für den neuen Teil. Das nennt man <abbr class="k-begriff" data-erklaerung="Ein Regressionstest prüft nach einer Änderung, ob alles, was vorher funktioniert hat, immer noch funktioniert. Wie die Abnahmemessung nach einer Reparatur: Man misst nicht nur das getauschte Teil.">Regressionstest</abbr>. Eine Verschönerung, zum Beispiel anders runden oder einen Vergleich umschreiben, kippt gern genau den Grenzfall. Eure Testfälle von Hand aus V15 und die <code class="k-i">assert</code>-Tests aus <a href="v12-labor.html">V12</a> sind dafür da.</p>
+
+        <h3>PAP und Code abgleichen</h3>
+        <p>Der PAP ist Dokumentation. Er hilft nur, wenn er zum Programm passt, wie es heute läuft: dieselbe Reihenfolge, dieselben Verzweigungen, dieselben Schleifen. Hat sich der Code seit V14 geändert, ändert ihr den Plan mit. Das übst du in <a href="#pap">Abschnitt 4</a>.</p>
+
+        <h3>Grenzen benennen</h3>
+        <p>Eure README sagt in fünf bis zehn Zeilen, wofür das Werkzeug da ist, wie man es bedient, welche Eingaben und Ausgaben es mit welchen Einheiten hat und wo das Modell aufhört, zum Beispiel „nur statische Last“ oder „nur im elastischen Bereich“. Im KI-Protokoll steht mindestens ein Fehler, den Copilot gemacht hat, und wie ihr ihn gefunden habt. Die KI verantwortet nichts; das Ergebnis verantwortet ihr.</p>
+
+        <div class="hinweis hinweis--achtung"><strong class="hinweis__title">Achtung: keine echten Firmendaten</strong><p>Wer Daten aus dem Praxisbetrieb verwenden möchte, fragt vorher dort nach und nutzt sonst die Demo-Daten aus dem Themenkatalog. Das gilt auch für alles, was ihr Copilot zeigt (siehe <a href="v11-copilot.html">V11</a> und <a href="v18-it-sicherheit.html">V18</a>).</p></div>
+      </section>
+
+      <!-- 3 ───────────── MEILENSTEINE ───────────── -->
+      <section class="k-section" id="meilensteine" data-section="meilensteine" aria-labelledby="h-ms">
+        <h2 class="k-section__title" id="h-ms"><span class="k-section__num" aria-hidden="true">3</span> Meilensteine</h2>
+
+        <h3>Stand eurer Meilensteine V14 bis V21</h3>
+        <p>Die Meilensteine hakst du auf der <a href="../projekt.html#meilensteine">Projektseite</a> ab. Hier siehst du den Stand auf einen Blick: Was ist offen geblieben? Ein Klick führt direkt zum Meilenstein.</p>
+        <ul class="v21-uebersicht" id="v21-uebersicht" aria-live="polite">
+          <li class="k-muted">Stand wird geladen …</li>
+        </ul>
+
+        <h3>Fertig-Check für heute</h3>
+        <p>Der Meilenstein V21 im Detail. Hake ab, was erledigt ist. Der Stand bleibt in diesem Browser gespeichert.</p>
+        <p class="v21-summe" id="v21-summe" role="status" aria-live="polite"></p>
+        <div class="v21-check" id="v21-check">
+          <noscript><p>Zum Abhaken wird JavaScript benötigt. Die Liste steht auch auf der Projektseite.</p></noscript>
+        </div>
+        <p><button type="button" class="k-btn k-btn--ghost k-btn--small" id="v21-check-reset">Fertig-Check zurücksetzen</button></p>
+      </section>
+
+      <!-- 4 ───────────── PAP ───────────── -->
+      <section class="k-section" id="pap" data-section="pap" aria-labelledby="h-pap">
+        <h2 class="k-section__title" id="h-pap"><span class="k-section__num" aria-hidden="true">4</span> PAP deines Werkzeugs</h2>
+
+        <h3>Aufgabe A: den Plan an den Code anpassen</h3>
+        <p>Öffne euren PAP aus V14 im <a href="../pap-editor.html">PAP-Editor</a> (oder zeichne ihn neu) und lege den Code daneben. Geh den Code von oben nach unten durch und prüfe bei jedem Schritt:</p>
+        <ol class="k-steps">
+          <li>Steht jede Eingabe im Plan, mit Einheit im Text (zum Beispiel „d in mm“)?</li>
+          <li>Hat jede <code class="k-i">if</code>-Verzweigung im Code eine Raute im Plan, mit derselben Bedingung, auch mit <code class="k-i">&gt;=</code> statt <code class="k-i">&gt;</code>?</li>
+          <li>Hat jede Schleife eine Rückführung im Plan, und ist klar, wann sie endet?</li>
+          <li>Ist jede eigene Funktion ein Unterprogramm-Symbol (Rechteck mit Doppellinien, aus <a href="v07-labor.html">V07</a>)?</li>
+          <li>Stehen die Ausgaben in derselben Reihenfolge wie im Programm?</li>
+        </ol>
+        <p>Speichere den fertigen Plan im Editor und exportiere ihn als SVG oder PNG für die Präsentation. Ein Tipp: Mit „Code → PAP“ kann der Editor einfache Programmteile selbst zeichnen. Den Rest ergänzt ihr von Hand.</p>
+
+        <h3>Aufgabe B: die Eingabe-Prüfschleife als PAP</h3>
+        <p>Fast jedes Projektwerkzeug braucht sie (Meilenstein V18): Eine Eingabe wird so lange neu abgefragt, bis sie gültig ist. Zeichne sie hier im Kleinen. Die Prüfung erzeugt aus deinem PAP Python-Code und testet ihn mit gültigen und ungültigen Eingaben, auch an der Grenze.</p>
+        <div class="a-task k-pap-aufgabe" data-a="pap-zeichnen" data-id="v21-pruefschleife" data-timeout="8000" data-erlaubt="in,out,op,if,while,repeat">
+          <div class="a-task__head"><h3 class="a-task__title">Durchmesser einlesen, bis er gültig ist</h3></div>
+          <p>Der Plan liest einen Wellendurchmesser <code class="k-i">d</code> in mm ein und gibt ihn aus. Ergänze dazwischen eine <strong>kopfgesteuerte Schleife</strong>: Solange <code class="k-i">d</code> kleiner oder gleich 0 ist, gibt sie eine Meldung aus, in der das Wort „Ungültig“ vorkommt, und liest <code class="k-i">d</code> neu ein. Der Text einer Ausgabe steht in Anführungszeichen, zum Beispiel <code class="k-i">"Ungültig: d muss größer als null sein."</code>.</p>
+          <script type="application/json" data-role="start">{"baum":[{"k":"in","v":"d","typ":"float"},{"k":"out","v":"\"Durchmesser:\", d, \"mm\""}]}</script>
+          <script type="text/x-python" data-role="tests">
+def _lauf(eingaben):
+    text = _run_program(eingaben)
+    z = _zeilen(text)
+    fehler = sum(1 for zeile in z if "ungültig" in zeile.lower())
+    return text, fehler
+
+def test_gueltig():
+    """d = 40: keine Meldung, Ausgabe 40 mm"""
+    text, fehler = _lauf(["40"])
+    assert fehler == 0, "Bei gültiger Eingabe darf keine Meldung kommen. Ausgabe: %r" % text
+    assert _zahlen(text) and _zahlen(text)[-1] == 40, "Erwartet wird zum Schluss der Durchmesser 40. Ausgabe: %r" % text
+
+def test_zwei_falsche():
+    """-5, dann 0, dann 40: zwei Meldungen, dann 40 mm"""
+    text, fehler = _lauf(["-5", "0", "40"])
+    assert fehler == 2, "Erwartet werden genau zwei Meldungen mit 'Ungültig' (für -5 und für 0), gefunden: %d. Ausgabe: %r" % (fehler, text)
+    assert _zahlen(text)[-1] == 40, "Zum Schluss muss der gültige Durchmesser 40 ausgegeben werden. Ausgabe: %r" % text
+
+def test_grenze_null():
+    """Grenzfall: 0 ist ungültig, danach 12.5 mm"""
+    text, fehler = _lauf(["0", "12.5"])
+    assert fehler == 1, "Ein Durchmesser von genau 0 ist ungültig (Bedingung d <= 0, nicht d < 0). Ausgabe: %r" % text
+    assert _zahlen(text)[-1] == 12.5, "Erwartet wird zum Schluss 12.5. Ausgabe: %r" % text
+
+def test_kleinste_gueltige():
+    """0.1 mm ist schon gültig"""
+    text, fehler = _lauf(["0.1"])
+    assert fehler == 0 and _zahlen(text)[-1] == 0.1, "0.1 ist größer als 0 und damit gültig. Ausgabe: %r" % text
+          </script>
+          <script type="application/json" data-role="solution">{"baum":[{"k":"in","v":"d","typ":"float"},{"k":"while","v":"d <= 0","body":[{"k":"out","v":"\"Ungültig: d muss größer als null sein.\""},{"k":"in","v":"d","typ":"float"}]},{"k":"out","v":"\"Durchmesser:\", d, \"mm\""}]}</script>
+          <ol class="a-hints">
+            <li>Füge nach der Eingabe eine Schleife „kopfgesteuert“ ein. Ihre Bedingung ist die Bedingung für „ungültig“: <code>d &lt;= 0</code>.</li>
+            <li>In die Schleife gehören zwei Symbole: eine Ausgabe mit dem Meldungstext in Anführungszeichen und noch einmal die Eingabe von <code>d</code> (Kommazahl). Ohne die zweite Eingabe endet die Schleife nie.</li>
+            <li>Die Grenze: 0 ist kein gültiger Durchmesser. Darum <code>&lt;=</code> und nicht <code>&lt;</code>.</li>
+          </ol>
+        </div>
+        <p class="k-small k-muted">Im eigenen Projekt kommt meist noch <code class="k-i">try</code>/<code class="k-i">except ValueError</code> dazu, falls jemand Text statt einer Zahl eintippt (<a href="v09-labor.html">V09</a>). Im PAP-Editor gibt es dafür kein eigenes Symbol; im Plan genügt eine Raute „Eingabe ist eine Zahl?“.</p>
+      </section>
+
+      <!-- 5 ───────────── WIEDERHOLUNG ───────────── -->
+      <section class="k-section" id="wiederholung" data-section="wiederholung" aria-labelledby="h-wdh">
+        <h2 class="k-section__title" id="h-wdh"><span class="k-section__num" aria-hidden="true">5</span> Wiederholung nach Bedarf</h2>
+        <p>Hier fängst du bei deinem Problem an, nicht bei der Lektionsnummer. Such das Symptom, das zu deinem Projekt passt, und spring in das Labor. Dort findest du im <strong>Werkzeugkasten</strong> die Syntax und bei <strong>Typische Fehlermeldungen</strong> die häufigsten Fehler mit Erklärung.</p>
+
+        <h3>Was hakt bei euch?</h3>
+        <ul class="v21-faelle">
+          <li><strong>Das Programm stürzt ab, wenn jemand Text oder ein Komma eintippt</strong> (<code class="k-i">ValueError</code>). Die Eingabe mit <code class="k-i">try</code>/<code class="k-i">except</code> abfangen und neu fragen. <span class="v21-links"><a href="v09-labor.html#a-werkzeugkasten">V09 try/except</a> · <a href="v06-labor.html#a-werkzeugkasten">V06 while</a> · <a href="v04-labor.html#a-werkzeugkasten">V04 Bedingungen</a></span></li>
+          <li><strong>Auf einem anderen Rechner kommt <code class="k-i">FileNotFoundError</code>.</strong> Relativer statt absoluter Pfad, Datei im Projektordner. <span class="v21-links"><a href="v09-labor.html#a-fehler">V09 Dateien</a> · <a href="v16-labor.html#a-werkzeugkasten">V16 Pfade mit pathlib</a></span></li>
+          <li><strong>Eine Funktion liefert <code class="k-i">None</code>.</strong> Meist <code class="k-i">print</code> statt <code class="k-i">return</code> oder ein Zweig ohne <code class="k-i">return</code>. <span class="v21-links"><a href="v07-labor.html#a-fehler">V07 Funktionen</a></span></li>
+          <li><strong>Ein Grenzfall geht schief</strong> oder ein Ergebnis ist knapp daneben. Vergleich mit <code class="k-i">&gt;=</code> oder <code class="k-i">&gt;</code>? Fließkommazahlen mit <code class="k-i">math.isclose</code> vergleichen. <span class="v21-links"><a href="v04-labor.html#a-fehler">V04 Vergleiche</a> · <a href="v03-labor.html#a-werkzeugkasten">V03 Fließkomma</a> · <a href="v12-labor.html#a-werkzeugkasten">V12 Testfälle und assert</a></span></li>
+          <li><strong>Ich verstehe den Traceback nicht.</strong> Von unten lesen: letzte Zeile ist der Fehlertyp, darüber die Zeile in deinem Code. Mit „Schritt für Schritt“ nachverfolgen. <span class="v21-links"><a href="v12-labor.html#a-fehler">V12 Debuggen</a> · <a href="v09-labor.html#a-fehler">V09 Ausnahmen</a></span></li>
+          <li><strong>Die Ausgabe hat 15 Nachkommastellen oder keine Einheit.</strong> f-String mit Format, zum Beispiel <code class="k-i">f"{tau:.1f} N/mm²"</code>. <span class="v21-links"><a href="v03-labor.html#a-werkzeugkasten">V03 f-Strings</a></span></li>
+          <li><strong>Die Schleife läuft einmal zu oft, zu wenig oder endet nie.</strong> <code class="k-i">range</code>-Grenzen prüfen, in <code class="k-i">while</code> die Variable ändern. <span class="v21-links"><a href="v06-labor.html#a-fehler">V06 Schleifen</a></span></li>
+          <li><strong>Der Code ist ein langes Skript mit kopierten Stellen.</strong> In Funktionen zerlegen (DRY), Funktionen in ein Modul auslagern. <span class="v21-links"><a href="v07-labor.html#a-werkzeugkasten">V07 def und return</a> · <a href="v11-labor.html#a-werkzeugkasten">V11 import und eigenes Modul</a></span></li>
+          <li><strong>Eine Liste ändert sich „von selbst“ oder ein Schlüssel fehlt</strong> (<code class="k-i">KeyError</code>). Zwei Namen für dieselbe Liste, Schlüssel prüfen mit <code class="k-i">in</code>. <span class="v21-links"><a href="v08-labor.html#a-fehler">V08 Listen und Dictionaries</a></span></li>
+          <li><strong>Die CSV-Datei hat Semikolon und Dezimalkomma.</strong> Trennzeichen angeben, Komma ersetzen, kaputte Zeilen überspringen. <span class="v21-links"><a href="v09-labor.html#a-werkzeugkasten">V09 csv-Modul</a> · <a href="v15-labor.html#a-werkzeugkasten">V15 read_csv</a></span></li>
+          <li><strong>Viele Messwerte auswerten:</strong> Mittelwert, Streuung, Cp und Cpk, Gruppen. <span class="v21-links"><a href="v15-labor.html#a-werkzeugkasten">V15 pandas</a> · <a href="v13-labor.html#a-werkzeugkasten">V13 NumPy</a></span></li>
+          <li><strong>Das Diagramm ist unklar oder täuscht.</strong> Achsentitel mit Einheit, y-Achse ehrlich, Titel. <span class="v21-links"><a href="v14-labor.html#a-werkzeugkasten">V14 matplotlib</a> · <a href="v14-labor.html#a-fehler">V14 typische Fehler</a></span></li>
+          <li><strong>Copilot schlägt ein Paket oder eine Funktion vor, die es nicht gibt.</strong> Erst prüfen, dann installieren. <span class="v21-links"><a href="v11-labor.html#a-fehler">V11 import und pip</a> · <a href="v18-labor.html#a-werkzeugkasten">V18 Sicherheit</a></span></li>
+          <li><strong>Daten kommen als JSON, aus einer Datenbank oder sollen als Objekt beschrieben werden.</strong> <span class="v21-links"><a href="v17-labor.html#a-werkzeugkasten">V17 JSON</a> · <a href="v19-labor.html#a-werkzeugkasten" data-v21-pruefen>V19 SQL</a> · <a href="v20-labor.html#a-werkzeugkasten" data-v21-pruefen>V20 Klassen</a></span></li>
+        </ul>
+
+        <h3>Alle Labore auf einen Blick</h3>
+        <ul class="v21-labore">
+          <li><span class="v21-labore__nr">V01</span><span class="v21-labore__t">print, Variablen, input</span><span class="v21-links"><a href="v01-labor.html#a-werkzeugkasten">Werkzeugkasten</a> · <a href="v01-labor.html#a-fehler">Fehler</a></span></li>
+          <li><span class="v21-labore__nr">V02</span><span class="v21-labore__t">int, Rechenoperatoren, Binär</span><span class="v21-links"><a href="v02-labor.html#a-werkzeugkasten">Werkzeugkasten</a> · <a href="v02-labor.html#a-fehler">Fehler</a></span></li>
+          <li><span class="v21-labore__nr">V03</span><span class="v21-labore__t">float, Typumwandlung, f-Strings, math</span><span class="v21-links"><a href="v03-labor.html#a-werkzeugkasten">Werkzeugkasten</a> · <a href="v03-labor.html#a-fehler">Fehler</a></span></li>
+          <li><span class="v21-labore__nr">V04</span><span class="v21-labore__t">Vergleiche, and/or/not, if/elif/else</span><span class="v21-links"><a href="v04-labor.html#a-werkzeugkasten">Werkzeugkasten</a> · <a href="v04-labor.html#a-fehler">Fehler</a></span></li>
+          <li><span class="v21-labore__nr">V05</span><span class="v21-labore__t">Programmablaufplan, PAP → Code</span><span class="v21-links"><a href="v05-labor.html#a-werkzeugkasten">Werkzeugkasten</a> · <a href="v05-labor.html#a-fehler">Fehler</a></span></li>
+          <li><span class="v21-labore__nr">V06</span><span class="v21-labore__t">while, for, range, Summen</span><span class="v21-links"><a href="v06-labor.html#a-werkzeugkasten">Werkzeugkasten</a> · <a href="v06-labor.html#a-fehler">Fehler</a></span></li>
+          <li><span class="v21-labore__nr">V07</span><span class="v21-labore__t">Funktionen: def, Parameter, return</span><span class="v21-links"><a href="v07-labor.html#a-werkzeugkasten">Werkzeugkasten</a> · <a href="v07-labor.html#a-fehler">Fehler</a></span></li>
+          <li><span class="v21-labore__nr">V08</span><span class="v21-labore__t">Listen, Tupel, Dictionaries</span><span class="v21-links"><a href="v08-labor.html#a-werkzeugkasten">Werkzeugkasten</a> · <a href="v08-labor.html#a-fehler">Fehler</a></span></li>
+          <li><span class="v21-labore__nr">V09</span><span class="v21-labore__t">Dateien, CSV, try/except</span><span class="v21-links"><a href="v09-labor.html#a-werkzeugkasten">Werkzeugkasten</a> · <a href="v09-labor.html#a-fehler">Fehler</a></span></li>
+          <li><span class="v21-labore__nr">V10</span><span class="v21-labore__t">String-Methoden, List Comprehension</span><span class="v21-links"><a href="v10-labor.html#a-werkzeugkasten">Werkzeugkasten</a> · <a href="v10-labor.html#a-fehler">Fehler</a></span></li>
+          <li><span class="v21-labore__nr">V11</span><span class="v21-labore__t">import, Module, pip, Copilot</span><span class="v21-links"><a href="v11-labor.html#a-werkzeugkasten">Werkzeugkasten</a> · <a href="v11-labor.html#a-fehler">Fehler</a></span></li>
+          <li><span class="v21-labore__nr">V12</span><span class="v21-labore__t">assert, Testfälle, Debuggen</span><span class="v21-links"><a href="v12-labor.html#a-werkzeugkasten">Werkzeugkasten</a> · <a href="v12-labor.html#a-fehler">Fehler</a></span></li>
+          <li><span class="v21-labore__nr">V13</span><span class="v21-labore__t">NumPy, Vektorisierung, Zeit messen</span><span class="v21-links"><a href="v13-labor.html#a-werkzeugkasten">Werkzeugkasten</a> · <a href="v13-labor.html#a-fehler">Fehler</a></span></li>
+          <li><span class="v21-labore__nr">V14</span><span class="v21-labore__t">Diagramme mit matplotlib</span><span class="v21-links"><a href="v14-labor.html#a-werkzeugkasten">Werkzeugkasten</a> · <a href="v14-labor.html#a-fehler">Fehler</a></span></li>
+          <li><span class="v21-labore__nr">V15</span><span class="v21-labore__t">pandas, Cp/Cpk, Regelkarte</span><span class="v21-links"><a href="v15-labor.html#a-werkzeugkasten">Werkzeugkasten</a> · <a href="v15-labor.html#a-fehler">Fehler</a></span></li>
+          <li><span class="v21-labore__nr">V16</span><span class="v21-labore__t">pathlib, Dateien durchsuchen</span><span class="v21-links"><a href="v16-labor.html#a-werkzeugkasten">Werkzeugkasten</a> · <a href="v16-labor.html#a-fehler">Fehler</a></span></li>
+          <li><span class="v21-labore__nr">V17</span><span class="v21-labore__t">JSON, HTTP-API</span><span class="v21-links"><a href="v17-labor.html#a-werkzeugkasten">Werkzeugkasten</a> · <a href="v17-labor.html#a-fehler">Fehler</a></span></li>
+          <li><span class="v21-labore__nr">V18</span><span class="v21-labore__t">hashlib, Prüfsummen</span><span class="v21-links"><a href="v18-labor.html#a-werkzeugkasten">Werkzeugkasten</a> · <a href="v18-labor.html#a-fehler">Fehler</a></span></li>
+          <li><span class="v21-labore__nr">V19</span><span class="v21-labore__t">sqlite3, SQL, Platzhalter</span><span class="v21-links"><a href="v19-labor.html#a-werkzeugkasten" data-v21-pruefen>Werkzeugkasten</a> · <a href="v19-labor.html#a-fehler" data-v21-pruefen>Fehler</a></span></li>
+          <li><span class="v21-labore__nr">V20</span><span class="v21-labore__t">class, Attribute, Methoden</span><span class="v21-links"><a href="v20-labor.html#a-werkzeugkasten" data-v21-pruefen>Werkzeugkasten</a> · <a href="v20-labor.html#a-fehler" data-v21-pruefen>Fehler</a></span></li>
+        </ul>
+        <p class="k-small k-muted">Syntax schnell nachschlagen: in der <a href="../bibliothek.html">Befehls-Bibliothek</a>, jedes Beispiel dort ist ausführbar.</p>
+      </section>
+
+      <!-- 6 ───────────── GENERALPROBE ───────────── -->
+      <section class="k-section" id="generalprobe" data-section="generalprobe" aria-labelledby="h-gp">
+        <h2 class="k-section__title" id="h-gp"><span class="k-section__num" aria-hidden="true">6</span> Generalprobe</h2>
+        <p>In V22 hat jede Gruppe fünf Minuten (Ablauf auf der <a href="../projekt.html#praesentation">Projektseite</a>). Probt heute einmal vor einer anderen Gruppe mit dieser Uhr. Sie zeigt, in welchem Teil ihr gerade sein solltet. Wer zu lange bei der Demo bleibt, sieht es rechtzeitig.</p>
+
+        <div class="v21-uhr" id="v21-uhr">
+          <p class="v21-uhr__zeit" id="v21-uhr-zeit" aria-hidden="true">5:00</p>
+          <p class="v21-uhr__phase" id="v21-uhr-phase">Bereit: Problem (45 s)</p>
+          <ol class="v21-uhr__leiste" id="v21-uhr-leiste" aria-label="Teile der Präsentation"></ol>
+          <p class="v21-uhr__knoepfe">
+            <button type="button" class="k-btn" id="v21-uhr-start">Start</button>
+            <button type="button" class="k-btn k-btn--ghost" id="v21-uhr-reset">Zurücksetzen</button>
+          </p>
+          <p class="k-sr" id="v21-uhr-ansage" aria-live="assertive"></p>
+        </div>
+
+        <h3>Rückmeldung der zuhörenden Gruppe</h3>
+        <p>Die andere Gruppe achtet auf vier Dinge und sagt danach zu jedem einen Satz:</p>
+        <ol class="k-steps">
+          <li>Habe ich verstanden, welches Problem das Werkzeug löst und mit welchen Einheiten es rechnet?</li>
+          <li>Hat die Live-Demo eine Fehleingabe gezeigt, und hat das Programm sie abgefangen?</li>
+          <li>War der Testfall von Hand nachvollziehbar, und stimmt er mit der Ausgabe überein?</li>
+          <li>Konnten beide Personen ihren Code erklären, auch eine Zeile, nach der jemand fragt?</li>
+        </ol>
+
+        <h3>Fragen, die in V22 kommen können</h3>
+        <ul>
+          <li>Was passiert, wenn ich hier 0 eingebe? Und wenn ich „abc“ eingebe?</li>
+          <li>Woher habt ihr diesen Wert (Werkstoffkennwert, Tabellenwert), und wo steht die Quelle?</li>
+          <li>Welcher Testfall prüft diese Verzweigung?</li>
+          <li>Diese Zeile hat Copilot geschrieben: Was macht sie genau?</li>
+          <li>Wofür gilt euer Ergebnis nicht?</li>
+        </ul>
+        <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke</strong><p>Jede Zeile, die in eurem Projekt steht, müsst ihr erklären können, auch die von Copilot. Das ist zugleich die beste Vorbereitung auf die Klausur: Dort liest und schreibst du Code von Hand.</p></div>
+      </section>
+
+      <!-- Videos zur Nachbereitung -->
+      <section class="k-section" id="videos" aria-labelledby="h-videos">
+        <h2 class="k-section__title" id="h-videos">Videos zur Nachbereitung</h2>
+        <p>Zu V21 gibt es ein kurzes Video. Für die Inhalte, die ihr im Projekt braucht, sind die Videos der jeweiligen Labore da (Abschnitt 5).</p>
+        <ul class="k-video-list">
+          <li><a href="#video-theorie">Fertig ist, was frisch läuft: frischer Start, Regressionstest, PAP abgleichen, Präsentation</a> <span class="k-muted">(ca. 3 Min, Abschnitt 2 dieser Seite)</span></li>
+        </ul>
+      </section>
+
+      <!-- Übergang -->
+      <section class="k-next" aria-labelledby="h-next">
+        <h2 id="h-next">Wie geht es weiter?</h2>
+        <p>In V22 präsentiert ihr eure Werkzeuge, danach geht es um Code-Walkthroughs und Klausurtraining. Bis dahin: Fertig-Check abschließen, Präsentation zu Hause noch einmal mit der Uhr proben, alle Dateien in einem Ordner bereithalten.</p>
+        <p><a class="k-btn" href="../projekt.html">Zur Projektseite →</a> <a class="k-btn k-btn--ghost" href="../index.html#lernpfad">Zum Lernpfad</a></p>
+      </section>
+
+      <!-- Für Dozierende -->
+      <section class="k-section k-section--dozent" aria-labelledby="h-doz">
+        <h2 id="h-doz" class="k-sr">Für Dozierende</h2>
+      <details class="k-dozent">
+        <summary>Für Dozierende: Ablaufplan 135 Minuten Werkstatt</summary>
+        <div class="k-dozent__body">
+          <p class="k-small k-muted">V21 ist ein Werkstatt-Termin ohne Labor und ohne Notebook. Alle Meilensteine, der Themenkatalog und das Bewertungsraster stehen auf der <a href="../projekt.html">Projektseite</a>. Der Stand der Studierenden ist nur in deren Browser gespeichert und für dich nicht einsehbar; lass dir im Stand-up den Fertig-Check zeigen.</p>
+          <div class="k-tablewrap"><table class="k-plan">
+            <thead><tr><th scope="col">Minuten</th><th scope="col">Wo</th><th scope="col">Was zu tun ist</th></tr></thead>
+            <tbody>
+              <tr><td>0–10</td><td>Abschnitt 1</td><td><strong>Stand-up.</strong> Jede Gruppe eine Minute: läuft, fehlt, hängt. Themen für Mini-Wiederholungen an der Tafel sammeln (meist: Eingaben abfangen, Pfade, Tests, Diagramm-Achsen).</td></tr>
+              <tr><td>10–20</td><td>Abschnitt 2</td><td><strong>Fertig-Kriterien.</strong> Live vorführen: ein Demo-Projekt in einen leeren Ordner kopieren und starten, einen absoluten Pfad als Fehler zeigen; Video, sobald vorhanden.</td></tr>
+              <tr><td>20–80</td><td>Abschnitte 3–5</td><td><strong>Werkstatt.</strong> Gruppen arbeiten den Fertig-Check ab und gleichen den PAP an (Aufgabe B als Einstieg für Gruppen ohne Prüfschleife). Rundgang. Zwei oder drei Mini-Wiederholungen à 5–10 Minuten am Beamer zu den Stand-up-Themen, mit den Labor-Links aus Abschnitt 5.</td></tr>
+              <tr><td>80–90</td><td>–</td><td><strong>Pause.</strong></td></tr>
+              <tr><td>90–130</td><td>Abschnitt 6</td><td><strong>Generalprobe.</strong> Je zwei Gruppen proben gegenseitig mit der Probe-Uhr (5 Min Vortrag, 3 Min Rückmeldung nach den vier Fragen, dann Wechsel). Einen Durchlauf am Beamer als Beispiel, wenn eine Gruppe sich traut.</td></tr>
+              <tr><td>130–135</td><td>–</td><td><strong>Abschluss.</strong> Reihenfolge der Präsentationen in V22 festlegen, Hinweis: Programm in V22 frisch starten, Demo-Daten im Ordner.</td></tr>
+              <tr><td>zu Hause</td><td>–</td><td>Fertig-Check abschließen, README und KI-Protokoll fertig, Präsentation einmal mit Uhr proben. Kein Training-Pflichtumfang.</td></tr>
+            </tbody>
+          </table></div>
+          <p class="k-small k-muted">Material: Beamer, ein Demo-Projekt mit absichtlich absolutem Pfad für Abschnitt 2, Uhr am Beamer (Abschnitt 6 lässt sich vollbild zeigen).</p>
+        </div>
+      </details>
+      </section>
+
+    </main>
+  </div>
+
+  <footer class="dhbw-footer k-footer">
+    <div class="dhbw-footer__inner">
+      <span><span class="dhbw-footer__brand">DHBW Stuttgart</span> · Campus Horb</span>
+      <span><a href="../index.html">Zurück zum Lernpfad</a> · V21 Projektwerkstatt</span>
+    </div>
+  </footer>
+
+  <script src="../assets/js/speicher.js"></script>
+  <script src="../assets/js/icons.js"></script>
+  <script src="../assets/js/editor.js" defer></script>
+  <script src="../assets/js/pap-engine.js"></script>
+  <script src="../assets/js/kurs.js"></script>
+  <script src="../assets/js/aufgaben.js"></script>
+  <script src="../assets/js/pap-editor.js"></script>
+  <script src="../assets/js/explorables-v21.js"></script>
+</body>
+</html>
