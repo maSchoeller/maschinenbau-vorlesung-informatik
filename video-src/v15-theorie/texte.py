@@ -1,0 +1,35 @@
+"""Sprechertext V15 Theorie (Quelltext mit Markup)."""
+SRC = [
+ ["Zwei Drehmaschinen fertigen dieselbe Welle: Durchmesser 20 Millimeter, Toleranz plus minus [[0,02 mm|null Komma null zwei Millimeter]].",
+  "Erlaubt sind also [[19,980|neunzehn Komma neun acht null]] bis [[20,020|zwanzig Komma null zwei null]] Millimeter.",
+  "Gemessen wurden 250 Teile, je Maschine 125.",
+  "Der Kunde fragt: Welche Maschine darf liefern? In 250 Zahlen siehst du das nicht. Du brauchst Kennzahlen."],
+ ["Der Mittelwert sagt, wo die Mitte liegt. Die Standardabweichung [[σ|Sigma]] sagt, wie breit die Werte streuen.",
+  "[[D1|D eins]] liegt im Mittel bei [[20,0001|zwanzig Komma null null null eins]] Millimetern. [[D2|D zwei]] liegt mit [[20,0072|zwanzig Komma null null sieben zwei]] etwa sieben Mikrometer höher und streut mehr.",
+  "Viele Fertigungsprozesse folgen der Normalverteilung, der Glockenkurve. Zwischen minus drei Sigma und plus drei Sigma um den Mittelwert liegen etwa [[99,7 %|neunundneunzig Komma sieben Prozent]] aller Teile.",
+  "Diese Breite von sechs Sigma heißt Prozessbreite."],
+ ["Jetzt legen wir die Glocke zwischen die Toleranzgrenzen: unten die [[USG|U S G]], oben die [[OSG|O S G]].",
+  "[[Cp|C P]] ist die Toleranzbreite geteilt durch sechs Sigma. Es fragt: Passt die Streuung in die Toleranz?",
+  "[[Cpk|C P K]] nimmt die Lage dazu: der kleinere Abstand der Mitte zu einer Grenze, geteilt durch drei Sigma. Üblich ist die Forderung [[Cpk|C P K]] mindestens [[1,33|eins Komma drei drei]].",
+  "[[D1|D eins]] hat [[Cp|C P]] [[1,59|eins Komma fünf neun]] und [[Cpk|C P K]] [[1,58|eins Komma fünf acht]]: fähig. [[D2|D zwei]] hat [[Cp|C P]] [[1,07|eins Komma null sieben]], aber [[Cpk|C P K]] nur [[0,68|null Komma sechs acht]]: Die Glocke sitzt zu weit oben. D eins darf liefern, D zwei nicht."],
+ ["Fähig und beherrscht sind zwei verschiedene Fragen.",
+  "Fähig heißt: Die Teile liegen in der Toleranz. Das misst [[Cpk|C P K]], rückblickend auf eine Datenmenge.",
+  "Beherrscht heißt: Mittelwert und Streuung bleiben über die Zeit gleich, nur der normale Zufall wirkt. Ein fähiger Prozess kann trotzdem wandern.",
+  "Ob er beherrscht ist, zeigt die Regelkarte."],
+ ["In die Regelkarte trägst du den Mittelwert jeder Stichprobe ein, hier fünf Teile, in der Reihenfolge der Entnahme.",
+  "Dazu kommen eine Mittellinie und zwei Eingriffsgrenzen bei plus minus drei Sigma geteilt durch Wurzel aus n, denn Mittelwerte streuen weniger.",
+  "Wichtig: Eingriffsgrenzen kommen aus dem Prozess, Toleranzgrenzen vom Kunden.",
+  "Bei [[D2|D zwei]] wandern die Mittelwerte nach oben. Stichprobe 20 liegt über der oberen Grenze: Die Karte schlägt an, und vier der sechs Ausschussteile entstehen erst danach."],
+ ["Das Werkzeug rechnet. pandas liefert Mittelwert, [[Cp|C P]] und [[Cpk|C P K]] in einer Sekunde.",
+  "Du bewertest: Stimmen die Grenzen? Sind die Daten repräsentativ? Warum driftet [[D2|D zwei]], vermutlich Werkzeugverschleiß?",
+  "Die Entscheidung bleibt beim Ingenieur. Im Labor rechnest du es selbst."],
+]
+
+SZENEN = [
+ "Zwei Drehmaschinen D1 und D2 als Symbole, dazwischen die Welle mit Toleranzband 19,980 bis 20,020 mm auf einem Zahlenstrahl; rechts ein Tabellen-Ausschnitt der 250 Messwerte, am Ende die Frage Welche Maschine darf liefern?",
+ "Zwei Kacheln D1 und D2 mit Mittelwert und Sigma; daneben die Glockenkurve, Bereich Mittelwert plus minus 3 Sigma wird eingefärbt mit Beschriftung 99,7 % und Prozessbreite 6 Sigma.",
+ "Glocke zwischen USG und OSG; Pfeil der Toleranzbreite, Pfeil der Prozessbreite 6 Sigma (Cp); Abstände der Mitte zu den Grenzen (Cpk); Formeln; Ergebniskarten D1 und D2 mit Richtwert 1,33 und zwei Glocken (D1 mittig, D2 nach rechts verschoben).",
+ "2 mal 2 Felder fähig / nicht fähig gegen beherrscht / nicht beherrscht, Kurzcharakteristik je Feld; D1 oben links markiert; D2 unten rechts bzw. nicht beherrscht.",
+ "Regelkarte der Stichprobenmittel von D2: Punkte bauen sich auf, Mittellinie und Eingriffsgrenzen erscheinen, Toleranzgrenzen gestrichelt zum Vergleich; Stichprobe 20 rot, Hinweis Karte schlägt an; Balken sechs Ausschussteile, vier danach.",
+ "Zwei Spalten: Werkzeug rechnet (pandas, Cp, Cpk, Regelkarte) und Ingenieur bewertet (Grenzen, Daten, Ursache, Entscheidung); unten Hinweis Labor.",
+]
