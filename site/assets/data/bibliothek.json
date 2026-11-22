@@ -4495,6 +4495,417 @@
      "meldung": "SyntaxError: unterminated string literal (detected at line 1); perhaps you escaped the end quote?"
     }
    ]
+  },
+  {
+   "id": "pd-read-csv",
+   "name": "pd.read_csv()",
+   "kategorie": "Datenanalyse (pandas)",
+   "eingefuehrt": "V15",
+   "ampel": "kopf",
+   "kurz": "Liest eine CSV-Datei als Tabelle (DataFrame) mit Spaltennamen ein.",
+   "syntax": "import pandas as pd\ndf = pd.read_csv(\"datei.csv\")\ndf = pd.read_csv(\"datei.csv\", sep=\";\", decimal=\",\")",
+   "erklaerung": "pandas ist das Standardpaket für Tabellendaten. read_csv liest die ganze Datei auf einmal: Die erste Zeile wird zu den Spaltennamen, jede weitere zu einer Zeile der Tabelle, Zahlen werden automatisch zu Zahlen. Das Ergebnis heißt DataFrame. Deutsche Dateien (Excel, phyphox) brauchen meist sep=\";\" und decimal=\",\". df.head() zeigt die ersten fünf Zeilen, len(df) die Anzahl der Zeilen, df.columns die Spaltennamen.",
+   "beispiel": "with open(\"wellen.csv\", \"w\", encoding=\"utf-8\") as f:\n    f.write(\"stichprobe,maschine,teil,durchmesser_mm\\n\"\n            \"1,D1,1,20.001\\n1,D1,2,19.998\\n1,D2,1,20.009\\n1,D2,2,20.012\\n\"\n            \"2,D1,1,20.002\\n2,D1,2,19.997\\n2,D2,1,20.015\\n2,D2,2,20.021\\n\")\n\nimport pandas as pd\ndf = pd.read_csv(\"wellen.csv\")\nprint(df.head(3))\nprint(len(df), \"Zeilen\")\nprint(list(df.columns))",
+   "wann_nutzen": "Sobald eine Messreihe oder ein Protokoll als CSV vorliegt und du mehr als ein paar Werte auswerten willst.",
+   "transfer": [
+    {
+     "situation": "Deutsche CSV mit Semikolon und Dezimalkomma",
+     "code": "with open(\"kraft.csv\", \"w\", encoding=\"utf-8\") as f:\n    f.write(\"zeit_s;kraft_n\\n0;0,0\\n1;12,5\\n2;24,9\\n\")\nimport pandas as pd\ndf = pd.read_csv(\"kraft.csv\", sep=\";\", decimal=\",\")\nprint(df[\"kraft_n\"].max())"
+    },
+    {
+     "situation": "Größe der Tabelle",
+     "code": "with open(\"wellen.csv\", \"w\", encoding=\"utf-8\") as f:\n    f.write(\"stichprobe,maschine,teil,durchmesser_mm\\n\"\n            \"1,D1,1,20.001\\n1,D1,2,19.998\\n1,D2,1,20.009\\n1,D2,2,20.012\\n\"\n            \"2,D1,1,20.002\\n2,D1,2,19.997\\n2,D2,1,20.015\\n2,D2,2,20.021\\n\")\nimport pandas as pd\ndf = pd.read_csv(\"wellen.csv\")\nprint(df.shape)   # (Zeilen, Spalten)"
+    }
+   ],
+   "verwandt": [
+    "pd-spalte",
+    "pd-describe",
+    "csv-reader",
+    "pandas-dataframe"
+   ],
+   "bezeichner": [
+    "pd.read_csv",
+    "read_csv",
+    ".head",
+    ".shape",
+    ".columns"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [
+    "pandas",
+    "DataFrame",
+    "Tabelle einlesen",
+    "CSV"
+   ],
+   "beispiel_ausgabe": "   stichprobe maschine  teil  durchmesser_mm\n0           1       D1     1          20.001\n1           1       D1     2          19.998\n2           1       D2     1          20.009\n8 Zeilen\n['stichprobe', 'maschine', 'teil', 'durchmesser_mm']",
+   "typische_fehler": [
+    {
+     "beschreibung": "Falsches Trennzeichen: alles landet in einer Spalte",
+     "code": "with open(\"kraft.csv\", \"w\", encoding=\"utf-8\") as f:\n    f.write(\"zeit_s;kraft_n\\n0;0,0\\n1;12,5\\n\")\nimport pandas as pd\ndf = pd.read_csv(\"kraft.csv\")\nprint(list(df.columns))",
+     "meldung": "(keine Fehlermeldung) Es gibt nur eine Spalte 'zeit_s;kraft_n'. Mit sep=\";\" einlesen."
+    },
+    {
+     "beschreibung": "Datei nicht im Arbeitsordner",
+     "code": "import pandas as pd\ndf = pd.read_csv(\"fehlt.csv\")",
+     "meldung": "FileNotFoundError: [Errno 2] No such file or directory: 'fehlt.csv'"
+    }
+   ]
+  },
+  {
+   "id": "pd-spalte",
+   "name": "Spalte df[\"name\"] (Series)",
+   "kategorie": "Datenanalyse (pandas)",
+   "eingefuehrt": "V15",
+   "ampel": "kopf",
+   "kurz": "Holt eine Spalte aus der Tabelle; mit ihr rechnest du wie mit einer Messreihe.",
+   "syntax": "df[\"spalte\"]            # eine Spalte (Series)\ndf[[\"a\", \"b\"]]         # mehrere Spalten (DataFrame)\ndf[\"spalte\"].mean()     # auch .std() .min() .max() .count()",
+   "erklaerung": "Eine einzelne Spalte heißt Series: eine Reihe von Werten mit Index (der Zeilennummer). Auf ihr gibt es die üblichen Kennwerte: mean() Mittelwert, std() Standardabweichung der Stichprobe (mit n − 1), min(), max(), count() Anzahl der Werte. Doppelte eckige Klammern wählen mehrere Spalten und liefern wieder eine Tabelle. Der Spaltenname muss genau stimmen, auch Groß- und Kleinschreibung.",
+   "beispiel": "with open(\"wellen.csv\", \"w\", encoding=\"utf-8\") as f:\n    f.write(\"stichprobe,maschine,teil,durchmesser_mm\\n\"\n            \"1,D1,1,20.001\\n1,D1,2,19.998\\n1,D2,1,20.009\\n1,D2,2,20.012\\n\"\n            \"2,D1,1,20.002\\n2,D1,2,19.997\\n2,D2,1,20.015\\n2,D2,2,20.021\\n\")\nimport pandas as pd\ndf = pd.read_csv(\"wellen.csv\")\nd = df[\"durchmesser_mm\"]\nprint(\"Mittelwert:\", round(d.mean(), 4), \"mm\")\nprint(\"Standardabweichung:\", round(d.std(), 4), \"mm\")\nprint(df[[\"maschine\", \"durchmesser_mm\"]].head(2))",
+   "wann_nutzen": "Immer wenn du Kennwerte einer Messgröße brauchst oder nur einen Teil der Spalten anzeigen willst.",
+   "transfer": [
+    {
+     "situation": "Spannweite einer Messreihe",
+     "code": "with open(\"wellen.csv\", \"w\", encoding=\"utf-8\") as f:\n    f.write(\"stichprobe,maschine,teil,durchmesser_mm\\n\"\n            \"1,D1,1,20.001\\n1,D1,2,19.998\\n1,D2,1,20.009\\n1,D2,2,20.012\\n\"\n            \"2,D1,1,20.002\\n2,D1,2,19.997\\n2,D2,1,20.015\\n2,D2,2,20.021\\n\")\nimport pandas as pd\ndf = pd.read_csv(\"wellen.csv\")\nd = df[\"durchmesser_mm\"]\nprint(round(d.max() - d.min(), 4), \"mm\")"
+    },
+    {
+     "situation": "Eine Series wie eine Liste durchlaufen",
+     "code": "with open(\"wellen.csv\", \"w\", encoding=\"utf-8\") as f:\n    f.write(\"stichprobe,maschine,teil,durchmesser_mm\\n\"\n            \"1,D1,1,20.001\\n1,D1,2,19.998\\n1,D2,1,20.009\\n1,D2,2,20.012\\n\"\n            \"2,D1,1,20.002\\n2,D1,2,19.997\\n2,D2,1,20.015\\n2,D2,2,20.021\\n\")\nimport pandas as pd\ndf = pd.read_csv(\"wellen.csv\")\nfor wert in df[\"durchmesser_mm\"].head(3):\n    print(wert)"
+    }
+   ],
+   "verwandt": [
+    "pd-read-csv",
+    "pd-describe",
+    "pd-neue-spalte",
+    "pd-filtern"
+   ],
+   "bezeichner": [
+    "Series",
+    ".mean",
+    ".std",
+    ".count"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [
+    "Series",
+    "Spalte",
+    "Mittelwert",
+    "Standardabweichung"
+   ],
+   "beispiel_ausgabe": "Mittelwert: 20.0069 mm\nStandardabweichung: 0.0087 mm\n  maschine  durchmesser_mm\n0       D1          20.001\n1       D1          19.998",
+   "typische_fehler": [
+    {
+     "beschreibung": "Spaltenname falsch geschrieben",
+     "code": "with open(\"wellen.csv\", \"w\", encoding=\"utf-8\") as f:\n    f.write(\"stichprobe,maschine,teil,durchmesser_mm\\n\"\n            \"1,D1,1,20.001\\n1,D1,2,19.998\\n1,D2,1,20.009\\n1,D2,2,20.012\\n\"\n            \"2,D1,1,20.002\\n2,D1,2,19.997\\n2,D2,1,20.015\\n2,D2,2,20.021\\n\")\nimport pandas as pd\ndf = pd.read_csv(\"wellen.csv\")\nprint(df[\"Durchmesser\"])",
+     "meldung": "KeyError: 'Durchmesser'"
+    },
+    {
+     "beschreibung": "Mehrere Spalten mit einfachen Klammern",
+     "code": "with open(\"wellen.csv\", \"w\", encoding=\"utf-8\") as f:\n    f.write(\"stichprobe,maschine,teil,durchmesser_mm\\n\"\n            \"1,D1,1,20.001\\n1,D1,2,19.998\\n1,D2,1,20.009\\n1,D2,2,20.012\\n\"\n            \"2,D1,1,20.002\\n2,D1,2,19.997\\n2,D2,1,20.015\\n2,D2,2,20.021\\n\")\nimport pandas as pd\ndf = pd.read_csv(\"wellen.csv\")\nprint(df[\"maschine\", \"durchmesser_mm\"])",
+     "meldung": "KeyError: ('maschine', 'durchmesser_mm')"
+    }
+   ]
+  },
+  {
+   "id": "pd-describe",
+   "name": "describe()",
+   "kategorie": "Datenanalyse (pandas)",
+   "eingefuehrt": "V15",
+   "ampel": "lesen",
+   "kurz": "Zeigt die wichtigsten Kennwerte einer Spalte oder Tabelle auf einen Blick.",
+   "syntax": "df[\"spalte\"].describe()\ndf.describe()",
+   "erklaerung": "describe() liefert count (Anzahl), mean (Mittelwert), std (Standardabweichung), min, 25 %, 50 % (Median), 75 % und max. Die Prozentzeilen sind Quartile: Unter dem 25-%-Wert liegt ein Viertel aller Messwerte. Mit .round(4) wird die Ausgabe lesbarer. Auf der ganzen Tabelle beschreibt describe() alle Zahlenspalten nebeneinander.",
+   "beispiel": "with open(\"wellen.csv\", \"w\", encoding=\"utf-8\") as f:\n    f.write(\"stichprobe,maschine,teil,durchmesser_mm\\n\"\n            \"1,D1,1,20.001\\n1,D1,2,19.998\\n1,D2,1,20.009\\n1,D2,2,20.012\\n\"\n            \"2,D1,1,20.002\\n2,D1,2,19.997\\n2,D2,1,20.015\\n2,D2,2,20.021\\n\")\nimport pandas as pd\ndf = pd.read_csv(\"wellen.csv\")\nprint(df[\"durchmesser_mm\"].describe().round(4))",
+   "wann_nutzen": "Als erster Blick auf neue Messdaten: Stimmen Anzahl, Bereich und Größenordnung? Ausreißer fallen bei min und max auf.",
+   "transfer": [
+    {
+     "situation": "Einen Kennwert aus describe holen",
+     "code": "with open(\"wellen.csv\", \"w\", encoding=\"utf-8\") as f:\n    f.write(\"stichprobe,maschine,teil,durchmesser_mm\\n\"\n            \"1,D1,1,20.001\\n1,D1,2,19.998\\n1,D2,1,20.009\\n1,D2,2,20.012\\n\"\n            \"2,D1,1,20.002\\n2,D1,2,19.997\\n2,D2,1,20.015\\n2,D2,2,20.021\\n\")\nimport pandas as pd\ndf = pd.read_csv(\"wellen.csv\")\nk = df[\"durchmesser_mm\"].describe()\nprint(k[\"max\"])"
+    },
+    {
+     "situation": "Median direkt",
+     "code": "with open(\"wellen.csv\", \"w\", encoding=\"utf-8\") as f:\n    f.write(\"stichprobe,maschine,teil,durchmesser_mm\\n\"\n            \"1,D1,1,20.001\\n1,D1,2,19.998\\n1,D2,1,20.009\\n1,D2,2,20.012\\n\"\n            \"2,D1,1,20.002\\n2,D1,2,19.997\\n2,D2,1,20.015\\n2,D2,2,20.021\\n\")\nimport pandas as pd\ndf = pd.read_csv(\"wellen.csv\")\nprint(df[\"durchmesser_mm\"].median())"
+    }
+   ],
+   "verwandt": [
+    "pd-spalte",
+    "pd-groupby"
+   ],
+   "bezeichner": [
+    ".describe",
+    ".median",
+    ".round"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [
+    "Kennwerte",
+    "Quartil",
+    "Statistik",
+    "Übersicht"
+   ],
+   "beispiel_ausgabe": "count     8.0000\nmean     20.0069\nstd       0.0087\nmin      19.9970\n25%      20.0002\n50%      20.0055\n75%      20.0128\nmax      20.0210\nName: durchmesser_mm, dtype: float64",
+   "typische_fehler": [
+    {
+     "beschreibung": "describe ohne Klammern aufgerufen",
+     "code": "with open(\"wellen.csv\", \"w\", encoding=\"utf-8\") as f:\n    f.write(\"stichprobe,maschine,teil,durchmesser_mm\\n\"\n            \"1,D1,1,20.001\\n1,D1,2,19.998\\n1,D2,1,20.009\\n1,D2,2,20.012\\n\"\n            \"2,D1,1,20.002\\n2,D1,2,19.997\\n2,D2,1,20.015\\n2,D2,2,20.021\\n\")\nimport pandas as pd\ndf = pd.read_csv(\"wellen.csv\")\nprint(df[\"durchmesser_mm\"].describe[\"mean\"])",
+     "meldung": "TypeError: 'method' object is not subscriptable"
+    },
+    {
+     "beschreibung": "std mit statistics.pstdev verwechselt",
+     "code": "import statistics\nprint(round(statistics.pstdev([1.0, 2.0, 3.0]), 4), round(statistics.stdev([1.0, 2.0, 3.0]), 4))",
+     "meldung": "(keine Fehlermeldung) pandas std() rechnet wie statistics.stdev mit n − 1, nicht wie pstdev."
+    }
+   ]
+  },
+  {
+   "id": "pd-filtern",
+   "name": "Filtern mit Maske df[bedingung]",
+   "kategorie": "Datenanalyse (pandas)",
+   "eingefuehrt": "V15",
+   "ampel": "kopf",
+   "kurz": "Behält nur die Zeilen, für die eine Bedingung wahr ist.",
+   "syntax": "maske = df[\"spalte\"] > grenze\ndf[maske]\ndf[(bedingung1) & (bedingung2)]   # und\ndf[(bedingung1) | (bedingung2)]   # oder\ndf[~(bedingung)]                  # nicht",
+   "erklaerung": "Ein Vergleich mit einer Spalte prüft jede Zeile einzeln und liefert eine Maske: eine Spalte aus True und False. df[maske] behält die Zeilen mit True. Bedingungen verknüpfst du mit & (und), | (oder) und ~ (nicht), nicht mit and/or/not. Jede Teilbedingung braucht eigene runde Klammern, weil & und | stärker binden als > und ==.",
+   "beispiel": "with open(\"wellen.csv\", \"w\", encoding=\"utf-8\") as f:\n    f.write(\"stichprobe,maschine,teil,durchmesser_mm\\n\"\n            \"1,D1,1,20.001\\n1,D1,2,19.998\\n1,D2,1,20.009\\n1,D2,2,20.012\\n\"\n            \"2,D1,1,20.002\\n2,D1,2,19.997\\n2,D2,1,20.015\\n2,D2,2,20.021\\n\")\nimport pandas as pd\ndf = pd.read_csv(\"wellen.csv\")\nOSG, USG = 20.020, 19.980\nd2 = df[df[\"maschine\"] == \"D2\"]\nprint(len(d2), \"Teile von D2\")\nausschuss = df[(df[\"durchmesser_mm\"] > OSG) | (df[\"durchmesser_mm\"] < USG)]\nprint(ausschuss)",
+   "wann_nutzen": "Für Teilmengen: eine Maschine, eine Schicht, alle Teile außerhalb der Toleranz.",
+   "transfer": [
+    {
+     "situation": "Zwei Bedingungen mit und",
+     "code": "with open(\"wellen.csv\", \"w\", encoding=\"utf-8\") as f:\n    f.write(\"stichprobe,maschine,teil,durchmesser_mm\\n\"\n            \"1,D1,1,20.001\\n1,D1,2,19.998\\n1,D2,1,20.009\\n1,D2,2,20.012\\n\"\n            \"2,D1,1,20.002\\n2,D1,2,19.997\\n2,D2,1,20.015\\n2,D2,2,20.021\\n\")\nimport pandas as pd\ndf = pd.read_csv(\"wellen.csv\")\nauswahl = df[(df[\"maschine\"] == \"D2\") & (df[\"stichprobe\"] == 2)]\nprint(auswahl[\"durchmesser_mm\"].mean())"
+    },
+    {
+     "situation": "Anzahl der True-Werte einer Maske",
+     "code": "with open(\"wellen.csv\", \"w\", encoding=\"utf-8\") as f:\n    f.write(\"stichprobe,maschine,teil,durchmesser_mm\\n\"\n            \"1,D1,1,20.001\\n1,D1,2,19.998\\n1,D2,1,20.009\\n1,D2,2,20.012\\n\"\n            \"2,D1,1,20.002\\n2,D1,2,19.997\\n2,D2,1,20.015\\n2,D2,2,20.021\\n\")\nimport pandas as pd\ndf = pd.read_csv(\"wellen.csv\")\nprint((df[\"durchmesser_mm\"] > 20.010).sum(), \"Teile über 20,010 mm\")"
+    }
+   ],
+   "verwandt": [
+    "pd-spalte",
+    "pd-groupby",
+    "and-or"
+   ],
+   "bezeichner": [
+    "Maske",
+    "&",
+    "|",
+    "~"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [
+    "filtern",
+    "Bedingung",
+    "boolean indexing",
+    "Auswahl"
+   ],
+   "beispiel_ausgabe": "4 Teile von D2\n   stichprobe maschine  teil  durchmesser_mm\n7           2       D2     2          20.021",
+   "typische_fehler": [
+    {
+     "beschreibung": "and statt &",
+     "code": "with open(\"wellen.csv\", \"w\", encoding=\"utf-8\") as f:\n    f.write(\"stichprobe,maschine,teil,durchmesser_mm\\n\"\n            \"1,D1,1,20.001\\n1,D1,2,19.998\\n1,D2,1,20.009\\n1,D2,2,20.012\\n\"\n            \"2,D1,1,20.002\\n2,D1,2,19.997\\n2,D2,1,20.015\\n2,D2,2,20.021\\n\")\nimport pandas as pd\ndf = pd.read_csv(\"wellen.csv\")\nprint(df[(df[\"maschine\"] == \"D2\") and (df[\"durchmesser_mm\"] > 20.01)])",
+     "meldung": "ValueError: The truth value of a Series is ambiguous. Use a.empty, a.bool(), a.item(), a.any() or a.all()."
+    },
+    {
+     "beschreibung": "Klammern vergessen",
+     "code": "with open(\"wellen.csv\", \"w\", encoding=\"utf-8\") as f:\n    f.write(\"stichprobe,maschine,teil,durchmesser_mm\\n\"\n            \"1,D1,1,20.001\\n1,D1,2,19.998\\n1,D2,1,20.009\\n1,D2,2,20.012\\n\"\n            \"2,D1,1,20.002\\n2,D1,2,19.997\\n2,D2,1,20.015\\n2,D2,2,20.021\\n\")\nimport pandas as pd\ndf = pd.read_csv(\"wellen.csv\")\nprint(df[df[\"durchmesser_mm\"] > 20.01 & df[\"maschine\"] == \"D2\"])",
+     "meldung": "TypeError: unsupported operand type(s) for &: 'float' and 'StringArray'"
+    }
+   ]
+  },
+  {
+   "id": "pd-groupby",
+   "name": "groupby()",
+   "kategorie": "Datenanalyse (pandas)",
+   "eingefuehrt": "V15",
+   "ampel": "kopf",
+   "kurz": "Teilt die Tabelle in Gruppen auf und berechnet je Gruppe einen Kennwert.",
+   "syntax": "df.groupby(\"gruppenspalte\")[\"wertspalte\"].mean()\ndf.groupby(\"gruppenspalte\")[\"wertspalte\"].agg([\"mean\", \"std\", \"count\"])",
+   "erklaerung": "groupby arbeitet in drei Schritten: aufteilen (alle Zeilen mit gleichem Wert in der Gruppenspalte kommen zusammen), anwenden (je Gruppe wird mean, std, count … berechnet), zusammenführen (das Ergebnis hat eine Zeile je Gruppe, die Gruppenwerte sind der Index). agg mit einer Liste rechnet mehrere Kennwerte auf einmal. Gruppieren nach zwei Spalten: groupby([\"maschine\", \"stichprobe\"]).",
+   "beispiel": "with open(\"wellen.csv\", \"w\", encoding=\"utf-8\") as f:\n    f.write(\"stichprobe,maschine,teil,durchmesser_mm\\n\"\n            \"1,D1,1,20.001\\n1,D1,2,19.998\\n1,D2,1,20.009\\n1,D2,2,20.012\\n\"\n            \"2,D1,1,20.002\\n2,D1,2,19.997\\n2,D2,1,20.015\\n2,D2,2,20.021\\n\")\nimport pandas as pd\ndf = pd.read_csv(\"wellen.csv\")\nprint(df.groupby(\"maschine\")[\"durchmesser_mm\"].mean().round(4))\nkennwerte = df.groupby(\"maschine\")[\"durchmesser_mm\"].agg([\"mean\", \"std\", \"count\"])\nprint(kennwerte.round(4))",
+   "wann_nutzen": "Wenn du Maschinen, Schichten, Chargen oder Stichproben miteinander vergleichen willst.",
+   "transfer": [
+    {
+     "situation": "Stichprobenmittel für eine Regelkarte",
+     "code": "with open(\"wellen.csv\", \"w\", encoding=\"utf-8\") as f:\n    f.write(\"stichprobe,maschine,teil,durchmesser_mm\\n\"\n            \"1,D1,1,20.001\\n1,D1,2,19.998\\n1,D2,1,20.009\\n1,D2,2,20.012\\n\"\n            \"2,D1,1,20.002\\n2,D1,2,19.997\\n2,D2,1,20.015\\n2,D2,2,20.021\\n\")\nimport pandas as pd\ndf = pd.read_csv(\"wellen.csv\")\nd2 = df[df[\"maschine\"] == \"D2\"]\nprint(d2.groupby(\"stichprobe\")[\"durchmesser_mm\"].mean())"
+    },
+    {
+     "situation": "Einen Wert aus dem Ergebnis holen",
+     "code": "with open(\"wellen.csv\", \"w\", encoding=\"utf-8\") as f:\n    f.write(\"stichprobe,maschine,teil,durchmesser_mm\\n\"\n            \"1,D1,1,20.001\\n1,D1,2,19.998\\n1,D2,1,20.009\\n1,D2,2,20.012\\n\"\n            \"2,D1,1,20.002\\n2,D1,2,19.997\\n2,D2,1,20.015\\n2,D2,2,20.021\\n\")\nimport pandas as pd\ndf = pd.read_csv(\"wellen.csv\")\nmittel = df.groupby(\"maschine\")[\"durchmesser_mm\"].mean()\nprint(round(mittel[\"D2\"], 4))"
+    }
+   ],
+   "verwandt": [
+    "pd-filtern",
+    "pd-describe",
+    "pd-cp-cpk"
+   ],
+   "bezeichner": [
+    ".groupby",
+    ".agg"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [
+    "gruppieren",
+    "aggregieren",
+    "split-apply-combine",
+    "Gruppe"
+   ],
+   "beispiel_ausgabe": "maschine\nD1    19.9995\nD2    20.0142\nName: durchmesser_mm, dtype: float64\n             mean     std  count\nmaschine                        \nD1        19.9995  0.0024      4\nD2        20.0142  0.0051      4",
+   "typische_fehler": [
+    {
+     "beschreibung": "Gruppenspalte falsch geschrieben",
+     "code": "with open(\"wellen.csv\", \"w\", encoding=\"utf-8\") as f:\n    f.write(\"stichprobe,maschine,teil,durchmesser_mm\\n\"\n            \"1,D1,1,20.001\\n1,D1,2,19.998\\n1,D2,1,20.009\\n1,D2,2,20.012\\n\"\n            \"2,D1,1,20.002\\n2,D1,2,19.997\\n2,D2,1,20.015\\n2,D2,2,20.021\\n\")\nimport pandas as pd\ndf = pd.read_csv(\"wellen.csv\")\nprint(df.groupby(\"Maschine\")[\"durchmesser_mm\"].mean())",
+     "meldung": "KeyError: 'Maschine'"
+    },
+    {
+     "beschreibung": "Kennwert vergessen: nur das Gruppen-Objekt",
+     "code": "with open(\"wellen.csv\", \"w\", encoding=\"utf-8\") as f:\n    f.write(\"stichprobe,maschine,teil,durchmesser_mm\\n\"\n            \"1,D1,1,20.001\\n1,D1,2,19.998\\n1,D2,1,20.009\\n1,D2,2,20.012\\n\"\n            \"2,D1,1,20.002\\n2,D1,2,19.997\\n2,D2,1,20.015\\n2,D2,2,20.021\\n\")\nimport pandas as pd\ndf = pd.read_csv(\"wellen.csv\")\nprint(type(df.groupby(\"maschine\")[\"durchmesser_mm\"]).__name__)",
+     "meldung": "(keine Fehlermeldung) Ausgabe: SeriesGroupBy. Erst .mean(), .std() oder .agg([...]) rechnet etwas aus."
+    }
+   ]
+  },
+  {
+   "id": "pd-neue-spalte",
+   "name": "Neue Spalte berechnen",
+   "kategorie": "Datenanalyse (pandas)",
+   "eingefuehrt": "V15",
+   "ampel": "kopf",
+   "kurz": "Rechnet aus vorhandenen Spalten eine neue, für alle Zeilen auf einmal.",
+   "syntax": "df[\"neu\"] = ausdruck_mit_spalten\nkennwerte[\"Cp\"] = (OSG - USG) / (6 * kennwerte[\"std\"])",
+   "erklaerung": "Rechnen mit einer Spalte wirkt auf jede Zeile (wie bei NumPy-Arrays), eine Schleife ist nicht nötig. Die Zuweisung an df[\"neuer_name\"] hängt das Ergebnis als Spalte an. Mit min(axis=1) nimmst du je Zeile den kleineren Wert aus mehreren Spalten, das braucht der Cpk.",
+   "beispiel": "with open(\"wellen.csv\", \"w\", encoding=\"utf-8\") as f:\n    f.write(\"stichprobe,maschine,teil,durchmesser_mm\\n\"\n            \"1,D1,1,20.001\\n1,D1,2,19.998\\n1,D2,1,20.009\\n1,D2,2,20.012\\n\"\n            \"2,D1,1,20.002\\n2,D1,2,19.997\\n2,D2,1,20.015\\n2,D2,2,20.021\\n\")\nimport pandas as pd\ndf = pd.read_csv(\"wellen.csv\")\ndf[\"abw_um\"] = (df[\"durchmesser_mm\"] - 20.0) * 1000   # Abweichung vom Soll in µm\nprint(df[[\"maschine\", \"durchmesser_mm\", \"abw_um\"]].round(1).head(4))",
+   "wann_nutzen": "Für Abweichungen vom Sollmaß, Einheiten umrechnen (mm in µm) und Kennzahlen je Gruppe (Cp, Cpk).",
+   "transfer": [
+    {
+     "situation": "Ja/Nein-Spalte für außerhalb der Toleranz",
+     "code": "with open(\"wellen.csv\", \"w\", encoding=\"utf-8\") as f:\n    f.write(\"stichprobe,maschine,teil,durchmesser_mm\\n\"\n            \"1,D1,1,20.001\\n1,D1,2,19.998\\n1,D2,1,20.009\\n1,D2,2,20.012\\n\"\n            \"2,D1,1,20.002\\n2,D1,2,19.997\\n2,D2,1,20.015\\n2,D2,2,20.021\\n\")\nimport pandas as pd\ndf = pd.read_csv(\"wellen.csv\")\ndf[\"ausserhalb\"] = (df[\"durchmesser_mm\"] > 20.020) | (df[\"durchmesser_mm\"] < 19.980)\nprint(df[\"ausserhalb\"].sum())"
+    },
+    {
+     "situation": "Kleinerer Wert je Zeile aus zwei Spalten",
+     "code": "import pandas as pd\nk = pd.DataFrame({\"bis_oben\": [0.019, 0.013], \"bis_unten\": [0.021, 0.027]})\nprint(k[[\"bis_oben\", \"bis_unten\"]].min(axis=1))"
+    }
+   ],
+   "verwandt": [
+    "pd-spalte",
+    "pd-cp-cpk",
+    "vektorisierung"
+   ],
+   "bezeichner": [
+    "axis"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [
+    "Spalte hinzufügen",
+    "berechnete Spalte",
+    "min axis=1"
+   ],
+   "beispiel_ausgabe": "  maschine  durchmesser_mm  abw_um\n0       D1            20.0     1.0\n1       D1            20.0    -2.0\n2       D2            20.0     9.0\n3       D2            20.0    12.0",
+   "typische_fehler": [
+    {
+     "beschreibung": "Neue Spalte mit Punkt statt Klammern",
+     "code": "with open(\"wellen.csv\", \"w\", encoding=\"utf-8\") as f:\n    f.write(\"stichprobe,maschine,teil,durchmesser_mm\\n\"\n            \"1,D1,1,20.001\\n1,D1,2,19.998\\n1,D2,1,20.009\\n1,D2,2,20.012\\n\"\n            \"2,D1,1,20.002\\n2,D1,2,19.997\\n2,D2,1,20.015\\n2,D2,2,20.021\\n\")\nimport pandas as pd\ndf = pd.read_csv(\"wellen.csv\")\ndf.abw = df[\"durchmesser_mm\"] - 20.0\nprint(df[\"abw\"])",
+     "meldung": "KeyError: 'abw'"
+    },
+    {
+     "beschreibung": "Text-Spalte mit Zahl verrechnet",
+     "code": "with open(\"wellen.csv\", \"w\", encoding=\"utf-8\") as f:\n    f.write(\"stichprobe,maschine,teil,durchmesser_mm\\n\"\n            \"1,D1,1,20.001\\n1,D1,2,19.998\\n1,D2,1,20.009\\n1,D2,2,20.012\\n\"\n            \"2,D1,1,20.002\\n2,D1,2,19.997\\n2,D2,1,20.015\\n2,D2,2,20.021\\n\")\nimport pandas as pd\ndf = pd.read_csv(\"wellen.csv\")\nprint(df[\"maschine\"] - 1)",
+     "meldung": "TypeError: unsupported operand type(s) for -: 'str' and 'int'"
+    }
+   ]
+  },
+  {
+   "id": "pd-value-counts",
+   "name": "value_counts() und unique()",
+   "kategorie": "Datenanalyse (pandas)",
+   "eingefuehrt": "V15",
+   "ampel": "lesen",
+   "kurz": "Zählt, wie oft jeder Wert in einer Spalte vorkommt.",
+   "syntax": "df[\"spalte\"].value_counts()\ndf[\"spalte\"].unique()",
+   "erklaerung": "value_counts() gibt jeden vorkommenden Wert mit seiner Häufigkeit aus, die häufigsten zuerst. unique() liefert die verschiedenen Werte ohne Wiederholung, nunique() ihre Anzahl. Beides ist ein schneller Plausibilitätstest: Sind alle Maschinen und Schichten dabei, gibt es Tippfehler wie \"d2\" neben \"D2\"?",
+   "beispiel": "with open(\"wellen.csv\", \"w\", encoding=\"utf-8\") as f:\n    f.write(\"stichprobe,maschine,teil,durchmesser_mm\\n\"\n            \"1,D1,1,20.001\\n1,D1,2,19.998\\n1,D2,1,20.009\\n1,D2,2,20.012\\n\"\n            \"2,D1,1,20.002\\n2,D1,2,19.997\\n2,D2,1,20.015\\n2,D2,2,20.021\\n\")\nimport pandas as pd\ndf = pd.read_csv(\"wellen.csv\")\nprint(df[\"maschine\"].value_counts())\nprint(list(df[\"maschine\"].unique()))",
+   "wann_nutzen": "Zum Prüfen von Kategorien (Maschine, Schicht, Prüfer) direkt nach dem Einlesen.",
+   "transfer": [
+    {
+     "situation": "Wie viele Teile über 20,010 mm je Maschine?",
+     "code": "with open(\"wellen.csv\", \"w\", encoding=\"utf-8\") as f:\n    f.write(\"stichprobe,maschine,teil,durchmesser_mm\\n\"\n            \"1,D1,1,20.001\\n1,D1,2,19.998\\n1,D2,1,20.009\\n1,D2,2,20.012\\n\"\n            \"2,D1,1,20.002\\n2,D1,2,19.997\\n2,D2,1,20.015\\n2,D2,2,20.021\\n\")\nimport pandas as pd\ndf = pd.read_csv(\"wellen.csv\")\nprint(df[df[\"durchmesser_mm\"] > 20.010][\"maschine\"].value_counts())"
+    },
+    {
+     "situation": "Anzahl verschiedener Werte",
+     "code": "with open(\"wellen.csv\", \"w\", encoding=\"utf-8\") as f:\n    f.write(\"stichprobe,maschine,teil,durchmesser_mm\\n\"\n            \"1,D1,1,20.001\\n1,D1,2,19.998\\n1,D2,1,20.009\\n1,D2,2,20.012\\n\"\n            \"2,D1,1,20.002\\n2,D1,2,19.997\\n2,D2,1,20.015\\n2,D2,2,20.021\\n\")\nimport pandas as pd\ndf = pd.read_csv(\"wellen.csv\")\nprint(df[\"stichprobe\"].nunique(), \"Stichproben\")"
+    }
+   ],
+   "verwandt": [
+    "pd-spalte",
+    "pd-groupby"
+   ],
+   "bezeichner": [
+    ".value_counts",
+    ".unique",
+    ".nunique"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [
+    "zählen",
+    "Häufigkeit",
+    "Kategorien"
+   ],
+   "beispiel_ausgabe": "maschine\nD1    4\nD2    4\nName: count, dtype: int64\n['D1', 'D2']",
+   "typische_fehler": [
+    {
+     "beschreibung": "unique auf der ganzen Tabelle statt auf einer Spalte",
+     "code": "with open(\"wellen.csv\", \"w\", encoding=\"utf-8\") as f:\n    f.write(\"stichprobe,maschine,teil,durchmesser_mm\\n\"\n            \"1,D1,1,20.001\\n1,D1,2,19.998\\n1,D2,1,20.009\\n1,D2,2,20.012\\n\"\n            \"2,D1,1,20.002\\n2,D1,2,19.997\\n2,D2,1,20.015\\n2,D2,2,20.021\\n\")\nimport pandas as pd\ndf = pd.read_csv(\"wellen.csv\")\nprint(df.unique())",
+     "meldung": "AttributeError: 'DataFrame' object has no attribute 'unique'. Did you mean: 'nunique'?"
+    }
+   ]
+  },
+  {
+   "id": "pd-cp-cpk",
+   "name": "Cp und Cpk berechnen",
+   "kategorie": "Datenanalyse (pandas)",
+   "eingefuehrt": "V15",
+   "ampel": "kopf",
+   "kurz": "Prozessfähigkeit: Wie gut passt die Streuung (Cp) und die Lage (Cpk) in die Toleranz?",
+   "syntax": "Cp  = (OSG - USG) / (6 * s)\nCpk = min(OSG - mittel, mittel - USG) / (3 * s)",
+   "erklaerung": "OSG und USG sind die obere und untere Spezifikationsgrenze aus der Zeichnung, mittel und s Mittelwert und Standardabweichung der Messwerte. Cp vergleicht nur die Toleranzbreite mit der Prozessstreuung 6s. Cpk berücksichtigt zusätzlich, wie mittig der Prozess liegt: Es zählt der Abstand zur näheren Grenze, deshalb ist Cpk nie größer als Cp. Üblicher Richtwert: Cpk ab 1,33 gilt als fähig, unter 1 entsteht sicher Ausschuss; verbindlich ist die Vorgabe des Kunden. Aussagekräftig nur bei einem beherrschten Prozess (Regelkarte ohne Auffälligkeiten) und genügend Teilen (z. B. 125).",
+   "beispiel": "with open(\"wellen.csv\", \"w\", encoding=\"utf-8\") as f:\n    f.write(\"stichprobe,maschine,teil,durchmesser_mm\\n\"\n            \"1,D1,1,20.001\\n1,D1,2,19.998\\n1,D2,1,20.009\\n1,D2,2,20.012\\n\"\n            \"2,D1,1,20.002\\n2,D1,2,19.997\\n2,D2,1,20.015\\n2,D2,2,20.021\\n\")\nimport pandas as pd\nOSG, USG = 20.020, 19.980\ndf = pd.read_csv(\"wellen.csv\")\nk = df.groupby(\"maschine\")[\"durchmesser_mm\"].agg([\"mean\", \"std\"])\nk[\"Cp\"] = (OSG - USG) / (6 * k[\"std\"])\nk[\"bis_oben\"] = OSG - k[\"mean\"]\nk[\"bis_unten\"] = k[\"mean\"] - USG\nk[\"Cpk\"] = k[[\"bis_oben\", \"bis_unten\"]].min(axis=1) / (3 * k[\"std\"])\nprint(k[[\"mean\", \"std\", \"Cp\", \"Cpk\"]].round(3))",
+   "wann_nutzen": "Bei der Abnahme einer Maschine oder eines Prozesses und in jedem Qualitätsbericht.",
+   "transfer": [
+    {
+     "situation": "Als Funktion für eine Liste von Messwerten",
+     "code": "import statistics\n\ndef cpk(werte, usg, osg):\n    m = statistics.mean(werte)\n    s = statistics.stdev(werte)\n    return min(osg - m, m - usg) / (3 * s)\n\nprint(round(cpk([20.001, 19.998, 20.003, 19.999, 20.002], 19.98, 20.02), 2))"
+    },
+    {
+     "situation": "Eingriffsgrenzen einer Mittelwertkarte (n = 5)",
+     "code": "mitte, s, n = 20.0053, 0.0048, 5\nsigma_x = s / n ** 0.5\nprint(f\"OEG {mitte + 3 * sigma_x:.4f} mm, UEG {mitte - 3 * sigma_x:.4f} mm\")"
+    }
+   ],
+   "verwandt": [
+    "pd-groupby",
+    "pd-neue-spalte",
+    "pd-describe"
+   ],
+   "bezeichner": [
+    "Cp",
+    "Cpk"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [
+    "Prozessfähigkeit",
+    "Cpk",
+    "Cp",
+    "SPC",
+    "Regelkarte",
+    "Eingriffsgrenze"
+   ],
+   "beispiel_ausgabe": "            mean    std     Cp    Cpk\nmaschine                             \nD1        20.000  0.002  2.801  2.731\nD2        20.014  0.005  1.301  0.374",
+   "typische_fehler": [
+    {
+     "beschreibung": "max statt min: der Prozess sieht besser aus, als er ist",
+     "code": "mittel, s, OSG, USG = 20.0072, 0.0062, 20.020, 19.980\nprint(round(max(OSG - mittel, mittel - USG) / (3 * s), 2))",
+     "meldung": "(keine Fehlermeldung) Ergebnis 1,45 statt 0,68: Der Cpk nimmt den Abstand zur näheren Grenze."
+    },
+    {
+     "beschreibung": "Standardabweichung null (alle Werte gleich)",
+     "code": "import statistics\nwerte = [20.0, 20.0, 20.0]\nprint((20.02 - 19.98) / (6 * statistics.stdev(werte)))",
+     "meldung": "ZeroDivisionError: float division by zero"
+    }
+   ]
   }
  ]
 }
