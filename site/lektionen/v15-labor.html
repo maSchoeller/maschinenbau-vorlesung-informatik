@@ -1,0 +1,1499 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>V15 Programmierlabor · Informatik Maschinenbau</title>
+  <meta name="description" content="Programmierlabor V15: Arbeitsumgebung mit Aufgabenliste, Editor und Befehls-Bibliothek. Teil A im Labor, Teil B Training zu Hause. Datenanalyse mit pandas: read_csv, Filtern, groupby, describe, Cp und Cpk, Regelkarte.">
+  <link rel="stylesheet" href="../assets/css/dhbw-base.css">
+  <link rel="stylesheet" href="../assets/css/kurs.css">
+  <link rel="stylesheet" href="../assets/css/aufgaben.css">
+  <link rel="stylesheet" href="../assets/css/editor.css">
+  <link rel="stylesheet" href="../assets/css/labor.css">
+  <link rel="stylesheet" href="../assets/css/v05.css">
+  <link rel="stylesheet" href="../assets/css/pap-editor.css">
+</head>
+<body data-lesson="V15" data-page="labor">
+  <a class="k-skip" href="#inhalt">Zum Inhalt springen</a>
+
+  <header class="dhbw-header k-header">
+    <div class="dhbw-header__inner">
+      <a class="k-logo" href="../index.html" aria-label="Zur Startseite">
+        <span class="k-logo__mark" aria-hidden="true">DHBW</span>
+        <span class="k-logo__text">Informatik Maschinenbau<small>Campus Horb · 2026/27</small></span>
+      </a>
+      <nav class="k-nav" aria-label="Hauptnavigation">
+        <a href="../index.html">Start</a>
+        <a href="../index.html#lernpfad">Lernpfad</a>
+        <a href="../bibliothek.html">Bibliothek</a>
+        <a href="../pap-editor.html">PAP-Editor</a>
+        <a href="../projekt.html">Projekt</a>
+        <a href="v15-datenanalyse.html">V15 Lerneinheit</a>
+        <a href="v15-labor.html" aria-current="page">V15 Labor</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="lab" data-lab>
+
+    <nav class="lab__list" aria-label="Aufgabenliste">
+      <div class="lab__listhead">
+        <p class="lab__title">Programmierlabor V15</p>
+        <a class="lab__back" href="v15-datenanalyse.html">← Lerneinheit</a>
+      </div>
+      <div class="a-progress" data-a-progress>
+        <span class="a-progress__bar"><span class="a-progress__fill"></span></span>
+        <span class="a-progress__text">0 von 14 Aufgaben gelöst</span>
+      </div>
+      <p class="lab__legend k-small k-muted"><span><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-circle"/></svg> offen</span><span><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-half"/></svg> begonnen</span><span><svg class="k-ic" aria-hidden="true" focusable="false"><use href="../assets/img/icons.svg#i-done"/></svg> gelöst</span></p>
+      <div data-lab-items></div>
+    </nav>
+
+    <main id="inhalt" class="lab__main" tabindex="-1">
+      <div class="lab__bar">
+        <div class="lab__select">
+          <label for="lab-select">Aufgabe</label>
+          <select id="lab-select"></select>
+        </div>
+        <button type="button" class="k-btn k-btn--ghost k-btn--small" id="lab-toolbox-btn" aria-expanded="false" aria-controls="lab-drawer">Werkzeugkasten</button>
+      </div>
+      <section class="lab__drawer" id="lab-drawer" aria-label="Werkzeugkasten" hidden></section>
+
+    <section class="l-task" id="a-werkzeugkasten" data-title="Werkzeugkasten" data-part="A" data-stars="" data-min="8" data-extra="" aria-labelledby="h-a-werkzeugkasten" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-werkzeugkasten" tabindex="-1">Werkzeugkasten</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Heute neu in Python: Tabellen mit <abbr class="k-begriff" data-erklaerung="pandas ist ein Python-Paket für Tabellen. Es liest eine CSV-Datei in eine Tabelle ein und rechnet auf ganzen Spalten auf einmal, ohne dass du eine Schleife schreibst. Der Name kommt von „panel data“."><strong>pandas</strong></abbr>. Du lädst eine Datei mit <code class="k-i">pd.read_csv</code> in einen <abbr class="k-begriff" data-erklaerung="Ein DataFrame ist eine Tabelle in Python: Zeilen sind die Messungen, Spalten sind die Größen, jede Spalte hat einen Namen. Das ist wie ein Tabellenblatt in Excel, nur mit Code bedient."><strong>DataFrame</strong></abbr>, wählst Spalten aus, <strong>filterst Zeilen mit einer Maske</strong>, bildest Kennzahlen (<code class="k-i">mean</code>, <code class="k-i">std</code>, <code class="k-i">describe</code>) und rechnest je Gruppe mit <code class="k-i">groupby</code>. Damit bestimmst du die <abbr class="k-begriff" data-erklaerung="Prozessfähigkeit heißt: Ein Fertigungsprozess hält die Toleranz sicher ein. Gemessen wird sie mit den Kennzahlen Cp und Cpk. Je größer, desto mehr Luft zwischen Streuung und Toleranzgrenze."><strong>Prozessfähigkeit</strong></abbr> (Cp, Cpk) deiner Drehmaschinen. Beim ersten Ausführen lädt Python pandas nach (ca. 16 MB, einmalig). Die Messdatei <code class="k-i">wellen.csv</code> liegt für jeden Lauf im Arbeitsordner bereit: 250 Wellendurchmesser von zwei Drehmaschinen D1 und D2, Soll 20,000 mm, Toleranz ± 0,020 mm.</p>
+      <figure class="k-video">
+        <video controls preload="metadata" poster="../assets/video/v15-python-poster.png" aria-label="Python-Werkstatt: pandas, Datei laden, filtern, gruppieren (ca. 3 Min)">
+          <source src="../assets/video/v15-python.mp4" type="video/mp4">
+          <track kind="subtitles" srclang="de" label="Deutsch" src="../assets/video/v15-python.vtt" default>
+          Dein Browser kann dieses Video nicht abspielen.
+        </video>
+        <div class="k-video__missing" hidden>Video folgt. Bis dahin: Lies den Code unten Zeile für Zeile und probiere ihn aus.</div>
+        <figcaption>Python-Werkstatt: pandas, Datei laden, filtern, gruppieren (ca. 3 Min). Untertitel sind eingeschaltet (Deutsch).</figcaption>
+      </figure>
+      <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke</strong><p>Diese sechs <abbr class="k-begriff" data-erklaerung="Die Syntax ist die Schreibweise einer Programmiersprache, wie die Grammatik einer Sprache: Reihenfolge, Klammern, Anführungszeichen. Ein Tippfehler dort heißt Syntaxfehler.">Syntax</abbr>-Karten sind dein Spickzettel, bis es sitzt. Du erreichst sie in jeder Aufgabe über den Knopf „Werkzeugkasten“ oben. Alle Befehle des Kurses stehen außerdem rechts in der Befehls-Bibliothek. Führe jede Python-Karte aus und lies die Ausgabe. Karte 6 ist eine Textkarte ohne Ausführen.</p></div>
+      <div class="lab__toolbox" id="lab-toolbox">
+<div class="a-syntax-list">
+  <article class="a-syntax" aria-labelledby="sk-laden">
+    <span class="a-syntax__label">Syntax-Karte 1</span>
+    <h4 id="sk-laden">Datei laden und ansehen</h4>
+<pre data-timeout="20000" data-files="../assets/data/v15/wellen.csv"><code>import pandas as pd
+
+df = pd.read_csv("wellen.csv")      # Datei laden: df ist jetzt eine Tabelle (DataFrame)
+print(df.head())                    # die ersten fünf Zeilen
+print(len(df), "Zeilen")            # Zahl der Zeilen
+print(df.shape)                     # (Zeilen, Spalten)
+print(list(df.columns))             # die Spaltennamen</code></pre>
+<pre data-timeout="20000" data-files="../assets/data/v09/bremsen.csv"><code>import pandas as pd
+
+# Eine deutsche CSV-Datei (Semikolon, Dezimalkomma), wie sie phyphox liefert (V09):
+df = pd.read_csv("bremsen.csv", sep=";", decimal=",")
+print(df.shape)
+print(df[["Time (s)", "Linear Acceleration y (m/s^2)"]].head(3))</code></pre>
+    <ul>
+      <li><code class="k-i">import pandas as pd</code> holt das Tabellen-Paket unter dem Kurznamen <code class="k-i">pd</code> (wie <code class="k-i">import matplotlib.pyplot as plt</code> in V14). Ohne diese Zeile gibt es einen <code class="k-i">NameError</code>.</li>
+      <li><code class="k-i">pd.read_csv("name.csv")</code> liest die Datei und erkennt die Kopfzeile selbst. Die Zahlen sind danach <strong>Zahlen</strong>, kein Text (kein <code class="k-i">float()</code> und kein <code class="k-i">replace</code> mehr).</li>
+      <li>Bei deutschen Dateien gibst du das Trennzeichen mit <code class="k-i">sep=";"</code> und das Dezimalzeichen mit <code class="k-i">decimal=","</code> an. Mit dem falschen Trennzeichen entsteht nur <em>eine</em> Spalte.</li>
+      <li><code class="k-i">df.shape</code> ist ein Tupel (Zeilen, Spalten), ohne Klammern am Ende, denn es ist keine Funktion. <code class="k-i">len(df)</code> zählt die Zeilen.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-spalten">
+    <span class="a-syntax__label">Syntax-Karte 2</span>
+    <h4 id="sk-spalten">Spalten und Kennzahlen</h4>
+<pre data-timeout="20000" data-files="../assets/data/v15/wellen.csv"><code>import pandas as pd
+
+df = pd.read_csv("wellen.csv")
+d = df["durchmesser_mm"]                   # eine Spalte (eine Series): ein Name in eckigen Klammern
+print(round(d.mean(), 4), round(d.std(), 4))
+print(d.min(), d.max(), d.count())
+print(d.idxmin())                          # Zeilennummer des kleinsten Werts
+print(df[["maschine", "durchmesser_mm"]].head(3))   # mehrere Spalten: eine Liste in den Klammern
+print(d.describe().round(4))               # Kennzahlen auf einen Blick
+print(df["maschine"].value_counts())       # wie oft kommt jeder Wert vor?</code></pre>
+    <ul>
+      <li><code class="k-i">df["spalte"]</code> liefert <strong>eine Spalte</strong> als <abbr class="k-begriff" data-erklaerung="Eine Series ist eine einzelne Spalte einer Tabelle: eine Liste von Werten mit einem Namen und einer Nummer je Zeile. Sie kann direkt rechnen, zum Beispiel den Mittelwert bilden."><strong>Series</strong></abbr>. Auf ihr rechnen <code class="k-i">mean()</code>, <code class="k-i">std()</code>, <code class="k-i">min()</code>, <code class="k-i">max()</code> und <code class="k-i">count()</code> ohne Schleife.</li>
+      <li><code class="k-i">std()</code> ist die <strong>Stichproben</strong>-<abbr class="k-begriff" data-erklaerung="Die Standardabweichung s misst, wie weit die Messwerte um ihren Mittelwert streuen. Eine kleine Standardabweichung heißt: Die Teile sind sich sehr ähnlich. Sie hat dieselbe Einheit wie die Messwerte (hier mm).">Standardabweichung</abbr> (geteilt durch n − 1), so wie es die Qualitätssicherung verlangt.</li>
+      <li><code class="k-i">df[["a", "b"]]</code> mit <strong>doppelten</strong> eckigen Klammern wählt mehrere Spalten und ergibt wieder eine Tabelle.</li>
+      <li><code class="k-i">describe()</code> fasst eine Spalte zusammen (Anzahl, Mittelwert, Streuung, kleinster und größter Wert, Quartile). <code class="k-i">round(4)</code> kürzt die Ausgabe auf vier Nachkommastellen.</li>
+      <li><code class="k-i">value_counts()</code> zählt, wie oft jeder Wert in einer Spalte vorkommt.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-maske">
+    <span class="a-syntax__label">Syntax-Karte 3</span>
+    <h4 id="sk-maske">Filtern mit einer Maske</h4>
+<pre data-timeout="20000" data-files="../assets/data/v15/wellen.csv"><code>import pandas as pd
+
+df = pd.read_csv("wellen.csv")
+maske = df["maschine"] == "D2"      # eine Reihe aus True und False, eine pro Zeile
+d2 = df[maske]                      # nur die Zeilen mit True bleiben
+print(len(d2))
+
+spaet_d2 = df[(df["maschine"] == "D2") &amp; (df["schicht"] == "Spät")]      # und: &amp;
+print(len(spaet_d2))
+ausser = df[(df["durchmesser_mm"] &gt; 20.02) | (df["durchmesser_mm"] &lt; 19.98)]   # oder: |
+print(len(ausser))
+nicht_d1 = df[~(df["maschine"] == "D1")]                                  # nicht: ~
+print(len(nicht_d1))</code></pre>
+    <ul>
+      <li>Ein Vergleich auf einer Spalte (<code class="k-i">df["maschine"] == "D2"</code>) rechnet <strong>für jede Zeile</strong> und ergibt eine <abbr class="k-begriff" data-erklaerung="Eine Maske ist eine Reihe aus True und False, eine für jede Zeile der Tabelle. Mit df[maske] bleiben nur die Zeilen, bei denen True steht, wie ein Filter in Excel."><strong>Maske</strong></abbr>. <code class="k-i">df[maske]</code> behält die Zeilen mit <code class="k-i">True</code>.</li>
+      <li>Mehrere Bedingungen verknüpfst du mit <code class="k-i">&amp;</code> (und), <code class="k-i">|</code> (oder) und <code class="k-i">~</code> (nicht) und setzt <strong>jede Bedingung in Klammern</strong>.</li>
+      <li><strong>Nicht</strong> <code class="k-i">and</code>, <code class="k-i">or</code>, <code class="k-i">not</code>: Die kennen nur ein einzelnes Ja oder Nein. Bei einer ganzen Reihe aus True und False kommt der <code class="k-i">ValueError</code> „truth value of a Series is ambiguous“.</li>
+      <li>Ein Gleichheitszeichen ist eine Zuweisung, zwei (<code class="k-i">==</code>) sind ein Vergleich. Bei Text steht der Wert in Anführungszeichen.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-gruppe">
+    <span class="a-syntax__label">Syntax-Karte 4</span>
+    <h4 id="sk-gruppe">Neue Spalte und Gruppen</h4>
+<pre data-timeout="20000" data-files="../assets/data/v15/wellen.csv"><code>import pandas as pd
+
+df = pd.read_csv("wellen.csv")
+df["abw_um"] = (df["durchmesser_mm"] - 20) * 1000      # neue Spalte: Abweichung vom Soll in µm
+print(df["abw_um"].head(3).round(1))
+
+print(df.groupby("maschine")["durchmesser_mm"].mean().round(4))     # ein Mittelwert je Maschine
+print(df.groupby("schicht")["durchmesser_mm"].agg(["mean", "std", "count"]).round(4))</code></pre>
+    <ul>
+      <li><code class="k-i">df["neu"] = …</code> legt eine neue Spalte an. Die Rechnung läuft für alle Zeilen auf einmal.</li>
+      <li><abbr class="k-begriff" data-erklaerung="groupby teilt die Tabelle nach den Werten einer Spalte in Gruppen, zum Beispiel eine Gruppe je Maschine. Danach rechnest du für jede Gruppe getrennt, etwa den Mittelwert. Das ist wie eine Pivot-Tabelle in Excel."><code class="k-i">groupby("maschine")</code></abbr> teilt die Tabelle in Gruppen. Dahinter wählst du die Spalte in eckigen Klammern und sagst, was du rechnen willst: <code class="k-i">.mean()</code>, <code class="k-i">.std()</code>, <code class="k-i">.count()</code>.</li>
+      <li><code class="k-i">.agg(["mean", "std", "count"])</code> rechnet <strong>mehrere Kennzahlen</strong> auf einmal. Das Ergebnis ist wieder eine Tabelle: eine Zeile je Gruppe, eine Spalte je Kennzahl.</li>
+      <li>Die Gruppennamen stehen danach als Zeilenbeschriftung (<abbr class="k-begriff" data-erklaerung="Der Index ist die Zeilenbeschriftung einer Tabelle. Nach groupby sind es die Gruppennamen, zum Beispiel D1 und D2. Mit .index holst du sie als Liste."><code class="k-i">index</code></abbr>) links, sortiert nach Alphabet oder Zahl.</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-regelkarte">
+    <span class="a-syntax__label">Syntax-Karte 5</span>
+    <h4 id="sk-regelkarte">Eine Regelkarte zeichnen</h4>
+<pre data-timeout="40000" data-files="../assets/data/v15/wellen.csv"><code>import pandas as pd
+import matplotlib.pyplot as plt
+
+df = pd.read_csv("wellen.csv")
+d1 = df[df["maschine"] == "D1"]
+mittel = d1.groupby("stichprobe")["durchmesser_mm"].mean()      # ein Mittelwert je Stichprobe
+
+plt.plot(mittel.index, mittel.values, marker="o")               # Stichprobe Nr. (x), Mittelwert (y)
+plt.axhline(20.000, color="gray", linestyle="--")               # Mittellinie
+plt.axhline(20.006, color="black", linestyle=":")               # obere Eingriffsgrenze
+plt.axhline(19.994, color="black", linestyle=":")               # untere Eingriffsgrenze
+plt.xlabel("Stichprobe Nr.")
+plt.ylabel("Mittelwert d in mm")
+plt.title("Regelkarte D1")                                      # der Titel ist auch der Alt-Text des Bildes
+plt.show()
+print(len(mittel), "Stichproben gezeichnet")</code></pre>
+    <ul>
+      <li>Eine <abbr class="k-begriff" data-erklaerung="Eine Regelkarte ist ein Diagramm für den laufenden Betrieb: Auf der Zeitachse stehen die Mittelwerte der Stichproben, dazu eine Mittellinie und zwei Eingriffsgrenzen. Liegt ein Punkt außerhalb, greift man in den Prozess ein, bevor Ausschuss entsteht."><strong>Regelkarte</strong></abbr> ist ein Diagramm aus V14 mit Daten aus pandas: Die Werte stammen aus <code class="k-i">mittel.index</code> (die Stichprobennummern) und <code class="k-i">mittel.values</code> (die Mittelwerte).</li>
+      <li><code class="k-i">axhline(y)</code> zeichnet eine waagerechte Hilfslinie für die Mittellinie und die beiden <strong>Eingriffsgrenzen</strong>. Die Linien unterscheiden sich im Stil (<code class="k-i">linestyle</code>), nicht nur in der Farbe.</li>
+      <li>Die Eingriffsgrenzen sind <strong>nicht</strong> die Toleranzgrenzen der Zeichnung: Sie hängen von der Streuung des Prozesses ab (Mittellinie ± 3 · s/√n) und warnen früher.</li>
+      <li>Immer <code class="k-i">plt.title(…)</code> setzen und die Achsen mit Größe und Einheit beschriften (Checkliste aus V14).</li>
+    </ul>
+  </article>
+  <article class="a-syntax" aria-labelledby="sk-formeln">
+    <span class="a-syntax__label">Syntax-Karte 6</span>
+    <h4 id="sk-formeln">Prozessfähigkeit: die Formeln (nur lesen)</h4>
+<pre class="k-code" data-run="no"><code>Cp  = (OSG - USG) / (6 * s)                         Toleranzbreite im Vergleich zur Streuung
+Cpk = min(OSG - mittel, mittel - USG) / (3 * s)     zusätzlich: Liegt der Prozess mittig?
+
+Cpk &gt;= 1,33          fähig
+1,0 &lt;= Cpk &lt; 1,33    bedingt fähig
+Cpk &lt; 1,0            nicht fähig
+
+Regelkarte (Mittelwerte von n Teilen):
+  Mittellinie = Mittelwert einer ruhigen Anfangsphase
+  Eingriffsgrenzen = Mittellinie +/- 3 * s / wurzel(n)</code></pre>
+    <ul>
+      <li><strong>OSG</strong> und <strong>USG</strong> sind die <abbr class="k-begriff" data-erklaerung="Die Spezifikationsgrenzen stehen auf der Zeichnung: das größte und das kleinste erlaubte Maß. Ein Teil außerhalb ist Ausschuss. Bei 20,000 ± 0,020 mm ist die obere Grenze (OSG) 20,020 mm und die untere (USG) 19,980 mm.">Spezifikationsgrenzen</abbr> aus der Zeichnung, <code class="k-i">mittel</code> und <code class="k-i">s</code> kommen aus den Messwerten des Prozesses.</li>
+      <li>Cp sagt, ob die Streuung <em>klein genug</em> wäre, Cpk sagt, ob der Prozess <em>tatsächlich</em> sicher in der Toleranz liegt. Cpk ist nie größer als Cp. Ist der Cpk viel kleiner, ist der Prozess verschoben.</li>
+      <li><code class="k-i">min(…)</code> nimmt den <strong>kleineren</strong> Abstand zur nächsten Grenze. Mit <code class="k-i">max</code> wäre der Wert zu gut, das ist ein häufiger Fehler in KI-Code.</li>
+      <li>Die Schwellen 1,33 und 1,0 sind gebräuchliche Richtwerte. Welche Zahl für ein Bauteil gilt, legt der Kunde oder die Norm fest.</li>
+    </ul>
+  </article>
+</div>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-vorgemacht" data-title="Vorgerechnetes Beispiel: Prozessfähigkeit zweier Drehmaschinen" data-part="A" data-stars="" data-min="12" data-extra="" aria-labelledby="h-a-vorgemacht" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-vorgemacht" tabindex="-1">Vorgerechnetes Beispiel: Prozessfähigkeit zweier Drehmaschinen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Aufgabe: Zwei <abbr class="k-begriff" data-erklaerung="Eine Drehmaschine spant Wellen auf Maß. Die Qualitätssicherung misst in festen Abständen eine kleine Gruppe von Teilen, die Stichprobe, um zu sehen, ob der Prozess stabil bleibt.">Drehmaschinen</abbr> D1 und D2 fertigen Wellen mit 20,000 mm ± 0,020 mm. Die Datei <code class="k-i">wellen.csv</code> enthält 25 <abbr class="k-begriff" data-erklaerung="Eine Stichprobe ist eine kleine Gruppe von Teilen, die nacheinander aus der laufenden Fertigung genommen und gemessen werden. Hier sind es fünf Teile je Stichprobe und Maschine.">Stichproben</abbr> mit je fünf gemessenen Teilen pro Maschine (250 Zeilen). Das Programm bestimmt Mittelwert, Streuung, <strong>Cp</strong> und <strong>Cpk</strong> je Maschine, zählt die Teile außerhalb der Toleranz und sucht in einer <abbr class="k-begriff" data-erklaerung="Eine Regelkarte (Mittelwertkarte) trägt die Mittelwerte der Stichproben über der Zeit auf, mit Mittellinie und zwei Eingriffsgrenzen. Ein Punkt außerhalb der Grenzen zeigt: Der Prozess hat sich verändert, jetzt eingreifen.">Regelkarte</abbr> der Maschine D2 die auffälligen Stichproben. Lies den Code Zeile für Zeile, dann führe ihn aus (beim ersten Mal lädt pandas nach) und vergleiche die Zahlen mit der Erklärung darunter.</p>
+      <figure class="k-video">
+        <video controls preload="metadata" poster="../assets/video/v15-beispiel-poster.png" aria-label="Vorgerechnet: Cp, Cpk und Regelkarte zweier Drehmaschinen mit pandas (ca. 3 Min)">
+          <source src="../assets/video/v15-beispiel.mp4" type="video/mp4">
+          <track kind="subtitles" srclang="de" label="Deutsch" src="../assets/video/v15-beispiel.vtt" default>
+          Dein Browser kann dieses Video nicht abspielen.
+        </video>
+        <div class="k-video__missing" hidden>Video folgt. Bis dahin: Lies den Code unten Zeile für Zeile und probiere ihn aus.</div>
+        <figcaption>Vorgerechnet: Cp, Cpk und Regelkarte zweier Drehmaschinen (ca. 3 Min). Untertitel sind eingeschaltet (Deutsch).</figcaption>
+      </figure>
+      <div class="a-task" data-a="run" data-id="w-vorgemacht" data-count="0" data-mode="programm" data-timeout="20000" data-files="../assets/data/v15/wellen.csv">
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V15" aria-label="Python-Code: Prozessfähigkeit zweier Drehmaschinen"># Prozessfähigkeit zweier Drehmaschinen: Cp, Cpk und eine einfache Regelkarte
+# (V15: pandas read_csv, Filtern, groupby, describe)
+# Datei: wellen.csv, Soll 20,000 mm, Toleranz +-0,020 mm
+
+import pandas as pd
+
+OSG = 20.020        # obere Spezifikationsgrenze in mm
+USG = 19.980        # untere Spezifikationsgrenze in mm
+
+df = pd.read_csv("wellen.csv")
+print(df.head(3))
+print(df["durchmesser_mm"].describe().round(4))
+
+# Je Maschine: Mittelwert und Standardabweichung
+kennwerte = df.groupby("maschine")["durchmesser_mm"].agg(["mean", "std", "count"])
+kennwerte["Cp"] = (OSG - USG) / (6 * kennwerte["std"])
+kennwerte["bis_oben"] = OSG - kennwerte["mean"]
+kennwerte["bis_unten"] = kennwerte["mean"] - USG
+kennwerte["Cpk"] = kennwerte[["bis_oben", "bis_unten"]].min(axis=1) / (3 * kennwerte["std"])
+print(kennwerte[["mean", "std", "count", "Cp", "Cpk"]].round(4))
+
+# Ausschuss: Teile außerhalb der Toleranz
+ausschuss = df[(df["durchmesser_mm"] > OSG) | (df["durchmesser_mm"] < USG)]
+print("Teile außerhalb Toleranz:", len(ausschuss))
+
+# Regelkarte (Mittelwertkarte) für D2: Stichproben-Mittelwerte gegen Eingriffsgrenzen
+d2 = df[df["maschine"] == "D2"]
+mittel = d2.groupby("stichprobe")["durchmesser_mm"].mean()
+anfang = d2[d2["stichprobe"] <= 15]                # ruhige Anfangsphase als Bezug
+mitte = anfang["durchmesser_mm"].mean()
+sigma_x = anfang["durchmesser_mm"].std() / 5 ** 0.5   # Streuung von 5er-Mittelwerten
+oeg = mitte + 3 * sigma_x                          # obere Eingriffsgrenze
+ueg = mitte - 3 * sigma_x                          # untere Eingriffsgrenze
+auffaellig = mittel[(mittel > oeg) | (mittel < ueg)]
+print(f"Mittellinie {mitte:.4f} mm, OEG {oeg:.4f} mm, UEG {ueg:.4f} mm")
+print("Stichproben außerhalb der Eingriffsgrenzen:", list(auffaellig.index))</textarea></div>
+      </div>
+      <p class="k-small k-muted">Die Ausgabe, die du erwarten kannst (zum Vergleichen, nicht ausführbar):</p>
+      <pre data-run="no" class="k-code"><code>   stichprobe maschine schicht  teil  durchmesser_mm
+0           1       D1    Früh     1         20.0006
+1           1       D1    Früh     2         19.9999
+2           1       D1    Früh     3         19.9998
+count    250.0000
+mean      20.0037
+std        0.0064
+min       19.9888
+...
+             mean     std  count      Cp     Cpk
+maschine
+D1        20.0001  0.0042    125  1.5905  1.5809
+D2        20.0072  0.0062    125  1.0682  0.6838
+Teile außerhalb Toleranz: 6
+Mittellinie 20.0053 mm, OEG 20.0118 mm, UEG 19.9989 mm
+Stichproben außerhalb der Eingriffsgrenzen: [20, 24, 25]</code></pre>
+      <ol class="a-explain">
+        <li><strong>Zeile 5:</strong> <code class="k-i">import pandas as pd</code> holt das Tabellen-Paket unter dem Kurznamen <code class="k-i">pd</code> (wie <code class="k-i">plt</code> in V14).</li>
+        <li><strong>Zeilen 7 und 8:</strong> Die <abbr class="k-begriff" data-erklaerung="Die Spezifikationsgrenzen stehen auf der Zeichnung: das größte und das kleinste erlaubte Maß. Ein Teil außerhalb ist Ausschuss.">Spezifikationsgrenzen</abbr> stehen einmal oben als Konstanten, Einheit im Kommentar: 20,000 mm + 0,020 mm = 20,020 mm, 20,000 mm − 0,020 mm = 19,980 mm.</li>
+        <li><strong>Zeile 10:</strong> <code class="k-i">pd.read_csv("wellen.csv")</code> liest die Datei in eine Tabelle (DataFrame) mit den Spalten <code class="k-i">stichprobe</code>, <code class="k-i">maschine</code>, <code class="k-i">schicht</code>, <code class="k-i">teil</code> und <code class="k-i">durchmesser_mm</code>. Die Zahlen sind schon Zahlen: kein <code class="k-i">float</code>, kein Schleifen-Einlesen wie in V09.</li>
+        <li><strong>Zeilen 11 und 12:</strong> <code class="k-i">head(3)</code> zeigt die ersten drei Zeilen: Immer erst ansehen, was in der Datei steht. <code class="k-i">describe()</code> fasst die Spalte <code class="k-i">durchmesser_mm</code> zusammen: 250 Werte, Mittelwert 20,0037 mm, Standardabweichung 0,0064 mm, kleinster Wert 19,9888 mm, größter 20,0255 mm. Beide Maschinen zusammen sagen noch nichts über eine einzelne Maschine.</li>
+        <li><strong>Zeile 15:</strong> <code class="k-i">groupby("maschine")</code> teilt die Tabelle in zwei Gruppen, <code class="k-i">["durchmesser_mm"]</code> wählt die Spalte, <code class="k-i">agg([…])</code> rechnet je Gruppe Mittelwert, Standardabweichung und Anzahl. Ergebnis: eine Tabelle mit zwei Zeilen (D1, D2) und drei Spalten.</li>
+        <li><strong>Zeilen 16 bis 19:</strong> Neue Spalten rechnen für beide Maschinen auf einmal. <strong>Cp</strong> = (OSG − USG) / (6 · s) vergleicht die Toleranzbreite mit der Streuung. Für Cpk braucht es den Abstand zur <em>nächsten</em> Grenze: <code class="k-i">bis_oben</code> und <code class="k-i">bis_unten</code>. <code class="k-i">[["bis_oben", "bis_unten"]].min(axis=1)</code> nimmt je <em>Zeile</em> (<code class="k-i">axis=1</code>) den kleineren der beiden Werte, geteilt durch 3 · s.</li>
+        <li><strong>Zeile 20 und das Ergebnis:</strong> D1 hat Cp 1,5905 und Cpk 1,5809: fähig (Cpk ≥ 1,33), mittig und eng. D2 hat Cp 1,0682, aber nur Cpk 0,6838: Die Streuung wäre noch knapp in Ordnung, doch der Mittelwert 20,0072 mm liegt zu nah an der oberen Grenze. D2 ist nicht fähig (Cpk &lt; 1,0).</li>
+        <li><strong>Zeilen 23 und 24:</strong> Die Maske hat zwei Bedingungen, jede in Klammern, verbunden mit <code class="k-i">|</code> (oder): größer als OSG <em>oder</em> kleiner als USG. <code class="k-i">len(ausschuss)</code> zählt die Zeilen: 6 Teile außerhalb. Schau sie dir an (Selbsterklärung unten): alle sechs kommen von D2.</li>
+        <li><strong>Zeilen 27 bis 30:</strong> Die Regelkarte gilt für D2. <code class="k-i">mittel</code> ist eine Reihe mit 25 Stichproben-Mittelwerten. Als Bezug dienen die Stichproben 1 bis 15 (<code class="k-i">anfang</code>), in denen der Prozess noch ruhig lief: Mittellinie 20,0053 mm.</li>
+        <li><strong>Zeilen 31 bis 33:</strong> Ein Mittelwert aus fünf Teilen streut weniger als ein Einzelteil, nämlich um den Faktor √5. Die <abbr class="k-begriff" data-erklaerung="Eingriffsgrenzen sind die Warngrenzen der Regelkarte: Mittellinie plus und minus dreimal die Streuung der Stichproben-Mittelwerte. Sie haben nichts mit den Toleranzgrenzen der Zeichnung zu tun und warnen früher.">Eingriffsgrenzen</abbr> sind Mittellinie ± 3 · s/√5: 20,0118 mm oben, 19,9989 mm unten. Das sind <strong>nicht</strong> OSG und USG: Die Regelkarte warnt, bevor Ausschuss entsteht.</li>
+        <li><strong>Zeilen 34 bis 36:</strong> <code class="k-i">mittel[(mittel &gt; oeg) | (mittel &lt; ueg)]</code> filtert die Stichproben außerhalb, <code class="k-i">.index</code> sind ihre Nummern: 20, 24 und 25. Ab Stichprobe 18 driftet D2 nach oben (Werkzeugverschleiß), die Karte meldet es ab Stichprobe 20, noch bevor die ersten Teile die Toleranz verlassen.</li>
+        <li><strong>Selbsterklärung:</strong> Wie würde sich das Ergebnis ändern, wenn Zeile 29 <code class="k-i">d2[d2["stichprobe"] &lt;= 25]</code> hieße (alle Stichproben als Bezug)? Warum? Zeige die sechs Ausschussteile mit <code class="k-i">print(ausschuss)</code> und prüfe, ob wirklich alle von D2 sind. Berechne Cp und Cpk für D1 getrennt nach Schicht (<code class="k-i">groupby(["maschine", "schicht"])</code>): Welche Schicht ist bei D2 schlechter?</li>
+      </ol>
+    </section>
+
+    <section class="l-task" id="a-ablauf" data-title="Ablauf verfolgen" data-part="A" data-stars="" data-min="8" data-extra="" aria-labelledby="h-a-ablauf" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-ablauf" tabindex="-1">Ablauf verfolgen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Bevor du Tabellen filterst, musst du lesen können, was eine Maske tut. Führe das Programm im Kopf aus, <strong>Zeile für Zeile, so wie Python es tut</strong>. Die Reihe <code class="k-i">abw</code> ist eine Series, du schreibst sie wie eine Liste (zum Beispiel <code class="k-i">[5, 12, -3, 7]</code>). Das ist das Filtern aus dem Beispiel, in klein: vier Abweichungen in µm.</p>
+      <div class="a-task" data-a="trace" data-id="w-trace">
+        <script type="application/json">{"code":["import pandas as pd","abw = pd.Series([5, 12, -3, 7])","maske = abw > 4","gross = abw[maske]","print(len(gross))","print(gross.mean())"],
+"vars":["abw","maske","gross"],
+"steps":[
+{"line":2,"set":{"abw":"[5, 12, -3, 7]"},"hint":"Eine Series mit vier Werten, die Abweichungen in µm. Schreib sie als Liste."},
+{"line":3,"set":{"maske":"[True, True, False, True]"},"hint":"Der Vergleich rechnet für jeden Wert einzeln: 5 > 4 ist True, 12 > 4 ist True, -3 > 4 ist False, 7 > 4 ist True. Es entsteht eine Reihe aus vier True/False."},
+{"line":4,"set":{"gross":"[5, 12, 7]"},"hint":"abw[maske] behält nur die Werte, bei denen in der Maske True steht, in der alten Reihenfolge. Der Wert -3 fällt weg."},
+{"line":5,"out":"3","hint":"len zählt die verbleibenden Werte: drei."},
+{"line":6,"out":"8.0","hint":"Der Mittelwert der drei Werte: (5 + 12 + 7) / 3 = 24 / 3 = 8.0. Ein Mittelwert ist immer eine Kommazahl, auch wenn er glatt aufgeht."}
+]}</script>
+      </div>
+      <p class="l-task__intro">Zweiter Ablauf: die Run-Regel der Regelkarte in reinem Python (keine Tabelle nötig). Gezählt wird, wie viele Stichprobenmittel <em>in Folge</em> über der Mittellinie liegen. Die Mittelwerte stehen als Abweichung vom Soll in µm in einer Liste.</p>
+      <div class="a-task" data-a="trace" data-id="w-trace2">
+        <script type="application/json">{"code":["mittel = [1, 4, 6, -2]","mitte = 2","folge = 0","for m in mittel:","    if m > mitte:","        folge = folge + 1","    else:","        folge = 0","print(folge)"],
+"vars":["m","folge"],
+"steps":[
+{"line":3,"set":{"folge":"0"},"hint":"Der Zähler startet bei 0."},
+{"line":4,"set":{"m":"1"},"hint":"Erster Durchlauf: m ist der erste Wert der Liste, 1."},
+{"line":8,"set":{"folge":"0"},"hint":"1 > 2 ist falsch, also läuft der else-Zweig: Die Folge reißt ab, folge ist 0."},
+{"line":4,"set":{"m":"4"},"hint":"Zweiter Durchlauf: m ist 4."},
+{"line":6,"set":{"folge":"1"},"hint":"4 > 2 ist wahr: folge = 0 + 1 = 1."},
+{"line":4,"set":{"m":"6"},"hint":"Dritter Durchlauf: m ist 6."},
+{"line":6,"set":{"folge":"2"},"hint":"6 > 2 ist wahr: folge = 1 + 1 = 2."},
+{"line":4,"set":{"m":"-2"},"hint":"Vierter Durchlauf: m ist -2."},
+{"line":8,"set":{"folge":"0"},"hint":"-2 > 2 ist falsch: Die Folge reißt ab, folge ist wieder 0. Merke: Eine Serie zählt nur, wenn sie ununterbrochen ist."},
+{"line":9,"out":"0","hint":"Am Ende steht der Zähler bei 0, weil der letzte Wert die Folge beendet hat. Für „sieben in Folge“ müsstest du während der Schleife prüfen (folge >= 7), nicht erst am Ende."}
+]}</script>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-zeilen" data-title="Zeilen ordnen" data-part="A" data-stars="" data-min="8" data-extra="" aria-labelledby="h-a-zeilen" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-zeilen" tabindex="-1">Zeilen ordnen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Alle Zeilen sind da, aber durcheinander. Bring sie in die richtige Reihenfolge <strong>und rücke die Zeilen im Schleifenrumpf ein</strong> (Pfeil nach rechts oder Mausziehen). Manche Zeilen gehören nicht ins Programm.</p>
+      <div class="a-task" data-a="parsons" data-id="w-parsons1">
+        <div class="a-task__head"><h3 class="a-task__title">Zu große Wellen zählen</h3></div>
+        <p>Das Programm liest <code class="k-i">wellen.csv</code> und zählt die Wellen, die größer als die obere Spezifikationsgrenze 20,020 mm sind. Überlege vorher: Was muss vor dem Lesen der Datei stehen, was entsteht zuerst, die Maske oder die gefilterte Tabelle, und was steht ganz am Ende?</p>
+        <script type="application/json">{"solution":["import pandas as pd","df = pd.read_csv('wellen.csv')","maske = df['durchmesser_mm'] > 20.02","zu_gross = df[maske]","print(len(zu_gross))"],
+"distractors":["zu_gross = df(maske)","df = pd.read_csv(wellen.csv)"],
+"alts":[]}</script>
+      </div>
+
+      <div class="a-task" data-a="parsons" data-id="w-parsons2">
+        <div class="a-task__head"><h3 class="a-task__title">Streuung je Maschine in einer Schleife</h3></div>
+        <p>Für jede der beiden Maschinen wird die Tabelle gefiltert und die Standardabweichung auf vier Stellen gerundet ausgegeben. Der Rumpf der Schleife besteht aus zwei Zeilen.</p>
+        <script type="application/json">{"solution":["import pandas as pd","df = pd.read_csv('wellen.csv')","for name in ['D1', 'D2']:","    teil = df[df['maschine'] == name]","    print(name, round(teil['durchmesser_mm'].std(), 4))"],
+"distractors":["    teil = df['maschine'] == name","    print(name, teil['durchmesser_mm'].std)"],
+"alts":[]}</script>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-luecken" data-title="Lücken füllen" data-part="A" data-stars="" data-min="6" data-extra="" aria-labelledby="h-a-luecken" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-luecken" tabindex="-1">Lücken füllen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Jetzt tippst du Teile selbst. Ergänze die vier Lücken, sodass das Programm die Datei lädt, nur die Wellen der Maschine D2 behält, <strong>nach Schicht gruppiert</strong> und den Mittelwert je Schicht ausgibt. Geprüft wird nicht dein Wortlaut, sondern ob das Programm bei der Messdatei und bei einer anderen Datei das Richtige tut.</p>
+      <div class="a-task" data-a="gap" data-id="w-luecken" data-mode="programm" data-timeout="20000" data-files="../assets/data/v15/wellen.csv">
+        <pre class="a-gap__src">import pandas as pd
+
+df = pd.@@read_csv@@("wellen.csv")
+d2 = df[df["maschine"] @@==@@ "D2"]
+je_schicht = d2.@@groupby@@("schicht")["durchmesser_mm"]
+print(je_schicht.@@mean@@().round(4))</pre>
+        <script type="text/x-python" data-role="tests">
+def _csv(rows):
+    with open("wellen.csv", "w", encoding="utf-8") as f:
+        f.write("stichprobe,maschine,schicht,teil,durchmesser_mm\n")
+        for r in rows:
+            f.write(r + "\n")
+
+def _norm(text):
+    return [" ".join(l.split()) for l in zeilen(text)]
+
+def test_messdatei():
+    """wellen.csv: D2 hat in der Frühschicht 20.0051 und in der Spätschicht 20.0094"""
+    z = _norm(run_program([]))
+    assert "Früh 20.0051" in z and "Spät 20.0094" in z, "Erwartet werden die Zeilen 'Früh 20.0051' und 'Spät 20.0094'. Dein Programm gibt aus: %r" % z
+
+def test_andere_datei():
+    """Andere Datei: nur die Zeilen von D2 zählen (D1 wird ignoriert)"""
+    _csv(["1,D2,Früh,1,20.010", "1,D2,Früh,2,20.030", "1,D1,Früh,1,19.000", "2,D2,Spät,1,19.990", "2,D1,Spät,1,21.000"])
+    z = _norm(run_program([]))
+    assert "Früh 20.02" in z and "Spät 19.99" in z, "Erwartet werden 'Früh 20.02' und 'Spät 19.99'. Dein Programm gibt aus: %r" % z
+        </script>
+        <ol class="a-hints">
+          <li>Lücke 1: Die Funktion, die eine CSV-Datei in eine Tabelle lädt, steht in Syntax-Karte 1. Sie gehört zu <code>pd</code>.</li>
+          <li>Lücke 2: Ein Vergleich, der für jede Zeile True oder False ergibt, braucht zwei Gleichheitszeichen (Syntax-Karte 3).</li>
+          <li>Lücke 3: Die Tabelle wird in Gruppen geteilt. Das Wort steht in Syntax-Karte 4.</li>
+          <li>Lücke 4: Der Mittelwert einer Spalte heißt <code>mean</code>, auch je Gruppe.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-erste" data-title="Erste eigene Aufgabe: Cp und Cpk für Maschine D1" data-part="A" data-stars="1" data-min="12" data-extra="" aria-labelledby="h-a-erste" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-erste" tabindex="-1">Erste eigene Aufgabe: Cp und Cpk für Maschine D1</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Jetzt rechnest du selbst, mit <abbr class="k-begriff" data-erklaerung="Ein Test ist ein kleines Prüfprogramm. Es startet dein Programm mit festen Eingaben und vergleicht die Ausgabe mit dem erwarteten Ergebnis.">Tests</abbr> als Sicherheitsnetz. Die Tests laufen mit der Messdatei <em>und</em> mit anderen Dateien, in denen andere Werte stehen: Ein Programm, das nur die Zahlen aus dem Beispiel ausgibt, besteht nicht.</p>
+      <div class="a-task" data-a="code" data-id="w-erste" data-mode="programm" data-timeout="20000" data-files="../assets/data/v15/wellen.csv">
+        <div class="a-task__text">
+          <p>Lies <code class="k-i">wellen.csv</code>, behalte <strong>nur die Zeilen der Maschine D1</strong>, berechne Mittelwert und Standardabweichung der Spalte <code class="k-i">durchmesser_mm</code> und daraus Cp und Cpk. Die Spezifikationsgrenzen stehen im Code. Gib vier Zeilen mit je vier Nachkommastellen aus.</p>
+          <div class="a-spec"><strong>Ausgabe genau so (für die mitgelieferte Datei):</strong><pre data-run="no">Mittelwert: 20.0001 mm
+Standardabweichung: 0.0042 mm
+Cp: 1.5905
+Cpk: 1.5809</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V15" aria-label="Python-Code: Cp und Cpk für D1">import pandas as pd
+
+OSG = 20.020        # obere Spezifikationsgrenze in mm
+USG = 19.980        # untere Spezifikationsgrenze in mm
+
+df = pd.read_csv("wellen.csv")
+# 1. nur die Zeilen der Maschine D1 behalten
+# 2. Mittelwert und Standardabweichung der Spalte durchmesser_mm
+# 3. Cp und Cpk berechnen und ausgeben
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+import statistics as _st
+
+def _csv(rows):
+    with open("wellen.csv", "w", encoding="utf-8") as f:
+        f.write("stichprobe,maschine,schicht,teil,durchmesser_mm\n")
+        for r in rows:
+            f.write(r + "\n")
+
+def _soll(werte, usg=19.98, osg=20.02):
+    m = sum(werte) / len(werte)
+    s = _st.stdev(werte)
+    return [round(m, 4), round(s, 4), round((osg - usg) / (6 * s), 4), round(min(osg - m, m - usg) / (3 * s), 4)]
+
+def _ist(z):
+    ergebnis = []
+    for label in ("Mittelwert:", "Standardabweichung:", "Cp:", "Cpk:"):
+        zeile = [l for l in z if l.startswith(label)]
+        assert zeile, "Die Zeile mit '%s' fehlt. Dein Programm gibt aus: %r" % (label, z)
+        w = _zahlen(zeile[0])
+        assert w, "In der Zeile %r steht keine Zahl." % zeile[0]
+        ergebnis.append(w[0])
+    return ergebnis
+
+def _pruefe(d1, d2):
+    rows = []
+    for i, w in enumerate(d1):
+        rows.append("%d,D1,Früh,%d,%.4f" % (i // 5 + 1, i % 5 + 1, w))
+    for i, w in enumerate(d2):
+        rows.append("%d,D2,Spät,%d,%.4f" % (i // 5 + 1, i % 5 + 1, w))
+    _csv(rows)
+    ist = _ist(_zeilen(_run_program([])))
+    soll = _soll(d1)
+    namen = ["Mittelwert", "Standardabweichung", "Cp", "Cpk"]
+    for n, a, b in zip(namen, ist, soll):
+        assert abs(a - b) < 1.5e-4, "%s: erwartet %s, dein Programm gibt %s aus." % (n, b, a)
+
+def test_messdatei():
+    """wellen.csv: D1 hat Mittelwert 20.0001, s 0.0042, Cp 1.5905, Cpk 1.5809"""
+    ist = _ist(_zeilen(_run_program([])))
+    soll = [20.0001, 0.0042, 1.5905, 1.5809]
+    for n, a, b in zip(["Mittelwert", "Standardabweichung", "Cp", "Cpk"], ist, soll):
+        assert abs(a - b) < 1.5e-4, "%s: erwartet %s, dein Programm gibt %s aus." % (n, b, a)
+
+def test_mittig():
+    """Andere Datei, mittiger Prozess: Mittelwert 20.000, Cp und Cpk gleich"""
+    _pruefe([19.99, 20.01, 20.00, 20.02, 19.98], [20.10, 20.12, 20.08, 20.11, 20.09])
+
+def test_verschoben():
+    """Andere Datei, verschobener Prozess: Cpk kleiner als Cp"""
+    _pruefe([20.005, 20.010, 20.012, 20.008, 20.015], [19.90, 20.10, 19.95, 20.05, 20.00])
+
+def test_nur_d1():
+    """D2 wird ignoriert, auch wenn D2 die größere Streuung hat"""
+    _pruefe([20.001, 19.999, 20.002, 19.998, 20.000, 20.001], [19.95, 20.05, 19.97, 20.03, 19.99, 20.01])
+        </script>
+        <script type="text/x-python" data-role="solution">
+import pandas as pd
+
+OSG = 20.020        # obere Spezifikationsgrenze in mm
+USG = 19.980        # untere Spezifikationsgrenze in mm
+
+df = pd.read_csv("wellen.csv")
+d1 = df[df["maschine"] == "D1"]
+mittel = d1["durchmesser_mm"].mean()
+s = d1["durchmesser_mm"].std()
+cp = (OSG - USG) / (6 * s)
+cpk = min(OSG - mittel, mittel - USG) / (3 * s)
+print(f"Mittelwert: {mittel:.4f} mm")
+print(f"Standardabweichung: {s:.4f} mm")
+print(f"Cp: {cp:.4f}")
+print(f"Cpk: {cpk:.4f}")
+        </script>
+        <ol class="a-hints">
+          <li>Erst die Maske, dann die gefilterte Tabelle: <code>d1 = df[df["maschine"] == "D1"]</code> (Syntax-Karte 3). Danach rechnest du nur noch mit <code>d1</code>.</li>
+          <li><code>mittel = d1["durchmesser_mm"].mean()</code> und <code>s = d1["durchmesser_mm"].std()</code>. Cp ist <code>(OSG - USG) / (6 * s)</code>, die Formeln stehen in Syntax-Karte 6.</li>
+          <li>Cpk braucht den <strong>kleineren</strong> der beiden Abstände: <code>min(OSG - mittel, mittel - USG) / (3 * s)</code>. Ausgabe mit vier Stellen: <code>print(f"Cp: {cp:.4f}")</code>.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-review" data-seen="manual" data-title="Code-Review: KI-Auswertung prüfen" data-part="A" data-stars="" data-min="15" data-extra="" aria-labelledby="h-a-review" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-review" tabindex="-1">Code-Review: KI-Auswertung prüfen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Eine KI hat ein Programm zur Prozessfähigkeit der beiden Drehmaschinen geliefert. Es sieht ordentlich aus und enthält vier Fehler: drei davon liefern <em>falsche Zahlen ohne Fehlermeldung</em>, einer bricht ab. Würdest du es freigeben? Klick die Zeilen an, die du für fehlerhaft hältst, dann lass auflösen.</p>
+      <figure class="k-figure">
+        <picture>
+          <source srcset="../assets/img/ki-spiegel.webp" type="image/webp">
+          <img src="../assets/img/ki-spiegel.png" alt="Illustration: KI-Code wird von einem Ingenieur geprüft" width="1600" height="901" loading="lazy" onerror="this.closest('figure').hidden=true">
+        </picture>
+      </figure>
+
+      <div class="k-mirror">
+        <h3>Szenario: Cp, Cpk und Regelkarte auswerten</h3>
+        <p class="k-prompt__who">Prompt eines Studierenden</p>
+        <blockquote class="k-prompt">Schreib mir ein Python-Programm mit pandas: Lies wellen.csv (Spalten stichprobe, maschine, schicht, teil, durchmesser_mm). Berechne für jede Maschine getrennt Cp und Cpk mit USG 19,98 mm und OSG 20,02 mm. Zähle die Teile der Maschine D2 in der Spätschicht. Bestimme für D2 mit einer Regelkarte der Stichprobenmittel, welche Stichproben auffällig sind. Die Eingriffsgrenzen sind die Mittellinie plus/minus 3 mal s/√5, bestimmt aus den Stichproben 1 bis 15.</blockquote>
+        <p class="k-prompt__who">KI-Antwort (Python)</p>
+          <ol class="k-codelines" aria-label="Code der KI, Zeilen anklickbar">
+            <li><button type="button" class="k-line">import pandas as pd</button></li>
+            <li><button type="button" class="k-line"> </button></li>
+            <li><button type="button" class="k-line">OSG = 20.020</button></li>
+            <li><button type="button" class="k-line">USG = 19.980</button></li>
+            <li><button type="button" class="k-line"> </button></li>
+            <li><button type="button" class="k-line">df = pd.read_csv(&quot;wellen.csv&quot;)</button></li>
+            <li><button type="button" class="k-line"> </button></li>
+            <li><button type="button" class="k-line">for name in [&quot;D1&quot;, &quot;D2&quot;]:</button></li>
+            <li><button type="button" class="k-line">    teil = df[df[&quot;maschine&quot;] == name]</button></li>
+            <li><button type="button" class="k-line">    mittel = teil[&quot;durchmesser_mm&quot;].mean()</button></li>
+            <li><button type="button" class="k-line" data-bug="a">    s = df[&quot;durchmesser_mm&quot;].std()</button></li>
+            <li><button type="button" class="k-line">    cp = (OSG - USG) / (6 * s)</button></li>
+            <li><button type="button" class="k-line" data-bug="b">    cpk = max(OSG - mittel, mittel - USG) / (3 * s)</button></li>
+            <li><button type="button" class="k-line">    print(name, round(cp, 2), round(cpk, 2))</button></li>
+            <li><button type="button" class="k-line"> </button></li>
+            <li><button type="button" class="k-line" data-bug="c">spaet = df[(df[&quot;maschine&quot;] == &quot;D2&quot;) and (df[&quot;schicht&quot;] == &quot;Spät&quot;)]</button></li>
+            <li><button type="button" class="k-line">print(len(spaet), &quot;Teile aus der Spätschicht von D2&quot;)</button></li>
+            <li><button type="button" class="k-line"> </button></li>
+            <li><button type="button" class="k-line">d2 = df[df[&quot;maschine&quot;] == &quot;D2&quot;]</button></li>
+            <li><button type="button" class="k-line">mittel2 = d2.groupby(&quot;stichprobe&quot;)[&quot;durchmesser_mm&quot;].mean()</button></li>
+            <li><button type="button" class="k-line" data-bug="d">oeg, ueg = OSG, USG</button></li>
+            <li><button type="button" class="k-line">auffaellig = mittel2[(mittel2 &gt; oeg) | (mittel2 &lt; ueg)]</button></li>
+            <li><button type="button" class="k-line">print(&quot;Auffällige Stichproben:&quot;, list(auffaellig.index))</button></li>
+          </ol>
+        <p class="k-small k-muted">Tipp: Es sind vier Fehler eingebaut. Nicht jede Zeile ist falsch. Drei Fehler siehst du erst, wenn du die Zahlen mit dem Beispiel vergleichst.</p>
+
+        <div class="k-mirror__task">
+          <p><strong>Würdest du das freigeben?</strong> Markiere die fehlerhaften Zeilen, dann lass auflösen.</p>
+          <button type="button" class="k-btn" data-mirror-check>Auflösen</button>
+          <p class="k-verdict" role="status" hidden></p>
+
+          <div data-mirror-after hidden>
+            <h3>Die vier Fehler</h3>
+            <h4>Fehler 1: Standardabweichung über beide Maschinen gemischt (Zeile 11)</h4>
+            <p>In der Schleife wird der Mittelwert aus <code class="k-i">teil</code> (eine Maschine) gebildet, die Standardabweichung aber aus <code class="k-i">df</code> (alle 250 Teile). Cp und Cpk beider Maschinen bekommen dasselbe <code class="k-i">s</code> von 0,0064 mm: Sie sehen fast gleich aus (Cp 1,04 für beide), obwohl D1 mit 1,59 deutlich besser ist als D2 mit 1,07. Es gibt keine Fehlermeldung, und die Zahlen wirken plausibel. Lösung: <code class="k-i">s = teil["durchmesser_mm"].std()</code>. Jede Kennzahl einer Maschine gehört in die Tabelle <em>dieser</em> Maschine.</p>
+            <h4>Fehler 2: <code class="k-i">max</code> statt <code class="k-i">min</code> im Cpk (Zeile 13)</h4>
+            <p>Cpk braucht den Abstand zur <em>nächsten</em> Grenze, das ist das Minimum. Mit <code class="k-i">max</code> wird der Abstand zur weiter entfernten Grenze genommen, und der Wert wird zu gut: D2 hätte Cpk 1,45 und gälte als fähig, richtig sind 0,68, also nicht fähig. Der Fehler fällt nicht auf, denn der Wert ist eine plausible Zahl. Lösung: <code class="k-i">min(OSG - mittel, mittel - USG)</code>. Als Gegenprobe gilt immer: Cpk ist nie größer als Cp.</p>
+            <h4>Fehler 3: <code class="k-i">and</code> statt <code class="k-i">&amp;</code> (Zeile 16)</h4>
+            <p>Bei Tabellen verknüpfst du Bedingungen mit <code class="k-i">&amp;</code>, <code class="k-i">|</code> und <code class="k-i">~</code>, nicht mit <code class="k-i">and</code>, <code class="k-i">or</code>, <code class="k-i">not</code>. Die Wörter wollen ein einziges Ja oder Nein, hier stehen aber zwei ganze Reihen aus True und False. Das Programm bricht mit <code class="k-i">ValueError: The truth value of a Series is ambiguous</code> ab. Lösung: <code class="k-i">df[(df["maschine"] == "D2") &amp; (df["schicht"] == "Spät")]</code>, jede Bedingung in Klammern.</p>
+            <h4>Fehler 4: Toleranzgrenzen als Eingriffsgrenzen (Zeile 21)</h4>
+            <p>Der Prompt verlangt Eingriffsgrenzen aus der Streuung der Stichprobenmittel (Mittellinie ± 3 · s/√5). Die KI hat stattdessen die Grenzen der Zeichnung genommen. Kein Stichprobenmittel erreicht 20,020 mm, die Liste der Auffälligen ist <em>leer</em>, und die Regelkarte meldet „alles in Ordnung“, obwohl D2 ab Stichprobe 18 nach oben driftet. Eine Regelkarte soll warnen, <em>bevor</em> Teile die Toleranz verlassen. Lösung: Mittellinie und Grenzen wie im Beispiel aus den Stichproben 1 bis 15 berechnen.</p>
+
+            <h3>Die Fehler einzeln zum Ausprobieren</h3>
+            <p class="k-small k-muted">Je ein kleines Programm mit dem Fehler und der Korrektur nebeneinander. Führe sie aus und vergleiche die Zahlen.</p>
+<pre data-timeout="20000" data-files="../assets/data/v15/wellen.csv"><code>import pandas as pd
+
+df = pd.read_csv("wellen.csv")
+d1 = df[df["maschine"] == "D1"]
+s_falsch = df["durchmesser_mm"].std()       # Fehler 1: alle 250 Teile, beide Maschinen gemischt
+s_richtig = d1["durchmesser_mm"].std()      # richtig: nur D1
+print("s gemischt:", round(s_falsch, 4), "mm   Cp:", round(0.04 / (6 * s_falsch), 2))
+print("s nur D1:  ", round(s_richtig, 4), "mm   Cp:", round(0.04 / (6 * s_richtig), 2))</code></pre>
+<pre data-timeout="20000" data-files="../assets/data/v15/wellen.csv"><code>import pandas as pd
+
+OSG = 20.020
+USG = 19.980
+df = pd.read_csv("wellen.csv")
+d2 = df[df["maschine"] == "D2"]["durchmesser_mm"]
+mittel = d2.mean()
+s = d2.std()
+print("bis oben:", round(OSG - mittel, 4), "mm   bis unten:", round(mittel - USG, 4), "mm")
+print("Cpk mit max (Fehler 2):", round(max(OSG - mittel, mittel - USG) / (3 * s), 2))
+print("Cpk mit min (richtig): ", round(min(OSG - mittel, mittel - USG) / (3 * s), 2))</code></pre>
+<pre data-timeout="20000" data-files="../assets/data/v15/wellen.csv"><code>import pandas as pd
+
+df = pd.read_csv("wellen.csv")
+# Fehler 3: "and" bricht mit einem ValueError ab. Ersetze es durch &amp; und führe noch einmal aus.
+spaet = df[(df["maschine"] == "D2") and (df["schicht"] == "Spät")]
+print(len(spaet), "Teile aus der Spätschicht von D2")</code></pre>
+<pre data-timeout="20000" data-files="../assets/data/v15/wellen.csv"><code>import pandas as pd
+
+df = pd.read_csv("wellen.csv")
+d2 = df[df["maschine"] == "D2"]
+mittel = d2.groupby("stichprobe")["durchmesser_mm"].mean()
+
+falsch = mittel[(mittel &gt; 20.020) | (mittel &lt; 19.980)]      # Fehler 4: Toleranzgrenzen
+print("Mit Toleranzgrenzen auffällig:", list(falsch.index))
+
+anfang = d2[d2["stichprobe"] &lt;= 15]
+mitte = anfang["durchmesser_mm"].mean()
+sigma_x = anfang["durchmesser_mm"].std() / 5 ** 0.5
+richtig = mittel[(mittel &gt; mitte + 3 * sigma_x) | (mittel &lt; mitte - 3 * sigma_x)]
+print("Mit Eingriffsgrenzen auffällig:", list(richtig.index))</code></pre>
+
+            <h3>Korrigierte Version</h3>
+<pre data-timeout="20000" data-files="../assets/data/v15/wellen.csv"><code>import pandas as pd
+
+OSG = 20.020
+USG = 19.980
+
+df = pd.read_csv("wellen.csv")
+
+for name in ["D1", "D2"]:
+    teil = df[df["maschine"] == name]
+    mittel = teil["durchmesser_mm"].mean()
+    s = teil["durchmesser_mm"].std()                        # nur diese Maschine
+    cp = (OSG - USG) / (6 * s)
+    cpk = min(OSG - mittel, mittel - USG) / (3 * s)         # der kleinere Abstand
+    print(name, round(cp, 2), round(cpk, 2))
+
+spaet = df[(df["maschine"] == "D2") &amp; (df["schicht"] == "Spät")]     # &amp; mit Klammern
+print(len(spaet), "Teile aus der Spätschicht von D2")
+
+d2 = df[df["maschine"] == "D2"]
+mittel2 = d2.groupby("stichprobe")["durchmesser_mm"].mean()
+anfang = d2[d2["stichprobe"] &lt;= 15]                        # ruhige Anfangsphase
+mitte = anfang["durchmesser_mm"].mean()
+sigma_x = anfang["durchmesser_mm"].std() / 5 ** 0.5
+oeg = mitte + 3 * sigma_x                                   # Eingriffsgrenzen, nicht OSG und USG
+ueg = mitte - 3 * sigma_x
+auffaellig = mittel2[(mittel2 &gt; oeg) | (mittel2 &lt; ueg)]
+print("Auffällige Stichproben:", list(auffaellig.index))</code></pre>
+            <div class="hinweis hinweis--merke"><strong class="hinweis__title">Merke</strong><p>Bei KI-Auswertungen prüfst du: Wird jede Kennzahl aus der <em>richtigen Teilmenge</em> gerechnet (eine Maschine, eine Schicht)? Steht bei Cpk ein <code class="k-i">min</code>, und ist Cpk kleiner oder gleich Cp? Sind Eingriffsgrenzen aus den Daten gerechnet und nicht die Zeichnungsgrenzen? Sind die Bedingungen mit <code class="k-i">&amp;</code> und <code class="k-i">|</code> in Klammern verknüpft? Und: Stimmen die Zahlen mit einer Handrechnung an einem kleinen Beispiel überein? Eine plausible Zahl ist noch keine richtige Zahl.</p></div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="a-fehler" data-title="Typische Fehlermeldungen" data-part="A" data-stars="" data-min="8" data-extra="" aria-labelledby="h-a-fehler" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-a-fehler" tabindex="-1">Typische Fehlermeldungen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Mit pandas siehst du neue Fehlermeldungen, und einen Fehler, der <em>keine</em> auslöst. Diese sechs siehst du garantiert. Jedes Beispiel lässt sich ausführen: Schau dir die echte Meldung an und lies sie von unten nach oben (zuerst die letzte Zeile).</p>
+      <div class="a-errors">
+        <div class="a-error">
+          <h3><code class="k-i">KeyError</code>: Spaltenname falsch</h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="20000" data-files="../assets/data/v15/wellen.csv">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V15" aria-label="Fehlerbeispiel KeyError Spaltenname">import pandas as pd
+
+df = pd.read_csv("wellen.csv")
+print(df["durchmesser"].mean())</textarea></div>
+          </div>
+          <p>Meldung: <code class="k-i">KeyError: 'durchmesser'</code>. Die Spalte heißt <code>durchmesser_mm</code>. Python sucht genau den Namen, den du schreibst, mit Groß- und Kleinschreibung und Unterstrich. Schau die Namen mit <code>print(list(df.columns))</code> nach. Steht in der Datei ein Leerzeichen am Rand des Namens, erscheint es in dieser Liste mit.</p>
+        </div>
+        <div class="a-error">
+          <h3><code class="k-i">ValueError</code>: <code class="k-i">and</code> statt <code class="k-i">&amp;</code></h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="20000" data-files="../assets/data/v15/wellen.csv">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V15" aria-label="Fehlerbeispiel ValueError and">import pandas as pd
+
+df = pd.read_csv("wellen.csv")
+zu_gross = df[(df["durchmesser_mm"] > 20.02) and (df["maschine"] == "D2")]
+print(len(zu_gross))</textarea></div>
+          </div>
+          <p>Meldung: <code class="k-i">ValueError: The truth value of a Series is ambiguous. Use a.empty, a.bool(), a.item(), a.any() or a.all().</code> („Der Wahrheitswert einer Reihe ist nicht eindeutig.“) <code>and</code> kann nur ein einziges Ja oder Nein verknüpfen, du hast aber eine ganze Reihe aus True und False. Schreibe <code>&amp;</code> (und), <code>|</code> (oder) und <code>~</code> (nicht), jede Bedingung in Klammern.</p>
+        </div>
+        <div class="a-error">
+          <h3>Falsches Trennzeichen: nur eine Spalte, keine Fehlermeldung</h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="20000" data-files="../assets/data/v09/bremsen.csv">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V15" aria-label="Fehlerbeispiel falsches Trennzeichen">import pandas as pd
+
+df = pd.read_csv("bremsen.csv")
+print(df.shape)
+print(len(df.columns), "Spalte(n)")
+print(list(df.columns))</textarea></div>
+          </div>
+          <p>Hier gibt es keine Fehlermeldung, aber <code>df.shape</code> zeigt <code>(400, 1)</code>: <strong>eine</strong> Spalte statt fünf, und ihr Name ist eine lange Zeile mit Semikolons (in der Ausgabe von <code>list(df.columns)</code>). Die Datei ist ein deutscher Export (Semikolon und Dezimalkomma), <code>read_csv</code> erwartet aber Kommas. Erst mit <code>pd.read_csv("bremsen.csv", sep=";", decimal=",")</code> stimmt die Tabelle. <em>Die Form (<code>shape</code>) und die Spaltenliste immer direkt nach dem Laden ansehen.</em></p>
+        </div>
+        <div class="a-error">
+          <h3><code class="k-i">FileNotFoundError</code>: Datei nicht gefunden</h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="20000">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V15" aria-label="Fehlerbeispiel FileNotFoundError">import pandas as pd
+
+df = pd.read_csv("wellen.csv")
+print(df.shape)</textarea></div>
+          </div>
+          <p>Meldung: <code class="k-i">FileNotFoundError: [Errno 44] No such file or directory: 'wellen.csv'</code> (auf anderen Rechnern steht <code>[Errno 2]</code>). Dieser Block hat die Datei <em>nicht</em> bekommen, also gibt es sie im Arbeitsordner nicht. In echt: Name falsch geschrieben, Endung versteckt oder die Datei liegt in einem anderen Ordner als das Programm. Die Meldung nennt den Namen, den Python gesucht hat (V09).</p>
+        </div>
+        <div class="a-error">
+          <h3><code class="k-i">TypeError</code>: Text statt Zahlen (Dezimalkomma vergessen)</h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="20000" data-files="../assets/data/v09/bremsen.csv">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V15" aria-label="Fehlerbeispiel TypeError Dezimalkomma">import pandas as pd
+
+df = pd.read_csv("bremsen.csv", sep=";")
+spalte = df["Linear Acceleration y (m/s^2)"]
+print(spalte.head(2))
+print(spalte.head(3).mean())</textarea></div>
+          </div>
+          <p>Das Trennzeichen stimmt, das Dezimalzeichen nicht: Ohne <code>decimal=","</code> bleiben „-6,397007E-02“ und alle anderen Werte <strong>Text</strong> (die erste Ausgabe zeigt <code>dtype: object</code>). Rechnen mit Text geht nicht. Die Meldung beginnt mit <code>TypeError: Could not convert string '-6,397007E-02-7,876711E-022,779793E-01' to numeric</code>: pandas hat die Texte hintereinandergeklebt und kann daraus keine Zahl machen. (Bei der ganzen Spalte wäre die Meldung 400 Werte lang, deshalb hier nur drei. Je nach pandas-Version lautet der Text etwas anders.) Lösung: <code>pd.read_csv("bremsen.csv", sep=";", decimal=",")</code>. Der Fehler ist dem aus V14 verwandt, wo Text-Werte die Achse durcheinanderbrachten.</p>
+        </div>
+        <div class="a-error">
+          <h3><code class="k-i">TypeError</code>: Mittelwert über Spalten mit Text</h3>
+          <div class="a-task" data-a="run" data-mode="programm" data-timeout="20000" data-files="../assets/data/v15/wellen.csv">
+            <div class="a-editor"><textarea class="py-editor" data-lesson="V15" aria-label="Fehlerbeispiel TypeError groupby mean">import pandas as pd
+
+df = pd.read_csv("wellen.csv")
+print(df.groupby("maschine").mean())</textarea></div>
+          </div>
+          <p>Die Tabelle hat auch die Textspalte <code>schicht</code>, und einen Mittelwert über „Früh“ und „Spät“ gibt es nicht. Die Meldung lautet <code>TypeError: agg function failed [how-&gt;mean,dtype-&gt;object]</code> („die Rechenfunktion ist bei einer Textspalte gescheitert“), je nach pandas-Version etwas anders. <strong>Wähle die Spalte, die du meinst</strong>: <code>df.groupby("maschine")["durchmesser_mm"].mean()</code>. So rechnest du nur, was gemeint ist.</p>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-1" data-title="Datei ansehen: Zeilen, Spalten, Kennzahlen" data-part="B" data-stars="1" data-min="6" data-extra="" aria-labelledby="h-t-1" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-1" tabindex="-1">Datei ansehen: Zeilen, Spalten, Kennzahlen</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Programmieren lernst du mit den Fingern, nicht mit den Augen. Das Training ist ein fester Teil jedes Termins und gehört zum Selbststudium. Du musst nicht alles an einem Stück machen, aber alles bis zum nächsten Termin. Die Aufgaben laufen im Browser und werden automatisch geprüft, auch mit anderen Dateien als der Messdatei: Hardcoding besteht nicht.</p>
+      <div class="hinweis hinweis--achtung"><strong class="hinweis__title">Achtung</strong><p>Phase 3: Beim Projekt arbeitest du mit Copilot. Hier im Training schreibst du die Befehle selbst, damit du sie lesen kannst. Wenn Copilot dir später eine Auswertung schreibt, prüfst du sie mit der Checkliste aus dem Code-Review (Teilmenge, <code class="k-i">min</code>, Eingriffsgrenzen, Klammern).</p></div>
+
+      <div class="a-task" data-a="code" data-id="tr-1" data-mode="programm" data-timeout="20000" data-files="../assets/data/v15/wellen.csv">
+        <div class="a-task__text">
+          <p>Bevor du eine Datei auswertest, schaust du sie dir an. Lies <code class="k-i">wellen.csv</code> mit pandas und gib fünf Zeilen aus: die Zahl der Zeilen, die Zahl der Spalten, den Mittelwert, den kleinsten und den größten Wert der Spalte <code class="k-i">durchmesser_mm</code> (mm mit vier Nachkommastellen).</p>
+          <div class="a-spec"><strong>Ausgabe genau so (für die mitgelieferte Datei):</strong><pre data-run="no">Zeilen: 250
+Spalten: 5
+Mittelwert: 20.0037 mm
+Kleinster Wert: 19.9888 mm
+Größter Wert: 20.0255 mm</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V15" aria-label="Python-Code Aufgabe 1">import pandas as pd
+
+df = pd.read_csv("wellen.csv")
+# Zahl der Zeilen und Spalten, dann Mittelwert, kleinster und größter Wert von durchmesser_mm
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _csv(werte):
+    with open("wellen.csv", "w", encoding="utf-8") as f:
+        f.write("stichprobe,maschine,schicht,teil,durchmesser_mm\n")
+        for i, w in enumerate(werte):
+            f.write("%d,D1,Früh,%d,%.4f\n" % (i // 5 + 1, i % 5 + 1, w))
+
+def _zahl(z, label):
+    zeile = [l for l in z if l.startswith(label)]
+    assert zeile, "Die Zeile mit '%s' fehlt. Dein Programm gibt aus: %r" % (label, z)
+    w = _zahlen(zeile[0])
+    assert w, "In der Zeile %r steht keine Zahl." % zeile[0]
+    return w[0]
+
+def _pruefe(z, n, mittel, klein, gross):
+    assert _zahl(z, "Zeilen:") == n, "Zeilen: erwartet %d, dein Programm gibt %s aus." % (n, _zahl(z, "Zeilen:"))
+    assert _zahl(z, "Spalten:") == 5, "Spalten: erwartet 5, dein Programm gibt %s aus." % _zahl(z, "Spalten:")
+    for label, soll in (("Mittelwert:", mittel), ("Kleinster Wert:", klein), ("Größter Wert:", gross)):
+        ist = _zahl(z, label)
+        assert abs(ist - soll) < 1.5e-4, "%s erwartet %.4f, dein Programm gibt %s aus." % (label, soll, ist)
+
+def test_messdatei():
+    """wellen.csv: 250 Zeilen, 5 Spalten, Mittelwert 20.0037, Bereich 19.9888 bis 20.0255"""
+    _pruefe(_zeilen(_run_program([])), 250, 20.0037, 19.9888, 20.0255)
+
+def test_kleine_datei():
+    """Andere Datei mit sechs Messwerten"""
+    w = [20.010, 19.990, 20.030, 20.000, 19.970, 20.020]
+    _csv(w)
+    _pruefe(_zeilen(_run_program([])), 6, sum(w) / 6, min(w), max(w))
+
+def test_eine_zeile():
+    """Grenzfall: nur eine Messzeile"""
+    _csv([20.0125])
+    _pruefe(_zeilen(_run_program([])), 1, 20.0125, 20.0125, 20.0125)
+        </script>
+        <script type="text/x-python" data-role="solution">
+import pandas as pd
+
+df = pd.read_csv("wellen.csv")
+d = df["durchmesser_mm"]
+print(f"Zeilen: {len(df)}")
+print(f"Spalten: {df.shape[1]}")
+print(f"Mittelwert: {d.mean():.4f} mm")
+print(f"Kleinster Wert: {d.min():.4f} mm")
+print(f"Größter Wert: {d.max():.4f} mm")
+        </script>
+        <ol class="a-hints">
+          <li>Die Zahl der Zeilen liefert <code>len(df)</code>, die Zahl der Spalten das zweite Element von <code>df.shape</code> (Syntax-Karte 1): <code>df.shape[1]</code>.</li>
+          <li>Die Spalte holst du mit <code>d = df["durchmesser_mm"]</code>. Darauf rechnen <code>d.mean()</code>, <code>d.min()</code> und <code>d.max()</code> (Karte 2).</li>
+          <li>Vier Nachkommastellen im f-String: <code>print(f"Mittelwert: {d.mean():.4f} mm")</code> (V03).</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-2" data-title="Kennwerte je Schicht mit groupby" data-part="B" data-stars="2" data-min="8" data-extra="" aria-labelledby="h-t-2" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-2" tabindex="-1">Kennwerte je Schicht mit groupby</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="code" data-id="tr-2" data-mode="programm" data-timeout="20000" data-files="../assets/data/v15/wellen.csv">
+        <div class="a-task__text">
+          <p>Streut die Spätschicht stärker als die Frühschicht? Gruppiere <code class="k-i">wellen.csv</code> nach der Spalte <code class="k-i">schicht</code> und berechne für <code class="k-i">durchmesser_mm</code> je Schicht <strong>Mittelwert, Standardabweichung und Anzahl</strong> (in dieser Reihenfolge). Runde auf vier Stellen und gib die Tabelle mit <code class="k-i">print</code> aus.</p>
+          <div class="a-spec"><strong>Ausgabe (für die mitgelieferte Datei):</strong><pre data-run="no">          mean     std  count
+schicht
+Früh   20.0027  0.0052    130
+Spät   20.0047  0.0074    120</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V15" aria-label="Python-Code Aufgabe 2">import pandas as pd
+
+df = pd.read_csv("wellen.csv")
+# nach schicht gruppieren, Mittelwert, Standardabweichung und Anzahl, auf vier Stellen runden, ausgeben
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+import statistics as _st
+
+def _csv(rows):
+    with open("wellen.csv", "w", encoding="utf-8") as f:
+        f.write("stichprobe,maschine,schicht,teil,durchmesser_mm\n")
+        for i, (schicht, w) in enumerate(rows):
+            f.write("%d,D1,%s,%d,%.4f\n" % (i // 5 + 1, schicht, i % 5 + 1, w))
+
+def _tabelle(z):
+    erg = {}
+    for l in z:
+        t = l.split()
+        if len(t) == 4:
+            try:
+                erg[t[0]] = [float(x) for x in t[1:]]
+            except ValueError:
+                pass
+    return erg
+
+def _pruefe(rows):
+    ist = _tabelle(_zeilen(_run_program([])))
+    gruppen = {}
+    for schicht, w in rows:
+        gruppen.setdefault(schicht, []).append(w)
+    assert set(ist) == set(gruppen), "Erwartet werden die Zeilen %s. Dein Programm gibt aus: %s" % (sorted(gruppen), sorted(ist))
+    for name, w in gruppen.items():
+        soll = [sum(w) / len(w), _st.stdev(w), len(w)]
+        for n, a, b in zip(["Mittelwert", "Standardabweichung", "Anzahl"], ist[name], soll):
+            assert abs(a - b) < 1.5e-4, "%s %s: erwartet %.4f, dein Programm gibt %s aus." % (name, n, b, a)
+
+def test_messdatei():
+    """wellen.csv: Früh 20.0027 / 0.0052 / 130, Spät 20.0047 / 0.0074 / 120"""
+    ist = _tabelle(_zeilen(_run_program([])))
+    assert set(ist) == {"Früh", "Spät"}, "Erwartet werden die Zeilen Früh und Spät. Dein Programm gibt aus: %s" % sorted(ist)
+    for name, soll in (("Früh", [20.0027, 0.0052, 130]), ("Spät", [20.0047, 0.0074, 120])):
+        for n, a, b in zip(["Mittelwert", "Standardabweichung", "Anzahl"], ist[name], soll):
+            assert abs(a - b) < 1.5e-4, "%s %s: erwartet %s, dein Programm gibt %s aus." % (name, n, b, a)
+
+def test_zwei_schichten():
+    """Andere Datei mit zwei Schichten"""
+    _csv([("Früh", 20.010), ("Früh", 20.030), ("Früh", 20.020), ("Spät", 19.990), ("Spät", 19.970), ("Spät", 19.980)])
+    _pruefe([("Früh", 20.010), ("Früh", 20.030), ("Früh", 20.020), ("Spät", 19.990), ("Spät", 19.970), ("Spät", 19.980)])
+
+def test_drei_schichten():
+    """Andere Datei mit drei Schichten (auch Nacht)"""
+    rows = [("Früh", 20.001), ("Früh", 20.003), ("Nacht", 19.995), ("Nacht", 19.999), ("Nacht", 20.004), ("Spät", 20.012), ("Spät", 20.016)]
+    _csv(rows)
+    _pruefe(rows)
+        </script>
+        <script type="text/x-python" data-role="solution">
+import pandas as pd
+
+df = pd.read_csv("wellen.csv")
+kennwerte = df.groupby("schicht")["durchmesser_mm"].agg(["mean", "std", "count"])
+print(kennwerte.round(4))
+        </script>
+        <ol class="a-hints">
+          <li>Gruppieren und eine Spalte wählen: <code>df.groupby("schicht")["durchmesser_mm"]</code> (Syntax-Karte 4).</li>
+          <li>Mehrere Kennzahlen auf einmal: <code>.agg(["mean", "std", "count"])</code>. Das Ergebnis ist eine Tabelle, speichere sie in einem Namen.</li>
+          <li>Runden und ausgeben: <code>print(kennwerte.round(4))</code>.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-3" data-title="Ausschussquote je Maschine" data-part="B" data-stars="2" data-min="10" data-extra="" aria-labelledby="h-t-3" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-3" tabindex="-1">Ausschussquote je Maschine</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="code" data-id="tr-3" data-mode="programm" data-timeout="20000" data-files="../assets/data/v15/wellen.csv">
+        <div class="a-task__text">
+          <p>Wie viel Prozent der Teile jeder Maschine liegen außerhalb der Toleranz? Lege eine neue Spalte <code class="k-i">ausschuss</code> an, die <code class="k-i">True</code> ist, wenn ein Teil größer als OSG <em>oder</em> kleiner als USG ist (ein Teil genau auf der Grenze ist in Ordnung). Der Mittelwert einer Spalte aus True und False ist der Anteil der Treffer (True zählt 1, False zählt 0). Gib die Quote je Maschine in <strong>Prozent mit einer Nachkommastelle</strong> aus.</p>
+          <div class="a-spec"><strong>Ausgabe (für die mitgelieferte Datei):</strong><pre data-run="no">maschine
+D1    0.0
+D2    4.8
+Name: ausschuss, dtype: float64</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V15" aria-label="Python-Code Aufgabe 3">import pandas as pd
+
+OSG = 20.020        # obere Spezifikationsgrenze in mm
+USG = 19.980        # untere Spezifikationsgrenze in mm
+
+df = pd.read_csv("wellen.csv")
+# 1. neue Spalte "ausschuss" (True, wenn außerhalb der Toleranz)
+# 2. Anteil je Maschine in Prozent, auf eine Stelle gerundet, ausgeben
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _csv(rows):
+    with open("wellen.csv", "w", encoding="utf-8") as f:
+        f.write("stichprobe,maschine,schicht,teil,durchmesser_mm\n")
+        for i, (m, w) in enumerate(rows):
+            f.write("%d,%s,Früh,%d,%s\n" % (i // 5 + 1, m, i % 5 + 1, w))
+
+def _quoten(z):
+    erg = {}
+    for l in z:
+        t = l.split()
+        if len(t) == 2:
+            try:
+                erg[t[0]] = float(t[1])
+            except ValueError:
+                pass
+    return erg
+
+def _pruefe(rows, soll):
+    _csv(rows)
+    ist = _quoten(_zeilen(_run_program([])))
+    assert set(ist) == set(soll), "Erwartet werden die Maschinen %s. Dein Programm gibt aus: %s" % (sorted(soll), ist)
+    for m in soll:
+        assert abs(ist[m] - soll[m]) < 0.06, "Maschine %s: erwartet %.1f %%, dein Programm gibt %s aus." % (m, soll[m], ist[m])
+
+def test_messdatei():
+    """wellen.csv: D1 0.0 %, D2 4.8 %"""
+    ist = _quoten(_zeilen(_run_program([])))
+    assert set(ist) == {"D1", "D2"}, "Erwartet werden D1 und D2. Dein Programm gibt aus: %s" % ist
+    assert abs(ist["D1"] - 0.0) < 0.06 and abs(ist["D2"] - 4.8) < 0.06, "Erwartet D1 0.0 und D2 4.8, dein Programm gibt %s aus." % ist
+
+def test_grenzwerte_sind_gut():
+    """Teile genau auf 20.02 und 19.98 sind kein Ausschuss"""
+    _pruefe([("D1", "20.00"), ("D1", "20.02"), ("D1", "19.98"), ("D1", "20.021"), ("D2", "20.03"), ("D2", "19.97"), ("D2", "20.00"), ("D2", "20.01")], {"D1": 25.0, "D2": 50.0})
+
+def test_ohne_ausschuss_und_alles_ausschuss():
+    """Eine Maschine ohne Ausschuss, eine mit nur Ausschuss"""
+    _pruefe([("A", "20.00"), ("A", "20.01"), ("B", "20.05"), ("B", "19.90")], {"A": 0.0, "B": 100.0})
+
+def test_drittel():
+    """Eine von drei Wellen: 33.3 Prozent"""
+    _pruefe([("D1", "20.00"), ("D1", "20.01"), ("D1", "19.95"), ("D2", "20.00"), ("D2", "20.00")], {"D1": 33.3, "D2": 0.0})
+        </script>
+        <script type="text/x-python" data-role="solution">
+import pandas as pd
+
+OSG = 20.020        # obere Spezifikationsgrenze in mm
+USG = 19.980        # untere Spezifikationsgrenze in mm
+
+df = pd.read_csv("wellen.csv")
+df["ausschuss"] = (df["durchmesser_mm"] > OSG) | (df["durchmesser_mm"] < USG)
+quote = df.groupby("maschine")["ausschuss"].mean() * 100
+print(quote.round(1))
+        </script>
+        <ol class="a-hints">
+          <li>Die neue Spalte ist eine Maske: <code>df["ausschuss"] = (df["durchmesser_mm"] &gt; OSG) | (df["durchmesser_mm"] &lt; USG)</code>. Jede Bedingung in Klammern, dazwischen <code>|</code> (Syntax-Karte 3).</li>
+          <li>Je Maschine ein Mittelwert der Spalte <code>ausschuss</code>: <code>df.groupby("maschine")["ausschuss"].mean()</code>. Das ergibt einen Anteil zwischen 0 und 1.</li>
+          <li>Mal 100 für Prozent, dann <code>.round(1)</code> und <code>print</code>. Achte auf <code>&gt;</code> und <code>&lt;</code> ohne Gleichheitszeichen: Die Grenze selbst ist noch in Ordnung.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-4" data-title="PAP zeichnen: Cpk bewerten" data-part="B" data-stars="2" data-min="10" data-extra="PAP zeichnen" aria-labelledby="h-t-4" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-4" tabindex="-1">PAP zeichnen: Cpk bewerten</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Aus Mittelwert und Streuung wird ein Urteil: Ist die Maschine fähig? Das zeichnest du als Plan. Die vier Eingaben stehen schon da. Ergänze die Rechnung für den Cpk, die zwei Rauten und die drei Ausgaben. Der Text einer Ausgabe steht in Anführungszeichen, zum Beispiel <code class="k-i">"fähig"</code>. Die Prüfung erzeugt aus deinem PAP Python-Code und testet ihn, auch am Grenzfall.</p>
+      <div class="a-task k-pap-aufgabe" data-a="pap-zeichnen" data-id="v15-cpk-bewertung" data-timeout="8000" data-erlaubt="in,out,op,if">
+        <div class="a-task__head"><h3 class="a-task__title">Prozessfähigkeit bewerten</h3></div>
+        <p>Zeichne einen PAP: Eingaben sind der Mittelwert <code class="k-i">mittel</code>, die Standardabweichung <code class="k-i">s</code> und die Grenzen <code class="k-i">usg</code> und <code class="k-i">osg</code> (alles Kommazahlen in mm). Berechne <code class="k-i">cpk</code> als den kleineren der beiden Abstände zu den Grenzen, geteilt durch 3 · s (in Python <code class="k-i">min(osg - mittel, mittel - usg) / (3 * s)</code>). Dann: Ist <code class="k-i">cpk</code> mindestens 1,33, gib „fähig“ aus. Sonst: Ist <code class="k-i">cpk</code> mindestens 1,0, gib „bedingt fähig“ aus. Sonst gib „nicht fähig“ aus. Es wird nur der Text ausgegeben.</p>
+        <script type="application/json" data-role="start">{"baum":[{"k":"in","v":"mittel","typ":"float"},{"k":"in","v":"s","typ":"float"},{"k":"in","v":"usg","typ":"float"},{"k":"in","v":"osg","typ":"float"}]}</script>
+        <script type="text/x-python" data-role="tests">
+def _urteil(mittel, s, usg, osg):
+    return zeilen(run_program([str(mittel), str(s), str(usg), str(osg)]))
+
+def _erwarte(z, soll):
+    assert soll in z, "Erwartet wird die Ausgabe '%s'. Dein PAP gibt aus: %r" % (soll, z)
+    for anderes in ("fähig", "bedingt fähig", "nicht fähig"):
+        if anderes != soll:
+            assert anderes not in z, "Es darf nur '%s' ausgegeben werden. Dein PAP gibt aus: %r" % (soll, z)
+
+def test_faehig():
+    """Mittig, kleine Streuung (Cpk 1,67): fähig"""
+    _erwarte(_urteil(20.0, 0.004, 19.98, 20.02), "fähig")
+
+def test_bedingt():
+    """Mittig, größere Streuung (Cpk 1,11): bedingt fähig"""
+    _erwarte(_urteil(20.0, 0.006, 19.98, 20.02), "bedingt fähig")
+
+def test_nicht_faehig():
+    """Zur oberen Grenze verschoben (Cpk 0,72): nicht fähig"""
+    _erwarte(_urteil(20.007, 0.006, 19.98, 20.02), "nicht fähig")
+
+def test_untere_grenze():
+    """Zur unteren Grenze verschoben (Cpk 1,44): fähig. Der kleinere Abstand zählt"""
+    _erwarte(_urteil(19.993, 0.003, 19.98, 20.02), "fähig")
+
+def test_grenzfall_eins():
+    """Grenzfall: Cpk genau 1,0 ist bedingt fähig"""
+    _erwarte(_urteil(10, 2, 4, 20), "bedingt fähig")
+
+def test_ausserhalb():
+    """Mittelwert außerhalb der Toleranz: Cpk negativ, nicht fähig"""
+    _erwarte(_urteil(20.03, 0.004, 19.98, 20.02), "nicht fähig")
+        </script>
+        <script type="application/json" data-role="solution">{"baum":[{"k":"in","v":"mittel","typ":"float"},{"k":"in","v":"s","typ":"float"},{"k":"in","v":"usg","typ":"float"},{"k":"in","v":"osg","typ":"float"},{"k":"op","v":"cpk = min(osg - mittel, mittel - usg) / (3 * s)"},{"k":"if","v":"cpk >= 1.33","yes":[{"k":"out","v":"\"fähig\""}],"no":[{"k":"if","v":"cpk >= 1.0","yes":[{"k":"out","v":"\"bedingt fähig\""}],"no":[{"k":"out","v":"\"nicht fähig\""}]}]}]}</script>
+        <ol class="a-hints">
+          <li>Nach den vier Eingaben kommt ein Rechteck (Operation) mit <code>cpk = min(osg - mittel, mittel - usg) / (3 * s)</code>. Das <code>min</code> nimmt den kleineren Abstand zu den Grenzen.</li>
+          <li>Danach eine Raute mit der Bedingung <code>cpk &gt;= 1.33</code>. Im „ja“-Zweig die Ausgabe <code>"fähig"</code>. Im „nein“-Zweig kommt die zweite Raute: <code>cpk &gt;= 1.0</code>, „ja“: <code>"bedingt fähig"</code>, „nein“: <code>"nicht fähig"</code>.</li>
+          <li>Achte auf <code>&gt;=</code>: Genau 1,0 ist noch „bedingt fähig“. Das testet der Grenzfall.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-5" data-title="Wiederholung: phyphox-Bremsung mit pandas statt csv-Modul" data-part="B" data-stars="2" data-min="8" data-extra="Wiederholung V09" aria-labelledby="h-t-5" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-5" tabindex="-1">Wiederholung: phyphox-Bremsung mit pandas statt csv-Modul</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">In V09 hast du die Bremsmessung <code class="k-i">bremsen.csv</code> mit dem <code class="k-i">csv</code>-Modul, einer Schleife und <code class="k-i">replace(",", ".")</code> gelesen. Heute reicht eine Zeile: <code class="k-i">sep=";"</code> für das Semikolon und <code class="k-i">decimal=","</code> für das Dezimalkomma. Die Datei hat fünf Spalten, uns interessieren <code class="k-i">Time (s)</code> und <code class="k-i">Linear Acceleration y (m/s^2)</code>.</p>
+      <div class="a-task" data-a="code" data-id="tr-5" data-mode="programm" data-timeout="20000" data-files="../assets/data/v09/bremsen.csv">
+        <div class="a-task__text">
+          <p>Lies die Datei mit pandas. Gib die Zahl der Messwerte aus und die <strong>Verzögerungsspitze</strong>, den kleinsten Wert der Beschleunigung in y-Richtung, mit dem Zeitpunkt, zu dem sie auftritt. Hilfe: <code class="k-i">idxmin()</code> liefert die Zeilennummer des kleinsten Werts, und <code class="k-i">df["Time (s)"][nummer]</code> holt die Zeit aus dieser Zeile.</p>
+          <div class="a-spec"><strong>Ausgabe genau so (für die mitgelieferte Datei):</strong><pre data-run="no">Messwerte: 400
+Spitze: -3.78 m/s² bei t = 4.94 s</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V15" aria-label="Python-Code Aufgabe 5">import pandas as pd
+
+df = pd.read_csv("bremsen.csv")      # Trennzeichen und Dezimalzeichen anpassen!
+# Spalten: "Time (s)" und "Linear Acceleration y (m/s^2)"
+# Messwerte zählen, kleinsten Wert und seinen Zeitpunkt bestimmen, ausgeben
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+KOPF = '"Time (s)";"Linear Acceleration x (m/s^2)";"Linear Acceleration y (m/s^2)";"Linear Acceleration z (m/s^2)";"Absolute acceleration (m/s^2)"'
+
+def _schreibe(paare):
+    with open("bremsen.csv", "w", encoding="utf-8") as f:
+        f.write(KOPF + "\n")
+        for t, a in paare:
+            f.write("%s;0,1;%s;0,2;0,3\n" % (("%.2f" % t).replace(".", ","), ("%.3f" % a).replace(".", ",")))
+
+def _pruefe(z, n, spitze, zeit):
+    zn = [l for l in z if l.startswith("Messwerte:")]
+    zs = [l for l in z if l.startswith("Spitze:")]
+    assert zn and zs, "Es werden die Zeilen 'Messwerte: …' und 'Spitze: …' erwartet. Dein Programm gibt aus: %r" % z
+    assert _zahlen(zn[0]) == [n], "Messwerte: erwartet %d, in der Zeile %r steht etwas anderes." % (n, zn[0])
+    w = _zahlen(zs[0])
+    assert len(w) == 2, "In der Zeile %r werden zwei Zahlen erwartet (Spitze und Zeit)." % zs[0]
+    assert abs(w[0] - spitze) < 0.0051, "Spitze: erwartet %.2f, dein Programm gibt %s aus." % (spitze, w[0])
+    assert abs(w[1] - zeit) < 0.0051, "Zeitpunkt: erwartet %.2f s, dein Programm gibt %s aus." % (zeit, w[1])
+
+def test_mitgelieferte_datei():
+    """bremsen.csv: 400 Messwerte, Spitze -3.78 m/s² bei t = 4.94 s"""
+    _pruefe(_zeilen(_run_program([])), 400, -3.78, 4.94)
+
+def test_kleine_datei():
+    """Andere Datei mit vier Messwerten: Spitze -2.70 bei 1.00 s"""
+    _schreibe([(0.0, 0.1), (0.5, -1.2), (1.0, -2.7), (1.5, -0.4)])
+    _pruefe(_zeilen(_run_program([])), 4, -2.70, 1.00)
+
+def test_spitze_am_anfang():
+    """Die Spitze ist der erste Wert und positiv: 0.50 bei 0.00 s"""
+    _schreibe([(0.0, 0.5), (0.5, 0.9), (1.0, 0.7)])
+    _pruefe(_zeilen(_run_program([])), 3, 0.50, 0.00)
+
+def test_spitze_am_ende():
+    """Die Spitze ist der letzte Wert: -3.10 bei 2.00 s"""
+    _schreibe([(0.0, -0.2), (1.0, -1.0), (2.0, -3.1)])
+    _pruefe(_zeilen(_run_program([])), 3, -3.10, 2.00)
+        </script>
+        <script type="text/x-python" data-role="solution">
+import pandas as pd
+
+df = pd.read_csv("bremsen.csv", sep=";", decimal=",")
+a = df["Linear Acceleration y (m/s^2)"]
+i = a.idxmin()
+print(f"Messwerte: {len(df)}")
+print(f"Spitze: {a.min():.2f} m/s² bei t = {df['Time (s)'][i]:.2f} s")
+        </script>
+        <ol class="a-hints">
+          <li>Die Datei ist ein deutscher Export: <code>pd.read_csv("bremsen.csv", sep=";", decimal=",")</code> (Syntax-Karte 1). Prüfe mit <code>df.shape</code>, dass es fünf Spalten sind.</li>
+          <li>Die Spalte steckt in einem Namen: <code>a = df["Linear Acceleration y (m/s^2)"]</code>. Dann <code>i = a.idxmin()</code> (Zeilennummer des kleinsten Werts) und <code>a.min()</code>.</li>
+          <li>Die Zeit aus derselben Zeile: <code>df["Time (s)"][i]</code>. Im f-String mit einfachen Anführungszeichen für den Spaltennamen: <code>f"… {df['Time (s)'][i]:.2f} s"</code>.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-6" data-title="Funktion cp_cpk für eine Messreihe" data-part="B" data-stars="3" data-min="12" data-extra="" aria-labelledby="h-t-6" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-6" tabindex="-1">Funktion cp_cpk für eine Messreihe</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task" data-a="code" data-id="tr-6" data-mode="code" data-timeout="20000" data-files="../assets/data/v15/wellen.csv">
+        <div class="a-task__text">
+          <p>Cp und Cpk brauchst du für jede Maschine, jede Schicht und jedes Maß: Das gehört in eine <strong>Funktion</strong> (V07). Schreibe <code class="k-i">cp_cpk(serie, usg, osg)</code>. Der Parameter <code class="k-i">serie</code> ist eine Spalte (Series) mit Messwerten. Die Funktion gibt das Paar <code class="k-i">(cp, cpk)</code> zurück, beide auf <strong>vier Nachkommastellen</strong> gerundet. Die Grenzen kommen als Parameter, nicht aus dem Programm: Die Funktion muss für jedes Maß funktionieren. Die Tests rufen sie mit den Maschinen aus der Datei und mit anderen Messreihen auf.</p>
+          <div class="a-spec"><strong>Erwartet</strong><pre data-run="no">cp_cpk(D1-Spalte, 19.98, 20.02)  ergibt  (1.5905, 1.5809)
+cp_cpk(D2-Spalte, 19.98, 20.02)  ergibt  (1.0682, 0.6838)</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V15" aria-label="Python-Code Aufgabe 6">import pandas as pd
+
+df = pd.read_csv("wellen.csv")
+
+
+def cp_cpk(serie, usg, osg):
+    """Gibt (Cp, Cpk) der Messreihe zurück, beide auf vier Stellen gerundet."""
+    pass
+
+
+for maschine in ["D1", "D2"]:
+    messwerte = df[df["maschine"] == maschine]["durchmesser_mm"]
+    print(maschine, cp_cpk(messwerte, 19.98, 20.02))
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+import pandas as _pd
+
+def _soll(serie, usg, osg):
+    m = serie.mean()
+    s = serie.std()
+    return round((osg - usg) / (6 * s), 4), round(min(osg - m, m - usg) / (3 * s), 4)
+
+def _gleich(ist, soll, text):
+    assert ist is not None and len(ist) == 2, "Die Funktion soll ein Paar (cp, cpk) zurückgeben (%s). Sie gibt %r zurück." % (text, ist)
+    assert abs(ist[0] - soll[0]) < 1e-9 and abs(ist[1] - soll[1]) < 1e-9, "%s: erwartet %s, die Funktion gibt %s zurück." % (text, soll, tuple(ist))
+
+def test_d1():
+    """Maschine D1: (1.5905, 1.5809)"""
+    df_ = _pd.read_csv("wellen.csv")
+    _gleich(cp_cpk(df_[df_["maschine"] == "D1"]["durchmesser_mm"], 19.98, 20.02), (1.5905, 1.5809), "D1")
+
+def test_d2():
+    """Maschine D2: (1.0682, 0.6838), Cpk kleiner als Cp"""
+    df_ = _pd.read_csv("wellen.csv")
+    _gleich(cp_cpk(df_[df_["maschine"] == "D2"]["durchmesser_mm"], 19.98, 20.02), (1.0682, 0.6838), "D2")
+
+def test_andere_reihe():
+    """Andere Messreihe, Cp und Cpk berechnet aus Mittelwert und s"""
+    r = _pd.Series([20.005, 20.010, 20.012, 20.008, 20.015])
+    _gleich(cp_cpk(r, 19.98, 20.02), _soll(r, 19.98, 20.02), "Reihe 1")
+
+def test_andere_grenzen():
+    """Andere Grenzen (9.9 und 10.1): die Grenzen sind Parameter"""
+    r = _pd.Series([10.01, 9.98, 10.03, 9.99, 10.00, 10.02])
+    _gleich(cp_cpk(r, 9.9, 10.1), _soll(r, 9.9, 10.1), "Reihe 2")
+
+def test_ausserhalb():
+    """Mittelwert außerhalb der Toleranz: Cpk ist negativ"""
+    r = _pd.Series([20.030, 20.034, 20.028, 20.031])
+    ist = cp_cpk(r, 19.98, 20.02)
+    _gleich(ist, _soll(r, 19.98, 20.02), "Reihe 3")
+    assert ist[1] < 0, "Liegt der Mittelwert außerhalb der Toleranz, muss der Cpk negativ sein. Die Funktion gibt %s zurück." % (ist[1],)
+        </script>
+        <script type="text/x-python" data-role="solution">
+import pandas as pd
+
+df = pd.read_csv("wellen.csv")
+
+
+def cp_cpk(serie, usg, osg):
+    """Gibt (Cp, Cpk) der Messreihe zurück, beide auf vier Stellen gerundet."""
+    mittel = serie.mean()
+    s = serie.std()
+    cp = (osg - usg) / (6 * s)
+    cpk = min(osg - mittel, mittel - usg) / (3 * s)
+    return round(cp, 4), round(cpk, 4)
+
+
+for maschine in ["D1", "D2"]:
+    messwerte = df[df["maschine"] == maschine]["durchmesser_mm"]
+    print(maschine, cp_cpk(messwerte, 19.98, 20.02))
+        </script>
+        <ol class="a-hints">
+          <li>Im Rumpf der Funktion rechnest du mit <code>serie.mean()</code> und <code>serie.std()</code>. Alles, was du brauchst, kommt aus den drei Parametern. Kein <code>df</code> und keine festen Zahlen 19.98 oder 20.02 im Rumpf.</li>
+          <li>Cp ist <code>(osg - usg) / (6 * s)</code>, Cpk ist <code>min(osg - mittel, mittel - usg) / (3 * s)</code> (Syntax-Karte 6).</li>
+          <li>Zurückgeben: <code>return round(cp, 4), round(cpk, 4)</code>. Ein <code>return</code> mit Komma gibt ein Paar (Tupel) zurück (V08). <code>print</code> im Rumpf wäre keine Rückgabe.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-7" data-title="Regelkarte zeichnen und auffällige Stichproben finden" data-part="B" data-stars="3" data-min="15" data-extra="" aria-labelledby="h-t-7" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-7" tabindex="-1">Regelkarte zeichnen und auffällige Stichproben finden</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Im Beispiel hast du die Eingriffsgrenzen für D2 gerechnet. Jetzt machst du daraus eine Funktion für <em>jede</em> Maschine und zeichnest die Karte dazu. Beim ersten Ausführen lädt matplotlib nach (ca. 22 MB, einmalig). Die Tests rufen deine Funktion auch mit anderen Daten auf und schauen ins Diagramm.</p>
+      <div class="a-task" data-a="code" data-id="tr-7" data-mode="code" data-timeout="40000" data-files="../assets/data/v15/wellen.csv">
+        <div class="a-task__text">
+          <p>Schreibe <code class="k-i">regelkarte(df, maschine)</code>. Sie filtert die Tabelle auf die Maschine, bildet den Mittelwert je Stichprobe, bestimmt <strong>Mittellinie</strong> und <strong>Eingriffsgrenzen</strong> aus den Stichproben 1 bis 15 (Mittellinie ± 3 · s/√5, wie im Beispiel) und zeichnet die Mittelwerte als Linie mit Punkten (<code class="k-i">plt.plot</code>), dazu drei waagerechte Hilfslinien (<code class="k-i">plt.axhline</code>). Beschrifte die Achsen („Stichprobe Nr.“, „Mittelwert d in mm“) und setze einen Titel. Die Funktion <strong>gibt die Liste der Nummern der auffälligen Stichproben zurück</strong> (Mittelwert außerhalb der Grenzen) und ruft <code class="k-i">plt.show()</code> nicht selbst auf.</p>
+          <div class="a-spec"><strong>Erwartet</strong><pre data-run="no">regelkarte(df, "D2")  ergibt  [20, 24, 25]
+regelkarte(df, "D1")  ergibt  []
+Diagramm: eine Linie mit 25 Mittelwerten, drei Hilfslinien, Achsentitel und Titel</pre></div>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V15" aria-label="Python-Code Aufgabe 7">import pandas as pd
+import matplotlib.pyplot as plt
+
+df = pd.read_csv("wellen.csv")
+
+
+def regelkarte(df, maschine):
+    """Zeichnet die Regelkarte der Stichproben-Mittelwerte, gibt die Nummern der auffälligen Stichproben zurück."""
+    # 1. auf die Maschine filtern, Mittelwert je Stichprobe
+    # 2. Mittellinie und Eingriffsgrenzen aus den Stichproben 1 bis 15
+    # 3. zeichnen und beschriften
+    return []
+
+
+auffaellig = regelkarte(df, "D2")
+print("Auffällig bei D2:", auffaellig)
+plt.show()
+</textarea></div>
+        <script type="text/x-python" data-role="tests">
+import pandas as _pd
+import matplotlib.pyplot as _plt
+
+def _aufruf(daten, maschine):
+    _plt.close("all")
+    erg = regelkarte(daten, maschine)
+    return [int(x) for x in list(erg)], _plt.gcf()
+
+def _gebaut():
+    muster = [19.99, 20.00, 20.01, 20.00, 20.00]
+    zeilen_ = []
+    for s in range(1, 21):
+        verschiebung = 0.0
+        if s == 18:
+            verschiebung = 0.03
+        if s == 19:
+            verschiebung = 0.004
+        if s == 20:
+            verschiebung = -0.02
+        for t, w in enumerate(muster):
+            zeilen_.append((s, "D1", "Früh", t + 1, w + verschiebung))
+            zeilen_.append((s, "D2", "Spät", t + 1, 20.1 + 0.001 * s * (t + 1)))
+    return _pd.DataFrame(zeilen_, columns=["stichprobe", "maschine", "schicht", "teil", "durchmesser_mm"])
+
+def test_d2_messdatei():
+    """D2 aus wellen.csv: auffällig sind die Stichproben 20, 24 und 25"""
+    erg, _ = _aufruf(_pd.read_csv("wellen.csv"), "D2")
+    assert erg == [20, 24, 25], "Erwartet [20, 24, 25], die Funktion gibt %s zurück." % (erg,)
+
+def test_d1_messdatei():
+    """D1 aus wellen.csv: keine Stichprobe auffällig"""
+    erg, _ = _aufruf(_pd.read_csv("wellen.csv"), "D1")
+    assert erg == [], "Bei D1 ist keine Stichprobe auffällig, die Funktion gibt %s zurück." % (erg,)
+
+def test_andere_daten():
+    """Andere Daten: Stichprobe 18 (zu hoch) und 20 (zu niedrig) sind auffällig, 19 nicht"""
+    erg, _ = _aufruf(_gebaut(), "D1")
+    assert erg == [18, 20], "Erwartet [18, 20], die Funktion gibt %s zurück. (Nur D1 filtern, Grenzen aus den Stichproben 1 bis 15.)" % (erg,)
+
+def test_linie_und_hilfslinien():
+    """Im Diagramm: eine Linie mit 25 Mittelwerten und drei waagerechte Hilfslinien"""
+    _, fig_ = _aufruf(_pd.read_csv("wellen.csv"), "D2")
+    assert fig_.axes, "Es wurde nichts gezeichnet (plt.plot)."
+    ax_ = fig_.axes[0]
+    linien = [l for l in ax_.lines if len(set(float(v) for v in l.get_ydata())) > 1]
+    waagerecht = [l for l in ax_.lines if len(set(float(v) for v in l.get_ydata())) == 1]
+    assert len(linien) == 1 and len(linien[0].get_xdata()) == 25, "Erwartet wird eine Linie mit den 25 Stichproben-Mittelwerten. Gefunden: %d Linien mit Werten, davon die erste mit %d Punkten." % (len(linien), len(linien[0].get_xdata()) if linien else 0)
+    assert len(waagerecht) >= 3, "Erwartet werden drei waagerechte Hilfslinien (Mittellinie, OEG, UEG, plt.axhline). Gefunden: %d." % len(waagerecht)
+
+def test_beschriftung():
+    """Achsen mit Größe und Einheit, Titel gesetzt"""
+    _, fig_ = _aufruf(_pd.read_csv("wellen.csv"), "D2")
+    ax_ = fig_.axes[0]
+    assert "Stichprobe" in ax_.get_xlabel(), "x-Achse: erwartet z. B. 'Stichprobe Nr.', ist %r" % ax_.get_xlabel()
+    assert "mm" in ax_.get_ylabel(), "y-Achse: erwartet z. B. 'Mittelwert d in mm', ist %r" % ax_.get_ylabel()
+    assert ax_.get_title().strip() != "", "Es fehlt der Titel (plt.title)."
+        </script>
+        <script type="text/x-python" data-role="solution">
+import pandas as pd
+import matplotlib.pyplot as plt
+
+df = pd.read_csv("wellen.csv")
+
+
+def regelkarte(df, maschine):
+    """Zeichnet die Regelkarte der Stichproben-Mittelwerte, gibt die Nummern der auffälligen Stichproben zurück."""
+    teil = df[df["maschine"] == maschine]
+    mittel = teil.groupby("stichprobe")["durchmesser_mm"].mean()
+    anfang = teil[teil["stichprobe"] <= 15]
+    mitte = anfang["durchmesser_mm"].mean()
+    sigma_x = anfang["durchmesser_mm"].std() / 5 ** 0.5
+    oeg = mitte + 3 * sigma_x
+    ueg = mitte - 3 * sigma_x
+    plt.plot(mittel.index, mittel.values, marker="o")
+    plt.axhline(mitte, color="gray", linestyle="--")
+    plt.axhline(oeg, color="black", linestyle=":")
+    plt.axhline(ueg, color="black", linestyle=":")
+    plt.xlabel("Stichprobe Nr.")
+    plt.ylabel("Mittelwert d in mm")
+    plt.title("Regelkarte " + maschine)
+    auffaellig = mittel[(mittel > oeg) | (mittel < ueg)]
+    return list(auffaellig.index)
+
+
+auffaellig = regelkarte(df, "D2")
+print("Auffällig bei D2:", auffaellig)
+plt.show()
+        </script>
+        <ol class="a-hints">
+          <li>Die Rechnung kennst du aus dem Beispiel (Zeilen 27 bis 34), nur die Maschine ist jetzt ein Parameter: <code>teil = df[df["maschine"] == maschine]</code>, dann <code>mittel</code>, <code>anfang</code>, <code>mitte</code>, <code>sigma_x</code>, <code>oeg</code>, <code>ueg</code> (die Variable <code>maschine</code> statt <code>"D2"</code>).</li>
+          <li>Zeichnen wie in Syntax-Karte 5: <code>plt.plot(mittel.index, mittel.values, marker="o")</code>, drei <code>plt.axhline(…)</code> mit unterschiedlichem <code>linestyle</code>, <code>plt.xlabel</code>, <code>plt.ylabel</code> und <code>plt.title</code>.</li>
+          <li>Am Ende der Funktion: <code>return list(auffaellig.index)</code>, mit der Maske <code>mittel[(mittel &gt; oeg) | (mittel &lt; ueg)]</code>. <code>plt.show()</code> steht <em>außerhalb</em> der Funktion, unten im Programm.</li>
+        </ol>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-8" data-title="Klausur-Modus: Tabelle lesen, Cpk von Hand schreiben" data-part="B" data-stars="4" data-min="15" data-extra="8 Punkte" aria-labelledby="h-t-8" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-8" tabindex="-1">Klausur-Modus: Tabelle lesen, Cpk von Hand schreiben</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <div class="a-task__text">
+        <p><strong>So wie in der Klausur:</strong> Der erste Teil läuft auf Papier, der zweite im Editor ohne Ausführen und ohne <abbr class="k-begriff" data-erklaerung="Die Auto-Vervollständigung schlägt dir beim Tippen passende Wörter vor. In der Klausur gibt es sie nicht.">Auto-Vervollständigung</abbr>.</p>
+        <h3>Teil 1 (Papier, 3 Punkte): Code lesen</h3>
+        <pre data-run="no" class="k-code"><code>import pandas as pd
+
+df = pd.DataFrame({"maschine": ["D1", "D2", "D1", "D2"],
+                   "d": [20.00, 20.04, 19.96, 20.02]})
+maske = df["d"] &gt; 20.02
+print(maske.sum())
+print(df[df["maschine"] == "D1"]["d"].mean())
+print(df.groupby("maschine")["d"].max())</code></pre>
+        <p>Was gibt das Programm aus (1 Punkt je <code>print</code>)? <em>Hinweis:</em> <code>maske.sum()</code> zählt die True-Werte, <code>pd.DataFrame({…})</code> baut eine Tabelle mit zwei Spalten und vier Zeilen. Schreibe die drei Ausgaben auf Papier. Decke danach auf und vergleiche.</p>
+        <details class="k-deep">
+          <summary>Auflösung aufdecken und ausführen</summary>
+          <div class="k-deep__body">
+            <p>Die Maske ist <code>[False, True, False, False]</code> (nur 20.04 ist größer als 20.02, 20.02 selbst nicht), also gibt der erste <code>print</code> <code>1</code> aus. Der zweite filtert auf D1 (20.00 und 19.96) und gibt den Mittelwert <code>19.98</code> aus. Der dritte gibt eine Tabelle mit dem größten Wert je Maschine aus: D1 <code>20.00</code>, D2 <code>20.04</code>, dazu die Kopfzeile <code>maschine</code> und die Zeile <code>Name: d, dtype: float64</code>.</p>
+            <pre data-timeout="20000"><code>import pandas as pd
+
+df = pd.DataFrame({"maschine": ["D1", "D2", "D1", "D2"],
+                   "d": [20.00, 20.04, 19.96, 20.02]})
+maske = df["d"] &gt; 20.02
+print(maske.sum())
+print(df[df["maschine"] == "D1"]["d"].mean())
+print(df.groupby("maschine")["d"].max())</code></pre>
+          </div>
+        </details>
+        <h3>Teil 2 (Code schreiben, 8 Punkte)</h3>
+      </div>
+      <div class="a-task" data-a="klausur" data-id="tr-8" data-mode="code" data-minutes="15" data-timeout="20000">
+        <div class="a-task__text">
+          <p>Schreibe eine Funktion <code>cpk(werte, usg, osg)</code>, die den Cpk einer <strong>Liste</strong> von Messwerten berechnet, <strong>ohne pandas</strong> und ohne <code>statistics</code>. Der Mittelwert ist die Summe geteilt durch die Anzahl. Die Standardabweichung der Stichprobe ist <code>s = Wurzel( Summe der (x - mittel)² / (n - 1) )</code>, die Wurzel schreibst du als <code>** 0.5</code>. Der Cpk ist der kleinere der beiden Abstände <code>osg - mittel</code> und <code>mittel - usg</code>, geteilt durch <code>3 * s</code>. Die Funktion gibt den Cpk auf <strong>drei Nachkommastellen</strong> gerundet zurück. Beispiel: <code>cpk([20.002, 19.998, 20.006, 19.994, 20.000], 19.98, 20.02)</code> ergibt <code>1.491</code>.</p>
+        </div>
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V15" data-assist="off" aria-label="Python-Code von Hand schreiben, ohne Ausführen"></textarea></div>
+        <script type="text/x-python" data-role="tests">
+def _soll(werte, usg, osg):
+    n = len(werte)
+    m = sum(werte) / n
+    s = (sum((x - m) ** 2 for x in werte) / (n - 1)) ** 0.5
+    return round(min(osg - m, m - usg) / (3 * s), 3)
+
+def _pruefe(werte, usg, osg):
+    ist = cpk(werte, usg, osg)
+    soll = _soll(werte, usg, osg)
+    assert ist is not None, "Die Funktion gibt nichts zurück. Mit return geben, nicht mit print."
+    assert abs(ist - soll) < 1e-9, "cpk(%r, %s, %s): erwartet %s, die Funktion gibt %s zurück." % (werte, usg, osg, soll, ist)
+
+def test_funktion():
+    """Die Funktion cpk existiert und rechnet das Beispiel: 1.491"""
+    assert "cpk" in globals() and callable(cpk), "Es fehlt die Funktion cpk(werte, usg, osg)."
+    _pruefe([20.002, 19.998, 20.006, 19.994, 20.000], 19.98, 20.02)
+
+def test_verschoben():
+    """Prozess zur oberen Grenze verschoben: der kleinere Abstand zählt"""
+    _pruefe([20.010, 20.012, 20.008, 20.011, 20.009], 19.98, 20.02)
+
+def test_untere_grenze():
+    """Prozess zur unteren Grenze verschoben"""
+    _pruefe([19.991, 19.989, 19.993, 19.990, 19.992, 19.988], 19.98, 20.02)
+
+def test_andere_grenzen():
+    """Andere Grenzen (9.9 und 10.1): nichts ist fest eingebaut"""
+    _pruefe([10.01, 9.98, 10.03, 9.99, 10.00, 10.02], 9.9, 10.1)
+
+def test_ausserhalb():
+    """Mittelwert außerhalb der Toleranz: Cpk negativ"""
+    _pruefe([20.030, 20.034, 20.028, 20.031], 19.98, 20.02)
+    assert cpk([20.030, 20.034, 20.028, 20.031], 19.98, 20.02) < 0, "Liegt der Mittelwert außerhalb der Toleranz, muss der Cpk negativ sein."
+        </script>
+        <script type="text/x-python" data-role="solution">
+def cpk(werte, usg, osg):
+    n = len(werte)
+    mittel = sum(werte) / n
+    summe = 0.0
+    for x in werte:
+        summe = summe + (x - mittel) ** 2
+    s = (summe / (n - 1)) ** 0.5
+    abstand = min(osg - mittel, mittel - usg)
+    return round(abstand / (3 * s), 3)
+        </script>
+        <script type="application/json" data-role="scheme">[
+{"p":1,"t":"def cpk(werte, usg, osg): mit den drei Parametern, Doppelpunkt, Rumpf eingerückt; am Ende ein return (kein print)"},
+{"p":1,"t":"Mittelwert als Summe durch Anzahl: sum(werte) / len(werte)"},
+{"p":1,"t":"Quadratsumme der Abweichungen vom Mittelwert (Schleife oder Generator) richtig gebildet"},
+{"p":1,"t":"Standardabweichung der Stichprobe: durch (n - 1) geteilt und die Wurzel als ** 0.5"},
+{"p":1,"t":"Beide Abstände osg - mittel und mittel - usg gebildet"},
+{"p":1,"t":"Der kleinere Abstand mit min(...) gewählt (nicht max)"},
+{"p":1,"t":"Division durch 3 * s mit Klammern: abstand / (3 * s), nicht abstand / 3 * s"},
+{"p":1,"t":"Auf drei Nachkommastellen gerundet und zurückgegeben; keine Syntaxfehler, richtige Einrückung und Klammern"}
+]</script>
+      </div>
+
+    </section>
+
+    <section class="l-task" id="t-projekt" data-nonumber="1" data-title="Projekt: Meilenstein V15" data-part="B" data-stars="" data-min="" data-extra="ohne Wertung" aria-labelledby="h-t-projekt" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-projekt" tabindex="-1">Projekt: Meilenstein V15</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Falls in der Projektzeit nicht alles geschafft wurde: Hier ist die Liste für diesen Termin. Heute geht es um die Frage „Woher kommen die Zahlen, und was soll herauskommen?“, noch ohne Code. Alle Themen, die weiteren Meilensteine und das Bewertungsraster stehen auf der <a href="../projekt.html">Projektseite</a>. Wer das Thema „SPC-Auswertung“ gewählt hat, arbeitet mit <code class="k-i">wellen.csv</code> aus diesem Labor.</p>
+      <ol class="k-steps">
+        <li><strong>Datenquelle beschaffen:</strong> Woher stammen eure Zahlen (Datei, Tabellenbuch, eigene Messung)? Schreibt die Quelle auf.</li>
+        <li><strong>Eingaben auflisten:</strong> Jede Eingabe mit Einheit und einem sinnvollen Wertebereich (zum Beispiel Durchmesser größer 0 mm).</li>
+        <li><strong>Fünf Testfälle von Hand rechnen:</strong> mit Taschenrechner oder Papier, darunter mindestens <strong>zwei Grenzfälle</strong> (zum Beispiel ein Messwert genau auf der Toleranzgrenze).</li>
+        <li><strong>Testfälle festhalten:</strong> als Python-Liste oder in einer Datei <code class="k-i">test_projekt.py</code>, noch ohne das Programm dazu.</li>
+        <li><strong>Copilot fragen:</strong> Er soll die Daten einlesen. Vergleicht sein Ergebnis mit eurer Handrechnung und notiert den Vergleich im <code class="k-i">KI-PROTOKOLL.md</code>.</li>
+        <li><strong>Abhaken:</strong> Den Stand tragt ihr auf der <a href="../projekt.html#meilensteine">Projektseite</a> ein.</li>
+      </ol>
+      <p>Nächster Meilenstein (V16): Grundgerüst mit Funktionen.</p>
+
+    </section>
+
+    <section class="l-task" id="t-notebook" data-nonumber="1" data-title="Notebook und Deep Dive" data-part="B" data-stars="" data-min="" data-extra="ohne Wertung" aria-labelledby="h-t-notebook" hidden>
+      <header class="l-task__head">
+        <p class="l-task__kicker"></p>
+        <h2 class="l-task__title" id="h-t-notebook" tabindex="-1">Notebook und Deep Dive</h2>
+        <p class="l-task__meta"></p>
+      </header>
+      <p class="l-task__intro">Mehr üben mit Tabellen, Kennzahlen und der Regelkarte. Das Notebook nutzt Python aus V01 bis V15, hat drei Stufen (Aufwärmen, Anwenden, Knobeln), keine Lösungen, dafür Selbsttests, und ist für Codespaces gedacht: Dort sind pandas und matplotlib vorinstalliert. Die Messdatei <code class="k-i">wellen.csv</code> legt das Notebook beim Start selbst an.</p>
+      <p><a class="k-btn k-btn--ghost" href="../notebooks/V15-Datenanalyse.ipynb" download>V15-Datenanalyse.ipynb herunterladen</a></p>
+      <ol class="k-steps">
+        <li><strong>In Codespaces öffnen:</strong> Im Kurs-Repository auf GitHub „Code“ → „Codespaces“ → „Create codespace“ (Schritt für Schritt in der <a href="v11-copilot.html#anleitung">Lerneinheit V11, Abschnitt 3</a>). Dann <code class="k-i">notebooks/V15-Datenanalyse.ipynb</code> öffnen.</li>
+        <li><strong>Oder lokal:</strong> <code class="k-i">pip install pandas matplotlib jupyter</code>, dann <code class="k-i">jupyter lab</code>.</li>
+        <li>Zu jeder Auswertung: erst die Teilmenge klären (welche Maschine, welche Schicht), dann rechnen, dann die Prüfzelle laufen lassen.</li>
+      </ol>
+      <h3>Danach</h3>
+      <p><a href="v15-datenanalyse.html#deepdive">Zum Deep Dive</a> (freiwillig), oder zurück zur <a href="v15-datenanalyse.html">Lerneinheit</a>, oder weiter zum <a href="../projekt.html">Projekt</a>.</p>
+
+    </section>
+
+      <nav class="lab__pager" aria-label="Zwischen Aufgaben wechseln">
+        <a class="k-btn k-btn--ghost" id="lab-prev" href="#a-werkzeugkasten">← Zurück</a>
+        <a class="k-btn k-btn--ghost" id="lab-next" href="#a-vorgemacht">Weiter →</a>
+      </nav>
+    </main>
+
+    <div class="lab__dock" data-library-dock data-state="off"></div>
+  </div>
+
+  <footer class="dhbw-footer k-footer">
+    <div class="dhbw-footer__inner">
+      <span><span class="dhbw-footer__brand">DHBW Stuttgart</span> · Campus Horb</span>
+      <span><a href="../index.html">Zurück zum Lernpfad</a> · <a href="../projekt.html">Projekt</a> · V15 Programmierlabor</span>
+    </div>
+  </footer>
+
+  <script src="../assets/js/speicher.js"></script>
+  <script src="../assets/js/icons.js"></script>
+  <script src="../assets/js/editor.js" defer></script>
+  <script src="../assets/js/pap-engine.js"></script>
+  <script src="../assets/js/kurs.js"></script>
+  <script src="../assets/js/aufgaben.js"></script>
+  <script src="../assets/js/pap-editor.js"></script>
+  <script src="../assets/js/labor.js"></script>
+</body>
+</html>
