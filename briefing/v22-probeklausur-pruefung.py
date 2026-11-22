@@ -60,25 +60,22 @@ for a in (False, True):
 netz = ipaddress.ip_network("192.168.30.0/24")
 assert ipaddress.ip_address("192.168.30.12") in netz
 assert ipaddress.ip_address("192.168.31.20") not in netz
-assert netz.num_addresses - 2 == 254
+assert ipaddress.ip_address("192.168.30.250") in netz
 # A3 c) SQL-Abfrage
 db = sqlite3.connect(":memory:")
 cur = db.cursor()
 cur.execute("CREATE TABLE auftraege (nr INTEGER PRIMARY KEY, teil TEXT, maschine TEXT, menge INTEGER, status TEXT)")
 cur.executemany("INSERT INTO auftraege VALUES (?, ?, ?, ?, ?)", [
-    (4711, "WELLE_20H6", "D2", 500, "in Arbeit"),
-    (4712, "FLANSCH_80", "F1", 120, "offen"),
-    (4713, "WELLE_20H6", "D2", 300, "offen"),
-    (4714, "BUCHSE_30", "D2", 800, "fertig"),
-    (4715, "FLANSCH_80", "F1", 60, "offen"),
+    (101, "Welle", "D2", 40, "offen"),
+    (102, "Flansch", "F1", 25, "offen"),
+    (103, "Welle", "D2", 60, "erledigt"),
+    (104, "Buchse", "D2", 15, "offen"),
 ])
 cur.execute("SELECT nr, menge FROM auftraege WHERE maschine = 'D2' AND status = 'offen'")
-assert cur.fetchall() == [(4713, 300)]
-cur.execute("SELECT nr, menge FROM auftraege WHERE maschine = ? AND status = ?", ("D2", "offen"))
-assert cur.fetchall() == [(4713, 300)]
+assert cur.fetchall() == [(101, 40), (104, 15)]
 eingabe = "x' OR '1'='1"
 cur.execute(f"SELECT nr FROM auftraege WHERE teil = '{eingabe}'")
-assert len(cur.fetchall()) == 5          # Injection liefert alle Zeilen
+assert len(cur.fetchall()) == 4          # Injection liefert alle Zeilen
 cur.execute("SELECT nr FROM auftraege WHERE teil = ?", (eingabe,))
 assert len(cur.fetchall()) == 0
 db.close()

@@ -901,63 +901,50 @@ assert abweichung_ok(200, 205, 2) == False     # außerhalb
             </div>
           </article>
 
-          <!-- ===== k-16 · V13 · Code ===== -->
-          <article class="kt-task" id="k-16" data-lektion="V13" data-typ="code" data-punkte="8" data-minuten="10" aria-labelledby="h-k-16" hidden>
-            <header class="kt-task__head"><p class="kt-task__kicker"></p><h2 id="h-k-16" tabindex="-1">Ausschussanteil ohne Schleife</h2></header>
-            <div class="a-task" data-a="klausur" data-id="k-16" data-mode="funktion" data-minutes="10">
+          <!-- ===== k-16 · V13 · Theorie (NumPy lesen und erklären) ===== -->
+          <article class="kt-task" id="k-16" data-lektion="V13" data-typ="theorie" data-punkte="8" data-minuten="10" aria-labelledby="h-k-16" hidden>
+            <header class="kt-task__head"><p class="kt-task__kicker"></p><h2 id="h-k-16" tabindex="-1">NumPy lesen: Ausschuss ohne Schleife</h2></header>
+            <div class="a-task kt-papier" data-a="papier" data-id="k-16" data-minutes="10">
               <div class="a-task__text">
-                <p>Eine Messreihe mit einer Million Durchmessern liegt als <strong>NumPy-Array</strong> <code>werte</code> vor. Schreibe die Funktion <code>ausschuss_anteil(werte, u, o)</code>, die den Anteil der Werte <strong>außerhalb</strong> des Bereichs von <code>u</code> bis <code>o</code> in Prozent zurückgibt (die Grenzwerte selbst sind in Ordnung). Benutze keine Schleife, sondern Vergleiche auf dem ganzen Array. Binde NumPy mit <code>import numpy as np</code> ein.</p>
-                <div class="a-spec"><strong>Beispiel:</strong><pre data-run="no">werte = np.array([19.97, 19.98, 20.00, 20.02, 20.03, 20.01])
-ausschuss_anteil(werte, 19.98, 20.02)   ->  33.33...</pre></div>
-              </div>
-              <div class="a-editor"><textarea class="py-editor" data-assist="off" aria-label="Python-Code von Hand schreiben, ohne Ausführen"></textarea></div>
-              <script type="text/x-python" data-role="tests">
-import numpy as _np
-
-def _ref(w, u, o):
-    return float(_np.mean((w < u) | (w > o)) * 100)
-
-def _t(w, u, o):
-    r = ausschuss_anteil(w, u, o)
-    assert r is not None, "ausschuss_anteil gibt nichts zurück (None). Fehlt ein return?"
-    assert abs(float(r) - _ref(w, u, o)) < 1e-6, "Richtig wären %.4f %%, deine Funktion liefert %r" % (_ref(w, u, o), r)
-
-def test_beispiel():
-    """Beispiel aus der Aufgabe: 33.33 %"""
-    _t(_np.array([19.97, 19.98, 20.00, 20.02, 20.03, 20.01]), 19.98, 20.02)
-
-def test_alles_gut():
-    """alle Werte im Bereich: 0 %"""
-    _t(_np.array([20.00, 20.01, 19.99]), 19.98, 20.02)
-
-def test_alles_schlecht():
-    """alle Werte außerhalb: 100 %"""
-    _t(_np.array([21.0, 19.0, 25.0, 10.0]), 19.98, 20.02)
-
-def test_nur_grenzen():
-    """nur Grenzwerte: gehören noch zum Bereich, 0 %"""
-    _t(_np.array([19.98, 20.02, 19.98]), 19.98, 20.02)
-
-def test_viele_werte():
-    """200000 Zufallswerte"""
-    w = _np.random.default_rng(7).normal(20.0, 0.015, 200000)
-    _t(w, 19.98, 20.02)
-              </script>
-              <script type="text/x-python" data-role="solution">
+                <p>Ein Kollege hat den Ausschuss einer kleinen Messreihe mit NumPy ausgewertet. Die Durchmesser liegen zwischen 19,98 mm und 20,02 mm in Ordnung, die Grenzen selbst gehören dazu. Lies den Code, du musst ihn nicht selbst schreiben.</p>
+                <script type="text/x-python" data-role="code" data-nur-anzeige="1">
 import numpy as np
 
-def ausschuss_anteil(werte, u, o):
-    ausser = (werte < u) | (werte > o)
-    return np.mean(ausser) * 100
-              </script>
+werte = np.array([19.97, 19.98, 20.00, 20.02, 20.03, 20.01])
+ausser = (werte < 19.98) | (werte > 20.02)
+print(ausser)
+print(ausser.sum())
+print(werte[ausser])
+print(round(np.mean(ausser) * 100, 1))
+                </script>
+                <p><strong>a)</strong> Was gibt das Programm aus? Schreibe jede Zeile der Bildschirmausgabe auf. (4 P.)</p>
+                <p><strong>b)</strong> Was bedeutet die Zeile <code>ausser = ...</code>, und warum steht dort <code>|</code> und nicht das Wort <code>or</code>? (2 P.)</p>
+                <p><strong>c)</strong> Dieselbe Auswertung mit einer <code>for</code>-Schleife wäre bei einer Million Werten deutlich langsamer. Nenne zwei Gründe, warum die NumPy-Variante schneller ist. (2 P.)</p>
+              </div>
               <script type="application/json" data-role="scheme">[
-{"p":1,"t":"import numpy as np steht am Programmanfang"},
-{"p":1,"t":"def mit den drei Parametern und return (kein print)"},
-{"p":2,"t":"Zwei Vergleiche direkt auf dem Array (werte < u, werte > o), Ergebnis sind Boolesche Arrays; Grenzen mit < und >, nicht <= und >="},
-{"p":1,"t":"Verknüpfung mit | (oder np.logical_or). Nicht das Wort or: das geht bei Arrays nicht"},
-{"p":2,"t":"Anteil in Prozent: Mittelwert der Booleschen Werte mal 100 (oder np.sum(...) / len(werte) * 100)"},
-{"p":1,"t":"Keine for-Schleife über die Werte (vektorisiert)"}
+{"p":1,"t":"a) Zeile 1: [ True False False False  True False] (Boolesches Array: Wahr bei 19,97 und 20,03)"},
+{"p":1,"t":"a) Zeile 2: 2 (die Summe zählt die Wahr-Werte, True zählt als 1)"},
+{"p":1,"t":"a) Zeile 3: [19.97 20.03] (nur die Werte, an deren Stelle Wahr steht)"},
+{"p":1,"t":"a) Zeile 4: 33.3 (Mittelwert der Wahr/Falsch-Werte = 2 von 6, in Prozent)"},
+{"p":1,"t":"b) Beide Vergleiche gelten für alle Werte auf einmal und ergeben je ein Array aus Wahr/Falsch; die Zeile markiert alle Werte außerhalb des Bereichs"},
+{"p":1,"t":"b) | verknüpft elementweise („oder“ Stelle für Stelle); das Wort or verlangt einen einzelnen Wahrheitswert und gibt bei Arrays eine Fehlermeldung"},
+{"p":1,"t":"c) NumPy rechnet in vorkompiliertem C-Code über einen zusammenhängenden Speicherblock gleichartiger Zahlen"},
+{"p":1,"t":"c) Die Python-Schleife interpretiert jede Anweisung einzeln und prüft für jeden Wert den Datentyp (Overhead je Element)"}
 ]</script>
+              <template data-role="loesung">
+                <p><strong>a)</strong> Ausgabe: <code>[ True False False False  True False]</code>, dann <code>2</code>, dann <code>[19.97 20.03]</code>, dann <code>33.3</code>. Die Werte 19,98 und 20,02 liegen genau auf den Grenzen und sind in Ordnung, daher steht dort <code>False</code>.</p>
+                <p><strong>b)</strong> <code>werte &lt; 19.98</code> und <code>werte &gt; 20.02</code> vergleichen jeden Wert und liefern je ein Array aus Wahr/Falsch. <code>|</code> verknüpft die beiden Arrays Stelle für Stelle mit „oder“. Das Wort <code>or</code> erwartet einen einzigen Wahrheitswert und bricht bei Arrays mit einer Fehlermeldung ab.</p>
+                <p><strong>c)</strong> NumPy führt die Operation in vorkompiliertem C-Code auf einem zusammenhängenden Speicherblock aus. Die Python-Schleife dagegen interpretiert jede Anweisung einzeln und prüft für jeden Wert erneut den Datentyp.</p>
+                <p>Zum Nachprüfen, ausführbar:</p>
+                <pre class="k-code"><code>import numpy as np
+
+werte = np.array([19.97, 19.98, 20.00, 20.02, 20.03, 20.01])
+ausser = (werte &lt; 19.98) | (werte &gt; 20.02)
+print(ausser)
+print(ausser.sum())
+print(werte[ausser])
+print(round(np.mean(ausser) * 100, 1))</code></pre>
+              </template>
             </div>
           </article>
 
@@ -1113,24 +1100,24 @@ def zaehle_endungen(pfade):
             <header class="kt-task__head"><p class="kt-task__kicker"></p><h2 id="h-k-20" tabindex="-1">Netz der Fertigungshalle und JSON-Daten</h2></header>
             <div class="a-task kt-papier" data-a="papier" data-id="k-20" data-minutes="11">
               <div class="a-task__text">
-                <p>Die Fertigungshalle 2 hängt im Netz <code>172.16.8.0/22</code>.</p>
-                <p><strong>a)</strong> Gib die Subnetzmaske in Dezimalschreibweise an und berechne, wie viele Geräteadressen nutzbar sind. (3 P.)</p>
-                <p><strong>b)</strong> Gehören die Geräte <code>172.16.10.77</code> (Presse) und <code>172.16.12.5</code> (Förderband) zu diesem Netz? Nenne außerdem die erste und die letzte nutzbare Adresse. (4 P.)</p>
+                <p>Die Fertigungshalle 2 hängt im Netz <code>172.16.8.0/24</code> (Netzmaske <code>255.255.255.0</code>). Die SPS hat die Adresse <code>172.16.8.10</code>.</p>
+                <p><strong>a)</strong> Gehören die Geräte <code>172.16.8.77</code> (Presse), <code>172.16.9.5</code> (Förderband) und <code>172.16.8.200</code> (Portalroboter) zum Netz der Halle? Antworte je mit ja oder nein und begründe kurz. (3 P.)</p>
+                <p><strong>b)</strong> Das Förderband <code>172.16.9.5</code> antwortet der SPS nicht. Erkläre mit deinem Ergebnis aus a), woran das liegt, und nenne zwei Möglichkeiten, das Problem zu beheben. (4 P.)</p>
                 <p><strong>c)</strong> Ein Sensor liefert den Text <code>{"temp": 21.5, "einheit": "C"}</code> (JSON). Schreibe die Python-Zeilen, die daraus die Zahl 21.5 holen und ausgeben. Der Text steht in der Variablen <code>antwort</code>. (2 P.)</p>
               </div>
               <script type="application/json" data-role="scheme">[
-{"p":1,"t":"a) Subnetzmaske 255.255.252.0 (22 Einsen: im dritten Block 6 Netz-Bits = 252)"},
-{"p":2,"t":"a) 32 − 22 = 10 Geräte-Bits, 2^10 = 1024 Adressen, minus Netzadresse und Broadcast = 1022 nutzbar"},
-{"p":1,"t":"b) Adressbereich erkannt: 172.16.8.0 bis 172.16.11.255 (dritter Block 8 bis 11)"},
-{"p":1,"t":"b) 172.16.10.77 gehört dazu (10 liegt zwischen 8 und 11)"},
-{"p":1,"t":"b) 172.16.12.5 gehört nicht dazu (12 liegt außerhalb), das Förderband ist in einem anderen Netz"},
-{"p":1,"t":"b) Erste nutzbare Adresse 172.16.8.1, letzte nutzbare 172.16.11.254"},
+{"p":1,"t":"a) 172.16.8.77: ja, die ersten drei Blöcke 172.16.8 stimmen überein (Netzanteil bei /24)"},
+{"p":1,"t":"a) 172.16.9.5: nein, dritter Block 9 ≠ 8, also ein anderes Netz"},
+{"p":1,"t":"a) 172.16.8.200: ja, 172.16.8 stimmt überein, der letzte Block ist frei wählbar (0 bis 255)"},
+{"p":2,"t":"b) Das Förderband liegt in einem anderen Netz (172.16.9.x) als die SPS (172.16.8.x); Geräte in verschiedenen Netzen erreichen sich nicht direkt"},
+{"p":1,"t":"b) Abhilfe 1: Adresse des Förderbands ins Netz der Halle ändern, zum Beispiel 172.16.8.x mit freiem x"},
+{"p":1,"t":"b) Abhilfe 2: Verbindung über ein Gateway (Router) zwischen den beiden Netzen einrichten"},
 {"p":1,"t":"c) import json und daten = json.loads(antwort)"},
 {"p":1,"t":"c) print(daten[\"temp\"]) gibt 21.5 aus (Zugriff über den Schlüssel)"}
 ]</script>
               <template data-role="loesung">
-                <p><strong>a)</strong> /22 heißt 22 Netz-Bits: <code>255.255.252.0</code>. Es bleiben 10 Geräte-Bits: 2<sup>10</sup> = 1024 Adressen, davon 1022 nutzbar (ohne Netzadresse und Broadcast).</p>
-                <p><strong>b)</strong> Das Netz reicht von 172.16.8.0 bis 172.16.11.255. Die Presse (172.16.10.77) gehört dazu, das Förderband (172.16.12.5) nicht. Erste nutzbare Adresse: <code>172.16.8.1</code>, letzte: <code>172.16.11.254</code>.</p>
+                <p><strong>a)</strong> Bei /24 bilden die ersten drei Blöcke den Netzanteil (<code>172.16.8</code>). Die Presse (172.16.8.77) gehört dazu, der Portalroboter (172.16.8.200) auch, das Förderband (172.16.9.5) nicht, denn 9 ist nicht 8.</p>
+                <p><strong>b)</strong> Das Förderband steht im Netz 172.16.9.x, die SPS im Netz 172.16.8.x. Geräte in verschiedenen Netzen erreichen sich nicht direkt. Abhilfe: Entweder bekommt das Förderband eine freie Adresse im Netz der Halle (zum Beispiel 172.16.8.50), oder ein Gateway (Router) verbindet die beiden Netze.</p>
                 <p><strong>c)</strong> Ausführbar:</p>
                 <pre class="k-code"><code>import json
 
@@ -1173,70 +1160,71 @@ print(hashlib.sha256(b"Welle Z-18").hexdigest())</code></pre>
             </div>
           </article>
 
-          <!-- ===== k-22 · V19 · Code ===== -->
-          <article class="kt-task" id="k-22" data-lektion="V19" data-typ="code" data-punkte="9" data-minuten="12" aria-labelledby="h-k-22" hidden>
-            <header class="kt-task__head"><p class="kt-task__kicker"></p><h2 id="h-k-22" tabindex="-1">Verschlissene Werkzeuge abfragen</h2></header>
-            <div class="a-task" data-a="klausur" data-id="k-22" data-mode="funktion" data-minutes="12">
+          <!-- ===== k-22 · V19 · Theorie (SQL lesen und erklären) ===== -->
+          <article class="kt-task" id="k-22" data-lektion="V19" data-typ="theorie" data-punkte="9" data-minuten="11" aria-labelledby="h-k-22" hidden>
+            <header class="kt-task__head"><p class="kt-task__kicker"></p><h2 id="h-k-22" tabindex="-1">SQL-Abfrage lesen: verschlissene Werkzeuge</h2></header>
+            <div class="a-task kt-papier" data-a="papier" data-id="k-22" data-minutes="11">
               <div class="a-task__text">
-                <p>Eine SQLite-Datenbank enthält die Tabelle <code>werkzeuge</code> mit den Spalten <code>id</code>, <code>typ</code>, <code>maschine</code> und <code>standzeit_min</code> (bisherige Einsatzzeit in Minuten). Schreibe die Funktion <code>verschlissene_werkzeuge(db, maschine, grenze)</code>. Sie bekommt eine offene <code>sqlite3</code>-Verbindung <code>db</code> und gibt die Liste der Zeilen <code>(id, standzeit_min)</code> aller Werkzeuge der angegebenen Maschine zurück, deren Standzeit mindestens <code>grenze</code> beträgt, das längste zuerst. Setze die Werte mit <strong>Platzhaltern</strong> <code>?</code> ein, nicht mit einem f-String.</p>
-                <div class="a-spec"><strong>Beispiel (Maschine D2, Grenze 400):</strong><pre data-run="no">[(3, 480), (2, 455), (5, 400)]</pre></div>
+                <p>Eine SQLite-Datenbank enthält die Tabelle <code>werkzeuge</code>. Die Spalte <code>standzeit_min</code> ist die bisherige Einsatzzeit in Minuten.</p>
+                <div class="k-tablewrap" tabindex="0" role="region" aria-label="Tabelle werkzeuge mit sechs Zeilen, bei schmalem Bildschirm seitlich scrollbar"><table class="k-plan">
+                  <thead><tr><th scope="col">id</th><th scope="col">typ</th><th scope="col">maschine</th><th scope="col">standzeit_min</th></tr></thead>
+                  <tbody>
+                    <tr><td>1</td><td>Bohrer 8</td><td>D2</td><td>120</td></tr>
+                    <tr><td>2</td><td>Fräser 20</td><td>D2</td><td>455</td></tr>
+                    <tr><td>3</td><td>Wendeplatte</td><td>D2</td><td>480</td></tr>
+                    <tr><td>4</td><td>Bohrer 12</td><td>F1</td><td>500</td></tr>
+                    <tr><td>5</td><td>Fräser 10</td><td>D2</td><td>400</td></tr>
+                    <tr><td>6</td><td>Gewindebohrer</td><td>F1</td><td>90</td></tr>
+                  </tbody>
+                </table></div>
+                <p>Ein Programm führt diese Abfrage aus (<code>cur</code> ist ein Cursor der offenen Verbindung). Du musst nichts selbst schreiben, nur lesen und erklären.</p>
+                <script type="text/x-python" data-role="code" data-nur-anzeige="1">
+cur.execute("SELECT id, standzeit_min FROM werkzeuge "
+            "WHERE maschine = ? AND standzeit_min >= ? "
+            "ORDER BY standzeit_min DESC", ("D2", 400))
+print(cur.fetchall())
+                </script>
+                <p><strong>a)</strong> Was gibt das Programm aus? (3 P.)</p>
+                <p><strong>b)</strong> Was würde ausgegeben, wenn <code>&gt;=</code> durch <code>&gt;</code> ersetzt und die Zeile mit <code>ORDER BY</code> weggelassen wird? (3 P.)</p>
+                <p><strong>c)</strong> Die Werte stehen als Platzhalter <code>?</code> im Text und nicht per f-String darin. Warum? Was geschähe bei einem f-String, wenn für die Maschine <code>D2' OR '1'='1</code> eingegeben wird? (3 P.)</p>
               </div>
-              <div class="a-editor"><textarea class="py-editor" data-assist="off" aria-label="Python-Code von Hand schreiben, ohne Ausführen"></textarea></div>
-              <script type="text/x-python" data-role="tests">
-import sqlite3 as _sq
-
-def _db():
-    db = _sq.connect(":memory:")
-    db.execute("CREATE TABLE werkzeuge (id INTEGER PRIMARY KEY, typ TEXT, maschine TEXT, standzeit_min INTEGER)")
-    db.executemany("INSERT INTO werkzeuge VALUES (?, ?, ?, ?)", [
-        (1, "Bohrer 8", "D2", 120), (2, "Fräser 20", "D2", 455), (3, "Wendeplatte", "D2", 480),
-        (4, "Bohrer 12", "F1", 500), (5, "Fräser 10", "D2", 400), (6, "Gewindebohrer", "F1", 90)])
-    db.commit()
-    return db
-
-def _t(maschine, grenze, erwartet):
-    r = verschlissene_werkzeuge(_db(), maschine, grenze)
-    assert r is not None, "Die Funktion gibt nichts zurück (None). Fehlt ein return?"
-    r = [tuple(x) for x in r]
-    assert r == erwartet, "Für Maschine %r und Grenze %s ist %r richtig, deine Funktion liefert %r" % (maschine, grenze, erwartet, r)
-
-def test_beispiel():
-    """Beispiel: D2, Grenze 400"""
-    _t("D2", 400, [(3, 480), (2, 455), (5, 400)])
-
-def test_andere_maschine():
-    """andere Maschine: F1, Grenze 100"""
-    _t("F1", 100, [(4, 500)])
-
-def test_keiner():
-    """kein Werkzeug über der Grenze: D2, Grenze 1000"""
-    _t("D2", 1000, [])
-
-def test_grenze_gehoert_dazu():
-    """Grenze gehört dazu: D2, Grenze 455"""
-    _t("D2", 455, [(3, 480), (2, 455)])
-
-def test_sql_injection():
-    """Eingabe mit SQL-Befehl wird nur als Text behandelt"""
-    _t("D2' OR '1'='1", 0, [])
-              </script>
-              <script type="text/x-python" data-role="solution">
-def verschlissene_werkzeuge(db, maschine, grenze):
-    cur = db.cursor()
-    cur.execute("SELECT id, standzeit_min FROM werkzeuge "
-                "WHERE maschine = ? AND standzeit_min >= ? "
-                "ORDER BY standzeit_min DESC", (maschine, grenze))
-    return cur.fetchall()
-              </script>
               <script type="application/json" data-role="scheme">[
-{"p":1,"t":"SELECT id, standzeit_min FROM werkzeuge: richtige Spalten und Tabelle"},
-{"p":2,"t":"WHERE mit beiden Bedingungen verknüpft: maschine = ? AND standzeit_min >= ?"},
-{"p":1,"t":">= (die Grenze gehört dazu), nicht >"},
-{"p":1,"t":"ORDER BY standzeit_min DESC (längstes zuerst)"},
-{"p":2,"t":"Werte als Tupel (maschine, grenze) hinter dem SQL-Text übergeben, Reihenfolge passend zu den ?, kein f-String und kein +"},
-{"p":1,"t":"Der SQL-Text wird mit execute (über cursor oder db) ausgeführt"},
-{"p":1,"t":"fetchall() mit return (kein print)"}
+{"p":1,"t":"a) Es werden die Zeilen mit den ids 3, 2 und 5 ausgewählt (Maschine D2 und mindestens 400 min; 4 ist F1, 1 ist zu kurz, 400 gehört wegen >= dazu)"},
+{"p":1,"t":"a) Reihenfolge längste Standzeit zuerst (ORDER BY ... DESC): 480, 455, 400"},
+{"p":1,"t":"a) Nur die zwei Spalten id und standzeit_min, als Liste von Tupeln: [(3, 480), (2, 455), (5, 400)]"},
+{"p":1,"t":"b) Die Zeile mit id 5 (400 min) fällt weg, weil 400 > 400 nicht stimmt"},
+{"p":1,"t":"b) Ohne ORDER BY kommt die Reihenfolge der Tabelle (nach id): 2 vor 3"},
+{"p":1,"t":"b) Ausgabe: [(2, 455), (3, 480)]"},
+{"p":1,"t":"c) Mit Platzhalter wird die Eingabe nur als Wert behandelt, nie als SQL-Befehl"},
+{"p":1,"t":"c) Beim f-String wird die Eingabe Teil des SQL-Textes: WHERE maschine = 'D2' OR '1'='1' ist für jede Zeile wahr, es kämen alle Werkzeuge zurück (SQL-Injection)"},
+{"p":1,"t":"c) Mit Platzhalter wird der Text D2' OR '1'='1 als Maschinenname gesucht und gefunden wird nichts; das schützt vor SQL-Injection"}
 ]</script>
+              <template data-role="loesung">
+                <p><strong>a)</strong> <code>[(3, 480), (2, 455), (5, 400)]</code>. Zeile 1 (120 min) ist zu kurz, die Zeilen 4 und 6 gehören zu F1. Wegen <code>&gt;=</code> bleibt die Zeile mit genau 400 min drin, und <code>ORDER BY standzeit_min DESC</code> stellt die längste Standzeit nach vorn.</p>
+                <p><strong>b)</strong> <code>[(2, 455), (3, 480)]</code>. Mit <code>&gt;</code> fällt die Zeile mit 400 min weg. Ohne <code>ORDER BY</code> kommen die Zeilen in der Reihenfolge der Tabelle, also id 2 vor id 3.</p>
+                <p><strong>c)</strong> Ein Platzhalter <code>?</code> setzt die Eingabe nur als Wert ein, sie kann nie als SQL-Befehl wirken. Bei einem f-String würde daraus <code>WHERE maschine = 'D2' OR '1'='1'</code>, eine Bedingung, die für jede Zeile gilt: SQL-Injection. Mit Platzhalter wird nach einer Maschine mit genau diesem seltsamen Namen gesucht, und es kommt nichts zurück.</p>
+                <p>Zum Nachprüfen, ausführbar:</p>
+                <pre class="k-code"><code>import sqlite3
+
+db = sqlite3.connect(":memory:")
+cur = db.cursor()
+cur.execute("CREATE TABLE werkzeuge (id INTEGER PRIMARY KEY, typ TEXT, maschine TEXT, standzeit_min INTEGER)")
+cur.executemany("INSERT INTO werkzeuge VALUES (?, ?, ?, ?)", [
+    (1, "Bohrer 8", "D2", 120), (2, "Fräser 20", "D2", 455), (3, "Wendeplatte", "D2", 480),
+    (4, "Bohrer 12", "F1", 500), (5, "Fräser 10", "D2", 400), (6, "Gewindebohrer", "F1", 90)])
+
+cur.execute("SELECT id, standzeit_min FROM werkzeuge "
+            "WHERE maschine = ? AND standzeit_min &gt;= ? "
+            "ORDER BY standzeit_min DESC", ("D2", 400))
+print(cur.fetchall())                       # a)
+
+cur.execute("SELECT id, standzeit_min FROM werkzeuge "
+            "WHERE maschine = ? AND standzeit_min &gt; ?", ("D2", 400))
+print(cur.fetchall())                       # b)
+
+cur.execute("SELECT id FROM werkzeuge WHERE maschine = ?", ("D2' OR '1'='1",))
+print(cur.fetchall())                       # c) mit Platzhalter: leer</code></pre>
+              </template>
             </div>
           </article>
 

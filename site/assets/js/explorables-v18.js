@@ -485,7 +485,7 @@
     { d: '11.09.2026', t: 'Meldepflichten der Hersteller (Art. 14)', tag: 'CRA', past: true,
       x: 'Seit diesem Tag müssen Hersteller aktiv ausgenutzte Schwachstellen und schwere Sicherheitsvorfälle melden. Frühwarnung innerhalb von 24 Stunden, Meldung innerhalb von 72 Stunden, Abschlussbericht spätestens 14 Tage nach Verfügbarkeit einer Korrektur (bei einem schweren Vorfall: Abschlussbericht innerhalb eines Monats). Gemeldet wird über die zentrale Meldeplattform an das zuständige CSIRT (in Deutschland das BSI) und an die ENISA.' },
     { heute: true, d: '22.11.2026', t: 'Heute (Stand dieser Seite)' },
-    { d: '14.01.2027', t: 'Maschinenverordnung (EU) 2023/1230 gilt', tag: 'Maschinen', past: false,
+    { d: '20.01.2027', t: 'Maschinenverordnung (EU) 2023/1230 gilt', tag: 'Maschinen', past: false,
       x: 'Die Maschinenverordnung löst die Maschinenrichtlinie 2006/42/EG ab. Für Maschinenbauer wichtig: Sicherheitsrelevante Software und Daten müssen gegen unbeabsichtigte oder absichtliche Veränderung geschützt sein (Schutz gegen Korrumpierung, Anhang III, Abschnitt 1.1.9). Die Firmware-Prüfung aus dieser Lerneinheit ist genau so ein Schutz.' },
     { d: '11.12.2027', t: 'CRA gilt vollständig', tag: 'CRA', past: false,
       x: 'Ab diesem Tag gilt die Verordnung vollständig: alle Pflichten aus Anhang I (keine bekannten ausnutzbaren Schwachstellen bei Auslieferung, sichere Voreinstellungen, Sicherheitsupdates, Schutz der Integrität von Daten, Programmen und Konfiguration, SBOM, Meldeweg für Schwachstellen). Neue Produkte mit digitalen Elementen brauchen die CE-Kennzeichnung auch für die Cybersicherheit. Der Unterstützungszeitraum mit Sicherheitsupdates beträgt mindestens 5 Jahre, außer das Produkt wird erwartbar kürzer genutzt.' }

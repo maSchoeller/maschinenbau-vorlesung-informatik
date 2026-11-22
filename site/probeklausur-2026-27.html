@@ -44,6 +44,7 @@
           <li><strong>Danach selbst bewerten:</strong> Schalte auf <em>Mit Musterlösung</em>, vergleiche Aufgabe für Aufgabe mit dem Punkteschema und trage deine erreichten Punkte ein. Bestanden ist die Probeklausur ab 45 von 90 Punkten.</li>
         </ol>
         <p>Wo du viele Punkte verloren hast, übst du gezielt im <a href="klausurtrainer.html">Klausurtrainer</a>.</p>
+        <p class="k-small k-muted">SQL, Subnetze, NumPy und pandas kommen in der Klausur nur als „lesen und erklären“ vor: Du bestimmst das Ergebnis einer gegebenen Abfrage bzw. eines Code-Stücks oder prüfst, ob zwei Adressen im selben Netz liegen. Selbst schreiben musst du dazu nichts; der Schwerpunkt liegt auf Python-Code von Hand und auf dem PAP.</p>
 
         <div class="pk-leiste" role="group" aria-label="Ansicht und Druck">
           <fieldset class="pk-segment">
@@ -197,13 +198,13 @@ print(pumpe)</code></pre>
           <!-- A3 -->
           <article class="pk-aufgabe" id="a3" data-aufgabe="A3" data-max="9" aria-labelledby="h-a3">
             <header class="pk-kopf"><h3 id="h-a3">A3 · Netzwerk, Sicherheit und Datenbanken</h3><span class="pk-pkt">9 Punkte</span></header>
-            <p>Die Fertigungszelle FZ-3 hängt im Netz 192.168.30.0/24.</p>
+            <p>Die Fertigungszelle FZ-3 hängt im Netz 192.168.30.0/24 (Netzmaske 255.255.255.0).</p>
 
             <div class="pk-teilauf">
-              <p><span class="pk-bu">a)</span> Wie viele Geräte-Adressen sind in diesem Netz nutzbar? Gehören die Adressen 192.168.30.12 (Drehmaschine D2) und 192.168.31.20 (Roboter R1) zum Netz? Begründen Sie kurz. <span class="pk-tp">(3 P.)</span></p>
+              <p><span class="pk-bu">a)</span> Gehören die Geräte 192.168.30.12 (Drehmaschine D2), 192.168.31.20 (Roboter R1) und 192.168.30.250 (Messrechner) zum Netz der Zelle? Antworten Sie je mit ja oder nein und begründen Sie kurz. <span class="pk-tp">(3 P.)</span></p>
               <div class="pk-loesung">
                 <p class="pk-loesung__titel">Musterlösung und Punkte</p>
-                <p>/24: 24 Bit Netzanteil, 8 Bit für Geräte, also 256 Adressen, minus Netzadresse (.0) und Broadcast (.255), also 254 nutzbar <span class="pk-tp">(1 P.)</span>. 192.168.30.12: ja, die ersten drei Blöcke 192.168.30 stimmen überein <span class="pk-tp">(1 P.)</span>. 192.168.31.20: nein, dritter Block 31 ≠ 30, also ein anderes Netz; R1 ist falsch konfiguriert <span class="pk-tp">(1 P.)</span>.</p>
+                <p>Bei /24 bilden die ersten drei Blöcke den Netzanteil (192.168.30). 192.168.30.12: ja, die ersten drei Blöcke stimmen überein <span class="pk-tp">(1 P.)</span>. 192.168.31.20: nein, dritter Block 31 ≠ 30, also ein anderes Netz; R1 ist falsch konfiguriert <span class="pk-tp">(1 P.)</span>. 192.168.30.250: ja, 192.168.30 stimmt überein, der letzte Block darf 0 bis 255 sein <span class="pk-tp">(1 P.)</span>.</p>
               </div>
             </div>
 
@@ -216,11 +217,28 @@ print(pumpe)</code></pre>
             </div>
 
             <div class="pk-teilauf">
-              <p><span class="pk-bu">c)</span> Die Tabelle <code class="k-i">auftraege</code> hat die Spalten <code class="k-i">nr</code>, <code class="k-i">teil</code>, <code class="k-i">maschine</code>, <code class="k-i">menge</code>, <code class="k-i">status</code>. Schreiben Sie eine SQL-Abfrage, die <code class="k-i">nr</code> und <code class="k-i">menge</code> aller Aufträge der Maschine <code class="k-i">D2</code> mit Status <code class="k-i">offen</code> liefert <span class="pk-tp">(2 P.)</span>. Warum setzt man in Python die Werte mit Platzhaltern <code class="k-i">?</code> ein statt mit einem f-String? <span class="pk-tp">(1 P.)</span></p>
+              <p><span class="pk-bu">c)</span> Die Tabelle <code class="k-i">auftraege</code> enthält diese Zeilen:</p>
+              <table class="pk-tt">
+                <caption class="k-sr">Tabelle auftraege mit vier Aufträgen</caption>
+                <thead><tr><th scope="col">nr</th><th scope="col">teil</th><th scope="col">maschine</th><th scope="col">menge</th><th scope="col">status</th></tr></thead>
+                <tbody>
+                  <tr><td>101</td><td>Welle</td><td>D2</td><td>40</td><td>offen</td></tr>
+                  <tr><td>102</td><td>Flansch</td><td>F1</td><td>25</td><td>offen</td></tr>
+                  <tr><td>103</td><td>Welle</td><td>D2</td><td>60</td><td>erledigt</td></tr>
+                  <tr><td>104</td><td>Buchse</td><td>D2</td><td>15</td><td>offen</td></tr>
+                </tbody>
+              </table>
+              <p>Welche Zeilen (Spalten <code class="k-i">nr</code> und <code class="k-i">menge</code>) liefert diese Abfrage? <span class="pk-tp">(2 P.)</span></p>
+              <pre class="k-code" data-run="no"><code>SELECT nr, menge FROM auftraege WHERE maschine = 'D2' AND status = 'offen';</code></pre>
+              <p>In einem Python-Programm steht <code class="k-i">cur.execute("SELECT nr FROM auftraege WHERE maschine = ?", (eingabe,))</code>. Warum setzt man den Wert mit einem Platzhalter <code class="k-i">?</code> ein und nicht mit einem f-String? <span class="pk-tp">(1 P.)</span></p>
               <div class="pk-loesung">
                 <p class="pk-loesung__titel">Musterlösung und Punkte</p>
-                <pre class="k-code" data-run="no"><code>SELECT nr, menge FROM auftraege WHERE maschine = 'D2' AND status = 'offen';</code></pre>
-                <p>SELECT/FROM <span class="pk-tp">(1 P.)</span>, WHERE mit AND <span class="pk-tp">(1 P.)</span>. Platzhalter: Die Eingabe wird nur als Wert behandelt, nie als SQL-Befehl; das schützt vor SQL-Injection (z. B. Eingabe <code class="k-i">x' OR '1'='1</code>) <span class="pk-tp">(1 P.)</span>.</p>
+                <table class="pk-tt">
+                  <caption class="k-sr">Ergebnis der Abfrage</caption>
+                  <thead><tr><th scope="col">nr</th><th scope="col">menge</th></tr></thead>
+                  <tbody><tr><td>101</td><td>40</td></tr><tr><td>104</td><td>15</td></tr></tbody>
+                </table>
+                <p>Beide Zeilen 101 und 104, keine weitere <span class="pk-tp">(1 P.)</span>; Begründung: 102 hat die Maschine F1, 103 ist schon erledigt, beide fallen durch <code class="k-i">AND</code> heraus, und die Spalten sind nur <code class="k-i">nr</code> und <code class="k-i">menge</code> <span class="pk-tp">(1 P.)</span>. Platzhalter: Die Eingabe wird nur als Wert behandelt, nie als SQL-Befehl; das schützt vor SQL-Injection (z. B. Eingabe <code class="k-i">x' OR '1'='1</code>) <span class="pk-tp">(1 P.)</span>.</p>
               </div>
             </div>
           </article>

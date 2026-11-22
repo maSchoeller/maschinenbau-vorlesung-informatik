@@ -127,7 +127,7 @@ def sc5(f, t, ct):
              (ct(1) + 3.0, tx(2026, 9, 11), "11.09.2026", "Meldepflicht: 24 h / 72 h", "o", RED, "ma"),
              (ct(1) + 5.5, tx(2027, 12, 11), "11.12.2027", "gilt vollständig", "o", GREEN, "ra"),
              (ct(1) + 0.3, tx(2026, 11, 22), "22.11.2026", "heute", "u1", DARK, "rr"),
-             (ct(3) + 0.3, tx(2027, 1, 14), "14.01.2027", "Maschinenverordnung", "u2", AMB, "ma")]
+             (ct(3) + 0.3, tx(2027, 1, 20), "20.01.2027", "Maschinenverordnung", "u2", AMB, "ma")]
     for te, x, dat, txt, lv, c, anc in marks:
         def fn(d, dy, x=x, dat=dat, txt=txt, lv=lv, c=c, anc=anc):
             d.ellipse((x - 11, AY - 11 + dy, x + 11, AY + 11 + dy), fill=c, outline=WHITE, width=3)

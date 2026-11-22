@@ -374,12 +374,6 @@ S("import", "import & Module", AU, "V11", "kopf",
 S("pip", "pip install", AU, "V11", "lesen",
   "Installiert zusätzliche Pakete aus dem Internet (Terminal).",
   "pip install paketname", [])
-S("assert", "assert", AU, "V12", "kopf",
-  "Bricht mit Fehler ab, wenn eine Annahme nicht stimmt: assert x > 0, 'Meldung'.",
-  "assert bedingung, 'Meldung'", ["if", "try-except"])
-S("traceback", "Traceback lesen", AU, "V12", "kopf",
-  "Die Fehlermeldung von unten nach oben lesen: letzte Zeile = Fehlerart, davor die Stelle im Code.",
-  "Traceback (most recent call last): ...", ["try-except"])
 S("numpy-array", "NumPy-Array", AU, "V13", "lesen",
   "Schnelles Feld aus Zahlen, mit dem sich ganze Reihen auf einmal rechnen lassen.",
   "import numpy as np\nnp.array([1, 2, 3])", ["liste"], bez=["numpy", "np"])
@@ -401,12 +395,9 @@ S("pathlib", "pathlib / os", AU, "V16", "lesen",
 S("json", "json", AU, "V17", "lesen",
   "Austauschformat für Daten, sieht fast aus wie ein dict.",
   "import json\njson.loads(text)", ["dict"])
-S("requests", "requests (HTTP)", AU, "V17", "delegieren",
+S("requests", "requests (HTTP)", AU, "V17", "lesen",
   "Fragt Daten von einer Web-API ab.",
   "import requests\nrequests.get(url).json()", ["json"])
-S("hashlib", "hashlib", AU, "V18", "delegieren",
-  "Bildet Prüfsummen (Hashes) von Daten oder Dateien.",
-  "import hashlib\nhashlib.sha256(daten).hexdigest()", [])
 S("sqlite3", "sqlite3 (SQL)", AU, "V19", "lesen",
   "Eingebaute Datenbank: Tabellen abfragen mit SQL und Platzhaltern.",
   "import sqlite3\ncon = sqlite3.connect('daten.db')", ["dict"], bez=["sql"])
@@ -581,6 +572,57 @@ E("assertion-error", "AssertionError", TE, "V12", "kopf",
    ("Klammern machen ein Tupel: der Test scheitert nie, obwohl 1 == 2 falsch ist", 'assert (1 == 2, "wird nie geprüft")\nprint("läuft durch, obwohl falsch")', "Kein Fehler, nur eine Warnung: SyntaxWarning: assertion is always true, perhaps remove parentheses?", False)],
   ["assert", "traceback", "except-as", "tupel", "testfunktion"],
   bez=["AssertionError"])
+
+E("assert", "assert", TE, "V12", "kopf",
+  "Bricht mit AssertionError ab, wenn eine Annahme nicht stimmt: assert bedingung, \"Meldung\".",
+  "assert bedingung\nassert bedingung, \"Meldung\"",
+  "assert prüft eine Bedingung. Ist sie wahr, passiert nichts und das Programm läuft weiter; ist sie falsch, bricht Python mit einem AssertionError ab, und die Meldung hinter dem Komma steht im Traceback. So schreibst du Tests: links der Aufruf deiner Funktion, rechts der Wert, den du von Hand bestimmt hast. Zwei Stolpersteine: Setze Bedingung und Meldung nie zusammen in Klammern. assert (x > 0, \"Meldung\") bildet ein Tupel, und ein nicht leeres Tupel ist immer wahr, der Test kann dann nie scheitern (Python warnt nur mit einer SyntaxWarning). Und vergleiche Kommazahlen in Tests nie mit ==, sondern mit math.isclose: 0.1 + 0.2 == 0.3 ist False.",
+  '''
+  import math
+
+  def gesamt(a, b):
+      return a + b
+
+  assert gesamt(2, 3) == 5, "gesamt(2, 3) sollte 5 sein"
+  assert math.isclose(0.1 + 0.2, 0.3), "Kommazahlen mit isclose vergleichen"
+  print("alle Annahmen stimmen")
+  ''',
+  "In Testfunktionen und Testschleifen, und als Schutz im Code für Annahmen, die nie falsch sein dürfen.",
+  [("Wert im erlaubten Bereich", 'drehzahl = 1450\nassert 0 <= drehzahl <= 4500, f"Drehzahl {drehzahl} außerhalb 0 bis 4500"\nprint("Drehzahl ok")'),
+   ("Kommazahl mit math.isclose prüfen", 'import math\nv_ms = 100 / 3.6\nassert math.isclose(v_ms, 27.7778, rel_tol=1e-4), "Umrechnung stimmt nicht"\nprint("bestanden")'),
+   ("Test fangen und weiterlaufen", 'try:\n    assert 2 + 2 == 5, "Rechnung falsch"\nexcept AssertionError as fehler:\n    print("gescheitert:", fehler)')],
+  [("Kommazahlen mit == verglichen", 'assert 0.1 + 0.2 == 0.3, "sollte gleich sein"'),
+   ("Klammern um Bedingung und Meldung: der Test scheitert nie", 'assert (1 == 2, "wird nie geprüft")\nprint("läuft durch, obwohl falsch")', "Kein Fehler, nur eine Warnung: SyntaxWarning: assertion is always true, perhaps remove parentheses?", False)],
+  ["assertion-error", "traceback", "testfunktion", "testfaelle-liste", "try-except", "vergleiche"],
+  bez=["assert"],
+  aliase=["Test schreiben", "Bedingung prüfen", "isclose", "Kommazahlen vergleichen"])
+
+E("traceback", "Traceback lesen", TE, "V12", "kopf",
+  "Die Fehlermeldung von unten nach oben lesen: letzte Zeile = Fehlerart und Grund, darüber die Stelle im Code.",
+  "Traceback (most recent call last):\n  File \"...\", line 7, in <module>\n    ...\nFehlerart: Beschreibung",
+  "Ein Traceback ist der Bericht, den Python beim Abbruch ausgibt. Lies ihn von unten nach oben: Die letzte Zeile nennt die Fehlerart (z. B. ZeroDivisionError, TypeError, AssertionError) und den Grund. Darüber steht die Zeile, in der es knallte, mit Dateiname, Zeilennummer (line N) und dem Code. Weiter oben folgt die Kette der Aufrufe: ganz oben der Einstieg, ganz unten die Stelle des Fehlers. Starte deine Suche bei der untersten Zeile aus deinem eigenen Code; der Fehler liegt dort oder in dem, was du dort übergeben hast. Bei assert zeigt die Stelle den Test, nicht den Fehler: den suchst du in der geprüften Funktion.",
+  '''
+  import traceback
+
+  def anteil(teil, gesamt):
+      return teil / gesamt
+
+  def bericht(werte):
+      return anteil(werte[0], werte[1])
+
+  try:
+      bericht([5, 0])
+  except ZeroDivisionError:
+      print(traceback.format_exc())
+  ''',
+  "Immer als Erstes, wenn ein Programm abbricht: erst die letzte Zeile lesen, dann die Zeilennummer darüber.",
+  [("Fehlerart und Grund aus der Meldung", 'try:\n    int("abc")\nexcept ValueError as fehler:\n    print(type(fehler).__name__, "-", fehler)'),
+   ("Nur die letzte Zeile des Tracebacks", 'import traceback\ntry:\n    [1, 2, 3][5]\nexcept IndexError:\n    print(traceback.format_exc().strip().splitlines()[-1])')],
+  [("Die Ursache steht ganz unten: Aufrufkette a -> b, der Fehler passiert in b", 'def a(x):\n    return b(x)\n\ndef b(x):\n    return 10 / x\n\na(0)'),
+   ("TypeError heißt falscher Typ, nicht falscher Wert", 'print("Wert: " + 5)')],
+  ["assert", "assertion-error", "try-except", "except-as"],
+  bez=["Traceback"],
+  aliase=["Fehlermeldung lesen", "Stacktrace", "Fehler finden", "most recent call last"])
 S("numpy-reihen", "np.arange / np.linspace", AU, "V13", "lesen",
   "Zahlenreihen als Array: arange wie range (Stopp nicht dabei), linspace mit fester Anzahl (beide Enden dabei).",
   "np.arange(0, 1, 0.25)\nnp.linspace(0, 1, 5)\nt = np.arange(N) / fs", ["numpy-array", "range"],
@@ -1013,7 +1055,7 @@ E("hashlib-sha256", "hashlib.sha256().hexdigest()", SI, "V18", "kopf",
   [("Text statt Bytes übergeben", 'import hashlib\nhashlib.sha256("Drehzahl 1450")'),
    ("hexdigest vergessen: Objekt statt Text", 'import hashlib\nprint(hashlib.sha256(b"abc") == "ba7816bf")', "kein Fehler, aber immer False: links steht ein Hash-Objekt, kein Text", False),
    ("digest() mit Hex-Text verglichen", 'import hashlib\nsoll = hashlib.sha256(b"abc").hexdigest()\nprint(hashlib.sha256(b"abc").digest() == soll)', "kein Fehler, aber False: digest() liefert Bytes, hexdigest() Text", False)],
-  ["bytes-encode", "datei-binaer", "pruefsumme-vergleichen", "hashlib"],
+  ["bytes-encode", "datei-binaer", "pruefsumme-vergleichen", "xor-bitweise"],
   bez=["hashlib.sha256", ".hexdigest", ".digest", ".update", "hashlib.md5", "hashlib.sha1"],
   aliase=["Hash", "Prüfsumme", "SHA-256", "Fingerabdruck", "Checksumme", "sha256sum"])
 
@@ -1094,6 +1136,37 @@ E("pruefsumme-vergleichen", "Prüfsumme vergleichen (Soll/Ist)", SI, "V18", "kop
   ["hashlib-sha256", "split", "datei-binaer"],
   bez=["Soll-Ist-Vergleich", ".sha256"],
   aliase=["Prüfsumme prüfen", "Checksumme vergleichen", "Integrität prüfen", "Firmware prüfen", "sha256sum -c"])
+
+E("xor-bitweise", "XOR ^ (bitweise)", SI, "V18", "lesen",
+  "Bitweises Exklusiv-Oder: a ^ b ist an jeder Stelle 1, wenn die Bits verschieden sind. Nicht die Potenz.",
+  "a ^ b\nergebnis ^= wert",
+  "Das Zeichen ^ ist in Python bitweises XOR (exklusives Oder), nicht die Potenz: Für Potenzen gilt **. XOR vergleicht zwei ganze Zahlen Bit für Bit: Ist genau eines der beiden Bits 1, ist das Ergebnisbit 1, sind beide gleich, ist es 0. Zweimal mit demselben Wert XOR-en bringt den Ausgangswert zurück (a ^ b ^ b == a). Darauf beruhen einfache Prüfsummen (alle Datenbytes nacheinander mit ^= verknüpfen) und viele Verschlüsselungsverfahren. Mit format(wert, \"08b\") siehst du die Bitmuster. Eine XOR-Prüfsumme erkennt Übertragungsfehler nur grob und ist kein Schutz gegen Manipulation, dafür nimmst du SHA-256.",
+  '''
+  a = 0b1100
+  b = 0b1010
+  print(format(a, "04b"), "^", format(b, "04b"), "=", format(a ^ b, "04b"))
+
+  daten = [0x12, 0x34, 0x56]
+  pruef = 0
+  for byte in daten:
+      pruef ^= byte
+  print("Prüfbyte:", hex(pruef))
+
+  # Kontrolle: Daten plus Prüfbyte ergeben 0
+  kontrolle = pruef
+  for byte in daten:
+      kontrolle ^= byte
+  print("Kontrolle:", kontrolle)
+  ''',
+  "Bei Bitmustern und einfachen Prüfbytes; nie als Potenz (dafür **).",
+  [("Zweimal XOR mit demselben Schlüssel gibt den Wert zurück", 'wert = 0b10110010\nschluessel = 0b01101100\nverschluesselt = wert ^ schluessel\nprint(format(verschluesselt, "08b"))\nprint(format(verschluesselt ^ schluessel, "08b"), verschluesselt ^ schluessel == wert)'),
+   ("Einzelnes Bit umschalten", 'ausgaenge = 0b0101\nausgaenge ^= 0b0001\nprint(format(ausgaenge, "04b"))\nausgaenge ^= 0b0001\nprint(format(ausgaenge, "04b"))'),
+   ("XOR-Prüfbyte eines Telegramms", 'telegramm = b"R1:1450"\npruef = 0\nfor byte in telegramm:\n    pruef ^= byte\nprint(f"{pruef:02X}")')],
+  [("^ statt ** für die Potenz benutzt", 'print(2 ^ 3)', "Kein Fehler, Ausgabe: 1 (2 ^ 3 ist bitweises XOR, nicht 8; die Potenz schreibt man 2 ** 3)", False),
+   ("XOR mit Kommazahl: nur ganze Zahlen erlaubt", 'print(1.5 ^ 2)')],
+  ["potenz", "bin-hex", "pruefsumme-vergleichen", "hashlib-sha256"],
+  bez=["^", "XOR"],
+  aliase=["XOR", "exklusives Oder", "Bitoperation", "Bitmuster", "Prüfbyte", "BCC", "Bit umschalten"])
 
 # ───────────── V19 Datenbanken & SQL (sqlite3, Platzhalter) ─────────────
 DB = "Datenbanken (SQL)"

@@ -1070,7 +1070,7 @@
     {
      "beschreibung": "Konstante großgeschrieben",
      "code": "import math\nprint(math.PI)",
-     "meldung": "AttributeError: module 'math' has no attribute 'PI'"
+     "meldung": "AttributeError: module 'math' has no attribute 'PI'. Did you mean: 'pi'?"
     },
     {
      "beschreibung": "pi wie eine Funktion aufgerufen",
@@ -2068,7 +2068,7 @@
     {
      "beschreibung": "Parametername falsch geschrieben",
      "code": "def umfang(d, pi=3.14159):\n    return pi * d\n\numfang(10, PI=3.14)",
-     "meldung": "TypeError: umfang() got an unexpected keyword argument 'PI'. Did you mean 'pi'?"
+     "meldung": "TypeError: umfang() got an unexpected keyword argument 'PI'"
     }
    ]
   },
@@ -3068,39 +3068,6 @@
    ]
   },
   {
-   "id": "assert",
-   "name": "assert",
-   "kategorie": "Ausblick (ab V10)",
-   "eingefuehrt": "V12",
-   "ampel": "kopf",
-   "kurz": "Bricht mit Fehler ab, wenn eine Annahme nicht stimmt: assert x > 0, 'Meldung'.",
-   "syntax": "assert bedingung, 'Meldung'",
-   "stichwort": true,
-   "verwandt": [
-    "if",
-    "try-except"
-   ],
-   "bezeichner": [
-    "assert"
-   ]
-  },
-  {
-   "id": "traceback",
-   "name": "Traceback lesen",
-   "kategorie": "Ausblick (ab V10)",
-   "eingefuehrt": "V12",
-   "ampel": "kopf",
-   "kurz": "Die Fehlermeldung von unten nach oben lesen: letzte Zeile = Fehlerart, davor die Stelle im Code.",
-   "syntax": "Traceback (most recent call last): ...",
-   "stichwort": true,
-   "verwandt": [
-    "try-except"
-   ],
-   "bezeichner": [
-    "Traceback lesen"
-   ]
-  },
-  {
    "id": "numpy-array",
    "name": "NumPy-Array",
    "kategorie": "Ausblick (ab V10)",
@@ -3225,7 +3192,7 @@
    "name": "requests (HTTP)",
    "kategorie": "Ausblick (ab V10)",
    "eingefuehrt": "V17",
-   "ampel": "delegieren",
+   "ampel": "lesen",
    "kurz": "Fragt Daten von einer Web-API ab.",
    "syntax": "import requests\nrequests.get(url).json()",
    "stichwort": true,
@@ -3234,20 +3201,6 @@
    ],
    "bezeichner": [
     "requests (HTTP)"
-   ]
-  },
-  {
-   "id": "hashlib",
-   "name": "hashlib",
-   "kategorie": "Ausblick (ab V10)",
-   "eingefuehrt": "V18",
-   "ampel": "delegieren",
-   "kurz": "Bildet Prüfsummen (Hashes) von Daten oder Dateien.",
-   "syntax": "import hashlib\nhashlib.sha256(daten).hexdigest()",
-   "stichwort": true,
-   "verwandt": [],
-   "bezeichner": [
-    "hashlib"
    ]
   },
   {
@@ -3522,6 +3475,114 @@
      "beschreibung": "Klammern machen ein Tupel: der Test scheitert nie, obwohl 1 == 2 falsch ist",
      "code": "assert (1 == 2, \"wird nie geprüft\")\nprint(\"läuft durch, obwohl falsch\")",
      "meldung": "Kein Fehler, nur eine Warnung: SyntaxWarning: assertion is always true, perhaps remove parentheses?"
+    }
+   ]
+  },
+  {
+   "id": "assert",
+   "name": "assert",
+   "kategorie": "Testen & Fehlersuche",
+   "eingefuehrt": "V12",
+   "ampel": "kopf",
+   "kurz": "Bricht mit AssertionError ab, wenn eine Annahme nicht stimmt: assert bedingung, \"Meldung\".",
+   "syntax": "assert bedingung\nassert bedingung, \"Meldung\"",
+   "erklaerung": "assert prüft eine Bedingung. Ist sie wahr, passiert nichts und das Programm läuft weiter; ist sie falsch, bricht Python mit einem AssertionError ab, und die Meldung hinter dem Komma steht im Traceback. So schreibst du Tests: links der Aufruf deiner Funktion, rechts der Wert, den du von Hand bestimmt hast. Zwei Stolpersteine: Setze Bedingung und Meldung nie zusammen in Klammern. assert (x > 0, \"Meldung\") bildet ein Tupel, und ein nicht leeres Tupel ist immer wahr, der Test kann dann nie scheitern (Python warnt nur mit einer SyntaxWarning). Und vergleiche Kommazahlen in Tests nie mit ==, sondern mit math.isclose: 0.1 + 0.2 == 0.3 ist False.",
+   "beispiel": "import math\n\ndef gesamt(a, b):\n    return a + b\n\nassert gesamt(2, 3) == 5, \"gesamt(2, 3) sollte 5 sein\"\nassert math.isclose(0.1 + 0.2, 0.3), \"Kommazahlen mit isclose vergleichen\"\nprint(\"alle Annahmen stimmen\")",
+   "wann_nutzen": "In Testfunktionen und Testschleifen, und als Schutz im Code für Annahmen, die nie falsch sein dürfen.",
+   "transfer": [
+    {
+     "situation": "Wert im erlaubten Bereich",
+     "code": "drehzahl = 1450\nassert 0 <= drehzahl <= 4500, f\"Drehzahl {drehzahl} außerhalb 0 bis 4500\"\nprint(\"Drehzahl ok\")"
+    },
+    {
+     "situation": "Kommazahl mit math.isclose prüfen",
+     "code": "import math\nv_ms = 100 / 3.6\nassert math.isclose(v_ms, 27.7778, rel_tol=1e-4), \"Umrechnung stimmt nicht\"\nprint(\"bestanden\")"
+    },
+    {
+     "situation": "Test fangen und weiterlaufen",
+     "code": "try:\n    assert 2 + 2 == 5, \"Rechnung falsch\"\nexcept AssertionError as fehler:\n    print(\"gescheitert:\", fehler)"
+    }
+   ],
+   "verwandt": [
+    "assertion-error",
+    "traceback",
+    "testfunktion",
+    "testfaelle-liste",
+    "try-except",
+    "vergleiche"
+   ],
+   "bezeichner": [
+    "assert"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [
+    "Test schreiben",
+    "Bedingung prüfen",
+    "isclose",
+    "Kommazahlen vergleichen"
+   ],
+   "beispiel_ausgabe": "alle Annahmen stimmen",
+   "typische_fehler": [
+    {
+     "beschreibung": "Kommazahlen mit == verglichen",
+     "code": "assert 0.1 + 0.2 == 0.3, \"sollte gleich sein\"",
+     "meldung": "AssertionError: sollte gleich sein"
+    },
+    {
+     "beschreibung": "Klammern um Bedingung und Meldung: der Test scheitert nie",
+     "code": "assert (1 == 2, \"wird nie geprüft\")\nprint(\"läuft durch, obwohl falsch\")",
+     "meldung": "Kein Fehler, nur eine Warnung: SyntaxWarning: assertion is always true, perhaps remove parentheses?"
+    }
+   ]
+  },
+  {
+   "id": "traceback",
+   "name": "Traceback lesen",
+   "kategorie": "Testen & Fehlersuche",
+   "eingefuehrt": "V12",
+   "ampel": "kopf",
+   "kurz": "Die Fehlermeldung von unten nach oben lesen: letzte Zeile = Fehlerart und Grund, darüber die Stelle im Code.",
+   "syntax": "Traceback (most recent call last):\n  File \"...\", line 7, in <module>\n    ...\nFehlerart: Beschreibung",
+   "erklaerung": "Ein Traceback ist der Bericht, den Python beim Abbruch ausgibt. Lies ihn von unten nach oben: Die letzte Zeile nennt die Fehlerart (z. B. ZeroDivisionError, TypeError, AssertionError) und den Grund. Darüber steht die Zeile, in der es knallte, mit Dateiname, Zeilennummer (line N) und dem Code. Weiter oben folgt die Kette der Aufrufe: ganz oben der Einstieg, ganz unten die Stelle des Fehlers. Starte deine Suche bei der untersten Zeile aus deinem eigenen Code; der Fehler liegt dort oder in dem, was du dort übergeben hast. Bei assert zeigt die Stelle den Test, nicht den Fehler: den suchst du in der geprüften Funktion.",
+   "beispiel": "import traceback\n\ndef anteil(teil, gesamt):\n    return teil / gesamt\n\ndef bericht(werte):\n    return anteil(werte[0], werte[1])\n\ntry:\n    bericht([5, 0])\nexcept ZeroDivisionError:\n    print(traceback.format_exc())",
+   "wann_nutzen": "Immer als Erstes, wenn ein Programm abbricht: erst die letzte Zeile lesen, dann die Zeilennummer darüber.",
+   "transfer": [
+    {
+     "situation": "Fehlerart und Grund aus der Meldung",
+     "code": "try:\n    int(\"abc\")\nexcept ValueError as fehler:\n    print(type(fehler).__name__, \"-\", fehler)"
+    },
+    {
+     "situation": "Nur die letzte Zeile des Tracebacks",
+     "code": "import traceback\ntry:\n    [1, 2, 3][5]\nexcept IndexError:\n    print(traceback.format_exc().strip().splitlines()[-1])"
+    }
+   ],
+   "verwandt": [
+    "assert",
+    "assertion-error",
+    "try-except",
+    "except-as"
+   ],
+   "bezeichner": [
+    "Traceback"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [
+    "Fehlermeldung lesen",
+    "Stacktrace",
+    "Fehler finden",
+    "most recent call last"
+   ],
+   "beispiel_ausgabe": "Traceback (most recent call last):\n  File \"<string>\", line 10, in <module>\n  File \"<string>\", line 7, in bericht\n  File \"<string>\", line 4, in anteil\nZeroDivisionError: division by zero",
+   "typische_fehler": [
+    {
+     "beschreibung": "Die Ursache steht ganz unten: Aufrufkette a -> b, der Fehler passiert in b",
+     "code": "def a(x):\n    return b(x)\n\ndef b(x):\n    return 10 / x\n\na(0)",
+     "meldung": "ZeroDivisionError: division by zero"
+    },
+    {
+     "beschreibung": "TypeError heißt falscher Typ, nicht falscher Wert",
+     "code": "print(\"Wert: \" + 5)",
+     "meldung": "TypeError: can only concatenate str (not \"int\") to str"
     }
    ]
   },
@@ -3872,7 +3933,7 @@
     {
      "beschreibung": "ax.xlabel statt ax.set_xlabel",
      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots()\nax.xlabel(\"Zeit t in s\")",
-     "meldung": "AttributeError: 'Axes' object has no attribute 'xlabel'. Did you mean: 'clabel'?"
+     "meldung": "AttributeError: 'Axes' object has no attribute 'xlabel'. Did you mean: '_label'?"
     },
     {
      "beschreibung": "Teilbilder nicht entpackt: das Raster ist eine Gruppe",
@@ -3936,7 +3997,7 @@
     {
      "beschreibung": "Komma nach dem letzten Element",
      "code": "import json\njson.loads('{\"id\": \"D2\",}')",
-     "meldung": "json.decoder.JSONDecodeError: Illegal trailing comma before end of object: line 1 column 12 (char 11)"
+     "meldung": "json.decoder.JSONDecodeError: Expecting property name enclosed in double quotes: line 1 column 13 (char 12)"
     },
     {
      "beschreibung": "loads bekommt schon ein dict statt Text",
@@ -4105,394 +4166,6 @@
      "beschreibung": "Adressen als Text vergleichen statt als Netz",
      "code": "print(\"192.168.31.20\".startswith(\"192.168.3\"))",
      "meldung": "kein Fehler, aber True: 192.168.31.20 liegt nicht in 192.168.30.0/24"
-    }
-   ]
-  },
-  {
-   "id": "path",
-   "name": "Path (pathlib)",
-   "kategorie": "Dateien & Fehler",
-   "eingefuehrt": "V16",
-   "ampel": "kopf",
-   "kurz": "Ein Pfad als Objekt: Teile verbindest du mit /, geprüft und gelesen wird per Methode.",
-   "syntax": "from pathlib import Path\nordner = Path(\"zelle\")\ndatei = ordner / \"maschinen\" / \"D2\"",
-   "erklaerung": "Path(\"zelle\") erzeugt ein Pfad-Objekt, keinen gewöhnlichen Text. Mit dem Operator / hängst du Teile an, Python setzt das passende Trennzeichen für dein Betriebssystem ein. Ein relativer Pfad (\"zelle/x.log\") gilt ab dem Ordner, in dem das Programm läuft; ein absoluter Pfad beginnt an der Wurzel des Laufwerks. Mit / rechnet nur ein Path: Text / Text ist ein Fehler, mindestens der linke Teil muss ein Path sein.",
-   "beispiel": "from pathlib import Path\n\nzelle = Path(\"zelle\")\nlogs = zelle / \"maschinen\" / \"D2\" / \"logs\"\ndatei = logs / \"2026-11-16.log\"\n\nprint(datei.as_posix())\nprint(datei.name)\nprint(datei.is_absolute())",
-   "wann_nutzen": "Immer wenn dein Programm Dateien oder Ordner anspricht: Messdaten, Logs, NC-Programme der Fertigungszelle.",
-   "transfer": [
-    {
-     "situation": "Pfad aus Teilen bauen",
-     "code": "from pathlib import Path\nbasis = Path(\"zelle\")\nmaschine = \"F1\"\nprint((basis / \"maschinen\" / maschine / \"logs\").as_posix())"
-    },
-    {
-     "situation": "Relativ oder absolut?",
-     "code": "from pathlib import Path\nprint(Path(\"daten/messung.csv\").is_absolute())\nprint(Path(\"daten/messung.csv\").resolve().is_absolute())"
-    }
-   ],
-   "verwandt": [
-    "with-open",
-    "import",
-    "path-teile",
-    "path-pruefen"
-   ],
-   "bezeichner": [
-    "Path",
-    "pathlib",
-    "from pathlib import Path"
-   ],
-   "lauffaehig": true,
-   "suchbegriffe": [
-    "Pfad",
-    "pfad verbinden",
-    "relativ",
-    "absolut",
-    "pathlib"
-   ],
-   "beispiel_ausgabe": "zelle/maschinen/D2/logs/2026-11-16.log\n2026-11-16.log\nFalse",
-   "typische_fehler": [
-    {
-     "beschreibung": "Text durch Text geteilt",
-     "code": "ordner = \"zelle\"\ndatei = ordner / \"x.log\"",
-     "meldung": "TypeError: unsupported operand type(s) for /: 'str' and 'str'"
-    },
-    {
-     "beschreibung": "Datei liegt nicht im aktuellen Ordner (relativer Pfad)",
-     "code": "from pathlib import Path\ntext = Path(\"messung.csv\").read_text(encoding=\"utf-8\")",
-     "meldung": "FileNotFoundError: [Errno 2] No such file or directory: 'messung.csv'"
-    }
-   ]
-  },
-  {
-   "id": "path-teile",
-   "name": "Path: name, stem, suffix, parent, parts",
-   "kategorie": "Dateien & Fehler",
-   "eingefuehrt": "V16",
-   "ampel": "kopf",
-   "kurz": "Zerlegt einen Pfad in Dateiname, Name ohne Endung, Endung und Ordner.",
-   "syntax": "datei.name    datei.stem    datei.suffix    datei.parent    datei.parts",
-   "erklaerung": "Ein Pfad besteht aus Teilen, die du direkt abfragen kannst. name ist der letzte Teil mit Endung, stem der Name ohne Endung, suffix die Endung samt Punkt. parent ist der Ordner darüber (wieder ein Path, also geht auch parent.parent). parts liefert alle Teile als Tupel. Das Zerlegen passiert nur im Text: Die Datei muss dafür nicht existieren.",
-   "beispiel": "from pathlib import Path\n\ndatei = Path(\"zelle/nc-programme/WELLE_20H6.nc\")\n\nprint(datei.name)\nprint(datei.stem)\nprint(datei.suffix)\nprint(datei.parent.as_posix())\nprint(datei.parent.parent.name)\nprint(datei.parts)",
-   "wann_nutzen": "Wenn du Dateien nach Endung sortierst, Namen ohne Endung brauchst oder wissen willst, in welchem Ordner (welcher Maschine) eine Datei liegt.",
-   "transfer": [
-    {
-     "situation": "Maschine aus dem Logpfad lesen",
-     "code": "from pathlib import Path\nlog = Path(\"zelle/maschinen/R1/logs/2026-11-18.log\")\nprint(log.parent.parent.name)"
-    },
-    {
-     "situation": "Neue Endung für den Namen",
-     "code": "from pathlib import Path\np = Path(\"WELLE_20H6.nc\")\nprint(p.stem + \"_v2\" + p.suffix)\nprint(p.with_suffix(\".txt\").name)"
-    }
-   ],
-   "verwandt": [
-    "path",
-    "glob",
-    "path-pruefen"
-   ],
-   "bezeichner": [
-    ".name",
-    ".stem",
-    ".suffix",
-    ".parent",
-    ".parts",
-    ".with_suffix"
-   ],
-   "lauffaehig": true,
-   "suchbegriffe": [
-    "dateiname",
-    "endung",
-    "ordner",
-    "elternordner"
-   ],
-   "beispiel_ausgabe": "WELLE_20H6.nc\nWELLE_20H6\n.nc\nzelle/nc-programme\nzelle\n('zelle', 'nc-programme', 'WELLE_20H6.nc')",
-   "typische_fehler": [
-    {
-     "beschreibung": "name mit Klammern aufgerufen",
-     "code": "from pathlib import Path\nprint(Path(\"a/b.nc\").name())",
-     "meldung": "TypeError: 'str' object is not callable"
-    },
-    {
-     "beschreibung": "Endung ohne Punkt verglichen: nie wahr",
-     "code": "from pathlib import Path\nprint(Path(\"a/b.nc\").suffix == \"nc\")",
-     "meldung": "False (die Endung ist \".nc\", mit Punkt)"
-    }
-   ]
-  },
-  {
-   "id": "glob",
-   "name": "glob, rglob, iterdir",
-   "kategorie": "Dateien & Fehler",
-   "eingefuehrt": "V16",
-   "ampel": "lesen",
-   "kurz": "Findet Dateien und Ordner nach Muster, auch in Unterordnern.",
-   "syntax": "ordner.iterdir()    ordner.glob(\"*.log\")    ordner.rglob(\"*.nc\")",
-   "erklaerung": "iterdir() liefert alles, was direkt im Ordner liegt. glob(\"*.log\") liefert nur die Treffer des Musters; * steht für beliebigen Text, auch mitten im Pfad (\"maschinen/*/logs/*.log\"). rglob(\"*.nc\") sucht zusätzlich in allen Unterordnern. Das Ergebnis ist keine Liste, sondern ein Generator: Es hat kein len(), und die Reihenfolge ist nicht festgelegt. Mit sorted(...) oder list(...) bekommst du eine Liste, die du zählen und sortieren kannst.",
-   "beispiel": "from pathlib import Path\n\nfor maschine in [\"D2\", \"F1\"]:\n    logs = Path(\"zelle/maschinen\") / maschine / \"logs\"\n    logs.mkdir(parents=True)\n    for tag in [\"2026-11-17\", \"2026-11-16\"]:\n        (logs / f\"{tag}.log\").write_text(\"x\", encoding=\"utf-8\")\n\nzelle = Path(\"zelle\")\nalle = sorted(p.name for p in zelle.rglob(\"*.log\"))\nprint(len(alle), alle)\n\nnur_d2 = sorted(p.name for p in zelle.glob(\"maschinen/D2/logs/*.log\"))\nprint(nur_d2)",
-   "wann_nutzen": "Wenn du viele Dateien auf einmal bearbeiten willst: alle Logs einer Woche, alle NC-Programme, alle CSV-Dateien eines Ordners.",
-   "transfer": [
-    {
-     "situation": "Nur die Dateien direkt im Ordner",
-     "code": "from pathlib import Path\nproben = Path(\"proben\")\nproben.mkdir()\n(proben / \"a.csv\").write_text(\"1\", encoding=\"utf-8\")\n(proben / \"b.txt\").write_text(\"2\", encoding=\"utf-8\")\nprint(sorted(p.name for p in proben.iterdir()))"
-    },
-    {
-     "situation": "Anzahl der Treffer, mit und ohne Unterordner",
-     "code": "from pathlib import Path\nnc = Path(\"nc\")\n(nc / \"alt\").mkdir(parents=True)\n(nc / \"A.nc\").write_text(\"G0\", encoding=\"utf-8\")\n(nc / \"alt\" / \"A_v1.nc\").write_text(\"G0\", encoding=\"utf-8\")\nprint(len(list(nc.glob(\"*.nc\"))), len(list(nc.rglob(\"*.nc\"))))"
-    }
-   ],
-   "verwandt": [
-    "path",
-    "path-pruefen",
-    "sorted",
-    "liste"
-   ],
-   "bezeichner": [
-    ".glob",
-    ".rglob",
-    ".iterdir",
-    "glob",
-    "rglob",
-    "iterdir"
-   ],
-   "lauffaehig": true,
-   "suchbegriffe": [
-    "dateien suchen",
-    "dateien finden",
-    "muster",
-    "wildcard",
-    "durchsuchen",
-    "generator"
-   ],
-   "beispiel_ausgabe": "4 ['2026-11-16.log', '2026-11-16.log', '2026-11-17.log', '2026-11-17.log']\n['2026-11-16.log', '2026-11-17.log']",
-   "typische_fehler": [
-    {
-     "beschreibung": "len() auf das glob-Ergebnis",
-     "code": "from pathlib import Path\nordner = Path(\"x\")\nordner.mkdir()\nprint(len(ordner.glob(\"*.txt\")))",
-     "meldung": "TypeError: object of type 'generator' has no len()"
-    },
-    {
-     "beschreibung": "glob findet nichts in Unterordnern",
-     "code": "from pathlib import Path\nordner = Path(\"x/y\")\nordner.mkdir(parents=True)\n(ordner / \"a.nc\").write_text(\"G0\", encoding=\"utf-8\")\nprint(len(list(Path(\"x\").glob(\"*.nc\"))))",
-     "meldung": "0 (glob sucht nur im Ordner selbst; rglob auch in Unterordnern)"
-    }
-   ]
-  },
-  {
-   "id": "path-pruefen",
-   "name": "Path: exists, is_file, stat, read_text",
-   "kategorie": "Dateien & Fehler",
-   "eingefuehrt": "V16",
-   "ampel": "lesen",
-   "kurz": "Prüft, ob es eine Datei oder einen Ordner gibt, liest die Größe und den Inhalt.",
-   "syntax": "p.exists()    p.is_file()    p.is_dir()    p.stat().st_size    p.read_text(encoding=\"utf-8\")",
-   "erklaerung": "exists() fragt, ob der Pfad etwas bezeichnet; is_file() und is_dir() unterscheiden Datei und Ordner. p.stat().st_size gibt die Größe in Bytes (durch 1024 teilen für KiB). read_text(encoding=\"utf-8\") liest die ganze Datei als Text, write_text(...) schreibt sie. Kurz und ohne with; für sehr große Dateien oder zeilenweises Lesen bleibt open() mit with die bessere Wahl.",
-   "beispiel": "from pathlib import Path\n\nordner = Path(\"zelle\")\nordner.mkdir()\ndatei = ordner / \"LIESMICH.txt\"\ndatei.write_text(\"Fertigungszelle FZ-3\\nHalle 2\\n\", encoding=\"utf-8\")\n\nprint(datei.exists(), datei.is_file(), datei.is_dir())\nprint(ordner.is_dir())\nprint(Path(\"gibt_es_nicht.txt\").exists())\nprint(datei.stat().st_size, \"Bytes\")\nprint(datei.read_text(encoding=\"utf-8\").splitlines()[0])",
-   "wann_nutzen": "Vor dem Lesen prüfen, ob die Datei da ist; Dateigrößen vergleichen; kleine Textdateien in einem Schritt einlesen.",
-   "transfer": [
-    {
-     "situation": "Nur lesen, wenn es die Datei gibt",
-     "code": "from pathlib import Path\np = Path(\"config.txt\")\nif p.exists():\n    print(p.read_text(encoding=\"utf-8\"))\nelse:\n    print(\"keine Konfiguration gefunden\")"
-    },
-    {
-     "situation": "Größe in KiB",
-     "code": "from pathlib import Path\np = Path(\"daten.txt\")\np.write_text(\"x\" * 2048, encoding=\"utf-8\")\nprint(p.stat().st_size / 1024, \"KiB\")"
-    }
-   ],
-   "verwandt": [
-    "path",
-    "glob",
-    "with-open",
-    "try-except"
-   ],
-   "bezeichner": [
-    ".exists",
-    ".is_file",
-    ".is_dir",
-    ".stat",
-    ".st_size",
-    ".read_text",
-    ".write_text"
-   ],
-   "lauffaehig": true,
-   "suchbegriffe": [
-    "datei existiert",
-    "dateigröße",
-    "datei lesen",
-    "ordner prüfen",
-    "FileNotFoundError"
-   ],
-   "beispiel_ausgabe": "True True False\nTrue\nFalse\n31 Bytes\nFertigungszelle FZ-3",
-   "typische_fehler": [
-    {
-     "beschreibung": "Relativer Pfad zeigt ins Leere",
-     "code": "from pathlib import Path\nprint(Path(\"messung.csv\").read_text(encoding=\"utf-8\"))",
-     "meldung": "FileNotFoundError: [Errno 2] No such file or directory: 'messung.csv'"
-    },
-    {
-     "beschreibung": "st_size direkt auf dem Path statt auf stat()",
-     "code": "from pathlib import Path\np = Path(\"a.txt\")\np.write_text(\"x\", encoding=\"utf-8\")\nprint(p.st_size)",
-     "meldung": "AttributeError: 'PosixPath' object has no attribute 'st_size'"
-    }
-   ]
-  },
-  {
-   "id": "os-modul",
-   "name": "os: getcwd, listdir (os.path, os.walk)",
-   "kategorie": "Dateien & Fehler",
-   "eingefuehrt": "V16",
-   "ampel": "lesen",
-   "kurz": "Ältere Schreibweise für Ordner und Dateien; kommt in KI-Code und alten Skripten häufig vor.",
-   "syntax": "import os\nos.getcwd()    os.listdir(\".\")    os.path.join(a, b)    os.walk(ordner)",
-   "erklaerung": "Das Modul os kann vieles, was auch Path kann, aber mit Funktionen und Text statt Objekten. os.getcwd() nennt den aktuellen Arbeitsordner, os.listdir(\".\") liefert die Namen im Ordner als Liste (unsortiert). os.path.join(a, b) verbindet Pfadteile, os.walk(ordner) läuft durch einen ganzen Ordnerbaum. Für eigenen Code ist pathlib meist lesbarer; os.path.join und os.walk musst du nur erkennen und verstehen.",
-   "beispiel": "import os\n\nos.mkdir(\"zelle\")\nfor name in [\"b.txt\", \"a.txt\"]:\n    with open(os.path.join(\"zelle\", name), \"w\", encoding=\"utf-8\") as f:\n        f.write(\"x\")\n\nprint(sorted(os.listdir(\"zelle\")))\nprint(os.getcwd() != \"\")\n\nfor ordner, unterordner, dateien in os.walk(\"zelle\"):\n    print(ordner, sorted(dateien))",
-   "wann_nutzen": "Wenn du fremden Code liest, der os benutzt, oder wissen willst, in welchem Ordner dein Programm gerade läuft.",
-   "transfer": [
-    {
-     "situation": "Nur die Namen im Ordner",
-     "code": "import os\nos.mkdir(\"d\")\nopen(\"d/x.txt\", \"w\").close()\nprint(os.listdir(\"d\"))"
-    },
-    {
-     "situation": "Dieselbe Aufgabe mit pathlib",
-     "code": "from pathlib import Path\np = Path(\"d\")\np.mkdir()\n(p / \"x.txt\").write_text(\"\", encoding=\"utf-8\")\nprint([q.name for q in p.iterdir()])"
-    }
-   ],
-   "verwandt": [
-    "path",
-    "glob",
-    "import",
-    "with-open"
-   ],
-   "bezeichner": [
-    "os",
-    "os.getcwd",
-    "os.listdir",
-    "os.path",
-    "os.path.join",
-    "os.walk"
-   ],
-   "lauffaehig": true,
-   "suchbegriffe": [
-    "arbeitsordner",
-    "aktueller ordner",
-    "ordnerbaum",
-    "betriebssystem"
-   ],
-   "beispiel_ausgabe": "['a.txt', 'b.txt']\nTrue\nzelle ['a.txt', 'b.txt']",
-   "typische_fehler": [
-    {
-     "beschreibung": "os.listdir auf einen Ordner, den es nicht gibt",
-     "code": "import os\nprint(os.listdir(\"ordner_fehlt\"))",
-     "meldung": "FileNotFoundError: [Errno 2] No such file or directory: 'ordner_fehlt'"
-    },
-    {
-     "beschreibung": "os nicht importiert",
-     "code": "print(os.getcwd())",
-     "meldung": "NameError: name 'os' is not defined. Did you forget to import 'os'?"
-    }
-   ]
-  },
-  {
-   "id": "perf-counter",
-   "name": "time.perf_counter()",
-   "kategorie": "Ausblick (ab V10)",
-   "eingefuehrt": "V16",
-   "ampel": "lesen",
-   "kurz": "Misst, wie lange ein Programmteil läuft: Zeit davor und danach, dann die Differenz.",
-   "syntax": "import time\nstart = time.perf_counter()\n...\ndauer = time.perf_counter() - start",
-   "erklaerung": "perf_counter() liefert eine Zeit in Sekunden, die nur zum Vergleichen taugt: Der absolute Wert ist bedeutungslos, die Differenz zweier Aufrufe ist die Laufzeit. Mal 1000 ergibt Millisekunden. Die Messwerte schwanken von Lauf zu Lauf, weil der Rechner nebenbei anderes erledigt; wiederhole die Messung also einige Male, bevor du etwas daraus schließt. Mit der Uhrzeit (time.time, datetime) hat das nichts zu tun.",
-   "beispiel": "import time\n\nstart = time.perf_counter()\nsumme = 0\nfor i in range(1_000_000):\n    summe += i\nende = time.perf_counter()\n\ndauer_ms = (ende - start) * 1000\nprint(summe)\nprint(dauer_ms > 0)",
-   "wann_nutzen": "Um zwei Lösungen zu vergleichen (Schleife oder NumPy, Suche in Ordnern) oder zu prüfen, ob ein Programm bei großen Datenmengen zu langsam wird.",
-   "transfer": [
-    {
-     "situation": "Zwei Varianten vergleichen",
-     "code": "import time\nzahlen = list(range(200000))\nt0 = time.perf_counter()\ns1 = sum(zahlen)\nt1 = time.perf_counter()\ns2 = 0\nfor z in zahlen:\n    s2 += z\nt2 = time.perf_counter()\nprint(s1 == s2)\nprint(f\"sum: {(t1 - t0) * 1000:.2f} ms, Schleife: {(t2 - t1) * 1000:.2f} ms\")"
-    },
-    {
-     "situation": "Mehrfach messen, kleinsten Wert nehmen",
-     "code": "import time\nwerte = []\nfor _ in range(5):\n    t = time.perf_counter()\n    sorted(range(50000, 0, -1))\n    werte.append(time.perf_counter() - t)\nprint(min(werte) <= max(werte))"
-    }
-   ],
-   "verwandt": [
-    "import",
-    "with-open",
-    "glob",
-    "zeit-messen"
-   ],
-   "bezeichner": [
-    "time",
-    "perf_counter",
-    "time.perf_counter"
-   ],
-   "lauffaehig": true,
-   "suchbegriffe": [
-    "laufzeit",
-    "zeit messen",
-    "stoppuhr",
-    "millisekunden",
-    "benchmark"
-   ],
-   "beispiel_ausgabe": "499999500000\nTrue",
-   "typische_fehler": [
-    {
-     "beschreibung": "Differenz in falscher Reihenfolge: negative Dauer",
-     "code": "import time\nstart = time.perf_counter()\nende = time.perf_counter()\nprint(start - ende)",
-     "meldung": "negative Zahl (ende - start rechnen)"
-    },
-    {
-     "beschreibung": "time nicht importiert",
-     "code": "start = time.perf_counter()",
-     "meldung": "NameError: name 'time' is not defined. Did you forget to import 'time'?"
-    }
-   ]
-  },
-  {
-   "id": "raw-string",
-   "name": "Roher String r\"C:\\Users\\...\" (Windows-Pfade)",
-   "kategorie": "Dateien & Fehler",
-   "eingefuehrt": "V16",
-   "ampel": "lesen",
-   "kurz": "Windows-Pfade mit \\ als rohen Text schreiben, damit Python den Backslash nicht als Sonderzeichen liest.",
-   "syntax": "pfad = r\"C:\\Users\\name\\daten.csv\"\npfad = Path(\"C:/Users/name/daten.csv\")",
-   "erklaerung": "In normalen Texten leitet der Backslash eine Sonderschreibweise ein: \\n ist ein Zeilenumbruch, \\U beginnt ein Unicode-Zeichen. Ein Windows-Pfad wie \"C:\\Users\\...\" erzeugt daher einen SyntaxError (unicodeescape) oder, bei \\n und \\t, still einen falschen Pfad. Zwei Auswege: ein r vor das Anführungszeichen (roher String, der Backslash bleibt wörtlich) oder Schrägstriche / verwenden, die Python auch unter Windows versteht. Ein roher String darf nicht mit einem einzelnen \\ enden.",
-   "beispiel": "from pathlib import Path\n\nroh = r\"C:\\Users\\marvin\\daten\\messung.csv\"\nprint(roh)\nprint(len(roh))\n\nschraeg = Path(\"C:/Users/marvin/daten/messung.csv\")\nprint(schraeg.name, schraeg.suffix)\n\nnormal = \"Spalte1\\tSpalte2\"\nprint(len(normal))",
-   "wann_nutzen": "Sobald du einen Pfad aus dem Windows-Explorer in den Code kopierst, oder wenn KI-Code Pfade mit Backslash enthält.",
-   "transfer": [
-    {
-     "situation": "Pfad aus dem Explorer als roher String",
-     "code": "pfad = r\"C:\\Daten\\neu\\test.txt\"\nprint(pfad)\nprint(pfad.endswith(\".txt\"))"
-    },
-    {
-     "situation": "Ohne r wird aus \\n ein Zeilenumbruch",
-     "code": "falsch = \"C:\\neu\\test\"\nprint(len(falsch))\nrichtig = r\"C:\\neu\\test\"\nprint(len(richtig))"
-    }
-   ],
-   "verwandt": [
-    "path",
-    "path-teile",
-    "str-text"
-   ],
-   "bezeichner": [
-    "r\"",
-    "unicodeescape",
-    "Backslash"
-   ],
-   "lauffaehig": true,
-   "suchbegriffe": [
-    "raw string",
-    "backslash",
-    "windows pfad",
-    "unicodeescape",
-    "SyntaxError"
-   ],
-   "beispiel_ausgabe": "C:\\Users\\marvin\\daten\\messung.csv\n33\nmessung.csv .csv\n15",
-   "typische_fehler": [
-    {
-     "beschreibung": "Backslash-U im normalen Text",
-     "code": "pfad = \"C:\\Users\\marvin\\daten.csv\"\nprint(pfad)",
-     "meldung": "SyntaxError: (unicode error) 'unicodeescape' codec can't decode bytes in position 2-3: truncated \\UXXXXXXXX escape"
-    },
-    {
-     "beschreibung": "Roher String endet auf Backslash",
-     "code": "pfad = r\"C:\\Daten\\\"\nprint(pfad)",
-     "meldung": "SyntaxError: unterminated string literal (detected at line 1); perhaps you escaped the end quote?"
     }
    ]
   },
@@ -4700,7 +4373,7 @@
     {
      "beschreibung": "and statt &",
      "code": "with open(\"wellen.csv\", \"w\", encoding=\"utf-8\") as f:\n    f.write(\"stichprobe,maschine,teil,durchmesser_mm\\n\"\n            \"1,D1,1,20.001\\n1,D1,2,19.998\\n1,D2,1,20.009\\n1,D2,2,20.012\\n\"\n            \"2,D1,1,20.002\\n2,D1,2,19.997\\n2,D2,1,20.015\\n2,D2,2,20.021\\n\")\nimport pandas as pd\ndf = pd.read_csv(\"wellen.csv\")\nprint(df[(df[\"maschine\"] == \"D2\") and (df[\"durchmesser_mm\"] > 20.01)])",
-     "meldung": "ValueError: The truth value of a Series is ambiguous. Use a.empty, a.bool(), a.item(), a.any() or a.all()."
+     "meldung": "ValueError: The truth value of a Series is ambiguous. Use a.empty, a.item(), a.any() or a.all()."
     },
     {
      "beschreibung": "Klammern vergessen",
@@ -4936,7 +4609,7 @@
     "bytes-encode",
     "datei-binaer",
     "pruefsumme-vergleichen",
-    "hashlib"
+    "xor-bitweise"
    ],
    "bezeichner": [
     "hashlib.sha256",
@@ -5139,331 +4812,62 @@
    ]
   },
   {
-   "id": "klasse",
-   "name": "class (Klasse definieren)",
-   "kategorie": "Klassen & Objekte",
-   "eingefuehrt": "V20",
-   "ampel": "kopf",
-   "kurz": "Ein Bauplan für Objekte: bündelt Maße (Attribute) und Rechnungen (Methoden) eines Bauteils.",
-   "syntax": "class Name:\n    def __init__(self, parameter):\n        self.parameter = parameter\n\n    def methode(self):\n        return ...",
-   "erklaerung": "Mit class legst du einen neuen Datentyp an. Die Klasse ist der Bauplan, wie ein Normblatt oder eine Zeichnungsvorlage: Sie beschreibt, welche Maße ein Bauteil hat und was man damit rechnen kann, ist selbst aber noch kein konkretes Teil. Der Name steht im Kopf, ein Doppelpunkt schließt ihn ab, der Rumpf ist eingerückt. Per Konvention beginnt der Klassenname mit einem Großbuchstaben (Flansch, Welle), damit man ihn von Variablen unterscheidet. Die Definition allein rechnet nichts: Erst wenn du ein Objekt erzeugst, entsteht ein konkretes Teil.",
-   "beispiel": "class Welle:\n    \"\"\"Glatte Welle (Maße in mm).\"\"\"\n\n    def __init__(self, d, l):\n        self.d = d\n        self.l = l\n\n    def volumen(self):\n        return 3.14159265 / 4 * self.d ** 2 * self.l\n\n\nw = Welle(20, 150)\nprint(w.d, w.l)\nprint(round(w.volumen() / 1000, 1), \"cm³\")",
-   "wann_nutzen": "Immer wenn zusammengehörige Maße und die zugehörigen Rechnungen sonst als lose Variablen und Funktionen mit vielen Parametern herumliegen: Welle, Rohr, Flansch, Feder, Werkzeug.",
+   "id": "xor-bitweise",
+   "name": "XOR ^ (bitweise)",
+   "kategorie": "Sicherheit & Prüfsummen",
+   "eingefuehrt": "V18",
+   "ampel": "lesen",
+   "kurz": "Bitweises Exklusiv-Oder: a ^ b ist an jeder Stelle 1, wenn die Bits verschieden sind. Nicht die Potenz.",
+   "syntax": "a ^ b\nergebnis ^= wert",
+   "erklaerung": "Das Zeichen ^ ist in Python bitweises XOR (exklusives Oder), nicht die Potenz: Für Potenzen gilt **. XOR vergleicht zwei ganze Zahlen Bit für Bit: Ist genau eines der beiden Bits 1, ist das Ergebnisbit 1, sind beide gleich, ist es 0. Zweimal mit demselben Wert XOR-en bringt den Ausgangswert zurück (a ^ b ^ b == a). Darauf beruhen einfache Prüfsummen (alle Datenbytes nacheinander mit ^= verknüpfen) und viele Verschlüsselungsverfahren. Mit format(wert, \"08b\") siehst du die Bitmuster. Eine XOR-Prüfsumme erkennt Übertragungsfehler nur grob und ist kein Schutz gegen Manipulation, dafür nimmst du SHA-256.",
+   "beispiel": "a = 0b1100\nb = 0b1010\nprint(format(a, \"04b\"), \"^\", format(b, \"04b\"), \"=\", format(a ^ b, \"04b\"))\n\ndaten = [0x12, 0x34, 0x56]\npruef = 0\nfor byte in daten:\n    pruef ^= byte\nprint(\"Prüfbyte:\", hex(pruef))\n\n# Kontrolle: Daten plus Prüfbyte ergeben 0\nkontrolle = pruef\nfor byte in daten:\n    kontrolle ^= byte\nprint(\"Kontrolle:\", kontrolle)",
+   "wann_nutzen": "Bei Bitmustern und einfachen Prüfbytes; nie als Potenz (dafür **).",
    "transfer": [
     {
-     "situation": "Bauplan für eine Feder",
-     "code": "class Feder:\n    def __init__(self, c):\n        self.c = c\n\n    def kraft(self, s):\n        return self.c * s\n\nf = Feder(12.5)\nprint(f.kraft(4), \"N\")"
+     "situation": "Zweimal XOR mit demselben Schlüssel gibt den Wert zurück",
+     "code": "wert = 0b10110010\nschluessel = 0b01101100\nverschluesselt = wert ^ schluessel\nprint(format(verschluesselt, \"08b\"))\nprint(format(verschluesselt ^ schluessel, \"08b\"), verschluesselt ^ schluessel == wert)"
     },
     {
-     "situation": "Zwei Teile aus einem Bauplan",
-     "code": "class Rohr:\n    def __init__(self, d_aussen, d_innen, l):\n        self.d_aussen = d_aussen\n        self.d_innen = d_innen\n        self.l = l\n\nr1 = Rohr(42, 36, 1000)\nr2 = Rohr(60, 52, 500)\nprint(r1.d_aussen, r2.d_aussen)"
+     "situation": "Einzelnes Bit umschalten",
+     "code": "ausgaenge = 0b0101\nausgaenge ^= 0b0001\nprint(format(ausgaenge, \"04b\"))\nausgaenge ^= 0b0001\nprint(format(ausgaenge, \"04b\"))"
+    },
+    {
+     "situation": "XOR-Prüfbyte eines Telegramms",
+     "code": "telegramm = b\"R1:1450\"\npruef = 0\nfor byte in telegramm:\n    pruef ^= byte\nprint(f\"{pruef:02X}\")"
     }
    ],
    "verwandt": [
-    "init",
-    "objekt-erzeugen",
-    "def"
+    "potenz",
+    "bin-hex",
+    "pruefsumme-vergleichen",
+    "hashlib-sha256"
    ],
    "bezeichner": [
-    "class"
+    "^",
+    "XOR"
    ],
    "lauffaehig": true,
    "suchbegriffe": [
-    "Klasse",
-    "Bauplan",
-    "Objektorientierung",
-    "eigener Datentyp",
-    "OOP"
+    "XOR",
+    "exklusives Oder",
+    "Bitoperation",
+    "Bitmuster",
+    "Prüfbyte",
+    "BCC",
+    "Bit umschalten"
    ],
-   "beispiel_ausgabe": "20 150\n47.1 cm³",
+   "beispiel_ausgabe": "1100 ^ 1010 = 0110\nPrüfbyte: 0x70\nKontrolle: 0",
    "typische_fehler": [
     {
-     "beschreibung": "Doppelpunkt hinter dem Klassennamen vergessen",
-     "code": "class Welle\n    pass",
-     "meldung": "SyntaxError: expected ':'"
+     "beschreibung": "^ statt ** für die Potenz benutzt",
+     "code": "print(2 ^ 3)",
+     "meldung": "Kein Fehler, Ausgabe: 1 (2 ^ 3 ist bitweises XOR, nicht 8; die Potenz schreibt man 2 ** 3)"
     },
     {
-     "beschreibung": "Klasse definiert, aber kein Objekt erzeugt: der Klassenname allein hat keine Maße",
-     "code": "class Welle:\n    def __init__(self, d):\n        self.d = d\n\nprint(Welle.d)",
-     "meldung": "AttributeError: type object 'Welle' has no attribute 'd'"
+     "beschreibung": "XOR mit Kommazahl: nur ganze Zahlen erlaubt",
+     "code": "print(1.5 ^ 2)",
+     "meldung": "TypeError: unsupported operand type(s) for ^: 'float' and 'int'"
     }
-   ]
-  },
-  {
-   "id": "init",
-   "name": "__init__ (Konstruktor)",
-   "kategorie": "Klassen & Objekte",
-   "eingefuehrt": "V20",
-   "ampel": "kopf",
-   "kurz": "Richtet ein neues Objekt ein: nimmt die Maße entgegen und speichert sie als Attribute.",
-   "syntax": "def __init__(self, d, l):\n    self.d = d\n    self.l = l",
-   "erklaerung": "__init__ (zwei Unterstriche davor und dahinter) ruft Python automatisch auf, sobald du ein Objekt erzeugst, zum Beispiel mit Welle(20, 150). Der erste Parameter heißt immer self, die übrigen sind die Werte, die du beim Erzeugen angibst. Was nicht mit self.name = ... gespeichert wird, ist nach dem Ende von __init__ weg: Parameter sind lokale Variablen. Auch Standardwerte funktionieren wie bei jeder Funktion. __init__ gibt nichts zurück (kein return).",
-   "beispiel": "class Flansch:\n    def __init__(self, d_aussen, d_innen, dicke, n=4):\n        self.d_aussen = d_aussen\n        self.d_innen = d_innen\n        self.dicke = dicke\n        self.n = n\n\n\nf1 = Flansch(120, 40, 15, 6)\nf2 = Flansch(100, 30, 12)\nprint(f1.n, f2.n)",
-   "wann_nutzen": "Bei jeder Klasse, die Maße oder Zustand speichert: Einmal beim Erzeugen festlegen, danach in allen Methoden benutzen.",
-   "transfer": [
-    {
-     "situation": "Wert prüfen, bevor er gespeichert wird",
-     "code": "class Welle:\n    def __init__(self, d, l):\n        if d <= 0 or l <= 0:\n            raise ValueError(\"Maße müssen positiv sein\")\n        self.d = d\n        self.l = l\n\nprint(Welle(20, 150).d)"
-    },
-    {
-     "situation": "Aus gegebenen Maßen ein weiteres Attribut ableiten",
-     "code": "class Rohr:\n    def __init__(self, d_aussen, d_innen):\n        self.d_aussen = d_aussen\n        self.d_innen = d_innen\n        self.wand = (d_aussen - d_innen) / 2\n\nprint(Rohr(42, 36).wand)"
-    }
-   ],
-   "verwandt": [
-    "klasse",
-    "self",
-    "default-werte"
-   ],
-   "bezeichner": [
-    "__init__"
-   ],
-   "lauffaehig": true,
-   "suchbegriffe": [
-    "Konstruktor",
-    "Initialisierung",
-    "Objekt einrichten"
-   ],
-   "beispiel_ausgabe": "6 4",
-   "typische_fehler": [
-    {
-     "beschreibung": "Parameter nicht als Attribut gespeichert: die Methode findet ihn nicht",
-     "code": "class Welle:\n    def __init__(self, d, l):\n        self.d = d\n\n    def volumen(self):\n        return self.l * self.d\n\nprint(Welle(20, 150).volumen())",
-     "meldung": "AttributeError: 'Welle' object has no attribute 'l'"
-    },
-    {
-     "beschreibung": "Zu wenige Argumente beim Erzeugen",
-     "code": "class Welle:\n    def __init__(self, d, l):\n        self.d = d\n        self.l = l\n\nw = Welle(20)",
-     "meldung": "TypeError: Welle.__init__() missing 1 required positional argument: 'l'"
-    }
-   ]
-  },
-  {
-   "id": "self",
-   "name": "self",
-   "kategorie": "Klassen & Objekte",
-   "eingefuehrt": "V20",
-   "ampel": "kopf",
-   "kurz": "Das Objekt, mit dem eine Methode gerade arbeitet: über self.name erreichst du seine Attribute.",
-   "syntax": "def methode(self, ...):\n    return self.attribut",
-   "erklaerung": "In jeder Methode ist self der erste Parameter. Beim Aufruf w1.volumen() setzt Python das Objekt w1 automatisch dort ein, du schreibst es nicht in die Klammer. Darum gehört in die Methode self.d für das Maß des eigenen Objekts: Ein nacktes d wäre eine andere Variable (und existiert meist nicht). Ruft man dieselbe Methode an einem zweiten Objekt auf, ist self dieses zweite Objekt, und die Rechnung nimmt dessen Maße. Der Name self ist Konvention, aber alle verwenden ihn.",
-   "beispiel": "class Welle:\n    def __init__(self, d, l):\n        self.d = d\n        self.l = l\n\n    def streckung(self):\n        return self.l / self.d\n\n\nw1 = Welle(20, 150)\nw2 = Welle(40, 150)\nprint(w1.streckung())\nprint(w2.streckung())",
-   "wann_nutzen": "In jeder Methode und in __init__, sobald sie Maße des Objekts lesen oder ändern soll.",
-   "transfer": [
-    {
-     "situation": "Eine Methode ändert den Zustand des eigenen Objekts",
-     "code": "class Werkzeug:\n    def __init__(self, standzeit):\n        self.rest = standzeit\n\n    def benutze(self, minuten):\n        self.rest = self.rest - minuten\n\nt = Werkzeug(60)\nt.benutze(25)\nprint(t.rest)"
-    },
-    {
-     "situation": "Eine Methode ruft eine andere Methode desselben Objekts auf",
-     "code": "class Quader:\n    def __init__(self, a, b, c):\n        self.a, self.b, self.c = a, b, c\n\n    def volumen(self):\n        return self.a * self.b * self.c\n\n    def masse(self, dichte=7.85):\n        return self.volumen() / 1e6 * dichte\n\nprint(round(Quader(100, 50, 20).masse(), 2), \"kg\")"
-    }
-   ],
-   "verwandt": [
-    "klasse",
-    "methode",
-    "attribut"
-   ],
-   "bezeichner": [
-    "self"
-   ],
-   "lauffaehig": true,
-   "suchbegriffe": [
-    "selbst",
-    "eigenes Objekt",
-    "self vergessen"
-   ],
-   "beispiel_ausgabe": "7.5\n3.75",
-   "typische_fehler": [
-    {
-     "beschreibung": "self in der Definition vergessen",
-     "code": "class Welle:\n    def __init__(self, d):\n        self.d = d\n\n    def umfang():\n        return 3.14159 * self.d\n\nprint(Welle(20).umfang())",
-     "meldung": "TypeError: Welle.umfang() takes 0 positional arguments but 1 was given"
-    },
-    {
-     "beschreibung": "d statt self.d in der Rechnung",
-     "code": "class Welle:\n    def __init__(self, d):\n        self.d = d\n\n    def umfang(self):\n        return 3.14159 * d\n\nprint(Welle(20).umfang())",
-     "meldung": "NameError: name 'd' is not defined. Did you mean: 'self.d'?"
-    }
-   ]
-  },
-  {
-   "id": "attribut",
-   "name": "Attribut lesen und ändern",
-   "kategorie": "Klassen & Objekte",
-   "eingefuehrt": "V20",
-   "ampel": "kopf",
-   "kurz": "Ein Maß oder Merkmal eines Objekts: mit objekt.name lesen, mit objekt.name = wert ändern.",
-   "syntax": "w = Welle(20, 150)\nprint(w.d)\nw.d = 25",
-   "erklaerung": "Ein Attribut ist eine Variable, die zu einem Objekt gehört. Du erreichst sie mit einem Punkt zwischen Objektname und Attributname. Lesen und Ändern funktionieren wie bei einer normalen Variablen; es gibt keine Klammern. Jedes Objekt hat seine eigenen Attribute: Ändert man w1.d, bleibt w2.d unverändert. Wichtig: Weist du ein Objekt einem zweiten Namen zu (w2 = w1), gibt es trotzdem nur ein Objekt mit zwei Namen, und eine Änderung ist über beide sichtbar (wie bei Listen in V08).",
-   "beispiel": "class Welle:\n    def __init__(self, d, l):\n        self.d = d\n        self.l = l\n\n\nw1 = Welle(20, 150)\nw2 = Welle(20, 150)\nw1.d = 25\nprint(w1.d, w2.d)\n\nw3 = w1\nw3.l = 200\nprint(w1.l)",
-   "wann_nutzen": "Wenn du Varianten durchspielst (Länge ändern, Durchmesser ändern) oder den Zustand eines Teils fortschreibst (Reststandzeit, Stückzahl).",
-   "transfer": [
-    {
-     "situation": "Alle Maße eines Objekts ausgeben",
-     "code": "class Welle:\n    def __init__(self, d, l):\n        self.d = d\n        self.l = l\n\nw = Welle(20, 150)\nprint(vars(w))"
-    },
-    {
-     "situation": "Variante durch Ändern eines Attributs",
-     "code": "class Flansch:\n    def __init__(self, n):\n        self.n = n\n\nf = Flansch(6)\nfor n in (4, 6, 8):\n    f.n = n\n    print(f.n, \"Bohrungen\")"
-    }
-   ],
-   "verwandt": [
-    "klasse",
-    "init",
-    "liste"
-   ],
-   "bezeichner": [
-    "Attribut",
-    "vars"
-   ],
-   "lauffaehig": true,
-   "suchbegriffe": [
-    "Eigenschaft",
-    "Maß ändern",
-    "punkt-notation",
-    "Alias"
-   ],
-   "beispiel_ausgabe": "25 20\n200",
-   "typische_fehler": [
-    {
-     "beschreibung": "Tippfehler im Attributnamen",
-     "code": "class Welle:\n    def __init__(self, d):\n        self.d = d\n\nw = Welle(20)\nprint(w.durchmesser)",
-     "meldung": "AttributeError: 'Welle' object has no attribute 'durchmesser'"
-    },
-    {
-     "beschreibung": "Zwei Namen, ein Objekt: die Änderung schlägt auf beide durch",
-     "code": "class Welle:\n    def __init__(self, d):\n        self.d = d\n\nw1 = Welle(20)\nw2 = w1\nw2.d = 99\nprint(w1.d)",
-     "meldung": "(keine Fehlermeldung) Ausgabe 99: w1 und w2 sind dasselbe Objekt."
-    }
-   ]
-  },
-  {
-   "id": "methode",
-   "name": "Methode definieren und aufrufen",
-   "kategorie": "Klassen & Objekte",
-   "eingefuehrt": "V20",
-   "ampel": "kopf",
-   "kurz": "Eine Funktion, die zu einer Klasse gehört: Aufruf mit Klammern am Objekt, z. B. w.volumen().",
-   "syntax": "class Welle:\n    def volumen(self):\n        return ...\n\nw.volumen()",
-   "erklaerung": "Eine Methode ist eine def-Funktion im Rumpf der Klasse. Ihr erster Parameter ist self. Aufgerufen wird sie am Objekt: objekt.methode(argumente). Die Klammern sind Pflicht, auch ohne Argumente; ohne Klammern bekommst du nur die Methode selbst (bound method), nicht ihr Ergebnis. Methoden können Standardwerte haben (masse(dichte=7.85)), etwas zurückgeben (return) oder ein Attribut verändern. Du nutzt Methoden seit V01: \"M10\".upper() und liste.append(x) sind Methodenaufrufe, denn str und list sind Klassen.",
-   "beispiel": "import math\n\n\nclass Rohr:\n    def __init__(self, d_aussen, d_innen, l):\n        self.d_aussen = d_aussen\n        self.d_innen = d_innen\n        self.l = l\n\n    def volumen(self):\n        \"\"\"mm³\"\"\"\n        return math.pi / 4 * (self.d_aussen ** 2 - self.d_innen ** 2) * self.l\n\n    def masse(self, dichte=7.85):\n        \"\"\"kg, Dichte in g/cm³\"\"\"\n        return self.volumen() / 1000 * dichte / 1000\n\n\nr = Rohr(42, 36, 1000)\nprint(round(r.volumen() / 1000, 1), \"cm³\")\nprint(round(r.masse(), 2), \"kg Stahl\")\nprint(round(r.masse(2.70), 2), \"kg Aluminium\")",
-   "wann_nutzen": "Für jede Rechnung oder Prüfung, die zu einem Bauteil gehört: Volumen, Masse, ist_gueltig, benutzen.",
-   "transfer": [
-    {
-     "situation": "Prüfmethode mit Wahrheitswert",
-     "code": "class Rohr:\n    def __init__(self, d_aussen, d_innen):\n        self.d_aussen = d_aussen\n        self.d_innen = d_innen\n\n    def ist_gueltig(self):\n        return 0 < self.d_innen < self.d_aussen\n\nprint(Rohr(42, 36).ist_gueltig(), Rohr(36, 42).ist_gueltig())"
-    },
-    {
-     "situation": "Baureihe: Methode auf allen Objekten einer Liste",
-     "code": "class Welle:\n    def __init__(self, d, l):\n        self.d = d\n        self.l = l\n\n    def volumen(self):\n        return 3.14159265 / 4 * self.d ** 2 * self.l\n\nreihe = [Welle(d, 200) for d in (16, 20, 25)]\nfor w in reihe:\n    print(w.d, round(w.volumen() / 1000, 1))"
-    },
-    {
-     "situation": "Bekannte Methoden: str und list sind Klassen",
-     "code": "text = \"m10\"\nprint(text.upper())\nteile = []\nteile.append(\"Welle\")\nprint(teile)"
-    }
-   ],
-   "verwandt": [
-    "klasse",
-    "self",
-    "def",
-    "default-werte"
-   ],
-   "bezeichner": [
-    "Methode",
-    "bound method"
-   ],
-   "lauffaehig": true,
-   "suchbegriffe": [
-    "Funktion im Objekt",
-    "Methodenaufruf",
-    "Klammern",
-    "bound method"
-   ],
-   "beispiel_ausgabe": "367.6 cm³\n2.89 kg Stahl\n0.99 kg Aluminium",
-   "typische_fehler": [
-    {
-     "beschreibung": "Klammern vergessen: du bekommst die Methode, nicht das Ergebnis",
-     "code": "class Welle:\n    def __init__(self, d):\n        self.d = d\n\n    def umfang(self):\n        return 3.14159 * self.d\n\nprint(Welle(20).umfang)",
-     "meldung": "(keine Fehlermeldung) Ausgabe <bound method Welle.umfang of ...>: das Ergebnis fehlt, die Klammern auch."
-    },
-    {
-     "beschreibung": "Argument übergeben, das die Methode nicht erwartet",
-     "code": "class Welle:\n    def __init__(self, d):\n        self.d = d\n\n    def umfang(self):\n        return 3.14159 * self.d\n\nprint(Welle(20).umfang(5))",
-     "meldung": "TypeError: Welle.umfang() takes 1 positional argument but 2 were given"
-    }
-   ]
-  },
-  {
-   "id": "objekt-erzeugen",
-   "name": "Objekt erzeugen (Klassenname(...))",
-   "kategorie": "Klassen & Objekte",
-   "eingefuehrt": "V20",
-   "ampel": "kopf",
-   "kurz": "Aus dem Bauplan ein konkretes Teil machen: name = Klasse(werte). Viele Objekte gehen in eine Liste.",
-   "syntax": "w = Welle(20, 150)\nreihe = [Welle(16, 200), Welle(20, 200)]",
-   "erklaerung": "Der Aufruf Klassenname(werte) legt ein neues Objekt (eine Instanz, ein Exemplar) an und führt dabei __init__ mit diesen Werten aus. Das Ergebnis speicherst du in einer Variablen. Aus einer Klasse kannst du beliebig viele Objekte erzeugen, jedes mit eigenen Maßen. Wie jeder Wert dürfen sie in Listen, Dictionaries oder Funktionsargumenten stehen. So bildest du eine Baureihe ab und wertest sie mit einer Schleife aus.",
-   "beispiel": "class Flansch:\n    def __init__(self, d_aussen, d_innen, dicke):\n        self.d_aussen = d_aussen\n        self.d_innen = d_innen\n        self.dicke = dicke\n\n    def volumen(self):\n        return 3.14159265 / 4 * (self.d_aussen ** 2 - self.d_innen ** 2) * self.dicke\n\n\nreihe = [Flansch(90, 30, 12), Flansch(120, 40, 15), Flansch(150, 60, 18)]\nfor f in reihe:\n    print(f.d_aussen, round(f.volumen() / 1000, 1), \"cm³\")\n\ngroesster = max(reihe, key=lambda f: f.volumen())\nprint(\"Größtes Volumen bei Außendurchmesser:\", groesster.d_aussen)",
-   "wann_nutzen": "Wenn du mehrere Varianten desselben Bauteils vergleichst: Baureihe, Prüfplan, Stückliste mit Objekten.",
-   "transfer": [
-    {
-     "situation": "Objekte aus Tabellenzeilen erzeugen",
-     "code": "class Welle:\n    def __init__(self, d, l):\n        self.d = d\n        self.l = l\n\nzeilen = [\"20;150\", \"25;200\"]\nwellen = []\nfor z in zeilen:\n    d, l = z.split(\";\")\n    wellen.append(Welle(float(d), float(l)))\nprint(len(wellen), wellen[1].l)"
-    },
-    {
-     "situation": "Ungültige Varianten zählen",
-     "code": "class Rohr:\n    def __init__(self, a, i):\n        self.a, self.i = a, i\n\n    def ist_gueltig(self):\n        return self.i < self.a\n\nrohre = [Rohr(42, 36), Rohr(30, 32), Rohr(60, 52)]\nprint(sum(1 for r in rohre if not r.ist_gueltig()), \"ungültig\")"
-    }
-   ],
-   "verwandt": [
-    "klasse",
-    "init",
-    "attribut",
-    "append"
-   ],
-   "bezeichner": [
-    "Objekt",
-    "Instanz"
-   ],
-   "lauffaehig": true,
-   "suchbegriffe": [
-    "Instanz",
-    "Exemplar",
-    "Baureihe",
-    "Objekte in Liste",
-    "neues Objekt"
-   ],
-   "beispiel_ausgabe": "90 67.9 cm³\n120 150.8 cm³\n150 267.2 cm³\nGrößtes Volumen bei Außendurchmesser: 150",
-   "typische_fehler": [
-    {
-     "beschreibung": "Klammern beim Erzeugen vergessen: der Name ist nur die Klasse, kein Objekt",
-     "code": "class Welle:\n    def __init__(self, d):\n        self.d = d\n\nw = Welle\nprint(w.d)",
-     "meldung": "AttributeError: type object 'Welle' has no attribute 'd'"
-    },
-    {
-     "beschreibung": "Zu viele Argumente beim Erzeugen",
-     "code": "class Welle:\n    def __init__(self, d, l):\n        self.d = d\n        self.l = l\n\nw = Welle(20, 150, 7)",
-     "meldung": "TypeError: Welle.__init__() takes 3 positional arguments but 4 were given"
-    }
-   ]
-  },
-  {
-   "id": "bauteil3d",
-   "name": "bauteil3d (Dreiecksnetz, STL)",
-   "kategorie": "Ausblick (ab V10)",
-   "eingefuehrt": "V20",
-   "ampel": "delegieren",
-   "kurz": "Mitgeliefertes Hilfsmodul: erzeugt aus Maßen ein Dreiecksnetz und zeigt es in 3D (flansch, welle, ring, zeige). Dein Anteil: die Klasse mit den Maßen.",
-   "syntax": "import bauteil3d\nm = bauteil3d.flansch(120, 40, 15, 90, 6, 11)\nbauteil3d.zeige(m, \"Flansch\")",
-   "stichwort": true,
-   "verwandt": [
-    "klasse",
-    "methode"
-   ],
-   "bezeichner": [
-    "bauteil3d",
-    "STL",
-    "mesh"
    ]
   },
   {
@@ -5896,6 +5300,722 @@
      "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ncur = db.cursor()\ncur.execute(\"CREATE TABLE auftraege (nr INTEGER PRIMARY KEY, teil TEXT, maschine TEXT, menge INTEGER, status TEXT)\")\ncur.executemany(\"INSERT INTO auftraege VALUES (?, ?, ?, ?, ?)\", [\n    (4711, \"WELLE_20H6\", \"D2\", 500, \"in Arbeit\"),\n    (4712, \"FLANSCH_80\", \"F1\", 120, \"offen\"),\n    (4713, \"WELLE_20H6\", \"D2\", 300, \"offen\"),\n    (4714, \"BUCHSE_30\", \"D2\", 800, \"fertig\"),\n    (4715, \"FLANSCH_80\", \"F1\", 60, \"fertig\"),\n])\ndb.commit()\ncur.execute(\"CREATE TABLE maschinen (id TEXT PRIMARY KEY, typ TEXT)\")\ncur.executemany(\"INSERT INTO maschinen VALUES (?, ?)\", [(\"D2\", \"Drehmaschine\"), (\"F1\", \"Fraesmaschine\")])\ncur.execute(\"SELECT a.nr, m.typ FROM auftraege a JOIN maschinen m\")\nprint(len(cur.fetchall()), \"Zeilen\")",
      "meldung": "(keine Fehlermeldung) 10 Zeilen statt 5: Ohne ON kombiniert der JOIN jeden Auftrag mit jeder Maschine."
     }
+   ]
+  },
+  {
+   "id": "path",
+   "name": "Path (pathlib)",
+   "kategorie": "Dateien & Fehler",
+   "eingefuehrt": "V16",
+   "ampel": "kopf",
+   "kurz": "Ein Pfad als Objekt: Teile verbindest du mit /, geprüft und gelesen wird per Methode.",
+   "syntax": "from pathlib import Path\nordner = Path(\"zelle\")\ndatei = ordner / \"maschinen\" / \"D2\"",
+   "erklaerung": "Path(\"zelle\") erzeugt ein Pfad-Objekt, keinen gewöhnlichen Text. Mit dem Operator / hängst du Teile an, Python setzt das passende Trennzeichen für dein Betriebssystem ein. Ein relativer Pfad (\"zelle/x.log\") gilt ab dem Ordner, in dem das Programm läuft; ein absoluter Pfad beginnt an der Wurzel des Laufwerks. Mit / rechnet nur ein Path: Text / Text ist ein Fehler, mindestens der linke Teil muss ein Path sein.",
+   "beispiel": "from pathlib import Path\n\nzelle = Path(\"zelle\")\nlogs = zelle / \"maschinen\" / \"D2\" / \"logs\"\ndatei = logs / \"2026-11-16.log\"\n\nprint(datei.as_posix())\nprint(datei.name)\nprint(datei.is_absolute())",
+   "wann_nutzen": "Immer wenn dein Programm Dateien oder Ordner anspricht: Messdaten, Logs, NC-Programme der Fertigungszelle.",
+   "transfer": [
+    {
+     "situation": "Pfad aus Teilen bauen",
+     "code": "from pathlib import Path\nbasis = Path(\"zelle\")\nmaschine = \"F1\"\nprint((basis / \"maschinen\" / maschine / \"logs\").as_posix())"
+    },
+    {
+     "situation": "Relativ oder absolut?",
+     "code": "from pathlib import Path\nprint(Path(\"daten/messung.csv\").is_absolute())\nprint(Path(\"daten/messung.csv\").resolve().is_absolute())"
+    }
+   ],
+   "verwandt": [
+    "with-open",
+    "import",
+    "path-teile",
+    "path-pruefen"
+   ],
+   "bezeichner": [
+    "Path",
+    "pathlib",
+    "from pathlib import Path"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [
+    "Pfad",
+    "pfad verbinden",
+    "relativ",
+    "absolut",
+    "pathlib"
+   ],
+   "beispiel_ausgabe": "zelle/maschinen/D2/logs/2026-11-16.log\n2026-11-16.log\nFalse",
+   "typische_fehler": [
+    {
+     "beschreibung": "Text durch Text geteilt",
+     "code": "ordner = \"zelle\"\ndatei = ordner / \"x.log\"",
+     "meldung": "TypeError: unsupported operand type(s) for /: 'str' and 'str'"
+    },
+    {
+     "beschreibung": "Datei liegt nicht im aktuellen Ordner (relativer Pfad)",
+     "code": "from pathlib import Path\ntext = Path(\"messung.csv\").read_text(encoding=\"utf-8\")",
+     "meldung": "FileNotFoundError: [Errno 2] No such file or directory: 'messung.csv'"
+    }
+   ]
+  },
+  {
+   "id": "path-teile",
+   "name": "Path: name, stem, suffix, parent, parts",
+   "kategorie": "Dateien & Fehler",
+   "eingefuehrt": "V16",
+   "ampel": "kopf",
+   "kurz": "Zerlegt einen Pfad in Dateiname, Name ohne Endung, Endung und Ordner.",
+   "syntax": "datei.name    datei.stem    datei.suffix    datei.parent    datei.parts",
+   "erklaerung": "Ein Pfad besteht aus Teilen, die du direkt abfragen kannst. name ist der letzte Teil mit Endung, stem der Name ohne Endung, suffix die Endung samt Punkt. parent ist der Ordner darüber (wieder ein Path, also geht auch parent.parent). parts liefert alle Teile als Tupel. Das Zerlegen passiert nur im Text: Die Datei muss dafür nicht existieren.",
+   "beispiel": "from pathlib import Path\n\ndatei = Path(\"zelle/nc-programme/WELLE_20H6.nc\")\n\nprint(datei.name)\nprint(datei.stem)\nprint(datei.suffix)\nprint(datei.parent.as_posix())\nprint(datei.parent.parent.name)\nprint(datei.parts)",
+   "wann_nutzen": "Wenn du Dateien nach Endung sortierst, Namen ohne Endung brauchst oder wissen willst, in welchem Ordner (welcher Maschine) eine Datei liegt.",
+   "transfer": [
+    {
+     "situation": "Maschine aus dem Logpfad lesen",
+     "code": "from pathlib import Path\nlog = Path(\"zelle/maschinen/R1/logs/2026-11-18.log\")\nprint(log.parent.parent.name)"
+    },
+    {
+     "situation": "Neue Endung für den Namen",
+     "code": "from pathlib import Path\np = Path(\"WELLE_20H6.nc\")\nprint(p.stem + \"_v2\" + p.suffix)\nprint(p.with_suffix(\".txt\").name)"
+    }
+   ],
+   "verwandt": [
+    "path",
+    "glob",
+    "path-pruefen"
+   ],
+   "bezeichner": [
+    ".name",
+    ".stem",
+    ".suffix",
+    ".parent",
+    ".parts",
+    ".with_suffix"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [
+    "dateiname",
+    "endung",
+    "ordner",
+    "elternordner"
+   ],
+   "beispiel_ausgabe": "WELLE_20H6.nc\nWELLE_20H6\n.nc\nzelle/nc-programme\nzelle\n('zelle', 'nc-programme', 'WELLE_20H6.nc')",
+   "typische_fehler": [
+    {
+     "beschreibung": "name mit Klammern aufgerufen",
+     "code": "from pathlib import Path\nprint(Path(\"a/b.nc\").name())",
+     "meldung": "TypeError: 'str' object is not callable"
+    },
+    {
+     "beschreibung": "Endung ohne Punkt verglichen: nie wahr",
+     "code": "from pathlib import Path\nprint(Path(\"a/b.nc\").suffix == \"nc\")",
+     "meldung": "False (die Endung ist \".nc\", mit Punkt)"
+    }
+   ]
+  },
+  {
+   "id": "glob",
+   "name": "glob, rglob, iterdir",
+   "kategorie": "Dateien & Fehler",
+   "eingefuehrt": "V16",
+   "ampel": "lesen",
+   "kurz": "Findet Dateien und Ordner nach Muster, auch in Unterordnern.",
+   "syntax": "ordner.iterdir()    ordner.glob(\"*.log\")    ordner.rglob(\"*.nc\")",
+   "erklaerung": "iterdir() liefert alles, was direkt im Ordner liegt. glob(\"*.log\") liefert nur die Treffer des Musters; * steht für beliebigen Text, auch mitten im Pfad (\"maschinen/*/logs/*.log\"). rglob(\"*.nc\") sucht zusätzlich in allen Unterordnern. Das Ergebnis ist keine Liste, sondern ein Generator: Es hat kein len(), und die Reihenfolge ist nicht festgelegt. Mit sorted(...) oder list(...) bekommst du eine Liste, die du zählen und sortieren kannst.",
+   "beispiel": "from pathlib import Path\n\nfor maschine in [\"D2\", \"F1\"]:\n    logs = Path(\"zelle/maschinen\") / maschine / \"logs\"\n    logs.mkdir(parents=True)\n    for tag in [\"2026-11-17\", \"2026-11-16\"]:\n        (logs / f\"{tag}.log\").write_text(\"x\", encoding=\"utf-8\")\n\nzelle = Path(\"zelle\")\nalle = sorted(p.name for p in zelle.rglob(\"*.log\"))\nprint(len(alle), alle)\n\nnur_d2 = sorted(p.name for p in zelle.glob(\"maschinen/D2/logs/*.log\"))\nprint(nur_d2)",
+   "wann_nutzen": "Wenn du viele Dateien auf einmal bearbeiten willst: alle Logs einer Woche, alle NC-Programme, alle CSV-Dateien eines Ordners.",
+   "transfer": [
+    {
+     "situation": "Nur die Dateien direkt im Ordner",
+     "code": "from pathlib import Path\nproben = Path(\"proben\")\nproben.mkdir()\n(proben / \"a.csv\").write_text(\"1\", encoding=\"utf-8\")\n(proben / \"b.txt\").write_text(\"2\", encoding=\"utf-8\")\nprint(sorted(p.name for p in proben.iterdir()))"
+    },
+    {
+     "situation": "Anzahl der Treffer, mit und ohne Unterordner",
+     "code": "from pathlib import Path\nnc = Path(\"nc\")\n(nc / \"alt\").mkdir(parents=True)\n(nc / \"A.nc\").write_text(\"G0\", encoding=\"utf-8\")\n(nc / \"alt\" / \"A_v1.nc\").write_text(\"G0\", encoding=\"utf-8\")\nprint(len(list(nc.glob(\"*.nc\"))), len(list(nc.rglob(\"*.nc\"))))"
+    }
+   ],
+   "verwandt": [
+    "path",
+    "path-pruefen",
+    "sorted",
+    "liste"
+   ],
+   "bezeichner": [
+    ".glob",
+    ".rglob",
+    ".iterdir",
+    "glob",
+    "rglob",
+    "iterdir"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [
+    "dateien suchen",
+    "dateien finden",
+    "muster",
+    "wildcard",
+    "durchsuchen",
+    "generator"
+   ],
+   "beispiel_ausgabe": "4 ['2026-11-16.log', '2026-11-16.log', '2026-11-17.log', '2026-11-17.log']\n['2026-11-16.log', '2026-11-17.log']",
+   "typische_fehler": [
+    {
+     "beschreibung": "len() auf das glob-Ergebnis",
+     "code": "from pathlib import Path\nordner = Path(\"x\")\nordner.mkdir()\nprint(len(ordner.glob(\"*.txt\")))",
+     "meldung": "TypeError: object of type 'generator' has no len()"
+    },
+    {
+     "beschreibung": "glob findet nichts in Unterordnern",
+     "code": "from pathlib import Path\nordner = Path(\"x/y\")\nordner.mkdir(parents=True)\n(ordner / \"a.nc\").write_text(\"G0\", encoding=\"utf-8\")\nprint(len(list(Path(\"x\").glob(\"*.nc\"))))",
+     "meldung": "0 (glob sucht nur im Ordner selbst; rglob auch in Unterordnern)"
+    }
+   ]
+  },
+  {
+   "id": "path-pruefen",
+   "name": "Path: exists, is_file, stat, read_text",
+   "kategorie": "Dateien & Fehler",
+   "eingefuehrt": "V16",
+   "ampel": "lesen",
+   "kurz": "Prüft, ob es eine Datei oder einen Ordner gibt, liest die Größe und den Inhalt.",
+   "syntax": "p.exists()    p.is_file()    p.is_dir()    p.stat().st_size    p.read_text(encoding=\"utf-8\")",
+   "erklaerung": "exists() fragt, ob der Pfad etwas bezeichnet; is_file() und is_dir() unterscheiden Datei und Ordner. p.stat().st_size gibt die Größe in Bytes (durch 1024 teilen für KiB). read_text(encoding=\"utf-8\") liest die ganze Datei als Text, write_text(...) schreibt sie. Kurz und ohne with; für sehr große Dateien oder zeilenweises Lesen bleibt open() mit with die bessere Wahl.",
+   "beispiel": "from pathlib import Path\n\nordner = Path(\"zelle\")\nordner.mkdir()\ndatei = ordner / \"LIESMICH.txt\"\ndatei.write_text(\"Fertigungszelle FZ-3\\nHalle 2\\n\", encoding=\"utf-8\")\n\nprint(datei.exists(), datei.is_file(), datei.is_dir())\nprint(ordner.is_dir())\nprint(Path(\"gibt_es_nicht.txt\").exists())\nprint(datei.stat().st_size, \"Bytes\")\nprint(datei.read_text(encoding=\"utf-8\").splitlines()[0])",
+   "wann_nutzen": "Vor dem Lesen prüfen, ob die Datei da ist; Dateigrößen vergleichen; kleine Textdateien in einem Schritt einlesen.",
+   "transfer": [
+    {
+     "situation": "Nur lesen, wenn es die Datei gibt",
+     "code": "from pathlib import Path\np = Path(\"config.txt\")\nif p.exists():\n    print(p.read_text(encoding=\"utf-8\"))\nelse:\n    print(\"keine Konfiguration gefunden\")"
+    },
+    {
+     "situation": "Größe in KiB",
+     "code": "from pathlib import Path\np = Path(\"daten.txt\")\np.write_text(\"x\" * 2048, encoding=\"utf-8\")\nprint(p.stat().st_size / 1024, \"KiB\")"
+    }
+   ],
+   "verwandt": [
+    "path",
+    "glob",
+    "with-open",
+    "try-except"
+   ],
+   "bezeichner": [
+    ".exists",
+    ".is_file",
+    ".is_dir",
+    ".stat",
+    ".st_size",
+    ".read_text",
+    ".write_text"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [
+    "datei existiert",
+    "dateigröße",
+    "datei lesen",
+    "ordner prüfen",
+    "FileNotFoundError"
+   ],
+   "beispiel_ausgabe": "True True False\nTrue\nFalse\n31 Bytes\nFertigungszelle FZ-3",
+   "typische_fehler": [
+    {
+     "beschreibung": "Relativer Pfad zeigt ins Leere",
+     "code": "from pathlib import Path\nprint(Path(\"messung.csv\").read_text(encoding=\"utf-8\"))",
+     "meldung": "FileNotFoundError: [Errno 2] No such file or directory: 'messung.csv'"
+    },
+    {
+     "beschreibung": "st_size direkt auf dem Path statt auf stat()",
+     "code": "from pathlib import Path\np = Path(\"a.txt\")\np.write_text(\"x\", encoding=\"utf-8\")\nprint(p.st_size)",
+     "meldung": "AttributeError: 'PosixPath' object has no attribute 'st_size'"
+    }
+   ]
+  },
+  {
+   "id": "os-modul",
+   "name": "os: getcwd, listdir (os.path, os.walk)",
+   "kategorie": "Dateien & Fehler",
+   "eingefuehrt": "V16",
+   "ampel": "lesen",
+   "kurz": "Ältere Schreibweise für Ordner und Dateien; kommt in KI-Code und alten Skripten häufig vor.",
+   "syntax": "import os\nos.getcwd()    os.listdir(\".\")    os.path.join(a, b)    os.walk(ordner)",
+   "erklaerung": "Das Modul os kann vieles, was auch Path kann, aber mit Funktionen und Text statt Objekten. os.getcwd() nennt den aktuellen Arbeitsordner, os.listdir(\".\") liefert die Namen im Ordner als Liste (unsortiert). os.path.join(a, b) verbindet Pfadteile, os.walk(ordner) läuft durch einen ganzen Ordnerbaum. Für eigenen Code ist pathlib meist lesbarer; os.path.join und os.walk musst du nur erkennen und verstehen.",
+   "beispiel": "import os\n\nos.mkdir(\"zelle\")\nfor name in [\"b.txt\", \"a.txt\"]:\n    with open(os.path.join(\"zelle\", name), \"w\", encoding=\"utf-8\") as f:\n        f.write(\"x\")\n\nprint(sorted(os.listdir(\"zelle\")))\nprint(os.getcwd() != \"\")\n\nfor ordner, unterordner, dateien in os.walk(\"zelle\"):\n    print(ordner, sorted(dateien))",
+   "wann_nutzen": "Wenn du fremden Code liest, der os benutzt, oder wissen willst, in welchem Ordner dein Programm gerade läuft.",
+   "transfer": [
+    {
+     "situation": "Nur die Namen im Ordner",
+     "code": "import os\nos.mkdir(\"d\")\nopen(\"d/x.txt\", \"w\").close()\nprint(os.listdir(\"d\"))"
+    },
+    {
+     "situation": "Dieselbe Aufgabe mit pathlib",
+     "code": "from pathlib import Path\np = Path(\"d\")\np.mkdir()\n(p / \"x.txt\").write_text(\"\", encoding=\"utf-8\")\nprint([q.name for q in p.iterdir()])"
+    }
+   ],
+   "verwandt": [
+    "path",
+    "glob",
+    "import",
+    "with-open"
+   ],
+   "bezeichner": [
+    "os",
+    "os.getcwd",
+    "os.listdir",
+    "os.path",
+    "os.path.join",
+    "os.walk"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [
+    "arbeitsordner",
+    "aktueller ordner",
+    "ordnerbaum",
+    "betriebssystem"
+   ],
+   "beispiel_ausgabe": "['a.txt', 'b.txt']\nTrue\nzelle ['a.txt', 'b.txt']",
+   "typische_fehler": [
+    {
+     "beschreibung": "os.listdir auf einen Ordner, den es nicht gibt",
+     "code": "import os\nprint(os.listdir(\"ordner_fehlt\"))",
+     "meldung": "FileNotFoundError: [Errno 2] No such file or directory: 'ordner_fehlt'"
+    },
+    {
+     "beschreibung": "os nicht importiert",
+     "code": "print(os.getcwd())",
+     "meldung": "NameError: name 'os' is not defined. Did you forget to import 'os'?"
+    }
+   ]
+  },
+  {
+   "id": "perf-counter",
+   "name": "time.perf_counter()",
+   "kategorie": "Ausblick (ab V10)",
+   "eingefuehrt": "V16",
+   "ampel": "lesen",
+   "kurz": "Misst, wie lange ein Programmteil läuft: Zeit davor und danach, dann die Differenz.",
+   "syntax": "import time\nstart = time.perf_counter()\n...\ndauer = time.perf_counter() - start",
+   "erklaerung": "perf_counter() liefert eine Zeit in Sekunden, die nur zum Vergleichen taugt: Der absolute Wert ist bedeutungslos, die Differenz zweier Aufrufe ist die Laufzeit. Mal 1000 ergibt Millisekunden. Die Messwerte schwanken von Lauf zu Lauf, weil der Rechner nebenbei anderes erledigt; wiederhole die Messung also einige Male, bevor du etwas daraus schließt. Mit der Uhrzeit (time.time, datetime) hat das nichts zu tun.",
+   "beispiel": "import time\n\nstart = time.perf_counter()\nsumme = 0\nfor i in range(1_000_000):\n    summe += i\nende = time.perf_counter()\n\ndauer_ms = (ende - start) * 1000\nprint(summe)\nprint(dauer_ms > 0)",
+   "wann_nutzen": "Um zwei Lösungen zu vergleichen (Schleife oder NumPy, Suche in Ordnern) oder zu prüfen, ob ein Programm bei großen Datenmengen zu langsam wird.",
+   "transfer": [
+    {
+     "situation": "Zwei Varianten vergleichen",
+     "code": "import time\nzahlen = list(range(200000))\nt0 = time.perf_counter()\ns1 = sum(zahlen)\nt1 = time.perf_counter()\ns2 = 0\nfor z in zahlen:\n    s2 += z\nt2 = time.perf_counter()\nprint(s1 == s2)\nprint(f\"sum: {(t1 - t0) * 1000:.2f} ms, Schleife: {(t2 - t1) * 1000:.2f} ms\")"
+    },
+    {
+     "situation": "Mehrfach messen, kleinsten Wert nehmen",
+     "code": "import time\nwerte = []\nfor _ in range(5):\n    t = time.perf_counter()\n    sorted(range(50000, 0, -1))\n    werte.append(time.perf_counter() - t)\nprint(min(werte) <= max(werte))"
+    }
+   ],
+   "verwandt": [
+    "import",
+    "with-open",
+    "glob",
+    "zeit-messen"
+   ],
+   "bezeichner": [
+    "time",
+    "perf_counter",
+    "time.perf_counter"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [
+    "laufzeit",
+    "zeit messen",
+    "stoppuhr",
+    "millisekunden",
+    "benchmark"
+   ],
+   "beispiel_ausgabe": "499999500000\nTrue",
+   "typische_fehler": [
+    {
+     "beschreibung": "Differenz in falscher Reihenfolge: negative Dauer",
+     "code": "import time\nstart = time.perf_counter()\nende = time.perf_counter()\nprint(start - ende)",
+     "meldung": "negative Zahl (ende - start rechnen)"
+    },
+    {
+     "beschreibung": "time nicht importiert",
+     "code": "start = time.perf_counter()",
+     "meldung": "NameError: name 'time' is not defined. Did you forget to import 'time'?"
+    }
+   ]
+  },
+  {
+   "id": "raw-string",
+   "name": "Roher String r\"C:\\Users\\...\" (Windows-Pfade)",
+   "kategorie": "Dateien & Fehler",
+   "eingefuehrt": "V16",
+   "ampel": "lesen",
+   "kurz": "Windows-Pfade mit \\ als rohen Text schreiben, damit Python den Backslash nicht als Sonderzeichen liest.",
+   "syntax": "pfad = r\"C:\\Users\\name\\daten.csv\"\npfad = Path(\"C:/Users/name/daten.csv\")",
+   "erklaerung": "In normalen Texten leitet der Backslash eine Sonderschreibweise ein: \\n ist ein Zeilenumbruch, \\U beginnt ein Unicode-Zeichen. Ein Windows-Pfad wie \"C:\\Users\\...\" erzeugt daher einen SyntaxError (unicodeescape) oder, bei \\n und \\t, still einen falschen Pfad. Zwei Auswege: ein r vor das Anführungszeichen (roher String, der Backslash bleibt wörtlich) oder Schrägstriche / verwenden, die Python auch unter Windows versteht. Ein roher String darf nicht mit einem einzelnen \\ enden.",
+   "beispiel": "from pathlib import Path\n\nroh = r\"C:\\Users\\marvin\\daten\\messung.csv\"\nprint(roh)\nprint(len(roh))\n\nschraeg = Path(\"C:/Users/marvin/daten/messung.csv\")\nprint(schraeg.name, schraeg.suffix)\n\nnormal = \"Spalte1\\tSpalte2\"\nprint(len(normal))",
+   "wann_nutzen": "Sobald du einen Pfad aus dem Windows-Explorer in den Code kopierst, oder wenn KI-Code Pfade mit Backslash enthält.",
+   "transfer": [
+    {
+     "situation": "Pfad aus dem Explorer als roher String",
+     "code": "pfad = r\"C:\\Daten\\neu\\test.txt\"\nprint(pfad)\nprint(pfad.endswith(\".txt\"))"
+    },
+    {
+     "situation": "Ohne r wird aus \\n ein Zeilenumbruch",
+     "code": "falsch = \"C:\\neu\\test\"\nprint(len(falsch))\nrichtig = r\"C:\\neu\\test\"\nprint(len(richtig))"
+    }
+   ],
+   "verwandt": [
+    "path",
+    "path-teile",
+    "str-text"
+   ],
+   "bezeichner": [
+    "r\"",
+    "unicodeescape",
+    "Backslash"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [
+    "raw string",
+    "backslash",
+    "windows pfad",
+    "unicodeescape",
+    "SyntaxError"
+   ],
+   "beispiel_ausgabe": "C:\\Users\\marvin\\daten\\messung.csv\n33\nmessung.csv .csv\n15",
+   "typische_fehler": [
+    {
+     "beschreibung": "Backslash-U im normalen Text",
+     "code": "pfad = \"C:\\Users\\marvin\\daten.csv\"\nprint(pfad)",
+     "meldung": "SyntaxError: (unicode error) 'unicodeescape' codec can't decode bytes in position 2-3: truncated \\UXXXXXXXX escape"
+    },
+    {
+     "beschreibung": "Roher String endet auf Backslash",
+     "code": "pfad = r\"C:\\Daten\\\"\nprint(pfad)",
+     "meldung": "SyntaxError: unterminated string literal (detected at line 1)"
+    }
+   ]
+  },
+  {
+   "id": "klasse",
+   "name": "class (Klasse definieren)",
+   "kategorie": "Klassen & Objekte",
+   "eingefuehrt": "V20",
+   "ampel": "kopf",
+   "kurz": "Ein Bauplan für Objekte: bündelt Maße (Attribute) und Rechnungen (Methoden) eines Bauteils.",
+   "syntax": "class Name:\n    def __init__(self, parameter):\n        self.parameter = parameter\n\n    def methode(self):\n        return ...",
+   "erklaerung": "Mit class legst du einen neuen Datentyp an. Die Klasse ist der Bauplan, wie ein Normblatt oder eine Zeichnungsvorlage: Sie beschreibt, welche Maße ein Bauteil hat und was man damit rechnen kann, ist selbst aber noch kein konkretes Teil. Der Name steht im Kopf, ein Doppelpunkt schließt ihn ab, der Rumpf ist eingerückt. Per Konvention beginnt der Klassenname mit einem Großbuchstaben (Flansch, Welle), damit man ihn von Variablen unterscheidet. Die Definition allein rechnet nichts: Erst wenn du ein Objekt erzeugst, entsteht ein konkretes Teil.",
+   "beispiel": "class Welle:\n    \"\"\"Glatte Welle (Maße in mm).\"\"\"\n\n    def __init__(self, d, l):\n        self.d = d\n        self.l = l\n\n    def volumen(self):\n        return 3.14159265 / 4 * self.d ** 2 * self.l\n\n\nw = Welle(20, 150)\nprint(w.d, w.l)\nprint(round(w.volumen() / 1000, 1), \"cm³\")",
+   "wann_nutzen": "Immer wenn zusammengehörige Maße und die zugehörigen Rechnungen sonst als lose Variablen und Funktionen mit vielen Parametern herumliegen: Welle, Rohr, Flansch, Feder, Werkzeug.",
+   "transfer": [
+    {
+     "situation": "Bauplan für eine Feder",
+     "code": "class Feder:\n    def __init__(self, c):\n        self.c = c\n\n    def kraft(self, s):\n        return self.c * s\n\nf = Feder(12.5)\nprint(f.kraft(4), \"N\")"
+    },
+    {
+     "situation": "Zwei Teile aus einem Bauplan",
+     "code": "class Rohr:\n    def __init__(self, d_aussen, d_innen, l):\n        self.d_aussen = d_aussen\n        self.d_innen = d_innen\n        self.l = l\n\nr1 = Rohr(42, 36, 1000)\nr2 = Rohr(60, 52, 500)\nprint(r1.d_aussen, r2.d_aussen)"
+    }
+   ],
+   "verwandt": [
+    "init",
+    "objekt-erzeugen",
+    "def"
+   ],
+   "bezeichner": [
+    "class"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [
+    "Klasse",
+    "Bauplan",
+    "Objektorientierung",
+    "eigener Datentyp",
+    "OOP"
+   ],
+   "beispiel_ausgabe": "20 150\n47.1 cm³",
+   "typische_fehler": [
+    {
+     "beschreibung": "Doppelpunkt hinter dem Klassennamen vergessen",
+     "code": "class Welle\n    pass",
+     "meldung": "SyntaxError: expected ':'"
+    },
+    {
+     "beschreibung": "Klasse definiert, aber kein Objekt erzeugt: der Klassenname allein hat keine Maße",
+     "code": "class Welle:\n    def __init__(self, d):\n        self.d = d\n\nprint(Welle.d)",
+     "meldung": "AttributeError: type object 'Welle' has no attribute 'd'"
+    }
+   ]
+  },
+  {
+   "id": "init",
+   "name": "__init__ (Konstruktor)",
+   "kategorie": "Klassen & Objekte",
+   "eingefuehrt": "V20",
+   "ampel": "kopf",
+   "kurz": "Richtet ein neues Objekt ein: nimmt die Maße entgegen und speichert sie als Attribute.",
+   "syntax": "def __init__(self, d, l):\n    self.d = d\n    self.l = l",
+   "erklaerung": "__init__ (zwei Unterstriche davor und dahinter) ruft Python automatisch auf, sobald du ein Objekt erzeugst, zum Beispiel mit Welle(20, 150). Der erste Parameter heißt immer self, die übrigen sind die Werte, die du beim Erzeugen angibst. Was nicht mit self.name = ... gespeichert wird, ist nach dem Ende von __init__ weg: Parameter sind lokale Variablen. Auch Standardwerte funktionieren wie bei jeder Funktion. __init__ gibt nichts zurück (kein return).",
+   "beispiel": "class Flansch:\n    def __init__(self, d_aussen, d_innen, dicke, n=4):\n        self.d_aussen = d_aussen\n        self.d_innen = d_innen\n        self.dicke = dicke\n        self.n = n\n\n\nf1 = Flansch(120, 40, 15, 6)\nf2 = Flansch(100, 30, 12)\nprint(f1.n, f2.n)",
+   "wann_nutzen": "Bei jeder Klasse, die Maße oder Zustand speichert: Einmal beim Erzeugen festlegen, danach in allen Methoden benutzen.",
+   "transfer": [
+    {
+     "situation": "Wert prüfen, bevor er gespeichert wird",
+     "code": "class Welle:\n    def __init__(self, d, l):\n        if d <= 0 or l <= 0:\n            raise ValueError(\"Maße müssen positiv sein\")\n        self.d = d\n        self.l = l\n\nprint(Welle(20, 150).d)"
+    },
+    {
+     "situation": "Aus gegebenen Maßen ein weiteres Attribut ableiten",
+     "code": "class Rohr:\n    def __init__(self, d_aussen, d_innen):\n        self.d_aussen = d_aussen\n        self.d_innen = d_innen\n        self.wand = (d_aussen - d_innen) / 2\n\nprint(Rohr(42, 36).wand)"
+    }
+   ],
+   "verwandt": [
+    "klasse",
+    "self",
+    "default-werte"
+   ],
+   "bezeichner": [
+    "__init__"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [
+    "Konstruktor",
+    "Initialisierung",
+    "Objekt einrichten"
+   ],
+   "beispiel_ausgabe": "6 4",
+   "typische_fehler": [
+    {
+     "beschreibung": "Parameter nicht als Attribut gespeichert: die Methode findet ihn nicht",
+     "code": "class Welle:\n    def __init__(self, d, l):\n        self.d = d\n\n    def volumen(self):\n        return self.l * self.d\n\nprint(Welle(20, 150).volumen())",
+     "meldung": "AttributeError: 'Welle' object has no attribute 'l'"
+    },
+    {
+     "beschreibung": "Zu wenige Argumente beim Erzeugen",
+     "code": "class Welle:\n    def __init__(self, d, l):\n        self.d = d\n        self.l = l\n\nw = Welle(20)",
+     "meldung": "TypeError: Welle.__init__() missing 1 required positional argument: 'l'"
+    }
+   ]
+  },
+  {
+   "id": "self",
+   "name": "self",
+   "kategorie": "Klassen & Objekte",
+   "eingefuehrt": "V20",
+   "ampel": "kopf",
+   "kurz": "Das Objekt, mit dem eine Methode gerade arbeitet: über self.name erreichst du seine Attribute.",
+   "syntax": "def methode(self, ...):\n    return self.attribut",
+   "erklaerung": "In jeder Methode ist self der erste Parameter. Beim Aufruf w1.volumen() setzt Python das Objekt w1 automatisch dort ein, du schreibst es nicht in die Klammer. Darum gehört in die Methode self.d für das Maß des eigenen Objekts: Ein nacktes d wäre eine andere Variable (und existiert meist nicht). Ruft man dieselbe Methode an einem zweiten Objekt auf, ist self dieses zweite Objekt, und die Rechnung nimmt dessen Maße. Der Name self ist Konvention, aber alle verwenden ihn.",
+   "beispiel": "class Welle:\n    def __init__(self, d, l):\n        self.d = d\n        self.l = l\n\n    def streckung(self):\n        return self.l / self.d\n\n\nw1 = Welle(20, 150)\nw2 = Welle(40, 150)\nprint(w1.streckung())\nprint(w2.streckung())",
+   "wann_nutzen": "In jeder Methode und in __init__, sobald sie Maße des Objekts lesen oder ändern soll.",
+   "transfer": [
+    {
+     "situation": "Eine Methode ändert den Zustand des eigenen Objekts",
+     "code": "class Werkzeug:\n    def __init__(self, standzeit):\n        self.rest = standzeit\n\n    def benutze(self, minuten):\n        self.rest = self.rest - minuten\n\nt = Werkzeug(60)\nt.benutze(25)\nprint(t.rest)"
+    },
+    {
+     "situation": "Eine Methode ruft eine andere Methode desselben Objekts auf",
+     "code": "class Quader:\n    def __init__(self, a, b, c):\n        self.a, self.b, self.c = a, b, c\n\n    def volumen(self):\n        return self.a * self.b * self.c\n\n    def masse(self, dichte=7.85):\n        return self.volumen() / 1e6 * dichte\n\nprint(round(Quader(100, 50, 20).masse(), 2), \"kg\")"
+    }
+   ],
+   "verwandt": [
+    "klasse",
+    "methode",
+    "attribut"
+   ],
+   "bezeichner": [
+    "self"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [
+    "selbst",
+    "eigenes Objekt",
+    "self vergessen"
+   ],
+   "beispiel_ausgabe": "7.5\n3.75",
+   "typische_fehler": [
+    {
+     "beschreibung": "self in der Definition vergessen",
+     "code": "class Welle:\n    def __init__(self, d):\n        self.d = d\n\n    def umfang():\n        return 3.14159 * self.d\n\nprint(Welle(20).umfang())",
+     "meldung": "TypeError: Welle.umfang() takes 0 positional arguments but 1 was given"
+    },
+    {
+     "beschreibung": "d statt self.d in der Rechnung",
+     "code": "class Welle:\n    def __init__(self, d):\n        self.d = d\n\n    def umfang(self):\n        return 3.14159 * d\n\nprint(Welle(20).umfang())",
+     "meldung": "NameError: name 'd' is not defined. Did you mean: 'self.d'?"
+    }
+   ]
+  },
+  {
+   "id": "attribut",
+   "name": "Attribut lesen und ändern",
+   "kategorie": "Klassen & Objekte",
+   "eingefuehrt": "V20",
+   "ampel": "kopf",
+   "kurz": "Ein Maß oder Merkmal eines Objekts: mit objekt.name lesen, mit objekt.name = wert ändern.",
+   "syntax": "w = Welle(20, 150)\nprint(w.d)\nw.d = 25",
+   "erklaerung": "Ein Attribut ist eine Variable, die zu einem Objekt gehört. Du erreichst sie mit einem Punkt zwischen Objektname und Attributname. Lesen und Ändern funktionieren wie bei einer normalen Variablen; es gibt keine Klammern. Jedes Objekt hat seine eigenen Attribute: Ändert man w1.d, bleibt w2.d unverändert. Wichtig: Weist du ein Objekt einem zweiten Namen zu (w2 = w1), gibt es trotzdem nur ein Objekt mit zwei Namen, und eine Änderung ist über beide sichtbar (wie bei Listen in V08).",
+   "beispiel": "class Welle:\n    def __init__(self, d, l):\n        self.d = d\n        self.l = l\n\n\nw1 = Welle(20, 150)\nw2 = Welle(20, 150)\nw1.d = 25\nprint(w1.d, w2.d)\n\nw3 = w1\nw3.l = 200\nprint(w1.l)",
+   "wann_nutzen": "Wenn du Varianten durchspielst (Länge ändern, Durchmesser ändern) oder den Zustand eines Teils fortschreibst (Reststandzeit, Stückzahl).",
+   "transfer": [
+    {
+     "situation": "Alle Maße eines Objekts ausgeben",
+     "code": "class Welle:\n    def __init__(self, d, l):\n        self.d = d\n        self.l = l\n\nw = Welle(20, 150)\nprint(vars(w))"
+    },
+    {
+     "situation": "Variante durch Ändern eines Attributs",
+     "code": "class Flansch:\n    def __init__(self, n):\n        self.n = n\n\nf = Flansch(6)\nfor n in (4, 6, 8):\n    f.n = n\n    print(f.n, \"Bohrungen\")"
+    }
+   ],
+   "verwandt": [
+    "klasse",
+    "init",
+    "liste"
+   ],
+   "bezeichner": [
+    "Attribut",
+    "vars"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [
+    "Eigenschaft",
+    "Maß ändern",
+    "punkt-notation",
+    "Alias"
+   ],
+   "beispiel_ausgabe": "25 20\n200",
+   "typische_fehler": [
+    {
+     "beschreibung": "Tippfehler im Attributnamen",
+     "code": "class Welle:\n    def __init__(self, d):\n        self.d = d\n\nw = Welle(20)\nprint(w.durchmesser)",
+     "meldung": "AttributeError: 'Welle' object has no attribute 'durchmesser'"
+    },
+    {
+     "beschreibung": "Zwei Namen, ein Objekt: die Änderung schlägt auf beide durch",
+     "code": "class Welle:\n    def __init__(self, d):\n        self.d = d\n\nw1 = Welle(20)\nw2 = w1\nw2.d = 99\nprint(w1.d)",
+     "meldung": "(keine Fehlermeldung) Ausgabe 99: w1 und w2 sind dasselbe Objekt."
+    }
+   ]
+  },
+  {
+   "id": "methode",
+   "name": "Methode definieren und aufrufen",
+   "kategorie": "Klassen & Objekte",
+   "eingefuehrt": "V20",
+   "ampel": "kopf",
+   "kurz": "Eine Funktion, die zu einer Klasse gehört: Aufruf mit Klammern am Objekt, z. B. w.volumen().",
+   "syntax": "class Welle:\n    def volumen(self):\n        return ...\n\nw.volumen()",
+   "erklaerung": "Eine Methode ist eine def-Funktion im Rumpf der Klasse. Ihr erster Parameter ist self. Aufgerufen wird sie am Objekt: objekt.methode(argumente). Die Klammern sind Pflicht, auch ohne Argumente; ohne Klammern bekommst du nur die Methode selbst (bound method), nicht ihr Ergebnis. Methoden können Standardwerte haben (masse(dichte=7.85)), etwas zurückgeben (return) oder ein Attribut verändern. Du nutzt Methoden seit V01: \"M10\".upper() und liste.append(x) sind Methodenaufrufe, denn str und list sind Klassen.",
+   "beispiel": "import math\n\n\nclass Rohr:\n    def __init__(self, d_aussen, d_innen, l):\n        self.d_aussen = d_aussen\n        self.d_innen = d_innen\n        self.l = l\n\n    def volumen(self):\n        \"\"\"mm³\"\"\"\n        return math.pi / 4 * (self.d_aussen ** 2 - self.d_innen ** 2) * self.l\n\n    def masse(self, dichte=7.85):\n        \"\"\"kg, Dichte in g/cm³\"\"\"\n        return self.volumen() / 1000 * dichte / 1000\n\n\nr = Rohr(42, 36, 1000)\nprint(round(r.volumen() / 1000, 1), \"cm³\")\nprint(round(r.masse(), 2), \"kg Stahl\")\nprint(round(r.masse(2.70), 2), \"kg Aluminium\")",
+   "wann_nutzen": "Für jede Rechnung oder Prüfung, die zu einem Bauteil gehört: Volumen, Masse, ist_gueltig, benutzen.",
+   "transfer": [
+    {
+     "situation": "Prüfmethode mit Wahrheitswert",
+     "code": "class Rohr:\n    def __init__(self, d_aussen, d_innen):\n        self.d_aussen = d_aussen\n        self.d_innen = d_innen\n\n    def ist_gueltig(self):\n        return 0 < self.d_innen < self.d_aussen\n\nprint(Rohr(42, 36).ist_gueltig(), Rohr(36, 42).ist_gueltig())"
+    },
+    {
+     "situation": "Baureihe: Methode auf allen Objekten einer Liste",
+     "code": "class Welle:\n    def __init__(self, d, l):\n        self.d = d\n        self.l = l\n\n    def volumen(self):\n        return 3.14159265 / 4 * self.d ** 2 * self.l\n\nreihe = [Welle(d, 200) for d in (16, 20, 25)]\nfor w in reihe:\n    print(w.d, round(w.volumen() / 1000, 1))"
+    },
+    {
+     "situation": "Bekannte Methoden: str und list sind Klassen",
+     "code": "text = \"m10\"\nprint(text.upper())\nteile = []\nteile.append(\"Welle\")\nprint(teile)"
+    }
+   ],
+   "verwandt": [
+    "klasse",
+    "self",
+    "def",
+    "default-werte"
+   ],
+   "bezeichner": [
+    "Methode",
+    "bound method"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [
+    "Funktion im Objekt",
+    "Methodenaufruf",
+    "Klammern",
+    "bound method"
+   ],
+   "beispiel_ausgabe": "367.6 cm³\n2.89 kg Stahl\n0.99 kg Aluminium",
+   "typische_fehler": [
+    {
+     "beschreibung": "Klammern vergessen: du bekommst die Methode, nicht das Ergebnis",
+     "code": "class Welle:\n    def __init__(self, d):\n        self.d = d\n\n    def umfang(self):\n        return 3.14159 * self.d\n\nprint(Welle(20).umfang)",
+     "meldung": "(keine Fehlermeldung) Ausgabe <bound method Welle.umfang of ...>: das Ergebnis fehlt, die Klammern auch."
+    },
+    {
+     "beschreibung": "Argument übergeben, das die Methode nicht erwartet",
+     "code": "class Welle:\n    def __init__(self, d):\n        self.d = d\n\n    def umfang(self):\n        return 3.14159 * self.d\n\nprint(Welle(20).umfang(5))",
+     "meldung": "TypeError: Welle.umfang() takes 1 positional argument but 2 were given"
+    }
+   ]
+  },
+  {
+   "id": "objekt-erzeugen",
+   "name": "Objekt erzeugen (Klassenname(...))",
+   "kategorie": "Klassen & Objekte",
+   "eingefuehrt": "V20",
+   "ampel": "kopf",
+   "kurz": "Aus dem Bauplan ein konkretes Teil machen: name = Klasse(werte). Viele Objekte gehen in eine Liste.",
+   "syntax": "w = Welle(20, 150)\nreihe = [Welle(16, 200), Welle(20, 200)]",
+   "erklaerung": "Der Aufruf Klassenname(werte) legt ein neues Objekt (eine Instanz, ein Exemplar) an und führt dabei __init__ mit diesen Werten aus. Das Ergebnis speicherst du in einer Variablen. Aus einer Klasse kannst du beliebig viele Objekte erzeugen, jedes mit eigenen Maßen. Wie jeder Wert dürfen sie in Listen, Dictionaries oder Funktionsargumenten stehen. So bildest du eine Baureihe ab und wertest sie mit einer Schleife aus.",
+   "beispiel": "class Flansch:\n    def __init__(self, d_aussen, d_innen, dicke):\n        self.d_aussen = d_aussen\n        self.d_innen = d_innen\n        self.dicke = dicke\n\n    def volumen(self):\n        return 3.14159265 / 4 * (self.d_aussen ** 2 - self.d_innen ** 2) * self.dicke\n\n\nreihe = [Flansch(90, 30, 12), Flansch(120, 40, 15), Flansch(150, 60, 18)]\nfor f in reihe:\n    print(f.d_aussen, round(f.volumen() / 1000, 1), \"cm³\")\n\ngroesster = max(reihe, key=lambda f: f.volumen())\nprint(\"Größtes Volumen bei Außendurchmesser:\", groesster.d_aussen)",
+   "wann_nutzen": "Wenn du mehrere Varianten desselben Bauteils vergleichst: Baureihe, Prüfplan, Stückliste mit Objekten.",
+   "transfer": [
+    {
+     "situation": "Objekte aus Tabellenzeilen erzeugen",
+     "code": "class Welle:\n    def __init__(self, d, l):\n        self.d = d\n        self.l = l\n\nzeilen = [\"20;150\", \"25;200\"]\nwellen = []\nfor z in zeilen:\n    d, l = z.split(\";\")\n    wellen.append(Welle(float(d), float(l)))\nprint(len(wellen), wellen[1].l)"
+    },
+    {
+     "situation": "Ungültige Varianten zählen",
+     "code": "class Rohr:\n    def __init__(self, a, i):\n        self.a, self.i = a, i\n\n    def ist_gueltig(self):\n        return self.i < self.a\n\nrohre = [Rohr(42, 36), Rohr(30, 32), Rohr(60, 52)]\nprint(sum(1 for r in rohre if not r.ist_gueltig()), \"ungültig\")"
+    }
+   ],
+   "verwandt": [
+    "klasse",
+    "init",
+    "attribut",
+    "append"
+   ],
+   "bezeichner": [
+    "Objekt",
+    "Instanz"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [
+    "Instanz",
+    "Exemplar",
+    "Baureihe",
+    "Objekte in Liste",
+    "neues Objekt"
+   ],
+   "beispiel_ausgabe": "90 67.9 cm³\n120 150.8 cm³\n150 267.2 cm³\nGrößtes Volumen bei Außendurchmesser: 150",
+   "typische_fehler": [
+    {
+     "beschreibung": "Klammern beim Erzeugen vergessen: der Name ist nur die Klasse, kein Objekt",
+     "code": "class Welle:\n    def __init__(self, d):\n        self.d = d\n\nw = Welle\nprint(w.d)",
+     "meldung": "AttributeError: type object 'Welle' has no attribute 'd'"
+    },
+    {
+     "beschreibung": "Zu viele Argumente beim Erzeugen",
+     "code": "class Welle:\n    def __init__(self, d, l):\n        self.d = d\n        self.l = l\n\nw = Welle(20, 150, 7)",
+     "meldung": "TypeError: Welle.__init__() takes 3 positional arguments but 4 were given"
+    }
+   ]
+  },
+  {
+   "id": "bauteil3d",
+   "name": "bauteil3d (Dreiecksnetz, STL)",
+   "kategorie": "Ausblick (ab V10)",
+   "eingefuehrt": "V20",
+   "ampel": "delegieren",
+   "kurz": "Mitgeliefertes Hilfsmodul: erzeugt aus Maßen ein Dreiecksnetz und zeigt es in 3D (flansch, welle, ring, zeige). Dein Anteil: die Klasse mit den Maßen.",
+   "syntax": "import bauteil3d\nm = bauteil3d.flansch(120, 40, 15, 90, 6, 11)\nbauteil3d.zeige(m, \"Flansch\")",
+   "stichwort": true,
+   "verwandt": [
+    "klasse",
+    "methode"
+   ],
+   "bezeichner": [
+    "bauteil3d",
+    "STL",
+    "mesh"
    ]
   }
  ]

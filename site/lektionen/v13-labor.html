@@ -200,26 +200,24 @@ print(a.shape, np.max(a))                     # nur diese Spalte als einfaches A
 <pre data-timeout="60000"><code>import time
 import numpy as np
 
-def messe(f):
+zeiten_s = []
+zeiten_v = []
+for versuch in range(5):
     start = time.perf_counter()
-    f()                                       # nur das Gemessene zwischen Start und Ende
-    return time.perf_counter() - start
-
-def schleife():
     summe = 0
     for i in range(200_000):
         summe = summe + i * i
+    zeiten_s.append(time.perf_counter() - start)   # nur das Gemessene zwischen Start und Ende
 
-def vektor():
-    a = np.arange(200_000.0)                  # .0: Kommazahlen, sonst läuft a * a über (siehe unten)
+    start = time.perf_counter()
+    a = np.arange(200_000.0)                       # .0: Kommazahlen, sonst läuft a * a über (siehe unten)
     np.sum(a * a)
+    zeiten_v.append(time.perf_counter() - start)
 
-zeiten_s = [messe(schleife) for versuch in range(5)]
-zeiten_v = [messe(vektor) for versuch in range(5)]
 print(f"Schleife: Minimum {min(zeiten_s) * 1000:.2f} ms, Median {np.median(zeiten_s) * 1000:.2f} ms")
 print(f"Vektor:   Minimum {min(zeiten_v) * 1000:.2f} ms, Median {np.median(zeiten_v) * 1000:.2f} ms")</code></pre>
     <ul>
-      <li><code class="k-i">messe(schleife)</code> übergibt die Funktion selbst, ohne Klammern: Eine Funktion ist auch ein Wert, den man weiterreichen kann. Erst <code class="k-i">f()</code> mit Klammern ruft sie in <code class="k-i">messe</code> auf.</li>
+      <li><strong>Eine Messung</strong> besteht aus drei Schritten: <code class="k-i">start = time.perf_counter()</code>, dann die Rechnung, dann <code class="k-i">time.perf_counter() - start</code>. Die Dauer wird an eine Liste gehängt, die Schleife <code class="k-i">for versuch in range(5)</code> wiederholt das fünfmal.</li>
       <li><code class="k-i">time.perf_counter()</code> liefert Sekunden. Erst die <strong>Differenz</strong> aus zwei Aufrufen (nach minus vor) ist die Dauer. Reihenfolge <code class="k-i">ende - start</code>, nicht umgekehrt.</li>
       <li><strong>Mehrfach messen</strong> und <code class="k-i">min(zeiten)</code> oder <code class="k-i">np.median(zeiten)</code> berichten, nicht den Mittelwert und nicht eine einzelne Messung.</li>
       <li><code class="k-i">np.arange(200_000.0)</code> mit <code class="k-i">.0</code> liefert Kommazahlen. Mit ganzen Zahlen rechnet NumPy im Browser mit 32 Bit, und <code class="k-i">a * a</code> würde ab etwa 46 341 still überlaufen, ohne Fehlermeldung (wie der Encoder-Zähler aus V02). Prüfe große Summen darum gegen einen Überschlag.</li>
@@ -1068,31 +1066,33 @@ def test_kommazahlen():
 
     </section>
 
-    <section class="l-task" id="t-5" data-title="Zeit messen: die beste Zeit" data-part="B" data-stars="3" data-min="10" data-extra="" aria-labelledby="h-t-5" hidden>
+    <section class="l-task" id="t-5" data-title="Zeit messen: Schleife gegen NumPy" data-part="B" data-stars="3" data-min="10" data-extra="" aria-labelledby="h-t-5" hidden>
       <header class="l-task__head">
         <p class="l-task__kicker"></p>
-        <h2 class="l-task__title" id="h-t-5" tabindex="-1">Zeit messen: die beste Zeit</h2>
+        <h2 class="l-task__title" id="h-t-5" tabindex="-1">Zeit messen: Schleife gegen NumPy</h2>
         <p class="l-task__meta"></p>
       </header>
       <div class="a-task" data-a="code" data-id="tr-5" data-mode="funktion">
         <div class="a-task__text">
-          <p>Schreibe die Funktion <code class="k-i">beste_zeit(f, wiederholungen)</code>. Sie bekommt eine Funktion <code class="k-i">f</code> (ohne Parameter, du rufst sie mit <code class="k-i">f()</code> auf) und eine Zahl <code class="k-i">wiederholungen</code>. Sie ruft <code class="k-i">f()</code> genau so oft auf, <strong>misst jeden Aufruf einzeln</strong> mit <code class="k-i">time.perf_counter()</code> und <strong>gibt</strong> die kleinste gemessene Dauer in Sekunden <strong>zurück</strong>. Zwischen den beiden Zeitstempeln steht nur der Aufruf <code class="k-i">f()</code>.</p>
-          <div class="a-spec"><strong>Beispiel:</strong><pre data-run="no">def arbeit():
-    return sum(range(100000))
-
-beste_zeit(arbeit, 5)   -&gt;  die kleinste von fünf Messungen, z. B. 0.0021 (s)</pre></div>
-          <p class="k-small k-muted">Wichtig für die Prüfung: Schreibe <code>import time</code> und rufe <code>time.perf_counter()</code> auf (nicht <code>from time import perf_counter</code>). Pro Wiederholung genau zwei Aufrufe: einen vor, einen nach <code>f()</code>.</p>
+          <p>Schreibe zwei Funktionen, die dieselbe Rechnung auf zwei Arten <strong>messen</strong>: die Summe der Quadrate von 0 bis <em>n</em>−1. (a) <code class="k-i">dauer_schleife(n)</code> rechnet mit einer <code class="k-i">for</code>-Schleife und <code class="k-i">summe = summe + i * i</code>. (b) <code class="k-i">dauer_numpy(n)</code> rechnet mit <code class="k-i">a = np.arange(n, dtype=np.int64)</code> und <code class="k-i">np.sum(a * a)</code>. Beide <strong>geben</strong> die gemessene Dauer in Sekunden <strong>zurück</strong> (nicht das Rechenergebnis). Zwischen den beiden Zeitstempeln steht nur die Rechnung.</p>
+          <div class="a-spec"><strong>Beispiel:</strong><pre data-run="no">dauer_schleife(200_000)   -&gt;  z. B. 0.06 (s)
+dauer_numpy(200_000)      -&gt;  z. B. 0.002 (s), viel kleiner</pre></div>
+          <p class="k-small k-muted">Wichtig für die Prüfung: Schreibe <code>import time</code> und rufe <code>time.perf_counter()</code> auf (nicht <code>from time import perf_counter</code>). Pro Funktion genau zwei Aufrufe: einen vor und einen nach der Rechnung. Die Zeit hängt von Rechner und Browser ab, nur das Verhältnis ist die Aussage.</p>
         </div>
         <div class="a-editor"><textarea class="py-editor" data-lesson="V13" aria-label="Python-Code Aufgabe 5">import time
+import numpy as np
 
-def beste_zeit(f, wiederholungen):
-    # f() mehrfach aufrufen, jede Dauer messen, die kleinste zurückgeben
+def dauer_schleife(n):
+    # Start merken, Summe der Quadrate mit for-Schleife, Dauer zurückgeben
     pass
 
-def arbeit():
-    return sum(range(100000))
+def dauer_numpy(n):
+    # Start merken, Summe der Quadrate mit NumPy, Dauer zurückgeben
+    pass
 
-print(beste_zeit(arbeit, 5))
+t_s = dauer_schleife(200_000)
+t_v = dauer_numpy(200_000)
+print(f"Schleife {t_s:.3f} s, NumPy {t_v:.4f} s")
 </textarea></div>
         <script type="text/x-python" data-role="tests">
 import time as _zeitmodul
@@ -1110,54 +1110,59 @@ def _mit_uhr(stempel, fn):
     finally:
         _zeitmodul.perf_counter = echt
 
-def test_minimum_der_messungen():
-    """Drei Messungen von 1, 3 und 2 s: Rückgabe 1"""
-    stempel = [0.0, 1.0, 10.0, 13.0, 20.0, 22.0]
-    erg = _mit_uhr(stempel, lambda: _fn("beste_zeit")(lambda: None, 3))
-    assert erg is not None, "beste_zeit gibt None zurück: Steht ein return im Rumpf?"
-    assert abs(float(erg) - 1.0) < 1e-9, "Mit den (künstlichen) Zeitstempeln 0/1, 10/13, 20/22 sind die Dauern 1, 3 und 2 s. Die beste Zeit ist 1.0, deine Funktion liefert %r. Benutzt du import time und time.perf_counter() genau zweimal je Wiederholung (vor und nach f())? Nimmst du das Minimum?" % (erg,)
+def test_schleife_differenz():
+    """dauer_schleife: künstliche Zeitstempel 10 und 12,5 ergeben 2,5 s"""
+    erg = _mit_uhr([10.0, 12.5], lambda: _fn("dauer_schleife")(1000))
+    assert erg is not None, "dauer_schleife gibt None zurück: Steht ein return im Rumpf?"
+    assert abs(float(erg) - 2.5) < 1e-9, "Mit den (künstlichen) Zeitstempeln 10.0 und 12.5 ist die Dauer 2.5 s, deine Funktion liefert %r. Rechne nach minus vor und benutze time.perf_counter() genau zweimal." % (erg,)
 
-def test_minimum_nicht_erste():
-    """Die kleinste Messung steht am Ende: 5, 4, 0.5 s"""
-    stempel = [0.0, 5.0, 10.0, 14.0, 20.0, 20.5]
-    erg = _mit_uhr(stempel, lambda: _fn("beste_zeit")(lambda: None, 3))
-    assert erg is not None and abs(float(erg) - 0.5) < 1e-9, "Dauern 5, 4 und 0.5 s: Die beste Zeit ist 0.5, deine Funktion liefert %r." % (erg,)
+def test_numpy_differenz():
+    """dauer_numpy: künstliche Zeitstempel 3 und 3,25 ergeben 0,25 s"""
+    erg = _mit_uhr([3.0, 3.25], lambda: _fn("dauer_numpy")(1000))
+    assert erg is not None, "dauer_numpy gibt None zurück: Steht ein return im Rumpf?"
+    assert abs(float(erg) - 0.25) < 1e-9, "Mit den Zeitstempeln 3.0 und 3.25 ist die Dauer 0.25 s, deine Funktion liefert %r. Rechne nach minus vor und benutze time.perf_counter() genau zweimal." % (erg,)
 
-def test_aufrufe_gezaehlt():
-    """f wird genau wiederholungen-mal aufgerufen"""
-    zaehler = []
-    def f():
-        zaehler.append(1)
-    _fn("beste_zeit")(f, 4)
-    assert len(zaehler) == 4, "f() soll bei wiederholungen = 4 genau viermal aufgerufen werden, deine Funktion ruft es %d-mal auf." % len(zaehler)
+def test_echte_zeiten():
+    """Echte Messungen sind kleine positive Zahlen"""
+    for name in ("dauer_schleife", "dauer_numpy"):
+        erg = _fn(name)(20000)
+        assert erg is not None, "%s gibt None zurück." % name
+        assert 0 < float(erg) < 10, "%s liefert %r. Das ist keine plausible Dauer in Sekunden (nach minus vor, nicht umgekehrt; zurückgegeben wird die Dauer, nicht die Summe)." % (name, erg)
 
-def test_echte_zeit():
-    """Eine echte Messung liefert eine kleine positive Zahl"""
-    erg = _fn("beste_zeit")(lambda: sum(range(20000)), 3)
-    assert erg is not None, "beste_zeit gibt None zurück: Steht ein return im Rumpf?"
-    assert 0 < float(erg) < 5, "Die gemessene Zeit %r ist keine plausible Dauer in Sekunden. Rechne nach minus vor, nicht umgekehrt." % (erg,)
+def test_schleife_rechnet_wirklich():
+    """Die Schleife läuft über alle n Werte: mehr Durchläufe brauchen mehr Zeit"""
+    f = _fn("dauer_schleife")
+    klein = min(f(1000) for _ in range(2))
+    gross = min(f(100000) for _ in range(2))
+    assert gross > klein, "Die Dauer für n = 100000 (%r) ist nicht größer als für n = 1000 (%r). Läuft die Schleife wirklich über range(n)?" % (gross, klein)
 
-def test_eine_wiederholung():
-    """wiederholungen = 1: die einzige Messung"""
-    stempel = [100.0, 100.25]
-    erg = _mit_uhr(stempel, lambda: _fn("beste_zeit")(lambda: None, 1))
-    assert erg is not None and abs(float(erg) - 0.25) < 1e-9, "Bei einer Wiederholung mit den Zeitstempeln 100.0 und 100.25 wird 0.25 erwartet, deine Funktion liefert %r." % (erg,)
+def test_numpy_schneller():
+    """Bei 200 000 Werten ist NumPy deutlich schneller als die Schleife"""
+    s = _fn("dauer_schleife")(200_000)
+    v = min(_fn("dauer_numpy")(200_000) for _ in range(3))
+    assert v < s, "NumPy (%r s) ist nicht schneller als die Schleife (%r s). Rechnest du in dauer_numpy wirklich mit np.arange und np.sum(a * a), ohne Schleife?" % (v, s)
         </script>
         <script type="text/x-python" data-role="solution">
 import time
+import numpy as np
 
-def beste_zeit(f, wiederholungen):
-    zeiten = []
-    for versuch in range(wiederholungen):
-        start = time.perf_counter()
-        f()
-        zeiten.append(time.perf_counter() - start)
-    return min(zeiten)
+def dauer_schleife(n):
+    start = time.perf_counter()
+    summe = 0
+    for i in range(n):
+        summe = summe + i * i
+    return time.perf_counter() - start
+
+def dauer_numpy(n):
+    start = time.perf_counter()
+    a = np.arange(n, dtype=np.int64)
+    np.sum(a * a)
+    return time.perf_counter() - start
         </script>
         <ol class="a-hints">
-          <li>Leere Liste <code>zeiten = []</code>, dann eine Schleife <code>for versuch in range(wiederholungen):</code>.</li>
-          <li>In der Schleife: <code>start = time.perf_counter()</code>, dann <code>f()</code>, dann <code>time.perf_counter() - start</code> an die Liste anhängen. Nach minus vor, nicht umgekehrt.</li>
-          <li>Nach der Schleife das Minimum zurückgeben: <code>return min(zeiten)</code>.</li>
+          <li>Jede Funktion hat dasselbe Gerüst: <code>start = time.perf_counter()</code>, die Rechnung, <code>return time.perf_counter() - start</code>.</li>
+          <li>In <code>dauer_schleife</code> kommt dazwischen <code>summe = 0</code> und eine Schleife <code>for i in range(n):</code> mit <code>summe = summe + i * i</code>.</li>
+          <li>In <code>dauer_numpy</code> kommt dazwischen <code>a = np.arange(n, dtype=np.int64)</code> und <code>np.sum(a * a)</code>. Zurückgegeben wird die Dauer, nicht die Summe.</li>
         </ol>
       </div>
 

@@ -139,12 +139,12 @@ typen = {}
 for i in aufgaben:
     typen.setdefault(aufgaben[i]["typ"], []).append(i)
 code_aufgaben = typen.get("code", []) + typen.get("pap-code", [])
-pruefe(len(code_aufgaben) >= 12, "Mindestens 12 Code-schreiben-Aufgaben nötig, vorhanden: %d" % len(code_aufgaben))
+pruefe(len(code_aufgaben) >= 10, "Mindestens 10 Code-schreiben-Aufgaben nötig (NumPy, SQL, Subnetz, pandas nur lesen), vorhanden: %d" % len(code_aufgaben))
 pruefe(len(typen.get("pap-code", [])) == 2, "Genau 2 Aufgaben PAP -> Code erwartet")
 pruefe(1 <= len(typen.get("pap-zeichnen", [])) <= 2, "1 bis 2 Aufgaben Code -> PAP erwartet")
 pruefe(4 <= len(typen.get("ausgabe", [])) <= 5, "4 bis 5 Ausgabe-Aufgaben erwartet")
 pruefe(len(typen.get("fehler", [])) == 3, "3 Fehler-finden-Aufgaben erwartet")
-pruefe(3 <= len(typen.get("theorie", [])) <= 4, "3 bis 4 Theorie-Aufgaben erwartet")
+pruefe(5 <= len(typen.get("theorie", [])) <= 7, "5 bis 7 Theorie-Aufgaben erwartet (inkl. Lese-Aufgaben NumPy/SQL/Subnetz)")
 pruefe(set(typen) <= {"code", "pap-code", "pap-zeichnen", "ausgabe", "fehler", "theorie"}, "Unbekannter Typ: %r" % set(typen))
 
 # ---------------------------------------------------------------- Punkteschema
@@ -187,12 +187,8 @@ MUTANTEN = {
     "k-15": ['def abweichung_ok(soll, ist, tol_prozent):\n    return True\n',
              'def abweichung_ok(soll, ist, tol_prozent):\n    return abs(ist - soll) < soll * tol_prozent / 100\n',
              'def abweichung_ok(soll, ist, tol_prozent):\n    return ist - soll <= soll * tol_prozent / 100\n'],
-    "k-16": ['def ausschuss_anteil(werte, u, o):\n    return 33.3333333\n',
-             'import numpy as np\ndef ausschuss_anteil(werte, u, o):\n    return np.mean((werte <= u) | (werte >= o)) * 100\n'],
     "k-19": ['def zaehle_endungen(pfade):\n    return {"step": 2, "pdf": 1}\n',
              'from pathlib import Path\ndef zaehle_endungen(pfade):\n    d = {}\n    for p in pfade:\n        e = Path(p).suffix[1:]\n        d[e] = d.get(e, 0) + 1\n    return d\n'],
-    "k-22": ['def verschlissene_werkzeuge(db, maschine, grenze):\n    return [(3, 480), (2, 455), (5, 400)]\n',
-             'def verschlissene_werkzeuge(db, maschine, grenze):\n    cur = db.cursor()\n    cur.execute(f"SELECT id, standzeit_min FROM werkzeuge WHERE maschine = \'{maschine}\' AND standzeit_min >= {grenze} ORDER BY standzeit_min DESC")\n    return cur.fetchall()\n'],
     "k-24": ['class Welle:\n    def __init__(self, d, laenge, dichte=7.85):\n        self.d = d\n        self.laenge = laenge\n        self.dichte = dichte\n    def masse(self):\n        return 2.466\n    def schlankheit(self):\n        return 50.0\n    def kuerzen(self, mm):\n        return True\n',
              'import math\nclass Welle:\n    def __init__(self, d, laenge, dichte=7.85):\n        self.d = d\n        self.laenge = laenge\n        self.dichte = dichte\n    def masse(self):\n        return math.pi / 4 * self.d ** 2 * self.laenge * self.dichte / 1e6\n    def schlankheit(self):\n        return self.laenge / self.d\n    def kuerzen(self, mm):\n        if mm <= self.laenge:\n            self.laenge = self.laenge - mm\n            return True\n        return False\n'],
 }
@@ -341,12 +337,22 @@ obere = (20.02 - mittel) / (3 * s)
 untere = (mittel - 19.98) / (3 * s)
 pruefe(round(obere, 2) == 2.08 and round(untere, 2) == 1.25 and min(obere, untere) == untere, "k-18 Cpk 2,08 gegen 1,25")
 # k-20
-netz = ipaddress.ip_network("172.16.8.0/22")
-pruefe(str(netz.netmask) == "255.255.252.0", "k-20 Maske")
-pruefe(netz.num_addresses == 1024 and len(list(netz.hosts())) == 1022, "k-20 1024 Adressen, 1022 nutzbar")
-pruefe(ipaddress.ip_address("172.16.10.77") in netz and ipaddress.ip_address("172.16.12.5") not in netz, "k-20 Zugehörigkeit")
-pruefe(str(next(netz.hosts())) == "172.16.8.1" and str(list(netz.hosts())[-1]) == "172.16.11.254", "k-20 erste und letzte nutzbare Adresse")
-pruefe(str(netz.network_address) == "172.16.8.0" and str(netz.broadcast_address) == "172.16.11.255", "k-20 Netz- und Broadcastadresse")
+netz = ipaddress.ip_network("172.16.8.0/24")
+pruefe(str(netz.netmask) == "255.255.255.0", "k-20 Maske")
+pruefe([ipaddress.ip_address(a) in netz for a in ("172.16.8.77", "172.16.9.5", "172.16.8.200")] == [True, False, True], "k-20 a) Zugehörigkeit (nur Netz-Check)")
+# k-16 (NumPy lesen)
+import numpy as np
+w16 = np.array([19.97, 19.98, 20.00, 20.02, 20.03, 20.01])
+a16 = (w16 < 19.98) | (w16 > 20.02)
+pruefe(str(a16) == "[ True False False False  True False]" and int(a16.sum()) == 2 and str(w16[a16]) == "[19.97 20.03]" and str(round(np.mean(a16) * 100, 1)) == "33.3", "k-16 a) Ausgabe")
+# k-22 (SQL lesen)
+import sqlite3
+_db = sqlite3.connect(":memory:")
+_db.execute("CREATE TABLE werkzeuge (id INTEGER PRIMARY KEY, typ TEXT, maschine TEXT, standzeit_min INTEGER)")
+_db.executemany("INSERT INTO werkzeuge VALUES (?, ?, ?, ?)", [(1, "Bohrer 8", "D2", 120), (2, "Fräser 20", "D2", 455), (3, "Wendeplatte", "D2", 480), (4, "Bohrer 12", "F1", 500), (5, "Fräser 10", "D2", 400), (6, "Gewindebohrer", "F1", 90)])
+pruefe(_db.execute("SELECT id, standzeit_min FROM werkzeuge WHERE maschine = ? AND standzeit_min >= ? ORDER BY standzeit_min DESC", ("D2", 400)).fetchall() == [(3, 480), (2, 455), (5, 400)], "k-22 a)")
+pruefe(_db.execute("SELECT id, standzeit_min FROM werkzeuge WHERE maschine = ? AND standzeit_min > ?", ("D2", 400)).fetchall() == [(2, 455), (3, 480)], "k-22 b)")
+pruefe(_db.execute("SELECT id FROM werkzeuge WHERE maschine = ?", ("D2' OR '1'='1",)).fetchall() == [] and len(_db.execute("SELECT id FROM werkzeuge WHERE maschine = 'D2' OR '1'='1'").fetchall()) == 6, "k-22 c) Injection")
 pruefe(json.loads('{"temp": 21.5, "einheit": "C"}')["temp"] == 21.5, "k-20 c) JSON")
 # k-21
 h = hashlib.sha256(b"Welle Z-17").hexdigest()

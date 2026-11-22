@@ -11,7 +11,7 @@ CRA = "[[CRA|C R A]]"
 D1 = "[[10. Dezember 2024|zehnten Dezember zweitausendvierundzwanzig]]"
 D2 = "[[11. September 2026|elften September zweitausendsechsundzwanzig]]"
 D3 = "[[11. Dezember 2027|elften Dezember zweitausendsiebenundzwanzig]]"
-D4 = "[[14. Januar 2027|vierzehnten Januar zweitausendsiebenundzwanzig]]"
+D4 = "[[20. Januar 2027|zwanzigsten Januar zweitausendsiebenundzwanzig]]"
 
 SRC = [
  ["Roboter R1 der Zelle FZ-3 soll vom USB-Stick des Servicetechnikers neue Firmware bekommen.",
