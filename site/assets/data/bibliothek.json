@@ -5465,6 +5465,438 @@
     "STL",
     "mesh"
    ]
+  },
+  {
+   "id": "sqlite-connect",
+   "name": "sqlite3.connect() / cursor()",
+   "kategorie": "Datenbanken (SQL)",
+   "eingefuehrt": "V19",
+   "ampel": "kopf",
+   "kurz": "Öffnet eine SQLite-Datenbank und liefert einen Cursor, über den du SQL-Befehle ausführst.",
+   "syntax": "import sqlite3\ndb = sqlite3.connect(\"datei.db\")   # oder \":memory:\"\ncur = db.cursor()\ncur.execute(\"SQL-Befehl\")\ndb.commit()\ndb.close()",
+   "erklaerung": "sqlite3 gehört zur Standardbibliothek. connect öffnet die Datenbankdatei (gibt es sie nicht, wird sie angelegt); \":memory:\" legt eine Datenbank nur im Arbeitsspeicher an, praktisch zum Üben. Über den Cursor schickst du mit execute einen SQL-Befehl und holst mit fetchall oder fetchone das Ergebnis ab. Änderungen (INSERT, UPDATE, DELETE) werden erst mit db.commit() dauerhaft gespeichert, am Ende schließt db.close() die Verbindung.",
+   "beispiel": "import sqlite3\n\ndb = sqlite3.connect(\":memory:\")\ncur = db.cursor()\ncur.execute(\"CREATE TABLE maschinen (id TEXT PRIMARY KEY, typ TEXT)\")\ncur.execute(\"INSERT INTO maschinen VALUES ('D2', 'Drehmaschine')\")\ndb.commit()\ncur.execute(\"SELECT id, typ FROM maschinen\")\nprint(cur.fetchall())\ndb.close()",
+   "wann_nutzen": "Sobald Daten in einer Datenbank liegen: Aufträge, Stücklisten, Messwerte aus einer Messmaschinen-Software.",
+   "transfer": [
+    {
+     "situation": "Tabellen einer Datenbank auflisten",
+     "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ncur = db.cursor()\ncur.execute(\"CREATE TABLE auftraege (nr INTEGER PRIMARY KEY, teil TEXT, maschine TEXT, menge INTEGER, status TEXT)\")\ncur.executemany(\"INSERT INTO auftraege VALUES (?, ?, ?, ?, ?)\", [\n    (4711, \"WELLE_20H6\", \"D2\", 500, \"in Arbeit\"),\n    (4712, \"FLANSCH_80\", \"F1\", 120, \"offen\"),\n    (4713, \"WELLE_20H6\", \"D2\", 300, \"offen\"),\n    (4714, \"BUCHSE_30\", \"D2\", 800, \"fertig\"),\n    (4715, \"FLANSCH_80\", \"F1\", 60, \"fertig\"),\n])\ndb.commit()\ncur.execute(\"SELECT name FROM sqlite_master WHERE type = 'table'\")\nprint(cur.fetchall())"
+    },
+    {
+     "situation": "Ohne Cursor: execute direkt an der Verbindung",
+     "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\nprint(db.execute(\"SELECT 6 * 7\").fetchone())"
+    }
+   ],
+   "verwandt": [
+    "sql-select",
+    "sql-fetch",
+    "sql-insert",
+    "sqlite3"
+   ],
+   "bezeichner": [
+    "sqlite3.connect",
+    ".cursor",
+    ".execute",
+    ".commit",
+    ".close"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [
+    "Datenbank öffnen",
+    "Verbindung",
+    "Cursor",
+    "SQLite"
+   ],
+   "beispiel_ausgabe": "[('D2', 'Drehmaschine')]",
+   "typische_fehler": [
+    {
+     "beschreibung": "Tabellenname falsch geschrieben",
+     "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ncur = db.cursor()\ncur.execute(\"CREATE TABLE auftraege (nr INTEGER PRIMARY KEY, teil TEXT, maschine TEXT, menge INTEGER, status TEXT)\")\ncur.executemany(\"INSERT INTO auftraege VALUES (?, ?, ?, ?, ?)\", [\n    (4711, \"WELLE_20H6\", \"D2\", 500, \"in Arbeit\"),\n    (4712, \"FLANSCH_80\", \"F1\", 120, \"offen\"),\n    (4713, \"WELLE_20H6\", \"D2\", 300, \"offen\"),\n    (4714, \"BUCHSE_30\", \"D2\", 800, \"fertig\"),\n    (4715, \"FLANSCH_80\", \"F1\", 60, \"fertig\"),\n])\ndb.commit()\ncur.execute(\"SELECT * FROM auftrag\")",
+     "meldung": "sqlite3.OperationalError: no such table: auftrag"
+    },
+    {
+     "beschreibung": "Spalte gibt es nicht",
+     "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ncur = db.cursor()\ncur.execute(\"CREATE TABLE auftraege (nr INTEGER PRIMARY KEY, teil TEXT, maschine TEXT, menge INTEGER, status TEXT)\")\ncur.executemany(\"INSERT INTO auftraege VALUES (?, ?, ?, ?, ?)\", [\n    (4711, \"WELLE_20H6\", \"D2\", 500, \"in Arbeit\"),\n    (4712, \"FLANSCH_80\", \"F1\", 120, \"offen\"),\n    (4713, \"WELLE_20H6\", \"D2\", 300, \"offen\"),\n    (4714, \"BUCHSE_30\", \"D2\", 800, \"fertig\"),\n    (4715, \"FLANSCH_80\", \"F1\", 60, \"fertig\"),\n])\ndb.commit()\ncur.execute(\"SELECT nummer FROM auftraege\")",
+     "meldung": "sqlite3.OperationalError: no such column: nummer"
+    }
+   ]
+  },
+  {
+   "id": "sql-select",
+   "name": "SELECT … FROM … WHERE",
+   "kategorie": "Datenbanken (SQL)",
+   "eingefuehrt": "V19",
+   "ampel": "kopf",
+   "kurz": "Fragt Zeilen einer Tabelle ab: welche Spalten, aus welcher Tabelle, unter welcher Bedingung.",
+   "syntax": "SELECT spalte1, spalte2 FROM tabelle WHERE bedingung ORDER BY spalte DESC",
+   "erklaerung": "SQL ist deklarativ: Du beschreibst, WAS du haben willst, die Datenbank entscheidet, WIE sie es findet. Die Datenbank arbeitet in dieser Reihenfolge: FROM (Tabelle), WHERE (Zeilen aussortieren), SELECT (Spalten auswählen), ORDER BY (sortieren, DESC = absteigend). SELECT * liefert alle Spalten. Bedingungen verknüpfst du mit AND und OR, ungleich ist !=. Ohne ORDER BY ist die Reihenfolge nicht garantiert. Werte aus Python setzt du immer über Platzhalter ein.",
+   "beispiel": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ncur = db.cursor()\ncur.execute(\"CREATE TABLE auftraege (nr INTEGER PRIMARY KEY, teil TEXT, maschine TEXT, menge INTEGER, status TEXT)\")\ncur.executemany(\"INSERT INTO auftraege VALUES (?, ?, ?, ?, ?)\", [\n    (4711, \"WELLE_20H6\", \"D2\", 500, \"in Arbeit\"),\n    (4712, \"FLANSCH_80\", \"F1\", 120, \"offen\"),\n    (4713, \"WELLE_20H6\", \"D2\", 300, \"offen\"),\n    (4714, \"BUCHSE_30\", \"D2\", 800, \"fertig\"),\n    (4715, \"FLANSCH_80\", \"F1\", 60, \"fertig\"),\n])\ndb.commit()\ncur.execute(\"SELECT nr, teil, menge FROM auftraege WHERE maschine = 'D2' ORDER BY menge DESC\")\nfor nr, teil, menge in cur.fetchall():\n    print(nr, teil, menge)",
+   "wann_nutzen": "Für jede Auswertung: offene Aufträge einer Maschine, Teile über einer Menge, die größten Aufträge zuerst.",
+   "transfer": [
+    {
+     "situation": "Mehrere Bedingungen",
+     "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ncur = db.cursor()\ncur.execute(\"CREATE TABLE auftraege (nr INTEGER PRIMARY KEY, teil TEXT, maschine TEXT, menge INTEGER, status TEXT)\")\ncur.executemany(\"INSERT INTO auftraege VALUES (?, ?, ?, ?, ?)\", [\n    (4711, \"WELLE_20H6\", \"D2\", 500, \"in Arbeit\"),\n    (4712, \"FLANSCH_80\", \"F1\", 120, \"offen\"),\n    (4713, \"WELLE_20H6\", \"D2\", 300, \"offen\"),\n    (4714, \"BUCHSE_30\", \"D2\", 800, \"fertig\"),\n    (4715, \"FLANSCH_80\", \"F1\", 60, \"fertig\"),\n])\ndb.commit()\ncur.execute(\"SELECT nr FROM auftraege WHERE maschine = 'F1' AND status != 'fertig'\")\nprint(cur.fetchall())"
+    },
+    {
+     "situation": "Nur die ersten zwei (LIMIT)",
+     "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ncur = db.cursor()\ncur.execute(\"CREATE TABLE auftraege (nr INTEGER PRIMARY KEY, teil TEXT, maschine TEXT, menge INTEGER, status TEXT)\")\ncur.executemany(\"INSERT INTO auftraege VALUES (?, ?, ?, ?, ?)\", [\n    (4711, \"WELLE_20H6\", \"D2\", 500, \"in Arbeit\"),\n    (4712, \"FLANSCH_80\", \"F1\", 120, \"offen\"),\n    (4713, \"WELLE_20H6\", \"D2\", 300, \"offen\"),\n    (4714, \"BUCHSE_30\", \"D2\", 800, \"fertig\"),\n    (4715, \"FLANSCH_80\", \"F1\", 60, \"fertig\"),\n])\ndb.commit()\ncur.execute(\"SELECT nr, menge FROM auftraege ORDER BY menge DESC LIMIT 2\")\nprint(cur.fetchall())"
+    }
+   ],
+   "verwandt": [
+    "sql-platzhalter",
+    "sql-fetch",
+    "sql-group-by",
+    "sqlite-connect"
+   ],
+   "bezeichner": [
+    "SELECT",
+    "FROM",
+    "WHERE",
+    "ORDER BY",
+    "DESC",
+    "LIMIT"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [
+    "Abfrage",
+    "SQL",
+    "Query",
+    "sortieren",
+    "filtern"
+   ],
+   "beispiel_ausgabe": "4714 BUCHSE_30 800\n4711 WELLE_20H6 500\n4713 WELLE_20H6 300",
+   "typische_fehler": [
+    {
+     "beschreibung": "SELECT falsch geschrieben",
+     "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ncur = db.cursor()\ncur.execute(\"CREATE TABLE auftraege (nr INTEGER PRIMARY KEY, teil TEXT, maschine TEXT, menge INTEGER, status TEXT)\")\ncur.executemany(\"INSERT INTO auftraege VALUES (?, ?, ?, ?, ?)\", [\n    (4711, \"WELLE_20H6\", \"D2\", 500, \"in Arbeit\"),\n    (4712, \"FLANSCH_80\", \"F1\", 120, \"offen\"),\n    (4713, \"WELLE_20H6\", \"D2\", 300, \"offen\"),\n    (4714, \"BUCHSE_30\", \"D2\", 800, \"fertig\"),\n    (4715, \"FLANSCH_80\", \"F1\", 60, \"fertig\"),\n])\ndb.commit()\ncur.execute(\"SELEC nr FROM auftraege\")",
+     "meldung": "sqlite3.OperationalError: near \"SELEC\": syntax error"
+    },
+    {
+     "beschreibung": "Text ohne Anführungszeichen: wird als Spaltenname gelesen",
+     "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ncur = db.cursor()\ncur.execute(\"CREATE TABLE auftraege (nr INTEGER PRIMARY KEY, teil TEXT, maschine TEXT, menge INTEGER, status TEXT)\")\ncur.executemany(\"INSERT INTO auftraege VALUES (?, ?, ?, ?, ?)\", [\n    (4711, \"WELLE_20H6\", \"D2\", 500, \"in Arbeit\"),\n    (4712, \"FLANSCH_80\", \"F1\", 120, \"offen\"),\n    (4713, \"WELLE_20H6\", \"D2\", 300, \"offen\"),\n    (4714, \"BUCHSE_30\", \"D2\", 800, \"fertig\"),\n    (4715, \"FLANSCH_80\", \"F1\", 60, \"fertig\"),\n])\ndb.commit()\ncur.execute(\"SELECT nr FROM auftraege WHERE status = offen\")",
+     "meldung": "sqlite3.OperationalError: no such column: offen"
+    }
+   ]
+  },
+  {
+   "id": "sql-platzhalter",
+   "name": "Platzhalter ? (gegen SQL-Injection)",
+   "kategorie": "Datenbanken (SQL)",
+   "eingefuehrt": "V19",
+   "ampel": "kopf",
+   "kurz": "Werte aus Python nie in den SQL-Text kleben, sondern mit ? und einem Tupel getrennt übergeben.",
+   "syntax": "cur.execute(\"SELECT ... WHERE spalte = ? AND andere = ?\", (wert1, wert2))\ncur.execute(\"SELECT ... WHERE spalte = ?\", (wert,))   # Komma!",
+   "erklaerung": "Baut man eine Eingabe per f-String in den SQL-Text ein, kann sie den Text verändern: Aus der Eingabe x' OR '1'='1 wird die Bedingung teil = 'x' OR '1'='1', die für jede Zeile wahr ist (SQL-Injection). Mit Platzhaltern bleibt der SQL-Text fest, der Wert geht getrennt als Daten an die Datenbank und wird nie als SQL-Code gelesen. Die Werte stehen in einem Tupel in der Reihenfolge der Fragezeichen; bei einem einzigen Wert braucht das Tupel ein Komma: (wert,). Platzhalter gehen nur für Werte, nicht für Tabellen- oder Spaltennamen.",
+   "beispiel": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ncur = db.cursor()\ncur.execute(\"CREATE TABLE auftraege (nr INTEGER PRIMARY KEY, teil TEXT, maschine TEXT, menge INTEGER, status TEXT)\")\ncur.executemany(\"INSERT INTO auftraege VALUES (?, ?, ?, ?, ?)\", [\n    (4711, \"WELLE_20H6\", \"D2\", 500, \"in Arbeit\"),\n    (4712, \"FLANSCH_80\", \"F1\", 120, \"offen\"),\n    (4713, \"WELLE_20H6\", \"D2\", 300, \"offen\"),\n    (4714, \"BUCHSE_30\", \"D2\", 800, \"fertig\"),\n    (4715, \"FLANSCH_80\", \"F1\", 60, \"fertig\"),\n])\ndb.commit()\neingabe = \"x' OR '1'='1\"\ncur.execute(f\"SELECT nr FROM auftraege WHERE teil = '{eingabe}'\")\nprint(\"f-String:\", len(cur.fetchall()), \"Treffer\")\ncur.execute(\"SELECT nr FROM auftraege WHERE teil = ?\", (eingabe,))\nprint(\"Platzhalter:\", len(cur.fetchall()), \"Treffer\")",
+   "wann_nutzen": "Immer, wenn ein Wert aus einer Eingabe, Datei, API oder Variable in eine Abfrage kommt. Also praktisch immer.",
+   "transfer": [
+    {
+     "situation": "Zwei Werte",
+     "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ncur = db.cursor()\ncur.execute(\"CREATE TABLE auftraege (nr INTEGER PRIMARY KEY, teil TEXT, maschine TEXT, menge INTEGER, status TEXT)\")\ncur.executemany(\"INSERT INTO auftraege VALUES (?, ?, ?, ?, ?)\", [\n    (4711, \"WELLE_20H6\", \"D2\", 500, \"in Arbeit\"),\n    (4712, \"FLANSCH_80\", \"F1\", 120, \"offen\"),\n    (4713, \"WELLE_20H6\", \"D2\", 300, \"offen\"),\n    (4714, \"BUCHSE_30\", \"D2\", 800, \"fertig\"),\n    (4715, \"FLANSCH_80\", \"F1\", 60, \"fertig\"),\n])\ndb.commit()\nmaschine, status = \"D2\", \"offen\"\ncur.execute(\"SELECT nr FROM auftraege WHERE maschine = ? AND status = ?\", (maschine, status))\nprint(cur.fetchall())"
+    },
+    {
+     "situation": "Anführungszeichen in den Daten sind kein Problem",
+     "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ndb.execute(\"CREATE TABLE kunden (name TEXT)\")\ndb.execute(\"INSERT INTO kunden VALUES (?)\", (\"O'Brien\",))\nprint(db.execute(\"SELECT name FROM kunden WHERE name = ?\", (\"O'Brien\",)).fetchall())"
+    }
+   ],
+   "verwandt": [
+    "sql-select",
+    "tupel",
+    "fstring",
+    "sqlite-connect"
+   ],
+   "bezeichner": [
+    "?",
+    "Platzhalter"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [
+    "SQL-Injection",
+    "Parameter",
+    "Injection",
+    "Sicherheit",
+    "bindings"
+   ],
+   "beispiel_ausgabe": "f-String: 5 Treffer\nPlatzhalter: 0 Treffer",
+   "typische_fehler": [
+    {
+     "beschreibung": "Komma vergessen: (\"D2\") ist kein Tupel, sondern Text mit 2 Zeichen",
+     "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ncur = db.cursor()\ncur.execute(\"CREATE TABLE auftraege (nr INTEGER PRIMARY KEY, teil TEXT, maschine TEXT, menge INTEGER, status TEXT)\")\ncur.executemany(\"INSERT INTO auftraege VALUES (?, ?, ?, ?, ?)\", [\n    (4711, \"WELLE_20H6\", \"D2\", 500, \"in Arbeit\"),\n    (4712, \"FLANSCH_80\", \"F1\", 120, \"offen\"),\n    (4713, \"WELLE_20H6\", \"D2\", 300, \"offen\"),\n    (4714, \"BUCHSE_30\", \"D2\", 800, \"fertig\"),\n    (4715, \"FLANSCH_80\", \"F1\", 60, \"fertig\"),\n])\ndb.commit()\ncur.execute(\"SELECT nr FROM auftraege WHERE maschine = ?\", (\"D2\"))",
+     "meldung": "sqlite3.ProgrammingError: Incorrect number of bindings supplied. The current statement uses 1, and there are 2 supplied."
+    },
+    {
+     "beschreibung": "Anführungszeichen in den Daten zerbrechen den f-String-SQL",
+     "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ncur = db.cursor()\ncur.execute(\"CREATE TABLE auftraege (nr INTEGER PRIMARY KEY, teil TEXT, maschine TEXT, menge INTEGER, status TEXT)\")\ncur.executemany(\"INSERT INTO auftraege VALUES (?, ?, ?, ?, ?)\", [\n    (4711, \"WELLE_20H6\", \"D2\", 500, \"in Arbeit\"),\n    (4712, \"FLANSCH_80\", \"F1\", 120, \"offen\"),\n    (4713, \"WELLE_20H6\", \"D2\", 300, \"offen\"),\n    (4714, \"BUCHSE_30\", \"D2\", 800, \"fertig\"),\n    (4715, \"FLANSCH_80\", \"F1\", 60, \"fertig\"),\n])\ndb.commit()\nname = \"O'Brien\"\ncur.execute(f\"SELECT nr FROM auftraege WHERE teil = '{name}'\")",
+     "meldung": "sqlite3.OperationalError: near \"Brien\": syntax error"
+    },
+    {
+     "beschreibung": "Zwei Anweisungen in einem execute",
+     "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ncur = db.cursor()\ncur.execute(\"CREATE TABLE auftraege (nr INTEGER PRIMARY KEY, teil TEXT, maschine TEXT, menge INTEGER, status TEXT)\")\ncur.executemany(\"INSERT INTO auftraege VALUES (?, ?, ?, ?, ?)\", [\n    (4711, \"WELLE_20H6\", \"D2\", 500, \"in Arbeit\"),\n    (4712, \"FLANSCH_80\", \"F1\", 120, \"offen\"),\n    (4713, \"WELLE_20H6\", \"D2\", 300, \"offen\"),\n    (4714, \"BUCHSE_30\", \"D2\", 800, \"fertig\"),\n    (4715, \"FLANSCH_80\", \"F1\", 60, \"fertig\"),\n])\ndb.commit()\ncur.execute(\"SELECT nr FROM auftraege WHERE teil = 'x'; DELETE FROM auftraege\")",
+     "meldung": "sqlite3.ProgrammingError: You can only execute one statement at a time."
+    }
+   ]
+  },
+  {
+   "id": "sql-fetch",
+   "name": "fetchall() / fetchone()",
+   "kategorie": "Datenbanken (SQL)",
+   "eingefuehrt": "V19",
+   "ampel": "kopf",
+   "kurz": "Holt das Ergebnis einer Abfrage: alle Zeilen als Liste von Tupeln oder eine Zeile (oder None).",
+   "syntax": "zeilen = cur.fetchall()   # [(...), (...), ...]\nzeile = cur.fetchone()    # (...) oder None",
+   "erklaerung": "Nach cur.execute(\"SELECT ...\") liegt das Ergebnis bereit. fetchall() liefert eine Liste von Tupeln, ein Tupel je Zeile, in der Reihenfolge der Spalten im SELECT; bei keinem Treffer eine leere Liste. fetchone() liefert die nächste Zeile als Tupel oder None, wenn es keine gibt. Prüfe deshalb vor dem Zugriff mit if zeile is None. Mit for nr, teil in cur.fetchall(): entpackst du jede Zeile direkt in Variablen.",
+   "beispiel": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ncur = db.cursor()\ncur.execute(\"CREATE TABLE auftraege (nr INTEGER PRIMARY KEY, teil TEXT, maschine TEXT, menge INTEGER, status TEXT)\")\ncur.executemany(\"INSERT INTO auftraege VALUES (?, ?, ?, ?, ?)\", [\n    (4711, \"WELLE_20H6\", \"D2\", 500, \"in Arbeit\"),\n    (4712, \"FLANSCH_80\", \"F1\", 120, \"offen\"),\n    (4713, \"WELLE_20H6\", \"D2\", 300, \"offen\"),\n    (4714, \"BUCHSE_30\", \"D2\", 800, \"fertig\"),\n    (4715, \"FLANSCH_80\", \"F1\", 60, \"fertig\"),\n])\ndb.commit()\ncur.execute(\"SELECT teil, status FROM auftraege WHERE nr = ?\", (4712,))\nzeile = cur.fetchone()\nprint(zeile)\ncur.execute(\"SELECT teil, status FROM auftraege WHERE nr = ?\", (9999,))\nprint(cur.fetchone())",
+   "wann_nutzen": "fetchone für genau einen Datensatz (Suche nach Primärschlüssel, COUNT, SUM), fetchall für Listen.",
+   "transfer": [
+    {
+     "situation": "Einzelwert aus COUNT",
+     "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ncur = db.cursor()\ncur.execute(\"CREATE TABLE auftraege (nr INTEGER PRIMARY KEY, teil TEXT, maschine TEXT, menge INTEGER, status TEXT)\")\ncur.executemany(\"INSERT INTO auftraege VALUES (?, ?, ?, ?, ?)\", [\n    (4711, \"WELLE_20H6\", \"D2\", 500, \"in Arbeit\"),\n    (4712, \"FLANSCH_80\", \"F1\", 120, \"offen\"),\n    (4713, \"WELLE_20H6\", \"D2\", 300, \"offen\"),\n    (4714, \"BUCHSE_30\", \"D2\", 800, \"fertig\"),\n    (4715, \"FLANSCH_80\", \"F1\", 60, \"fertig\"),\n])\ndb.commit()\ncur.execute(\"SELECT COUNT(*) FROM auftraege WHERE status = ?\", (\"offen\",))\nanzahl = cur.fetchone()[0]\nprint(anzahl, \"offene Aufträge\")"
+    },
+    {
+     "situation": "Nicht gefunden abfangen",
+     "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ncur = db.cursor()\ncur.execute(\"CREATE TABLE auftraege (nr INTEGER PRIMARY KEY, teil TEXT, maschine TEXT, menge INTEGER, status TEXT)\")\ncur.executemany(\"INSERT INTO auftraege VALUES (?, ?, ?, ?, ?)\", [\n    (4711, \"WELLE_20H6\", \"D2\", 500, \"in Arbeit\"),\n    (4712, \"FLANSCH_80\", \"F1\", 120, \"offen\"),\n    (4713, \"WELLE_20H6\", \"D2\", 300, \"offen\"),\n    (4714, \"BUCHSE_30\", \"D2\", 800, \"fertig\"),\n    (4715, \"FLANSCH_80\", \"F1\", 60, \"fertig\"),\n])\ndb.commit()\ncur.execute(\"SELECT status FROM auftraege WHERE nr = ?\", (4799,))\nzeile = cur.fetchone()\nif zeile is None:\n    print(\"Auftrag nicht gefunden\")\nelse:\n    print(zeile[0])"
+    }
+   ],
+   "verwandt": [
+    "sql-select",
+    "tupel",
+    "for-liste"
+   ],
+   "bezeichner": [
+    ".fetchall",
+    ".fetchone"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [
+    "Ergebnis holen",
+    "Liste von Tupeln",
+    "None"
+   ],
+   "beispiel_ausgabe": "('FLANSCH_80', 'offen')\nNone",
+   "typische_fehler": [
+    {
+     "beschreibung": "Zugriff auf None, wenn nichts gefunden wurde",
+     "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ncur = db.cursor()\ncur.execute(\"CREATE TABLE auftraege (nr INTEGER PRIMARY KEY, teil TEXT, maschine TEXT, menge INTEGER, status TEXT)\")\ncur.executemany(\"INSERT INTO auftraege VALUES (?, ?, ?, ?, ?)\", [\n    (4711, \"WELLE_20H6\", \"D2\", 500, \"in Arbeit\"),\n    (4712, \"FLANSCH_80\", \"F1\", 120, \"offen\"),\n    (4713, \"WELLE_20H6\", \"D2\", 300, \"offen\"),\n    (4714, \"BUCHSE_30\", \"D2\", 800, \"fertig\"),\n    (4715, \"FLANSCH_80\", \"F1\", 60, \"fertig\"),\n])\ndb.commit()\ncur.execute(\"SELECT status FROM auftraege WHERE nr = ?\", (4799,))\nprint(cur.fetchone()[0])",
+     "meldung": "TypeError: 'NoneType' object is not subscriptable"
+    }
+   ]
+  },
+  {
+   "id": "sql-insert",
+   "name": "CREATE TABLE / INSERT / executemany",
+   "kategorie": "Datenbanken (SQL)",
+   "eingefuehrt": "V19",
+   "ampel": "lesen",
+   "kurz": "Legt eine Tabelle an und fügt Zeilen ein, viele auf einmal mit executemany.",
+   "syntax": "CREATE TABLE tabelle (spalte1 INTEGER PRIMARY KEY, spalte2 TEXT, spalte3 REAL)\ncur.execute(\"INSERT INTO tabelle VALUES (?, ?, ?)\", (1, \"a\", 2.5))\ncur.executemany(\"INSERT INTO tabelle VALUES (?, ?, ?)\", liste_von_tupeln)\ndb.commit()",
+   "erklaerung": "CREATE TABLE legt fest, welche Spalten es gibt und welchen Datentyp sie haben (INTEGER, REAL, TEXT). Der Primärschlüssel (PRIMARY KEY) ist eindeutig wie eine Seriennummer: Eine zweite Zeile mit derselben Nummer lehnt die Datenbank ab. INSERT fügt eine Zeile ein, executemany wiederholt dasselbe INSERT für jedes Tupel einer Liste. Danach commit nicht vergessen.",
+   "beispiel": "import sqlite3\n\ndb = sqlite3.connect(\":memory:\")\ncur = db.cursor()\ncur.execute(\"CREATE TABLE auftraege (nr INTEGER PRIMARY KEY, teil TEXT, menge INTEGER)\")\nneue = [(4711, \"WELLE_20H6\", 500), (4712, \"FLANSCH_80\", 120)]\ncur.executemany(\"INSERT INTO auftraege VALUES (?, ?, ?)\", neue)\ndb.commit()\ncur.execute(\"SELECT COUNT(*) FROM auftraege\")\nprint(cur.fetchone()[0], \"Aufträge\")",
+   "wann_nutzen": "Beim Übernehmen von Daten aus CSV, JSON oder Eingaben in eine Datenbank.",
+   "transfer": [
+    {
+     "situation": "Nur bestimmte Spalten füllen",
+     "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ndb.execute(\"CREATE TABLE teile (name TEXT, masse REAL, lager TEXT)\")\ndb.execute(\"INSERT INTO teile (name, masse) VALUES (?, ?)\", (\"Welle\", 2.4))\nprint(db.execute(\"SELECT * FROM teile\").fetchall())"
+    },
+    {
+     "situation": "Doppelte Nummer abfangen",
+     "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ncur = db.cursor()\ncur.execute(\"CREATE TABLE auftraege (nr INTEGER PRIMARY KEY, teil TEXT, maschine TEXT, menge INTEGER, status TEXT)\")\ncur.executemany(\"INSERT INTO auftraege VALUES (?, ?, ?, ?, ?)\", [\n    (4711, \"WELLE_20H6\", \"D2\", 500, \"in Arbeit\"),\n    (4712, \"FLANSCH_80\", \"F1\", 120, \"offen\"),\n    (4713, \"WELLE_20H6\", \"D2\", 300, \"offen\"),\n    (4714, \"BUCHSE_30\", \"D2\", 800, \"fertig\"),\n    (4715, \"FLANSCH_80\", \"F1\", 60, \"fertig\"),\n])\ndb.commit()\ntry:\n    cur.execute(\"INSERT INTO auftraege VALUES (?, ?, ?, ?, ?)\", (4711, \"BOLZEN_12\", \"D2\", 100, \"offen\"))\nexcept sqlite3.IntegrityError:\n    print(\"Auftragsnummer schon vergeben\")"
+    }
+   ],
+   "verwandt": [
+    "sqlite-connect",
+    "sql-platzhalter",
+    "sql-update-delete",
+    "liste",
+    "tupel"
+   ],
+   "bezeichner": [
+    "CREATE TABLE",
+    "INSERT",
+    ".executemany",
+    "PRIMARY KEY",
+    "INTEGER",
+    "TEXT",
+    "REAL"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [
+    "Tabelle anlegen",
+    "einfügen",
+    "Primärschlüssel",
+    "IntegrityError"
+   ],
+   "beispiel_ausgabe": "2 Aufträge",
+   "typische_fehler": [
+    {
+     "beschreibung": "Primärschlüssel doppelt",
+     "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ncur = db.cursor()\ncur.execute(\"CREATE TABLE auftraege (nr INTEGER PRIMARY KEY, teil TEXT, maschine TEXT, menge INTEGER, status TEXT)\")\ncur.executemany(\"INSERT INTO auftraege VALUES (?, ?, ?, ?, ?)\", [\n    (4711, \"WELLE_20H6\", \"D2\", 500, \"in Arbeit\"),\n    (4712, \"FLANSCH_80\", \"F1\", 120, \"offen\"),\n    (4713, \"WELLE_20H6\", \"D2\", 300, \"offen\"),\n    (4714, \"BUCHSE_30\", \"D2\", 800, \"fertig\"),\n    (4715, \"FLANSCH_80\", \"F1\", 60, \"fertig\"),\n])\ndb.commit()\ncur.execute(\"INSERT INTO auftraege VALUES (4711, 'BOLZEN_12', 'D2', 100, 'offen')\")",
+     "meldung": "sqlite3.IntegrityError: UNIQUE constraint failed: auftraege.nr"
+    },
+    {
+     "beschreibung": "Zu wenige Werte für die Tabelle",
+     "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ncur = db.cursor()\ncur.execute(\"CREATE TABLE auftraege (nr INTEGER PRIMARY KEY, teil TEXT, maschine TEXT, menge INTEGER, status TEXT)\")\ncur.executemany(\"INSERT INTO auftraege VALUES (?, ?, ?, ?, ?)\", [\n    (4711, \"WELLE_20H6\", \"D2\", 500, \"in Arbeit\"),\n    (4712, \"FLANSCH_80\", \"F1\", 120, \"offen\"),\n    (4713, \"WELLE_20H6\", \"D2\", 300, \"offen\"),\n    (4714, \"BUCHSE_30\", \"D2\", 800, \"fertig\"),\n    (4715, \"FLANSCH_80\", \"F1\", 60, \"fertig\"),\n])\ndb.commit()\ncur.execute(\"INSERT INTO auftraege VALUES (?, ?, ?)\", (4716, \"DECKEL_80\", \"F1\"))",
+     "meldung": "sqlite3.OperationalError: table auftraege has 5 columns but 3 values were supplied"
+    }
+   ]
+  },
+  {
+   "id": "sql-update-delete",
+   "name": "UPDATE / DELETE (immer mit WHERE)",
+   "kategorie": "Datenbanken (SQL)",
+   "eingefuehrt": "V19",
+   "ampel": "lesen",
+   "kurz": "Ändert oder löscht Zeilen. Ohne WHERE trifft es jede Zeile der Tabelle.",
+   "syntax": "cur.execute(\"UPDATE tabelle SET spalte = ? WHERE schluessel = ?\", (neu, nr))\ncur.execute(\"DELETE FROM tabelle WHERE schluessel = ?\", (nr,))\ndb.commit()\ncur.rowcount   # Anzahl betroffener Zeilen",
+   "erklaerung": "UPDATE setzt neue Werte, DELETE entfernt Zeilen. Beide wirken auf alle Zeilen, auf die das WHERE passt, und ohne WHERE auf die ganze Tabelle. Das ist der klassische Fehler in KI-Code. cur.rowcount sagt, wie viele Zeilen betroffen waren (0 heißt: nichts gefunden). Erst db.commit() macht die Änderung in einer Datei-Datenbank dauerhaft.",
+   "beispiel": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ncur = db.cursor()\ncur.execute(\"CREATE TABLE auftraege (nr INTEGER PRIMARY KEY, teil TEXT, maschine TEXT, menge INTEGER, status TEXT)\")\ncur.executemany(\"INSERT INTO auftraege VALUES (?, ?, ?, ?, ?)\", [\n    (4711, \"WELLE_20H6\", \"D2\", 500, \"in Arbeit\"),\n    (4712, \"FLANSCH_80\", \"F1\", 120, \"offen\"),\n    (4713, \"WELLE_20H6\", \"D2\", 300, \"offen\"),\n    (4714, \"BUCHSE_30\", \"D2\", 800, \"fertig\"),\n    (4715, \"FLANSCH_80\", \"F1\", 60, \"fertig\"),\n])\ndb.commit()\ncur.execute(\"UPDATE auftraege SET status = ? WHERE nr = ?\", (\"in Arbeit\", 4712))\nprint(cur.rowcount, \"Zeile geändert\")\ndb.commit()\ncur.execute(\"SELECT nr, status FROM auftraege WHERE maschine = ? ORDER BY nr\", (\"F1\",))\nprint(cur.fetchall())",
+   "wann_nutzen": "Status eines Auftrags weitersetzen, Mengen korrigieren, stornierte Aufträge entfernen.",
+   "transfer": [
+    {
+     "situation": "Unbekannte Nummer erkennen",
+     "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ncur = db.cursor()\ncur.execute(\"CREATE TABLE auftraege (nr INTEGER PRIMARY KEY, teil TEXT, maschine TEXT, menge INTEGER, status TEXT)\")\ncur.executemany(\"INSERT INTO auftraege VALUES (?, ?, ?, ?, ?)\", [\n    (4711, \"WELLE_20H6\", \"D2\", 500, \"in Arbeit\"),\n    (4712, \"FLANSCH_80\", \"F1\", 120, \"offen\"),\n    (4713, \"WELLE_20H6\", \"D2\", 300, \"offen\"),\n    (4714, \"BUCHSE_30\", \"D2\", 800, \"fertig\"),\n    (4715, \"FLANSCH_80\", \"F1\", 60, \"fertig\"),\n])\ndb.commit()\ncur.execute(\"UPDATE auftraege SET status = ? WHERE nr = ?\", (\"fertig\", 4799))\nif cur.rowcount == 0:\n    print(\"Auftrag nicht gefunden\")"
+    },
+    {
+     "situation": "Löschen mit Bedingung",
+     "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ncur = db.cursor()\ncur.execute(\"CREATE TABLE auftraege (nr INTEGER PRIMARY KEY, teil TEXT, maschine TEXT, menge INTEGER, status TEXT)\")\ncur.executemany(\"INSERT INTO auftraege VALUES (?, ?, ?, ?, ?)\", [\n    (4711, \"WELLE_20H6\", \"D2\", 500, \"in Arbeit\"),\n    (4712, \"FLANSCH_80\", \"F1\", 120, \"offen\"),\n    (4713, \"WELLE_20H6\", \"D2\", 300, \"offen\"),\n    (4714, \"BUCHSE_30\", \"D2\", 800, \"fertig\"),\n    (4715, \"FLANSCH_80\", \"F1\", 60, \"fertig\"),\n])\ndb.commit()\ncur.execute(\"DELETE FROM auftraege WHERE status = ?\", (\"fertig\",))\ndb.commit()\nprint(cur.rowcount, \"gelöscht\")"
+    }
+   ],
+   "verwandt": [
+    "sql-insert",
+    "sql-platzhalter",
+    "sqlite-connect"
+   ],
+   "bezeichner": [
+    "UPDATE",
+    "SET",
+    "DELETE",
+    ".rowcount"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [
+    "ändern",
+    "löschen",
+    "Status setzen",
+    "rowcount",
+    "commit"
+   ],
+   "beispiel_ausgabe": "1 Zeile geändert\n[(4712, 'in Arbeit'), (4715, 'fertig')]",
+   "typische_fehler": [
+    {
+     "beschreibung": "UPDATE ohne WHERE: alle Aufträge sind plötzlich fertig",
+     "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ncur = db.cursor()\ncur.execute(\"CREATE TABLE auftraege (nr INTEGER PRIMARY KEY, teil TEXT, maschine TEXT, menge INTEGER, status TEXT)\")\ncur.executemany(\"INSERT INTO auftraege VALUES (?, ?, ?, ?, ?)\", [\n    (4711, \"WELLE_20H6\", \"D2\", 500, \"in Arbeit\"),\n    (4712, \"FLANSCH_80\", \"F1\", 120, \"offen\"),\n    (4713, \"WELLE_20H6\", \"D2\", 300, \"offen\"),\n    (4714, \"BUCHSE_30\", \"D2\", 800, \"fertig\"),\n    (4715, \"FLANSCH_80\", \"F1\", 60, \"fertig\"),\n])\ndb.commit()\ncur.execute(\"UPDATE auftraege SET status = ?\", (\"fertig\",))\nprint(cur.rowcount, \"Zeilen geändert\")",
+     "meldung": "(keine Fehlermeldung) 5 Zeilen geändert statt einer: Das WHERE fehlt."
+    },
+    {
+     "beschreibung": "commit vergessen: nach dem Schließen ist die Änderung weg",
+     "code": "import sqlite3\ndb = sqlite3.connect(\"t.db\")\ndb.execute(\"CREATE TABLE t (x INTEGER)\")\ndb.commit()\ndb.execute(\"INSERT INTO t VALUES (1)\")\ndb.close()\ndb = sqlite3.connect(\"t.db\")\nprint(db.execute(\"SELECT COUNT(*) FROM t\").fetchone())",
+     "meldung": "(keine Fehlermeldung) Ausgabe (0,): Das INSERT wurde nie mit commit gespeichert."
+    }
+   ]
+  },
+  {
+   "id": "sql-group-by",
+   "name": "GROUP BY mit SUM / COUNT",
+   "kategorie": "Datenbanken (SQL)",
+   "eingefuehrt": "V19",
+   "ampel": "lesen",
+   "kurz": "Fasst Zeilen zu Gruppen zusammen und rechnet je Gruppe eine Summe, Anzahl, Mittel, Min oder Max.",
+   "syntax": "SELECT spalte, SUM(menge), COUNT(*) FROM tabelle GROUP BY spalte\n# weitere: AVG(x), MIN(x), MAX(x)",
+   "erklaerung": "Aggregatfunktionen rechnen über mehrere Zeilen: COUNT(*) zählt, SUM summiert, AVG bildet den Mittelwert, MIN und MAX suchen die Extremwerte. Ohne GROUP BY gibt es eine Ergebniszeile für die ganze Tabelle. Mit GROUP BY maschine sortiert die Datenbank die Zeilen in Fächer je Maschine und rechnet je Fach. WHERE filtert vorher einzelne Zeilen. Für eine feste Reihenfolge ORDER BY ergänzen.",
+   "beispiel": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ncur = db.cursor()\ncur.execute(\"CREATE TABLE auftraege (nr INTEGER PRIMARY KEY, teil TEXT, maschine TEXT, menge INTEGER, status TEXT)\")\ncur.executemany(\"INSERT INTO auftraege VALUES (?, ?, ?, ?, ?)\", [\n    (4711, \"WELLE_20H6\", \"D2\", 500, \"in Arbeit\"),\n    (4712, \"FLANSCH_80\", \"F1\", 120, \"offen\"),\n    (4713, \"WELLE_20H6\", \"D2\", 300, \"offen\"),\n    (4714, \"BUCHSE_30\", \"D2\", 800, \"fertig\"),\n    (4715, \"FLANSCH_80\", \"F1\", 60, \"fertig\"),\n])\ndb.commit()\ncur.execute(\"SELECT maschine, SUM(menge) FROM auftraege GROUP BY maschine ORDER BY maschine\")\nfor maschine, summe in cur.fetchall():\n    print(f\"{maschine}: {summe} Stück\")",
+   "wann_nutzen": "Kennzahlen: Stück je Maschine, offene Aufträge je Status, mittlere Losgröße.",
+   "transfer": [
+    {
+     "situation": "Anzahl je Status",
+     "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ncur = db.cursor()\ncur.execute(\"CREATE TABLE auftraege (nr INTEGER PRIMARY KEY, teil TEXT, maschine TEXT, menge INTEGER, status TEXT)\")\ncur.executemany(\"INSERT INTO auftraege VALUES (?, ?, ?, ?, ?)\", [\n    (4711, \"WELLE_20H6\", \"D2\", 500, \"in Arbeit\"),\n    (4712, \"FLANSCH_80\", \"F1\", 120, \"offen\"),\n    (4713, \"WELLE_20H6\", \"D2\", 300, \"offen\"),\n    (4714, \"BUCHSE_30\", \"D2\", 800, \"fertig\"),\n    (4715, \"FLANSCH_80\", \"F1\", 60, \"fertig\"),\n])\ndb.commit()\ncur.execute(\"SELECT status, COUNT(*) FROM auftraege GROUP BY status ORDER BY status\")\nprint(cur.fetchall())"
+    },
+    {
+     "situation": "Ergebnis in ein Dictionary übernehmen",
+     "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ncur = db.cursor()\ncur.execute(\"CREATE TABLE auftraege (nr INTEGER PRIMARY KEY, teil TEXT, maschine TEXT, menge INTEGER, status TEXT)\")\ncur.executemany(\"INSERT INTO auftraege VALUES (?, ?, ?, ?, ?)\", [\n    (4711, \"WELLE_20H6\", \"D2\", 500, \"in Arbeit\"),\n    (4712, \"FLANSCH_80\", \"F1\", 120, \"offen\"),\n    (4713, \"WELLE_20H6\", \"D2\", 300, \"offen\"),\n    (4714, \"BUCHSE_30\", \"D2\", 800, \"fertig\"),\n    (4715, \"FLANSCH_80\", \"F1\", 60, \"fertig\"),\n])\ndb.commit()\ncur.execute(\"SELECT maschine, SUM(menge) FROM auftraege WHERE status != ? GROUP BY maschine\", (\"fertig\",))\noffen = {}\nfor maschine, summe in cur.fetchall():\n    offen[maschine] = summe\nprint(offen)"
+    }
+   ],
+   "verwandt": [
+    "sql-select",
+    "sql-fetch",
+    "dict"
+   ],
+   "bezeichner": [
+    "GROUP BY",
+    "SUM",
+    "COUNT",
+    "AVG",
+    "MIN",
+    "MAX"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [
+    "Aggregatfunktion",
+    "gruppieren",
+    "zählen",
+    "Summe je"
+   ],
+   "beispiel_ausgabe": "D2: 1600 Stück\nF1: 180 Stück",
+   "typische_fehler": [
+    {
+     "beschreibung": "SUM über eine leere Auswahl ergibt None, nicht 0",
+     "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ncur = db.cursor()\ncur.execute(\"CREATE TABLE auftraege (nr INTEGER PRIMARY KEY, teil TEXT, maschine TEXT, menge INTEGER, status TEXT)\")\ncur.executemany(\"INSERT INTO auftraege VALUES (?, ?, ?, ?, ?)\", [\n    (4711, \"WELLE_20H6\", \"D2\", 500, \"in Arbeit\"),\n    (4712, \"FLANSCH_80\", \"F1\", 120, \"offen\"),\n    (4713, \"WELLE_20H6\", \"D2\", 300, \"offen\"),\n    (4714, \"BUCHSE_30\", \"D2\", 800, \"fertig\"),\n    (4715, \"FLANSCH_80\", \"F1\", 60, \"fertig\"),\n])\ndb.commit()\ncur.execute(\"SELECT SUM(menge) FROM auftraege WHERE maschine = ?\", (\"R1\",))\nprint(cur.fetchone()[0] + 10)",
+     "meldung": "TypeError: unsupported operand type(s) for +: 'NoneType' and 'int'"
+    },
+    {
+     "beschreibung": "Spalte im SELECT, aber nicht im GROUP BY: SQLite nimmt still irgendeine Zeile",
+     "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ncur = db.cursor()\ncur.execute(\"CREATE TABLE auftraege (nr INTEGER PRIMARY KEY, teil TEXT, maschine TEXT, menge INTEGER, status TEXT)\")\ncur.executemany(\"INSERT INTO auftraege VALUES (?, ?, ?, ?, ?)\", [\n    (4711, \"WELLE_20H6\", \"D2\", 500, \"in Arbeit\"),\n    (4712, \"FLANSCH_80\", \"F1\", 120, \"offen\"),\n    (4713, \"WELLE_20H6\", \"D2\", 300, \"offen\"),\n    (4714, \"BUCHSE_30\", \"D2\", 800, \"fertig\"),\n    (4715, \"FLANSCH_80\", \"F1\", 60, \"fertig\"),\n])\ndb.commit()\ncur.execute(\"SELECT maschine, teil, SUM(menge) FROM auftraege GROUP BY maschine ORDER BY maschine\")\nprint(cur.fetchall())",
+     "meldung": "(keine Fehlermeldung) Das Teil je Gruppe ist eins der Teile, welches, ist nicht festgelegt. Andere Datenbanken melden hier einen Fehler."
+    }
+   ]
+  },
+  {
+   "id": "sql-join",
+   "name": "JOIN zweier Tabellen",
+   "kategorie": "Datenbanken (SQL)",
+   "eingefuehrt": "V19",
+   "ampel": "lesen",
+   "kurz": "Verknüpft Zeilen zweier Tabellen über eine gemeinsame Spalte, z. B. Auftrag und Maschine.",
+   "syntax": "SELECT a.nr, m.typ FROM auftraege a JOIN maschinen m ON a.maschine = m.id",
+   "erklaerung": "In einer Datenbank steht jede Information nur einmal: Der Maschinentyp steht in der Tabelle maschinen, ein Auftrag verweist nur mit der Maschinen-ID darauf (Fremdschlüssel). JOIN ... ON setzt die Zeilen beider Tabellen zusammen, bei denen die Bedingung passt. Die Kürzel a und m sind Abkürzungen für die Tabellennamen. Aufträge, deren Maschine in der anderen Tabelle fehlt, fallen beim einfachen JOIN heraus.",
+   "beispiel": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ncur = db.cursor()\ncur.execute(\"CREATE TABLE auftraege (nr INTEGER PRIMARY KEY, teil TEXT, maschine TEXT, menge INTEGER, status TEXT)\")\ncur.executemany(\"INSERT INTO auftraege VALUES (?, ?, ?, ?, ?)\", [\n    (4711, \"WELLE_20H6\", \"D2\", 500, \"in Arbeit\"),\n    (4712, \"FLANSCH_80\", \"F1\", 120, \"offen\"),\n    (4713, \"WELLE_20H6\", \"D2\", 300, \"offen\"),\n    (4714, \"BUCHSE_30\", \"D2\", 800, \"fertig\"),\n    (4715, \"FLANSCH_80\", \"F1\", 60, \"fertig\"),\n])\ndb.commit()\ncur.execute(\"CREATE TABLE maschinen (id TEXT PRIMARY KEY, typ TEXT)\")\ncur.executemany(\"INSERT INTO maschinen VALUES (?, ?)\", [(\"D2\", \"Drehmaschine\"), (\"F1\", \"Fraesmaschine\")])\ncur.execute(\"SELECT a.nr, a.teil, m.typ FROM auftraege a JOIN maschinen m ON a.maschine = m.id WHERE a.status = ? ORDER BY a.nr\", (\"offen\",))\nfor nr, teil, typ in cur.fetchall():\n    print(nr, teil, \"auf\", typ)",
+   "wann_nutzen": "Sobald zusammengehörige Daten in mehreren Tabellen liegen: Aufträge und Maschinen, Stücklisten und Teile.",
+   "transfer": [
+    {
+     "situation": "Menge je Maschinentyp",
+     "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ncur = db.cursor()\ncur.execute(\"CREATE TABLE auftraege (nr INTEGER PRIMARY KEY, teil TEXT, maschine TEXT, menge INTEGER, status TEXT)\")\ncur.executemany(\"INSERT INTO auftraege VALUES (?, ?, ?, ?, ?)\", [\n    (4711, \"WELLE_20H6\", \"D2\", 500, \"in Arbeit\"),\n    (4712, \"FLANSCH_80\", \"F1\", 120, \"offen\"),\n    (4713, \"WELLE_20H6\", \"D2\", 300, \"offen\"),\n    (4714, \"BUCHSE_30\", \"D2\", 800, \"fertig\"),\n    (4715, \"FLANSCH_80\", \"F1\", 60, \"fertig\"),\n])\ndb.commit()\ncur.execute(\"CREATE TABLE maschinen (id TEXT PRIMARY KEY, typ TEXT)\")\ncur.executemany(\"INSERT INTO maschinen VALUES (?, ?)\", [(\"D2\", \"Drehmaschine\"), (\"F1\", \"Fraesmaschine\")])\ncur.execute(\"SELECT m.typ, SUM(a.menge) FROM auftraege a JOIN maschinen m ON a.maschine = m.id GROUP BY m.typ ORDER BY m.typ\")\nprint(cur.fetchall())"
+    },
+    {
+     "situation": "Mit vollen Tabellennamen statt Kürzeln",
+     "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ncur = db.cursor()\ncur.execute(\"CREATE TABLE auftraege (nr INTEGER PRIMARY KEY, teil TEXT, maschine TEXT, menge INTEGER, status TEXT)\")\ncur.executemany(\"INSERT INTO auftraege VALUES (?, ?, ?, ?, ?)\", [\n    (4711, \"WELLE_20H6\", \"D2\", 500, \"in Arbeit\"),\n    (4712, \"FLANSCH_80\", \"F1\", 120, \"offen\"),\n    (4713, \"WELLE_20H6\", \"D2\", 300, \"offen\"),\n    (4714, \"BUCHSE_30\", \"D2\", 800, \"fertig\"),\n    (4715, \"FLANSCH_80\", \"F1\", 60, \"fertig\"),\n])\ndb.commit()\ncur.execute(\"CREATE TABLE maschinen (id TEXT PRIMARY KEY, typ TEXT)\")\ncur.executemany(\"INSERT INTO maschinen VALUES (?, ?)\", [(\"D2\", \"Drehmaschine\"), (\"F1\", \"Fraesmaschine\")])\ncur.execute(\"SELECT auftraege.nr, maschinen.typ FROM auftraege JOIN maschinen ON auftraege.maschine = maschinen.id\")\nprint(len(cur.fetchall()), \"Treffer\")"
+    }
+   ],
+   "verwandt": [
+    "sql-select",
+    "sql-group-by",
+    "sql-insert"
+   ],
+   "bezeichner": [
+    "JOIN",
+    "ON"
+   ],
+   "lauffaehig": true,
+   "suchbegriffe": [
+    "verknüpfen",
+    "Fremdschlüssel",
+    "zwei Tabellen"
+   ],
+   "beispiel_ausgabe": "4712 FLANSCH_80 auf Fraesmaschine\n4713 WELLE_20H6 auf Drehmaschine",
+   "typische_fehler": [
+    {
+     "beschreibung": "Spaltenname in beiden Tabellen: nicht eindeutig",
+     "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ndb.execute(\"CREATE TABLE a (id TEXT, x INTEGER)\")\ndb.execute(\"CREATE TABLE b (id TEXT, y INTEGER)\")\ndb.execute(\"SELECT id FROM a JOIN b ON a.id = b.id\")",
+     "meldung": "sqlite3.OperationalError: ambiguous column name: id"
+    },
+    {
+     "beschreibung": "ON vergessen: jede Zeile mit jeder kombiniert",
+     "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ncur = db.cursor()\ncur.execute(\"CREATE TABLE auftraege (nr INTEGER PRIMARY KEY, teil TEXT, maschine TEXT, menge INTEGER, status TEXT)\")\ncur.executemany(\"INSERT INTO auftraege VALUES (?, ?, ?, ?, ?)\", [\n    (4711, \"WELLE_20H6\", \"D2\", 500, \"in Arbeit\"),\n    (4712, \"FLANSCH_80\", \"F1\", 120, \"offen\"),\n    (4713, \"WELLE_20H6\", \"D2\", 300, \"offen\"),\n    (4714, \"BUCHSE_30\", \"D2\", 800, \"fertig\"),\n    (4715, \"FLANSCH_80\", \"F1\", 60, \"fertig\"),\n])\ndb.commit()\ncur.execute(\"CREATE TABLE maschinen (id TEXT PRIMARY KEY, typ TEXT)\")\ncur.executemany(\"INSERT INTO maschinen VALUES (?, ?)\", [(\"D2\", \"Drehmaschine\"), (\"F1\", \"Fraesmaschine\")])\ncur.execute(\"SELECT a.nr, m.typ FROM auftraege a JOIN maschinen m\")\nprint(len(cur.fetchall()), \"Zeilen\")",
+     "meldung": "(keine Fehlermeldung) 10 Zeilen statt 5: Ohne ON kombiniert der JOIN jeden Auftrag mit jeder Maschine."
+    }
+   ]
   }
  ]
 }
