@@ -1,0 +1,36 @@
+"""Sprechertext V21 Theorie: Projektwerkstatt, Fertig ist, was frisch läuft (Quelltext mit Markup)."""
+SRC = [
+ ["Dein Werkzeug läuft auf deinem Laptop. Dann kommt die Präsentation, und auf dem anderen Rechner steht in Rot: `FileNotFoundError`.",
+  "Der Grund: Dein Programm öffnet die Datei mit einem Pfad von deinem eigenen Rechner, zum Beispiel [[C:\Users\...\messung.csv|C Doppelpunkt Users, dein Name, messung Punkt c s v]].",
+  "Diesen Ordner gibt es auf dem anderen Rechner nicht.",
+  "Heute prüfst du dein Werkzeug nach einem Satz: Fertig ist, was frisch läuft."],
+ ["Der erste Test heißt frischer Start. Lege einen neuen, leeren Ordner an und kopiere alle Dateien deines Werkzeugs hinein.",
+  "Öffne Dateien mit relativen Pfaden, also nur `messung.csv`, nicht mit dem ganzen Pfad. Dann findet das Programm die Datei im Projektordner.",
+  "Starte das Programm von oben. Keine Werte aus einem alten Lauf, keine Variable, die nur in deiner offenen Sitzung existiert.",
+  "Und notiere, welche Pakete du brauchst. Was fehlt, merkst sonst erst du auf dem fremden Rechner."],
+ ["Nach jeder Änderung laufen alle Tests erneut. Das heißt Regressionstest.",
+  "Du nimmst die Testfälle von Hand aus Vorlesung 11 und 12, auch den Grenzfall, und vergleichst mit deinen Zahlen.",
+  "Warum? Eine kleine Verschönerung kann etwas kaputt machen. Du rundest anders oder änderst einen Vergleich, und plötzlich kippt der Grenzfall.",
+  "Prüfe also nie nur den neuen Teil. Alle Tests, jedes Mal."],
+ ["Dein Programmablaufplan ist Dokumentation. Er muss zum Code passen.",
+  "Prüfe drei Dinge: die Reihenfolge der Schritte, jede Verzweigung und die Eingabe-Prüfschleife.",
+  "Zum Beispiel: Eingabe. Dann die Schleife: Solange der Durchmesser kleiner oder gleich null ist, Meldung und neu einlesen. Danach die Rechnung, dann die Ausgabe.",
+  "Änderst du den Code, änderst du den Plan mit. Stimmen beide nicht mehr überein, ist der Plan wertlos."],
+ ["Zum Werkzeug gehört eine README. Darin stehen Zweck, Bedienung und die Eingaben und Ausgaben mit Einheiten.",
+  "Vor allem steht dort, wo dein Modell aufhört: für welche Werte es gilt und was es nicht berücksichtigt. Zum Beispiel: gerechnet nur im elastischen Bereich.",
+  "Dazu kommt das [[KI|Ka I]]-Protokoll: Was hast du gefragt, was kam zurück, was war falsch? Mindestens ein gefundener Fehler gehört hinein.",
+  "Denn die [[KI|Ka I]] verantwortet nichts. Das Ergebnis verantwortest du als Ingenieur."],
+ ["Die Präsentation dauert fünf Minuten. Du zeigst das Problem, den Programmablaufplan und eine Live-Demo mit einer Fehleingabe.",
+  "Dazu kommt ein von Hand gerechneter Testfall und das, was die [[KI|Ka I]] falsch gemacht hat.",
+  "Die Fehleingabe zeigt, dass die Prüfschleife greift. Der Handrechnung zeigt, dass das Ergebnis stimmt.",
+  "Probt mit der Uhr, und beide sprechen. Fertig ist, was frisch läuft und in fünf Minuten erklärt ist."],
+]
+
+SZENEN = [
+ "Laptop links mit grünem Haken, rechts ein Beamer-Rechner mit roter Meldung FileNotFoundError. Darunter der Pfad C:\Users\...\messung.csv, der rot durchgestrichen wird; ein Ordner-Symbol existiert nur links. Am Ende der Leitsatz: Fertig ist, was frisch läuft.",
+ "Ein neuer, leerer Ordner füllt sich mit Dateien (werkzeug.py, messung.csv, Pakete). Zwei Pfade gegenübergestellt: absolut (rot) und relativ (grün). Dann ein Start-Pfeil von der ersten Zeile; ein Zettel Pakete notiert mit Häkchen.",
+ "Testtabelle mit vier Handfällen, der letzte als Grenzfall markiert; alle grün. Eine Änderung (Rundung) erscheint, der Grenzfall wird rot; Pfeil zurück: alle Tests erneut, wieder grün.",
+ "Links ein kleiner Programmablaufplan (Eingabe, Raute Durchmesser <= 0 mit Schleife, Rechnung, Ausgabe), rechts der passende Code. Entsprechende Teile werden nacheinander verbunden; dann weicht der Code ab, die Verbindung wird rot, Plan wertlos.",
+ "Zwei Dokumente: README (Zweck, Bedienung, Ein-/Ausgaben mit Einheiten, Grenzen des Modells) und KI-Protokoll mit einer Zeile Frage, Antwort und rot markiertem Fehler. Darunter: Du verantwortest das Ergebnis.",
+ "Fünf-Minuten-Uhr; fünf Stationen auf der Zeitachse: Problem, PAP, Live-Demo mit Fehleingabe, Handrechnung, KI-Fehler. Zwei Personen teilen sich die Abschnitte; am Ende der Leitsatz.",
+]
