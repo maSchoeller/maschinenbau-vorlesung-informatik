@@ -2,7 +2,7 @@
 // Rauchtest gegen eine laufende Bereitstellung (nur öffentliche Endpunkte, schreibt nichts).
 //   node api/skripte/rauchtest.mjs https://<name>.azurestaticapps.net
 //   node api/skripte/rauchtest.mjs http://localhost:7321      (Functions-Host direkt)
-// Optional: --erwarte-ablage=cosmos  --erwarte-tutor  --versuche=10 (Wartezeit bei frischer Bereitstellung)
+// Optional: --erwarte-ablage=cosmos  --erwarte-tutor  --erwarte-stand=<commit>  --versuche=10 (Wartezeit bei frischer Bereitstellung)
 // Exit-Code 0 = alles in Ordnung, 1 = mindestens eine Prüfung fehlgeschlagen.
 
 const args = process.argv.slice(2);
@@ -39,6 +39,7 @@ const pruefungen = [
     if (!r.daten || r.daten.ok !== true) return `ok=${r.daten && r.daten.ok}, ablage=${r.daten && r.daten.ablage}`;
     if (opt['erwarte-ablage'] && r.daten.ablage !== opt['erwarte-ablage']) return `ablage=${r.daten.ablage}`;
     if (opt['erwarte-tutor'] && r.daten.tutor !== true) return 'tutor=false (ANTHROPIC_API_KEY fehlt?)';
+    if (opt['erwarte-stand'] && r.daten.stand !== opt['erwarte-stand']) return `stand=${r.daten.stand}, erwartet ${opt['erwarte-stand']} (API noch nicht aktualisiert?)`;
     if (!r.cache.includes('no-store')) return `cache-control ${r.cache}`;
     return null;
   }],

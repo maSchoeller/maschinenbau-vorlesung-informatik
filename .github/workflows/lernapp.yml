@@ -153,6 +153,8 @@ jobs:
           test -d api-paket/node_modules/@anthropic-ai/sdk
           node -e "const n=require('./api-paket/daten/aufgaben.json').aufgaben.length; if(!(n>0)){console.error('aufgaben.json ist leer');process.exit(1)}; console.log('Aufgaben für den Tutor:', n)"
           rm -rf api-paket/node_modules/.bin   # nur Verknüpfungen, zur Laufzeit unnötig
+          # /api/status meldet diesen Commit als „stand“; der Rauchtest vergleicht ihn
+          node -e "require('fs').writeFileSync('api-paket/src/stand.json', JSON.stringify({ commit: process.env.GITHUB_SHA.slice(0, 12) }))"
           cp api/skripte/rauchtest.mjs rauchtest.mjs
 
       - name: Ergebnis für die Bereitstellung ablegen
@@ -199,7 +201,7 @@ jobs:
           skip_app_build: true
           skip_api_build: true
 
-      - name: Rauchtest (API antwortet, neue Version ist online)
+      - name: Rauchtest (neue Seiten und neuer API-Stand sind online)
         if: ${{ vars.SWA_HOSTNAME != '' }}
         env:
           HOST: ${{ vars.SWA_HOSTNAME }}
@@ -213,5 +215,5 @@ jobs:
             sleep 10
           done
           if [ "$ist" != "$soll" ]; then echo "::error::Online ist Version '$ist', erwartet '$soll'"; exit 1; fi
-          node rauchtest.mjs "https://$HOST" --erwarte-ablage=cosmos --versuche=6
+          node rauchtest.mjs "https://$HOST" --erwarte-ablage=cosmos --erwarte-stand="${GITHUB_SHA:0:12}" --versuche=12
           echo "Bereitgestellt: https://$HOST (Version $soll)" >> "$GITHUB_STEP_SUMMARY"
