@@ -89,3 +89,21 @@ test('Vergleich meldet echte Abweichungen und übersieht Unwichtiges', () => {
   assert.equal(u('<script type="application/json">{"a": [1, 2]}</script>', '<script type="application/json">{"a":[1,2]}</script>'), null, 'JSON nach Wert');
   assert.notEqual(u('<button>a</button><button>b</button>', '<button>a</button> <button>b</button>'), null, 'Leerzeichen zwischen Knöpfen');
 });
+
+test('Plan: Folge, Entscheidung mit ja und nein, verschachtelt; Fehler bei falscher Einrückung', () => {
+  const plan = (text) => mdxZuHtml('<Plan titel="Test">\n\n```text\n' + text + '\n```\n\n</Plan>\n');
+  const einfach = plan('Eingabe: punkte\nEntscheidung: punkte >= 50?\n  ja:\n    Ausgabe: "bestanden"\n  nein:\n    Ausgabe: "nicht bestanden"\nAusgabe: "fertig"');
+  assert.equal((einfach.match(/pap-n--if/g) || []).length, 1, 'eine Raute');
+  assert.equal((einfach.match(/pap-n--io/g) || []).length, 4, 'vier Parallelogramme');
+  assert.match(einfach, /aria-label="Programmablaufplan: Test"/);
+  assert.match(einfach, />ja</);
+  assert.match(einfach, />nein</);
+  const nurJa = plan('Entscheidung: x > 0?\n  ja:\n    y = 1\nAusgabe: y');
+  assert.equal((nurJa.match(/pap-n--if/g) || []).length, 1);
+  const kette = plan('Entscheidung: n >= 90?\n  ja:\n    note = 1\n  nein:\n    Entscheidung: n >= 50?\n      ja:\n        note = 3\n      nein:\n        note = 5\nAusgabe: note');
+  assert.equal((kette.match(/pap-n--if/g) || []).length, 2, 'zwei Rauten für eine Kette');
+  assert.equal((kette.match(/pap-n--op/g) || []).length, 3);
+  assert.throws(() => plan('Eingabe: x\n   y = 1'), /Einrückung/);
+  assert.throws(() => plan('ja:\n  y = 1'), /ohne Entscheidung/);
+  assert.throws(() => plan('Eingabe: x\n    y = 1'), /zu weit eingerückt/);
+});

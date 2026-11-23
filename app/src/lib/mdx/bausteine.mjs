@@ -34,6 +34,56 @@ function papEngine() {
   return pap;
 }
 
+/* Ablauf eines <Plan> (Text, eine Zeile je Symbol) -> Beschreibung für die Zeichenroutine.
+     Eingabe: …  /  Ausgabe: …      Parallelogramm
+     Entscheidung: bedingung?        Raute; darunter eingerückt „ja:“ und „nein:“ mit ihren Schritten
+     alles andere                    Rechteck
+   Einrückung: zwei Leerzeichen je Ebene. Ein Zweig darf leer sein (dann nur „ja:“ oder nur „nein:“)
+   und selbst wieder eine Entscheidung enthalten. Start und Ende kommen von selbst.
+
+     Eingabe: punkte
+     Entscheidung: punkte >= 50?
+       ja:
+         Ausgabe: "bestanden"
+       nein:
+         Ausgabe: "nicht bestanden"
+*/
+export function planSpec(K, text) {
+  const zeilen = text.replace(/\t/g, '  ').split('\n').filter((z) => z.trim()).map((z) => {
+    const leer = z.length - z.trimStart().length;
+    if (leer % 2) throw new Error(`<Plan>: Einrückung mit ${leer} Leerzeichen (erlaubt sind 2 je Ebene): „${z.trim()}“`);
+    return { ebene: leer / 2, text: z.trim() };
+  });
+  let nr = 0;
+  const id = () => 'n' + (++nr);
+  let i = 0;
+  function folge(ebene) {
+    const knoten = [];
+    while (i < zeilen.length && zeilen[i].ebene >= ebene) {
+      const z = zeilen[i];
+      if (z.ebene > ebene) throw new Error(`<Plan>: Zeile „${z.text}“ ist zu weit eingerückt`);
+      if (/^(ja|nein):/i.test(z.text)) throw new Error(`<Plan>: „${z.text}“ steht ohne Entscheidung darüber`);
+      i++;
+      const m = /^Entscheidung:\s*(.+)$/i.exec(z.text);
+      if (m) {
+        const zweige = { ja: [], nein: [] };
+        while (i < zeilen.length && zeilen[i].ebene === ebene + 1 && /^(ja|nein):\s*$/i.test(zeilen[i].text)) {
+          const welcher = zeilen[i].text.toLowerCase().startsWith('ja') ? 'ja' : 'nein';
+          i++;
+          zweige[welcher] = folge(ebene + 2);
+        }
+        knoten.push(K.P.iff(m[1], zweige.ja, zweige.nein, id(), { wrapAt: 28 }));
+      } else if (/^(Eingabe|Ausgabe)\b/.test(z.text)) knoten.push(K.P.io(z.text, id(), { wrapAt: 40 }));
+      else knoten.push(K.P.op(z.text, id(), { wrapAt: 40 }));
+    }
+    return knoten;
+  }
+  const mitte = folge(0);
+  if (i < zeilen.length) throw new Error(`<Plan>: Zeile „${zeilen[i].text}“ passt nicht in den Ablauf`);
+  if (!mitte.length) throw new Error('<Plan>: der Ablauf ist leer');
+  return [K.P.start('n0'), ...mitte, K.P.end('n' + (nr + 1))];
+}
+
 const HINWEIS_TITEL = { merke: 'Merke', achtung: 'Achtung', warum: 'Warum muss ich das wissen?' };
 
 /* Angaben eines Codeblocks: key="wert" key='wert' key=wert key */
@@ -116,8 +166,7 @@ export function bausteine({ ordner = null, datei = 'MDX' } = {}) {
       const block = ohneLeerraum(kinder).find((x) => istElement(x, 'pre'));
       if (!block || !titel) throw new Error('<Plan titel="…">: erwartet den Ablauf als ```text, eine Zeile je Symbol');
       const K = papEngine();
-      const zeilen = textVon(block).split('\n').map((z) => z.trim()).filter(Boolean);
-      const spec = [K.P.start('n0'), ...zeilen.map((z, i) => (/^(Eingabe|Ausgabe)\b/.test(z) ? K.P.io(z, 'n' + (i + 1), { wrapAt: 40 }) : K.P.op(z, 'n' + (i + 1), { wrapAt: 40 }))), K.P.end('n' + (zeilen.length + 1))];
+      const spec = planSpec(K, textVon(block));
       return roh(K.figure(spec, { label: 'Programmablaufplan: ' + titel, minw: 0.85 }));
     },
 

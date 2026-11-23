@@ -160,7 +160,23 @@ Ausgabe: woche
 <Fehlersuche titel="Pizza teilen" fehler="3 4">   Beschreibung, Programm als ```text, danach die Auflösung
 ```
 
-Eine Zeile je Symbol im `<Plan>`: „Eingabe: …“ und „Ausgabe: …“ werden Parallelogramme, alles andere ein Rechteck; Start und Ende kommen von selbst. `<Station … data-seen="manual">` zählt erst als angesehen, wenn die Fehlersuche aufgelöst wurde. Vorbelegte Eingaben eines Codeblocks mit mehreren Zeilen: ```` ```python data-stdin="40\n10" ````.
+Eine Zeile je Symbol im `<Plan>`: „Eingabe: …“ und „Ausgabe: …“ werden Parallelogramme, alles andere ein Rechteck; Start und Ende kommen von selbst. Eine Verzweigung schreibst du als `Entscheidung: bedingung?` und darunter eingerückt (zwei Leerzeichen je Ebene) die Zweige `ja:` und `nein:` mit ihren Schritten; ein Zweig darf fehlen, und in einem Zweig darf wieder eine Entscheidung stehen:
+
+````mdx
+<Plan titel="Bestanden?">
+
+```text
+Eingabe: punkte
+Entscheidung: punkte >= 50?
+  ja:
+    Ausgabe: "bestanden"
+  nein:
+    Ausgabe: "nicht bestanden"
+```
+
+</Plan>
+````
+ `<Station … data-seen="manual">` zählt erst als angesehen, wenn die Fehlersuche aufgelöst wurde. Vorbelegte Eingaben eines Codeblocks mit mehreren Zeilen: ```` ```python data-stdin="40\n10" ````.
 
 Regeln für neue Terminseiten (Vorgaben vom 2026-11-23):
 

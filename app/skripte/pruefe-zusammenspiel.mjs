@@ -411,8 +411,7 @@ async function tutor() {
   pruefe(await p.evaluate(() => document.querySelector('[data-app-slot="panel"]').hidden && !window.KursApp.panel.istOffen()), 'Tutor: Esc schließt das Panel');
   /* Labor bleibt bedienbar: Ausführen in der Aufgabe */
   const aufgabe = p.locator('.a-task[data-id="tr-1"]');
-  await p.evaluate(() => window.KursEditor.setValue(document.querySelector('.a-task[data-id="tr-1"] textarea'), 'print("Kinoabend läuft")
-'));
+  await p.evaluate(() => window.KursEditor.setValue(document.querySelector('.a-task[data-id="tr-1"] textarea'), 'print("Kinoabend läuft")\n'));
   await aufgabe.locator('.cm-content').click();
   await aufgabe.locator('button', { hasText: 'Ausführen' }).first().click();
   const lief = await bis(() => aufgabe.evaluate((a) => /Kinoabend läuft/.test(a.textContent.replace(a.querySelector('.a-editor') ? a.querySelector('.a-editor').textContent : '', ''))), 60000, 300);
