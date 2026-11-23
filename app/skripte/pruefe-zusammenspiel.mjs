@@ -237,7 +237,9 @@ async function gast() {
   /* Storage: nur das Konto aus VIDEO_BASIS (hier ohne VIDEO_BASIS gebaut: keines). Geprüft am Kopf der Seite */
   const kopfCsp = (await (await p.request.get(BASIS + '/index.html')).headers())['content-security-policy'] || '';
   const verbinden = (/connect-src([^;]*)/.exec(kopfCsp) || [])[1] || '';
-  pruefe(kopfCsp && !/blob\.core\.windows\.net|\*/.test(verbinden), 'CSP: connect-src ohne fremde Storage-Konten (kein *.blob.core.windows.net)', 'connect-src' + verbinden);
+  /* Lokal ohne VIDEO_BASIS: kein Storage-Konto. Gegen die bereitgestellte App: genau das eine Konto aus VIDEO_BASIS. Nie ein Platzhalter. */
+  const speicherKonten = verbinden.match(/https:\/\/\S*blob\.core\.windows\.net/g) || [];
+  pruefe(kopfCsp && !/\*/.test(verbinden) && speicherKonten.length <= 1, 'CSP: connect-src ohne Platzhalter und höchstens mit dem einen Storage-Konto aus VIDEO_BASIS', 'connect-src' + verbinden);
   A.probleme.length = 0;   /* die gewollte CSP-Meldung in der Konsole */
 }
 
