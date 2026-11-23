@@ -41,9 +41,9 @@ Inhalte laut Handbuch:
   - Programmablaufplan (PAP) zu einer Aufgabenstellung zeichnen,
   - PAP in Quellcode übertragen,
   - Quellcode lesen und verstehen (Ausgabe bestimmen, Ablauf verfolgen, Fehler finden, als PAP darstellen).
-- Freies Schreiben von Quellcode auf Papier weitgehend vermeiden.
+- Code schreiben wird nur verlangt, wenn ein PAP zu übertragen ist oder die Lösung weniger als 8 Zeilen braucht.
 - Theorieteil: Pflichttheorie mit kleinen Rechenaufgaben (Dezimal, Binär, Hex umrechnen, Wahrheitstabelle ausfüllen, Datentyp bestimmen). Vertiefungsthemen nur als Verständnisfragen.
-- Hilfsmittel: offen. Vorschlag: Der Klausur liegt eine Befehlsübersicht mit der Python-Syntax bei. Begründung: „PAP in Code übertragen“ soll das Denken prüfen, nicht das Auswendiglernen von Schreibweisen, und die Übersicht nimmt der ängstlichen Mehrheit den Druck.
+- Keine Hilfsmittel. Die Syntax der Kursbausteine und die PAP-Symbole müssen im Kopf sein.
 
 ### 2.3 Zeit
 
@@ -76,7 +76,16 @@ Inhalte laut Handbuch:
 | Beispielwelt | Spiele und Rätsel, Alltag der Studierenden, dazu Vorgriffe auf spätere Module (Abschnitt 4.3). Keine Beispiele, die Maschinenbau-Fachwissen voraussetzen. |
 | Python-Umfang | Variablen, Ein- und Ausgabe, Verzweigungen, Schleifen, Funktionen, Listen (auch als Raster), Zufallszahlen, Dateien lesen und schreiben, Diagramm nach Vorlage. Sonst nichts. |
 | Vertiefungstheorie | Datenbanken, Netzwerke und IT-Sicherheit, Wie funktioniert KI? |
-| Code lesen | Keine eigene Einheit, sondern Aufgabenform in jedem Termin. |
+| Code lesen | Keine eigene Einheit, sondern Aufgabenform in jedem Termin. Der Abschnitt „KI-Spiegel“ wird zu „Fehler finden“ ohne KI-Rahmen. |
+| Bauteile in 3D | Der CAD-Teil aus V20 bleibt als Beispielwelt: `bauteil3d` und 3D-Vorschau liefern je eine Aufgabe in Schleifen, Funktionen und Listen. Keine Klassen, keine eigenen Blöcke. |
+| Seiten | Eine Seite je Termin im Lernpfad; je Termin Lerneinheit und Programmierlabor wie bisher. |
+| Training zu Hause | Pflicht, 45 Minuten je Termin, dazu eine Warm-up-Aufgabe zu Beginn des nächsten Termins. |
+| Klausur-Modus | Umbau auf die Klausurformen: PAP zeichnen, PAP in Code übertragen, Ausgabe vorhersagen; Code schreiben nur bei Lösungen unter 8 Zeilen. |
+| Wissens-Ampel | Entfällt. |
+| Erklärvideos | Theorie-Videos mit bleibendem Stoff prüfen und weiterverwenden; Python- und Beispiel-Videos neu, sobald die Inhalte stehen. |
+| Entfallene Lektionen | Kommen aus der App und werden nicht nach MDX übertragen. |
+| „Wie funktioniert KI?“ | Bleibt in Termin 12 und 13, kein Vorgriff in Termin 01. |
+| Präsenzzeit | 20 Termine sind so vorgegeben; die Differenz zu 72 h im Handbuch muss das Konzept nicht erklären. |
 | Notation | PAP statt Struktogramm bleibt. |
 
 ## 4. Zielgruppe
@@ -102,7 +111,7 @@ In einem Satz: Anfängerinnen und Anfänger ohne Vorerfahrung, die das Fach als 
 
 ### 4.2 Was daraus folgt
 
-1. **Geübt wird im Termin.** Weil wenige zu Hause üben, muss alles Klausurrelevante im Hörsaal mindestens einmal selbst gemacht worden sein. Das Training zu Hause ist Zusatz, keine Voraussetzung für den nächsten Termin. Das begrenzt den Stoff stärker als die Stundenzahl.
+1. **Geübt wird im Termin, gefestigt zu Hause.** Weil bisher wenige zu Hause üben, muss alles Klausurrelevante im Hörsaal mindestens einmal selbst gemacht worden sein. Das begrenzt den Stoff stärker als die Stundenzahl. Das Training zu Hause ist trotzdem Pflicht (45 Minuten je Termin); die Warm-up-Aufgabe des nächsten Termins greift es auf.
 2. **Der PAP ist Werkzeug ab dem ersten Termin, kein eigenes Thema.** Die schwerste Abbruchstelle ist der Weg vom Problem zum Programm. Bisher steht der PAP in einem Termin (V05). Er begleitet künftig jede Programmieraufgabe: erst Ablauf zeichnen, dann Code. Das ist zugleich das Klausurformat.
 3. **Die Programmierzeit liegt hinter den Verzweigungen.** Variablen, Ein- und Ausgabe und Verzweigungen gingen im Vorjahr; Schleifen, Funktionen und Listen nicht. Diese drei bekommen 19 der 48 Programmierblöcke, die beiden Spiele weitere 13.
 4. **Beispiele dürfen kein zweites Fach sein.** Wellen, Passungen, Cp/Cpk und Sicherheitsschaltungen kennen die Studierenden noch nicht, sie wirken aufgesetzt und machen keinen Spaß. Spiele und Alltag versteht jeder sofort. Vorgriffe auf spätere Module nur in einer Form, die ohne Vorwissen auskommt.
@@ -131,11 +140,11 @@ Was den Studierenden in späteren Vorlesungen hilft (Modulhandbücher Horb, KE u
 |---|---|---|---|---|---|
 | P1 | Variablen, Ein- und Ausgabe, Ausgabe formatieren | 3 | 1 | Alltag: Trinkgeld, Pendelstrecke, Einheiten | – |
 | P2 | Verzweigungen | 4 | 1 | Ampel, Getränkeautomat, Schere-Stein-Papier | Abläufe und Zustände |
-| P3 | Schleifen (while, for) | 7 | 1 | Würfeln, Countdown, Summen und Folgen, Sparplan | Mathematik II, Rechnen in Schritten |
-| P4 | Funktionen, lokale und globale Namen | 6 | 1 | Bausteine für das Spiel, Umrechner | Mathematik II |
+| P3 | Schleifen (while, for) | 7 | 1 | Würfeln, Countdown, Summen und Folgen, Sparplan; 3D: Turm oder Lochreihe | Mathematik II, Rechnen in Schritten |
+| P4 | Funktionen, lokale und globale Namen | 6 | 1 | Bausteine für das Spiel, Umrechner; 3D: Bauteil mit Parametern | Mathematik II |
 | P5 | Zahlenraten: erstes vollständiges Spiel | 4 | 1 | Spiel | – |
 | P6 | Auffrischer nach der Praxisphase | 2 | 2 | Zahlenraten ausbauen | – |
-| P7 | Listen | 6 | 2 | Punktestände, Würfelstatistik, Noten | Mathematik I, Messwerte |
+| P7 | Listen | 6 | 2 | Punktestände, Würfelstatistik, Noten; 3D: gestufte Welle aus einer Liste | Mathematik I, Messwerte |
 | P8 | Messwerte auswerten: Datei lesen, Mittelwert, Minimum, Maximum, Diagramm nach Vorlage | 3 | 2 | Temperaturen, Laufzeiten | Messwerte |
 | P9 | Raster (Liste in Liste) | 2 | 2 | Spielfeld mit Zeile und Spalte | Mathematik I |
 | P10 | Schiffe versenken gegen den Computer, Führung nimmt ab | 9 | 2 | Spiel | – |
@@ -229,6 +238,7 @@ Erste Verteilung der Blöcke. Jeder Termin hat 4 Blöcke; T steht für Theorie, 
 - **Kein Puffer im 1. Semester.** Fällt ein Termin aus oder dauert Schleifen länger, muss etwas weichen. Vorschlag für die Reihenfolge des Weichens: T6 Rechneraufbau rückt in den Puffer des 2. Semesters, danach T4 Bitoperationen auf einen halben Block.
 - **Der vierte Block hat 25 statt 30 Minuten.** 80 Blöcke sind die Obergrenze, nicht der Erwartungswert.
 - **Zielbild.** 48 Blöcke sind 24 Stunden Programmieren im Hörsaal, bei wenig Übung zu Hause. Dass die Mitte der Gruppe Schiffe versenken geführt fertig baut und den Code lesen und ändern kann, ist damit erreichbar. Dass sie ein Programm dieser Größe ganz allein entwirft, ist für das obere Drittel realistisch, für die Mitte nicht gesichert. Das ist eine Einschätzung, kein Messwert.
+- **Keine Hilfsmittel in der Klausur.** Die Syntax muss sitzen. Das spricht für den kleinen Python-Umfang und dafür, „PAP in Code“ im Training ohne Autovervollständigung zu üben. Funktionen aus `bauteil3d` können in der Klausur nicht vorausgesetzt werden.
 - **Schiffe versenken braucht eine kleine Fassung:** ein Raster, der Computer setzt die Schiffe zufällig, die Person schießt, bis alles versenkt ist. Zuerst Schiffe der Länge 1, längere Schiffe als Ausbau für die Schnellen.
 
 ## 7. Folgen für das vorhandene Material
@@ -252,7 +262,10 @@ Erste Zuordnung der 22 vorhandenen Lektionen. „Stoff“ heißt: Erklärungen, 
 | V17 Netzwerke, V18 IT-Sicherheit | Stoff für T10, nur Verständnis, ohne Python-Teil |
 | V19 Datenbanken und SQL | Stoff für T9, nur Verständnis, ohne sqlite3 |
 | V22 Klausurtraining | Stoff für P11, T11; Aufgaben auf das neue Klausurformat |
-| V11, V12, V13, V15, V20, V21 | entfallen |
+| V20 Objekte und CAD-Automatisierung | Klassen entfallen; `bauteil3d` und 3D-Vorschau werden Beispielwelt in P3, P4, P7 |
+| V11, V12, V13, V15, V21 | entfallen, kommen aus der App, keine Übertragung nach MDX |
+| Erklärvideos | Theorie-Videos mit bleibendem Stoff prüfen und weiterverwenden; Python- und Beispiel-Videos neu |
+| Wissens-Ampel, KI-Spiegel | Ampel entfällt auf allen Seiten; KI-Spiegel wird „Fehler finden“ |
 | `site/projekt.html` | entfällt; an die Stelle tritt die Schrittfolge für Schiffe versenken (P10) |
 | Probeklausur 2026/27, Klausurtrainer | Teil B5 „Kurze Programmieraufgaben“ und Klausur-Modus (Code auf Papier) umbauen; Theorieteil auf die neue Auswahl |
 | `KONZEPT.md` | umgeschrieben (2026-11-23) |
@@ -262,9 +275,4 @@ Neu zu bauen, ohne Vorlage: P5 Zahlenraten, P6 und T7 Auffrischer, P9 Raster, P1
 
 ## 8. Offene Punkte
 
-- Hilfsmittel in der Klausur (Vorschlag in 2.2).
-- 72 h Präsenz laut Handbuch gegenüber 20 Terminen à 135 Minuten (60 Unterrichtseinheiten): Wo liegen die übrigen Stunden, oder ist die Abweichung mit der Studiengangsleitung abgestimmt?
-- Reihenfolge der Vertiefungsthemen im 2. Semester und ob „Wie funktioniert KI?“ besser schon in Termin 01 angerissen wird, weil es die Haltung „gibt ja KI“ trifft.
-- Aufbau der Lektionsseiten (Lerneinheit, Labor, Training zu Hause, Videos): Was davon bleibt, wenn im Termin geübt wird und eine Einheit über mehrere Termine läuft?
-- Wissens-Ampel, KI-Spiegel und Klausur-Modus aus dem alten Konzept: Die Ampelstufe „Delegieren: die KI macht das“ und der Klausur-Modus (Code auf Papier) widersprechen den neuen Entscheidungen.
-- Ob einzelne entfallene Lektionen als freiwillige Vertiefung online bleiben.
+Keine. Die Punkte aus der ersten Fassung (Hilfsmittel, Präsenzzeit, Reihenfolge der Vertiefung, Seitenaufbau, Wissens-Ampel, KI-Spiegel, Klausur-Modus, entfallene Lektionen, Videos) sind am 2026-11-23 entschieden und stehen in Abschnitt 3.

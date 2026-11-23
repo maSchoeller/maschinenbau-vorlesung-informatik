@@ -26,10 +26,10 @@ Rund 25 Studierende in einem Raum, Konstruktion und Entwicklung und Produktionst
 
 Daraus folgen die Regeln für alle Inhalte:
 
-1. **Geübt wird im Termin.** Alles Klausurrelevante wird im Hörsaal mindestens einmal selbst gemacht. Das Training zu Hause ist Zusatz, keine Voraussetzung für den nächsten Termin.
+1. **Geübt wird im Termin, gefestigt zu Hause.** Alles Klausurrelevante wird im Hörsaal mindestens einmal selbst gemacht. Das Training zu Hause ist Pflicht: 45 Minuten je Termin. Der nächste Termin beginnt mit einer Warm-up-Aufgabe daraus.
 2. **PAP zuerst**, in jeder Programmieraufgabe.
 3. **Tempo nach der Mitte der Gruppe.** Schnelle bekommen Ausbauaufgaben.
-4. **Beispiele ohne Fachwissen.** Spiele und Rätsel, Alltag der Studierenden, dazu Vorgriffe auf spätere Module in einer Form, die ohne Vorwissen auskommt. Keine Wellen, Passungen, Sicherheitsschaltungen oder Prozessfähigkeit.
+4. **Beispiele ohne Fachwissen.** Spiele und Rätsel, Alltag der Studierenden, Bauteile in 3D, dazu Vorgriffe auf spätere Module in einer Form, die ohne Vorwissen auskommt. Keine Auslegungsrechnungen, Passungen, Sicherheitsschaltungen oder Prozessfähigkeit.
 5. **In jedem Termin läuft etwas.** Kleine Schritte, ein lauffähiges Ergebnis, Fehlermeldungen lesen als Inhalt.
 6. **Aufgaben, bei denen Kopieren nichts bringt.** PAP zeichnen, Ablauf verfolgen, Ausgabe vorhersagen, Fehler finden.
 7. **Wenig Tipparbeit.** PAP-Editor, Zeilen ordnen, Lückencode und Ablaufverfolgung müssen auch am Tablet gehen.
@@ -53,11 +53,11 @@ Jeder Termin hat 4 Blöcke à 30 Minuten. Zusammen sind das 80 Blöcke: 48 Progr
 |---|---|---|---|---|
 | P1 | Variablen, Ein- und Ausgabe, Ausgabe formatieren | 3 | 1 | Trinkgeld, Pendelstrecke, Einheiten |
 | P2 | Verzweigungen | 4 | 1 | Ampel, Getränkeautomat, Schere-Stein-Papier |
-| P3 | Schleifen (while, for) | 7 | 1 | Würfeln, Countdown, Summen und Folgen, Sparplan |
-| P4 | Funktionen, lokale und globale Namen | 6 | 1 | Bausteine für das Spiel, Umrechner |
+| P3 | Schleifen (while, for) | 7 | 1 | Würfeln, Countdown, Summen und Folgen, Sparplan; 3D: Turm oder Lochreihe aus Körpern |
+| P4 | Funktionen, lokale und globale Namen | 6 | 1 | Bausteine für das Spiel, Umrechner; 3D: Parameter ändern, Bauteil ändert sich |
 | P5 | Zahlenraten: erstes vollständiges Spiel | 4 | 1 | Spiel |
 | P6 | Auffrischer nach der Praxisphase | 2 | 2 | Zahlenraten ausbauen |
-| P7 | Listen | 6 | 2 | Punktestände, Würfelstatistik, Noten |
+| P7 | Listen | 6 | 2 | Punktestände, Würfelstatistik, Noten; 3D: gestufte Welle aus einer Liste |
 | P8 | Messwerte auswerten: Datei lesen, Mittelwert, Minimum, Maximum, Diagramm nach Vorlage | 3 | 2 | Temperaturen, Laufzeiten |
 | P9 | Raster (Liste in Liste) | 2 | 2 | Spielfeld mit Zeile und Spalte |
 | P10 | Schiffe versenken gegen den Computer | 9 | 2 | Spiel |
@@ -66,6 +66,8 @@ Jeder Termin hat 4 Blöcke à 30 Minuten. Zusammen sind das 80 Blöcke: 48 Progr
 Python-Umfang: Variablen, Ein- und Ausgabe, Verzweigungen, Schleifen, Funktionen, Listen (auch als Raster), Zufallszahlen, Dateien lesen und schreiben, Diagramm nach Vorlage. Sonst nichts: keine Dictionaries, Tupel, try/except, List Comprehension, NumPy, pandas, Datenbankzugriff, Klassen.
 
 Jedes Konstrukt wird einmal eingeführt und danach in den Aufgaben ständig wiederverwendet.
+
+Bauteile in 3D: Das mitgelieferte Modul `bauteil3d` (Zylinder, Ring, Welle, Flansch, verschieben, zusammensetzen) und die 3D-Vorschau liefern in P3, P4 und P7 je eine Aufgabe mit sichtbarem Ergebnis. Es sind reine Funktionsaufrufe, keine Klassen, und es gibt dafür keine eigenen Blöcke. In der Klausur werden die Funktionen von `bauteil3d` nicht vorausgesetzt.
 
 In jedem Termin, ohne eigene Blöcke: PAP zuerst, Code lesen und beurteilen, Fehlermeldungen lesen.
 
@@ -124,7 +126,7 @@ Das 1. Semester hat keinen Puffer. Wird die Zeit knapp, rückt zuerst T6 Rechner
 
 | Minuten | Inhalt |
 |---|---|
-| 0–10 | Warm-up, Rückblick |
+| 0–10 | Warm-up-Aufgabe aus dem Training, Rückblick |
 | 10–40 | Theorie-Block |
 | 40–70 | Programmieren 1: PAP zuerst |
 | 70–80 | Pause |
@@ -135,9 +137,10 @@ Das 1. Semester hat keinen Puffer. Wird die Zeit knapp, rückt zuerst T6 Rechner
 
 - Rein schriftlich. Der „Entwurf“ aus dem Modulhandbuch („Kombinierte Prüfung – Klausur < 50 % und Entwurf“) ist Teil der Klausur.
 - Entwurfs- und Programmierteil über 60 %, Theorie unter 40 %.
-- Aufgabenformen im Programmierteil: PAP zu einer Aufgabenstellung zeichnen; PAP in Code übertragen; Code lesen und verstehen (Ausgabe bestimmen, Ablauf verfolgen, Fehler finden, als PAP darstellen). Freies Schreiben von Code auf Papier wird weitgehend vermieden.
+- Aufgabenformen im Programmierteil: PAP zu einer Aufgabenstellung zeichnen; PAP in Code übertragen; Code lesen und verstehen (Ausgabe bestimmen, Ablauf verfolgen, Fehler finden, als PAP darstellen).
+- Code schreiben wird nur verlangt, wenn ein PAP zu übertragen ist oder die Lösung weniger als 8 Zeilen braucht.
 - Theorieteil: T1 bis T6 mit kleinen Rechenaufgaben (umrechnen, Wahrheitstabelle ausfüllen, Datentyp bestimmen); T8 bis T10 nur als Verständnisfragen.
-- Hilfsmittel: offen. Vorschlag: Der Klausur liegt eine Befehlsübersicht mit der Python-Syntax bei.
+- Keine Hilfsmittel. Die Syntax der Kursbausteine und die PAP-Symbole müssen im Kopf sein; auch deshalb ist der Python-Umfang klein.
 
 ## Aufgabentypen
 
@@ -147,16 +150,16 @@ Durchgerechnetes Beispiel → Ausgabe vorhersagen → Ablauf verfolgen (Variable
 
 Die drei Klausurformen (PAP zeichnen, PAP in Code übertragen, Code lesen) kommen in jedem Termin vor.
 
-## Aus dem bisherigen Konzept, noch nicht neu entschieden
+## Seiten und Material
 
-Diese Teile stammen aus dem Plan mit 22 Lektionen. Sie gelten weiter, soweit sie den Regeln oben nicht widersprechen. Wo sie widersprechen, steht es dabei; diese Punkte müssen geklärt werden.
-
-- **Seitenaufbau.** Bisher pro Termin eine Lerneinheit (Warum, Theorie mit Erklärvideo und Explorables, Python-Werkstatt, Ausprobieren, KI-Spiegel, Selbstcheck) und ein Programmierlabor mit Training zu Hause. Offen: wie die Seiten geschnitten werden, wenn eine Einheit über mehrere Termine läuft, und was vom Training zu Hause bleibt, wenn im Termin geübt wird.
-- **Wissens-Ampel** (Im Kopf / Lesen und erkennen / Delegieren). Die Stufe „Delegieren: die KI macht das“ passt nicht mehr dazu, dass KI nur Erklärer ist.
-- **KI-Spiegel** („Würdest du das freigeben?“). Passt als Form für „Code lesen und beurteilen“; die Rahmung über KI-Lösungen ist offen.
-- **Klausur-Modus im Training** (Code erst auf Papier schreiben). Widerspricht dem neuen Klausurformat.
-- **Entfallene Lektionen** (V11, V12, V13, V15, V20, V21, Projektseite). Offen, ob einzelne als freiwillige Vertiefung online bleiben.
-- **Erklärvideos.** Vorhandene Videos zeigen die alten Beispiele.
+- **Eine Seite je Termin.** Der Lernpfad hat 20 Termine. Läuft eine Einheit über mehrere Termine, steht sie als Teil 1, 2, 3 auf den jeweiligen Terminseiten.
+- **Je Termin zwei Seiten wie bisher:** Lerneinheit (verstehen, lineares Lesestück mit dem Theorie-Block und der Einführung ins Programmierthema) und Programmierlabor (Aufgaben im Termin und Training zu Hause). Einzelheiten in `DESIGN.md`.
+- **Training zu Hause:** Pflicht, 45 Minuten je Termin, dazu die Warm-up-Aufgabe zu Beginn des nächsten Termins.
+- **Klausur-Modus im Training:** PAP auf Papier zeichnen und mit der Musterlösung vergleichen; PAP ohne Autovervollständigung und ohne Befehls-Bibliothek in Code übertragen; Ausgabe eines Programms vorhersagen; Code schreiben nur bei Lösungen unter 8 Zeilen.
+- **Fehler finden** ersetzt den Abschnitt „KI-Spiegel“: dieselbe Aufgabenform (Code lesen, Fehler finden, beurteilen), ohne die Behauptung, der Code stamme von einer KI.
+- **Die Wissens-Ampel entfällt.**
+- **Erklärvideos:** Theorie-Videos, deren Stoff bleibt, werden geprüft und weiterverwendet. Python- und Beispiel-Videos werden mit den neuen Beispielen neu produziert, sobald die Inhalte stehen.
+- **Entfallene Lektionen** (V11, V12, V13, V15, V20, V21, Projektseite) kommen aus der App und werden nicht nach MDX übertragen. Aus V20 leben `bauteil3d` und die 3D-Vorschau als Beispielwelt weiter.
 
 ## Design
 
