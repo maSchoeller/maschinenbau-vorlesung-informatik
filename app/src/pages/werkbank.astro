@@ -1,10 +1,64 @@
 ---
-/* Platzhalter des Fundaments. Gehört der Rolle Werkbank; sie ersetzt diese Datei. */
+/* Werkbank: eigene Python-Programme schreiben, ausführen, speichern, teilen (Vertrag 8).
+   Die Bestandsskripte (Runner, Editor) liegen nicht in der Hülle, weil die Seite neu ist; sie werden hier eingebunden wie in site/bibliothek.html.
+   Alles Dynamische macht app/werkbank.js. */
 import App from '../layouts/App.astro';
+const bestand = [
+  '<script src="assets/js/icons.js"></script>',
+  '<script src="assets/js/kurs.js"></script>',
+  '<script src="assets/js/editor.js" defer></script>',
+];
 ---
-<App pfad="werkbank.html" art="werkbank" titel="Werkbank">
-  <main id="inhalt" class="app-seite">
-    <h1>Werkbank</h1>
-    <p>In der Werkbank schreibst, speicherst und teilst du bald deine eigenen Python-Programme. Bis dahin kannst du jeden Codeblock direkt in den Lektionen ausführen.</p>
+<App pfad="werkbank.html" art="werkbank" titel="Werkbank" beschreibung="Eigene Python-Programme schreiben, ausführen, speichern und per Link teilen." bestandSkripte={bestand}>
+  <main id="inhalt" class="app-seite wb">
+    <h1 class="wb-h1">Werkbank</h1>
+
+    <div class="wb-raster">
+      <section class="wb-liste" aria-labelledby="wb-liste-h">
+        <h2 id="wb-liste-h" class="wb-liste__kopf">Meine Programme <span class="wb-liste__zahl" id="wb-zahl"></span></h2>
+        <ul class="wb-liste__ul" id="wb-liste"></ul>
+        <p class="wb-liste__hinweis k-small k-muted">Gespeichert in diesem Browser. Mit Konto auf allen deinen Geräten.</p>
+      </section>
+
+      <div class="wb-haupt">
+        <section class="wb-leer" id="wb-leer" hidden aria-labelledby="wb-leer-h">
+          <h2 id="wb-leer-h">Noch kein Programm</h2>
+          <p>Hier schreibst du eigene Python-Programme. Sie bleiben gespeichert, laufen direkt im Browser und lassen sich per Link teilen.</p>
+          <button type="button" class="k-btn" id="wb-beispiel">Beispielprogramm anlegen</button>
+        </section>
+
+        <section class="wb-arbeit" id="wb-arbeit" hidden aria-label="Programm bearbeiten">
+          <div class="wb-kopf">
+            <div class="wb-titelfeld">
+              <label for="wb-titel">Titel</label>
+              <input type="text" id="wb-titel" class="wb-titel" maxlength="80" autocomplete="off" spellcheck="false">
+            </div>
+            <div class="wb-aktionen" role="group" aria-label="Aktionen für dieses Programm">
+              <button type="button" class="k-btn k-btn--small k-btn--ghost" data-wb="neu">Neu</button>
+              <button type="button" class="k-btn k-btn--small k-btn--ghost" data-wb="duplizieren">Duplizieren</button>
+              <button type="button" class="k-btn k-btn--small k-btn--ghost" data-wb="herunterladen">Herunterladen (.py)</button>
+              <button type="button" class="k-btn k-btn--small k-btn--ghost" data-wb="teilen">Teilen</button>
+              <button type="button" class="k-btn k-btn--small k-btn--ghost wb-loeschen" data-wb="loeschen">Löschen</button>
+            </div>
+          </div>
+          <p class="wb-status k-small k-muted" id="wb-status" role="status" aria-live="polite"></p>
+          <p class="hinweis wb-gross" id="wb-gross" hidden></p>
+
+          <div class="k-runner wb-runner" id="wb-runner" data-timeout="10000">
+<textarea class="k-runner__code py-editor" id="wb-code" aria-label="Python-Code" rows="14" placeholder="# Schreibe hier dein Programm
+print(&quot;Hallo, Welle!&quot;)"></textarea>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <dialog class="wb-dialog" id="wb-teilen" aria-labelledby="wb-teilen-h">
+      <div class="wb-dialog__kopf">
+        <h2 id="wb-teilen-h">Programm teilen</h2>
+        <button type="button" class="wb-dialog__zu" id="wb-teilen-zu" aria-label="Schließen"></button>
+      </div>
+      <div class="wb-dialog__koerper" id="wb-teilen-koerper"></div>
+      <p class="wb-dialog__status k-small" id="wb-teilen-status" role="status" aria-live="polite"></p>
+    </dialog>
   </main>
 </App>

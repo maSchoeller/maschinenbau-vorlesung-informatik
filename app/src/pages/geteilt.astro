@@ -1,10 +1,28 @@
 ---
-/* Platzhalter des Fundaments. Gehört der Rolle Werkbank; sie ersetzt diese Datei. */
+/* Geteiltes Programm ansehen, ausführen und als Kopie in die eigene Werkbank übernehmen (Vertrag 8). Ohne Login nutzbar.
+   Alles Dynamische macht app/geteilt.js; Inhalte werden dort nur als Text eingesetzt. */
 import App from '../layouts/App.astro';
+const bestand = [
+  '<script src="assets/js/icons.js"></script>',
+  '<script src="assets/js/kurs.js"></script>',
+  '<script src="assets/js/editor.js" defer></script>',
+];
 ---
-<App pfad="geteilt.html" art="geteilt" titel="Geteiltes Programm">
-  <main id="inhalt" class="app-seite">
-    <h1>Geteiltes Programm</h1>
-    <p>Hier erscheinen bald Programme, die andere aus dem Kurs mit dir geteilt haben.</p>
+<App pfad="geteilt.html" art="geteilt" titel="Geteiltes Programm" beschreibung="Ein mit dir geteiltes Python-Programm ansehen, ausführen und kopieren." css={['werkbank']} bestandSkripte={bestand}>
+  <main id="inhalt" class="app-seite wb wb-geteilt">
+    <div id="gt-meldung" class="wb-meldung" role="status" aria-live="polite">
+      <p>Programm wird geladen …</p>
+    </div>
+
+    <article id="gt-inhalt" hidden>
+      <h1 class="wb-h1" id="gt-titel"></h1>
+      <p class="wb-wer k-muted" id="gt-wer"></p>
+      <p class="k-small k-muted wb-snap">Das ist ein Schnappschuss: Spätere Änderungen der Person erscheinen hier nicht. Was du hier änderst, bleibt bei dir.</p>
+      <div id="gt-runner"></div>
+      <div class="wb-fuss">
+        <button type="button" class="k-btn k-btn--ghost" id="gt-kopie">Kopie in meine Werkbank</button>
+        <span class="k-small k-muted" id="gt-status" role="status" aria-live="polite"></span>
+      </div>
+    </article>
   </main>
 </App>

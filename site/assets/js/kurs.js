@@ -6,7 +6,9 @@
   'use strict';
 
   var PYODIDE_VERSION = 'v0.26.4';
-  var PYODIDE_BASE = 'https://cdn.jsdelivr.net/pyodide/' + PYODIDE_VERSION + '/full/';
+  /* Selbst gehostet (Lern-App): window.KURS_PYODIDE_BASIS (absolute URL, Schrägstrich am Ende); sonst CDN wie bisher */
+  var PYODIDE_LOKAL = !!window.KURS_PYODIDE_BASIS;
+  var PYODIDE_BASE = window.KURS_PYODIDE_BASIS || ('https://cdn.jsdelivr.net/pyodide/' + PYODIDE_VERSION + '/full/');
 
   /* ── Hilfsfunktionen ─────────────────────────────────────── */
   function $(sel, root) { return (root || document).querySelector(sel); }
@@ -283,6 +285,7 @@
   /* ── (c) Python im Browser (Pyodide im Web Worker) ───────── */
   function workerMain() {
     var pyodide = null;
+    var lokal = false;   // true: Pakete aus dem eigenen Ordner, nichts von PyPI
     // Python-Hilfsfunktionen für die Code-Vervollständigung im Editor (editor.js)
     var JEDI_PY = [
       'import jedi, json',
@@ -510,6 +513,7 @@
     self.onmessage = function (e) {
       var m = e.data;
       if (m.type === 'init') {
+        lokal = !!m.lokal;
         try {
           importScripts(m.base + 'pyodide.js');
           self.loadPyodide({ indexURL: m.base }).then(function (p) {
@@ -519,9 +523,12 @@
         } catch (err) { self.postMessage({ type: 'initerror', message: String(err) }); }
       } else if (m.type === 'jedi-init') {
         // Editor-Integration: Jedi per micropip nachladen und Hilfsfunktionen in den Haupt-Namensraum legen
-        pyodide.loadPackage('micropip').then(function () {
+        // Selbst gehostet: jedi und parso kommen per loadPackage aus dem eigenen Ordner, nichts von PyPI
+        (lokal ? pyodide.loadPackage(['jedi']).then(function () {
+          return pyodide.runPythonAsync(JEDI_PY.join('\n'));
+        }) : pyodide.loadPackage('micropip').then(function () {
           return pyodide.runPythonAsync(['import micropip', "await micropip.install('jedi')"].concat(JEDI_PY).join('\n'));
-        }).then(function () {
+        })).then(function () {
           self.postMessage({ type: 'rpc', rid: m.rid, ok: true, result: 'ok' });
         }).catch(function (err) {
           self.postMessage({ type: 'rpc', rid: m.rid, ok: false, error: String(err && err.message ? err.message : err) });
@@ -660,7 +667,7 @@ _result
           else if (Py.handler) Py.handler(m);
         };
         w.onerror = function (ev) { Py.reset(); reject(new Error(ev.message || 'Worker-Fehler')); };
-        w.postMessage({ type: 'init', base: PYODIDE_BASE });
+        w.postMessage({ type: 'init', base: PYODIDE_BASE, lokal: PYODIDE_LOKAL });
       });
       Py.ready.catch(function () { /* wird beim Aufrufer behandelt */ });
       return Py.ready;

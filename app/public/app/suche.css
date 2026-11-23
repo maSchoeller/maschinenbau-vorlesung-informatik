@@ -1,0 +1,35 @@
+/* =============================================================
+   app/suche.css – Suchdialog (Rolle Navigation)
+   ============================================================= */
+dialog.suche {
+  position: fixed; top: 10vh; left: 50%; transform: translateX(-50%); margin: 0;
+  width: min(680px, calc(100vw - 48px)); max-height: 76vh; padding: 0; box-sizing: border-box;
+  display: none; flex-direction: column; overflow: hidden;
+  border: 1px solid var(--k-line, #E5E7EB); border-radius: var(--r-card, 8px); background: #fff; color: var(--text, #1A1A1A);
+  box-shadow: var(--shadow-raised, 0 4px 16px rgba(0,0,0,.12));
+}
+dialog.suche[open] { display: flex; }
+dialog.suche::backdrop { background: rgba(26, 26, 26, .42); }
+
+.suche-kopf { display: flex; align-items: center; gap: var(--sp-3, 12px); padding: 0 var(--sp-3, 12px) 0 var(--sp-4, 16px); border-bottom: 1px solid var(--k-line, #E5E7EB); flex: none; }
+.suche-kopf > .k-ic { width: 22px; height: 22px; flex: none; color: var(--k-muted, #4B5563); }
+.suche-feld { flex: 1 1 auto; min-width: 0; height: 56px; padding: 0; border: 0; outline: 0; background: transparent; font: inherit; font-size: var(--fs-md, 1.125rem); color: inherit; }
+.suche-kopf:focus-within { box-shadow: inset 0 -3px 0 var(--k-focus, #1A1A1A); }
+.suche-feld::-webkit-search-cancel-button { display: none; }
+.suche-zu { flex: none; width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center; background: none; border: 0; border-radius: var(--r-base, 6px); color: var(--k-muted, #4B5563); cursor: pointer; }
+.suche-zu:hover { background: var(--app-flaeche, #F7F8FA); color: var(--text, #1A1A1A); }
+.suche-zu .k-ic { width: 20px; height: 20px; }
+
+.suche-liste { flex: 1 1 auto; overflow-y: auto; padding: var(--sp-2, 8px) 0; min-height: 80px; }
+.suche-gruppe__name { padding: var(--sp-3, 12px) var(--sp-4, 16px) var(--sp-1, 4px); font-size: var(--fs-xs, .75rem); font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--k-muted, #4B5563); }
+.suche-treffer { display: flex; flex-direction: column; gap: 1px; padding: 8px var(--sp-4, 16px); color: var(--text, #1A1A1A); text-decoration: none; border-left: 3px solid transparent; }
+.suche-treffer__titel { font-weight: 600; overflow-wrap: anywhere; }
+.suche-treffer__text { font-size: var(--fs-sm, .875rem); color: var(--k-muted, #4B5563); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.suche-treffer.is-aktiv { background: var(--red-tint, #FAE5E8); border-left-color: var(--red, #E2001A); }
+.suche-treffer:hover { text-decoration: none; color: var(--text, #1A1A1A); }
+.suche-leer { margin: 0; padding: var(--sp-4, 16px); color: var(--k-muted, #4B5563); }
+.suche-fuss { flex: none; margin: 0; padding: var(--sp-2, 8px) var(--sp-4, 16px); border-top: 1px solid var(--k-line, #E5E7EB); color: var(--k-muted, #4B5563); }
+
+@media (max-width: 1099px) { dialog.suche { top: 6vh; } }
+@media print { dialog.suche { display: none !important; } }
+.suche-status { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
