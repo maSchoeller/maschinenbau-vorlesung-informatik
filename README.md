@@ -5,7 +5,7 @@ Interaktive Vorlesungs-Website für das Modul **Informatik (T4MB1006)** im Studi
 Leitidee: *KI schreibt Code – Ingenieure spezifizieren, prüfen und verantworten.*
 
 - **Lern-App:** https://nice-wave-051f81f03.3.azurestaticapps.net (installierbar, offline nutzbar, mit Konto, Werkbank und Tutor)
-- **Konzept** (Leitidee, Wissens-Ampel, 22 Termine, Ablauf): [KONZEPT.md](KONZEPT.md)
+- **Konzept** (Leitsatz, zwei Stränge, 20 Termine, Klausur): [KONZEPT.md](KONZEPT.md), Herleitung und Zuordnung des alten Materials: `KONZEPT-MIGRATION.md`. Der Kursplan für die App steht in `app/kurs.yaml` ([Architektur, Abschnitt 16](docs/app/ARCHITEKTUR.md))
 - **Seitenstruktur und Gestaltungsregeln:** [DESIGN.md](DESIGN.md)
 - **Lern-App: Architektur und Betrieb:** [docs/app/ARCHITEKTUR.md](docs/app/ARCHITEKTUR.md), [docs/app/BETRIEB.md](docs/app/BETRIEB.md)
 

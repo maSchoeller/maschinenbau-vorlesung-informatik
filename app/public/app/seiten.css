@@ -92,11 +92,26 @@
 .lp-seite { display: flex; flex-direction: column; align-items: flex-start; gap: var(--sp-2); }
 .lp-seite p { margin: 0; }
 .lp-zahlen:empty { display: none; }
+/* 20 Termine: je Termin Theorie und Programmieren, rechts die eigenen Seiten oder das bisherige Material */
+.lp-umbau { max-width: var(--k-measure); margin: 0 0 var(--k-block-gap); padding: var(--sp-3) var(--sp-4); border-left: 3px solid var(--k-info); background: var(--k-info-bg); }
+.lp-teil { display: grid; grid-template-columns: 8.5em minmax(0, 1fr); gap: var(--sp-3); }
+.lp-teil + .lp-teil { margin-top: var(--sp-1) !important; }
+.lp-teil__art { font-size: var(--fs-sm); font-weight: 600; color: var(--k-muted); padding-top: 2px; }
+.lp-material__titel { font-weight: 600; }
+.lp-material { list-style: none; margin: 0; padding: 0; width: 100%; display: grid; gap: var(--sp-2); }
+.lp-material li { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 0 var(--sp-3); }
+.lp-material__ziel { font-weight: 600; color: var(--red-dark); min-height: 32px; display: inline-flex; align-items: center; }
+.lp-material__labor { color: var(--red-dark); min-height: 32px; display: inline-flex; align-items: center; }
+.lp-material .np-stand { grid-column: 1; font-weight: 400; }
+.lp-material .lp-zahlen { grid-column: 1 / -1; }
+.lp-pause { max-width: none; margin: var(--k-section-gap) 0 0; padding: var(--sp-3) 0; border-top: 1px solid var(--k-line); border-bottom: 1px solid var(--k-line); text-align: center; font-size: var(--fs-sm); font-weight: 600; letter-spacing: .04em; }
 .lp-ziele { display: flex; gap: var(--sp-2); flex-wrap: wrap; margin-top: var(--sp-1); }
 
 @media (max-width: 1099px) {
   .lp-station { grid-template-columns: 56px minmax(0, 1fr); }
   .lp-seite { grid-column: 2; flex-direction: row; flex-wrap: wrap; align-items: center; gap: var(--sp-2) var(--sp-4); }
+  .lp-material { max-width: 420px; }
+  .lp-material__ziel, .lp-material__labor { min-height: 44px; }
   .lp-ziele { margin-top: 0; }
 }
 

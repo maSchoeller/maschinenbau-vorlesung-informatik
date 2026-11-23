@@ -382,7 +382,7 @@ function umziehen(relPfad, { schreiben = false, leise = false } = {}) {
 const args = process.argv.slice(2);
 const schreiben = args.includes('--schreiben');
 if (args.includes('--alle')) {
-  const seiten = ladeKurs().termine.flatMap((t) => [t.lerneinheit, t.labor]).filter(Boolean).map((d) => 'lektionen/' + d).filter((r) => fs.existsSync(path.join(SITE, r)));
+  const seiten = ladeKurs().lektionen.flatMap((t) => [t.lerneinheit, t.labor]).filter(Boolean).map((d) => 'lektionen/' + d).filter((r) => fs.existsSync(path.join(SITE, r)));
   let ok = 0;
   const haeufig = new Map();
   for (const r of seiten) {

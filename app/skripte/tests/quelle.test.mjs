@@ -27,7 +27,7 @@ const seiten = alleSeiten();
 const distDa = fs.existsSync(path.join(DIST, 'lektionen'));
 
 test('es gibt die erwarteten Seiten', () => {
-  assert.ok(seiten.length >= 48, `nur ${seiten.length} Seiten`);
+  assert.ok(seiten.length >= 36, `nur ${seiten.length} Seiten`);
   assert.ok(!seiten.includes('werkzeuge/labor-test.html'));
 });
 

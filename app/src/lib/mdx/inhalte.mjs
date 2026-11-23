@@ -24,7 +24,7 @@ export function mdxDatei(relPfad) {
 
 /** Alle Lektionsseiten (relativ zu site/), deren Quelle MDX ist. */
 export function mdxSeiten() {
-  return ladeKurs().termine.flatMap((t) => [t.lerneinheit, t.labor]).filter(Boolean).map((d) => 'lektionen/' + d).filter((r) => mdxDatei(r));
+  return ladeKurs().lektionen.flatMap((t) => [t.lerneinheit, t.labor]).filter(Boolean).map((d) => 'lektionen/' + d).filter((r) => mdxDatei(r));
 }
 
 /* Übersetzen ist teuer genug, um es je Datei und Änderungszeit nur einmal zu tun */

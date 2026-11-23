@@ -10,7 +10,6 @@ export const BEREICHE = [
     id: 'kurs', name: 'Kurs', icon: 'route', ziel: 'lernpfad.html', label: 'Kurs',
     reiter: [
       { id: 'lernpfad', name: 'Lernpfad', ziel: 'lernpfad.html' },
-      { id: 'projekt', name: 'Projekt', ziel: 'projekt.html' },
       { id: 'glossar', name: 'Glossar', ziel: 'glossar.html' },
       { id: 'kurs', name: 'Über den Kurs', ziel: 'kurs.html' },
     ],
@@ -44,7 +43,6 @@ export const UNTEN = [
 export const SEITEN = {
   'index.html': { bereich: 'heute', reiter: null, titel: 'Heute' },
   'lernpfad.html': { bereich: 'kurs', reiter: 'lernpfad', titel: 'Lernpfad' },
-  'projekt.html': { bereich: 'kurs', reiter: 'projekt', titel: 'Projekt' },
   'glossar.html': { bereich: 'kurs', reiter: 'glossar', titel: 'Glossar' },
   'kurs.html': { bereich: 'kurs', reiter: 'kurs', titel: 'Über den Kurs' },
   'werkbank.html': { bereich: 'werkbank', reiter: 'werkbank', titel: 'Werkbank' },

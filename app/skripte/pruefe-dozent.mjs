@@ -75,7 +75,7 @@ async function lernstand(userId, eimer) {
 browser = await chromium.launch();
 try {
   const kurs = await fetch(BASIS + '/app/daten/kurs.json').then((r) => r.json());
-  const v01 = kurs.termine[0];
+  const v01 = kurs.lektionen[0];
   const mitTeilen = v01.aufgaben.filter((a) => a.pruefbar.length > 0);
   const [b1, b2] = mitTeilen.filter((a) => a.teil === 'B');
   const eimer = (ids) => Object.fromEntries(ids.map((i) => [i, 1]));
@@ -149,7 +149,7 @@ try {
   pruefe('t4 Abschnitte der Lerneinheit mit Zahl', abschnitt[0] === `${v01.abschnitte[0].titel}: ${l.abschnitte[0].n} von ${N}` && abschnitt.length === v01.abschnitte.length, abschnitt[0]);
   const ziel = await doz.page.evaluate((id) => [...document.querySelectorAll('[data-dz-aufgaben] a')].find((x) => x.hash === '#' + id).getAttribute('href'), b1.id);
   pruefe('t4 Aufgabe verlinkt ins Labor', ziel === `${v01.labor}#${b1.id}`, ziel);
-  pruefe('t4 Lektionswahl: alle Termine, V01 gewählt', await doz.page.locator('[data-dz-lektion] option').count() === kurs.termine.length && await doz.page.locator('[data-dz-lektion]').inputValue() === 'V01');
+  pruefe('t4 Lektionswahl: alle Termine, V01 gewählt', await doz.page.locator('[data-dz-lektion] option').count() === kurs.lektionen.length && await doz.page.locator('[data-dz-lektion]').inputValue() === 'V01');
 
   console.log('\nt5 Tablet, Lektionswechsel, Kontoseite');
   await doz.page.setViewportSize({ width: 768, height: 1024 });
@@ -158,7 +158,7 @@ try {
   const spalten = await doz.page.evaluate(() => getComputedStyle(document.querySelector('.dz-zahlen')).gridTemplateColumns.split(' ').length);
   pruefe('t5 Tablet: Kennzahlen in zwei Spalten', spalten === 2, String(spalten));
   await doz.page.setViewportSize({ width: 1440, height: 900 });
-  const v02 = kurs.termine[1];
+  const v02 = kurs.lektionen[1];
   await doz.page.locator('[data-dz-lektion]').selectOption('V02');
   const zeilen2 = await doz.page.locator('[data-dz-aufgaben] tr').count();
   pruefe('t5 Wechsel auf V02: Tabelle und Adresse folgen', zeilen2 === v02.aufgaben.filter((a) => a.pruefbar.length > 0).length && new URL(doz.page.url()).hash === '#v02', zeilen2 + ' Zeilen, ' + doz.page.url());

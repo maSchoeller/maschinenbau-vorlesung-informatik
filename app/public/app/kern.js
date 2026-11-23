@@ -337,7 +337,7 @@
     lektion: function (nr) {
       return kurs().then(function (d) {
         var t = null;
-        (d.termine || []).forEach(function (x) { if (x.nr === nr) t = x; });
+        (d.lektionen || []).forEach(function (x) { if (x.nr === nr) t = x; });
         if (!t) throw new Error('Unbekannte Lektion ' + nr);
         return terminStand(t);
       });

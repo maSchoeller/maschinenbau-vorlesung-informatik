@@ -55,7 +55,7 @@
   }
   function termin(nr) {
     var i;
-    for (i = 0; i < kurs.termine.length; i++) if (kurs.termine[i].nr === nr) return kurs.termine[i];
+    for (i = 0; i < kurs.lektionen.length; i++) if (kurs.lektionen[i].nr === nr) return kurs.lektionen[i];
     return null;
   }
   function uhrzeit(iso) {

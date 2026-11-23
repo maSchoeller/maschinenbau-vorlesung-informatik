@@ -5,7 +5,7 @@
    Startet einen eigenen kleinen Dateiserver für die Ausgabe (kein Emulator nötig).
    Aufruf: node skripte/pruefe-navigation.mjs [ausgabeordner=dist-nav] [port=4321]
            node skripte/pruefe-navigation.mjs http://localhost:4340   (gegen einen laufenden Server, ohne eigenen)
-   Fängt unter anderem: leere Suche zeigt nur die 22 Lektionen, „Weiter“ führt nie auf Navigationsseiten,
+   Fängt unter anderem: leere Suche zeigt nur die Lektionen, „Weiter“ führt nie auf Navigationsseiten,
    im Fertig-Zustand genau ein primärer Knopf, Warm-up mit bis zu drei Aufgaben, Glossar-Filter ae/oe/ue,
    Suche findet Python-Themen, Fokus kehrt zurück (Suche, Hinweis wegklicken).
    ============================================================= */
@@ -61,10 +61,11 @@ async function main() {
       await page.waitForSelector('dialog.suche[open] a.suche-treffer');
       let opt = await page.locator('dialog.suche a.suche-treffer').count();
       let grp = await page.locator('dialog.suche .suche-gruppe__name').allTextContents();
-      pruefe(opt === 22 && grp.length === 1 && grp[0] === 'Lektionen', 'Leere Suche: genau die 22 Lektionen in einer Gruppe (' + opt + ' Treffer, Gruppen: ' + grp.join(',') + ')');
+      const nLek = (await page.evaluate(() => window.KursApp.kurs())).lektionen.length;
+      pruefe(opt === nLek && nLek >= 10 && grp.length === 1 && grp[0] === 'Lektionen', 'Leere Suche: genau die ' + nLek + ' Lektionen in einer Gruppe (' + opt + ' Treffer, Gruppen: ' + grp.join(',') + ')');
       await page.waitForTimeout(400);
-      pruefe(/Alle 22 Lektionen/.test(await page.locator('dialog.suche .suche-status').textContent()), 'Statusmeldung „Alle 22 Lektionen“');
-      for (const [q, erwartet] of [['numpy', 'V13'], ['for schleife', 'V06'], ['zaehler', null]]) {
+      pruefe(new RegExp('Alle ' + nLek + ' Lektionen').test(await page.locator('dialog.suche .suche-status').textContent()), 'Statusmeldung „Alle ' + nLek + ' Lektionen“');
+      for (const [q, erwartet] of [['matplotlib', 'V14'], ['for schleife', 'V06'], ['zaehler', null]]) {
         await page.fill('#suche-feld', q);
         const t = await page.locator('dialog.suche a.suche-treffer').allInnerTexts();
         if (erwartet) {
@@ -92,7 +93,7 @@ async function main() {
       await page.goto(basis + 'lektionen/v01-start.html').catch(() => {});
       await page.goto(basis + 'index.html'); await page.evaluate(() => localStorage.clear());
       const kurs = await page.evaluate(() => window.KursApp.kurs());
-      const t = kurs.termine;
+      const t = kurs.lektionen;
       const seed = (n, was) => page.evaluate(({ nr, was }) => {
         const KS = window.KursSpeicher;
         for (const [k, ids] of Object.entries(was)) { const b = KS.sofort.lesen(KS.pfad(nr, k)) || {}; ids.forEach((i) => { b[i] = 1; }); KS.sofort.schreiben(KS.pfad(nr, k), b); }
@@ -140,7 +141,8 @@ async function main() {
 
       /* Lernpfad */
       await page.goto(basis + 'lernpfad.html'); await page.waitForTimeout(500);
-      pruefe(await page.locator('.lp-station, [data-lektion]').count() >= 22, 'Lernpfad zeigt 22 Stationen');
+      pruefe(await page.locator('.lp-station').count() === kurs.termine.length && kurs.termine.length === 20, 'Lernpfad zeigt die 20 Termine');
+      pruefe(await page.locator('.lp-material [data-nr], .lp-seite[data-nr]').count() >= t.length, 'Lernpfad nennt zu den Terminen alle Lektionen (' + t.length + ')');
       if (g.n === 'desktop') await page.screenshot({ path: path.join(APP, '.cache', 'nav-lernpfad.png') }).catch(() => {});
       pruefe(konsole.length === 0, 'keine Konsolenfehler' + (konsole.length ? ': ' + konsole.slice(0, 3).join(' | ') : ''));
       await ctx.close();

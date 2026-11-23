@@ -1,260 +1,230 @@
-# Eine Quelle für die 22 Termine des Kurses (Architektur-Vertrag, Abschnitt 2).
-# Dateinamen beziehen sich auf site/lektionen/ bzw. site/notebooks/.
-# Fehlt eine genannte Datei, bricht der Build ab (src/lib/kurs.mjs).
-# freigabe: Datum (JJJJ-MM-TT) oder null. Noch nicht freigegebene Lektionen bleiben sichtbar.
+# Eine Quelle für den Kurs (Architektur-Vertrag, Abschnitte 2 und 16). Plan nach KONZEPT.md, Stand 2026-11-23.
+#
+# semester   die zwei Semester.
+# einheiten  der Stoff: Programmierstrang P1–P11 und Theoriestrang T1–T11.
+#            bloecke: Blöcke à 30 Minuten im ganzen Kurs (wird gegen die Termine geprüft).
+#            stoff:   Lektionen des bisherigen Kurses, aus denen die Einheit entsteht (KONZEPT-MIGRATION.md, Abschnitt 7).
+#                     Ohne stoff wird die Einheit neu gebaut.
+# termine    die 20 Termine in Kursreihenfolge, je Termin 4 Blöcke (theorie, programmieren, puffer).
+#            lektion:  Kennung der eigenen Seiten des Termins, sobald es sie gibt (Eintrag unter lektionen).
+#            freigabe: Datum (JJJJ-MM-TT) oder weglassen.
+# lektionen  Seiten, die es gibt: bis zum Neuzuschnitt die bleibenden Lektionen des bisherigen Kurses.
+#            Dateinamen sind die Adressen unter lektionen/; die Quelle liegt in app/inhalte/vNN/ (MDX) oder site/lektionen/.
+#            Fehlt eine genannte Datei, bricht der Build ab (src/lib/kurs.mjs).
 
-phasen:
+semester:
   - nr: 1
-    name: Fundament
-    bereich: V01–V09
-    leitsatz: KI als Erklärer, nicht als Generator. Du tippst selbst.
+    name: 1. Semester
+    bereich: Termin 01 bis 10
+    leitsatz: Erst der Ablauf, dann der Code. Am Ende steht dein erstes Spiel, Zahlenraten.
   - nr: 2
-    name: Werkzeug
-    bereich: V10–V13
-    leitsatz: KI erzeugt, du prüfst (Testfälle vorher von Hand).
-  - nr: 3
-    name: Projekt
-    bereich: V14–V22
-    leitsatz: "Jeweils die letzten 30 Min: kleines Ingenieurwerkzeug mit Copilot."
+    name: 2. Semester
+    bereich: Termin 11 bis 20
+    leitsatz: Listen, Messwerte und ein Spielfeld. Am Ende baust du Schiffe versenken gegen den Computer.
+
+einheiten:
+  P1: { name: "Variablen, Ein- und Ausgabe, Ausgabe formatieren", kurz: "Variablen, Ein- und Ausgabe", bloecke: 3, stoff: [V01] }
+  P2: { name: Verzweigungen, kurz: Verzweigungen, bloecke: 4, stoff: [V04] }
+  P3: { name: "Schleifen (while, for)", kurz: Schleifen, bloecke: 7, stoff: [V06] }
+  P4: { name: "Funktionen, lokale und globale Namen", kurz: Funktionen, bloecke: 6, stoff: [V07] }
+  P5: { name: "Zahlenraten: erstes vollständiges Spiel", kurz: Zahlenraten, bloecke: 4 }
+  P6: { name: Auffrischer nach der Praxisphase, kurz: Auffrischer Programmieren, bloecke: 2 }
+  P7: { name: Listen, kurz: Listen, bloecke: 6, stoff: [V08] }
+  P8: { name: "Messwerte auswerten: Datei lesen, Mittelwert, Minimum, Maximum, Diagramm nach Vorlage", kurz: Messwerte auswerten, bloecke: 3, stoff: [V09, V14] }
+  P9: { name: "Raster (Liste in Liste)", kurz: Raster, bloecke: 2 }
+  P10: { name: Schiffe versenken gegen den Computer, kurz: Schiffe versenken, bloecke: 9 }
+  P11: { name: Klausurtraining Programmierteil, kurz: Klausurtraining Programmieren, bloecke: 2, stoff: [V22] }
+  T1: { name: "Problemanalyse, Algorithmus, PAP-Symbole", kurz: Problemanalyse und PAP, bloecke: 2, stoff: [V05] }
+  T2: { name: "Boolesche Logik: und, oder, nicht, Wahrheitstabelle", kurz: Boolesche Logik, bloecke: 3, stoff: [V04] }
+  T3: { name: "Zahlensysteme: dezimal, binär, hexadezimal", kurz: Zahlensysteme, bloecke: 4, stoff: [V02] }
+  T4: { name: Bitoperationen, kurz: Bitoperationen, bloecke: 1, stoff: [V02] }
+  T5: { name: "Datentypen, Kommazahlen und ihre Genauigkeit", kurz: Datentypen, bloecke: 3, stoff: [V03] }
+  T6: { name: Aufbau und Funktion eines Rechners, kurz: Rechneraufbau, bloecke: 3, stoff: [V16] }
+  T7: { name: Auffrischer Pflichttheorie, kurz: Auffrischer Theorie, bloecke: 1 }
+  T8: { name: Wie funktioniert KI?, kurz: Wie funktioniert KI?, bloecke: 3, stoff: [V10] }
+  T9: { name: Datenbanken, kurz: Datenbanken, bloecke: 3, stoff: [V19] }
+  T10: { name: Netzwerke und IT-Sicherheit, kurz: Netzwerke und IT-Sicherheit, bloecke: 5, stoff: [V17, V18] }
+  T11: { name: Klausurtraining Theorieteil, kurz: Klausurtraining Theorie, bloecke: 2, stoff: [V22] }
 
 termine:
+  - { nr: 1,  theorie: { T1: 2 },        programmieren: { P1: 2 } }
+  - { nr: 2,  theorie: { T2: 1 },        programmieren: { P1: 1, P2: 2 } }
+  - { nr: 3,  theorie: { T2: 2 },        programmieren: { P2: 2 } }
+  - { nr: 4,  theorie: { T3: 2 },        programmieren: { P3: 2 } }
+  - { nr: 5,  theorie: { T3: 1 },        programmieren: { P3: 3 } }
+  - { nr: 6,  theorie: { T3: 1, T4: 1 }, programmieren: { P3: 2 } }
+  - { nr: 7,  theorie: { T5: 2 },        programmieren: { P4: 2 } }
+  - { nr: 8,  theorie: { T5: 1 },        programmieren: { P4: 3 } }
+  - { nr: 9,  theorie: { T6: 2 },        programmieren: { P4: 1, P5: 1 } }
+  - { nr: 10, theorie: { T6: 1 },        programmieren: { P5: 3 } }
+  - { nr: 11, theorie: { T7: 1 },        programmieren: { P6: 2, P7: 1 } }
+  - { nr: 12, theorie: { T8: 2 },        programmieren: { P7: 2 } }
+  - { nr: 13, theorie: { T8: 1 },        programmieren: { P7: 3 } }
+  - { nr: 14, theorie: { T9: 2 },        programmieren: { P8: 2 } }
+  - { nr: 15, theorie: { T9: 1 },        programmieren: { P8: 1, P9: 2 } }
+  - { nr: 16, theorie: { T10: 2 },       programmieren: { P10: 2 } }
+  - { nr: 17, theorie: { T10: 1 },       programmieren: { P10: 3 } }
+  - { nr: 18, theorie: { T10: 2 },       programmieren: { P10: 2 } }
+  - { nr: 19, puffer: 2,                 programmieren: { P10: 2 } }
+  - { nr: 20, theorie: { T11: 2 },       programmieren: { P11: 2 } }
+
+lektionen:
   - nr: V01
     titel: Warum programmieren, wenn KI es kann?
     kurz: Warum programmieren?
     hook: KI-Rechnung um Faktor 1000 falsch
     python: [print, Variablen & Zuweisung, Kommentare, input, Namensregeln]
-    phase: 1
+    semester: 1
     lerneinheit: v01-warum-programmieren.html
     labor: v01-labor.html
     notebook: V01-Erste-Schritte.ipynb
     freigabe: null
-
   - nr: V02
     titel: Bits, Binär, Hex, Zweierkomplement
     kurz: Bits und Bytes
     hook: Encoder-Zähler läuft über
     python: [int, "Rechenoperatoren (+ - * / // % **)", Operatorrangfolge, int(text), "bin()/hex()/int(x, 2)"]
-    phase: 1
+    semester: 1
     lerneinheit: v02-bits-und-bytes.html
     labor: v02-labor.html
     notebook: V02-Bits-und-Bytes.ipynb
     freigabe: null
-
   - nr: V03
     titel: Fließkommazahlen & Datentypen
     kurz: Fließkommazahlen
     hook: 0.1+0.2, Toleranzen addieren
     python: [float, type(), Typumwandlung, input → Zahl, f-Strings mit Format, math-Modul, math.isclose]
-    phase: 1
+    semester: 1
     lerneinheit: v03-fliesskommazahlen.html
     labor: v03-labor.html
     notebook: V03-Fliesskommazahlen.ipynb
     freigabe: null
-
   - nr: V04
     titel: Logik & Verzweigungen
     kurz: Logik und Verzweigungen
     hook: Zweihand-Sicherheitsschaltung
     python: [bool, Vergleichsoperatoren, and/or/not, if / elif / else, Einrückung]
-    phase: 1
+    semester: 1
     lerneinheit: v04-logik-und-verzweigungen.html
     labor: v04-labor.html
     notebook: V04-Logik-und-Verzweigungen.ipynb
     freigabe: null
-
   - nr: V05
     titel: Problemanalyse & Programmablaufplan
     kurz: Programmablaufplan
     hook: Der PAP wird zum Prompt
     python: [PAP → Code, verschachtelte Verzweigungen, Eingabe prüfen]
-    phase: 1
+    semester: 1
     lerneinheit: v05-programmablaufplan.html
     labor: v05-labor.html
     notebook: V05-Programmablaufplan.ipynb
     freigabe: null
-
   - nr: V06
     titel: Schleifen
     kurz: Schleifen
     hook: Abkühlkurve, Newton-Verfahren
     python: [while, for, range, break/continue, Zähler & Summen]
-    phase: 1
+    semester: 1
     lerneinheit: v06-schleifen.html
     labor: v06-labor.html
     notebook: V06-Schleifen.ipynb
     freigabe: null
-
   - nr: V07
     titel: Funktionen, Zerlegung, KISS/DRY
     kurz: Zerlegung und Funktionen
     hook: Wellen-Rechner aus Bausteinen
     python: [def, Parameter, return, Default-Werte, Docstring, lokale Variablen]
-    phase: 1
+    semester: 1
     lerneinheit: v07-funktionen.html
     labor: v07-labor.html
     notebook: V07-Funktionen.ipynb
     freigabe: null
-
   - nr: V08
     titel: Datenstrukturen (Basis)
     kurz: Datenstrukturen
     hook: Stückliste, Messreihe
     python: ["Listen (Index, Slicing, append, len)", for über Listen, Tupel, Dictionaries]
-    phase: 1
+    semester: 2
     lerneinheit: v08-datenstrukturen.html
     labor: v08-labor.html
     notebook: V08-Datenstrukturen.ipynb
     freigabe: null
-
   - nr: V09
     titel: Dateien & Fehlerbehandlung
     kurz: Dateien und Fehler
     hook: eigene Smartphone-Messdaten (phyphox)
     python: ["Strings (split, strip)", with open, csv-Modul, try/except]
-    phase: 1
+    semester: 2
     lerneinheit: v09-dateien-und-fehler.html
     labor: v09-labor.html
     notebook: V09-Dateien-und-Fehler.ipynb
     freigabe: null
-
   - nr: V10
     titel: Wie funktioniert KI?
     kurz: Wie funktioniert KI?
     hook: warum KI selbstbewusst falsch liegt
     python: [String-Methoden vertieft, List Comprehension, einfacher Tokenizer]
-    phase: 2
+    semester: 2
     lerneinheit: v10-wie-funktioniert-ki.html
     labor: v10-labor.html
     notebook: V10-Wie-funktioniert-KI.ipynb
     freigabe: null
-
-  - nr: V11
-    titel: Programmieren mit Copilot
-    kurz: Programmieren mit Copilot
-    hook: Prompt A vs. PAP als Prompt
-    python: [import, Module & pip, Codespaces/VS Code, Copilot-Workflow]
-    phase: 2
-    lerneinheit: v11-copilot.html
-    labor: v11-labor.html
-    notebook: V11-Copilot.ipynb
-    freigabe: null
-
-  - nr: V12
-    titel: Testen & Debuggen von KI-Code
-    kurz: Testen und Debuggen
-    hook: Testfälle von Hand, Grenzwerte
-    python: [assert, Testfälle schreiben, Tracebacks lesen, Debugger]
-    phase: 2
-    lerneinheit: v12-testen-und-debuggen.html
-    labor: v12-labor.html
-    notebook: V12-Testen-und-Debuggen.ipynb
-    freigabe: null
-
-  - nr: V13
-    titel: Laufzeit-Intuition
-    kurz: Laufzeit-Intuition
-    hook: "1 Mio. Messpunkte: Schleife vs. Vektor"
-    python: [NumPy-Arrays, Vektorisierung, Zeit messen]
-    phase: 2
-    lerneinheit: v13-laufzeit.html
-    labor: v13-labor.html
-    notebook: V13-Laufzeit.ipynb
-    freigabe: null
-
   - nr: V14
     titel: Visualisierung & Projekt-Kickoff
     kurz: Visualisierung
     hook: Diagramme, die täuschen
     python: ["matplotlib (plot, Achsen, Einheiten, Subplots)"]
-    phase: 3
+    semester: 2
     lerneinheit: v14-visualisierung.html
     labor: v14-labor.html
     notebook: V14-Visualisierung.ipynb
     freigabe: null
-
-  - nr: V15
-    titel: Datenanalyse mit pandas
-    kurz: Datenanalyse
-    hook: Cp/Cpk, SPC-Regelkarte
-    python: ["pandas (read_csv, Filtern, groupby, describe)"]
-    phase: 3
-    lerneinheit: v15-datenanalyse.html
-    labor: v15-labor.html
-    notebook: V15-Datenanalyse.ipynb
-    freigabe: null
-
   - nr: V16
     titel: Rechner & Betriebssystem kompakt
     kurz: Rechner und Betriebssystem
     hook: Warum ruckelt mein CAD?
     python: [pathlib/os, Dateien durchsuchen, Prozesse/Zeit]
-    phase: 3
+    semester: 1
     lerneinheit: v16-rechner-und-betriebssystem.html
     labor: v16-labor.html
     notebook: V16-Rechner-und-Betriebssystem.ipynb
     freigabe: null
-
   - nr: V17
     titel: Netzwerke & Industrie 4.0
     kurz: Netzwerke
     hook: IP/Subnetz einer Fertigungszelle, MQTT
     python: [JSON, "requests (HTTP-API abfragen)"]
-    phase: 3
+    semester: 2
     lerneinheit: v17-netzwerke.html
     labor: v17-labor.html
     notebook: V17-Netzwerke.ipynb
     freigabe: null
-
   - nr: V18
     titel: IT-Sicherheit für Ingenieure
     kurz: IT-Sicherheit
     hook: CRA, Firmware-Signatur, KI & vertrauliche Daten
     python: [hashlib, Prüfsummen von Dateien]
-    phase: 3
+    semester: 2
     lerneinheit: v18-it-sicherheit.html
     labor: v18-labor.html
     notebook: V18-IT-Sicherheit.ipynb
     freigabe: null
-
   - nr: V19
     titel: Datenbanken & SQL
     kurz: Datenbanken und SQL
     hook: Fertigungsaufträge abfragen, SQL-Injection
     python: [sqlite3, Parameter-Platzhalter]
-    phase: 3
+    semester: 2
     lerneinheit: v19-datenbanken-und-sql.html
     labor: v19-labor.html
     notebook: V19-Datenbanken-und-SQL.ipynb
     freigabe: null
-
-  - nr: V20
-    titel: Objekte & CAD-Automatisierung
-    kurz: Objekte und CAD
-    hook: parametrisches Bauteil per Skript
-    python: [class, __init__, Attribute, "Methoden (lesen & einfach schreiben)"]
-    phase: 3
-    lerneinheit: v20-objekte-cad.html
-    labor: v20-labor.html
-    notebook: V20-Objekte-und-CAD.ipynb
-    freigabe: null
-
-  - nr: V21
-    titel: Projektwerkstatt
-    kurz: Projektwerkstatt
-    hook: Werkzeug fertigstellen
-    python: [Wiederholung nach Bedarf]
-    phase: 3
-    lerneinheit: v21-projektwerkstatt.html
-    labor: null
-    notebook: null
-    freigabe: null
-
   - nr: V22
     titel: Code-Walkthroughs & Klausurtraining
     kurz: Klausurtraining
     hook: eigenen Code erklären
     python: [Klausuraufgaben von Hand]
-    phase: 3
+    semester: 2
     lerneinheit: v22-klausurtraining.html
     labor: null
     notebook: null

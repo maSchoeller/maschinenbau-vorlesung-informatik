@@ -123,7 +123,7 @@
 
   function fertigBlock() {
     return el('section', { class: 'np-block', 'aria-labelledby': 'h-lektion' }, [
-      el('h2', { id: 'h-lektion', text: 'Alle 22 Lektionen sind abgeschlossen' }),
+      el('h2', { id: 'h-lektion', text: 'Alle Lektionen sind abgeschlossen' }),
       el('p', { text: 'Stark. Jetzt lohnt sich die Wiederholung vor der Klausur.' }),
       el('a', { class: 'k-btn', href: A.url('klausurtrainer.html') }, [el('span', { text: 'Zum Klausurtrainer' }), ic('chevron-right')])
     ]);
@@ -217,7 +217,7 @@
   function start() {
     var sicherheit = setTimeout(function () { wurzel.removeAttribute('data-laedt'); }, 2500);
     A.kurs().then(function (d) {
-      termine = d.termine || [];
+      termine = d.lektionen || [];   /* Lektionen mit Seiten; die 20 Termine des Plans zeigt der Lernpfad */
       clearTimeout(sicherheit);
       hinweis = null;
       zeichnen();

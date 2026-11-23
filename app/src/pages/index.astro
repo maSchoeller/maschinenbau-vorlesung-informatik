@@ -4,7 +4,7 @@
 import App from '../layouts/App.astro';
 import Icon from '../components/Icon.astro';
 import { ladeKurs } from '../lib/kurs.mjs';
-const erste = ladeKurs().termine[0];
+const erste = ladeKurs().lektionen[0];
 ---
 <App pfad="index.html" art="heute" titel="Heute" beschreibung="Dein nächster Schritt im Kurs Informatik für Maschinenbau: weitermachen, aktuelle Lektion, kurzes Warm-up." css={['seiten']} skripte={['stand']}>
   <noscript><style>.np-wurzel[data-laedt] { opacity: 1 !important; }</style></noscript>
@@ -18,7 +18,7 @@ const erste = ladeKurs().termine[0];
           <span class="np-gross__text">Starte mit {erste.nr} · {erste.kurz}</span>
           <Icon id="chevron-right" basis="" />
         </a>
-        <p class="k-small"><a href="lernpfad.html">Alle 22 Lektionen im Lernpfad</a></p>
+        <p class="k-small"><a href="lernpfad.html">Alle 20 Termine im Lernpfad</a></p>
       </section>
     </div>
   </main>

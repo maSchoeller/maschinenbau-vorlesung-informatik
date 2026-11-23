@@ -2,6 +2,8 @@
 
 Stand: 2026-11-23. Gilt für Lektionen, die nach MDX umgezogen sind (bisher V07 als Pilot). Vertrag: `docs/app/ARCHITEKTUR.md`, Abschnitt 15.
 
+Der Kurs wird auf 20 Termine umgestellt (`KONZEPT.md`, Architektur Abschnitt 16). Neue Terminseiten entstehen direkt als MDX. V11, V12, V13, V15, V20 und V21 sind aus der App genommen und werden nicht umgezogen.
+
 ## Wo was liegt
 
 ```
@@ -146,7 +148,7 @@ npm run selbsttest      # solange die alte Seite noch daneben liegt: MDX und Ori
 git rm ../site/lektionen/v08-datenstrukturen.html ../site/lektionen/v08-labor.html
 ```
 
-Der Konverter versucht jeden Block in der lesbarsten Form (Baustein oder Markdown), übersetzt ihn sofort zurück und vergleicht mit dem Original. Passt es nicht, nimmt er die nächste Stufe: HTML-Element mit umgezogenem Inhalt, zuletzt `<Html>`. Das Ergebnis ist deshalb immer gleich dem Original; der Bericht nennt den Anteil, der noch als `<Html>` übrig ist. Stand 2026-11-23: alle 42 Lektionsseiten lassen sich so umziehen, höchstens 11 % einer Seite bleiben roh (V03-Lerneinheit), bei 37 Seiten 0 %.
+Der Konverter versucht jeden Block in der lesbarsten Form (Baustein oder Markdown), übersetzt ihn sofort zurück und vergleicht mit dem Original. Passt es nicht, nimmt er die nächste Stufe: HTML-Element mit umgezogenem Inhalt, zuletzt `<Html>`. Das Ergebnis ist deshalb immer gleich dem Original; der Bericht nennt den Anteil, der noch als `<Html>` übrig ist. Stand 2026-11-23 (vor dem Entfernen der sechs entfallenen Lektionen gemessen): alle 42 Lektionsseiten lassen sich so umziehen, höchstens 11 % einer Seite bleiben roh (V03-Lerneinheit), bei 37 Seiten 0 %.
 
 „Gleich“ heißt (`app/src/lib/mdx/vergleich.mjs`): gleiche Elemente in gleicher Reihenfolge, gleiche Attribute, gleicher Text. Leerraum zählt in `<pre>` und `<textarea>` zeichengenau, im Fließtext als ein Leerzeichen, an Blockgrenzen gar nicht. Python in `<script type="text/x-python">` wird verglichen, wie `aufgaben.js` es liest; JSON nach seinem Wert.
 

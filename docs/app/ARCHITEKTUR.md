@@ -24,7 +24,7 @@ Grundsätze:
 ```
 site/                    Inhalte (Bestand). Nur die in Abschnitt 11 genannten Dateien dürfen geändert werden.
 app/                     Astro-Projekt (Hülle, neue Seiten, Build)
-  kurs.yaml              eine Quelle für die 22 Termine (Titel, Hook, Python, Phase, Dateien, Freigabe)
+  kurs.yaml              eine Quelle für den Kurs: Semester, Einheiten, 20 Termine, Lektionen mit Seiten (Abschnitt 16)
   inhalte/vNN/           umgezogene Lektionen: lerneinheit.mdx, labor.mdx und ihre Python-/JSON-Dateien (Abschnitt 15)
   astro.config.mjs       output static, build.format 'file', outDir dist
   src/layouts/App.astro  die Hülle (Leiste, Kopfzeile, Panel, Skript-Reihenfolge)
@@ -109,8 +109,8 @@ Dateizuständigkeit ist strikt. Wer etwas außerhalb seines Bereichs braucht, ä
 | Bereich | Reiter in der Kopfzeile | Seiten |
 |---|---|---|
 | Heute | keine | `index.html` |
-| Kurs | Lernpfad · Projekt · Glossar · Über den Kurs | `lernpfad.html`, `projekt.html`, `glossar.html`, `kurs.html` |
-| Kurs, in einer Lektion | Lektionswähler „V07 · Zerlegung und Funktionen“ (öffnet Liste aller 22 mit Fortschritt) · Pfeile vorige/nächste Lektion · Umschalter Verstehen / Labor · „Notebook“ als Link | `lektionen/vXX-*.html` |
+| Kurs | Lernpfad · Glossar · Über den Kurs | `lernpfad.html`, `glossar.html`, `kurs.html` |
+| Kurs, in einer Lektion | Lektionswähler „V07 · Zerlegung und Funktionen“ (öffnet Liste aller Lektionen mit Fortschritt, nach Semester) · Pfeile vorige/nächste Lektion · Umschalter Verstehen / Labor · „Notebook“ als Link | `lektionen/vXX-*.html` |
 | Werkbank | Programme · PAP-Editor · 3D-Vorschau | `werkbank.html`, `pap-editor.html`, `werkzeuge/3d-vorschau.html` |
 | Bibliothek | keine | `bibliothek.html` |
 | Klausur | Klausurtrainer · Probeklausur | `klausurtrainer.html`, `probeklausur-2026-27.html` |
@@ -182,7 +182,7 @@ Fortschritt liegt wie bisher in `KursSpeicher`: `inf-mb/<lektion>/done` (Abschni
 ## 5. Seiten der App (neu)
 
 - **Heute** (`index.html`): 1. „Weiter, wo du warst“ (ein großer Knopf zur letzten Seite). 2. Die aktuelle Lektion (erste nicht abgeschlossene bzw. nach Freigabedatum) mit ihren zwei Schritten Verstehen und Labor und deren Stand. 3. „Warm-up“: drei offene Aufgaben aus früheren, bereits begonnenen Lektionen (Wiederholung). 4. Dezent: Hinweis auf Installation und Konto, solange nicht geschehen. Kein Dashboard, keine Statistikflut.
-- **Lernpfad** (`lernpfad.html`): drei Phasen, 22 Stationen mit Titel, Hook, neuem Python, Stand (offen, begonnen, fertig) und direkten Zielen Verstehen/Labor. Noch nicht freigegebene Lektionen (Feld `freigabe` in `kurs.yaml`, Datum) sind sichtbar, aber als „ab TT.MM.“ markiert und nicht gesperrt (Hinweis statt Schloss).
+- **Lernpfad** (`lernpfad.html`): die 20 Termine des Plans in zwei Semestern (Abschnitt 16). Je Termin Theorie und Programmieren mit „Teil x von y“, wenn eine Einheit über mehrere Termine läuft. Rechts die eigenen Seiten des Termins mit Stand und den Zielen Verstehen/Labor; solange es sie nicht gibt, das bisherige Material (Lektionen, aus denen der Termin entsteht) mit Stand. Freigabedaten (Feld `freigabe`) erscheinen als „ab TT.MM.“, gesperrt wird nichts.
 - **Über den Kurs** (`kurs.html`): Leitidee, Wissens-Ampel, Ablauf eines Termins, „Startklar“ (Inhalte der bisherigen Startseite `site/index.html`, redaktionell unverändert).
 - **Glossar** (`glossar.html`): alle Begriffe A bis Z mit Erklärung und Link zur Lektion der ersten Einführung; Filterfeld.
 - **Suche** (Dialog, Strg+K): durchsucht `suche.json`; Gruppen Lektionen, Aufgaben, Bibliothek, Glossar; Pfeiltasten und Enter.
@@ -364,3 +364,26 @@ Zweck: Die Lektionen sind 3,5 MB handgeschriebenes HTML aus wiederkehrenden Baus
 - **Tests:** `skripte/tests/mdx.test.mjs` (Bausteine, Vergleich), `quelle.test.mjs` (jede MDX-Lektion übersetzbar; gebaut: Inhalt genau einmal, Skripte in Reihenfolge). Die Browser-Prüfungen laufen unverändert über alle Seiten.
 
 Stand 2026-11-23: V07 (Lerneinheit und Labor) ist umgezogen. Der Konverter zieht alle 42 Lektionsseiten mit gleichem Ergebnis um. Offen: Bausteine für Seitenrahmen, Video, Bild, Wissens-Ampel, Deep Dive, „Für Dozierende“ und die Aufgabentypen des Labors (stehen noch als HTML im MDX); Prüfung im Build, dass jede Musterlösung ihre Tests besteht und kein Konstrukt vor seiner Einführung vorkommt.
+
+## 16. Kursplan: 20 Termine
+
+Seit 2026-11-23 gilt der Plan aus `KONZEPT.md` (Herleitung und Zuordnung des alten Materials: `KONZEPT-MIGRATION.md`): 20 Termine in zwei Semestern, je Termin 4 Blöcke à 30 Minuten. Der Stoff ist in Einheiten gegliedert (Programmierstrang P1–P11, Theoriestrang T1–T11), die über mehrere Termine laufen. Die Seiten folgen den Terminen: je Termin eine Lerneinheit und ein Programmierlabor.
+
+`app/kurs.yaml` ist die eine Quelle und hat vier Abschnitte:
+
+| Abschnitt | Inhalt |
+|---|---|
+| `semester` | die zwei Semester (Name, Bereich, Leitsatz) |
+| `einheiten` | P1–P11 und T1–T11 mit Name, Kurzname, Zahl der Blöcke und `stoff`: den Lektionen des bisherigen Kurses, aus denen die Einheit entsteht. Ohne `stoff` wird die Einheit neu gebaut |
+| `termine` | die 20 Termine in Reihenfolge: Blöcke je Einheit unter `theorie` und `programmieren`, `puffer`, optional `freigabe` und `lektion` (Kennung der eigenen Seiten, sobald es sie gibt) |
+| `lektionen` | Seiten, die es gibt (Kennung, Titel, Dateien, Notebook). Bis zum Neuzuschnitt sind das die 16 bleibenden Lektionen des bisherigen Kurses |
+
+Der Build (`src/lib/kurs.mjs`) prüft den Plan: genau 20 Termine, je Termin 4 Blöcke, die Blöcke jeder Einheit in den Terminen ergeben ihre Gesamtzahl, jede genannte Einheit und Lektion gibt es. Er berechnet „Teil x von y“ und je Termin das bisherige Material (Vereinigung des `stoff` seiner Einheiten).
+
+`kurs.json` für den Browser: `semester`, `einheiten`, `termine` (die 20 Termine des Plans) und `lektionen` (Seiten mit Abschnitten und Aufgaben). Lektionswähler, Heute, Fortschritt, Suche und die Kursübersicht für Dozierende arbeiten mit `lektionen`; nur der Lernpfad zeigt die Termine. In der Hülle heißt eine Lektion an einigen Stellen noch „termin“ (`terminZuDatei`, `KursApp.fortschritt.termin`); gemeint ist dort immer ein Eintrag aus `lektionen`.
+
+Übergang: Die Seiten der 20 Termine gibt es noch nicht. Sie entstehen Termin für Termin als MDX (Abschnitt 15) aus dem bisherigen Material und mit neuen Beispielen. Ist ein Termin fertig, bekommt er einen Eintrag unter `lektionen` und `lektion: <Kennung>` am Termin; die Lektionen, die ganz in neuen Terminen aufgegangen sind, entfallen dann. Neue Terminseiten brauchen eigene Kennungen, die sich nicht mit denen des bisherigen Materials (V01 bis V22) überschneiden, weil der Lernstand unter der Kennung gespeichert wird; das Muster dafür ist beim ersten Termin festzulegen (`kurs.mjs` erlaubt bisher nur `V` und zwei Ziffern).
+
+Aus der App genommen (2026-11-23): V11, V12, V13, V15, V20, V21 und die Projektseite samt Reiter „Projekt“. Ihre Notebooks, Explorable-Skripte, Bilder und Videos liegen noch unter `site/` und werden mit ausgeliefert, aber nirgends verlinkt. Das Modul `bauteil3d` und die 3D-Vorschau bleiben als Beispielwelt.
+
+Offen: Die bleibenden Lektionen verweisen an rund 80 Stellen auf die Projektseite oder auf entfallene Lektionen (ins Leere, bis die Seiten neu gebaut sind). „Über den Kurs“ (`kurs.astro`, Inhalte aus `site/index.html`), `DESIGN.md` und `briefing/LEKTION-BRIEF.md` beschreiben noch den alten Kurs (Leitidee, Wissens-Ampel, 22 Termine). Heute und der Lektionswähler gehen die Lektionen in der bisherigen Reihenfolge durch, nicht in der des neuen Plans.

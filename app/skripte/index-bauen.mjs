@@ -1,6 +1,6 @@
 /* =============================================================
    index-bauen.mjs – Daten aus kurs.yaml und den site/-Seiten (Vertrag, Abschnitt 3)
-     dist/app/daten/kurs.json     Termine mit Abschnitten und Aufgaben
+     dist/app/daten/kurs.json     Plan (20 Termine, Einheiten) und Lektionen mit Abschnitten und Aufgaben
      dist/app/daten/suche.json    Lektionen, Abschnitte, Aufgaben, Bibliothek, Glossar
      dist/app/daten/glossar.json  alle abbr.k-begriff[data-erklaerung], je Begriff die erste Lektion
      api/daten/aufgaben.json      Aufgabentexte und Musterlösungen für den Tutor (nicht öffentlich!)
@@ -85,7 +85,7 @@ export function glossarSammler() {
 
 /* Glossar ohne den übrigen Index (für glossar.astro, das beim Astro-Build vor index-bauen läuft) */
 export function sammleGlossar() {
-  const { termine } = ladeKurs();
+  const { lektionen: termine } = ladeKurs();
   const g = glossarSammler();
   for (const t of termine) {
     g.sammle(lies(`lektionen/${t.lerneinheit}`), `lektionen/${t.lerneinheit}`, t.nr);
@@ -96,7 +96,7 @@ export function sammleGlossar() {
 }
 
 export default function indexBauen() {
-  const { phasen, termine } = ladeKurs();
+  const { semester, einheiten, termine: plan, lektionen: termine } = ladeKurs();
   const suche = [];
   const glossar = glossarSammler();
   const aufgabenApi = [];
@@ -147,7 +147,7 @@ export default function indexBauen() {
     const quiz = le.querySelector('[data-quiz]');
     kursApi.push({ nr: t.nr, quiz: quiz ? quiz.getAttribute('data-quiz') : null, abschnitte: abschnitte.map((a) => a.id), stationen: aufgaben.map((a) => ({ id: a.id, teil: a.teil, pruefbar: a.pruefbar })) });
     return {
-      nr: t.nr, titel: t.titel, kurz: t.kurz, hook: t.hook, python: t.python, phase: t.phase, freigabe: t.freigabe,
+      nr: t.nr, titel: t.titel, kurz: t.kurz, hook: t.hook, python: t.python, semester: t.semester, freigabe: t.freigabe,
       lerneinheit: leUrl, labor: t.labor ? `lektionen/${t.labor}` : null, notebook: t.notebook ? `notebooks/${t.notebook}` : null,
       abschnitte, aufgaben,
     };
@@ -164,10 +164,11 @@ export default function indexBauen() {
   for (const g of glossarListe) suche.push({ typ: 'glossar', titel: g.begriff, text: (g.formen ? 'Auch: ' + g.formen.join(', ') + '. ' : '') + kuerzen(g.erklaerung, 140), url: `glossar.html#${g.id}`, lektion: g.lektion });
 
   const daten = path.join(DIST, 'app', 'daten');
-  schreibe(path.join(daten, 'kurs.json'), { phasen, termine: kursTermine });
+  /* termine: die 20 Termine des Plans; lektionen: Seiten, die es gibt, mit Abschnitten und Aufgaben */
+  schreibe(path.join(daten, 'kurs.json'), { semester, einheiten, termine: plan, lektionen: kursTermine });
   schreibe(path.join(daten, 'suche.json'), { eintraege: suche });
   schreibe(path.join(daten, 'glossar.json'), { begriffe: glossarListe });
   schreibe(path.join(API_DATEN, 'aufgaben.json'), { erstellt: new Date().toISOString(), aufgaben: aufgabenApi, kurs: kursApi });
   const nA = kursTermine.reduce((s, t) => s + t.aufgaben.length, 0);
-  console.log(`index-bauen: ${kursTermine.length} Termine, ${nA} Labor-Aufgaben, ${suche.length} Sucheinträge, ${glossarListe.length} Begriffe, ${aufgabenApi.length} Aufgaben mit Lösung für den Tutor`);
+  console.log(`index-bauen: ${plan.length} Termine, ${kursTermine.length} Lektionen, ${nA} Labor-Aufgaben, ${suche.length} Sucheinträge, ${glossarListe.length} Begriffe, ${aufgabenApi.length} Aufgaben mit Lösung für den Tutor`);
 }

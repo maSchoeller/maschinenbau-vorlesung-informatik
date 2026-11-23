@@ -34,7 +34,7 @@ export function appDateien({ art, neu, skripte = [], css = [] }) {
 
 /* Kontext einer Lektionsseite für Kopfzeile und nächsten Schritt */
 export function lektionsKontext(termin, art) {
-  const { phasen, termine } = ladeKurs();
+  const { semester, lektionen } = ladeKurs();
   const vor = nachbar(termin.nr, -1, art);
   const nach = nachbar(termin.nr, 1, art);
   let weiter = null;
@@ -43,5 +43,5 @@ export function lektionsKontext(termin, art) {
     const n = nachbar(termin.nr, 1, 'lerneinheit');
     if (n) weiter = { datei: n.termin.lerneinheit, text: `Weiter mit ${n.termin.nr} · ${n.termin.kurz}` };
   }
-  return { termin, art, vor, nach, weiter, phasen, termine };
+  return { termin, art, vor, nach, weiter, semester, termine: lektionen };
 }
