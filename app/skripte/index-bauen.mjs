@@ -12,13 +12,13 @@ import path from 'node:path';
 import { parse } from 'node-html-parser';
 import { SITE, DIST, API_DATEN } from '../src/lib/pfade.mjs';
 import { ladeKurs } from '../src/lib/kurs.mjs';
-import { alleSeiten } from '../src/lib/quelle.mjs';
+import { alleSeiten, seitenHtml } from '../src/lib/quelle.mjs';
 
 const leer = (s) => String(s || '').replace(/\s+/g, ' ').trim();
 const kuerzen = (s, n) => (s.length > n ? s.slice(0, n - 1).replace(/\s+\S*$/, '') + ' …' : s);
 const zahl = (s) => (/^\d+$/.test(String(s || '')) ? parseInt(s, 10) : null);
 
-function lies(rel) { return parse(fs.readFileSync(path.join(SITE, rel), 'utf8'), { comment: false, blockTextElements: { script: true, style: true, pre: true, textarea: true } }); }
+function lies(rel) { return parse(seitenHtml(rel), { comment: false, blockTextElements: { script: true, style: true, pre: true, textarea: true } }); }
 
 /* Klartext eines Elements ohne Skripte, Editoren und Steuerknöpfe */
 function klartext(el) {

@@ -13,6 +13,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { zerlege, zerlegeText, alleSeiten, umschreiben } from '../../src/lib/quelle.mjs';
 import { SITE, DIST, APP } from '../../src/lib/pfade.mjs';
+import { mdxDatei, mdxSeiten } from '../../src/lib/mdx/inhalte.mjs';
+import { unterschied } from '../../src/lib/mdx/vergleich.mjs';
 
 const GESCHUETZT = [
   /<script\b[^>]*type="text\/x-python"[^>]*>[\s\S]*?<\/script>/g,
@@ -30,6 +32,7 @@ test('es gibt die erwarteten Seiten', () => {
 });
 
 for (const s of seiten) {
+  if (mdxDatei(s)) continue;   /* MDX-Quelle: eigene Tests weiter unten */
   test(`byte-genau: ${s}`, () => {
     const q = zerlege(s, { videoBasis: '' });
     if (q.weiterleitung) return;
@@ -53,6 +56,23 @@ for (const s of seiten) {
       for (const block of q.inhaltOriginal.match(re) || []) {
         assert.equal(zaehle(q.inhalt, block), zaehle(q.inhaltOriginal, block), `geschützter Block verändert: ${block.slice(0, 80)}`);
       }
+    }
+  });
+}
+
+/* Lektionen mit MDX-Quelle: übersetzbar, mit Inhalt und Skripten; solange die alte site/-Seite noch
+   daneben liegt, muss das Ergebnis für den Browser dasselbe sein (src/lib/mdx/vergleich.mjs). */
+for (const s of mdxSeiten()) {
+  test(`mdx: ${s}`, () => {
+    const q = zerlege(s, { videoBasis: '' });
+    assert.ok(q.mdx && q.inhalt.includes('id="inhalt"'), 'Inhalt mit id="inhalt"');
+    assert.ok(q.titel && q.stylesheets.length >= 2 && q.skripte.length >= 2, 'Titel, Stylesheets und Skripte im Kopf');
+    assert.ok(q.skripte.some((x) => x.src && /assets\/js\/speicher\.js$/.test(x.src)), 'speicher.js steht in der Skriptliste');
+    assert.doesNotMatch(q.inhalt, /<x-[a-z]+/, 'kein Teil-Baustein außerhalb seines Bausteins (Erklaerung, Ohne)');
+    const alt = path.join(SITE, s);
+    if (fs.existsSync(alt)) {
+      const o = zerlegeText(fs.readFileSync(alt, 'utf8'), s, { videoBasis: '' });
+      assert.equal(unterschied(o.inhaltOriginal, q.inhaltOriginal), null, 'MDX weicht von der alten site/-Seite ab');
     }
   });
 }

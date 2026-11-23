@@ -9,7 +9,7 @@ Aus der statischen Vorlesungs-Website wird eine installierbare Lern-App (PWA) f�
 
 Grundsätze:
 
-1. **`site/` bleibt die Quelle der Inhalte.** Die 43 Lektionsseiten und Werkzeugseiten werden weiter dort gepflegt (Lektions-Sessions und Videoproduktion arbeiten unverändert; `site/` bleibt auch für sich allein über einen einfachen Dateiserver lauffähig). Die App ist eine Build-Schicht darüber: Sie nimmt den Inhalt jeder Seite unverändert und setzt ihn in die gemeinsame Hülle. Eine spätere Umstellung der Inhalte auf MDX ist ausdrücklich nicht Teil dieser Arbeit.
+1. **`site/` bleibt die Quelle der Inhalte.** Die 43 Lektionsseiten und Werkzeugseiten werden weiter dort gepflegt (Lektions-Sessions und Videoproduktion arbeiten unverändert; `site/` bleibt auch für sich allein über einen einfachen Dateiserver lauffähig). Die App ist eine Build-Schicht darüber: Sie nimmt den Inhalt jeder Seite unverändert und setzt ihn in die gemeinsame Hülle. **Nachtrag 2026-11-23:** Lektionen ziehen lektionsweise nach MDX um (`app/inhalte/`, Abschnitt 15); eine umgezogene Lektion hat nur noch die MDX-Quelle, ihre Seite unter `site/lektionen/` entfällt. Pilot: V07.
 2. **Ohne Login bleibt alles nutzbar** (Lernen, Python, Fortschritt lokal, Werkbank lokal). Konto braucht nur: Abgleich, Teilen, Tutor.
 3. **Offline zuerst.** Lesen und Schreiben gehen immer zuerst lokal; das Netz gleicht im Hintergrund ab.
 4. **Weniger ist mehr.** Keine Funktion, die nicht in diesem Dokument steht. Keine Punkte, Ranglisten, Abzeichen. Details gehören hinter „Mehr“.
@@ -25,10 +25,12 @@ Grundsätze:
 site/                    Inhalte (Bestand). Nur die in Abschnitt 11 genannten Dateien dürfen geändert werden.
 app/                     Astro-Projekt (Hülle, neue Seiten, Build)
   kurs.yaml              eine Quelle für die 22 Termine (Titel, Hook, Python, Phase, Dateien, Freigabe)
+  inhalte/vNN/           umgezogene Lektionen: lerneinheit.mdx, labor.mdx und ihre Python-/JSON-Dateien (Abschnitt 15)
   astro.config.mjs       output static, build.format 'file', outDir dist
   src/layouts/App.astro  die Hülle (Leiste, Kopfzeile, Panel, Skript-Reihenfolge)
   src/components/        Bausteine der Hülle und der neuen Seiten
-  src/lib/               Build-Logik: kurs.mjs (kurs.yaml lesen), quelle.mjs (site/-HTML zerlegen), navigation.mjs
+  src/lib/               Build-Logik: kurs.mjs (kurs.yaml lesen), quelle.mjs (site/-HTML zerlegen), navigation.mjs,
+                         mdx/ (MDX übersetzen, Bausteine, Vergleich)
   src/pages/             neue Seiten und Durchreich-Routen für site/-Seiten
   public/app/            Client-Skripte und CSS der App (nicht gebündelt, per <script is:inline src>)
   skripte/               Node-Skripte: nach-build.mjs (ruft die folgenden), assets-kopieren, index-bauen, sw-bauen, pyodide-holen
@@ -56,6 +58,7 @@ Dateizuständigkeit ist strikt. Wer etwas außerhalb seines Bereichs braucht, ä
 | Werkbank | `src/pages/werkbank.astro`, `geteilt.astro`, `public/app/werkbank.js`, `geteilt.js`, `werkbank.css` |
 | Tutor | `api/src/functions/tutor.js`, `api/src/lib/tutor/`, `api/tests/tutor*.js` (Tests, Angriffs- und Oberflächenlauf), `api/tests/tutor-angriffe.json`, `public/app/tutor.js`, `tutor.css` |
 | Dozent | `api/src/functions/dozent.js`, `api/src/lib/dozent.js`, `gruppenbild.js`, `kursstruktur.js`, `api/tests/dozent.test.js`, `src/pages/dozent.astro`, `public/app/dozent.js`, `dozent.css`, `skripte/pruefe-dozent.mjs` (Abschnitt 14) |
+| Inhalte (MDX) | `app/inhalte/`, `app/src/lib/mdx/`, `app/skripte/html-nach-mdx.mjs`, `app/skripte/tests/mdx.test.mjs`, `docs/app/INHALTE.md` (Abschnitt 15) |
 | Integration | Zusammenspiel über alle Bereiche: `app/skripte/pruefe-alles.mjs`, `pruefe-zusammenspiel.mjs`, `skripte/tests/kern.test.mjs`, `docs/app/uebergaben/integration.md`; darf für das Zusammenspiel in `app/`, `api/`, `infra/`, `docs/app/` ändern |
 | Tests | `tests/e2e/`, `playwright.config.*`, Wurzel-`package.json` (nur Test-Skripte) |
 
@@ -71,6 +74,7 @@ Dateizuständigkeit ist strikt. Wer etwas außerhalb seines Bereichs braucht, ä
    - die `<script src>`-Tags am Ende (Reihenfolge und `defer` erhalten).
    Der Inhalt wird byte-genau übernommen (Leerzeichen in `<pre>`, `<textarea>`, `<script type="text/x-python">` und `application/json` dürfen sich nicht ändern). Nur diese Umschreibungen sind erlaubt: Verweise auf `index.html#lernpfad` → `lernpfad.html`; `<source src="…/assets/video/X.mp4">` → `${VIDEO_BASIS}/X.mp4`, wenn die Umgebungsvariable `VIDEO_BASIS` gesetzt ist.
    `lektionen/v03-training.html` ist nur eine Weiterleitung und wird als solche übernommen. `werkzeuge/labor-test.html` wird nicht veröffentlicht.
+   Hat eine Lektionsseite eine MDX-Quelle (`app/inhalte/vNN/lerneinheit.mdx` bzw. `labor.mdx`), liefert `quelle.mjs` dieselben Felder aus dem übersetzten MDX (Abschnitt 15); die Umschreibungen gelten unverändert.
 3. **`skripte/nach-build.mjs`** (läuft nach Astro, ruft der Reihe nach):
    - `assets-kopieren.mjs`: `site/assets/**` → `dist/assets/**`, `site/notebooks/**` → `dist/notebooks/**`. Mit gesetztem `VIDEO_BASIS` werden `*.mp4` ausgelassen.
    - `index-bauen.mjs`: erzeugt aus `kurs.yaml` und den `site/`-Seiten
@@ -305,6 +309,7 @@ Nur diese (alle so, dass `site/` für sich allein weiter funktioniert):
 - `site/assets/js/kurs.js`: Pyodide-Basis über `window.KURS_PYODIDE_BASIS` überschreibbar machen; sicherstellen, dass keine Laufzeit-Abhängigkeit zu fremden Hosts bleibt, wenn die Basis gesetzt ist (PWA-Rolle). Gleiches in `editor.js`, falls dort Pakete nachgeladen werden.
 - `site/assets/img/icons.svg`: neue Symbole für die Hülle im vorhandenen Stil (Fundament).
 Alles andere in `site/` ist tabu. Fällt ein Fehler im Bestand auf, wird er gemeldet, nicht nebenbei behoben.
+Ausnahme: Beim Umzug einer Lektion nach MDX (Abschnitt 15) werden ihre beiden Seiten unter `site/lektionen/` gelöscht.
 
 ## 12. Tests und Abnahme
 
@@ -347,3 +352,15 @@ Regeln:
 Seite `dozent.html` (`dozent.js`): Lektionswahl (Vorauswahl aus der Adresse `#v07`, sonst die späteste Lektion, in der mindestens ein Viertel der Konten aktiv ist), dann drei Abschnitte: „Wie weit ist die Gruppe?“ (vier Kennzahlen), „Wo hängt es?“ (die drei am häufigsten begonnenen, nicht gelösten Aufgaben und die Tabelle aller Stationen mit Verweis ins Labor), „Lerneinheit“ (abgehakte Abschnitte). Titel und Reihenfolge kommen aus `kurs.json`. Die Seite ruft die API nur, wenn `/api/ich` das Konto als Dozent meldet; Gäste sehen den Anmelde-Hinweis. Kein Eintrag in der Leiste: Der Weg führt über den Verweis auf der Kontoseite, den nur Dozierende sehen.
 
 Nicht umgesetzt (bewusst): Ansicht je Person, Verlauf über die Zeit, Auswertung je Quizfrage (gespeichert wird nur das Gesamtergebnis je Quiz), Live-Modus für die Präsenz.
+
+## 15. Lektionen als MDX
+
+Zweck: Die Lektionen sind 3,5 MB handgeschriebenes HTML aus wiederkehrenden Bausteinen. Als MDX stehen Fließtext als Markdown, die Bausteine als Elemente mit Namen und der Python-Code der Aufgaben in eigenen Dateien. Anleitung zum Schreiben und Umziehen: `docs/app/INHALTE.md`.
+
+- **Quelle:** `app/inhalte/vNN/lerneinheit.mdx` und `labor.mdx`, daneben Unterordner `lerneinheit/` und `labor/` mit Python (`<kennung>.tests.py`, `.solution.py`, `.vorlage.py`) und JSON. Adressen und Dateinamen der Seiten bleiben wie in `kurs.yaml`. Gibt es die MDX-Datei, ist sie die einzige Quelle der Seite.
+- **Übersetzen** (`src/lib/mdx/`): `@mdx-js/mdx` übersetzt die Datei beim Build; statt React entsteht ein Baum aus schlichten Knoten (`knoten.mjs`), den die Bausteine (`bausteine.mjs`) zu genau dem HTML machen, das `kurs.js`, `labor.js`, `aufgaben.js` und das CSS erwarten. Kein Framework im Browser, das Ergebnis ist statisches HTML wie bisher. `quelle.mjs` liefert für eine MDX-Lektion dieselben Felder wie für eine `site/`-Seite; Hülle, Index, Glossar, Suche und die Tutor-Daten lesen das übersetzte HTML und merken keinen Unterschied.
+- **Gleichheit beim Umzug:** `skripte/html-nach-mdx.mjs` zieht eine Seite um und prüft jeden Block gegen das Original (`vergleich.mjs`: gleiche Elemente, Attribute und Texte; Leerraum zählt, wo der Browser ihn zeigt). Was sich nicht lesbar umziehen lässt, bleibt als `<Html>`-Block unverändert. Solange die alte Seite noch neben der MDX-Datei liegt, vergleicht `npm run selbsttest` beide.
+- **Fehler brechen den Build ab:** unbekannter Baustein, fehlende Code-Datei, `<Vorhersage>` ohne richtige Antwort, Kopf ohne Pflichtfeld. Die Meldung nennt Datei und Zeile.
+- **Tests:** `skripte/tests/mdx.test.mjs` (Bausteine, Vergleich), `quelle.test.mjs` (jede MDX-Lektion übersetzbar; gebaut: Inhalt genau einmal, Skripte in Reihenfolge). Die Browser-Prüfungen laufen unverändert über alle Seiten.
+
+Stand 2026-11-23: V07 (Lerneinheit und Labor) ist umgezogen. Der Konverter zieht alle 42 Lektionsseiten mit gleichem Ergebnis um. Offen: Bausteine für Seitenrahmen, Video, Bild, Wissens-Ampel, Deep Dive, „Für Dozierende“ und die Aufgabentypen des Labors (stehen noch als HTML im MDX); Prüfung im Build, dass jede Musterlösung ihre Tests besteht und kein Konstrukt vor seiner Einführung vorkommt.

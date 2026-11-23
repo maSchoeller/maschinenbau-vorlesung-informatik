@@ -18,10 +18,12 @@ export function ladeKurs() {
     if (!/^V\d\d$/.test(nr)) fehler(`Termin ${i + 1}: nr "${nr}" ist ungültig`);
     for (const k of ['titel', 'kurz', 'hook', 'lerneinheit']) if (!t[k]) fehler(`${nr}: Feld ${k} fehlt`);
     if (!phasen.some((p) => p.nr === t.phase)) fehler(`${nr}: Phase ${t.phase} unbekannt`);
+    /* Quelle einer Lektionsseite: app/inhalte/vNN/<feld>.mdx (umgezogen) oder site/lektionen/<datei> */
     const pruefe = (ordner, datei, feld) => {
       if (datei == null) return null;
       const p = path.join(SITE, ordner, datei);
-      if (!fs.existsSync(p)) fehler(`${nr}: ${feld} "${ordner}/${datei}" existiert nicht`);
+      const mdx = ordner === 'lektionen' ? path.join(APP, 'inhalte', nr.toLowerCase(), feld + '.mdx') : null;
+      if (!fs.existsSync(p) && !(mdx && fs.existsSync(mdx))) fehler(`${nr}: ${feld} "${ordner}/${datei}" existiert nicht (auch nicht als inhalte/${nr.toLowerCase()}/${feld}.mdx)`);
       return String(datei);
     };
     let freigabe = t.freigabe == null ? null : t.freigabe;

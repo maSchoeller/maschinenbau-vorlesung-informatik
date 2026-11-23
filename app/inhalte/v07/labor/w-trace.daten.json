@@ -1,0 +1,9 @@
+{"code":["def verdopple(x):","    y = 2 * x","    return y","a = 5","b = verdopple(a)","print(a, b)"],
+"vars":["a","b","x","y"],
+"steps":[
+{"line":4,"set":{"a":"5"},"hint":"Die Zeilen 1 bis 3 legen die Funktion nur an, der Rumpf läuft noch nicht. Das Programm beginnt bei Zeile 4: a bekommt den Wert 5."},
+{"line":5,"set":{"x":"5"},"hint":"Aufruf verdopple(a): Python legt einen neuen Frame an. Das Argument ist der Wert von a, also 5, und landet im Parameter x. Der Frame hat sein eigenes x."},
+{"line":2,"set":{"y":"10"},"hint":"Im Rumpf: y = 2 * x = 2 * 5 = 10. y ist lokal und gehört nur zu diesem Frame."},
+{"line":5,"set":{"b":"10"},"hint":"return y (Zeile 3) gibt 10 zurück und beendet die Funktion. Der Frame mit x und y wird abgebaut. Zurück in Zeile 5 wird der Rückgabewert der Variablen b zugewiesen."},
+{"line":6,"out":"5 10","hint":"print gibt a und b aus. a ist unverändert 5: Die Funktion hat nur ihre eigene Kopie x verändert."}
+]}

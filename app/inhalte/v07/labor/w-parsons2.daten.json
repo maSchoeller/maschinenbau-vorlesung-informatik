@@ -1,0 +1,1 @@
+{"solution": ["def pruefe(tau_vorh, tau_zul=40.0):", "    if tau_vorh <= tau_zul:", "        return 'ok'", "    else:", "        return 'zu hoch'", "print(pruefe(18.6))"], "distractors": ["        print('ok')", "def pruefe(tau_vorh, tau_zul):"], "alts": []}
