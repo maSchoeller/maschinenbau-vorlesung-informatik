@@ -8,7 +8,8 @@
     "dev": "astro dev --port 4301",
     "build": "astro build && node skripte/nach-build.mjs",
     "pruefen": "node skripte/pruefe-seiten.mjs",
-    "selbsttest": "node --test \"skripte/tests/*.test.mjs\""
+    "selbsttest": "node --test \"skripte/tests/*.test.mjs\"",
+    "pruefen:alles": "node skripte/pruefe-alles.mjs"
   },
   "dependencies": {
     "astro": "7.4.13",

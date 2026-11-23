@@ -74,6 +74,7 @@
     } } });
   }
   function beobachten(reg) {
+    if (!reg) return;
     if (reg.waiting && navigator.serviceWorker.controller) updateHinweis(reg);
     reg.addEventListener('updatefound', function () {
       var w = reg.installing;
@@ -94,6 +95,8 @@
     swBereit = new Promise(function (ok) {
       function los() {
         navigator.serviceWorker.register(WURZEL + 'sw.js', { scope: WURZEL }).then(function (reg) {
+          /* blockierter Service Worker (Richtlinie, Testbrowser): register liefert u. U. nichts */
+          if (!reg) { ok(null); return; }
           registrierung = reg; beobachten(reg); ok(reg);
           var zuletzt = Date.now();
           document.addEventListener('visibilitychange', function () {
@@ -175,32 +178,37 @@
     /* b) Python offline */
     var py = el('div', { class: 'pwa-block' });
     box.appendChild(py);
-    pythonBlock(py);
+    var pakete = pythonBlock(py);
 
-    /* c) Speicher */
+    /* c) Einzelheiten hinter „Mehr“ (Weniger ist mehr): Pakete, Speicher, Offline-Daten löschen */
+    var mehr = el('details', { class: 'pwa-mehr' }, [el('summary', { text: 'Mehr' })]);
+    box.appendChild(mehr);
+    if (pakete) mehr.appendChild(pakete);
     var sp = el('div', { class: 'pwa-block' });
-    box.appendChild(sp);
+    mehr.appendChild(sp);
     speicherBlock(sp, status);
 
     wurzel.appendChild(box);
 
     /* Status des Service Workers */
-    var nachfragen = 0;
+    var nachfragen = 0, gescheitert = false;
     function statusZeigen() {
-      if (!hatSW) { status.textContent = 'Offline-Betrieb ist in diesem Browser oder auf dieser Adresse nicht verfügbar (nötig: https).'; return; }
+      if (gescheitert) return;
+      if (!hatSW) { status.textContent = 'Ohne Netz geht die App in diesem Browser oder auf dieser Adresse nicht (nötig: https).'; return; }
       swStatus().then(function (s) {
+        if (gescheitert) return;   /* Einrichtung gescheitert: die Meldung bleibt stehen */
         if (s && s.meta) {
           var luecken = (s.meta.fehlend || []).length;
-          status.textContent = 'Die Seiten dieser App sind auf diesem Gerät gespeichert (Version ' + s.version + ', ' + mb(s.meta.bytes) + ')' + (luecken ? '; ' + luecken + ' Dateien fehlen noch und werden beim Besuchen nachgeladen.' : '. Sie funktionieren auch ohne Netz.');
+          status.textContent = 'Die Seiten sind auf diesem Gerät gespeichert' + (luecken ? '; einige fehlen noch und kommen beim Besuchen dazu.' : ' und funktionieren auch ohne Netz.');
         } else {
-          status.textContent = 'Der Offline-Speicher wird eingerichtet. Das dauert beim ersten Besuch einen Moment.';
+          status.textContent = 'Die App richtet sich gerade für die Nutzung ohne Netz ein.';
           if (nachfragen++ < 40) setTimeout(statusZeigen, 1500);
         }
       });
     }
     statusZeigen();
     if (swBereit) swBereit.then(function (reg) {
-      if (!reg) { if (hatSW) status.textContent = 'Der Offline-Speicher konnte nicht eingerichtet werden.'; return; }
+      if (!reg) { if (hatSW) { gescheitert = true; status.textContent = 'Die App konnte sich in diesem Browser nicht für die Nutzung ohne Netz einrichten.'; } return; }
       navigator.serviceWorker.ready.then(function () { setTimeout(statusZeigen, 400); });
       navigator.serviceWorker.addEventListener('controllerchange', function () { setTimeout(statusZeigen, 400); });
     });
@@ -208,10 +216,9 @@
 
   function pythonBlock(py) {
     py.appendChild(el('h3', { class: 'pwa-unter', text: 'Python offline' }));
-    var text = el('p', { class: 'pwa-text', text: 'Der Python-Kern wird beim ersten Ausführen automatisch gespeichert. Mit dem Knopf lädst du zusätzlich alle Pakete des Kurses vorab, damit auch numpy, pandas und Diagramme ohne Netz laufen.' });
+    var text = el('p', { class: 'pwa-text', text: 'Lädt Python mit allem, was der Kurs braucht, auf dieses Gerät. Danach laufen auch Diagramme ohne Netz.' });
     py.appendChild(text);
     var liste = el('ul', { class: 'pwa-liste' });
-    py.appendChild(liste);
     var zeile = el('div', { class: 'pwa-zeile' });
     var knopf = el('button', { type: 'button', class: 'k-btn k-btn--small' }, [bild('sync'), el('span', { text: 'Python offline bereit machen' })]);
     var stopp = el('button', { type: 'button', class: 'k-btn k-btn--small k-btn--ghost', hidden: '' }, ['Abbrechen']);
@@ -245,7 +252,7 @@
         ks.forEach(function (r) { schonDa[new URL(r.url).pathname.split('/').pop()] = true; });
       });
     }
-    if (!hatCaches) { py.hidden = true; return; }
+    if (!hatCaches) { py.hidden = true; return null; }
     fetch(WURZEL + 'pyodide/gruppen.json', { cache: 'no-cache' }).then(function (r) { if (!r.ok) throw new Error('keine Pyodide-Dateien'); return r.json(); }).then(function (d) {
       daten = d; cacheName = 'kurs-pyodide-' + d.version;
       return cacheLesen();
@@ -281,10 +288,11 @@
       });
     });
     stopp.addEventListener('click', function () { if (fortschrittsLauf) fortschrittsLauf.abort(); });
+    return liste;
   }
 
   function speicherBlock(sp, status) {
-    sp.appendChild(el('h3', { class: 'pwa-unter', text: 'Speicher' }));
+    sp.appendChild(el('h3', { class: 'pwa-unter', text: 'Speicher auf diesem Gerät' }));
     var beleg = el('p', { class: 'pwa-text', text: 'Belegter Speicher wird ermittelt…' });
     var dauer = el('p', { class: 'pwa-text' });
     var z1 = el('div', { class: 'pwa-zeile' });

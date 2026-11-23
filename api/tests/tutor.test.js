@@ -5,7 +5,7 @@
 const { describe, it, beforeEach, afterEach } = require('node:test');
 const assert = require('node:assert/strict');
 const h = require('./hilfe');
-h.lade(['tutor']);
+h.lade(['tutor', 'ich']);
 
 const modell = require('../src/lib/tutor/modell');
 const kontext = require('../src/lib/tutor/kontext');
@@ -49,7 +49,7 @@ function frage(text, k = { lektion: 'V07', seite: 'labor', aufgabe: 't-1' }, fru
 }
 const post = (body, benutzer = 'u1', extra = {}) => h.aufruf('POST', '/api/tutor', { benutzer, body, ...extra });
 
-const ENV = ['ANTHROPIC_API_KEY', 'TUTOR_MODELL', 'TUTOR_PRUEFER', 'TUTOR_LIMIT_NUTZER_TAG', 'TUTOR_LIMIT_KURS_TAG', 'TUTOR_DOPPEL', 'WEBSITE_INSTANCE_ID'];
+const ENV = ['KURS_CODE', 'ANTHROPIC_API_KEY', 'TUTOR_MODELL', 'TUTOR_PRUEFER', 'TUTOR_LIMIT_NUTZER_TAG', 'TUTOR_LIMIT_KURS_TAG', 'TUTOR_DOPPEL', 'WEBSITE_INSTANCE_ID'];
 let envVorher;
 beforeEach(() => {
   envVorher = Object.fromEntries(ENV.map((k) => [k, process.env[k]]));
@@ -110,6 +110,33 @@ describe('Zugang und Eingaben', () => {
     assert.equal(r.status, 200);
     assert.match(r.daten.antwort, /Modell-Doppel/);
     assert.match(r.daten.antwort, /Aufgabe t-1/);
+  });
+  it('KURS_CODE: Tutor erst nach Freischaltung (403 freischaltung, nichts gezählt), falscher Code 403, Versuche begrenzt', async () => {
+    process.env.KURS_CODE = 'Welle Lager Zahnrad';
+    const c = skript();
+    modell._setzeClient(c);
+    const r = await post(frage('Hallo'));
+    assert.equal(r.status, 403);
+    assert.equal(r.daten.fehler, 'freischaltung');
+    assert.equal(c.aufrufe.length, 0);
+    assert.equal((await h.aufruf('GET', '/api/ich', { benutzer: 'u1' })).daten.freigeschaltet, false);
+    const falsch = await h.aufruf('POST', '/api/ich/freischalten', { benutzer: 'u1', body: { code: 'raten' } });
+    assert.equal(falsch.status, 403);
+    assert.equal(falsch.daten.fehler, 'code-falsch');
+    assert.equal((await h.aufruf('POST', '/api/ich/freischalten', { body: { code: 'x' } })).status, 401);
+    const gut = await h.aufruf('POST', '/api/ich/freischalten', { benutzer: 'u1', body: { code: '  welle  lager ZAHNRAD ' } });
+    assert.equal(gut.status, 200);
+    assert.equal((await h.aufruf('GET', '/api/ich', { benutzer: 'u1' })).daten.freigeschaltet, true);
+    assert.equal((await post(frage('Hallo'))).status, 200);
+    assert.equal((await post(frage('Hallo'), 'u2')).status, 403, 'gilt je Konto');
+    for (let i = 0; i < 10; i++) await h.aufruf('POST', '/api/ich/freischalten', { benutzer: 'u3', body: { code: 'raten' + i } });
+    const gesperrt = await h.aufruf('POST', '/api/ich/freischalten', { benutzer: 'u3', body: { code: 'Welle Lager Zahnrad' } });
+    assert.equal(gesperrt.status, 429, 'nach 10 Versuchen am Tag ist Schluss');
+  });
+  it('ohne KURS_CODE keine Freischaltung nötig', async () => {
+    modell._setzeClient(skript());
+    assert.equal((await post(frage('Hallo'))).status, 200);
+    assert.equal((await h.aufruf('GET', '/api/ich', { benutzer: 'u1' })).daten.freigeschaltet, true);
   });
   it('TUTOR_DOPPEL=1 wird in Produktion ignoriert (ohne Schlüssel weiter 503)', async () => {
     process.env.TUTOR_DOPPEL = '1';

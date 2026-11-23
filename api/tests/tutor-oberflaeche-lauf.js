@@ -25,7 +25,9 @@ const WURZEL = path.resolve(__dirname, '..', '..');
 const args = process.argv.slice(2);
 const fotoIdx = args.indexOf('--fotos');
 const FOTOS = fotoIdx >= 0 ? path.resolve(args.splice(fotoIdx, 2)[1]) : null;
-const ORDNER = path.resolve(__dirname, '..', args[0] || '../app/dist-tutor');
+// Erstes Argument: Ausgabeordner (eigener Dateiserver) oder Basis-URL eines laufenden Servers (z. B. Emulator)
+const URL_ARG = /^https?:\/\//.test(args[0] || '') ? args[0].replace(/\/+$/, '') + '/' : null;
+const ORDNER = path.resolve(__dirname, '..', URL_ARG ? '../app/dist' : (args[0] || '../app/dist-tutor'));
 const PORT = Number(args[1] || 4323);
 
 function ladePlaywright() {
@@ -36,7 +38,7 @@ function ladePlaywright() {
   process.exit(2);
 }
 
-if (!fs.existsSync(path.join(ORDNER, 'index.html'))) {
+if (!URL_ARG && !fs.existsSync(path.join(ORDNER, 'index.html'))) {
   console.error(`Kein Build in ${ORDNER}. Zuerst: cd app && KURS_AUSGABE=dist-tutor npm run build`);
   process.exit(2);
 }
@@ -114,7 +116,7 @@ async function lauf(browser, breite, hoehe) {
   const gesendet = [];
   const stand = { rest: 30 };
   await apiNachbilden(page, gesendet, stand);
-  const basis = `http://127.0.0.1:${PORT}/`;
+  const basis = URL_ARG || `http://127.0.0.1:${PORT}/`;
 
   // ---- Labor: langer Verlauf, dann Fehler
   await page.goto(basis + 'lektionen/v05-labor.html#a-fuellstand');
@@ -182,7 +184,7 @@ async function lauf(browser, breite, hoehe) {
 }
 
 (async () => {
-  await new Promise((r) => server.listen(PORT, '127.0.0.1', r));
+  if (!URL_ARG) await new Promise((r) => server.listen(PORT, '127.0.0.1', r));
   const { chromium } = ladePlaywright();
   const browser = await chromium.launch();
   try {
@@ -192,7 +194,7 @@ async function lauf(browser, breite, hoehe) {
     fehler.push('Abbruch: ' + (e && e.message ? e.message.split('\n')[0] : e));
   } finally {
     await browser.close();
-    server.close();
+    if (!URL_ARG) server.close();
   }
   for (const t of ok) console.log('  ok      ' + t);
   for (const t of fehler) console.log('  FEHLER  ' + t);

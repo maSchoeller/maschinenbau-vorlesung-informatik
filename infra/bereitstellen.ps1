@@ -244,8 +244,23 @@ function Invoke-Bauen {
       & npm run build; if ($LASTEXITCODE -ne 0) { throw 'npm run build in app/ fehlgeschlagen.' }
     } finally { Pop-Location }
     if (-not (Test-Path (Join-Path $Wurzel 'app/dist/staticwebapp.config.json'))) { throw 'app/dist/staticwebapp.config.json fehlt.' }
-    if (-not (Test-Path (Join-Path $Wurzel 'api/daten/aufgaben.json'))) { Write-Warnung 'api/daten/aufgaben.json fehlt (Tutor ohne Aufgabentexte).' }
+    if (-not (Test-Path (Join-Path $Wurzel 'api/daten/aufgaben.json'))) { throw 'api/daten/aufgaben.json fehlt (der Build hat sie nicht erzeugt; ohne sie arbeitet der Tutor ohne Aufgabentexte und ohne Musterlösungs-Abgleich).' }
+    Test-DistGroesse (Join-Path $Wurzel 'app/dist')
   }
+}
+
+# Free-Tarif von Static Web Apps: höchstens 250 MB und 15.000 Dateien je App. Wir brechen mit Abstand ab.
+$DistGrenzeMB = 230
+$DistGrenzeDateien = 14000
+function Test-DistGroesse([string] $Ordner) {
+  $dateien = @(Get-ChildItem -LiteralPath $Ordner -Recurse -File -Force)
+  $bytes = ($dateien | Measure-Object -Property Length -Sum).Sum
+  $mb = [math]::Round($bytes / 1MB, 1)
+  $mp4 = @($dateien | Where-Object Extension -eq '.mp4').Count
+  Write-Info "Größe app/dist: $mb MB in $($dateien.Count) Dateien (Grenze Free-Tarif 250 MB / 15.000 Dateien; Abbruch ab $DistGrenzeMB MB)"
+  if ($mp4) { Write-Warnung "$mp4 Videos liegen in dist (VIDEO_BASIS nicht gesetzt?)." }
+  if ($mb -gt $DistGrenzeMB) { throw "app/dist ist mit $mb MB zu groß (Abbruch ab $DistGrenzeMB MB)." }
+  if ($dateien.Count -gt $DistGrenzeDateien) { throw "app/dist hat $($dateien.Count) Dateien (Abbruch ab $DistGrenzeDateien)." }
 }
 
 # Baut das API-Paket in einem eigenen Temp-Ordner: nur, was zur Laufzeit gebraucht wird.
@@ -262,8 +277,7 @@ function New-ApiPaket {
   foreach ($teil in $ApiPaketInhalt) {
     $p = Join-Path $quelle $teil
     if (Test-Path -LiteralPath $p) { Copy-Item -LiteralPath $p -Destination $ziel -Recurse }
-    elseif ($teil -eq 'daten') { Write-Warnung 'api/daten fehlt (Tutor ohne Aufgabentexte).' }
-    else { throw "api/$teil fehlt." }
+    else { throw "api/$teil fehlt$(if ($teil -eq 'daten') { ' (App-Build erzeugt api/daten/aufgaben.json)' })." }
   }
   # lokale Dateien, die versehentlich unter src/ oder daten/ liegen könnten
   Get-ChildItem -LiteralPath $ziel -Recurse -Force -File | Where-Object { $_.Name -in @('local.settings.json', 'ablage.json', '.env') } | Remove-Item -Force
@@ -281,6 +295,12 @@ function Test-ApiPaket([string] $Ordner) {
   $lokal = @(Get-ChildItem -LiteralPath $Ordner -Recurse -Force -File | Where-Object { $_.Name -in @('local.settings.json', 'ablage.json') })
   if ($lokal.Count) { throw "API-Paket enthält lokale Dateien: $($lokal.FullName -join ', ')" }
   if (-not (Test-Path (Join-Path $Ordner 'node_modules/@azure/functions'))) { throw 'API-Paket: node_modules/@azure/functions fehlt.' }
+  if (-not (Test-Path (Join-Path $Ordner 'node_modules/@anthropic-ai/sdk'))) { throw 'API-Paket: node_modules/@anthropic-ai/sdk fehlt (Tutor antwortete mit 503).' }
+  $aufgaben = Join-Path $Ordner 'daten/aufgaben.json'
+  if (-not (Test-Path -LiteralPath $aufgaben)) { throw 'API-Paket: daten/aufgaben.json fehlt (zuerst die App bauen).' }
+  $n = @((Get-Content -LiteralPath $aufgaben -Raw | ConvertFrom-Json).aufgaben).Count
+  if ($n -lt 1) { throw 'API-Paket: daten/aufgaben.json enthält keine Aufgaben.' }
+  Write-Info "API-Paket: @anthropic-ai/sdk vorhanden, daten/aufgaben.json mit $n Aufgaben"
 }
 
 function Invoke-Paket {

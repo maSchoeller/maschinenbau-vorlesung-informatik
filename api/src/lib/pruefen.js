@@ -8,6 +8,7 @@ const GRENZEN = Object.freeze({
   BODY_BYTES: 256 * 1024,      // ganzer Request-Body
   EINTRAG_BYTES: 64 * 1024,    // JSON eines Eintragswerts
   CODE_BYTES: 64 * 1024,       // Code eines geteilten Programms
+  EINGABEN_BYTES: 4 * 1024,    // Eingaben (input()) eines geteilten Programms
   ABGLEICH_MAX: 500,           // Einträge je /api/abgleich
   KONTO_BYTES: 10 * 1024 * 1024, // Summe aller Eintragswerte je Benutzer
   ZUKUNFT_MS: 5 * 60 * 1000,   // erlaubter Vorlauf von 'geaendert'
@@ -105,6 +106,15 @@ function code(c) {
   return c;
 }
 
+/** Optionale Eingaben für input() eines geteilten Programms → Zeichenkette ('' wenn keine). */
+function eingaben(e) {
+  if (e === undefined || e === null || e === '') return '';
+  if (typeof e !== 'string') wirf(400, 'eingaben-ungueltig', 'Die Eingaben müssen Text sein.');
+  if (bytes(e) > GRENZEN.EINGABEN_BYTES) wirf(413, 'eingaben-zu-gross', 'Die Eingaben dürfen höchstens 4 KB groß sein.');
+  if (STEUERZEICHEN_RE.test(e)) wirf(400, 'eingaben-ungueltig', 'Die Eingaben enthalten unzulässige Steuerzeichen.');
+  return e;
+}
+
 /** Optionale Lektion ('V07' o. ä.) → Zeichenkette oder null. */
 function lektion(l) {
   if (l === undefined || l === null || l === '') return null;
@@ -158,6 +168,6 @@ async function body(request, { leerErlaubt = false, maxBytes = GRENZEN.BODY_BYTE
 }
 
 module.exports = {
-  GRENZEN, PFAD_RE, pfad, iso, geaendert, geaendertGeprueft, seit, eintragWert, anzeigename, titel, code, lektion,
+  GRENZEN, PFAD_RE, pfad, iso, geaendert, geaendertGeprueft, seit, eintragWert, anzeigename, titel, code, eingaben, lektion,
   geteiltId, aenderndeAnfrage, body, bytes,
 };

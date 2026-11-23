@@ -47,6 +47,12 @@ async function codeSetzen(page, text) {
   await page.keyboard.press('Delete');
   await page.keyboard.insertText(text);
 }
+/* Seltene Aktionen liegen hinter „Mehr“: Menü öffnen, Aktion wählen; das Menü schließt sich danach */
+async function mehr(page, aktion) {
+  await page.click('.wb-mehr > summary');
+  await page.click(`.wb-mehr [data-wb="${aktion}"]`);
+  pruefe(await page.evaluate(() => !document.querySelector('.wb-mehr').open), `„Mehr“ schließt sich nach „${aktion}“`);
+}
 async function listenTitel(page) { return page.locator('#wb-liste .wb-prog__titel').allTextContents(); }
 async function listeEnthaelt(page, titel, ms = 3000) {
   return page.waitForFunction((t) => Array.from(document.querySelectorAll('#wb-liste .wb-prog__titel')).some((e) => e.textContent === t), titel, { timeout: ms }).then(() => true, () => false);
@@ -135,7 +141,7 @@ async function main() {
       pruefe(await page.inputValue('#wb-titel') === 'Mein Test', 'Titel bleibt nach dem Neuladen');
 
       /* ── 5. Duplizieren, Neu ──────────────────────────────── */
-      await page.click('[data-wb="duplizieren"]');
+      await mehr(page, 'duplizieren');
       await page.waitForFunction(() => document.querySelectorAll('#wb-liste li').length === 2);
       pruefe(await page.inputValue('#wb-titel') === 'Mein Test (Kopie)', 'Duplizieren: Kopie mit Titelzusatz geöffnet');
       pruefe((await codeLesen(page)).startsWith('print("Hallo Werkbank")'), 'Duplizieren: Code kopiert');
@@ -149,7 +155,7 @@ async function main() {
 
       /* ── 6. Löschen mit Rückgängig ────────────────────────── */
       const vorher = (await listenTitel(page)).length;
-      await page.click('[data-wb="loeschen"]');
+      await mehr(page, 'loeschen');
       await page.waitForFunction((n) => document.querySelectorAll('#wb-liste li').length === n - 1, vorher);
       const meldungText = await page.locator('.app-meldungen').innerText();
       pruefe(/gelöscht/.test(meldungText) && /Rückgängig/.test(meldungText), 'Löschen: Meldung mit „Rückgängig“ statt Rückfrage');
@@ -163,7 +169,7 @@ async function main() {
       await page.locator('#wb-liste a', { hasText: /^Mein Test/ }).first().click();
       await page.waitForFunction(() => document.getElementById('wb-titel').value.startsWith('Mein Test'));
       const titelJetzt = await page.inputValue('#wb-titel');
-      const [dl] = await Promise.all([page.waitForEvent('download'), page.click('[data-wb="herunterladen"]')]);
+      const [dl] = await Promise.all([page.waitForEvent('download'), mehr(page, 'herunterladen')]);
       const dname = dl.suggestedFilename();
       const dinhalt = fs.readFileSync(await dl.path(), 'utf8');
       pruefe(dname === (titelJetzt === 'Mein Test' ? 'mein_test.py' : 'mein_test_kopie.py'), 'Download heißt ' + dname);
@@ -224,6 +230,16 @@ async function main() {
       await page.waitForFunction(() => document.getElementById('wb-titel').value === 'Vom zweiten Tab', null, { timeout: 5000 });
       pruefe((await codeLesen(page)).startsWith('# aus dem zweiten Tab'), 'Änderung aus anderem Tab erscheint im Editor');
       pruefe(await listeEnthaelt(page, 'Vom zweiten Tab'), 'Änderung aus anderem Tab erscheint in der Liste');
+      /* Die verdrängte eigene Fassung bleibt einen Klick weit zurückholbar */
+      const zurueck = page.locator('.app-meldungen button', { hasText: 'Meine Fassung wiederherstellen' });
+      pruefe(await zurueck.count() === 1, 'Fremdstand ersetzt eigenen Text: Meldung mit „Meine Fassung wiederherstellen“');
+      if (await zurueck.count()) {
+        await zurueck.click();
+        await page.waitForFunction(() => !/# aus dem zweiten Tab/.test(window.KursEditor.getValue(document.getElementById('wb-code'))), null, { timeout: 3000 }).catch(() => {});
+        const wieder = await codeLesen(page);
+        pruefe(!wieder.startsWith('# aus dem zweiten Tab') && wieder.trim().length > 0, '„Meine Fassung wiederherstellen“ setzt den eigenen Text zurück und speichert ihn', wieder.slice(0, 40));
+        await zweit.waitForFunction(() => !/# aus dem zweiten Tab/.test(window.KursEditor.getValue(document.getElementById('wb-code'))), null, { timeout: 5000 }).then(() => pruefe(true, 'Wiederhergestellte Fassung erreicht den anderen Tab'), () => pruefe(false, 'Wiederhergestellte Fassung erreicht den anderen Tab'));
+      }
       /* ungespeicherte lokale Eingabe wird nicht überschrieben */
       await page.locator('#wb-runner .cm-content').first().click();
       await page.keyboard.press('End');

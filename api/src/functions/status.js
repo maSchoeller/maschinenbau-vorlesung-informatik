@@ -4,6 +4,7 @@ const { ok, sicher } = require('../lib/antwort');
 const { ablageArt } = require('../lib/ablage');
 const { istLokal } = require('../lib/umgebung');
 const paket = require('../../package.json');
+const modell = require('../lib/tutor/modell');
 
 // GET /api/status (ohne Login): {ok, version, tutor, ablage}
 async function status() {
@@ -12,7 +13,8 @@ async function status() {
   return ok({
     ok: Boolean(ablage) && saltOk,
     version: process.env.APP_VERSION || paket.version,
-    tutor: Boolean(process.env.ANTHROPIC_API_KEY),
+    // true, wenn ein Modell-Client bereitsteht: Schlüssel und SDK, lokal auch das Modell-Doppel (TUTOR_DOPPEL=1).
+    tutor: Boolean(modell.client()),
     ablage: ablage || 'fehlt',
   });
 }

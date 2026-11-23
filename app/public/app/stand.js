@@ -7,58 +7,15 @@
      .offeneAufgaben(termin) -> offene, prüfbare Laborstationen
      .freigabeText(iso)      -> 'ab 03.12.' | ''
      .freigegeben(iso, heute)-> true, wenn kein Datum oder Datum erreicht
+   Zählregel: KursApp.fortschritt.termin (kern.js), damit Lektionswähler, Heute und Lernpfad gleich zählen.
    Liest nur über KursSpeicher.sofort (lokal zuerst, wie der Bestand). Texte immer per textContent setzen.
    ============================================================= */
 (function () {
   'use strict';
-  var KS = window.KursSpeicher;
-
-  function lesen(nr, k) {
-    try { return (KS && KS.sofort.lesen(KS.pfad(nr, k))) || {}; } catch (e) { return {}; }
-  }
-  function istFreiwillig(a) { return /freiwillig/i.test(a.titel || ''); }
-  function anzahl(o) { return Object.keys(o || {}).length; }
-
-  /* Pflichtabschnitte zählen; „Deep Dive (freiwillig)“ zählt nicht für „fertig“. */
-  function von(t) {
-    var done = lesen(t.nr, 'done'), aufg = lesen(t.nr, 'aufg'), beg = lesen(t.nr, 'begonnen'), ges = lesen(t.nr, 'gesehen');
-    var pflicht = (t.abschnitte || []).filter(function (a) { return !istFreiwillig(a); });
-    var fertigA = pflicht.filter(function (a) { return !!done[a.id]; }).length;
-    var offenA = pflicht.filter(function (a) { return !done[a.id]; })[0];
-
-    var stationen = offeneAufgaben(t, aufg, beg);
-    var pruefbar = (t.aufgaben || []).filter(function (a) { return (a.pruefbar || []).length; });
-    /* Zählung wie im Labor und in KursApp.fortschritt: je prüfbarem Teil (data-id), nicht je Station */
-    var ids = [];
-    pruefbar.forEach(function (a) { a.pruefbar.forEach(function (i) { if (ids.indexOf(i) < 0) ids.push(i); }); });
-    var geloest = ids.filter(function (i) { return !!aufg[i]; }).length;
-    var hatLabor = !!t.labor && ids.length > 0;
-
-    var verstehenFertig = pflicht.length === 0 || fertigA === pflicht.length;
-    var laborFertig = !hatLabor || geloest === ids.length;
-    var gearbeitet = anzahl(done) + anzahl(aufg) + anzahl(beg) > 0;
-    var begonnen = gearbeitet || anzahl(ges) > 0;
-    var status = (verstehenFertig && laborFertig && (pflicht.length || hatLabor)) ? 'fertig' : (begonnen ? 'begonnen' : 'offen');
-    return {
-      nr: t.nr,
-      verstehen: { fertig: fertigA, gesamt: pflicht.length, offenAnker: offenA ? (offenA.anker || offenA.id) : null, ganz: verstehenFertig },
-      labor: { geloest: geloest, gesamt: ids.length, offenAnker: stationen.length ? stationen[0].id : null, ganz: laborFertig, vorhanden: hatLabor },
-      begonnen: begonnen,
-      gearbeitet: gearbeitet,
-      status: status
-    };
-  }
-
-  /* Stationen mit prüfbaren Teilen, die noch nicht ganz gelöst sind; Teil B (Training) zuerst für Wiederholung */
-  function offeneAufgaben(t, aufg, beg) {
-    aufg = aufg || lesen(t.nr, 'aufg'); beg = beg || lesen(t.nr, 'begonnen');
-    return (t.aufgaben || []).filter(function (a) {
-      return (a.pruefbar || []).length && !a.pruefbar.every(function (i) { return !!aufg[i]; });
-    }).map(function (a) {
-      var angefangen = a.pruefbar.some(function (i) { return !!aufg[i] || !!beg[i]; });
-      return { id: a.id, titel: a.titel, teil: a.teil, sterne: a.sterne, minuten: a.minuten, angefangen: angefangen };
-    });
-  }
+  /* Die Zählregel selbst steht an einer Stelle: KursApp.fortschritt (app/kern.js). */
+  var F = window.KursApp.fortschritt;
+  function von(t) { return F.termin(t); }
+  function offeneAufgaben(t) { return F.offeneAufgaben(t); }
 
   function alle(termine) { return (termine || []).map(von); }
 

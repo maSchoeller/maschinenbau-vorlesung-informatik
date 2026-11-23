@@ -325,6 +325,8 @@
     var b = e.target.closest && e.target.closest('[data-wb]');
     if (!b) return;
     var a = b.getAttribute('data-wb');
+    var mehr = b.closest('details');
+    if (mehr) mehr.open = false;   /* Menü „Mehr“ nach der Wahl schließen */
     if (a === 'neu') neuesProgramm();
     else if (a === 'duplizieren') duplizieren();
     else if (a === 'loeschen') loeschen();
@@ -332,6 +334,17 @@
     else if (a === 'teilen') teilenOeffnen(b);
   });
   $('#wb-beispiel').addEventListener('click', beispiel);
+  /* Menü „Mehr“: Esc und Klick daneben schließen es */
+  var mehrMenue = $('.wb-mehr');
+  if (mehrMenue) {
+    document.addEventListener('click', function (e) { if (mehrMenue.open && !mehrMenue.contains(e.target)) mehrMenue.open = false; });
+    mehrMenue.addEventListener('keydown', function (e) { if (e.key === 'Escape' && mehrMenue.open) { e.stopPropagation(); mehrMenue.open = false; mehrMenue.querySelector('summary').focus(); } });
+  }
+  /* Hinweis unter der Liste je nach Konto */
+  App.konto.status().then(function (k) {
+    var h = $('.wb-liste__hinweis');
+    if (h && k && k.angemeldet) h.textContent = 'Gespeichert in diesem Browser und in deinem Konto.';
+  }, function () {});
 
   /* ── Teilen ───────────────────────────────────────────────── */
   var dlg = $('#wb-teilen'), dlgKoerper = $('#wb-teilen-koerper'), dlgStatus = $('#wb-teilen-status');
@@ -413,6 +426,7 @@
       if (!w) return;
       erstellen.disabled = true; dlgStatus.textContent = 'Link wird erstellt …';
       var daten = { titel: WB.titel(w.titel) || 'Programm', code: editorHolen() };
+      if (w.eingaben && /input\s*\(/.test(daten.code)) daten.eingaben = String(w.eingaben).slice(0, 1000);   /* Server: höchstens 4 KB */
       if (w.quelle && w.quelle.lektion && /^[A-Za-z0-9-]{1,20}$/.test(w.quelle.lektion)) daten.lektion = w.quelle.lektion;
       App.api('geteilt', { method: 'POST', body: daten }).then(function (r) {
         var link = absolutLink(r.id);
@@ -479,7 +493,7 @@
             return;
           }
           clearTimeout(sicherTimer); weg.disabled = true;
-          App.api('geteilt/' + encodeURIComponent(g.id), { method: 'DELETE', body: {} }).then(function () {
+          App.api('geteilt/' + encodeURIComponent(g.id), { method: 'DELETE' }).then(function () {
             dlgStatus.textContent = 'Link gelöscht.';
             eigeneLaden(ziel);
           }, function (e) {
@@ -513,6 +527,7 @@
       var w = ev.wert;
       var gleich = w.code === editorHolen() && String(w.titel || '') === titelFeld.value;
       if (!gleich && !geaendert) {
+        var vorher = editorHolen();
         laedt = true;
         try {
           if (w.code !== editorHolen()) editorSetzen(w.code);
@@ -522,6 +537,15 @@
         } finally { laedt = false; }
         statusSagen('Von einem anderen Gerät aktualisiert.');
         groessenHinweis(w);
+        /* „Neuester gewinnt“ gilt je ganzem Programm: Hat das andere Gerät zeitgleich am selben Programm
+           getippt, verschwindet dabei eigener, schon gespeicherter Text. Er bleibt einen Klick weit zurückholbar. */
+        if (w.code !== vorher && vorher.trim()) {
+          App.melde('Dieses Programm wurde auf einem anderen Gerät geändert.', { art: 'info', aktion: { text: 'Meine Fassung wiederherstellen', fn: function () {
+            if (aktuellId !== id) return;
+            editorSetzen(vorher); geaendert = true; speichern();
+            statusSagen('Deine Fassung ist wiederhergestellt.');
+          } } });
+        }
       }
     }
     if (id === wartetAuf && lies(id)) { listeLaden().then(function () { if (lies(id)) { oeffne(id); } }); return; }

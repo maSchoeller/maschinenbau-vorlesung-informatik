@@ -63,7 +63,8 @@ function sicher(handler) {
       }
       const status = cosmosStatus(err);
       const log = context && typeof context.error === 'function' ? context.error.bind(context) : () => {};
-      log(`Unerwarteter Fehler (${err && err.name ? err.name : 'Fehler'}${status ? ', Status ' + status : ''})`);
+      const code = err && typeof err.code === 'string' && /^[A-Z_]{2,30}$/.test(err.code) ? ', ' + err.code : '';   // z. B. EPERM, ohne Inhalte
+      log(`Unerwarteter Fehler (${err && err.name ? err.name : 'Fehler'}${code}${status ? ', Status ' + status : ''})`);
       if (status === 429 || status === 503 || status === 408) {
         return fehler(503, 'ueberlastet', 'Der Dienst ist gerade überlastet. Bitte versuche es gleich noch einmal.');
       }

@@ -13,5 +13,5 @@ param cosmosKontoName = readEnvironmentVariable('LERNAPP_COSMOS_KONTO', '')
 param videoUploaderObjectId = readEnvironmentVariable('LERNAPP_UPLOADER_ID', '')
 param tutorModell = 'claude-haiku-5-5'
 param tutorLimitNutzerTag = 40
-param tutorLimitKursTag = 1500
+param tutorLimitKursTag = 600   // Kurs hat rund 40 Studierende (40 x 15 Fragen)
 param tutorPruefer = 'an'

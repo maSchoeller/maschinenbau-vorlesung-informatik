@@ -79,6 +79,8 @@
     if (runner && runner.make) {
       var box = runner.make(d.code, { label: 'Python-Code von ' + (d.autor || 'unbekannt') + ', ausführbar und änderbar', timeout: 10000 });
       box.classList.add('wb-runner');
+      /* Eingaben für input() reisen mit (sonst bricht ein Programm mit input() beim Empfänger mit EOFError ab) */
+      if (typeof d.eingaben === 'string' && d.eingaben) box.setAttribute('data-stdin', d.eingaben);
       ziel.appendChild(box);
       runner.init(box);
       if (window.KursEditor && window.KursEditor.attach) window.KursEditor.attach(box.querySelector('textarea'), {});
@@ -123,7 +125,9 @@
     var code = ta && window.KursEditor && window.KursEditor.getValue ? window.KursEditor.getValue(ta) : (ta ? ta.value : daten.code);
     var quelle = { seite: 'geteilt.html' };
     if (daten.lektion) quelle.lektion = daten.lektion;
-    var id = WB.anlegen({ titel: daten.titel, code: code, quelle: quelle });
+    var stdin = document.querySelector('#gt-runner .k-runner__stdin');
+    var eingaben = stdin ? (window.KursEditor && window.KursEditor.getValue ? window.KursEditor.getValue(stdin) : stdin.value) : (daten.eingaben || '');
+    var id = WB.anlegen({ titel: daten.titel, code: code, eingaben: eingaben || undefined, quelle: quelle });
     if (!id) { kopieStatus.textContent = 'Das Programm konnte nicht gespeichert werden.'; return; }
     WB.merkeAktuell(id);
     location.href = WB.url(id);

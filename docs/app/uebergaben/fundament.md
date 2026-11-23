@@ -105,6 +105,6 @@ Symbole: `KursApp.icon('search')` bzw. in Astro `<Icon id="…" basis={…} />` 
 - Laborseiten: Bestandstexte „0 von 15 Aufgaben gelöst“ im HTML sind teils veraltet; `aufgaben.js` korrigiert sie zur Laufzeit.
 - Labor: `labor.js` scrollt beim Aufgabenwechsel auf die Oberkante der Arbeitsfläche minus 8 px. Damit nichts unter der Kopfzeile verschwindet, hat `.lab` in der Hülle `padding-top`/`margin-top` von ±56 px. Klausurtrainer scrollt ebenso (`klausurtrainer.js`), dort kann der Aufgabenkopf bis zu 48 px unter der Kopfzeile liegen.
 - Panel neben dem Labor (Desktop): die angedockte Befehls-Bibliothek wird ausgeblendet, solange das Panel offen ist (sonst wird der Editor zu schmal). Tablet: Panel liegt über dem Inhalt, der Bibliotheks-Knopf ist dann verdeckt.
-- Content-Security-Policy ist bewusst nicht gesetzt: der Bestand braucht Inline-Skripte, Worker aus `blob:`, `wasm-unsafe-eval` und (bis zur PWA-Rolle) jsDelivr und Google Fonts. Kandidat, sobald Pyodide und Schriften lokal sind.
+- Content-Security-Policy ist seit der Integration gesetzt (`globalHeaders` in `staticwebapp.config.json`, Begründung in `integration.md`): nur eigene Herkunft, dazu Inline-Skripte, `blob:`-Worker, `wasm-unsafe-eval` und für Videos `https://*.blob.core.windows.net`.
 - `/.auth/login/aad` ist gesperrt (404). Im Emulator liefert `/api/*` ohne `--api-location` 502, nicht 404.
 - `site/assets/img/icons.svg` enthält seit früher einen Kommentar, in dem versehentlich sechs Symbole und ein `</svg>` stehen (harmlos, nicht angefasst).

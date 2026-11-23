@@ -1,6 +1,6 @@
 # Lern-App: Architektur-Vertrag
 
-Stand: 2026-11-22. Verbindlich für alle, die an `app/`, `api/`, `infra/` und `tests/` arbeiten.
+Stand: 2026-11-23. Verbindlich für alle, die an `app/`, `api/`, `infra/` und `tests/` arbeiten.
 Ergänzend lesen: `KONZEPT.md`, `DESIGN.md`, `docs/ARCHITEKTUR-BACKEND.md` (älterer Entwurf; wo er diesem Dokument widerspricht, gilt dieses), `docs/app/recherche/*.md` (belegte Fakten zu Azure, Pyodide, Claude-API, Astro).
 
 ## 1. Ziel und Grundsätze
@@ -40,7 +40,7 @@ api/                     Azure Functions (Node, Programmiermodell v4, CommonJS o
   daten/                 beim Build erzeugt: aufgaben.json (Aufgabentexte und Musterlösungen für den Tutor); nicht in Git, nicht öffentlich
   tests/                 node:test
 infra/                   main.bicep, Parameter, bereitstellen.ps1, README.md
-tests/e2e/               Playwright (Chromium), gegen den lokalen SWA-Emulator
+tests/e2e/               entfällt: die Playwright-Prüfungen liegen in app/skripte/pruefe-*.mjs (Abschnitt 12)
 docs/app/                dieses Dokument, recherche/, BETRIEB.md, uebergaben/
 ```
 
@@ -54,7 +54,8 @@ Dateizuständigkeit ist strikt. Wer etwas außerhalb seines Bereichs braucht, ä
 | API und Infrastruktur | `api/` (außer Tutor-Dateien), `infra/`, `docs/app/BETRIEB.md` |
 | Konto und Abgleich | `public/app/speicher-azure.js`, `konto.js`, `konto.css`, `src/pages/konto.astro` |
 | Werkbank | `src/pages/werkbank.astro`, `geteilt.astro`, `public/app/werkbank.js`, `geteilt.js`, `werkbank.css` |
-| Tutor | `api/src/functions/tutor.js`, `api/src/lib/tutor/`, `api/tests/tutor*.test.js`, `api/tests/tutor-angriffe.json`, `public/app/tutor.js`, `tutor.css` |
+| Tutor | `api/src/functions/tutor.js`, `api/src/lib/tutor/`, `api/tests/tutor*.js` (Tests, Angriffs- und Oberflächenlauf), `api/tests/tutor-angriffe.json`, `public/app/tutor.js`, `tutor.css` |
+| Integration | Zusammenspiel über alle Bereiche: `app/skripte/pruefe-alles.mjs`, `pruefe-zusammenspiel.mjs`, `skripte/tests/kern.test.mjs`, `docs/app/uebergaben/integration.md`; darf für das Zusammenspiel in `app/`, `api/`, `infra/`, `docs/app/` ändern |
 | Tests | `tests/e2e/`, `playwright.config.*`, Wurzel-`package.json` (nur Test-Skripte) |
 
 ## 3. Build
@@ -165,7 +166,9 @@ KursApp.an(name, fn)     // Ereignisse: 'konto' (Statuswechsel), 'abgleich' ({zu
 KursApp.sende(name, daten)
 KursApp.melde(text, {art:'info'|'ok'|'fehler', aktion:{text, fn}})   // kurze Meldung unten
 KursApp.panel.oeffnen(id) / schliessen() / istOffen()
-KursApp.fortschritt.lektion('V07')   // Promise<{abschnitte:{fertig,gesamt}, aufgaben:{geloest,gesamt}}>
+KursApp.fortschritt.lektion('V07')   // Promise<{abschnitte:{fertig,gesamt}, aufgaben:{geloest,gesamt}, status, …}>
+                         // eine Zählregel für alle Anzeigen: Pflichtabschnitte (Deep Dive „freiwillig“ zählt nicht),
+                         // Aufgaben je prüfbarem Teil; synchron: fortschritt.termin(terminAusKursJson)
 KursApp.icon(id)         // SVG-Element aus dem Sprite
 ```
 
@@ -214,6 +217,12 @@ Allgemein:
 - Nach „Konto löschen“ lehnt der Server 30 Tage lang ältere Stände ab (410 `konto-geloescht`), damit andere Geräte das Konto nicht wieder auffüllen. Die Tageszähler des Tutors bleiben dabei bis zum Tagesende stehen (sonst ließe sich das Kontingent durch Löschen zurücksetzen).
 - Anzeigenamen mit Rollenwörtern (Prof, Dozent, Tutor, Admin, DHBW) sind gesperrt.
 
+**Nachtrag 2026-11-23 (Integration, nach den Gesamtprüfungen):**
+- `POST /api/geteilt` nimmt optional `eingaben` (Text für `input()`, höchstens 4 KB); `GET /api/geteilt/{id}` liefert `eingaben` (leer, wenn keine).
+- Tutor-Freischaltung: Ist die Einstellung `KURS_CODE` gesetzt, antwortet `POST /api/tutor` ohne Freischaltung mit 403 `{fehler:'freischaltung'}`. `POST /api/ich/freischalten {code}` schaltet das Konto einmalig frei (200; falscher Code 403 `code-falsch`; höchstens 10 Versuche je Konto und Tag, sonst 429). `GET /api/ich` meldet `freigeschaltet`. Ohne `KURS_CODE` ist nichts freizuschalten. Gespeichert wird nur `freigeschaltet: true` im Profil, nie der Code.
+- Python-Worker: `app/kern.js` startet jeden Worker der Seite mit einem Vorspiel, das ihm Netz nur zu `assets/` und `pyodide/` derselben Herkunft lässt (kein `/api/`, kein `/.auth/`) und Cache Storage, IndexedDB, weitere Worker und Kanäle entfernt. Grund: Geteilte Programme sind fremder Code und liefen sonst mit der Sitzung der Person.
+- CSP: `connect-src` und `media-src` erlauben nur das eine Storage-Konto aus `VIDEO_BASIS` (beim Build eingesetzt, `skripte/assets-kopieren.mjs`), ohne `VIDEO_BASIS` keines.
+
 Zeitstempel: ISO-8601 UTC. Der Server verwirft `geaendert` mehr als 5 Minuten in der Zukunft und setzt dann die Serverzeit. Bei Gleichstand bleibt der Serverstand.
 
 Ablage (`api/src/lib/ablage.js`), eine Schnittstelle, zwei Umsetzungen:
@@ -224,7 +233,7 @@ Ablage (`api/src/lib/ablage.js`), eine Schnittstelle, zwei Umsetzungen:
   - `zaehler` (Partition `/id`; kursweite Tageszähler für den Tutor)
 - **Datei** (lokal und Tests; `ABLAGE=datei`, JSON-Datei unter `api/.daten/`, bzw. `ABLAGE=speicher` rein im Arbeitsspeicher). Fehlt in Produktion `COSMOS_VERBINDUNG`, antwortet die API mit 503 statt still in den Arbeitsspeicher zu schreiben.
 
-App-Einstellungen: `COSMOS_VERBINDUNG`, `BENUTZER_SALT`, `ANTHROPIC_API_KEY` (vom Besitzer gesetzt), `TUTOR_MODELL`, `TUTOR_LIMIT_NUTZER_TAG` (Standard 40), `TUTOR_LIMIT_KURS_TAG` (Standard 1500), `TUTOR_PRUEFER` (`an`/`aus`, Standard `an`).
+App-Einstellungen: `COSMOS_VERBINDUNG`, `BENUTZER_SALT`, `ANTHROPIC_API_KEY` (vom Besitzer gesetzt), `TUTOR_MODELL`, `TUTOR_LIMIT_NUTZER_TAG` (Standard 40), `TUTOR_LIMIT_KURS_TAG` (Standard 1500), `TUTOR_PRUEFER` (`an`/`aus`, Standard `an`), `KURS_CODE` (optional, Tutor-Freischaltung, vom Besitzer gesetzt).
 
 ## 7. Konto und Abgleich (Client)
 
@@ -297,8 +306,8 @@ Alles andere in `site/` ist tabu. Fällt ein Fehler im Bestand auf, wird er geme
 ## 12. Tests und Abnahme
 
 - `api/tests`: jede Route (Erfolg, ohne Login, fremde Daten, Grenzen, Konfliktregel), mit `ABLAGE=speicher`.
-- `tests/e2e` (Playwright, Chromium, 1440×900 und 1024×768): Navigation (Leiste, Lektionswähler, vor/zurück, Suche), eine Lerneinheit und ein Labor laufen wie im Bestand (Python ausführen über lokales Pyodide, Aufgabe prüfen, Fortschritt sichtbar), Login über den Emulator, Abgleich zwischen zwei Browser-Kontexten, Werkbank speichern und teilen, geteilten Link ohne Login öffnen, Offline (nach Installation des Service Workers: Lektion neu laden, Python läuft), Tutor mit Modell-Doppel.
-- Bestandsprüfung: alle veröffentlichten Seiten laden ohne Konsolenfehler und ohne fehlgeschlagene Anfragen; Stichprobe je Seite, dass die Bausteine initialisiert sind (Quiz, Runner, Explorables, Labor-Liste).
+- Ende-zu-Ende-Prüfungen (Playwright, Chromium, 1440×900 und 1024×768; umgesetzt als `app/skripte/pruefe-*.mjs`, gesammelt über `npm run pruefen:alles`, siehe `docs/app/uebergaben/integration.md`; einen eigenen Ordner `tests/e2e` gibt es nicht): Navigation (Leiste, Lektionswähler, vor/zurück, Suche), eine Lerneinheit und ein Labor laufen wie im Bestand (Python ausführen über lokales Pyodide, Aufgabe prüfen, Fortschritt sichtbar), Login über den Emulator, Abgleich zwischen zwei Browser-Kontexten, Werkbank speichern und teilen, geteilten Link ohne Login öffnen, Offline (nach Installation des Service Workers: Lektion neu laden, Python läuft), Tutor mit Modell-Doppel.
+- Bestandsprüfung (`pruefe-seiten.mjs`): alle veröffentlichten Seiten laden ohne Konsolenfehler und ohne fehlgeschlagene Anfragen; je Seite, dass die Bausteine initialisiert sind (Quiz, Explorables, Begriffs-Erklärungen, Labor-Liste), eine h1 und auf dem Tablet Ziele ab 44 px.
 - Ports: Jeder Agent benutzt die ihm zugewiesenen Ports und beendet seine Prozesse am Ende.
 
 ## 13. Betrieb

@@ -21,8 +21,8 @@ const KERN = ['pyodide.js', 'pyodide.asm.js', 'pyodide.asm.wasm', 'python_stdlib
    Reihenfolge = Zuordnung gemeinsamer Abhängigkeiten (erste Gruppe gewinnt). */
 const GRUPPEN = [
   { id: 'daten', titel: 'Rechnen und Diagramme', hilfe: 'numpy, pandas, matplotlib', wurzeln: ['numpy', 'pandas', 'matplotlib'] },
-  { id: 'netz', titel: 'Netzwerk', hilfe: 'requests', wurzeln: ['requests', 'pyodide-http'] },
-  { id: 'extras', titel: 'Editor-Hilfe und SQL', hilfe: 'Autovervollständigung (Jedi), sqlite3, micropip', wurzeln: ['jedi', 'sqlite3', 'micropip'] },
+  { id: 'netz', titel: 'Daten aus dem Netz', hilfe: 'requests', wurzeln: ['requests', 'pyodide-http'] },
+  { id: 'extras', titel: 'Editor-Vorschläge und Datenbanken', hilfe: 'Vorschläge beim Tippen, SQL', wurzeln: ['jedi', 'sqlite3', 'micropip'] },
 ];
 
 const ORDNER = path.join(CACHE, 'pyodide');
@@ -122,7 +122,7 @@ export default async function pyodideHolen() {
   if (lock.info?.version !== VERSION) throw new Error(`pyodide-holen: Lock-Datei ist Version ${lock.info?.version}, erwartet ${VERSION}`);
 
   /* 2. Pakete laut Lock, gruppiert */
-  const gruppen = [{ id: 'kern', titel: 'Python-Kern', hilfe: 'Python selbst', dateien: KERN.map((n) => ({ datei: n, bytes: fs.statSync(path.join(ORDNER, n)).size })) }];
+  const gruppen = [{ id: 'kern', titel: 'Python', hilfe: 'die Sprache selbst', dateien: KERN.map((n) => ({ datei: n, bytes: fs.statSync(path.join(ORDNER, n)).size })) }];
   const schon = new Set();
   for (const g of GRUPPEN) {
     const pakete = paketHuelle(lock, g.wurzeln, schon);

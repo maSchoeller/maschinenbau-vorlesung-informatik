@@ -20,13 +20,14 @@ async function eigene(request) {
   });
 }
 
-// POST /api/geteilt {titel, code, lektion?} → 201 {id, erstellt}
+// POST /api/geteilt {titel, code, eingaben?, lektion?} → 201 {id, erstellt}
 async function anlegen(request) {
   const b = verlangeBenutzer(request);
   return gebremst(b.benutzerId, request, async () => {
     const body = await pruefen.body(request);
     const titel = pruefen.titel(body.titel);
     const code = pruefen.code(body.code);
+    const eingaben = pruefen.eingaben(body.eingaben);
     const lektion = pruefen.lektion(body.lektion);
     const a = ablage();
     const profil = await a.benutzerLesen(b.benutzerId);
@@ -34,7 +35,7 @@ async function anlegen(request) {
       wirf(409, 'anzeigename-fehlt', 'Lege zuerst in deinem Konto einen Anzeigenamen fest, dann kannst du teilen.');
     }
     // Grenze atomar über den Kontozähler (auch bei gleichzeitigen Anfragen höchstens 50)
-    const doc = await a.geteiltAnlegen(b.benutzerId, { titel, code, lektion, autor: profil.anzeigename });
+    const doc = await a.geteiltAnlegen(b.benutzerId, { titel, code, eingaben, lektion, autor: profil.anzeigename });
     if (!doc) wirf(403, 'grenze-erreicht', `Du kannst höchstens ${MAX_GETEILT} Programme teilen. Lösche zuerst ältere Links.`);
     return json(201, { id: doc.id, erstellt: doc.erstellt });
   });
@@ -51,6 +52,7 @@ async function lesen(request) {
       id: g.id,
       titel: String(g.titel),
       code: String(g.code),
+      eingaben: typeof g.eingaben === 'string' ? g.eingaben : '',
       lektion: g.lektion ? String(g.lektion) : null,
       autor: String(g.autor || ''),
       erstellt: g.erstellt,

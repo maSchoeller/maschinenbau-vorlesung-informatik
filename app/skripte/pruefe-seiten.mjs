@@ -83,8 +83,17 @@ async function main() {
       try {
         await page.goto(`${basis}/${s}`, { waitUntil: 'load', timeout: 45000 });
         await page.waitForTimeout(600);
-        const befund = await page.evaluate(() => {
+        /* Explorables brauchen ihr Skript (explorables-vXX.js); bis zu 5 s warten, bis alle etwas zeigen */
+        await page.waitForFunction(() => [...document.querySelectorAll('[data-explorable]')].every((x) => x.childElementCount > 0), null, { timeout: 5000 }).catch(() => {});
+        const befund = await page.evaluate((tablet) => {
           const r = [];
+          /* Tablet: Bedienelemente der Hülle mindestens 44 × 44 px */
+          if (tablet) {
+            const klein = [...document.querySelectorAll('.app-ansicht a, .app-lektion__pfeil, .app-bar__suche, .app-bar__link, .app-waehler__knopf, .app-panel__zu, .gl-buchstaben a')]
+              .filter((x) => x.offsetParent !== null).map((x) => [x, x.getBoundingClientRect()]).filter(([, b]) => b.width < 43.5 || b.height < 43.5)
+              .map(([x, b]) => `${x.className || x.tagName} ${Math.round(b.width)}×${Math.round(b.height)}`);
+            if (klein.length) r.push('Ziele unter 44 px: ' + [...new Set(klein)].slice(0, 4).join(', '));
+          }
           const q = (x) => document.querySelector(x);
           if (!q('body.app')) r.push('body.app fehlt');
           if (!q('nav.app-rail [data-app-ziel="heute"]')) r.push('Leiste fehlt');
@@ -101,8 +110,28 @@ async function main() {
             if (quiz && document.querySelector('.k-q__options') && !opts) r.push('Quiz nicht initialisiert (keine .k-q__opt)');
           }
           if (art === 'labor' && !document.querySelectorAll('[data-lab-items] a, [data-lab-items] .lab__item').length) r.push('Aufgabenliste des Labors leer');
+          /* Explorables: jedes zeigt nach dem Laden etwas (fehlt explorables-vXX.js, bleiben sie leer) */
+          const leer = [...document.querySelectorAll('[data-explorable]')].filter((x) => x.childElementCount === 0).map((x) => x.getAttribute('data-explorable'));
+          if (leer.length) r.push('Explorables nicht initialisiert: ' + leer.join(', '));
+          /* Begriffe (abbr.k-begriff, begriff.js): erweitert und Klick öffnet die Erklärung */
+          const begriffe = [...document.querySelectorAll('abbr.k-begriff[data-erklaerung]')];
+          if (begriffe.length) {
+            const b = begriffe[0];
+            if (b.getAttribute('role') !== 'button' || !b.getAttribute('aria-describedby')) r.push(`Begriffe nicht erweitert (${begriffe.length} abbr.k-begriff ohne begriff.js)`);
+            else {
+              b.click();
+              const offen = b.getAttribute('aria-expanded') === 'true';
+              b.click();
+              if (!offen) r.push('Klick auf einen Begriff öffnet keine Erklärung');
+            }
+          }
+          /* Labor: „Nächster Schritt“ der Hülle (nächste Lektion) erst auf der letzten Station */
+          const weiter = document.querySelector('.app-weiter');
+          const stationen = document.querySelectorAll('.l-task');
+          if (art === 'labor' && weiter && stationen.length > 1 && stationen[stationen.length - 1].hidden && getComputedStyle(weiter).display !== 'none') r.push('Labor: „Nächster Schritt“ steht schon vor der letzten Station');
+          if (!document.querySelector('h1')) r.push('keine h1');
           return r;
-        });
+        }, g.name === 'tablet');
         eigene.push(...befund);
         if (!ohneFotos) await page.screenshot({ path: path.join(FOTOS, `${s.replace(/\//g, '_').replace(/\.html$/, '')}-${g.name}.png`) });
       } catch (e) {

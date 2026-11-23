@@ -142,6 +142,8 @@ body.app--panel .kb-toggle:not(.kb-toggle--dock) { right: calc(var(--app-panel-w
 
 /* ── Nächster Schritt (wenn der Inhalt ihn nicht selbst hat) ── */
 .app-weiter { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: var(--sp-2) var(--sp-4); padding: var(--sp-5) var(--sp-5) var(--sp-7); border-top: 1px solid var(--app-linie); margin-top: var(--sp-5); }
+.app-weiter[hidden] { display: none; }
+.app-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .app-weiter__label { margin: 0; font-size: var(--fs-sm); font-weight: 600; color: var(--k-muted); }
 .app-weiter .k-btn .k-ic { margin: 0 0 0 .3em; }
 
@@ -192,6 +194,16 @@ body.app--panel .kb-toggle:not(.kb-toggle--dock) { right: calc(var(--app-panel-w
 /* Schmalere Inhaltsfläche als im Bestand (Leiste, ggf. Panel): Raster-Elemente dürfen schrumpfen */
 .app .v07-paps > figure { grid-template-columns: minmax(0, 1fr); }
 
+/* ── Runner: erster Klick auf „Ausführen“ darf nicht verloren gehen ──
+   Bestand (runner.css): Die Hinweiszeile .ke__status erscheint nur, solange der Editor den Fokus hat.
+   Klick auf einen Knopf darunter nahm dem Editor den Fokus, die Zeile verschwand beim mousedown, die
+   Knopfleiste rutschte nach oben und der mouseup landete daneben (kein click). Jetzt erscheint die
+   Zeile weiter sofort mit dem Fokus im Editor, verschwindet aber erst 0,8 s nach seinem Verlust; ein
+   Klick ist bis dahin abgeschlossen. (Nicht an :focus-within des ganzen Runners koppeln: dann rutscht
+   die Leiste beim Klick auf einen Knopf eines nicht fokussierten Runners nach unten.) */
+.app .k-runner--auto .ke__status { display: none; transition: display 0s linear .8s; transition-behavior: allow-discrete; }
+.app .k-runner--auto .ke:focus-within .ke__status { display: block; transition-delay: 0s; }
+
 /* ── Tablet: Panel liegt über dem Inhalt ────────────────────── */
 @media (max-width: 1099px) {
   .app-panel {
@@ -203,6 +215,17 @@ body.app--panel .kb-toggle:not(.kb-toggle--dock) { right: calc(var(--app-panel-w
   .app-bar__suche kbd { display: none; }
   .app-bar__link span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   .app-ansicht a { padding: 0 10px; }
+}
+/* Tablet und Touch: Ziele mindestens 44 × 44 px (DESIGN.md, Touch-Ziele) */
+@media (max-width: 1099px), (pointer: coarse) {
+  .app-ansicht { padding: 2px; }
+  .app-ansicht a { min-height: 44px; }
+  .app-lektion__pfeil { width: 44px; height: 44px; }
+  .app-bar__suche, .app-waehler__knopf, .app-waehler__eintrag { min-height: 44px; }
+  .app-bar__link { min-height: 44px; min-width: 44px; justify-content: center; }
+  .app-bar__suche { min-width: 44px; justify-content: center; }
+  .app-panel__zu, .app-meldung__zu { width: 44px; height: 44px; }
+  .app-meldung__aktion { min-height: 44px; }
 }
 @media (max-width: 900px) {
   .app-bar__suche span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

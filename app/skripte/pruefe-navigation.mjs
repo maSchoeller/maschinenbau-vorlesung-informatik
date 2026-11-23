@@ -4,6 +4,7 @@
    Der Lernstand wird über KursSpeicher in den Browser geschrieben (wie die Oberfläche es tut).
    Startet einen eigenen kleinen Dateiserver für die Ausgabe (kein Emulator nötig).
    Aufruf: node skripte/pruefe-navigation.mjs [ausgabeordner=dist-nav] [port=4321]
+           node skripte/pruefe-navigation.mjs http://localhost:4340   (gegen einen laufenden Server, ohne eigenen)
    Fängt unter anderem: leere Suche zeigt nur die 22 Lektionen, „Weiter“ führt nie auf Navigationsseiten,
    im Fertig-Zustand genau ein primärer Knopf, Warm-up mit bis zu drei Aufgaben, Glossar-Filter ae/oe/ue,
    Suche findet Python-Themen, Fokus kehrt zurück (Suche, Hinweis wegklicken).
@@ -15,7 +16,9 @@ import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
 
 const APP = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const ordner = path.join(APP, process.argv[2] || 'dist-nav');
+/* Erstes Argument: Ausgabeordner (eigener Dateiserver) oder Basis-URL eines laufenden Servers (z. B. Emulator) */
+const URL_ARG = /^https?:\/\//.test(process.argv[2] || '') ? process.argv[2].replace(/\/+$/, '') + '/' : null;
+const ordner = path.join(APP, URL_ARG ? (process.env.KURS_AUSGABE || 'dist') : (process.argv[2] || 'dist-nav'));
 const port = Number(process.argv[3] || 4321);
 const TYP = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml', '.woff2': 'font/woff2', '.webmanifest': 'application/manifest+json', '.png': 'image/png' };
 
@@ -33,9 +36,12 @@ function pruefe(ok, text) { if (!ok) fehler.push(text); console.log((ok ? '  ok 
 async function stand(page, fn, arg) { return page.evaluate(fn, arg); }
 
 async function main() {
-  if (!fs.existsSync(ordner)) throw new Error(ordner + ' fehlt: erst bauen (KURS_AUSGABE=dist-nav npm run build)');
-  await new Promise((r) => server.listen(port, r));
-  const basis = 'http://localhost:' + port + '/';
+  let basis = URL_ARG;
+  if (!basis) {
+    if (!fs.existsSync(ordner)) throw new Error(ordner + ' fehlt: erst bauen (KURS_AUSGABE=dist-nav npm run build)');
+    await new Promise((r) => server.listen(port, r));
+    basis = 'http://localhost:' + port + '/';
+  }
   const browser = await chromium.launch();
   try {
     for (const g of [{ n: 'desktop', width: 1440, height: 900 }, { n: 'tablet', width: 1024, height: 768 }]) {

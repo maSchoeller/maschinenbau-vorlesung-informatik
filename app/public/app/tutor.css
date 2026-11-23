@@ -66,6 +66,9 @@
 .tutor-sperre p { margin: 0 0 var(--sp-3); }
 .tutor-anmelden { display: inline-flex; align-items: center; gap: var(--sp-2); }
 .tutor-anmelden .k-ic { width: 20px; height: 20px; }
+.tutor-freischalten { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2); margin: 0 0 var(--sp-2); }
+.tutor-freischalten label { flex: 0 0 100%; font-weight: 600; font-size: var(--fs-sm); }
+.tutor-freischalten input { flex: 1 1 10em; min-width: 0; min-height: 44px; box-sizing: border-box; padding: 0 10px; font: inherit; border: 1px solid var(--k-line, #D1D5DB); border-radius: var(--r-base, 6px); }
 
 /* Eingabe: klebt unten im Panel */
 .tutor-form {

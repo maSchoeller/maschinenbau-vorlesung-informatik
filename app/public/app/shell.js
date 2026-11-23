@@ -25,10 +25,7 @@
     if (f.aufgaben.gesamt) t.push(f.aufgaben.geloest + '/' + f.aufgaben.gesamt + ' Aufgaben');
     return t.join(' · ');
   }
-  function standZustand(f) {
-    var g = f.abschnitte.gesamt + f.aufgaben.gesamt, n = f.abschnitte.fertig + f.aufgaben.geloest;
-    return n === 0 ? 'offen' : (n >= g ? 'fertig' : 'begonnen');
-  }
+  function standZustand(f) { return f.status; }   /* eine Regel: KursApp.fortschritt (kern.js) */
   function standFuellen() {
     if (!liste) return;
     $$('[data-app-stand]', liste).forEach(function (n) {
@@ -127,6 +124,19 @@
       }
     }
   });
+
+  /* ── Labor: „Nächster Schritt“ (nächste Lektion) erst auf der letzten Station ──
+     labor.js zeigt immer genau eine Station (.l-task) und blendet die anderen per hidden aus. Der
+     Block der Hülle stünde sonst auf jeder Station unter dem Stations-Knopf „Weiter“ und führte
+     am Training vorbei aus dem Labor heraus. */
+  var weiterNav = $('.app-weiter');
+  var stationen = A.seite.art === 'labor' ? $$('.l-task') : [];
+  if (weiterNav && stationen.length > 1) {
+    var letzte = stationen[stationen.length - 1];
+    var weiterSetzen = function () { weiterNav.hidden = letzte.hidden; };
+    weiterSetzen();
+    if (window.MutationObserver) new MutationObserver(weiterSetzen).observe(letzte, { attributes: true, attributeFilter: ['hidden'] });
+  }
 
   /* ── Zuletzt besuchte Seite (für „Heute“ und andere Geräte) ── */
   var OHNE = { heute: 1, offline: 1, '404': 1 };

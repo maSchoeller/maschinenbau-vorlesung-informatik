@@ -12,7 +12,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { zerlege, zerlegeText, alleSeiten, umschreiben } from '../../src/lib/quelle.mjs';
-import { SITE, DIST } from '../../src/lib/pfade.mjs';
+import { SITE, DIST, APP } from '../../src/lib/pfade.mjs';
 
 const GESCHUETZT = [
   /<script\b[^>]*type="text\/x-python"[^>]*>[\s\S]*?<\/script>/g,
@@ -32,10 +32,7 @@ test('es gibt die erwarteten Seiten', () => {
 for (const s of seiten) {
   test(`byte-genau: ${s}`, () => {
     const q = zerlege(s, { videoBasis: '' });
-    if (q.weiterleitung) {
-      if (distDa) assert.equal(fs.readFileSync(path.join(DIST, s), 'utf8'), q.original, 'Weiterleitung unverändert übernommen');
-      return;
-    }
+    if (q.weiterleitung) return;
     const o = q.original;
     /* 1. Ausschnitte lückenlos aus dem Original; entfernt wurden nur Sprunglink, Kopf und Fuß */
     assert.equal(q.inhaltOriginal, q.ausschnitte.map((a) => o.slice(a.von, a.bis)).join(''));
@@ -57,26 +54,37 @@ for (const s of seiten) {
         assert.equal(zaehle(q.inhalt, block), zaehle(q.inhaltOriginal, block), `geschützter Block verändert: ${block.slice(0, 80)}`);
       }
     }
-    /* 3. gebautes HTML */
-    if (distDa) {
-      /* dist wurde ggf. mit VIDEO_BASIS gebaut: dann mit derselben Umschreibung vergleichen */
-      const inhaltDist = umschreiben(q.inhaltOriginal, process.env.VIDEO_BASIS || '');
-      const d = fs.readFileSync(path.join(DIST, s), 'utf8');
-      assert.equal(zaehle(d, inhaltDist), 1, 'dist enthält den Inhalt genau einmal byte-genau');
-      const nachInhalt = d.slice(d.indexOf(inhaltDist) + inhaltDist.length);
-      let pos = 0;
-      for (const sk of q.skripte.filter((x) => !(x.src && /assets\/js\/speicher\.js$/.test(x.src)))) {
-        const i = nachInhalt.indexOf(sk.roh, pos);
-        assert.ok(i >= 0, `Bestandsskript fehlt oder falsche Reihenfolge: ${sk.roh.slice(0, 80)}`);
-        pos = i + sk.roh.length;
-      }
-      const iSpeicher = d.search(/<script src="(?:\.\.\/)*assets\/js\/speicher\.js"><\/script>/);
-      const iKern = d.search(/<script src="(?:\.\.\/)*app\/kern\.js\?v=[0-9a-f]{12}"><\/script>/);
-      const iErstes = q.skripte.find((x) => !(x.src && /speicher\.js$/.test(x.src)));
-      assert.ok(iSpeicher > 0 && iKern > iSpeicher, 'speicher.js vor kern.js (mit Versions-Hash)');
-      if (iErstes) assert.ok(d.indexOf(iErstes.roh) > iKern, 'kern.js vor den Bestandsskripten');
-      assert.equal(zaehle(d, '__KURS_'), 0, 'keine Platzhalter mehr im HTML');
+  });
+}
+
+/* 3. gebautes HTML: ohne Ausgabeordner ausdrücklich übersprungen (nicht stillschweigend bestanden) */
+const OHNE_DIST = distDa ? false : `kein Ausgabeordner ${path.relative(process.cwd(), DIST) || DIST}: erst bauen (npm run build bzw. KURS_AUSGABE=…)`;
+for (const s of seiten) {
+  test(`gebaut: ${s}`, { skip: OHNE_DIST }, () => {
+    const q = zerlege(s, { videoBasis: '' });
+    if (q.weiterleitung) {
+      assert.equal(fs.readFileSync(path.join(DIST, s), 'utf8'), q.original, 'Weiterleitung unverändert übernommen');
+      return;
     }
+    /* dist wurde ggf. mit VIDEO_BASIS gebaut: dann mit derselben Umschreibung vergleichen */
+    const inhaltDist = umschreiben(q.inhaltOriginal, process.env.VIDEO_BASIS || '');
+    const d = fs.readFileSync(path.join(DIST, s), 'utf8');
+    assert.equal(zaehle(d, inhaltDist), 1, 'dist enthält den Inhalt genau einmal byte-genau');
+    const nachInhalt = d.slice(d.indexOf(inhaltDist) + inhaltDist.length);
+    let pos = 0;
+    for (const sk of q.skripte.filter((x) => !(x.src && /assets\/js\/speicher\.js$/.test(x.src)))) {
+      const i = nachInhalt.indexOf(sk.roh, pos);
+      assert.ok(i >= 0, `Bestandsskript fehlt oder falsche Reihenfolge: ${sk.roh.slice(0, 80)}`);
+      pos = i + sk.roh.length;
+    }
+    const iSpeicher = d.search(/<script src="(?:\.\.\/)*assets\/js\/speicher\.js"><\/script>/);
+    const iKern = d.search(/<script src="(?:\.\.\/)*app\/kern\.js\?v=[0-9a-f]{12}"><\/script>/);
+    const iErstes = q.skripte.find((x) => !(x.src && /speicher\.js$/.test(x.src)));
+    assert.ok(iSpeicher > 0 && iKern > iSpeicher, 'speicher.js vor kern.js (mit Versions-Hash)');
+    if (iErstes) assert.ok(d.indexOf(iErstes.roh) > iKern, 'kern.js vor den Bestandsskripten');
+    assert.equal(zaehle(d, '__KURS_'), 0, 'keine Platzhalter mehr im HTML');
+    /* Jede Seite hat eine h1 (Laborseiten: von der Hülle, nur für Screenreader) */
+    assert.ok(/<h1[\s>]/.test(d), 'h1 fehlt');
   });
 }
 
@@ -93,4 +101,22 @@ test('VIDEO_BASIS schreibt nur <source …/assets/video/X.mp4> um', () => {
 
 test('Zerlegen bricht bei unerwartetem Aufbau ab', () => {
   assert.throws(() => zerlegeText('<html><head></head><body><main id="inhalt"></main></body></html>', 'x.html'), /footer/);
+});
+
+/* CSP: nur das eine Storage-Konto aus VIDEO_BASIS, nie *.blob.core.windows.net (Befund Sicherheit) */
+test('CSP: Storage-Platzhalter wird beim Build ersetzt', async () => {
+  const { configMitCsp } = await import('../assets-kopieren.mjs');
+  const quelle = fs.readFileSync(path.join(APP, 'staticwebapp.config.json'), 'utf8');
+  const ohne = JSON.parse(configMitCsp(quelle, '')).globalHeaders['Content-Security-Policy'];
+  assert.doesNotMatch(ohne, /blob\.core\.windows\.net/);
+  assert.match(ohne, /connect-src 'self';/);
+  const mit = JSON.parse(configMitCsp(quelle, 'https://kursvideos.blob.core.windows.net/video')).globalHeaders['Content-Security-Policy'];
+  assert.match(mit, /connect-src 'self' https:\/\/kursvideos\.blob\.core\.windows\.net;/);
+  assert.match(mit, /media-src 'self' blob: https:\/\/kursvideos\.blob\.core\.windows\.net;/);
+  assert.doesNotMatch(mit, /\*/);
+  assert.throws(() => configMitCsp(quelle, 'http://unsicher.example/video'));
+});
+test('CSP im Ausgabeordner ohne Platzhalter', { skip: OHNE_DIST }, () => {
+  const csp = JSON.parse(fs.readFileSync(path.join(DIST, 'staticwebapp.config.json'), 'utf8')).globalHeaders['Content-Security-Policy'];
+  assert.doesNotMatch(csp, /\*\./, 'kein Platzhalter mit *');
 });

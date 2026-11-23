@@ -19,6 +19,93 @@
      Python-Worker aus einer blob:-URL läuft und relative Pfade dort nicht auflösen kann) */
   if (gesetzt(BUILD.pyodide) && !window.KURS_PYODIDE_BASIS) window.KURS_PYODIDE_BASIS = WURZEL + BUILD.pyodide;
 
+  /* ── Python-Worker eingrenzen (Sicherheit) ─────────────────
+     Python läuft im Worker derselben Herkunft (kurs.js). Dort läuft auch fremder Code (geteilte
+     Programme); ohne Grenze könnte er mit der Sitzung der Person /api/ und /.auth/ aufrufen oder den
+     Cache des Service Workers vergiften. Jeder klassische Worker der Seite startet deshalb mit diesem
+     Vorspiel: Netz nur noch zu Kursdateien derselben Herkunft (assets/, pyodide/; fremde Ziele sperrt
+     die CSP), keine Speicher der Herkunft (Cache Storage, IndexedDB), keine weiteren Worker, Kanäle
+     oder Verbindungen zum Service Worker. Alle benutzten Eingebauten werden vorher festgehalten,
+     damit Python sie nicht umbiegen kann. */
+  function workerVorspiel(wurzel, erlaubt) {
+    var g = self, ruf = Reflect.apply, NURL = URL, NRequest = Request, Zk = String, dekodiere = decodeURIComponent;
+    var get = function (proto, name) { return Object.getOwnPropertyDescriptor(proto, name).get; };
+    var urlOrigin = get(NURL.prototype, 'origin'), urlProto = get(NURL.prototype, 'protocol'), urlPfad = get(NURL.prototype, 'pathname');
+    var reqUrl = get(NRequest.prototype, 'url');
+    var finde = String.prototype.indexOf, nFetch = g.fetch, nOpen = g.XMLHttpRequest && g.XMLHttpRequest.prototype.open, nImport = g.importScripts;
+    var herkunft = g.location.origin;
+    var definiere = Object.defineProperty, beschreibung = Object.getOwnPropertyDescriptor, proto = Object.getPrototypeOf;
+    /* Eigenschaft überall in der Prototypkette entfernen und fest durch wert ersetzen (Standard: undefined) */
+    function weg(obj, name, wert) {
+      for (var o = obj; o; o = proto(o)) { try { if (beschreibung(o, name)) delete o[name]; } catch (e) {} }
+      try { definiere(obj, name, { value: wert, writable: false, configurable: false }); } catch (e) {}
+    }
+    function frei(u) {
+      var x;
+      try { x = new NURL(Zk(u), wurzel); } catch (e) { return false; }
+      var pr = ruf(urlProto, x, []);
+      if (pr === 'blob:' || pr === 'data:') return true;
+      if (ruf(urlOrigin, x, []) !== herkunft) return true;   /* fremde Ziele: entscheidet die CSP */
+      var p;
+      try { p = dekodiere(ruf(urlPfad, x, [])); } catch (e) { return false; }
+      if (ruf(finde, p, ['..']) >= 0 || ruf(finde, p, ['//']) >= 0 || ruf(finde, p, ['\\']) >= 0) return false;
+      for (var i = 0; i < erlaubt.length; i++) if (ruf(finde, p, [erlaubt[i]]) === 0) return true;
+      return false;
+    }
+    function gesperrt(u) { return new TypeError('Aus Python sind nur Kursdateien erreichbar (gesperrt: ' + Zk(u).slice(0, 120) + ')'); }
+    var fetchNeu = function (eingabe, init) {
+      var r;
+      try { r = new NRequest(eingabe, init); } catch (e) { return Promise.reject(e); }
+      var u = ruf(reqUrl, r, []);
+      if (!frei(u)) return Promise.reject(gesperrt(u));
+      return ruf(nFetch, g, [r]);
+    };
+    weg(g, 'fetch', fetchNeu);
+    if (nOpen) {
+      var openNeu = function (methode, u, asynchron, nutzer, kennwort) {
+        var s = Zk(u);
+        if (!frei(s)) throw gesperrt(s);
+        return ruf(nOpen, this, arguments.length > 2 ? [Zk(methode), s, asynchron, nutzer, kennwort] : [Zk(methode), s]);
+      };
+      definiere(g.XMLHttpRequest.prototype, 'open', { value: openNeu, writable: false, configurable: false });
+    }
+    if (nImport) {
+      var importNeu = function () {
+        var liste = [];
+        for (var i = 0; i < arguments.length; i++) {
+          var s = Zk(arguments[i]);
+          if (!frei(s)) throw gesperrt(s);
+          definiere(liste, i, { value: s, writable: true, enumerable: true, configurable: true });
+        }
+        return ruf(nImport, g, liste);
+      };
+      weg(g, 'importScripts', importNeu);
+    }
+    ['caches', 'indexedDB', 'Worker', 'SharedWorker', 'BroadcastChannel', 'EventSource', 'WebSocket', 'WebTransport', 'cookieStore'].forEach(function (n) { weg(g, n); });
+    if (g.navigator) { weg(g.navigator, 'serviceWorker'); weg(g.navigator, 'locks'); }
+    /* Hat etwas nicht gegriffen, startet Python lieber gar nicht als ohne Grenze */
+    var dicht = g.fetch === fetchNeu && (!nImport || g.importScripts === importNeu) && (!nOpen || g.XMLHttpRequest.prototype.open === openNeu) &&
+      !g.caches && !g.indexedDB && !g.Worker && !g.SharedWorker && !g.BroadcastChannel && !(g.navigator && g.navigator.serviceWorker);
+    if (!dicht) throw new Error('Python-Umgebung konnte nicht abgesichert werden');
+  }
+  (function () {
+    var NWorker = window.Worker;
+    if (!NWorker || !window.Blob || !window.URL || !URL.createObjectURL) return;
+    var wurzelPfad;
+    try { wurzelPfad = new URL(WURZEL).pathname; } catch (e) { wurzelPfad = '/'; }
+    var erlaubt = [wurzelPfad + 'assets/', wurzelPfad + (gesetzt(BUILD.pyodide) ? BUILD.pyodide : 'pyodide/')];
+    var vorspiel = '(' + workerVorspiel.toString() + ')(' + JSON.stringify(location.origin + '/') + ',' + JSON.stringify(erlaubt) + ');\n';
+    function KursWorker(skript, optionen) {
+      if (!(this instanceof KursWorker)) throw new TypeError("Failed to construct 'Worker': Please use the 'new' operator.");
+      if (optionen && optionen.type === 'module') return new NWorker(skript, optionen);
+      var ziel = new URL(String(skript), location.href).href;
+      var blob = new Blob([vorspiel + 'importScripts(' + JSON.stringify(ziel) + ');\n'], { type: 'text/javascript' });
+      return new NWorker(URL.createObjectURL(blob), optionen);
+    }
+    KursWorker.prototype = NWorker.prototype;
+    window.Worker = KursWorker;
+  })();
+
   var body = document.body;
   var KS = window.KursSpeicher;
 
@@ -70,7 +157,11 @@
     var init = { method: (opt.method || 'GET').toUpperCase(), headers: kopf, credentials: 'same-origin', cache: 'no-store' };
     if (opt.headers) Object.keys(opt.headers).forEach(function (k) { kopf[k] = opt.headers[k]; });
     if (opt.body !== undefined) { init.body = typeof opt.body === 'string' ? opt.body : JSON.stringify(opt.body); kopf['Content-Type'] = 'application/json'; }
+    /* Die API verlangt bei allen ändernden Anfragen content-type JSON, auch ohne Body (DELETE) */
+    else if (init.method !== 'GET' && init.method !== 'HEAD') kopf['Content-Type'] = 'application/json';
     if (opt.signal) init.signal = opt.signal;
+    /* keepalive: die Anfrage überlebt das Schließen der Seite (Browser-Grenze: 64 KB Body) */
+    if (opt.keepalive) init.keepalive = true;
     return fetch(WURZEL + 'api/' + p, init).then(function (r) {
       var typ = r.headers.get('content-type') || '';
       var lesen = typ.indexOf('application/json') >= 0 ? r.json().catch(function () { return null; }) : r.text().then(function () { return null; }, function () { return null; });
@@ -98,6 +189,40 @@
   function kontoMerken(s) { try { localStorage.setItem(KONTO_SCHLUESSEL, JSON.stringify(s)); } catch (e) {} }
   var kontoStand = kontoGemerkt();
   var kontoAnfrage = null;
+
+  /* Gäste sparsam: Hat /api/ich in diesem Tab „nicht angemeldet“ gemeldet, fragt die nächste Seite
+     nicht erneut – aber nur beim Weiterklicken innerhalb der App. Frisch gefragt wird immer: auf
+     konto.html, nach Neuladen, beim Kommen von außen oder von /.auth/ (Rückkehr vom Login), nach
+     Klick auf Anmelden (auch in einem anderen Tab), wenn ein anderer Tab angemeldet ist, und nach 30 Minuten. */
+  var GAST_SCHLUESSEL = 'inf-mb-app:gast';           /* sessionStorage: Zeit der letzten Gast-Antwort */
+  var ANMELDUNG_SCHLUESSEL = 'inf-mb-app:anmeldung'; /* localStorage: Zeit des letzten Klicks auf Anmelden */
+  var GAST_DAUER = 30 * 60000;
+  function zahl(speicher, k) { try { return Number(speicher.getItem(k)) || 0; } catch (e) { return 0; } }
+  function gastVergessen() { try { sessionStorage.removeItem(GAST_SCHLUESSEL); } catch (e) {} }
+  function gastMerken() { try { sessionStorage.setItem(GAST_SCHLUESSEL, String(Date.now())); } catch (e) {} }
+  function innerhalbDerApp() {
+    var r = document.referrer || '';
+    if (!r) return false;
+    try {
+      var u = new URL(r);
+      if (u.origin !== location.origin) return false;
+      if (u.pathname.indexOf('/.auth/') >= 0 || /^\/(login|logout)(\/|$)/.test(u.pathname)) return false;
+    } catch (e) { return false; }
+    try {
+      var nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+      if (nav && nav.type === 'reload') return false;
+    } catch (e) {}
+    return true;
+  }
+  function gastBekannt() {
+    var t = zahl(sessionStorage, GAST_SCHLUESSEL);
+    if (!t || Date.now() - t > GAST_DAUER) return false;
+    if (zahl(localStorage, ANMELDUNG_SCHLUESSEL) >= t) return false;
+    var g = kontoGemerkt();
+    if (g && g.angemeldet) return false;
+    if (body && body.getAttribute('data-page') === 'konto') return false;
+    return innerhalbDerApp();
+  }
   function kontoSetzen(s) {
     var alt = kontoStand;
     kontoStand = s; kontoMerken(s);
@@ -107,8 +232,10 @@
   var konto = {
     status: function (neu) {
       if (kontoAnfrage && !neu) return kontoAnfrage;
+      if (!neu && gastBekannt()) { kontoAnfrage = Promise.resolve(kontoSetzen(NICHT_ANGEMELDET)); return kontoAnfrage; }
       kontoAnfrage = api('ich').then(function (d) {
-        if (!d || !d.angemeldet) return kontoSetzen(NICHT_ANGEMELDET);
+        if (!d || !d.angemeldet) { gastMerken(); return kontoSetzen(NICHT_ANGEMELDET); }
+        gastVergessen();
         return kontoSetzen({ angemeldet: true, anzeigename: d.anzeigename || null, benutzerId: d.benutzerId || null, neu: !!d.neu });
       }, function (e) {
         if (e && e.offline) { kontoAnfrage = null; return kontoStand || NICHT_ANGEMELDET; }
@@ -117,13 +244,30 @@
       return kontoAnfrage;
     },
     anmelden: function () {
-      location.href = WURZEL + '.auth/login/github?post_login_redirect_uri=' + encodeURIComponent(location.pathname + location.search + location.hash);
+      gastVergessen();
+      try { localStorage.setItem(ANMELDUNG_SCHLUESSEL, String(Date.now())); } catch (e) {}
+      location.href = WURZEL + '.auth/login/github?post_login_redirect_uri=' + encodeURIComponent(eigenerPfad() + location.search + location.hash);
     },
     abmelden: function () {
+      gastVergessen();
+      sitzungsdatenWeg();
       kontoSetzen(NICHT_ANGEMELDET);
-      location.href = WURZEL + '.auth/logout?post_logout_redirect_uri=' + encodeURIComponent(location.pathname);
+      location.href = WURZEL + '.auth/logout?post_logout_redirect_uri=' + encodeURIComponent(eigenerPfad());
     }
   };
+  /* Rücksprungziel nach Login/Logout: immer ein Pfad dieser Herkunft. Ein Aufruf wie //fremd.example/x
+     (die 404-Seite antwortet auf jeden Pfad) würde sonst als protokollrelative fremde Adresse weitergereicht. */
+  function eigenerPfad() { return '/' + String(location.pathname || '').replace(/^[\/\\]+/, ''); }
+  /* Beim Abmelden (auch nach „Konto löschen“): Tutor-Verlauf und -Kontingent dieses Tabs entfernen,
+     damit sie weder ein Gast noch das nächste Konto im selben Tab sieht oder mitschickt. */
+  function sitzungsdatenWeg() {
+    try {
+      for (var i = sessionStorage.length - 1; i >= 0; i--) {
+        var k = sessionStorage.key(i);
+        if (k && k.indexOf('inf-mb-app:tutor:') === 0) sessionStorage.removeItem(k);
+      }
+    } catch (e) {}
+  }
 
   /* ── Kursdaten ───────────────────────────────────────────── */
   var kursAnfrage = null;
@@ -142,24 +286,65 @@
     return kursAnfrage;
   }
 
-  /* ── Fortschritt ─────────────────────────────────────────── */
+  /* ── Fortschritt ─────────────────────────────────────────
+     Die eine Regel für alle Anzeigen (Lektionswähler, Heute, Lernpfad; stand.js baut darauf auf):
+     - Abschnitte: Pflichtabschnitte der Lerneinheit; „Deep Dive (freiwillig)“ zählt nirgends mit.
+     - Aufgaben: je prüfbarem Teil (data-id) des Labors, wie labor.js zählt.
+     - fertig: alle Pflichtabschnitte und alle prüfbaren Teile; begonnen: irgendein Eintrag in
+       done, aufg, begonnen oder gesehen; sonst offen. */
   function lesen(lektion, k) { try { return (KS && KS.sofort.lesen(KS.pfad(lektion, k))) || {}; } catch (e) { return {}; } }
+  function istFreiwillig(a) { return /freiwillig/i.test((a && a.titel) || ''); }
+  function anzahl(o) { return Object.keys(o || {}).length; }
+  /* Stationen mit prüfbaren Teilen, die noch nicht ganz gelöst sind */
+  function offeneAufgaben(t, aufg, beg) {
+    aufg = aufg || lesen(t.nr, 'aufg'); beg = beg || lesen(t.nr, 'begonnen');
+    return (t.aufgaben || []).filter(function (a) {
+      return (a.pruefbar || []).length && !a.pruefbar.every(function (i) { return !!aufg[i]; });
+    }).map(function (a) {
+      var angefangen = a.pruefbar.some(function (i) { return !!aufg[i] || !!beg[i]; });
+      return { id: a.id, titel: a.titel, teil: a.teil, sterne: a.sterne, minuten: a.minuten, angefangen: angefangen };
+    });
+  }
+  /* Termin aus kurs.json -> Stand (synchron) */
+  function terminStand(t) {
+    var done = lesen(t.nr, 'done'), aufg = lesen(t.nr, 'aufg'), beg = lesen(t.nr, 'begonnen'), ges = lesen(t.nr, 'gesehen');
+    var pflicht = (t.abschnitte || []).filter(function (a) { return !istFreiwillig(a); });
+    var fertigA = pflicht.filter(function (a) { return !!done[a.id]; }).length;
+    var offenA = pflicht.filter(function (a) { return !done[a.id]; })[0];
+    var stationen = offeneAufgaben(t, aufg, beg);
+    var ids = [];
+    (t.aufgaben || []).forEach(function (a) { (a.pruefbar || []).forEach(function (i) { if (ids.indexOf(i) < 0) ids.push(i); }); });
+    var geloest = ids.filter(function (i) { return !!aufg[i]; }).length;
+    var hatLabor = !!t.labor && ids.length > 0;
+    var verstehenFertig = pflicht.length === 0 || fertigA === pflicht.length;
+    var laborFertig = !hatLabor || geloest === ids.length;
+    var gearbeitet = anzahl(done) + anzahl(aufg) + anzahl(beg) > 0;
+    var begonnen = gearbeitet || anzahl(ges) > 0;
+    var status = (verstehenFertig && laborFertig && (pflicht.length || hatLabor)) ? 'fertig' : (begonnen ? 'begonnen' : 'offen');
+    return {
+      nr: t.nr,
+      abschnitte: { fertig: fertigA, gesamt: pflicht.length },
+      aufgaben: { geloest: geloest, gesamt: ids.length },
+      verstehen: { fertig: fertigA, gesamt: pflicht.length, offenAnker: offenA ? (offenA.anker || offenA.id) : null, ganz: verstehenFertig },
+      labor: { geloest: geloest, gesamt: ids.length, offenAnker: stationen.length ? stationen[0].id : null, ganz: laborFertig, vorhanden: hatLabor },
+      begonnen: begonnen,
+      gearbeitet: gearbeitet,
+      status: status
+    };
+  }
   var fortschritt = {
+    /* Promise<Stand> (Vertrag 4.4: abschnitte {fertig, gesamt}, aufgaben {geloest, gesamt}; dazu status u. a.) */
     lektion: function (nr) {
       return kurs().then(function (d) {
         var t = null;
         (d.termine || []).forEach(function (x) { if (x.nr === nr) t = x; });
         if (!t) throw new Error('Unbekannte Lektion ' + nr);
-        var done = lesen(nr, 'done'), aufg = lesen(nr, 'aufg');
-        var ab = (t.abschnitte || []).map(function (a) { return a.id; });
-        var ids = [];
-        (t.aufgaben || []).forEach(function (a) { (a.pruefbar || []).forEach(function (i) { if (ids.indexOf(i) < 0) ids.push(i); }); });
-        return {
-          abschnitte: { fertig: ab.filter(function (i) { return !!done[i]; }).length, gesamt: ab.length },
-          aufgaben: { geloest: ids.filter(function (i) { return !!aufg[i]; }).length, gesamt: ids.length }
-        };
+        return terminStand(t);
       });
-    }
+    },
+    termin: terminStand,
+    offeneAufgaben: offeneAufgaben,
+    freiwillig: istFreiwillig
   };
 
   /* ── Meldungen ───────────────────────────────────────────── */

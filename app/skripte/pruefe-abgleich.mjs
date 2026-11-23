@@ -288,9 +288,10 @@ async function t6() {
   await g2.page.locator('[data-konto-aktion="abmelden"]').click();
   d = await dialog(g2.page);
   await g2.page.locator('dialog.ka-dialog button:has-text("Stand von diesem Gerät entfernen")').click();
-  await g2.page.waitForURL((u) => !/konto\.html$/.test(u.pathname) || true, { timeout: 15000 }).catch(() => {});
+  /* Abmelden führt über /.auth/logout zurück auf die Kontoseite: warten, bis der Emulator meldet, dass niemand mehr angemeldet ist */
+  const abgemeldet = await bis(async () => { const r = await g2.ctx.request.get(BASIS + '/.auth/me').then((x) => x.json()); return !r || !r.clientPrincipal; }, 15000);
+  pruefe('t6 Abmelden: Sitzung beendet (/.auth/me ohne Benutzer)', !!abgemeldet);
   await g2.page.waitForLoadState('domcontentloaded');
-  await warte(500);
   await g2.page.goto(BASIS + '/lernpfad.html', { waitUntil: 'domcontentloaded' });
   const nachAbmelden = await speicherSchluessel(g2.page);
   pruefe('t6 Abmelden+entfernen: Kontostand weg, Gaststand wieder da', !nachAbmelden.includes('inf-mb/v01/done') && nachAbmelden.includes('inf-mb/v09/done'), nachAbmelden.join(','));

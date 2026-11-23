@@ -178,7 +178,7 @@
       }).then(function (w2) {
         if (w2 !== 'ja') return;
         datenStatus('Wird gelöscht …');
-        return KA.api('konto', { method: 'DELETE', body: {} }).then(function () {
+        return KA.api('konto', { method: 'DELETE' }).then(function () {
           return AB.beenden({ behalten: !cb.checked, kontoGeloescht: true, ohneAbgleich: true }).then(function () { KA.konto.abmelden(); });
         }, function (e) { datenStatus(e && e.offline ? 'Gerade keine Verbindung. Es wurde nichts gelöscht.' : 'Das Löschen hat nicht geklappt. Es wurde nichts gelöscht.', true); });
       });

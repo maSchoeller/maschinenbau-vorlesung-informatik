@@ -35,18 +35,19 @@
     return String(s == null ? '' : s).toLowerCase().replace(/ß/g, 'ss').normalize('NFD').replace(/[̀-ͯ]/g, '');
   }
 
-  /* Die Python-Themen einer Lektion (kurs.json) zählen zum Text des Lektionseintrags: „numpy“ findet V13 */
+  /* Die Python-Themen einer Lektion (kurs.json) zählen beim Suchen zum Text des Lektionseintrags („numpy“ findet V13),
+     stehen aber in einem eigenen Feld, das nicht angezeigt wird (sonst hingen sie ohne Trennung an der Unterzeile) */
   function lektionenAnreichern(d, k) {
     var py = {};
     ((k && k.termine) || []).forEach(function (t) { if (t.python && t.python.length) py[t.nr] = t.python.join(' '); });
     (d.eintraege || []).forEach(function (e) {
-      if (e.typ === 'lektion' && py[e.lektion]) e.text = (e.text ? e.text + ' ' : '') + py[e.lektion];
+      if (e.typ === 'lektion' && py[e.lektion]) e.stichwoerter = py[e.lektion];
     });
   }
 
   function aufbereiten(d) {
     return (d.eintraege || []).map(function (e) {
-      return { e: e, t: norm(e.titel), x: norm(e.text), l: norm(e.lektion || '') };
+      return { e: e, t: norm(e.titel), x: norm((e.text || '') + (e.stichwoerter ? ' ' + e.stichwoerter : '')), l: norm(e.lektion || '') };
     });
   }
 

@@ -75,6 +75,14 @@
 
   /* ── Kern-Speicher (gebündelt) ───────────────────────────── */
   var patch = {}, patchGeplant = false;
+  /* Voller Browser-Speicher: Was nicht in den localStorage passt, bleibt für diese Seite im
+     Arbeitsspeicher (fluechtig) und geht von dort zum Server; einmal je Seite ein Hinweis. */
+  var fluechtig = {}, vollGemeldet = false;
+  function speicherVoll() {
+    if (vollGemeldet) return;
+    vollGemeldet = true;
+    if (KA && KA.melde) KA.melde('Der Speicher dieses Browsers ist voll. Dein Stand geht trotzdem in dein Konto. Lösche nicht mehr benötigte Programme in der Werkbank, damit er auch hier Platz hat.', { art: 'fehler', dauer: 12000 });
+  }
   function rohLies() { var d = json(SPEICHER, {}); return Array.isArray(d) ? {} : d; }
   function leere() {
     var ks = Object.keys(patch);
@@ -82,31 +90,51 @@
     var d = rohLies(), p = patch;
     patch = {};
     ks.forEach(function (k) { if (p[k] === null) delete d[k]; else d[k] = p[k]; });
-    lsSchreib(SPEICHER, JSON.stringify(d));
+    if (lsSchreib(SPEICHER, JSON.stringify(d))) { fluechtig = {}; return; }
+    ks.forEach(function (k) { fluechtig[k] = p[k]; });
+    speicherVoll();
   }
-  function lies() { leere(); return rohLies(); }
-  function schreibGanz(d) { patch = {}; return lsSchreib(SPEICHER, JSON.stringify(d)); }
+  function lies() {
+    leere();
+    var d = rohLies();
+    Object.keys(fluechtig).forEach(function (k) { if (fluechtig[k] === null) delete d[k]; else d[k] = fluechtig[k]; });
+    return d;
+  }
+  function schreibGanz(d) { patch = {}; fluechtig = {}; return lsSchreib(SPEICHER, JSON.stringify(d)); }
   function patchen(pfad, wert) {
     patch[pfad] = wert;
     if (!patchGeplant) { patchGeplant = true; Promise.resolve().then(function () { patchGeplant = false; leere(); }); }
   }
 
   /* ── Offene Änderungen (je Pfad ein Schlüssel) ───────────── */
+  var offenFluechtig = {};   /* Marken, die wegen vollem Speicher nicht in den localStorage passten */
   function markiere(pfad, geaendert, geloescht) {
-    lsSchreib(OFFEN + pfad, JSON.stringify(geloescht ? { geaendert: geaendert, geloescht: true } : { geaendert: geaendert }));
+    var v = geloescht ? { geaendert: geaendert, geloescht: true } : { geaendert: geaendert };
+    if (lsSchreib(OFFEN + pfad, JSON.stringify(v))) { delete offenFluechtig[pfad]; return; }
+    offenFluechtig[pfad] = v;
+    speicherVoll();
   }
   function entmarkiere(pfad, geaendert) {
+    var f = offenFluechtig[pfad];
+    if (f && f.geaendert === geaendert) delete offenFluechtig[pfad];
     var v = json(OFFEN + pfad, null);
     if (v && v.geaendert === geaendert) lsWeg(OFFEN + pfad);
   }
   function offenListe() {
-    return schluesselMit(OFFEN).map(function (k) {
-      var v = json(k, null) || {};
-      return { pfad: k.slice(OFFEN.length), geaendert: String(v.geaendert || ''), geloescht: !!v.geloescht };
+    var gesehen = {};
+    var r = schluesselMit(OFFEN).map(function (k) {
+      var v = json(k, null) || {}, pf = k.slice(OFFEN.length);
+      if (offenFluechtig[pf]) v = offenFluechtig[pf];
+      gesehen[pf] = 1;
+      return { pfad: pf, geaendert: String(v.geaendert || ''), geloescht: !!v.geloescht };
     });
+    Object.keys(offenFluechtig).forEach(function (pf) {
+      if (!gesehen[pf]) r.push({ pfad: pf, geaendert: String(offenFluechtig[pf].geaendert || ''), geloescht: !!offenFluechtig[pf].geloescht });
+    });
+    return r;
   }
-  function offenAnzahl() { return schluesselMit(OFFEN).length; }
-  function offenLeeren() { schluesselMit(OFFEN).forEach(lsWeg); }
+  function offenAnzahl() { return offenListe().length; }
+  function offenLeeren() { offenFluechtig = {}; schluesselMit(OFFEN).forEach(lsWeg); }
   function zaehle(d) { return Object.keys(d).filter(function (p) { return p.indexOf('inf-mb/app/') !== 0; }).length; }
 
   /* ── Zustand ─────────────────────────────────────────────── */
@@ -242,7 +270,9 @@
       zuGrossMelden(zuGross);
       var body = { eintraege: senden };
       if (m.seit) body.seit = m.seit;
-      return KA.api('abgleich', { method: 'POST', body: body }).then(function (antwort) {
+      /* Beim Verlassen der Seite mit keepalive senden, damit der Abgleich das Schließen überlebt (Browser: höchstens 64 KB) */
+      var bleibt = Date.now() - verlassenUm < 3000 && groesse < 60 * 1024;
+      return KA.api('abgleich', { method: 'POST', body: body, keepalive: bleibt }).then(function (antwort) {
         antwort = antwort || {};
         Object.keys(marke).forEach(function (p) { entmarkiere(p, marke[p]); });
         abgelehntMelden(antwort.abgelehnt, marke);
@@ -407,8 +437,7 @@
     if (ent === 'nein') return trennen();
     return frage({
       titel: 'Bisherigen Arbeitsstand übernehmen?',
-      absaetze: ['Deinen bisherigen Arbeitsstand aus diesem Browser in dein Konto übernehmen?',
-        'In diesem Browser liegen ' + n + (n === 1 ? ' Eintrag' : ' Einträge') + ' (abgehakte Abschnitte, gelöste Aufgaben, eigene Programme). ' +
+      absaetze: [(n === 1 ? 'In diesem Browser liegt 1 Eintrag' : 'In diesem Browser liegen ' + n + ' Einträge') + ' (abgehakte Abschnitte, gelöste Aufgaben, eigene Programme). ' +
         'Bei „Ja“ wird er mit dem Stand in deinem Konto zusammengeführt, je Eintrag gewinnt der neueste. ' +
         'Bei „Nein“ bleibt er nur auf diesem Gerät, wird nicht hochgeladen und kommt nach dem Abmelden wieder zurück.'],
       knoepfe: [{ text: 'Ja, übernehmen', wert: 'ja', art: 'primaer' }, { text: 'Nein, getrennt halten', wert: 'nein', art: 'leise' }]
@@ -453,10 +482,12 @@
   }
   window.addEventListener('online', function () { zeigen(); abgleichen('online', { ohneWartezeit: true }); });
   window.addEventListener('offline', function () { zeigen(); });
+  var verlassenUm = 0;
   document.addEventListener('visibilitychange', function () {
     if (document.visibilityState === 'visible') abgleichen('fokus');
-    else if (offenAnzahl()) abgleichen('schreiben');
+    else if (offenAnzahl()) { verlassenUm = Date.now(); abgleichen('schreiben'); }
   });
+  window.addEventListener('pagehide', function () { if (offenAnzahl()) { verlassenUm = Date.now(); abgleichen('schreiben'); } });
   window.addEventListener('focus', function () { abgleichen('fokus'); });
   var aktT = 0;
   function aktiv() {

@@ -17,6 +17,25 @@ export default function assetsKopieren() {
     fs.rmSync(nach, { recursive: true, force: true });
     fs.cpSync(von, nach, { recursive: true, filter });
   }
-  fs.copyFileSync(path.join(APP, 'staticwebapp.config.json'), path.join(DIST, 'staticwebapp.config.json'));
+  fs.writeFileSync(path.join(DIST, 'staticwebapp.config.json'), configMitCsp(fs.readFileSync(path.join(APP, 'staticwebapp.config.json'), 'utf8'), process.env.VIDEO_BASIS));
   console.log(`assets-kopieren: ${n} Dateien${ohneVideo ? `, ${ausgelassen} Videos ausgelassen (VIDEO_BASIS)` : ''}`);
+}
+
+/* CSP: In der Quelle steht der Platzhalter https://*.blob.core.windows.net. Erlaubt wird nur das eine
+   Storage-Konto aus VIDEO_BASIS (sonst könnte Code im Browser Daten zu jedem beliebigen Storage-Konto
+   schicken); ohne VIDEO_BASIS entfällt der Eintrag ganz. */
+export const CSP_PLATZHALTER = 'https://*.blob.core.windows.net';
+export function configMitCsp(text, videoBasis) {
+  let herkunft = '';
+  if (videoBasis) {
+    const u = new URL(videoBasis);
+    if (u.protocol !== 'https:') throw new Error(`VIDEO_BASIS muss https sein: ${videoBasis}`);
+    herkunft = u.origin;
+  }
+  const json = JSON.parse(text);
+  const kopf = json.globalHeaders || {};
+  const csp = kopf['Content-Security-Policy'];
+  if (!csp || !csp.includes(CSP_PLATZHALTER)) throw new Error('staticwebapp.config.json: CSP ohne Storage-Platzhalter');
+  kopf['Content-Security-Policy'] = csp.split(' ' + CSP_PLATZHALTER).join(herkunft ? ' ' + herkunft : '');
+  return JSON.stringify(json, null, 2) + '\n';
 }

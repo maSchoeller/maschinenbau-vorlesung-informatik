@@ -1,7 +1,7 @@
 'use strict';
 // POST /api/tutor (Vertrag Abschnitt 10)
 // Body: {verlauf:[{rolle:'nutzer'|'tutor', text}], kontext:{lektion, seite, aufgabe, code, ausgabe}}
-// 200 {antwort, rest:{heute}} · 400 Eingabe · 401 ohne Login · 429 {fehler:'tageslimit'|'kursbudget'}
+// 200 {antwort, rest:{heute}} · 400 Eingabe · 401 ohne Login · 403 {fehler:'freischaltung'} (KURS_CODE) · 429 {fehler:'tageslimit'|'kursbudget'}
 // 503 {fehler:'nicht-eingerichtet'} ohne Schlüssel · 502 {fehler:'modell-fehler'} bei Fehlern des Modells
 //
 // Zählung: eine Frage zählt einmal (auch mit Prüfer-Aufruf und zweitem Versuch). Scheitert schon der
@@ -15,6 +15,8 @@ const limits = require('../lib/limits');
 const kontext = require('../lib/tutor/kontext');
 const modell = require('../lib/tutor/modell');
 const { beantworte, ModellFehler } = require('../lib/tutor/ablauf');
+const zugang = require('../lib/zugang');
+const { ablage } = require('../lib/ablage');
 
 const MELDUNG_429 = {
   tageslimit: 'Du hast heute alle Fragen an den Tutor verbraucht. Morgen geht es weiter.',
@@ -34,6 +36,11 @@ async function tutor(request, context) {
   if (modell.doppelGewuenscht() && !modell.doppelAktiv()) log(context, { warnung: 'TUTOR_DOPPEL außerhalb der lokalen Umgebung ignoriert' });
   const client = modell.client();
   if (!client) wirf(503, 'nicht-eingerichtet', 'Der Tutor ist noch nicht eingerichtet.');
+
+  // Freischaltung mit Kurscode (nur mit KURS_CODE): Wegwerf-Konten verbrauchen sonst das Kurskontingent
+  if (zugang.freischaltungNoetig() && !zugang.freigeschaltet(await ablage().benutzerLesen(b.benutzerId))) {
+    wirf(403, 'freischaltung', 'Der Tutor ist für Teilnehmende des Kurses. Gib einmal den Kurscode aus der Vorlesung ein.');
+  }
 
   const { limitNutzer, limitKurs } = limits.tutorLimits();
   const k = await limits.pruefeUndZaehle({ benutzerId: b.benutzerId, art: 'tutor', limitNutzer, limitKurs });

@@ -42,8 +42,21 @@
 }
 .wb-titel:focus-visible { outline: 3px solid var(--k-focus, #1A1A1A); outline-offset: 1px; }
 .wb-aktionen { display: flex; flex-wrap: wrap; gap: var(--sp-1) var(--sp-2); }
-.wb-loeschen { color: var(--k-bad, #B42318); }
-.wb-loeschen:hover { background: #FEF3F2; color: var(--k-bad, #B42318); }
+/* „Mehr“: seltene Aktionen; Löschen abgesetzt am Ende */
+.wb-mehr { position: relative; }
+.wb-mehr > summary { list-style: none; cursor: pointer; }
+.wb-mehr > summary::-webkit-details-marker { display: none; }
+.wb-mehr__liste {
+  position: absolute; right: 0; top: calc(100% + 4px); z-index: 30; min-width: 13rem; display: flex; flex-direction: column;
+  padding: 4px; background: #fff; border: 1px solid var(--k-line, #D1D5DB); border-radius: var(--r-base, 6px); box-shadow: 0 8px 24px rgba(0, 0, 0, .12);
+}
+.wb-mehr__liste button {
+  min-height: 44px; padding: 0 12px; text-align: left; font: inherit; font-size: var(--fs-sm); font-weight: 600; color: var(--text);
+  background: none; border: 0; border-radius: var(--r-sm, 4px); cursor: pointer;
+}
+.wb-mehr__liste button:hover { background: var(--app-flaeche, #F3F4F6); }
+.wb-mehr__liste .wb-loeschen { margin-top: 4px; border-top: 1px solid var(--k-line, #D1D5DB); border-radius: 0 0 var(--r-sm, 4px) var(--r-sm, 4px); color: var(--k-bad, #B42318); }
+.wb-mehr__liste .wb-loeschen:hover { background: #FEF3F2; }
 .wb-status { margin: var(--sp-2) 0 var(--sp-3); min-height: 1.4em; }
 .wb-gross { margin: 0 0 var(--sp-3); }
 

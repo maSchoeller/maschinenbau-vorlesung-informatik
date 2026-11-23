@@ -51,7 +51,8 @@ Grob: Erstinstallation ca. 22 GB, danach etwa 5 GB je Bereitstellung. Mehr als e
 - **Mengenbremse** (alle Routen außer Tutor und Status): je Konto und Tag 5000 Punkte, kursweit 200 000, anonyme Abrufe geteilter Programme kursweit 50 000. Ein Punkt ist eine Anfrage oder angefangene 16 KB in Anfrage und Antwort. Ein Tab, der jede Minute abgleicht, braucht an einem langen Tag ca. 600 Punkte. Danach 429 `mengenbremse` bis Mitternacht (deutsche Zeit). Einstellungen `MENGE_LIMIT_NUTZER_TAG`, `MENGE_LIMIT_KURS_TAG`, `MENGE_LIMIT_ANONYM_TAG` (nicht von Bicep verwaltet; per `az staticwebapp appsettings set` änderbar, bleiben beim Deployment erhalten). Gezählt wird gesammelt je Function-Instanz (je 50 Punkte ein Schreibvorgang), die Grenze ist also auf etwa 50 Punkte je Instanz genau.
 - Grobe Obergrenze bei Missbrauch (Schätzung, nicht gemessen): Ist die Kursgrenze jeden Tag ausgeschöpft und kostet ein Punkt etwa 10 RU, sind das 2 Mio. RU am Tag, ca. 0,50 USD am Tag bzw. 15 USD im Monat. Der Preis dafür: Mit etwa 40 Missbrauchskonten lässt sich der Abgleich des Kurses für einen Tag blockieren (die App arbeitet lokal weiter und gleicht am nächsten Tag ab).
 - **Speichergrenzen je Konto** (5000 lebende Einträge, 10 MB Werte, 50 geteilte Programme): atomar über den Kontozähler `konto:<benutzerId>` im Container `zaehler` (bedingtes Patch), auch bei parallelen Anfragen. Bekannte Unschärfe: Ist die Grenze erreicht, zählt der Server höchstens alle 10 Minuten nach; Reservierungen, die in diesem Moment noch nicht geschrieben sind, gehen dabei verloren. Ein Konto kann die Grenze so einmalig um die Menge gleichzeitig laufender Anfragen überschreiten (begrenzt durch die Mengenbremse), danach greift sie wieder.
-- Tutor: eigene Kontingente (40 je Konto, 1500 im Kurs je Tag) und das Ausgabenlimit in der Anthropic-Konsole (Abschnitt 4).
+- Tutor: eigene Kontingente (40 je Konto, im Kurs 600 je Tag laut `infra/main.bicepparam`, ohne Einstellung 1500) und das Ausgabenlimit in der Anthropic-Konsole (Abschnitt 4).
+- **Betriebsrisiko Wegwerf-Konten:** Anmelden kann sich jedes GitHub-Konto. Ohne Freischaltung reichen bei einem Kurskontingent von 600 Fragen 15 Konten, um den Tutor für den ganzen Kurs bis Mitternacht zu sperren. Deshalb vor dem Semester `KURS_CODE` setzen (Abschnitt 5) und den Code in der Vorlesung bzw. im Moodle-Kurs nennen: Der Tutor verlangt dann einmal je Konto den Kurscode (höchstens 10 Versuche je Konto und Tag). Wird der Code weitergegeben, einen neuen setzen; bereits freigeschaltete Konten bleiben freigeschaltet. Die Mengenbremse bleibt bewusst kursweit (Kostenschutz, siehe oben); sie trifft nur den Abgleich, die App arbeitet lokal weiter.
 
 ### Videos aus dem öffentlichen Storage
 
@@ -109,9 +110,10 @@ Remove-Variable k
 | `BENUTZER_SALT` | einmalig beim Erstdeployment erzeugt, danach nie überschrieben | Schlüssel für die pseudonymen Kennungen. **Nicht ändern**: Mit neuem Salt verlieren alle ihre Daten (neue benutzerId) |
 | `ANTHROPIC_API_KEY` | Besitzer per CLI | Tutor an/aus |
 | `TUTOR_MODELL` | Bicep (`claude-haiku-5-5`) | Modell-ID |
-| `TUTOR_LIMIT_NUTZER_TAG` / `TUTOR_LIMIT_KURS_TAG` | Bicep (40 / 1500) | Kontingente, Tag nach deutscher Zeit |
+| `TUTOR_LIMIT_NUTZER_TAG` / `TUTOR_LIMIT_KURS_TAG` | Bicep (40 / 600; ohne Einstellung 40 / 1500) | Kontingente, Tag nach deutscher Zeit |
 | `TUTOR_PRUEFER` | Bicep (`an`) | zweite Prüfung jeder Antwort |
 | `APP_VERSION` | optional | Version in `/api/status` |
+| `KURS_CODE` | Besitzer per CLI (nicht in Bicep, nicht ins Repository) | Tutor nur nach einmaliger Freischaltung mit diesem Code (Groß-/Kleinschreibung und Leerzeichen egal; am besten drei Wörter). Ohne Wert: keine Freischaltung. `az staticwebapp appsettings set -n <swa> -g rg-informatik-lernapp --setting-names KURS_CODE="…"` |
 
 Bicep-verwaltete Werte ändert man in `infra/main.bicepparam` und deployt erneut; ein per CLI geänderter Tutor-Grenzwert würde beim nächsten Deployment auf den Bicep-Wert zurückgesetzt.
 
@@ -208,3 +210,4 @@ Lokal getestet sind alle Routen gegen die Arbeitsspeicher-Ablage und gegen die C
 - Wie viele Function-Instanzen SWA Free parallel startet (bestimmt die Genauigkeit der Mengenbremse).
 - Verhalten verwalteter Functions mit Node 22 und Wildcard-Route `eintraege/{*pfad}` hinter dem SWA-Routing.
 - CORS und Range-Anfragen der Videos vom Storage-Konto.
+- Ob Azure Static Web Apps fremde Ziele in `post_login_redirect_uri` ablehnt (die App erzeugt nur noch Pfade der eigenen Herkunft; der Emulator nimmt jede Adresse an).

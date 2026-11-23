@@ -51,6 +51,23 @@ for (const [name, fabrik] of Object.entries(backends)) {
         assert.equal(r.headers['cache-control'], 'no-store');
         assert.match(r.headers['content-type'], /^application\/json; charset=utf-8$/);
       });
+      it('tutor: true mit lokalem Modell-Doppel, sonst ohne Schlüssel false', async () => {
+        const alt = { d: process.env.TUTOR_DOPPEL, k: process.env.ANTHROPIC_API_KEY, w: process.env.WEBSITE_INSTANCE_ID };
+        try {
+          delete process.env.ANTHROPIC_API_KEY;
+          delete process.env.WEBSITE_INSTANCE_ID;
+          delete process.env.TUTOR_DOPPEL;
+          assert.equal((await h.aufruf('GET', '/api/status')).daten.tutor, false);
+          process.env.TUTOR_DOPPEL = '1';
+          assert.equal((await h.aufruf('GET', '/api/status')).daten.tutor, true);
+          process.env.WEBSITE_INSTANCE_ID = 'azure';   // Produktion: Doppel wird ignoriert
+          assert.equal((await h.aufruf('GET', '/api/status')).daten.tutor, false);
+        } finally {
+          for (const [k, n] of [['d', 'TUTOR_DOPPEL'], ['k', 'ANTHROPIC_API_KEY'], ['w', 'WEBSITE_INSTANCE_ID']]) {
+            if (alt[k] === undefined) delete process.env[n]; else process.env[n] = alt[k];
+          }
+        }
+      });
     });
 
     // ------------------------------------------------------------ ich
@@ -492,6 +509,15 @@ for (const [name, fabrik] of Object.entries(backends)) {
 
     // ------------------------------------------------------------ geteilt
     describe('geteilt', () => {
+      it('Eingaben für input() reisen mit (höchstens 4 KB, nur Text)', async () => {
+        await anzeigename('u1', 'Anna');
+        const r = await h.aufruf('POST', '/api/geteilt', { benutzer: 'u1', body: { titel: 'Kreis', code: 'r = float(input())', eingaben: '25\n3' } });
+        assert.equal(r.status, 201);
+        assert.equal((await h.aufruf('GET', `/api/geteilt/${r.daten.id}`)).daten.eingaben, '25\n3');
+        assert.equal((await h.aufruf('POST', '/api/geteilt', { benutzer: 'u1', body: { titel: 'K', code: 'x', eingaben: 'x'.repeat(4097) } })).status, 413);
+        assert.equal((await h.aufruf('POST', '/api/geteilt', { benutzer: 'u1', body: { titel: 'K', code: 'x', eingaben: 5 } })).status, 400);
+        assert.equal((await h.aufruf('POST', '/api/geteilt', { benutzer: 'u1', body: { titel: 'K', code: 'x', eingaben: 'a\u0007' } })).status, 400);
+      });
       it('Anlegen verlangt Login und Anzeigenamen', async () => {
         assert.equal((await h.aufruf('POST', '/api/geteilt', { body: { titel: 'T', code: 'print(1)' } })).status, 401);
         const r = await h.aufruf('POST', '/api/geteilt', { benutzer: 'u1', body: { titel: 'T', code: 'print(1)' } });
@@ -506,7 +532,7 @@ for (const [name, fabrik] of Object.entries(backends)) {
         const id = r.daten.id;
         const g = await h.aufruf('GET', `/api/geteilt/${id}`);
         assert.equal(g.status, 200);
-        assert.deepEqual(g.daten, { id, titel: 'Mein Programm', code: 'print("<b>hallo</b>")', lektion: 'V07', autor: 'Anna', erstellt: r.daten.erstellt });
+        assert.deepEqual(g.daten, { id, titel: 'Mein Programm', code: 'print("<b>hallo</b>")', eingaben: '', lektion: 'V07', autor: 'Anna', erstellt: r.daten.erstellt });
         assert.ok(!('benutzerId' in g.daten));
         // späterer Namenswechsel ändert den Schnappschuss nicht
         await anzeigename('u1', 'Anna B');

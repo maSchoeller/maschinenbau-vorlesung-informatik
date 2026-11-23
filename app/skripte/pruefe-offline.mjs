@@ -271,6 +271,7 @@ async function t5() {
   /* b) fremde Herkunft (wie VIDEO_BASIS in Produktion): gleicher Server unter 127.0.0.1, mit CORS-Kopf */
   const fremdBasis = BASIS.replace('localhost', '127.0.0.1');
   if (fremdBasis === BASIS) { pruefe('fremde Herkunft', true, 'Basis ist nicht localhost, Teilprüfung übersprungen'); return; }
+  const mitFremd = (csp) => csp.replace(/(media-src|connect-src) 'self'/g, `$1 'self' ${fremdBasis}`);
   ctx = await kontext({ fremdErlauben: true });
   await ctx.route(`${fremdBasis}/assets/video/**`, async (route) => {
     const r = await route.fetch();
@@ -279,7 +280,17 @@ async function t5() {
   await ctx.route(`${BASIS}/${info.seite}`, async (route) => {
     const r = await route.fetch(); let body = await r.text();
     body = body.split('../assets/video/').join(`${fremdBasis}/assets/video/`);
-    await route.fulfill({ response: r, body });
+    /* Die CSP erlaubt in Produktion genau das Storage-Konto aus VIDEO_BASIS; hier steht die Ersatz-Herkunft an seiner Stelle */
+    const kopf = { ...r.headers() };
+    if (kopf['content-security-policy']) kopf['content-security-policy'] = mitFremd(kopf['content-security-policy']);
+    await route.fulfill({ response: r, body, headers: kopf });
+  });
+  /* gleiche Ersetzung für den Service Worker (seine Abrufe unterliegen der CSP von sw.js) */
+  await ctx.route(`${BASIS}/sw.js*`, async (route) => {
+    const r = await route.fetch();
+    const kopf = { ...r.headers() };
+    if (kopf['content-security-policy']) kopf['content-security-policy'] = mitFremd(kopf['content-security-policy']);
+    await route.fulfill({ response: r, headers: kopf });
   });
   page = await ctx.newPage();
   await page.goto(`${BASIS}/${info.seite}`);

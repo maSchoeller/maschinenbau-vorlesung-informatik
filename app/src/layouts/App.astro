@@ -38,6 +38,8 @@ const stylesheets = p.stylesheets ?? [`${basis}assets/css/dhbw-base.css`, `${bas
 const dateien = appDateien({ art: p.art, neu, skripte: p.skripte, css: p.css });
 const L = p.termin ? lektionsKontext(p.termin, p.lektionsArt) : null;
 const weiter = L && !p.hatWeiter ? L.weiter : null;
+/* Bestandsseiten ohne h1 (Laborseiten): eine nur für Screenreader sichtbare h1 aus dem Lektionstitel */
+const srH1 = L && !neu && !/<h1[\s>]/i.test(p.inhalt ?? '') ? `${p.lektionsArt === 'labor' ? 'Programmierlabor' : 'Lektion'} ${L.termin.nr} · ${L.termin.kurz}` : null;
 
 /* Body-Attribute: class="app", data-bereich, dann die der Bestandsseite in Originalreihenfolge */
 const attrs: Record<string, string | boolean> = { class: 'app' };
@@ -60,6 +62,10 @@ const touchIcon = gibtPublic('app/icons/apple-touch-icon.png');
   <meta name="theme-color" content="#E2001A">
   {manifest && <link rel="manifest" href={`${basis}manifest.webmanifest`}>}
   {touchIcon && <link rel="apple-touch-icon" href={`${basis}app/icons/apple-touch-icon.png`}>}
+  {manifest && <meta name="apple-mobile-web-app-capable" content="yes">}
+  {manifest && <meta name="mobile-web-app-capable" content="yes">}
+  {manifest && <meta name="apple-mobile-web-app-title" content="Informatik">}
+  {manifest && <meta name="apple-mobile-web-app-status-bar-style" content="default">}
   {stylesheets.map((h) => <link rel="stylesheet" href={h}>)}
   {(p.kopfStile ?? []).map((s) => <Fragment set:html={s} />)}
   {dateien.css.map((c) => <link rel="stylesheet" href={appUrl(basis, c)}>)}
@@ -70,6 +76,7 @@ const touchIcon = gibtPublic('app/icons/apple-touch-icon.png');
   <Kopfzeile basis={basis} bereich={info.bereich} reiter={info.reiter} titel={info.titel} lektion={L} />
   <div class="app-flaeche">
     <div class="app-inhalt">
+      {srH1 && <h1 class="app-sr">{srH1}</h1>}
       {neu ? <slot /> : <Fragment set:html={p.inhalt} />}
       {weiter && (
         <nav class="app-weiter" aria-label="Nächster Schritt">

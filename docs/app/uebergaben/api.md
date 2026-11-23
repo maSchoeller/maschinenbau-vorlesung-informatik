@@ -107,7 +107,7 @@ Stand nach Korrekturrunde 1 (2026-11-23). **Geändert gegenüber der ersten Fass
 
 ## 3. Für die Werkbank
 
-- `POST /api/geteilt {titel, code, lektion?}` → 201 `{id, erstellt}`; 409 `anzeigename-fehlt` (freundlicher Hinweis mit Weg zum Konto); 403 `grenze-erreicht` (50); 400/413 bei Titel/Code (Titel ohne Zeilenumbrüche und ohne Unicode-Formatzeichen); 429 `mengenbremse`.
+- `POST /api/geteilt {titel, code, eingaben?, lektion?}` → 201 `{id, erstellt}` (`eingaben`: Text für `input()`, höchstens 4 KB, kommt bei `GET /api/geteilt/{id}` zurück); 409 `anzeigename-fehlt` (freundlicher Hinweis mit Weg zum Konto); 403 `grenze-erreicht` (50); 400/413 bei Titel/Code (Titel ohne Zeilenumbrüche und ohne Unicode-Formatzeichen); 429 `mengenbremse`.
 - `GET /api/geteilt` → `{eintraege:[{id, titel, lektion, erstellt}]}` (neueste zuerst).
 - `GET /api/geteilt/{id}` ohne Login → `{id, titel, code, lektion, autor, erstellt}`; unbekannt oder ungültiges Format → 404 `nicht-gefunden`.
 - `DELETE /api/geteilt/{id}` → 200; fremd → 403 `nicht-eigen`; unbekannt → 404.

@@ -32,23 +32,76 @@ function schreibe(datei, daten) {
   fs.writeFileSync(datei, JSON.stringify(daten) + '\n');
 }
 
+/* ── Glossar: eine Quelle für glossar.json, suche.json und glossar.astro ─────────────
+   Sammlung: alle abbr.k-begriff[data-erklaerung] in Kursreihenfolge (je Termin Lerneinheit vor
+   Labor), danach die übrigen Seiten; je Begriff (ohne Groß/Klein) gilt die erste Fundstelle.
+   Singular/Plural-Dubletten (Datei/Dateien, Argument/Argumente) werden zusammengeführt, wenn die
+   eine Form die andere plus Endung -e, -n, -en, -s oder -es ist (außer NIE_ZUSAMMEN: gleiche
+   Schreibweise, andere Bedeutung). Es bleibt die kürzere Form mit der Erklärung der früheren
+   Fundstelle; die anderen Formen stehen in `formen` und behalten ihren Anker in `aliase`. */
+const ENDUNGEN = ['e', 'n', 'en', 's', 'es'];
+const NIE_ZUSAMMEN = new Set(['schlüssel']);   /* Schlüssel (dict, V08) und Schlüsseln (Kryptografie, V18) */
+export const glossarSlug = (s) => s.toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/ß/g, 'ss').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'begriff';
+
+export function glossarSammler() {
+  const sammlung = new Map();
+  let nr = 0;
+  return {
+    sammle(dom, rel, lektion) {
+      dom.querySelectorAll('abbr.k-begriff[data-erklaerung]').forEach((a) => {
+        const begriff = leer(a.textContent);
+        if (!begriff) return;
+        const k = begriff.toLowerCase();
+        if (sammlung.has(k)) return;
+        sammlung.set(k, { begriff, erklaerung: leer(a.getAttribute('data-erklaerung')), lektion, url: rel, _nr: nr++ });
+      });
+    },
+    liste() {
+      /* Dubletten: Grundform suchen (kürzeste Form, von der die anderen per Endung abgeleitet sind) */
+      const grund = new Map();
+      for (const k of sammlung.keys()) {
+        let g = k;
+        for (const e of ENDUNGEN) {
+          const kurz = k.slice(0, -e.length);
+          if (k.endsWith(e) && kurz.length >= 3 && sammlung.has(kurz) && !NIE_ZUSAMMEN.has(kurz) && kurz.length < g.length) g = kurz;
+        }
+        grund.set(k, g);
+      }
+      const gruppen = new Map();
+      for (const [k, g] of grund) { if (!gruppen.has(g)) gruppen.set(g, []); gruppen.get(g).push(sammlung.get(k)); }
+      const vergeben = new Set();
+      const id = (b) => { let x = 'g-' + glossarSlug(b), i = 2; while (vergeben.has(x)) x = 'g-' + glossarSlug(b) + '-' + i++; vergeben.add(x); return x; };
+      return [...gruppen.entries()].map(([g, formen]) => {
+        formen.sort((a, b) => a._nr - b._nr);
+        const erste = formen[0], haupt = sammlung.get(g);
+        return { begriff: haupt.begriff, erklaerung: erste.erklaerung, lektion: erste.lektion, url: erste.url, formen: formen.filter((f) => f !== haupt).map((f) => f.begriff) };
+      }).sort((a, b) => a.begriff.localeCompare(b.begriff, 'de')).map((g) => ({ id: id(g.begriff), ...g }))
+        .map((g) => ({ ...g, aliase: g.formen.map((f) => 'g-' + glossarSlug(f)).filter((a) => !vergeben.has(a) && vergeben.add(a)) }))
+        .map(({ formen, aliase, ...g }) => (formen.length ? { ...g, formen, aliase } : g));
+    },
+  };
+}
+
+/* Glossar ohne den übrigen Index (für glossar.astro, das beim Astro-Build vor index-bauen läuft) */
+export function sammleGlossar() {
+  const { termine } = ladeKurs();
+  const g = glossarSammler();
+  for (const t of termine) {
+    g.sammle(lies(`lektionen/${t.lerneinheit}`), `lektionen/${t.lerneinheit}`, t.nr);
+    if (t.labor) g.sammle(lies(`lektionen/${t.labor}`), `lektionen/${t.labor}`, t.nr);
+  }
+  for (const rel of alleSeiten().filter((r) => !r.startsWith('lektionen/'))) g.sammle(lies(rel), rel, null);
+  return g.liste();
+}
+
 export default function indexBauen() {
   const { phasen, termine } = ladeKurs();
   const suche = [];
-  const glossar = new Map();
+  const glossar = glossarSammler();
   const aufgabenApi = [];
   const erlaubtBis = [];
 
-  /* Glossar: Begriffe in Kursreihenfolge sammeln (Lerneinheit vor Labor), danach die übrigen Seiten */
-  function begriffe(dom, rel, lektion) {
-    dom.querySelectorAll('abbr.k-begriff[data-erklaerung]').forEach((a) => {
-      const begriff = leer(a.textContent);
-      if (!begriff) return;
-      const schluessel = begriff.toLowerCase();
-      if (glossar.has(schluessel)) return;
-      glossar.set(schluessel, { begriff, erklaerung: leer(a.getAttribute('data-erklaerung')), lektion, url: rel });
-    });
-  }
+  const begriffe = (dom, rel, lektion) => glossar.sammle(dom, rel, lektion);
 
   const kursTermine = termine.map((t) => {
     erlaubtBis.push(...t.python);
@@ -102,16 +155,8 @@ export default function indexBauen() {
   const bib = JSON.parse(fs.readFileSync(path.join(SITE, 'assets/data/bibliothek.json'), 'utf8'));
   for (const e of bib.eintraege || []) suche.push({ typ: 'bibliothek', titel: e.name, text: kuerzen(leer(e.kurz), 140), url: `bibliothek.html#${encodeURIComponent(e.id)}`, lektion: e.eingefuehrt || null });
 
-  /* id: Anker auf glossar.html (klein, Leerzeichen und Sonderzeichen -> '-') */
-  const slug = (s) => s.toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g, '').replace(/ß/g, 'ss').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'begriff';
-  const vergeben = new Set();
-  const glossarListe = [...glossar.values()].sort((a, b) => a.begriff.localeCompare(b.begriff, 'de')).map((g) => {
-    let id = 'g-' + slug(g.begriff), i = 2;
-    while (vergeben.has(id)) id = 'g-' + slug(g.begriff) + '-' + i++;
-    vergeben.add(id);
-    return { id, ...g };
-  });
-  for (const g of glossarListe) suche.push({ typ: 'glossar', titel: g.begriff, text: kuerzen(g.erklaerung, 140), url: `glossar.html#${g.id}`, lektion: g.lektion });
+  const glossarListe = glossar.liste();
+  for (const g of glossarListe) suche.push({ typ: 'glossar', titel: g.begriff, text: (g.formen ? 'Auch: ' + g.formen.join(', ') + '. ' : '') + kuerzen(g.erklaerung, 140), url: `glossar.html#${g.id}`, lektion: g.lektion });
 
   const daten = path.join(DIST, 'app', 'daten');
   schreibe(path.join(daten, 'kurs.json'), { phasen, termine: kursTermine });

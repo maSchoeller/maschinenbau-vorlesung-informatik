@@ -859,7 +859,7 @@ print(f"Mittelwert: {mittel:.2f}")
           <p>Wiederholung V08 (Dictionary, Tupel, <code class="k-i">.items()</code>) mit dem Neuen aus V09: Eine Stückliste kommt als CSV-Zeilen im Format <code class="k-i">Teilenummer;Menge;Gewicht in kg</code> mit Dezimalkomma. Baue daraus das Dictionary <code class="k-i">stueckliste</code>: Der Schlüssel ist die Teilenummer, der Wert ein <strong>Tupel</strong> (Menge als ganze Zahl, Gewicht als Kommazahl). Berechne danach mit <code class="k-i">.items()</code> das Gesamtgewicht (Menge mal Gewicht, Summe) in der Variablen <code class="k-i">gesamt</code>.</p>
           <div class="a-spec"><strong>Ausgabe genau so:</strong><pre data-run="no">Gesamtgewicht: 2.71 kg</pre></div>
         </div>
-        <div class="a-editor"><textarea class="py-editor" data-lesson="V09" aria-label="Python-Code Aufgabe 4">zeilen = ["W-100;1;2,40", "L-6205;2;0,13", "D-35;2;0,02", "P-8x7;1;0,01"]
+        <div class="a-editor"><textarea class="py-editor" data-lesson="V09" aria-label="Python-Code Aufgabe 4">csv_zeilen = ["W-100;1;2,40", "L-6205;2;0,13", "D-35;2;0,02", "P-8x7;1;0,01"]
 stueckliste = {}
 # zerlege jede Zeile und trage sie ein: Teilenummer -> (Menge, Gewicht)
 
@@ -883,9 +883,9 @@ def test_ausgabe():
     assert "Gesamtgewicht: 2.71 kg" in z, "Erwartet wird die Zeile 'Gesamtgewicht: 2.71 kg'. Dein Programm gibt aus: %r" % z
         </script>
         <script type="text/x-python" data-role="solution">
-zeilen = ["W-100;1;2,40", "L-6205;2;0,13", "D-35;2;0,02", "P-8x7;1;0,01"]
+csv_zeilen = ["W-100;1;2,40", "L-6205;2;0,13", "D-35;2;0,02", "P-8x7;1;0,01"]
 stueckliste = {}
-for zeile in zeilen:
+for zeile in csv_zeilen:
     felder = zeile.split(";")
     menge = int(felder[1])
     gewicht = float(felder[2].replace(",", "."))
@@ -897,7 +897,7 @@ for teil, werte in stueckliste.items():
 print(f"Gesamtgewicht: {gesamt:.2f} kg")
         </script>
         <ol class="a-hints">
-          <li>Eine Schleife über die Liste <code>zeilen</code> (V08): <code>for zeile in zeilen:</code>. Im Rumpf zerlegst du die Zeile mit <code>split(";")</code>.</li>
+          <li>Eine Schleife über die Liste <code>csv_zeilen</code> (V08): <code>for zeile in csv_zeilen:</code>. Im Rumpf zerlegst du die Zeile mit <code>split(";")</code>.</li>
           <li>Das Feld 0 ist der Schlüssel. Die Menge ist <code>int(felder[1])</code>, das Gewicht <code>float(felder[2].replace(",", "."))</code>. Der Eintrag: <code>stueckliste[felder[0]] = (menge, gewicht)</code>.</li>
           <li>Das Gesamtgewicht wie in V08: <code>for teil, werte in stueckliste.items():</code> und <code>gesamt = gesamt + werte[0] * werte[1]</code>, nach der ersten Schleife.</li>
         </ol>

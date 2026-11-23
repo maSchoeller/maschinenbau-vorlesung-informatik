@@ -123,7 +123,16 @@ function speicherBackend({ datei = null } = {}) {
     fs.mkdirSync(path.dirname(datei), { recursive: true });
     const tmp = datei + '.tmp';
     fs.writeFileSync(tmp, JSON.stringify(stand));
-    fs.renameSync(tmp, datei);
+    // Windows: Virenscanner oder Indexdienst halten die Zieldatei kurz offen (EPERM/EBUSY/EACCES beim
+    // Umbenennen, gesehen im Emulator als 500 auf /api/abgleich). Kurz wiederholen, zuletzt direkt schreiben.
+    for (let versuch = 0; ; versuch++) {
+      try { fs.renameSync(tmp, datei); return; } catch (e) {
+        if (!['EPERM', 'EBUSY', 'EACCES'].includes(e && e.code)) throw e;
+        if (versuch >= 5) { fs.writeFileSync(datei, fs.readFileSync(tmp)); fs.rmSync(tmp, { force: true }); return; }
+        const bis = Date.now() + 20 * (versuch + 1);
+        while (Date.now() < bis) { /* kurz warten (synchron, nur lokale Datei-Ablage) */ }
+      }
+    }
   }
   const neuesEtag = () => `"e${++etagZaehler}-${Date.now()}"`;
   const mitSystem = (doc) => ({ ...kopie(doc), _etag: neuesEtag(), _ts: sekunden(Date.now()) });
@@ -683,10 +692,19 @@ function fachlich(be) {
     },
 
     async anzeigenameSetzen(bid, name) {
+      return this.profilSetzen(bid, { anzeigename: name });
+    },
+
+    // Tutor-Freischaltung (lib/zugang.js): nur das Merkmal, nie der Code
+    async freischalten(bid) {
+      return this.profilSetzen(bid, { freigeschaltet: true });
+    },
+
+    async profilSetzen(bid, felder) {
       for (let versuch = 0; versuch < 5; versuch++) {
         const cur = await be.bLesen(bid);
         if (!cur) { await this.benutzerHolenOderAnlegen(bid); continue; }
-        const doc = { ...cur.doc, anzeigename: name, letzterZugriff: new Date().toISOString() };
+        const doc = { ...cur.doc, ...felder, letzterZugriff: new Date().toISOString() };
         try { await be.bErsetzen(doc, cur.etag); return doc; } catch (err) {
           if (!(err instanceof Konflikt)) throw err;
         }
@@ -697,11 +715,11 @@ function fachlich(be) {
     // ---- Geteilt
 
     /** Legt einen unveränderlichen Schnappschuss an (Grenze 50 atomar). → {id, erstellt} oder null (Grenze) */
-    async geteiltAnlegen(bid, { titel, code, lektion, autor }) {
+    async geteiltAnlegen(bid, { titel, code, eingaben, lektion, autor }) {
       if (!(await reservieren(bid, { n: 0, b: 0, g: 1 }))) return null;
       try {
         for (let versuch = 0; versuch < 5; versuch++) {
-          const doc = { id: neueGeteiltId(), benutzerId: bid, titel, code, lektion: lektion || null, autor, erstellt: new Date().toISOString() };
+          const doc = { id: neueGeteiltId(), benutzerId: bid, titel, code, eingaben: eingaben || '', lektion: lektion || null, autor, erstellt: new Date().toISOString() };
           try { await be.gAnlegen(doc); return doc; } catch (err) {
             if (!(err instanceof Konflikt)) throw err;
           }

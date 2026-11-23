@@ -180,14 +180,14 @@
       box.appendChild(live);
       setTimeout(function () { if (box.parentNode) box.parentNode.removeChild(box); }, 1500);
     });
-    box.appendChild(el('p', {}, [el('span', { text: h.text + ' ' }), el('a', { href: A.url('konto.html') }, [h.link])]));
+    box.appendChild(el('p', {}, [el('span', { text: h.text + ' ' }), el('a', { href: A.url(h.ziel || 'konto.html') }, [h.link])]));
     box.appendChild(zu);
     return box;
   }
   function hinweisWaehlen() {
     var w = weggeklickt();
     if (kontoStatus === false && !w.konto) return { id: 'konto', text: 'Mit einem Konto bleibt dein Stand auf allen deinen Geräten gleich.', link: 'Konto öffnen' };
-    if (!installiert() && !w.installieren) return { id: 'installieren', text: 'Du kannst den Kurs als App installieren und auch ohne Netz lernen.', link: 'So geht es' };
+    if (!installiert() && !w.installieren) return { id: 'installieren', text: 'Du kannst den Kurs als App installieren und auch ohne Netz lernen.', link: 'So geht es', ziel: 'konto.html#offline' };
     return null;
   }
 

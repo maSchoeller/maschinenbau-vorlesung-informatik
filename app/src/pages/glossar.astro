@@ -32,8 +32,9 @@ const ziel = (g: any) => (g.lektion ? `Lektion ${g.lektion}` : g.url.replace(/\.
           <dl>
             {gr.eintraege.map((g) => (
               <div class="gl-eintrag" id={g.id}>
-                <dt>{g.begriff}</dt>
+                <dt>{g.begriff}{g.formen && <span class="np-sr"> (auch: {g.formen.join(', ')})</span>}</dt>
                 <dd>
+                  {(g.aliase || []).map((a: string) => <span id={a}></span>)}
                   <span class="gl-text">{g.erklaerung}</span>
                   <a class="gl-ziel k-small" href={g.url}>{ziel(g)}<span class="np-sr">: {g.begriff}</span></a>
                 </dd>

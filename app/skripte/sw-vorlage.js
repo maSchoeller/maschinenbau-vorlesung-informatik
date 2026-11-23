@@ -4,7 +4,7 @@
    Caches:  kurs-shell-<Version>   Precache + zur Laufzeit ergänzte App-Dateien (wird je Version ersetzt)
             kurs-pyodide-<Ver>     /pyodide/**, Cache zuerst
             kurs-videos-v1         nur ausdrücklich gespeicherte Videos (bleibt über Versionen erhalten)
-   Nie gecacht: /api/**, /.auth/** (der Service Worker fasst diese Anfragen gar nicht an).
+   Nie gecacht: /api/**, /.auth/**, /login, /logout (der Service Worker fasst diese Anfragen gar nicht an).
    Kein stilles skipWaiting: eine neue Version wartet, bis die Seite es per Nachricht erlaubt.
    ============================================================= */
 'use strict';
@@ -102,8 +102,10 @@ self.addEventListener('fetch', (e) => {
   const url = new URL(req.url);
   const gleich = url.origin === WURZEL.origin;
 
-  /* API und Anmeldung: immer direkt ins Netz, nie in einen Cache (auch nicht als Rückfall bei Fehlern) */
-  if (gleich && (url.pathname.startsWith(PFAD + 'api/') || url.pathname.startsWith(PFAD + '.auth/') || url.pathname === PFAD + 'api')) return;
+  /* API und Anmeldung: immer direkt ins Netz, nie in einen Cache (auch nicht als Rückfall bei Fehlern).
+     /login und /logout sind Weiterleitungen der Static Web App auf /.auth/… (staticwebapp.config.json). */
+  if (gleich && (url.pathname.startsWith(PFAD + 'api/') || url.pathname.startsWith(PFAD + '.auth/') || url.pathname === PFAD + 'api' ||
+      /^(login|logout)(\/|$)/.test(url.pathname.slice(PFAD.length)))) return;
 
   /* Videos: eigene oder fremde Herkunft; nur aus dem Video-Cache, sonst Netz */
   if (/\.mp4$/i.test(url.pathname) || req.destination === 'video') { e.respondWith(video(req)); return; }

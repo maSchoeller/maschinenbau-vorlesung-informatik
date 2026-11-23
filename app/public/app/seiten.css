@@ -135,3 +135,9 @@
 
 @media (prefers-reduced-motion: reduce) { .np-wurzel, .np-aufgabe { transition: none; } }
 @media print { .gl-kopf { position: static; } }
+
+/* Tablet und Touch: Buchstaben als 44-px-Ziele (Leiste bricht dann in zwei Zeilen um) */
+@media (max-width: 1099px), (pointer: coarse) {
+  .gl-buchstaben a { min-width: 44px; height: 44px; }
+  .gl-gruppe, .gl-eintrag { scroll-margin-top: calc(var(--app-bar-h) + 112px); }
+}

@@ -35,10 +35,15 @@ const bestand = [
             </div>
             <div class="wb-aktionen" role="group" aria-label="Aktionen für dieses Programm">
               <button type="button" class="k-btn k-btn--small k-btn--ghost" data-wb="neu">Neu</button>
-              <button type="button" class="k-btn k-btn--small k-btn--ghost" data-wb="duplizieren">Duplizieren</button>
-              <button type="button" class="k-btn k-btn--small k-btn--ghost" data-wb="herunterladen">Herunterladen (.py)</button>
               <button type="button" class="k-btn k-btn--small k-btn--ghost" data-wb="teilen">Teilen</button>
-              <button type="button" class="k-btn k-btn--small k-btn--ghost wb-loeschen" data-wb="loeschen">Löschen</button>
+              <details class="wb-mehr">
+                <summary class="k-btn k-btn--small k-btn--link">Mehr</summary>
+                <div class="wb-mehr__liste">
+                  <button type="button" data-wb="duplizieren">Duplizieren</button>
+                  <button type="button" data-wb="herunterladen">Herunterladen (.py)</button>
+                  <button type="button" class="wb-loeschen" data-wb="loeschen">Löschen</button>
+                </div>
+              </details>
             </div>
           </div>
           <p class="wb-status k-small k-muted" id="wb-status" role="status" aria-live="polite"></p>

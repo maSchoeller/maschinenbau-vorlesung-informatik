@@ -31,8 +31,18 @@
   var rest = gleicherTag && typeof restGespeichert.heute === 'number' ? restGespeichert.heute : null;
   var erschoepft = Boolean(gleicherTag && restGespeichert.erschoepft);   /* 429 heute: Senden bleibt aus */
   var codeMitschicken = lesen(SCHLUESSEL_CODE, true) !== false;
+  /* Der Verlauf gehört genau einem Konto: Wechselt oder fehlt die Anmeldung, wird er verworfen
+     (kern.js räumt ihn beim Abmelden ohnehin weg; das hier fängt Abmelden auf anderen Wegen). */
+  var verlaufNutzer = typeof zustand.nutzer === 'string' ? zustand.nutzer : null;
+  function verlaufPruefen(s) {
+    var id = s && s.angemeldet ? (s.benutzerId || null) : null;
+    if (!id) { if (s && !s.angemeldet && (verlauf.length || verlaufNutzer)) { verlauf = []; verlaufNutzer = null; rest = null; erschoepft = false; sichern(); zeichneVerlauf(); } return; }
+    if (verlaufNutzer && verlaufNutzer !== id) { verlauf = []; rest = null; erschoepft = false; zeichneVerlauf(); restZeigen(); }
+    verlaufNutzer = id;
+    sichern();
+  }
   function sichern() {
-    schreiben(SCHLUESSEL, { verlauf: verlauf.slice(-30) });
+    schreiben(SCHLUESSEL, { verlauf: verlauf.slice(-30), nutzer: verlaufNutzer });
     schreiben(SCHLUESSEL_REST, rest === null && !erschoepft ? null : { heute: rest, erschoepft: erschoepft, tag: heute() });
   }
   function keineFragenMehr() { return erschoepft || rest === 0; }
@@ -103,6 +113,23 @@
         return {
           kontext: k, hatCode: true,
           beschreibung: codeMitschicken ? 'Deine zuletzt bearbeitete Aufgabe, dein Code und die letzte Ausgabe werden mitgeschickt.' : 'Deine zuletzt bearbeitete Aufgabe wird mitgeschickt, dein Code nicht.'
+        };
+      }
+    }
+    /* Werkbank: das offene Programm und seine letzte Ausgabe (ohne Aufgabe prüft der Server gegen alle Musterlösungen) */
+    if (s.art === 'werkbank') {
+      var wb = document.getElementById('wb-runner');
+      var wta = wb && !wb.closest('[hidden]') ? wb.querySelector('textarea.py-editor') : null;
+      if (wta) {
+        if (codeMitschicken) {
+          var wcode = codeVon(wta);
+          if (wcode.trim()) k.code = wcode.slice(0, MAX_CODE);
+          var wout = wb.querySelector('.k-runner__out');
+          if (wout && !wout.hidden && wout.textContent.trim()) k.ausgabe = wout.textContent.trim().slice(-MAX_AUSGABE);
+        }
+        return {
+          kontext: k, hatCode: true,
+          beschreibung: codeMitschicken ? 'Dein Programm und die letzte Ausgabe werden mitgeschickt.' : 'Nur deine Frage wird mitgeschickt, dein Programm nicht.'
         };
       }
     }
@@ -309,6 +336,29 @@
       sperre.appendChild(b);
       var akt = document.activeElement;
       if (A.panel.id() === ID && (!akt || akt === document.body || (akt.closest && akt.closest('.app-panel')))) b.focus();
+    } else if (art === 'freischaltung') {
+      /* KURS_CODE auf dem Server: einmal je Konto den Kurscode aus der Vorlesung eingeben */
+      sperre.appendChild(el('p', { text: 'Der Tutor ist für Teilnehmende des Kurses. Gib einmal den Kurscode aus der Vorlesung ein.' }));
+      var f = el('form', { class: 'tutor-freischalten' });
+      var lab = el('label', { for: 'tutor-kurscode', text: 'Kurscode' });
+      var feld = el('input', { id: 'tutor-kurscode', type: 'text', autocomplete: 'off', spellcheck: 'false', maxlength: '100' });
+      var los = el('button', { type: 'submit', class: 'k-btn', text: 'Freischalten' });
+      var hinweis = el('p', { class: 'tutor-klein', role: 'status', 'aria-live': 'polite' });
+      f.appendChild(lab); f.appendChild(feld); f.appendChild(los);
+      sperre.appendChild(f); sperre.appendChild(hinweis);
+      f.addEventListener('submit', function (ev) {
+        ev.preventDefault();
+        if (!feld.value.trim()) { feld.focus(); return; }
+        los.disabled = true; hinweis.textContent = 'Wird geprüft …';
+        A.api('ich/freischalten', { method: 'POST', body: { code: feld.value } }).then(function () {
+          sperren(null); zeichneVerlauf(); netzPruefen(); statusSagen('Freigeschaltet. Du kannst jetzt fragen.', 'ok'); eingabe.focus();
+        }, function (e) {
+          los.disabled = false;
+          hinweis.textContent = (e && e.daten && e.daten.meldung) || (e && e.offline ? 'Keine Verbindung zum Server.' : 'Das hat nicht geklappt. Versuche es noch einmal.');
+          feld.focus();
+        });
+      });
+      if (A.panel.id() === ID) setTimeout(function () { feld.focus(); }, 0);
     } else if (art === 'nicht-eingerichtet') {
       sperre.appendChild(el('p', { text: 'Der Tutor ist noch nicht eingerichtet. Sobald er freigeschaltet ist, kannst du hier Fragen stellen.' }));
     }
@@ -332,6 +382,7 @@
 
   function kontoPruefen() {
     return A.konto.status().then(function (s) {
+      if (s && (s.angemeldet || !istOffline())) verlaufPruefen(s);
       if (!s || !s.angemeldet) {
         sperren(istOffline() ? null : 'anmelden');
         if (istOffline()) netzPruefen();
@@ -380,6 +431,7 @@
       var nochmal = { text: 'Nochmal versuchen', fn: function () { abschicken(true); } };
       if (e && e.offline) statusSagen('Keine Verbindung zum Server. Prüfe dein Netz.', 'fehler', nochmal);
       else if (e.status === 401) { offeneFrage = null; eingabe.value = text; zeichneVerlauf(); sperren('anmelden'); }
+      else if (e.status === 403 && f === 'freischaltung') { offeneFrage = null; eingabe.value = text; zeichneVerlauf(); sperren('freischaltung'); }
       else if (e.status === 503 && f === 'nicht-eingerichtet') { offeneFrage = null; zeichneVerlauf(); sperren('nicht-eingerichtet'); }
       else if (e.status === 429) {
         /* Frage zurück ins Feld (nicht verloren), Senden bis morgen aus */

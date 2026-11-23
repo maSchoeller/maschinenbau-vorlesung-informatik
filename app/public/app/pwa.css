@@ -14,6 +14,8 @@
 .pwa-zeile { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-3, .75rem); }
 .pwa-zeile > .pwa-text { flex: 1 1 18rem; }
 
+.pwa-mehr > summary { display: inline-flex; align-items: center; min-height: 44px; cursor: pointer; font-weight: 600; font-size: var(--fs-sm); color: var(--red-dark); }
+.pwa-mehr[open] > summary { margin-bottom: var(--sp-2, .5rem); }
 .pwa-liste { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; border-top: 1px solid var(--k-line); }
 .pwa-gruppe { display: grid; grid-template-columns: minmax(10rem, 14rem) 1fr auto 8rem; gap: var(--sp-3, .75rem); align-items: baseline; padding: 8px 12px; font-size: var(--fs-sm); }
 .pwa-gruppe { border-bottom: 1px solid var(--k-line); }
