@@ -1,0 +1,84 @@
+---
+/* Konto (Rolle Konto und Abgleich). Vertrag Abschnitt 7. Das Element data-pwa-einstellungen füllt die PWA-Rolle. */
+import App from '../layouts/App.astro';
+---
+<App pfad="konto.html" art="konto" titel="Konto" beschreibung="Anmelden, Lernstand zwischen Geräten abgleichen, Daten sichern oder löschen.">
+  <main id="inhalt" class="app-seite konto-seite">
+    <h1>Konto</h1>
+
+    <p class="konto-laedt" data-konto-laedt role="status">Einen Moment …</p>
+
+    <!-- Nicht angemeldet -->
+    <section class="konto-block" data-konto-block="gast" aria-labelledby="k-gast" hidden>
+      <h2 id="k-gast">Ohne Konto geht fast alles</h2>
+      <p>Lernen, Python ausführen und eigene Programme schreiben funktioniert ohne Konto. Dein Fortschritt bleibt dann in diesem Browser.</p>
+      <p>Ein Konto brauchst du nur für drei Dinge:</p>
+      <ul class="konto-liste">
+        <li><strong>Abgleich über Geräte:</strong> Dein Stand ist am Laptop, am Tablet und zu Hause derselbe.</li>
+        <li><strong>Programme teilen:</strong> Du schickst einen Link zu einem Programm aus deiner Werkbank.</li>
+        <li><strong>Tutor:</strong> Du stellst Fragen und bekommst Hinweise, aber keine fertigen Lösungen.</li>
+      </ul>
+      <p class="konto-hinweis-offen" data-konto-offen-gast hidden></p>
+      <p><button type="button" class="k-btn" data-konto-aktion="anmelden">Mit GitHub anmelden</button></p>
+      <p class="konto-klein">Die Anmeldung läuft über GitHub. Wir speichern weder deinen Namen noch deine E-Mail-Adresse.</p>
+    </section>
+
+    <!-- Angemeldet -->
+    <div data-konto-block="konto" hidden>
+      <section class="konto-block" aria-labelledby="k-konto">
+        <h2 id="k-konto">Dein Konto</h2>
+        <p data-konto-kennung>Angemeldet über GitHub.</p>
+        <form class="konto-form" data-konto-name-form novalidate>
+          <label for="k-name">Anzeigename</label>
+          <div class="konto-form__zeile">
+            <input id="k-name" type="text" name="anzeigename" maxlength="30" autocomplete="off" spellcheck="false" aria-describedby="k-name-hilfe k-name-status">
+            <button type="submit" class="k-btn k-btn--ghost">Speichern</button>
+          </div>
+          <p id="k-name-hilfe" class="konto-klein">Wird angezeigt, wenn du ein Programm teilst. 2 bis 30 Zeichen: Buchstaben, Ziffern, Leerzeichen sowie <code>-</code>, <code>_</code> und <code>.</code>. Ohne Anzeigenamen kannst du nichts teilen.</p>
+          <p id="k-name-status" class="konto-status" role="status" aria-live="polite" data-konto-name-status></p>
+        </form>
+        <p><button type="button" class="k-btn k-btn--ghost" data-konto-aktion="abmelden">Abmelden</button></p>
+      </section>
+
+      <section class="konto-block" aria-labelledby="k-abgleich">
+        <h2 id="k-abgleich">Abgleich</h2>
+        <p class="konto-abgleich" data-konto-abgleich role="status" aria-live="polite">Wird geprüft …</p>
+        <p class="konto-klein" data-konto-abgleich-detail></p>
+        <p><button type="button" class="k-btn k-btn--ghost" data-konto-aktion="jetzt">Jetzt abgleichen</button></p>
+      </section>
+    </div>
+
+    <!-- Immer: Datei -->
+    <section class="konto-block" aria-labelledby="k-datei">
+      <h2 id="k-datei">Arbeitsstand sichern oder laden</h2>
+      <p>Mit einer Datei nimmst du deinen Stand auf ein anderes Gerät mit oder stellst ihn nach dem Löschen der Browserdaten wieder her. Das geht mit und ohne Konto.</p>
+      <p class="konto-aktionen">
+        <button type="button" class="k-btn k-btn--ghost" data-konto-aktion="sichern">Arbeitsstand sichern</button>
+        <button type="button" class="k-btn k-btn--ghost" data-konto-aktion="laden">Arbeitsstand laden</button>
+        <input type="file" accept="application/json,.json" hidden data-konto-datei aria-label="Arbeitsstand-Datei auswählen">
+      </p>
+      <p class="konto-status" role="status" aria-live="polite" data-konto-datei-status></p>
+    </section>
+
+    <!-- Angemeldet: Daten -->
+    <section class="konto-block" data-konto-block="daten" aria-labelledby="k-daten" hidden>
+      <h2 id="k-daten">Deine Daten im Konto</h2>
+      <p>Du kannst jederzeit alles herunterladen, was im Konto gespeichert ist, oder das Konto samt Daten löschen. Das Löschen gilt für den Server; melde dich danach auch auf deinen anderen Geräten ab und entferne dort den Stand.</p>
+      <p class="konto-aktionen">
+        <button type="button" class="k-btn k-btn--ghost" data-konto-aktion="export">Meine Daten herunterladen</button>
+        <button type="button" class="k-btn k-btn--ghost" data-konto-aktion="loeschen">Konto und Daten löschen …</button>
+      </p>
+      <p class="konto-status" role="status" aria-live="polite" data-konto-daten-status></p>
+    </section>
+
+    <div id="offline" data-pwa-einstellungen></div>
+
+    <section class="konto-block" aria-labelledby="k-datenschutz">
+      <h2 id="k-datenschutz">Datenschutz</h2>
+      <p>Mit Konto speichert der Server nur das, was für den Abgleich nötig ist: eine pseudonyme Kennung (aus deiner GitHub-Kennung berechnet, ohne dass man sie zurückrechnen kann), deinen Lernstand, deine Programme und deinen Anzeigenamen. Keine Namen, keine E-Mail-Adressen, keine Matrikelnummern. Die Daten liegen in der EU.</p>
+      <p>Weitere Empfänger: Die Anmeldung läuft über GitHub. Fragen an den Tutor gehen samt bisherigem Gespräch und, wenn du es zulässt, deinem Code, der letzten Ausgabe und der Aufgabe an Anthropic in den USA. Geteilte Programme kann jeder mit dem Link ohne Anmeldung sehen, mit deinem Anzeigenamen. Videos kommen aus einem Azure-Speicher in der EU.</p>
+      <p>Ohne Konto fragt jede Seite nur kurz beim Server nach, ob du angemeldet bist (ohne Daten von dir); dein Stand bleibt im Browser.</p>
+      <p>Beim Löschen verschwinden Lernstand, Programme, geteilte Links und Anzeigename. Nach dem Löschen bleiben nur Zähler ohne Inhalt, die nach höchstens 30 Tagen verfallen.</p>
+    </section>
+  </main>
+</App>

@@ -1,0 +1,8 @@
+.git*
+.vscode
+.daten/
+local.settings.json
+local.settings.beispiel.json
+tests/
+skripte/
+*.md

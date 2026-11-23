@@ -1,0 +1,22 @@
+---
+/* Leiste links (.app-rail): Bereiche oben, Tutor und Konto unten. Vertrag 4.1 und 4.2. */
+import Icon from '../Icon.astro';
+import { BEREICHE, UNTEN } from '../../lib/navigation.mjs';
+interface Props { basis: string; bereich: string | null }
+const { basis, bereich } = Astro.props;
+---
+<nav class="app-rail" aria-label="Bereiche">
+  <span class="app-rail__marke" aria-hidden="true">DHBW</span>
+  <ul class="app-rail__liste">
+    {BEREICHE.map((b) => (
+      <li><a class="app-rail__ziel" data-app-ziel={b.id} href={basis + b.ziel} aria-current={b.id === bereich ? 'page' : undefined}><Icon id={b.icon} basis={basis} /><span class="app-rail__text">{b.name}</span></a></li>
+    ))}
+  </ul>
+  <ul class="app-rail__liste app-rail__liste--unten">
+    {UNTEN.map((u) => (
+      <li>{u.aktion
+        ? <button type="button" class="app-rail__ziel" data-app-aktion={u.aktion} aria-expanded="false"><Icon id={u.icon} basis={basis} /><span class="app-rail__text">{u.name}</span></button>
+        : <a class="app-rail__ziel" data-app-ziel={u.id} data-app-konto href={basis + u.ziel} aria-current={u.id === bereich ? 'page' : undefined}><Icon id={u.icon} basis={basis} /><span class="app-rail__text">{u.name}</span></a>}</li>
+    ))}
+  </ul>
+</nav>

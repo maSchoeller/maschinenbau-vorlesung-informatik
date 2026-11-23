@@ -1,0 +1,22 @@
+---
+/* Rückfallseite des Service Workers: wird ausgeliefert, wenn eine nicht gespeicherte Seite ohne Netz verlangt wird.
+   Der Service Worker setzt dafür <base href> ein, damit die Verweise auch unter fremden Pfaden stimmen. Gehört der Rolle PWA. */
+import App from '../layouts/App.astro';
+import Icon from '../components/Icon.astro';
+---
+<App pfad="offline.html" art="offline" titel="Offline" beschreibung="Diese Seite ist offline nicht gespeichert.">
+  <main id="inhalt" class="app-seite pwa-offline">
+    <h1>Diese Seite ist offline nicht da</h1>
+    <p>Du hast gerade keine Verbindung, und diese Seite ist auf diesem Gerät noch nicht gespeichert. Alles, was du schon einmal geöffnet hast, funktioniert weiter.</p>
+    <p>Du kannst hier weitermachen:</p>
+    <p class="pwa-offline__ziele">
+      <a class="k-btn" href="index.html">Heute<Icon id="chevron-right" basis="" /></a>
+      <a class="k-btn k-btn--ghost" href="lernpfad.html">Lernpfad<Icon id="chevron-right" basis="" /></a>
+    </p>
+    <p class="pwa-text">Sobald das Netz wieder da ist, lädst du diese Seite neu.</p>
+    <p><button type="button" class="k-btn k-btn--small k-btn--ghost" id="pwa-neu">Erneut versuchen</button></p>
+    <script is:inline>
+      document.getElementById('pwa-neu').addEventListener('click', function () { location.reload(); });
+    </script>
+  </main>
+</App>

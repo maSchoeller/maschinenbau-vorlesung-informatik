@@ -4,15 +4,19 @@ Interaktive Vorlesungs-Website für das Modul **Informatik (T4MB1006)** im Studi
 
 Leitidee: *KI schreibt Code – Ingenieure spezifizieren, prüfen und verantworten.*
 
-- **Website:** https://maschoeller.github.io/maschinenbau-vorlesung-informatik/
+- **Lern-App:** https://nice-wave-051f81f03.3.azurestaticapps.net (installierbar, offline nutzbar, mit Konto, Werkbank und Tutor)
 - **Konzept** (Leitidee, Wissens-Ampel, 22 Termine, Ablauf): [KONZEPT.md](KONZEPT.md)
 - **Seitenstruktur und Gestaltungsregeln:** [DESIGN.md](DESIGN.md)
+- **Lern-App: Architektur und Betrieb:** [docs/app/ARCHITEKTUR.md](docs/app/ARCHITEKTUR.md), [docs/app/BETRIEB.md](docs/app/BETRIEB.md)
 
 ## Aufbau
 
 | Ordner | Inhalt |
 |---|---|
-| `site/` | Die Website (statisch, kein Build-Schritt). Wird per GitHub Actions auf GitHub Pages veröffentlicht. |
+| `site/` | Die Inhalte: Lektionsseiten, Werkzeuge, Skripte, Medien (statisches HTML, für sich allein lauffähig). Quelle für die Lern-App. |
+| `app/` | Lern-App: Build-Schicht über `site/` (Astro) mit gemeinsamer Hülle, Navigation, Konto, Werkbank, Offline-Betrieb. `npm run build`, Gesamtprüfung `npm run pruefen:alles`. |
+| `api/` | Azure Functions: Abgleich, Konto, geteilte Programme, Tutor |
+| `infra/` | Azure-Infrastruktur (Bicep) und `bereitstellen.ps1` |
 | `site/lektionen/` | Pro Termin eine **Lerneinheit** (`vXX-<thema>.html`) und ein **Programmierlabor** (`vXX-labor.html`) |
 | `site/notebooks/` | Jupyter-Notebooks zur Vertiefung |
 | `site/assets/data/bibliothek.json` | Befehls-Bibliothek (wird aus `tools/editor-build/bibliothek-quelle/` erzeugt und dabei getestet) |
@@ -32,9 +36,15 @@ python -m http.server 8765 --directory site
 
 Dann http://localhost:8765 öffnen. Python im Browser (Pyodide) lädt beim ersten Ausführen einmalig ca. 10 MB aus dem Netz.
 
+Das zeigt die Inhalte ohne die Hülle der Lern-App. Die App selbst lokal bauen und starten: siehe [docs/app/WERKZEUGE.md](docs/app/WERKZEUGE.md).
+
+## Veröffentlichen
+
+Jeder Push auf `main` wird von der GitHub Action `.github/workflows/lernapp.yml` gebaut, geprüft und nach Azure ausgerollt; Pull Requests werden gebaut und geprüft. Neue Videos einmal mit `./infra/bereitstellen.ps1 -Schritt Videos` in den Azure-Speicher laden. Einzelheiten: [docs/app/BETRIEB.md](docs/app/BETRIEB.md).
+
 ## Mediendateien
 
-Videos, Audio und Bilder liegen in **Git LFS**. Vor dem Klonen einmal `git lfs install` ausführen. Der Pages-Workflow checkt LFS-Dateien mit aus, damit die Website die echten Dateien ausliefert.
+Videos, Audio und Bilder liegen in **Git LFS**. Vor dem Klonen einmal `git lfs install` ausführen. Die GitHub Action holt die Bilder aus LFS; die Videos liegen im Azure-Speicher.
 
 ## Für Studierende: Codespaces
 

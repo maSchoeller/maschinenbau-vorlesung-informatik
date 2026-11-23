@@ -1,0 +1,217 @@
+# Lern-App: bauen, prüfen und nach Azure Static Web Apps bereitstellen.
+#
+#   Pull Request          → bauen und prüfen (kein Zugriff auf Secrets, keine Bereitstellung)
+#   Push auf main         → bauen, prüfen, bereitstellen (Produktion), Rauchtest
+#   von Hand (auf main)   → wie Push auf main (Actions → „Lern-App“ → Run workflow)
+#   von Hand (anderer Branch) → nur bauen und prüfen
+#
+# Einmalig im Repository einzurichten (Settings → Secrets and variables → Actions):
+#   Secret   AZURE_STATIC_WEB_APPS_API_TOKEN   Deployment-Token der Static Web App
+#   Variable VIDEO_BASIS                       Adresse des Video-Containers (Ausgabe „videoBasis“ der Infrastruktur)
+#   Variable SWA_HOSTNAME                      Hostname der App (Ausgabe „swaHostname“), für den Rauchtest
+# Befehle dazu: docs/app/BETRIEB.md, Abschnitt „Automatische Bereitstellung“.
+#
+# Zwei Jobs, damit das Secret nie in einem Job liegt, der npm-Pakete oder Code aus dem Repository ausführt:
+#   bauen          baut und prüft, lädt das Ergebnis als Artefakt hoch (ohne Secret)
+#   bereitstellen  lädt das Artefakt, stellt bereit, Rauchtest (nur auf main)
+#
+# Was dieser Workflow bewusst NICHT tut:
+#   - Infrastruktur (Bicep), Salt und Key Vault: bleiben bei infra/bereitstellen.ps1 -Schritt Infrastruktur.
+#   - Videos hochladen: infra/bereitstellen.ps1 -Schritt Videos. Fehlt ein Video im Speicher, warnt der Lauf.
+
+name: Lern-App
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'site/**'
+      - 'app/**'
+      - 'api/**'
+      - '.github/workflows/lernapp.yml'
+  pull_request:
+    paths:
+      - 'site/**'
+      - 'app/**'
+      - 'api/**'
+      - 'docs/app/recherche/03-pyodide-dateien.json'
+      - '.github/workflows/lernapp.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  # Bereitstellungen von main laufen nacheinander und werden nie abgebrochen; alles andere ersetzt sich je Branch.
+  group: ${{ (github.event_name != 'pull_request' && github.ref == 'refs/heads/main') && 'lernapp-produktion' || format('lernapp-{0}', github.ref) }}
+  cancel-in-progress: ${{ !(github.event_name != 'pull_request' && github.ref == 'refs/heads/main') }}
+
+env:
+  # Ohne die Variable (z. B. Pull Request aus einem Fork) wird mit einer Platzhalter-Adresse gebaut.
+  VIDEO_BASIS: ${{ vars.VIDEO_BASIS || 'https://videos.invalid/video' }}
+
+jobs:
+  bauen:
+    name: Bauen und prüfen
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Quelltext holen
+        uses: actions/checkout@v7
+        with:
+          lfs: false
+
+      # Bilder liegen in Git LFS. Videos (mp4) kommen aus dem Azure-Speicher und werden hier nicht geladen.
+      - name: Liste der LFS-Dateien (ohne Videos)
+        run: git lfs ls-files -l -I "site/**,app/**" -X "*.mp4" | cut -d' ' -f1 | sort > .lfs-liste
+
+      # Spart LFS-Kontingent: Die Bilder werden nur neu geladen, wenn sich die Liste ändert.
+      - name: LFS-Zwischenspeicher
+        uses: actions/cache@v6
+        with:
+          path: .git/lfs
+          key: lfs-${{ hashFiles('.lfs-liste') }}
+          restore-keys: |
+            lfs-
+
+      - name: Bilder aus Git LFS holen
+        run: git lfs pull --include "site/**,app/**" --exclude "*.mp4"
+
+      - name: Node 22
+        uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: |
+            app/package-lock.json
+            api/package-lock.json
+
+      - name: Pyodide-Zwischenspeicher
+        uses: actions/cache@v6
+        with:
+          path: app/.cache/pyodide
+          key: pyodide-${{ hashFiles('app/skripte/pyodide-holen.mjs', 'docs/app/recherche/03-pyodide-dateien.json', 'site/assets/js/kurs.js') }}
+
+      - name: App bauen (erzeugt auch api/daten/aufgaben.json)
+        working-directory: app
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1'
+        run: |
+          npm ci --no-audit --no-fund
+          npm run build
+          test -f dist/staticwebapp.config.json
+          test -f dist/sw.js
+          test -f dist/pyodide/pyodide.js
+
+      - name: Selbsttest der App (Inhalte unverändert durchgereicht, Kern)
+        working-directory: app
+        run: npm run selbsttest
+
+      - name: Ausgabe prüfen (keine LFS-Zeiger, keine Videos, Größe)
+        run: |
+          set -euo pipefail
+          zeiger=$(grep -rIl -m1 '^version https://git-lfs.github.com/spec' app/dist | head -5 || true)
+          if [ -n "$zeiger" ]; then echo "::error::LFS-Zeiger statt echter Dateien in der Ausgabe: $zeiger"; exit 1; fi
+          videos=$(find app/dist -name '*.mp4' | wc -l)
+          if [ "$videos" -gt 0 ]; then echo "::error::$videos Videos in der Ausgabe (VIDEO_BASIS nicht wirksam)"; exit 1; fi
+          mb=$(du -sm app/dist | cut -f1); dateien=$(find app/dist -type f | wc -l)
+          echo "Ausgabe: ${mb} MB in ${dateien} Dateien (Grenze des Free-Tarifs: 250 MB, 15000 Dateien)"
+          echo "Ausgabe: ${mb} MB in ${dateien} Dateien" >> "$GITHUB_STEP_SUMMARY"
+          if [ "$mb" -gt 230 ] || [ "$dateien" -gt 14000 ]; then echo "::error::Ausgabe zu groß für den Free-Tarif"; exit 1; fi
+
+      - name: API prüfen
+        working-directory: api
+        run: |
+          npm ci --no-audit --no-fund
+          npm test
+
+      - name: Videos im Azure-Speicher vorhanden?
+        if: ${{ vars.VIDEO_BASIS != '' }}
+        run: |
+          fehlt=0
+          for f in site/assets/video/*.mp4; do
+            n=$(basename "$f")
+            if ! curl -sfI --max-time 20 "$VIDEO_BASIS/$n" > /dev/null; then
+              echo "::warning::Ein Video aus site/assets/video fehlt im Azure-Speicher. Lokal ausführen: ./infra/bereitstellen.ps1 -Schritt Videos"
+              printf 'fehlt: %s\n' "$n"
+              fehlt=$((fehlt + 1))
+            fi
+          done
+          echo "Videos im Repository: $(ls site/assets/video/*.mp4 | wc -l), davon fehlen im Speicher: $fehlt" >> "$GITHUB_STEP_SUMMARY"
+
+      # Nur Laufzeitdateien (wie Test-ApiPaket in infra/bereitstellen.ps1).
+      - name: API-Paket bauen
+        run: |
+          set -euo pipefail
+          mkdir -p api-paket
+          cp -r api/host.json api/package.json api/package-lock.json api/src api/daten api-paket/
+          (cd api-paket && npm ci --omit=dev --no-audit --no-fund)
+          find api-paket/src api-paket/daten \( -name 'local.settings.json' -o -name 'ablage.json' -o -name '.env' \) -delete
+          test ! -e api-paket/local.settings.json
+          test -d api-paket/node_modules/@azure/functions
+          test -d api-paket/node_modules/@azure/cosmos
+          test -d api-paket/node_modules/@anthropic-ai/sdk
+          node -e "const n=require('./api-paket/daten/aufgaben.json').aufgaben.length; if(!(n>0)){console.error('aufgaben.json ist leer');process.exit(1)}; console.log('Aufgaben für den Tutor:', n)"
+          rm -rf api-paket/node_modules/.bin   # nur Verknüpfungen, zur Laufzeit unnötig
+          cp api/skripte/rauchtest.mjs rauchtest.mjs
+
+      - name: Ergebnis für die Bereitstellung ablegen
+        if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: lernapp
+          path: |
+            app/dist
+            api-paket
+            rauchtest.mjs
+          include-hidden-files: true
+          retention-days: 3
+          if-no-files-found: error
+
+  bereitstellen:
+    name: Bereitstellen (Produktion)
+    needs: bauen
+    if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Einrichtung prüfen
+        env:
+          TOKEN_DA: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN != '' }}
+        run: |
+          if [ "$TOKEN_DA" != "true" ]; then echo "::error::Secret AZURE_STATIC_WEB_APPS_API_TOKEN fehlt (siehe docs/app/BETRIEB.md)"; exit 1; fi
+          if [ "$VIDEO_BASIS" = "https://videos.invalid/video" ]; then echo "::error::Variable VIDEO_BASIS fehlt (siehe docs/app/BETRIEB.md)"; exit 1; fi
+
+      - name: Ergebnis des Jobs „bauen“ laden
+        uses: actions/download-artifact@v8
+        with:
+          name: lernapp
+
+      # Auf den Commit von v1 festgelegt, weil dieser Schritt das Secret bekommt.
+      - name: Bereitstellen
+        uses: Azure/static-web-apps-deploy@1a947af9992250f3bc2e68ad0754c0b0c11566c9 # v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          action: upload
+          app_location: app/dist
+          output_location: ''
+          api_location: api-paket
+          skip_app_build: true
+          skip_api_build: true
+
+      - name: Rauchtest (API antwortet, neue Version ist online)
+        if: ${{ vars.SWA_HOSTNAME != '' }}
+        env:
+          HOST: ${{ vars.SWA_HOSTNAME }}
+        run: |
+          set -euo pipefail
+          soll=$(node -e "console.log(require('./app/dist/app/daten/build.json').version)")
+          ist=''
+          for i in $(seq 1 18); do
+            ist=$(curl -sf --max-time 20 "https://$HOST/app/daten/build.json?t=$i" | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{try{console.log(JSON.parse(s).version)}catch{console.log('')}})" || true)
+            if [ "$ist" = "$soll" ]; then break; fi
+            sleep 10
+          done
+          if [ "$ist" != "$soll" ]; then echo "::error::Online ist Version '$ist', erwartet '$soll'"; exit 1; fi
+          node rauchtest.mjs "https://$HOST" --erwarte-ablage=cosmos --versuche=6
+          echo "Bereitgestellt: https://$HOST (Version $soll)" >> "$GITHUB_STEP_SUMMARY"

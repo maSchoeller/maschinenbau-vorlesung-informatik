@@ -1,0 +1,23 @@
+---
+/* „Über den Kurs“: redaktionelle Inhalte der bisherigen Startseite site/index.html
+   (Leitidee, Wissens-Ampel, Ablauf eines Termins, Startklar), byte-genau übernommen;
+   nur die Abschnittsnummern werden fortlaufend neu gezählt. Gehört danach der Rolle Navigation. */
+import App from '../layouts/App.astro';
+import { abschnitte, textVon, umschreiben } from '../lib/quelle.mjs';
+const label = textVon('index.html', /<p class="k-title__label">([\s\S]*?)<\/p>/);
+const h1 = textVon('index.html', /<h1 id="h-titel">([\s\S]*?)<\/h1>/);
+const lead = textVon('index.html', /<p class="k-title__lead">([\s\S]*?)<\/p>/);
+let n = 0;
+const teile = abschnitte('index.html', ['leitidee', 'ampel', 'termin', 'startklar'])
+  .map((s) => umschreiben(s.replace(/(<span class="k-section__num" aria-hidden="true">)\d+(<\/span>)/, (_, a, b) => `${a}${++n}${b}`)));
+---
+<App pfad="kurs.html" art="kurs" titel="Über den Kurs" beschreibung="Leitidee, Wissens-Ampel, Ablauf eines Termins und Startklar in 10 Minuten: worum es im Kurs Informatik für Maschinenbau geht.">
+  <main id="inhalt" class="k-wrap app-seite">
+    <header class="k-title">
+      <p class="k-title__label" set:html={label}></p>
+      <h1 id="h-titel" set:html={h1}></h1>
+      <p class="k-title__lead" set:html={lead}></p>
+    </header>
+    {teile.map((t) => <Fragment set:html={t} />)}
+  </main>
+</App>

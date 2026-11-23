@@ -1,0 +1,103 @@
+---
+/* =============================================================
+   App.astro – die Hülle jeder Seite (Architektur-Vertrag, Abschnitt 4).
+   Neue Seite:      <App pfad="werkbank.html" art="werkbank" titel="Werkbank"> … <main id="inhalt"> … </App>
+   Durchreichen:    siehe src/layouts/Durchreichen.astro (setzt inhalt, stylesheets, bestandSkripte …)
+   Skript-Reihenfolge (4.3): speicher.js · app/kern.js · app/speicher-azure.js · Bestand · defer: shell, suche,
+   tutor, pwa, werkbank-knopf, Seitenskripte. App-Dateien nur, wenn sie beim Build existieren.
+   ============================================================= */
+import Leiste from '../components/huelle/Leiste.astro';
+import Kopfzeile from '../components/huelle/Kopfzeile.astro';
+import Icon from '../components/Icon.astro';
+import { seiteInfo, basisVon } from '../lib/navigation.mjs';
+import { appDateien, appUrl, gibtPublic, lektionsKontext } from '../lib/huelle.mjs';
+
+interface Props {
+  pfad: string;                 // Pfad der Seite relativ zur Wurzel, z. B. 'lektionen/v07-labor.html'
+  art: string;                  // Seitenkennung (data-page), z. B. 'werkbank'
+  titel: string;                // <title>; bei neuen Seiten wird ' · Informatik Maschinenbau' ergänzt
+  beschreibung?: string;
+  stylesheets?: string[];       // relative hrefs; Standard: dhbw-base.css und kurs.css
+  kopfStile?: string[];         // rohe <style>-Blöcke (Bestand)
+  bodyAttribute?: { name: string; wert: string | null }[];   // Bestand; Standard: data-page=art
+  inhalt?: string;              // roher Inhalt (Bestand, byte-genau); sonst Slot
+  bestandSkripte?: string[];    // rohe <script>-Tags des Bestands (ohne speicher.js)
+  skripte?: string[];           // zusätzliche app/<name>.js dieser Seite
+  css?: string[];               // zusätzliche app/<name>.css dieser Seite
+  termin?: any;                 // Lektion (aus kurs.yaml), falls Lektionsseite
+  lektionsArt?: 'lerneinheit' | 'labor';
+  hatWeiter?: boolean;          // Inhalt bringt den nächsten Schritt schon mit (.k-next)
+}
+const p = Astro.props;
+/* 404.html wird unter beliebigen Pfaden ausgeliefert: dort absolute Verweise */
+const basis = p.pfad === '404.html' ? '/' : basisVon(p.pfad);
+const info = seiteInfo(p.pfad);
+const neu = p.inhalt == null;
+const titel = neu ? `${p.titel} · Informatik Maschinenbau` : p.titel;
+const stylesheets = p.stylesheets ?? [`${basis}assets/css/dhbw-base.css`, `${basis}assets/css/kurs.css`];
+const dateien = appDateien({ art: p.art, neu, skripte: p.skripte, css: p.css });
+const L = p.termin ? lektionsKontext(p.termin, p.lektionsArt) : null;
+const weiter = L && !p.hatWeiter ? L.weiter : null;
+/* Bestandsseiten ohne h1 (Laborseiten): eine nur für Screenreader sichtbare h1 aus dem Lektionstitel */
+const srH1 = L && !neu && !/<h1[\s>]/i.test(p.inhalt ?? '') ? `${p.lektionsArt === 'labor' ? 'Programmierlabor' : 'Lektion'} ${L.termin.nr} · ${L.termin.kurz}` : null;
+
+/* Body-Attribute: class="app", data-bereich, dann die der Bestandsseite in Originalreihenfolge */
+const attrs: Record<string, string | boolean> = { class: 'app' };
+if (info.bereich) attrs['data-bereich'] = info.bereich;
+for (const a of (p.bodyAttribute ?? [{ name: 'data-page', wert: p.art }])) {
+  if (a.name === 'class') attrs.class = 'app ' + (a.wert ?? '');
+  else attrs[a.name] = a.wert == null ? true : a.wert;
+}
+if (!attrs['data-page']) attrs['data-page'] = p.art;
+const manifest = gibtPublic('manifest.webmanifest');
+const touchIcon = gibtPublic('app/icons/apple-touch-icon.png');
+---
+<!DOCTYPE html>
+<html lang="de" class="app-html">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{titel}</title>
+  {p.beschreibung && <meta name="description" content={p.beschreibung}>}
+  <meta name="theme-color" content="#E2001A">
+  {manifest && <link rel="manifest" href={`${basis}manifest.webmanifest`}>}
+  {touchIcon && <link rel="apple-touch-icon" href={`${basis}app/icons/apple-touch-icon.png`}>}
+  {manifest && <meta name="apple-mobile-web-app-capable" content="yes">}
+  {manifest && <meta name="mobile-web-app-capable" content="yes">}
+  {manifest && <meta name="apple-mobile-web-app-title" content="Informatik">}
+  {manifest && <meta name="apple-mobile-web-app-status-bar-style" content="default">}
+  {stylesheets.map((h) => <link rel="stylesheet" href={h}>)}
+  {(p.kopfStile ?? []).map((s) => <Fragment set:html={s} />)}
+  {dateien.css.map((c) => <link rel="stylesheet" href={appUrl(basis, c)}>)}
+</head>
+<body {...attrs}>
+  <a class="app-skip" href="#inhalt">Zum Inhalt springen</a>
+  <Leiste basis={basis} bereich={info.bereich} />
+  <Kopfzeile basis={basis} bereich={info.bereich} reiter={info.reiter} titel={info.titel} lektion={L} />
+  <div class="app-flaeche">
+    <div class="app-inhalt">
+      {srH1 && <h1 class="app-sr">{srH1}</h1>}
+      {neu ? <slot /> : <Fragment set:html={p.inhalt} />}
+      {weiter && (
+        <nav class="app-weiter" aria-label="Nächster Schritt">
+          <p class="app-weiter__label">Nächster Schritt</p>
+          <a class="k-btn" href={`${basis}lektionen/${weiter.datei}`}>{weiter.text}<Icon id="chevron-right" basis={basis} /></a>
+        </nav>
+      )}
+    </div>
+    <aside class="app-panel" data-app-slot="panel" hidden aria-label="Tutor" tabindex="-1">
+      <div class="app-panel__kopf">
+        <h2 class="app-panel__titel" id="app-panel-titel">Tutor</h2>
+        <button type="button" class="app-panel__zu" data-app-aktion="panel-zu" aria-label="Panel schließen"><Icon id="x" basis={basis} /></button>
+      </div>
+      <div class="app-panel__inhalt" data-app-slot="panel-inhalt"></div>
+    </aside>
+  </div>
+  <div class="app-meldungen" data-app-slot="meldungen" aria-live="polite"></div>
+  <script is:inline src={`${basis}assets/js/speicher.js`}></script>
+  <script is:inline src={appUrl(basis, 'kern.js')}></script>
+  {dateien.frueh.map((s) => <script is:inline src={appUrl(basis, s)}></script>)}
+  {(p.bestandSkripte ?? []).map((s) => <Fragment set:html={s} />)}
+  {dateien.defer.map((s) => <script is:inline src={appUrl(basis, s)} defer></script>)}
+</body>
+</html>

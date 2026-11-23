@@ -280,8 +280,9 @@
   /* ══════════════════════════════════════════════════════════
      (C) HTTP-Anfrage Schritt für Schritt
      ══════════════════════════════════════════════════════════ */
-  var HOST = 'maschoeller.github.io';
-  var PFAD = '/maschinenbau-vorlesung-informatik/assets/data/v17/api/';
+  /* Host und Pfad dieser Website, wie der Browser sie gerade sieht (kein fest verdrahteter Hostname) */
+  var HOST = location.host || 'localhost';
+  var PFAD = new URL('../assets/data/v17/api/', location.href).pathname;
   var CODES = [
     { c: '200', n: 'OK', t: 'Alles gut, die Daten stehen in der Antwort.' },
     { c: '401', n: 'Unauthorized', t: 'Du hast dich nicht angemeldet oder das Token stimmt nicht.' },

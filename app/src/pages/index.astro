@@ -1,0 +1,25 @@
+---
+/* Heute: der nächste sinnvolle Schritt. Statisch steht der Einstieg für den ersten Besuch
+   (und für den Fall ohne JavaScript); app/heute.js ersetzt ihn, sobald ein Lernstand existiert. */
+import App from '../layouts/App.astro';
+import Icon from '../components/Icon.astro';
+import { ladeKurs } from '../lib/kurs.mjs';
+const erste = ladeKurs().termine[0];
+---
+<App pfad="index.html" art="heute" titel="Heute" beschreibung="Dein nächster Schritt im Kurs Informatik für Maschinenbau: weitermachen, aktuelle Lektion, kurzes Warm-up." css={['seiten']} skripte={['stand']}>
+  <noscript><style>.np-wurzel[data-laedt] { opacity: 1 !important; }</style></noscript>
+  <main id="inhalt" class="app-seite np-seite">
+    <h1>Heute</h1>
+    <div class="np-wurzel" data-heute data-laedt>
+      <section class="np-block np-start" aria-labelledby="h-start">
+        <h2 id="h-start">Willkommen im Kurs</h2>
+        <p>Jede Lektion hat zwei Schritte: erst <strong>Verstehen</strong>, dann im <strong>Labor</strong> selbst programmieren. Du musst nichts einrichten. Fang vorne an.</p>
+        <a class="k-btn np-gross" href={`lektionen/${erste.lerneinheit}`}>
+          <span class="np-gross__text">Starte mit {erste.nr} · {erste.kurz}</span>
+          <Icon id="chevron-right" basis="" />
+        </a>
+        <p class="k-small"><a href="lernpfad.html">Alle 22 Lektionen im Lernpfad</a></p>
+      </section>
+    </div>
+  </main>
+</App>

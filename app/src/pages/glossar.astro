@@ -1,0 +1,48 @@
+---
+/* Glossar: alle Begriffe A bis Z, statisch gerendert. app/glossar.js macht das Filterfeld. */
+import App from '../layouts/App.astro';
+import { glossarDaten } from '../components/nav/glossar-daten.mjs';
+const { gesamt, gruppen } = glossarDaten();
+const ziel = (g: any) => (g.lektion ? `Lektion ${g.lektion}` : g.url.replace(/\.html$/, '').replace(/^.*\//, '').replace(/^./, (c: string) => c.toUpperCase()).replace(/-/g, ' '));
+---
+<App pfad="glossar.html" art="glossar" titel="Glossar" beschreibung="Alle Fachbegriffe des Kurses von A bis Z mit kurzer Erklärung und dem Weg zur Lektion, in der sie eingeführt werden." css={['seiten']}>
+  <main id="inhalt" class="app-seite np-seite gl">
+    <h1>Glossar</h1>
+    <p class="np-lead">{gesamt} Begriffe von A bis Z. Jeder führt zu der Stelle, an der er zum ersten Mal erklärt wird.</p>
+
+    <div class="gl-kopf">
+      <div class="gl-suche">
+        <label for="gl-filter">Begriff oder Erklärung suchen</label>
+        <input type="search" id="gl-filter" class="gl-filter" autocomplete="off" spellcheck="false" placeholder="z. B. Schleife" aria-describedby="gl-zahl" disabled>
+      </div>
+      <p class="k-small k-muted gl-zahl" id="gl-zahl" role="status" aria-live="polite" data-gesamt={gesamt}>{gesamt} Begriffe</p>
+    </div>
+    <nav class="gl-buchstaben" aria-label="Sprung zu einem Buchstaben">
+      <ul>
+        {gruppen.map((g) => <li><a href={`#b-${g.buchstabe === '#' ? 'zahl' : g.buchstabe}`} data-b={g.buchstabe} aria-label={g.buchstabe === "#" ? "Zahlen und Sonderzeichen" : undefined}>{g.buchstabe}</a></li>)}
+      </ul>
+    </nav>
+
+    <p class="gl-leer" data-gl-leer hidden>Kein Begriff gefunden. Prüfe die Schreibweise oder suche mit Strg+K im ganzen Kurs.</p>
+
+    <div data-gl-liste>
+      {gruppen.map((gr) => (
+        <section class="gl-gruppe" id={`b-${gr.buchstabe === '#' ? 'zahl' : gr.buchstabe}`} data-b={gr.buchstabe}>
+          <h2>{gr.buchstabe}<span class="np-sr">{gr.buchstabe === '#' ? ' Zahlen und Sonderzeichen' : ''}</span></h2>
+          <dl>
+            {gr.eintraege.map((g) => (
+              <div class="gl-eintrag" id={g.id}>
+                <dt>{g.begriff}{g.formen && <span class="np-sr"> (auch: {g.formen.join(', ')})</span>}</dt>
+                <dd>
+                  {(g.aliase || []).map((a: string) => <span id={a}></span>)}
+                  <span class="gl-text">{g.erklaerung}</span>
+                  <a class="gl-ziel k-small" href={g.url}>{ziel(g)}<span class="np-sr">: {g.begriff}</span></a>
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+      ))}
+    </div>
+  </main>
+</App>

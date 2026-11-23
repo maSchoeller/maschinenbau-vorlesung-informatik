@@ -1,0 +1,26 @@
+using './main.bicep'
+
+// Standardwerte für die Lern-App. budgetEmail wird beim Deployment übergeben
+// (bereitstellen.ps1 -BudgetEmail ...), damit keine Adresse im Repository steht.
+param budgetEmail = readEnvironmentVariable('LERNAPP_BUDGET_EMAIL', '')
+param swaRegion = 'westeurope'
+param datenRegion = readEnvironmentVariable('LERNAPP_DATEN_REGION', 'germanywestcentral')
+param praefix = 'lernapp'
+param budgetBetrag = 30
+// Startdatum eines vorhandenen Budgets (setzt bereitstellen.ps1); leer = Erster des aktuellen Monats
+param budgetStart = readEnvironmentVariable('LERNAPP_BUDGET_START', '')
+param cosmosKontoName = readEnvironmentVariable('LERNAPP_COSMOS_KONTO', '')
+param videoUploaderObjectId = readEnvironmentVariable('LERNAPP_UPLOADER_ID', '')
+param tutorModell = 'claude-haiku-5-5'
+param tutorLimitNutzerTag = 40
+param tutorLimitKursTag = 600   // Kurs hat rund 40 Studierende (40 x 15 Fragen)
+param tutorPruefer = 'an'
+
+// Salt-Sicherung im Key Vault: setzt bereitstellen.ps1 nach der Fallunterscheidung (salt-fall.ps1)
+// nur für die Dauer des Deployments und entfernt die Variablen danach wieder. Ohne die Variablen
+// (Deployment von Hand) gilt das Sichere: nichts in den Tresor schreiben, keinen neuen Salt
+// erzeugen, vorhandenen Salt der SWA behalten.
+param saltAusTresor = readEnvironmentVariable('LERNAPP_SALT_TRESOR', '')
+param saltSichern = bool(readEnvironmentVariable('LERNAPP_SALT_SICHERN', 'false'))
+param neuenSaltErlauben = bool(readEnvironmentVariable('LERNAPP_NEUER_SALT', 'false'))
+param tresorLeserObjectId = readEnvironmentVariable('LERNAPP_UPLOADER_ID', '')

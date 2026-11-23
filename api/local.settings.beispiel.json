@@ -1,0 +1,12 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "FUNCTIONS_WORKER_RUNTIME": "node",
+    "ABLAGE": "datei",
+    "BENUTZER_SALT": "lokal-test",
+    "TUTOR_MODELL": "claude-haiku-5-5",
+    "TUTOR_LIMIT_NUTZER_TAG": "40",
+    "TUTOR_LIMIT_KURS_TAG": "1500",
+    "TUTOR_PRUEFER": "an"
+  }
+}

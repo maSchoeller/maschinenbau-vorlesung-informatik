@@ -1,0 +1,65 @@
+---
+/* Kopfzeile (.app-bar): Kontext des Bereichs, Status-Slot, Suche. Vertrag 4.1 und 4.2.
+   In Lektionen: Pfeile, Lektionswähler (alle 22 mit Fortschritt), Umschalter Verstehen/Labor, Notebook. */
+import Icon from '../Icon.astro';
+import { bereich as findeBereich } from '../../lib/navigation.mjs';
+interface Props { basis: string; bereich: string | null; reiter: string | null; titel?: string | null; lektion?: any }
+const { basis, bereich, reiter, titel, lektion } = Astro.props;
+const b = findeBereich(bereich);
+const L = lektion;
+const lek = (datei: string) => `${basis}lektionen/${datei}`;
+---
+<header class="app-bar">
+  <div class="app-bar__kontext" data-app-slot="kontext">
+    {L ? (
+      <div class="app-lektion">
+        {L.vor
+          ? <a class="app-lektion__pfeil" href={lek(L.vor.datei)} rel="prev" aria-label={`Vorige Lektion: ${L.vor.termin.nr} ${L.vor.termin.kurz}`} title={`${L.vor.termin.nr} · ${L.vor.termin.kurz}`}><Icon id="chevron-left" basis={basis} /></a>
+          : <span class="app-lektion__pfeil" aria-hidden="true" data-aus><Icon id="chevron-left" basis={basis} /></span>}
+        <div class="app-waehler">
+          <button type="button" class="app-waehler__knopf" data-app-waehler aria-expanded="false" aria-controls="app-waehler-liste" aria-haspopup="true">
+            <span class="app-waehler__nr">{L.termin.nr}</span>
+            <span class="app-waehler__titel">{L.termin.kurz}</span>
+            <Icon id="chevron-down" basis={basis} klasse="app-waehler__pfeil" />
+          </button>
+          <div class="app-waehler__liste" id="app-waehler-liste" hidden>
+            {L.phasen.map((p: any) => (
+              <section class="app-waehler__phase" aria-label={`Phase ${p.nr} · ${p.name}`}>
+                <p class="app-waehler__phasename">Phase {p.nr} · {p.name}</p>
+                <ol>
+                  {L.termine.filter((t: any) => t.phase === p.nr).map((t: any) => (
+                    <li><a class="app-waehler__eintrag" href={lek(L.art === 'labor' && t.labor ? t.labor : t.lerneinheit)} data-lektion={t.nr} aria-current={t.nr === L.termin.nr ? 'page' : undefined}>
+                      <span class="app-waehler__enr">{t.nr}</span>
+                      <span class="app-waehler__etitel">{t.kurz}</span>
+                      <span class="app-waehler__stand" data-app-stand={t.nr}></span>
+                    </a></li>
+                  ))}
+                </ol>
+              </section>
+            ))}
+          </div>
+        </div>
+        {L.nach
+          ? <a class="app-lektion__pfeil" href={lek(L.nach.datei)} rel="next" aria-label={`Nächste Lektion: ${L.nach.termin.nr} ${L.nach.termin.kurz}`} title={`${L.nach.termin.nr} · ${L.nach.termin.kurz}`}><Icon id="chevron-right" basis={basis} /></a>
+          : <span class="app-lektion__pfeil" aria-hidden="true" data-aus><Icon id="chevron-right" basis={basis} /></span>}
+        {L.termin.labor && (
+          <nav class="app-ansicht" aria-label="Ansicht">
+            <a href={lek(L.termin.lerneinheit)} aria-current={L.art === 'lerneinheit' ? 'page' : undefined}>Verstehen</a>
+            <a href={lek(L.termin.labor)} aria-current={L.art === 'labor' ? 'page' : undefined}>Labor</a>
+          </nav>
+        )}
+        {L.termin.notebook && (
+          <a class="app-bar__link" href={`${basis}notebooks/${L.termin.notebook}`} download><Icon id="notebook" basis={basis} /><span>Notebook</span></a>
+        )}
+      </div>
+    ) : b && b.reiter.length ? (
+      <nav class="app-reiter" aria-label={b.name}>
+        {b.reiter.map((r) => <a href={basis + r.ziel} aria-current={r.id === reiter ? 'page' : undefined}>{r.name}</a>)}
+      </nav>
+    ) : (
+      <p class="app-bar__titel">{b ? b.name : titel}</p>
+    )}
+  </div>
+  <div class="app-bar__status" data-app-slot="status" aria-live="polite"></div>
+  <button type="button" class="app-bar__suche" data-app-aktion="suche" aria-keyshortcuts="Control+K"><Icon id="search" basis={basis} /><span>Suchen</span><kbd>Strg K</kbd></button>
+</header>

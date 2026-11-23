@@ -1,0 +1,34 @@
+/* app/konto.css – Seite „Konto“ (Rolle Konto und Abgleich). Ruhiger DHBW-Stil: Abschnitte ohne Rahmen, ein primärer Knopf je Bereich. */
+.konto-seite { max-width: 760px; }
+.konto-seite > h1 { margin-top: 0; }
+.konto-block { margin-top: var(--k-section-gap, 2.5rem); }
+.konto-block > h2 { margin: 0 0 var(--sp-3, .75rem); font-size: var(--fs-lg, 1.5rem); }
+.konto-block > p { max-width: var(--k-measure, 68ch); }
+.konto-block[hidden], .konto-laedt[hidden], .konto-hinweis-offen[hidden] { display: none; }
+.konto-laedt { color: var(--k-muted); }
+.konto-liste { max-width: var(--k-measure, 68ch); padding-left: 1.25em; }
+.konto-liste li + li { margin-top: var(--sp-2, .5rem); }
+.konto-klein { color: var(--k-muted); font-size: var(--fs-sm, .9375rem); }
+.konto-hinweis-offen { padding: var(--sp-3, .75rem) var(--sp-4, 1rem); border-left: 3px solid var(--k-info); background: var(--k-info-bg); }
+.konto-aktionen { display: flex; flex-wrap: wrap; gap: var(--sp-3, .75rem); }
+
+.konto-form { margin: var(--sp-4, 1rem) 0; }
+.konto-form > label, .ka-dialog label { display: block; margin-bottom: var(--sp-1, .25rem); font-weight: 600; }
+.konto-form__zeile { display: flex; flex-wrap: wrap; gap: var(--sp-3, .75rem); align-items: center; }
+.konto-form input[type="text"], .konto-bestaetigung {
+  font: inherit; min-height: 44px; padding: 6px 12px; width: min(100%, 22em); box-sizing: border-box;
+  border: 2px solid #6B7280; border-radius: var(--r-base, 6px); background: #fff; color: var(--text);
+}
+.konto-form input[type="text"]:focus-visible, .konto-bestaetigung:focus-visible { outline: 3px solid var(--k-focus, #1A1A1A); outline-offset: 2px; }
+.konto-bestaetigung { display: block; }
+.konto-dialog__zeile { display: flex; align-items: center; gap: var(--sp-2, .5rem); margin-top: var(--sp-3, .75rem); }
+.konto-dialog__zeile label { margin: 0; font-weight: 400; }
+.konto-dialog__zeile input { width: 18px; height: 18px; accent-color: var(--red-dark); }
+
+.konto-status { min-height: 1.5em; margin: var(--sp-2, .5rem) 0 0; font-weight: 600; }
+.konto-status--fehler { color: var(--k-bad, #B50016); }
+.konto-status--fehler::before { content: "Fehler: "; }
+.konto-abgleich { font-weight: 600; margin-bottom: var(--sp-1, .25rem); }
+.konto-seite [data-pwa-einstellungen] { margin-top: var(--k-section-gap, 2.5rem); }
+@media print { .konto-aktionen { display: none; } }
+.konto-status:empty { min-height: 0; margin: 0; }

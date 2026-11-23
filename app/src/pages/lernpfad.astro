@@ -1,0 +1,46 @@
+---
+/* Lernpfad: drei Phasen, 22 Stationen. Statisch gerendert; app/lernpfad.js ergänzt Stand und Hervorhebung. */
+import App from '../layouts/App.astro';
+import Icon from '../components/Icon.astro';
+import { ladeKurs } from '../lib/kurs.mjs';
+const { phasen, termine } = ladeKurs();
+const ab = (iso: string | null) => { const m = /^\d{4}-(\d\d)-(\d\d)$/.exec(iso || ''); return m ? `ab ${m[2]}.${m[1]}.` : ''; };
+---
+<App pfad="lernpfad.html" art="lernpfad" titel="Lernpfad" beschreibung="Alle 22 Termine des Kurses in drei Phasen, mit Stand und direkten Wegen zu Verstehen und Labor." css={['seiten']} skripte={['stand']}>
+  <main id="inhalt" class="app-seite np-seite lp">
+    <h1>Lernpfad</h1>
+    <p class="np-lead">22 Termine in drei Phasen. Zu jedem gehören zwei Schritte: erst Verstehen, dann das Labor.</p>
+    <p class="k-small" data-lp-sprung hidden></p>
+
+    {phasen.map((p) => (
+      <section class="lp-phase" aria-labelledby={`h-phase-${p.nr}`}>
+        <header class="lp-phase__kopf">
+          <p class="np-kicker">Phase {p.nr} · {p.bereich}</p>
+          <h2 id={`h-phase-${p.nr}`}>{p.name}</h2>
+          <p class="k-muted">{p.leitsatz}</p>
+        </header>
+        <ol class="lp-liste">
+          {termine.filter((t) => t.phase === p.nr).map((t) => (
+            <li class="lp-station" id={t.nr.toLowerCase()} data-nr={t.nr} data-freigabe={t.freigabe || undefined}>
+              <span class="lp-nr">{t.nr}</span>
+              <div class="lp-text">
+                <h3>{t.titel}</h3>
+                <p class="lp-hook">{t.hook}</p>
+                {t.python.length > 0 && <p class="lp-python k-small"><span class="k-muted">Neu in Python:</span> {t.python.join(' · ')}</p>}
+                {t.freigabe && <p class="lp-frei k-small" data-frei={t.freigabe}>Freigabe {ab(t.freigabe)}</p>}
+              </div>
+              <div class="lp-seite">
+                <p class="np-stand np-stand--offen" data-stand><Icon id="circle" basis="" /><span>Offen</span></p>
+                <p class="lp-zahlen k-small k-muted" data-zahlen></p>
+                <div class="lp-ziele">
+                  <a class="k-btn k-btn--ghost k-btn--small" href={`lektionen/${t.lerneinheit}`}>Verstehen <span class="np-sr">{t.nr}</span></a>
+                  {t.labor && <a class="k-btn k-btn--ghost k-btn--small" href={`lektionen/${t.labor}`}>Labor <span class="np-sr">{t.nr}</span></a>}
+                </div>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </section>
+    ))}
+  </main>
+</App>

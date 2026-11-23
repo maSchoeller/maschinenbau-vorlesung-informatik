@@ -1,0 +1,10 @@
+---
+/* Durchreich-Route für die Werkzeug- und Klausurseiten der Wurzel */
+import Durchreichen from '../layouts/Durchreichen.astro';
+export function getStaticPaths() {
+  return ['bibliothek', 'pap-editor', 'klausurtrainer', 'probeklausur-2026-27', 'projekt']
+    .map((s) => ({ params: { seite: s }, props: { datei: s + '.html' } }));
+}
+const { datei } = Astro.props;
+---
+<Durchreichen datei={datei} />

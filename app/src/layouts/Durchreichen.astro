@@ -1,0 +1,28 @@
+---
+/* Setzt eine site/-Seite byte-genau in die Hülle (Vertrag, Abschnitt 3). */
+import App from './App.astro';
+import { zerlege } from '../lib/quelle.mjs';
+import { terminZuDatei } from '../lib/kurs.mjs';
+interface Props { datei: string }   // relativ zu site/, z. B. 'lektionen/v07-labor.html'
+const { datei } = Astro.props;
+const q = zerlege(datei);
+const t = datei.startsWith('lektionen/') ? terminZuDatei(datei.slice('lektionen/'.length)) : null;
+if (datei.startsWith('lektionen/') && !t) throw new Error(`Durchreichen: ${datei} steht nicht in kurs.yaml`);
+const art = (q.bodyAttribute.find((a) => a.name === 'data-page') || {}).wert || 'seite';
+/* speicher.js bringt die Hülle selbst als erstes Skript mit */
+const bestand = q.skripte.filter((s) => !(s.src && /(^|\/)assets\/js\/speicher\.js$/.test(s.src))).map((s) => s.roh);
+---
+<App
+  pfad={datei}
+  art={art}
+  titel={q.titel}
+  beschreibung={q.beschreibung}
+  stylesheets={q.stylesheets}
+  kopfStile={q.kopfStile}
+  bodyAttribute={q.bodyAttribute}
+  inhalt={q.inhalt}
+  bestandSkripte={bestand}
+  termin={t ? t.termin : undefined}
+  lektionsArt={t ? t.art : undefined}
+  hatWeiter={/class="k-next"/.test(q.inhalt)}
+/>

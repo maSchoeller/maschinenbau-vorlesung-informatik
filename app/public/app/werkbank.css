@@ -1,0 +1,138 @@
+/* =============================================================
+   app/werkbank.css – Werkbank und geteilte Programme (Rolle Werkbank)
+   Ruhiger DHBW-Stil (DESIGN.md 1–10). Nur Desktop (ab 1100 px) und Tablet (768 bis 1099 px). Eigene Klassen: wb-.
+   ============================================================= */
+
+.wb { max-width: 1320px; }
+.wb [hidden] { display: none !important; }
+.wb-h1 { margin: 0 0 var(--sp-4); font-size: var(--fs-xl); overflow-wrap: anywhere; }
+.wb-h1:focus { outline: none; }
+
+/* ── Raster: Liste links, Arbeitsfläche rechts ─────────────── */
+.wb-raster { display: grid; grid-template-columns: 17rem minmax(0, 1fr); gap: var(--sp-6); align-items: start; }
+.wb-liste {
+  position: sticky; top: var(--app-oben, 72px); max-height: calc(100vh - var(--app-oben, 72px) - var(--sp-4));
+  display: flex; flex-direction: column; min-width: 0;
+}
+.wb-liste__kopf { margin: 0 0 var(--sp-2); font-size: var(--fs-base); font-weight: 600; }
+.wb-liste__zahl { font-weight: 400; color: var(--k-muted); }
+.wb-liste__ul { list-style: none; margin: 0; padding: 0; overflow-y: auto; border-top: 1px solid var(--k-line, #E5E7EB); flex: 1 1 auto; min-height: 0; }
+.wb-liste__ul li { margin: 0; border-bottom: 1px solid var(--k-line, #E5E7EB); }
+.wb-liste__ul li + li { margin-top: 0; }
+.wb-liste__hinweis { margin: var(--sp-3) 0 0; }
+
+.wb-prog {
+  display: flex; flex-direction: column; gap: 2px; padding: var(--sp-2) var(--sp-3) var(--sp-2) calc(var(--sp-3) - 3px);
+  border-left: 3px solid transparent; color: var(--text); text-decoration: none; min-height: 44px; box-sizing: border-box; justify-content: center;
+}
+.wb-prog:hover { background: var(--app-flaeche, #F7F8FA); color: var(--text); text-decoration: none; }
+.wb-prog[aria-current="true"] { border-left-color: var(--red); background: var(--red-tint, #FDECEE); }
+.wb-prog:focus-visible { outline: 3px solid var(--k-focus, #1A1A1A); outline-offset: -3px; }
+.wb-prog__titel { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.wb-prog__zeit { font-size: var(--fs-xs); color: var(--k-muted); }
+
+/* ── Arbeitsfläche ─────────────────────────────────────────── */
+.wb-haupt { min-width: 0; }
+.wb-kopf { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--sp-3) var(--sp-4); }
+.wb-titelfeld { flex: 1 1 18rem; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.wb-titelfeld label { font-size: var(--fs-xs); font-weight: 600; color: var(--k-muted); }
+.wb-titel {
+  width: 100%; box-sizing: border-box; min-height: 44px; padding: 6px 10px; font: inherit; font-size: var(--fs-md); font-weight: 600;
+  color: var(--text); background: #fff; border: 1px solid #9CA3AF; border-radius: var(--r-sm, 4px);
+}
+.wb-titel:focus-visible { outline: 3px solid var(--k-focus, #1A1A1A); outline-offset: 1px; }
+.wb-aktionen { display: flex; flex-wrap: wrap; gap: var(--sp-1) var(--sp-2); }
+/* „Mehr“: seltene Aktionen; Löschen abgesetzt am Ende */
+.wb-mehr { position: relative; }
+.wb-mehr > summary { list-style: none; cursor: pointer; }
+.wb-mehr > summary::-webkit-details-marker { display: none; }
+.wb-mehr__liste {
+  position: absolute; right: 0; top: calc(100% + 4px); z-index: 30; min-width: 13rem; display: flex; flex-direction: column;
+  padding: 4px; background: #fff; border: 1px solid var(--k-line, #D1D5DB); border-radius: var(--r-base, 6px); box-shadow: 0 8px 24px rgba(0, 0, 0, .12);
+}
+.wb-mehr__liste button {
+  min-height: 44px; padding: 0 12px; text-align: left; font: inherit; font-size: var(--fs-sm); font-weight: 600; color: var(--text);
+  background: none; border: 0; border-radius: var(--r-sm, 4px); cursor: pointer;
+}
+.wb-mehr__liste button:hover { background: var(--app-flaeche, #F3F4F6); }
+.wb-mehr__liste .wb-loeschen { margin-top: 4px; border-top: 1px solid var(--k-line, #D1D5DB); border-radius: 0 0 var(--r-sm, 4px) var(--r-sm, 4px); color: var(--k-bad, #B42318); }
+.wb-mehr__liste .wb-loeschen:hover { background: #FEF3F2; }
+.wb-status { margin: var(--sp-2) 0 var(--sp-3); min-height: 1.4em; }
+.wb-gross { margin: 0 0 var(--sp-3); }
+
+/* Runner in der Werkbank: höher als in der Lektion; „Zurücksetzen“ gibt es hier nicht (es gäbe nur den leeren Anfangszustand) */
+.wb-runner { margin: 0; max-width: 100%; min-width: 0; }
+.wb-runner .k-runner__bar .k-btn--link:not(.wb-knopf) { display: none; }
+.wb-runner > .ke .cm-editor { min-height: 18rem; max-height: 62vh; }
+.wb-runner .ke .cm-scroller { overflow: auto; }
+.wb-runner .k-runner__stdinbox .ke .cm-editor { min-height: 0; max-height: 10rem; }
+.wb-runner .k-runner__out { max-height: 22em; }
+/* Hinweiszeile des Editors (Tastaturhilfe) immer zeigen: Erschiene sie nur bei Fokus, verschöbe sich beim Klick auf „Ausführen“
+   die Knopfleiste, sobald der Editor den Fokus verliert, und der Klick ginge daneben. Beim Eingabefeld entfällt sie. */
+.wb-runner .k-runner__stdinbox .ke__status { display: none; }
+.wb-runner > .k-runner__code { min-height: 18rem; }
+
+/* Leerer Zustand: ein Satz, ein Knopf */
+.wb-leer { max-width: 34rem; padding: var(--sp-5) 0; }
+.wb-leer h2 { margin: 0 0 var(--sp-3); font-size: var(--fs-lg); }
+.wb-leer p { margin: 0 0 var(--sp-4); }
+
+/* ── Teilen-Dialog ─────────────────────────────────────────── */
+.wb-dialog {
+  width: min(36rem, calc(100vw - 2 * var(--sp-5))); margin: auto; box-sizing: border-box; padding: var(--sp-5); color: var(--text);
+  background: #fff; border: 1px solid var(--k-line, #E5E7EB); border-radius: var(--r-card, 8px); box-shadow: 0 12px 40px rgba(0, 0, 0, .18);
+}
+.wb-dialog::backdrop { background: rgba(17, 24, 39, .45); }
+.wb-dialog__kopf { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); margin-bottom: var(--sp-3); }
+.wb-dialog__kopf h2 { margin: 0; font-size: var(--fs-lg); }
+.wb-dialog__zu {
+  flex: none; display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; padding: 0;
+  background: transparent; border: 0; border-radius: var(--r-base, 6px); color: var(--k-muted); cursor: pointer;
+}
+.wb-dialog__zu:hover { background: var(--app-flaeche, #F7F8FA); color: var(--text); }
+.wb-dialog__zu:focus-visible { outline: 3px solid var(--k-focus, #1A1A1A); outline-offset: 1px; }
+.wb-dialog__zu .k-ic { width: 1.3em; height: 1.3em; }
+.wb-dialog__koerper p { margin: 0 0 var(--sp-3); }
+.wb-dialog__koerper .k-btn { margin-top: var(--sp-1); }
+.wb-dialog__status { margin: var(--sp-3) 0 0; min-height: 1.4em; color: var(--k-muted); }
+.wb-hinweis-satz { font-weight: 600; font-size: var(--fs-base); }
+.wb-linkzeile { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--sp-1) var(--sp-2); align-items: end; margin-bottom: var(--sp-2); }
+.wb-linkzeile__label { grid-column: 1 / -1; font-size: var(--fs-xs); font-weight: 600; color: var(--k-muted); }
+.wb-linkfeld {
+  min-width: 0; min-height: 40px; padding: 6px 10px; box-sizing: border-box; font-family: var(--dhbw-font-mono, monospace); font-size: var(--fs-sm);
+  color: var(--text); background: #F6F8FA; border: 1px solid #9CA3AF; border-radius: var(--r-sm, 4px);
+}
+.wb-linkfeld:focus-visible { outline: 3px solid var(--k-focus, #1A1A1A); outline-offset: 1px; }
+.wb-eigene { margin-top: var(--sp-5); }
+.wb-eigene__h { margin: 0 0 var(--sp-2); font-size: var(--fs-base); }
+.wb-eigene__ul { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--k-line, #E5E7EB); max-height: 14rem; overflow-y: auto; }
+.wb-eigener { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); padding: var(--sp-1) 0; border-bottom: 1px solid var(--k-line, #E5E7EB); margin: 0; }
+.wb-eigener + .wb-eigener { margin-top: 0; }
+.wb-eigener__text { min-width: 0; display: flex; flex-direction: column; }
+.wb-eigener__titel { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.wb-eigener__aktionen { flex: none; display: flex; gap: var(--sp-1); }
+
+/* ── Geteiltes Programm ────────────────────────────────────── */
+.wb-geteilt { max-width: 1000px; }
+.wb-wer { margin: 0 0 var(--sp-2); overflow-wrap: anywhere; }
+.wb-snap { margin: 0 0 var(--sp-4); max-width: var(--k-measure); }
+.wb-geteilt .k-runner--auto { margin: 0; }
+.wb-geteilt .ke .cm-editor { min-height: 8rem; max-height: 60vh; }
+.wb-geteilt .ke .cm-scroller { overflow: auto; }
+.wb-fuss { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-3); margin-top: var(--sp-4); }
+.wb-meldung { max-width: 34rem; }
+.wb-meldung--hinweis { padding: var(--sp-5) 0; }
+.wb-meldung p { margin: 0 0 var(--sp-4); }
+.wb-nur-text { width: 100%; box-sizing: border-box; font-family: var(--dhbw-font-mono, monospace); }
+
+/* ── Tablet (768 bis 1099 px): Liste wandert über die Arbeitsfläche ── */
+@media (max-width: 1099px) {
+  .wb-raster { grid-template-columns: minmax(0, 1fr); gap: var(--sp-4); }
+  .wb-liste { position: static; max-height: none; }
+  .wb-liste__ul { max-height: 9rem; }
+  .wb-prog { flex-direction: row; align-items: center; justify-content: space-between; gap: var(--sp-3); min-height: 44px; padding-block: 0; }
+  .wb-prog__zeit { flex: none; }
+  .wb-liste__hinweis { display: none; }
+}
+
+@media print { .wb-liste, .wb-aktionen, .wb-dialog { display: none !important; } }

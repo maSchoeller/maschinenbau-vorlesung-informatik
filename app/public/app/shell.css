@@ -1,0 +1,244 @@
+/* =============================================================
+   app/shell.css – Hülle der Lern-App (Leiste, Kopfzeile, Panel, Meldungen)
+   Baut auf dhbw-base.css und kurs.css auf (Variablen --red, --k-line, --k-muted …).
+   Passt Bestandsseiten an die Hülle an, ohne site/-CSS zu ändern:
+   klebende Elemente unter die Kopfzeile, Labor-Breite, Anker-Sprünge, Druck.
+   Nur Desktop (ab 1100 px) und Tablet (768 bis 1099 px).
+   ============================================================= */
+
+:root {
+  --app-rail-w: 76px;
+  --app-bar-h: 56px;
+  --app-panel-w: 380px;
+  --app-oben: calc(var(--app-bar-h) + var(--sp-4, 16px));   /* Abstand klebender Elemente vom Fensterrand */
+  --app-linie: var(--k-line, #E5E7EB);
+  --app-flaeche: #F7F8FA;
+}
+
+body.app { margin: 0; min-height: 100vh; background: var(--surface, #fff); }
+
+/* ── Sprunglink ─────────────────────────────────────────────── */
+.app-skip { position: fixed; left: -999px; top: 8px; z-index: 600; background: #fff; color: var(--text); padding: 8px 14px; border: 2px solid var(--k-focus, #1A1A1A); font-weight: 600; text-decoration: none; }
+.app-skip:focus { left: calc(var(--app-rail-w) + 8px); }
+
+/* ── Leiste links ───────────────────────────────────────────── */
+.app-rail {
+  position: fixed; top: 0; bottom: 0; left: 0; z-index: 120; width: var(--app-rail-w);
+  display: flex; flex-direction: column; align-items: stretch; gap: var(--sp-2, 8px);
+  padding: 10px 0 12px; background: #fff; border-right: 1px solid var(--app-linie); box-sizing: border-box;
+}
+.app-rail__marke { align-self: center; display: block; background: var(--red); color: #fff; font-weight: 700; font-size: 11px; letter-spacing: .05em; line-height: 1; padding: 6px 7px; margin-bottom: 6px; user-select: none; }
+.app-rail__liste { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.app-rail__liste li { margin: 0; }
+.app-rail__liste--unten { margin-top: auto; }
+.app-rail__ziel {
+  position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+  width: 100%; min-height: 60px; padding: 6px 2px; box-sizing: border-box;
+  font: inherit; font-size: 12px; font-weight: 600; line-height: 1.15; color: var(--k-muted, #4B5563);
+  text-decoration: none; background: none; border: 0; border-radius: 0; cursor: pointer; text-align: center;
+}
+.app-rail__ziel .k-ic { width: 24px; height: 24px; vertical-align: 0; }
+.app-rail__ziel:hover { color: var(--text); background: var(--app-flaeche); text-decoration: none; }
+.app-rail__ziel[aria-current="page"], .app-rail__ziel[aria-expanded="true"] { color: var(--red-dark); }
+.app-rail__ziel[aria-current="page"]::before, .app-rail__ziel[aria-expanded="true"]::before {
+  content: ""; position: absolute; left: 0; top: 10px; bottom: 10px; width: 3px; background: var(--red); border-radius: 0 2px 2px 0;
+}
+.app-rail__ziel:focus-visible { outline: 3px solid var(--k-focus); outline-offset: -3px; }
+
+/* ── Kopfzeile ──────────────────────────────────────────────── */
+.app-bar {
+  position: sticky; top: 0; z-index: 110; height: var(--app-bar-h); box-sizing: border-box;
+  margin-left: var(--app-rail-w); padding: 0 var(--sp-5, 24px);
+  display: flex; align-items: center; gap: var(--sp-4, 16px);
+  background: #fff; border-bottom: 1px solid var(--app-linie);
+}
+.app-bar__kontext { flex: 1 1 auto; min-width: 0; display: flex; align-items: center; height: 100%; }
+.app-bar__status { flex: none; font-size: var(--fs-sm); color: var(--k-muted); display: flex; align-items: center; gap: var(--sp-2); }
+.app-bar__status:empty { display: none; }
+.app-bar__titel { margin: 0; font-weight: 700; font-size: var(--fs-md); color: var(--text); }
+.app-bar__suche {
+  flex: none; display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 10px 0 12px;
+  font: inherit; font-size: var(--fs-sm); font-weight: 600; color: var(--k-muted); background: #fff;
+  border: 1px solid var(--border, #D1D5DB); border-radius: var(--r-base, 6px); cursor: pointer;
+}
+.app-bar__suche:hover { color: var(--text); border-color: #9CA3AF; }
+.app-bar__suche kbd { font: inherit; font-size: var(--fs-xs); font-weight: 600; color: var(--k-muted); background: var(--app-flaeche); border: 1px solid var(--app-linie); border-radius: 4px; padding: 0 5px; }
+.app-bar__link { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 8px; font-size: var(--fs-sm); font-weight: 600; color: var(--k-muted); text-decoration: none; border-radius: var(--r-base); white-space: nowrap; }
+.app-bar__link:hover { color: var(--text); background: var(--app-flaeche); text-decoration: none; }
+
+/* Reiter eines Bereichs */
+.app-reiter { display: flex; align-items: stretch; height: 100%; gap: var(--sp-1, 4px); overflow-x: auto; scrollbar-width: none; }
+.app-reiter a {
+  display: inline-flex; align-items: center; padding: 0 12px; white-space: nowrap;
+  font-size: var(--fs-sm); font-weight: 600; color: var(--k-muted); text-decoration: none;
+  border-bottom: 2px solid transparent; margin-bottom: -1px;
+}
+.app-reiter a:hover { color: var(--text); text-decoration: none; }
+.app-reiter a[aria-current="page"] { color: var(--text); border-bottom-color: var(--red); }
+.app-reiter a:focus-visible { outline-offset: -3px; }
+
+/* Lektionsleiste: Pfeile, Wähler, Umschalter, Notebook */
+.app-lektion { display: flex; align-items: center; gap: var(--sp-2, 8px); min-width: 0; height: 100%; }
+.app-lektion__pfeil { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; color: var(--text); border-radius: var(--r-base); }
+.app-lektion__pfeil:hover { background: var(--app-flaeche); color: var(--text); }
+.app-lektion__pfeil[data-aus] { color: #C4C8CF; }
+.app-lektion__pfeil .k-ic { width: 20px; height: 20px; vertical-align: 0; }
+.app-waehler { position: relative; min-width: 0; }
+.app-waehler__knopf {
+  display: inline-flex; align-items: center; gap: 8px; max-width: 100%; min-height: 40px; padding: 0 10px;
+  font: inherit; font-weight: 600; color: var(--text); background: none; border: 1px solid transparent; border-radius: var(--r-base); cursor: pointer;
+}
+.app-waehler__knopf:hover, .app-waehler__knopf[aria-expanded="true"] { background: var(--app-flaeche); border-color: var(--app-linie); }
+.app-waehler__nr { color: var(--red-dark); font-weight: 700; }
+.app-waehler__titel { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.app-waehler__pfeil { color: var(--k-muted); }
+.app-waehler__liste {
+  position: absolute; top: calc(100% + 6px); left: 0; z-index: 140; width: min(460px, calc(100vw - var(--app-rail-w) - 32px));
+  max-height: calc(100vh - var(--app-bar-h) - 24px); overflow-y: auto; box-sizing: border-box;
+  padding: var(--sp-3) var(--sp-2) var(--sp-4); background: #fff; border: 1px solid var(--app-linie); border-radius: var(--r-card, 8px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .14);
+}
+.app-waehler__phase + .app-waehler__phase { margin-top: var(--sp-3); }
+.app-waehler__phasename { margin: 0 0 4px; padding: 0 10px; font-size: var(--fs-xs); font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--k-muted); }
+.app-waehler__liste ol { list-style: none; margin: 0; padding: 0; }
+.app-waehler__liste li { margin: 0; }
+.app-waehler__eintrag {
+  display: grid; grid-template-columns: 2.6em minmax(0, 1fr) auto; align-items: center; gap: 0 var(--sp-2);
+  min-height: 40px; padding: 4px 10px; color: var(--text); text-decoration: none; border-radius: var(--r-base); border-left: 3px solid transparent;
+}
+.app-waehler__eintrag:hover { background: var(--app-flaeche); color: var(--text); text-decoration: none; }
+.app-waehler__eintrag[aria-current="page"] { background: var(--red-tint); border-left-color: var(--red); }
+.app-waehler__eintrag:focus-visible { outline-offset: -3px; }
+.app-waehler__enr { font-weight: 700; color: var(--k-muted); font-size: var(--fs-sm); }
+.app-waehler__etitel { font-weight: 600; font-size: var(--fs-sm); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.app-waehler__stand { font-size: var(--fs-xs); color: var(--k-muted); white-space: nowrap; }
+.app-waehler__eintrag[data-stand="fertig"] .app-waehler__stand { color: var(--k-ok); font-weight: 600; }
+
+/* Umschalter Verstehen / Labor */
+.app-ansicht { flex: none; display: inline-flex; margin-left: var(--sp-2); padding: 3px; background: var(--app-flaeche); border: 1px solid var(--app-linie); border-radius: 8px; }
+.app-ansicht a { display: inline-flex; align-items: center; min-height: 32px; padding: 0 14px; font-size: var(--fs-sm); font-weight: 600; color: var(--k-muted); text-decoration: none; border-radius: 6px; }
+.app-ansicht a:hover { color: var(--text); text-decoration: none; }
+.app-ansicht a[aria-current="page"] { background: #fff; color: var(--text); box-shadow: 0 1px 3px rgba(0, 0, 0, .12); }
+
+/* ── Fläche: Inhalt und Panel ───────────────────────────────── */
+.app-flaeche { margin-left: var(--app-rail-w); display: flex; align-items: flex-start; }
+.app-inhalt { flex: 1 1 auto; min-width: 0; }
+.app-panel {
+  flex: 0 0 var(--app-panel-w); width: var(--app-panel-w); box-sizing: border-box;
+  position: sticky; top: var(--app-bar-h); height: calc(100vh - var(--app-bar-h));
+  display: flex; flex-direction: column; background: #fff; border-left: 1px solid var(--app-linie); outline: none;
+}
+.app-panel[hidden] { display: none; }
+.app-panel__kopf { flex: none; display: flex; align-items: center; justify-content: space-between; gap: var(--sp-2); padding: var(--sp-3) var(--sp-3) var(--sp-3) var(--sp-5); border-bottom: 1px solid var(--app-linie); }
+.app-panel__titel { margin: 0; font-size: var(--fs-md); }
+.app-panel__zu { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; color: var(--k-muted); background: none; border: 0; border-radius: var(--r-base); cursor: pointer; }
+.app-panel__zu:hover { background: var(--app-flaeche); color: var(--text); }
+.app-panel__zu .k-ic { width: 20px; height: 20px; vertical-align: 0; }
+.app-panel__inhalt { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: var(--sp-4) var(--sp-5); }
+.app-panel__hinweis { color: var(--k-muted); }
+
+/* Bestands-Knopf der Befehls-Bibliothek nicht unter das Panel legen */
+body.app--panel .kb-toggle:not(.kb-toggle--dock) { right: calc(var(--app-panel-w) + 16px); }
+
+/* ── Nächster Schritt (wenn der Inhalt ihn nicht selbst hat) ── */
+.app-weiter { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: var(--sp-2) var(--sp-4); padding: var(--sp-5) var(--sp-5) var(--sp-7); border-top: 1px solid var(--app-linie); margin-top: var(--sp-5); }
+.app-weiter[hidden] { display: none; }
+.app-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.app-weiter__label { margin: 0; font-size: var(--fs-sm); font-weight: 600; color: var(--k-muted); }
+.app-weiter .k-btn .k-ic { margin: 0 0 0 .3em; }
+
+/* ── Meldungen ──────────────────────────────────────────────── */
+.app-meldungen { position: fixed; left: calc(var(--app-rail-w) + 24px); bottom: 24px; z-index: 450; display: flex; flex-direction: column; gap: 8px; max-width: min(34rem, calc(100vw - var(--app-rail-w) - 48px)); pointer-events: none; }
+.app-meldung { pointer-events: auto; display: flex; align-items: center; gap: var(--sp-3); padding: 10px 8px 10px 16px; color: #fff; background: #1F2937; border-radius: var(--r-base); box-shadow: 0 6px 22px rgba(0, 0, 0, .22); font-size: var(--fs-sm); }
+.app-meldung--ok { background: var(--k-ok); }
+.app-meldung--fehler { background: var(--k-bad); }
+.app-meldung__text { flex: 1 1 auto; }
+.app-meldung__aktion { font: inherit; font-weight: 700; color: #fff; background: none; border: 1px solid rgba(255, 255, 255, .6); border-radius: 4px; min-height: 32px; padding: 0 10px; cursor: pointer; }
+.app-meldung__zu { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; color: #fff; background: none; border: 0; border-radius: 4px; cursor: pointer; }
+.app-meldung__zu .k-ic { vertical-align: 0; }
+.app-meldung :focus-visible { outline-color: #fff; }
+
+/* ── Neue Seiten der App: schlichte Lesespalte ──────────────── */
+.app-seite { max-width: 1100px; margin: 0 auto; padding: var(--sp-6) var(--gutter) var(--sp-7); box-sizing: border-box; }
+.app-seite > h1 { margin: 0 0 var(--sp-3); }
+.app-seite > p { max-width: var(--k-measure); }
+
+/* ── Bestandsseiten in der Hülle ─────────────────────────────── */
+/* Anker-Sprünge: Ziel nicht unter der Kopfzeile verstecken */
+.app-inhalt [id] { scroll-margin-top: calc(var(--app-bar-h) + var(--sp-4)); }
+
+/* Lerneinheit: Inhaltsverzeichnis klebt unter der Kopfzeile */
+.app .k-toc { top: var(--app-bar-h); max-height: calc(100vh - var(--app-bar-h)); overflow-y: auto; box-sizing: border-box; }
+
+/* Labor: Arbeitsfläche füllt den Inhaltsbereich statt 90vw; Liste und Bibliothek kleben unter der Kopfzeile */
+.app-inhalt { --lab-w: min(100%, 2400px); }
+.app .lab__list { top: var(--app-oben); max-height: calc(100vh - var(--app-oben) - var(--sp-4)); }
+.app .lab__dock { top: var(--app-oben); height: calc(100vh - var(--app-oben) - var(--sp-4)); }
+/* labor.js scrollt beim Aufgabenwechsel auf die Oberkante der Arbeitsfläche: Platz für die Kopfzeile lassen */
+.app .lab { padding-top: var(--app-bar-h); margin-top: calc(-1 * var(--app-bar-h)); }
+@media (min-width: 1100px) and (max-width: 1439px) {
+  .app .lab { grid-template-columns: 230px minmax(0, 1fr) 320px; gap: 0 var(--sp-5); padding-left: var(--sp-4); padding-right: var(--sp-4); }
+  html.kb-dock-closed .app .lab { grid-template-columns: 230px minmax(0, 1fr) 52px; }
+}
+/* Panel neben dem Labor: Bibliothek einklappen, damit der Editor breit genug bleibt */
+@media (min-width: 1100px) {
+  body.app--panel .lab, html.kb-dock-closed body.app--panel .lab { grid-template-columns: 220px minmax(0, 1fr); gap: 0 var(--sp-5); }
+  body.app--panel .lab__dock { display: none; }
+}
+
+/* Klausurtrainer, Befehls-Bibliothek: klebende Elemente unter die Kopfzeile */
+.app .kt-wrap { width: min(calc(100% - 2 * var(--sp-5)), 1560px); }
+.app .kt-side { top: var(--app-oben); max-height: calc(100vh - var(--app-oben) - var(--sp-4)); }
+.app .bib-controls { top: var(--app-bar-h); }
+
+/* Schmalere Inhaltsfläche als im Bestand (Leiste, ggf. Panel): Raster-Elemente dürfen schrumpfen */
+.app .v07-paps > figure { grid-template-columns: minmax(0, 1fr); }
+
+/* ── Runner: erster Klick auf „Ausführen“ darf nicht verloren gehen ──
+   Bestand (runner.css): Die Hinweiszeile .ke__status erscheint nur, solange der Editor den Fokus hat.
+   Klick auf einen Knopf darunter nahm dem Editor den Fokus, die Zeile verschwand beim mousedown, die
+   Knopfleiste rutschte nach oben und der mouseup landete daneben (kein click). Jetzt erscheint die
+   Zeile weiter sofort mit dem Fokus im Editor, verschwindet aber erst 0,8 s nach seinem Verlust; ein
+   Klick ist bis dahin abgeschlossen. (Nicht an :focus-within des ganzen Runners koppeln: dann rutscht
+   die Leiste beim Klick auf einen Knopf eines nicht fokussierten Runners nach unten.) */
+.app .k-runner--auto .ke__status { display: none; transition: display 0s linear .8s; transition-behavior: allow-discrete; }
+.app .k-runner--auto .ke:focus-within .ke__status { display: block; transition-delay: 0s; }
+
+/* ── Tablet: Panel liegt über dem Inhalt ────────────────────── */
+@media (max-width: 1099px) {
+  .app-panel {
+    position: fixed; top: var(--app-bar-h); right: 0; bottom: 0; z-index: 130; height: auto;
+    width: min(var(--app-panel-w), calc(100vw - var(--app-rail-w))); box-shadow: -8px 0 28px rgba(0, 0, 0, .16);
+  }
+  body.app--panel .kb-toggle { display: none; }
+  .app-bar { padding: 0 var(--sp-4); gap: var(--sp-3); }
+  .app-bar__suche kbd { display: none; }
+  .app-bar__link span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .app-ansicht a { padding: 0 10px; }
+}
+/* Tablet und Touch: Ziele mindestens 44 × 44 px (DESIGN.md, Touch-Ziele) */
+@media (max-width: 1099px), (pointer: coarse) {
+  .app-ansicht { padding: 2px; }
+  .app-ansicht a { min-height: 44px; }
+  .app-lektion__pfeil { width: 44px; height: 44px; }
+  .app-bar__suche, .app-waehler__knopf, .app-waehler__eintrag { min-height: 44px; }
+  .app-bar__link { min-height: 44px; min-width: 44px; justify-content: center; }
+  .app-bar__suche { min-width: 44px; justify-content: center; }
+  .app-panel__zu, .app-meldung__zu { width: 44px; height: 44px; }
+  .app-meldung__aktion { min-height: 44px; }
+}
+@media (max-width: 900px) {
+  .app-bar__suche span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+}
+
+/* ── Druck: nur der Inhalt ──────────────────────────────────── */
+@media print {
+  .app-rail, .app-bar, .app-panel, .app-meldungen, .app-skip, .app-weiter { display: none !important; }
+  .app-flaeche { margin-left: 0; display: block; }
+  body.app { overflow: visible; }
+  .app .lab { margin-top: 0; padding-top: 0; }
+  /* Inhaltsverzeichnis ist im Druck ausgeblendet: Lesespalte volle Breite (im Bestand rutscht sie in die 210-px-Spalte) */
+  .app .l-page { display: block; }
+}
+
+@media (prefers-reduced-motion: reduce) { html.app-html { scroll-behavior: auto; } }
