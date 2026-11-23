@@ -9,7 +9,7 @@ Aus der statischen Vorlesungs-Website wird eine installierbare Lern-App (PWA) f�
 
 Grundsätze:
 
-1. **`site/` bleibt die Quelle der Inhalte.** Die 43 Lektionsseiten und Werkzeugseiten werden weiter dort gepflegt (Lektions-Sessions, Videoproduktion, GitHub Pages bleiben lauffähig). Die App ist eine Build-Schicht darüber: Sie nimmt den Inhalt jeder Seite unverändert und setzt ihn in die gemeinsame Hülle. Eine spätere Umstellung der Inhalte auf MDX ist ausdrücklich nicht Teil dieser Arbeit.
+1. **`site/` bleibt die Quelle der Inhalte.** Die 43 Lektionsseiten und Werkzeugseiten werden weiter dort gepflegt (Lektions-Sessions und Videoproduktion arbeiten unverändert; `site/` bleibt auch für sich allein über einen einfachen Dateiserver lauffähig). Die App ist eine Build-Schicht darüber: Sie nimmt den Inhalt jeder Seite unverändert und setzt ihn in die gemeinsame Hülle. Eine spätere Umstellung der Inhalte auf MDX ist ausdrücklich nicht Teil dieser Arbeit.
 2. **Ohne Login bleibt alles nutzbar** (Lernen, Python, Fortschritt lokal, Werkbank lokal). Konto braucht nur: Abgleich, Teilen, Tutor.
 3. **Offline zuerst.** Lesen und Schreiben gehen immer zuerst lokal; das Netz gleicht im Hintergrund ab.
 4. **Weniger ist mehr.** Keine Funktion, die nicht in diesem Dokument steht. Keine Punkte, Ranglisten, Abzeichen. Details gehören hinter „Mehr“.
@@ -264,7 +264,7 @@ App-Einstellungen: `COSMOS_VERBINDUNG`, `BENUTZER_SALT`, `ANTHROPIC_API_KEY` (vo
   - **`/api/**`, `/.auth/**`**: immer Netz, nie Cache.
   - **Aktualisierung**: neue Version wartet; Meldung „Neue Version verfügbar – neu laden“ (`KursApp.melde` mit Aktion). Alte Caches werden beim Aktivieren entfernt.
 - `pwa.js`: registriert den Service Worker, zeigt Offline-Status (`KursApp.sende('netz', …)`), füllt `<div data-pwa-einstellungen>` auf der Kontoseite: „Als App installieren“ (wo der Browser es anbietet; für iPad kurzer Hinweis „Teilen → Zum Home-Bildschirm“), „Python offline bereit machen“ (lädt die Pyodide-Gruppen mit Fortschritt und Größenangabe), „Videos dieser Lektion offline speichern“ (auf Lektionsseiten als Aktion im Abschnitt Videos), Speicherbelegung, `navigator.storage.persist()`.
-- Pyodide liegt unter `/pyodide/` (gleiche Herkunft). `kurs.js` nutzt `window.KURS_PYODIDE_BASIS`, falls gesetzt, sonst wie bisher das CDN (damit GitHub Pages weiter funktioniert). Alles, was der Kurs an Paketen lädt (numpy, pandas, matplotlib, requests, pyodide-http, micropip, jedi …), muss aus dem eigenen Ordner kommen; nichts darf zur Laufzeit von PyPI oder einem CDN geholt werden.
+- Pyodide liegt unter `/pyodide/` (gleiche Herkunft). `kurs.js` nutzt `window.KURS_PYODIDE_BASIS`, falls gesetzt, sonst wie bisher das CDN (damit `site/` für sich allein weiter funktioniert). Alles, was der Kurs an Paketen lädt (numpy, pandas, matplotlib, requests, pyodide-http, micropip, jedi …), muss aus dem eigenen Ordner kommen; nichts darf zur Laufzeit von PyPI oder einem CDN geholt werden.
 - Schriften (Source Sans 3, Fira Code) liegen als woff2 unter `site/assets/fonts/`; der Google-Fonts-Import in `dhbw-base.css` entfällt.
 - Videos (`*.mp4`) werden in Produktion aus einem Azure-Storage-Konto ausgeliefert (`VIDEO_BASIS`), Poster und Untertitel bleiben in der App.
 
@@ -296,7 +296,7 @@ Server (`api/src/functions/tutor.js`, `api/src/lib/tutor/`):
 
 ## 11. Erlaubte Änderungen in `site/`
 
-Nur diese (alle so, dass GitHub Pages weiter funktioniert):
+Nur diese (alle so, dass `site/` für sich allein weiter funktioniert):
 - `site/assets/css/dhbw-base.css`: Google-Fonts-`@import` ersetzen durch `@font-face` auf `../fonts/*.woff2` (PWA-Rolle).
 - `site/assets/fonts/`: neue Schriftdateien samt Lizenzhinweis (PWA-Rolle).
 - `site/assets/js/kurs.js`: Pyodide-Basis über `window.KURS_PYODIDE_BASIS` überschreibbar machen; sicherstellen, dass keine Laufzeit-Abhängigkeit zu fremden Hosts bleibt, wenn die Basis gesetzt ist (PWA-Rolle). Gleiches in `editor.js`, falls dort Pakete nachgeladen werden.
@@ -313,7 +313,7 @@ Alles andere in `site/` ist tabu. Fällt ein Fehler im Bestand auf, wird er geme
 ## 13. Betrieb
 
 - Azure: Ressourcengruppe `rg-informatik-lernapp`, Region West Europe für Static Web Apps (Functions), Cosmos DB und Storage in Germany West Central (falls für Serverless nicht verfügbar: West Europe).
-- Bereitstellung vom Entwicklungsrechner mit der SWA-CLI (über die bestehende `az`-Anmeldung). Eine GitHub-Action für `main` liegt vorbereitet bei, wird aber erst nach Freigabe des Dozenten aktiv.
+- Bereitstellung automatisch per GitHub Action (`.github/workflows/lernapp.yml`): Pull Requests werden gebaut und geprüft, jeder Push auf `main` wird nach Azure ausgerollt. Infrastruktur (Bicep, Salt, Key Vault) und das Hochladen von Videos bleiben bei `infra/bereitstellen.ps1`. GitHub Pages ist abgeschaltet (2026-11-23); `site/` wird nur noch über die App veröffentlicht.
 - Kostenbudget 30 USD im Monat mit Warnung per E-Mail.
 - `BENUTZER_SALT` ist im Key Vault der Ressourcengruppe gesichert (Geheimnis `benutzer-salt`, RBAC, Soft-Delete 90 Tage, Purge-Schutz). Quelle der Wahrheit: Tresor vor SWA-Einstellung vor neuem Zufallswert (nur beim Erstdeployment); die Fallunterscheidung macht `infra/bereitstellen.ps1` (`infra/salt-fall.ps1`), Einzelheiten in `docs/app/BETRIEB.md`, Abschnitt 5.
 - `docs/app/BETRIEB.md` beschreibt: Ressourcen, Kosten, Bereitstellen, API-Schlüssel setzen, Einstellungen, Datenexport und Löschung, Aufräumen nach dem Semester.

@@ -41,12 +41,12 @@ Im Free-Tarif sind 100 GB ausgehender Verkehr im Monat enthalten; mehr lässt si
 
 | Vorgang | Menge | Verkehr |
 |---|---|---|
-| Erstinstallation je Gerät: Pyodide | ca. 83 MB (recherche/03) | 200 Geräte (100 Studierende × 2): ca. 17 GB |
-| Erstinstallation je Gerät: Precache (HTML, CSS, JS, Bilder, Daten) | ca. 26 MB | 200 Geräte: ca. 5 GB |
-| **jede Bereitstellung** (neue Build-Version, Precache wird neu geladen) | ca. 26 MB je Gerät | 200 Geräte: ca. 5 GB |
+| Erstinstallation je Gerät: Pyodide (nur wer „Python offline bereit machen“ wählt oder Python ausführt) | ca. 80 MB | 80 Geräte (40 Studierende × 2): ca. 6,5 GB |
+| Erstinstallation je Gerät: Grundausstattung (HTML, CSS, JS, Bilder, Daten) | ca. 11 MB | 80 Geräte: ca. 0,9 GB |
+| **jede Bereitstellung** (der Service Worker lädt nur geänderte Dateien neu; die HTML-Seiten ändern sich immer, weil sie die Build-Version tragen) | ca. 5 MB je Gerät | 80 Geräte: ca. 0,4 GB |
 | Seitenaufrufe, API | klein | wenige GB |
 
-Grob: Erstinstallation ca. 22 GB, danach etwa 5 GB je Bereitstellung. Mehr als etwa 12 Bereitstellungen im Monat bei voll installiertem Kurs sprengen die 100 GB. Deshalb: gesammelt ausrollen (z. B. einmal je Termin), die GitHub-Action ist nur von Hand auslösbar. Wunsch an die PWA-Rolle: Precache je Datei versionieren, damit nur Geänderte neu geladen werden (siehe `uebergaben/api.md`). Beobachten: Portal → Static Web App → Überwachung → Metriken, ausgehende Daten (Metrikname im Portal nicht geprüft).
+Grob (Kurs mit rund 40 Studierenden): Erstinstallation ca. 7 GB, danach etwa 0,4 GB je Bereitstellung. Damit sind auch tägliche Bereitstellungen weit unter den 100 GB im Monat; die GitHub Action stellt deshalb bei jedem Push auf `main` bereit (Abschnitt 3). Beobachten: Portal → Static Web App → Überwachung → Metriken, ausgehende Daten (Metrikname im Portal nicht geprüft).
 
 ### Kostenbremsen in der API
 
@@ -88,7 +88,26 @@ Erneutes Deployment ist gefahrlos: Einstellungen, die nicht von Bicep stammen (i
 
 Rauchtest von Hand: `node api/skripte/rauchtest.mjs https://<host> --erwarte-ablage=cosmos [--erwarte-tutor]`.
 
-Später per GitHub Action: `infra/github-action-beispiel.yml` (bewusst nicht aktiv; Hinweise im Kopf der Datei).
+### Automatische Bereitstellung (GitHub Action)
+
+`.github/workflows/lernapp.yml` baut und prüft bei jedem Pull Request und stellt bei jedem Push auf `main` (Pfade `site/`, `app/`, `api/`) nach Azure bereit; von Hand über Actions → „Lern-App“ → Run workflow. Ablauf: Bilder aus Git LFS (ohne Videos), App bauen, Selbsttest, API-Tests, Prüfung der Ausgabe (keine LFS-Zeiger, keine Videos, Größe), API-Paket, Bereitstellung, Rauchtest (neue Version online, API antwortet, Cosmos angebunden).
+
+Einmalig einrichten (PowerShell, angemeldet mit `az` und `gh`; `<swa-name>` aus der Ausgabe von `-Schritt Infrastruktur`):
+
+```powershell
+# Secret: Deployment-Token der Static Web App (geht direkt von Azure zu GitHub, wird nicht angezeigt)
+az staticwebapp secrets list -n <swa-name> -g rg-informatik-lernapp --query properties.apiKey -o tsv | gh secret set AZURE_STATIC_WEB_APPS_API_TOKEN
+
+# Variablen (nicht geheim): Video-Adresse und Hostname der App
+gh variable set VIDEO_BASIS --body "https://<storage>.blob.core.windows.net/video"
+gh variable set SWA_HOSTNAME --body "<name>.azurestaticapps.net"
+```
+
+Was die Action bewusst nicht tut, bleibt bei `infra/bereitstellen.ps1`:
+- **Infrastruktur, Salt, Key Vault** (`-Schritt Infrastruktur`, `-Schritt SaltPruefen`): selten und heikel, deshalb nicht automatisch und ohne Azure-Anmeldung in der Action.
+- **Videos hochladen** (`-Schritt Videos`): Nach einem neuen Video einmal lokal ausführen. Fehlt ein Video im Speicher, warnt der Lauf (Zusammenfassung und gelbe Hinweise); die Seite zeigt dort „Video folgt“.
+
+Der Token im Secret erlaubt nur das Bereitstellen dieser einen App. Erneuern: im Portal „Bereitstellungstoken verwalten → zurücksetzen“ und den Befehl oben erneut ausführen. Pull Requests aus Forks bekommen weder Secret noch Variablen und werden nur gebaut und geprüft.
 
 ## 4. API-Schlüssel für den Tutor setzen (Besitzer)
 
