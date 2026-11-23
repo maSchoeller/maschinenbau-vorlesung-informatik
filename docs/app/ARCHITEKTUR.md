@@ -315,4 +315,5 @@ Alles andere in `site/` ist tabu. Fällt ein Fehler im Bestand auf, wird er geme
 - Azure: Ressourcengruppe `rg-informatik-lernapp`, Region West Europe für Static Web Apps (Functions), Cosmos DB und Storage in Germany West Central (falls für Serverless nicht verfügbar: West Europe).
 - Bereitstellung vom Entwicklungsrechner mit der SWA-CLI (über die bestehende `az`-Anmeldung). Eine GitHub-Action für `main` liegt vorbereitet bei, wird aber erst nach Freigabe des Dozenten aktiv.
 - Kostenbudget 30 USD im Monat mit Warnung per E-Mail.
+- `BENUTZER_SALT` ist im Key Vault der Ressourcengruppe gesichert (Geheimnis `benutzer-salt`, RBAC, Soft-Delete 90 Tage, Purge-Schutz). Quelle der Wahrheit: Tresor vor SWA-Einstellung vor neuem Zufallswert (nur beim Erstdeployment); die Fallunterscheidung macht `infra/bereitstellen.ps1` (`infra/salt-fall.ps1`), Einzelheiten in `docs/app/BETRIEB.md`, Abschnitt 5.
 - `docs/app/BETRIEB.md` beschreibt: Ressourcen, Kosten, Bereitstellen, API-Schlüssel setzen, Einstellungen, Datenexport und Löschung, Aufräumen nach dem Semester.

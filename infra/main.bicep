@@ -5,8 +5,9 @@
 //   (üblicherweise über infra/bereitstellen.ps1)
 //
 // Ressourcen: Static Web App (Free), Cosmos DB for NoSQL (Serverless), Storage-Konto für Videos,
-// App-Einstellungen der SWA (vorhandene Werte bleiben erhalten, siehe swa-einstellungen.bicep),
-// Kostenbudget mit E-Mail-Warnung. Keine Geheimnisse in den Ausgaben.
+// Key Vault mit dem gesicherten BENUTZER_SALT, App-Einstellungen der SWA (vorhandene Werte bleiben
+// erhalten, siehe swa-einstellungen.bicep), Kostenbudget mit E-Mail-Warnung. Keine Geheimnisse in
+// den Ausgaben.
 
 targetScope = 'resourceGroup'
 
@@ -54,8 +55,29 @@ param tutorLimitKursTag int = 1500
 param tutorPruefer string = 'an'
 
 @secure()
-@description('Nur beim allerersten Deployment verwendet: Kandidat für BENUTZER_SALT. Ist in der SWA bereits ein Salt gesetzt, bleibt er unverändert.')
+@description('Nur beim allerersten Deployment verwendet (und nur mit neuenSaltErlauben = true): Kandidat für BENUTZER_SALT.')
 param saltKandidat string = '${newGuid()}${newGuid()}'
+
+// ---- Salt-Sicherung im Key Vault (Fallunterscheidung in bereitstellen.ps1 / salt-fall.ps1).
+// Die Standardwerte sind die sichere Wahl für ein Deployment von Hand: nichts in den Tresor
+// schreiben, keinen neuen Salt erzeugen, den vorhandenen Salt der SWA unverändert lassen.
+
+@secure()
+@description('Salt aus dem Tresor (setzt bereitstellen.ps1, wenn der Tresor ihn hat). Gewinnt gegenüber der SWA-Einstellung. Leer = kein Tresorwert übergeben.')
+param saltAusTresor string = ''
+
+@description('true: Geheimnis "benutzer-salt" in den Tresor schreiben (nur, wenn es dort noch fehlt; der Wert ist der wirksame Salt der SWA). Setzt bereitstellen.ps1.')
+param saltSichern bool = false
+
+@description('true: Gibt es weder im Tresor noch in der SWA einen Salt, wird saltKandidat verwendet. Nur beim echten Erstdeployment (setzt bereitstellen.ps1).')
+param neuenSaltErlauben bool = false
+
+@description('Objekt-ID der bereitstellenden Person; erhält "Key Vault Secrets User" auf dem Tresor (Lesen für den Abgleich in bereitstellen.ps1). Leer = keine Rollenzuweisung.')
+param tresorLeserObjectId string = ''
+
+@description('Art des Prinzipals für die Tresor-Rolle.')
+@allowed([ 'User', 'ServicePrincipal', 'Group' ])
+param tresorLeserTyp string = 'User'
 
 @description('Optional: Name eines vorhandenen Cosmos-Kontos (z. B. nach einer Point-in-Time-Wiederherstellung). Leer = Standardname.')
 param cosmosKontoName string = ''
@@ -64,6 +86,10 @@ var suffix = uniqueString(resourceGroup().id)
 var swaName = '${praefix}-swa-${take(suffix, 6)}'
 var cosmosName = empty(cosmosKontoName) ? toLower('${praefix}-cosmos-${take(suffix, 8)}') : cosmosKontoName
 var storageName = toLower(take('${praefix}vid${suffix}', 24))
+// Key Vault: 3 bis 24 Zeichen, Buchstaben, Ziffern, Bindestriche, global eindeutig. Bei praefix
+// 'lernapp' genau 24 Zeichen (7 + 4 + 13); praefix hat höchstens 12 Zeichen, das Ende ist also nie '-'.
+var tresorName = toLower(take('${praefix}-kv-${suffix}', 24))
+var saltGeheimnis = 'benutzer-salt'
 var videoContainer = 'video'
 var datenbank = 'lernapp'
 var budgetBeginn = empty(budgetStart) ? monatsErster : budgetStart
@@ -152,6 +178,60 @@ resource uploaderRolle 'Microsoft.Authorization/roleAssignments@2022-04-01' = if
   }
 }
 
+// ------------------------------------------------------------------ Key Vault (Sicherung des BENUTZER_SALT)
+//
+// Ohne Salt passen die Daten in Cosmos zu keinem Konto mehr. Der Tresor hält deshalb eine Kopie,
+// die das Löschen oder Neuanlegen der SWA übersteht. Soft-Delete 90 Tage und Purge-Schutz: auch ein
+// gelöschter Tresor bleibt 90 Tage wiederherstellbar und kann in dieser Zeit von niemandem endgültig
+// gelöscht werden. Öffentlicher Netzzugriff ist nötig, weil vom Entwicklungsrechner (wechselnde IP)
+// bereitgestellt und abgeglichen wird; der Zugriff auf Werte verlangt trotzdem eine Entra-Anmeldung
+// mit Datenrolle (RBAC). enabledForTemplateDeployment bleibt aus: Die Vorlage liest den Tresor nicht
+// (kein getSecret); geschrieben wird über die Steuerungsebene (vaults/secrets/write).
+
+resource tresor 'Microsoft.KeyVault/vaults@2025-05-01' = {
+  name: tresorName
+  location: datenRegion
+  tags: {
+    zweck: 'benutzer-salt'
+  }
+  properties: {
+    tenantId: tenant().tenantId
+    sku: {
+      family: 'A'
+      name: 'standard'
+    }
+    enableRbacAuthorization: true
+    accessPolicies: []
+    enableSoftDelete: true
+    softDeleteRetentionInDays: 90     // nur beim Anlegen festlegbar
+    enablePurgeProtection: true       // lässt sich nicht mehr abschalten
+    enabledForTemplateDeployment: false
+    enabledForDeployment: false
+    enabledForDiskEncryption: false
+    publicNetworkAccess: 'Enabled'
+    networkAcls: {
+      defaultAction: 'Allow'
+      bypass: 'None'
+    }
+  }
+}
+
+// Key Vault Secrets User (nur lesen: getSecret, readMetadata) für die bereitstellende Person.
+// Schreiben braucht keine Datenrolle: das Geheimnis legt das Deployment über die Steuerungsebene an.
+// Fester Name guid(...): Dieselbe Zuweisung (Bereich, Person, Rolle) von Hand unter anderem Namen ließe
+// dieses Deployment mit RoleAssignmentExists scheitern; deshalb nie von Hand zuweisen (BETRIEB.md, Abschnitt 5).
+var rolleSecretsUser = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4633458b-17de-408a-b874-0445c86b69e6')
+
+resource tresorLeserRolle 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (!empty(tresorLeserObjectId)) {
+  name: guid(tresor.id, tresorLeserObjectId, rolleSecretsUser)
+  scope: tresor
+  properties: {
+    roleDefinitionId: rolleSecretsUser
+    principalId: tresorLeserObjectId
+    principalType: tresorLeserTyp
+  }
+}
+
 // ------------------------------------------------------------------ App-Einstellungen der SWA
 
 module einstellungen 'module/swa-einstellungen.bicep' = {
@@ -159,7 +239,12 @@ module einstellungen 'module/swa-einstellungen.bicep' = {
   params: {
     swaName: swa.name
     cosmosName: cosmos.outputs.kontoName   // Ausgabe-Referenz = Abhängigkeit: erst Cosmos fertig, dann Einstellungen
+    tresorName: tresor.name                // Abhängigkeit: Tresor existiert, bevor das Geheimnis geschrieben wird
+    geheimnisName: saltGeheimnis
     saltKandidat: saltKandidat
+    saltAusTresor: saltAusTresor
+    saltSichern: saltSichern
+    neuenSaltErlauben: neuenSaltErlauben
     verwaltet: {
       COSMOS_DATENBANK: datenbank
       TUTOR_MODELL: tutorModell
@@ -225,3 +310,4 @@ output swaHostname string = swa.properties.defaultHostname
 output videoBasis string = '${storage.properties.primaryEndpoints.blob}${videoContainer}'
 output storageName string = storage.name
 output cosmosKonto string = cosmosName
+output tresorName string = tresor.name

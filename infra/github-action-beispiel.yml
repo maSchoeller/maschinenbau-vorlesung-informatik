@@ -10,6 +10,10 @@
 #            z. B. https://<storage>.blob.core.windows.net/video
 #   Variable SWA_HOSTNAME                      Ausgabe 'swaHostname' (z. B. <name>.azurestaticapps.net),
 #            nur für den Rauchtest; ohne sie wird er übersprungen
+# Infrastruktur (Bicep) und damit Salt und Key Vault fasst dieser Workflow nicht an; das bleibt bei
+# infra/bereitstellen.ps1 -Schritt Infrastruktur (Salt-Fallunterscheidung, siehe docs/app/BETRIEB.md, Abschnitt 5).
+# Er prüft auch nicht, ob Tresor und SWA denselben Salt haben (kein Azure-Login); das tut
+# infra/bereitstellen.ps1 -Schritt SaltPruefen, vor einem Ausrollen über diesen Workflow ausführen.
 # Videos selbst lädt dieser Workflow nicht hoch (das macht infra/bereitstellen.ps1 -Schritt Videos);
 # Git LFS holt deshalb nur die Bilder.
 #
