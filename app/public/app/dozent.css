@@ -1,0 +1,54 @@
+/* app/dozent.css – Seite „Kursübersicht“ für Dozierende. Ruhiger DHBW-Stil (DESIGN.md 1–10):
+   keine Karten (nichts ist anklickbar außer Links), Abschnitte durch Weißraum, Zahlen als Text,
+   Balken in einer neutralen Farbe. Nur Desktop und Tablet. Eigene Klassen: dz-. */
+.dz { max-width: 1000px; }
+.dz [hidden] { display: none !important; }
+.dz-laedt { color: var(--k-muted); }
+.dz-block > p { max-width: var(--k-measure); }
+.dz-kennung { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-3); }
+.dz-kennung code { font-size: var(--fs-base); overflow-wrap: anywhere; }
+.dz-status { min-height: 1.5em; margin: 0; font-weight: 600; }
+
+.dz-kopf { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--sp-3) var(--sp-5); margin-top: var(--sp-5); }
+.dz-wahl { display: flex; flex-direction: column; gap: var(--sp-1); }
+.dz-wahl label { font-weight: 600; font-size: var(--fs-sm); }
+.dz-wahl select {
+  font: inherit; min-height: 44px; min-width: 22em; max-width: 100%; padding: 0 var(--sp-3);
+  border: 1px solid #6B7280; border-radius: var(--r-base); background: #fff; color: var(--text);
+}
+.dz-wahl select:focus-visible { outline: 3px solid var(--k-focus, #1A1A1A); outline-offset: 2px; }
+.dz-stand { margin: 0 auto var(--sp-2) 0; }
+.dz-wenig { margin-top: var(--sp-5); max-width: var(--k-measure); padding: var(--sp-3) var(--sp-4); border-left: 3px solid var(--k-info); background: var(--k-info-bg); }
+
+.dz-abschnitt { margin-top: var(--k-section-gap); }
+.dz-abschnitt > h2 { margin: 0 0 var(--sp-3); font-size: var(--fs-lg); }
+.dz-abschnitt > p { max-width: var(--k-measure); }
+
+/* Kennzahlen: frei auf der Seite, keine Kacheln */
+.dz-zahlen { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--sp-5); margin: 0; }
+.dz-kennzahl { display: flex; flex-direction: column; gap: var(--sp-1); padding-top: var(--sp-3); border-top: 2px solid var(--k-line); }
+.dz-kennzahl dt { font-size: var(--fs-sm); font-weight: 600; color: var(--k-muted); }
+.dz-kennzahl dd { margin: 0; display: flex; flex-direction: column; gap: 2px; }
+.dz-kennzahl__wert { font-size: var(--fs-xl); font-weight: 700; line-height: 1.15; font-variant-numeric: tabular-nums; }
+.dz-kennzahl__zusatz { font-size: var(--fs-sm); color: var(--k-muted); }
+
+.dz-tabelle { width: 100%; border-collapse: collapse; margin-top: var(--sp-4); }
+.dz-tabelle--schmal { max-width: 640px; }
+.dz-tabelle th, .dz-tabelle td { text-align: left; vertical-align: middle; padding: var(--sp-2) var(--sp-3) var(--sp-2) 0; border-bottom: 1px solid var(--k-line); }
+.dz-tabelle thead th { font-size: var(--fs-sm); color: var(--k-muted); font-weight: 600; border-bottom-width: 2px; white-space: nowrap; }
+.dz-tabelle tbody th { font-weight: 400; }
+.dz-tabelle .dz-zahl { text-align: right; font-variant-numeric: tabular-nums; padding-right: 0; }
+
+.dz-balken { display: flex; align-items: center; gap: var(--sp-3); min-width: 220px; }
+.dz-balken__spur { flex: 1 1 auto; height: 8px; border-radius: 4px; background: var(--k-line); overflow: hidden; }
+.dz-balken__wert { display: block; height: 100%; border-radius: 4px; background: var(--k-info); }
+.dz-balken__text { flex: none; min-width: 5.5em; text-align: right; font-size: var(--fs-sm); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+.dz-fuss { margin-top: var(--k-section-gap); max-width: var(--k-measure); }
+
+@media (max-width: 1099px) {
+  .dz-zahlen { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .dz-balken { min-width: 160px; }
+}
+@media print { .dz-kopf .k-btn { display: none; } }
+@media (forced-colors: active) { .dz-balken__spur { border: 1px solid CanvasText; } .dz-balken__wert { background: CanvasText; } }

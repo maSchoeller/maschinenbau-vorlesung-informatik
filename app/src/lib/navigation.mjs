@@ -55,6 +55,7 @@ export const SEITEN = {
   'klausurtrainer.html': { bereich: 'klausur', reiter: 'klausurtrainer', titel: 'Klausurtrainer' },
   'probeklausur-2026-27.html': { bereich: 'klausur', reiter: 'probeklausur', titel: 'Probeklausur' },
   'konto.html': { bereich: 'konto', reiter: null, titel: 'Konto' },
+  'dozent.html': { bereich: 'konto', reiter: null, titel: 'Kursübersicht' },
   'offline.html': { bereich: null, reiter: null, titel: 'Offline' },
   '404.html': { bereich: null, reiter: null, titel: 'Seite nicht gefunden' },
 };

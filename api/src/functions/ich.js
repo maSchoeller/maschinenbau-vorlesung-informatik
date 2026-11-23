@@ -7,14 +7,15 @@ const { ablage } = require('../lib/ablage');
 const limits = require('../lib/limits');
 const { gebremst } = limits;
 const zugang = require('../lib/zugang');
+const { istDozent } = require('../lib/dozent');
 
-// GET /api/ich: ohne Login {angemeldet:false}; mit Login {angemeldet:true, benutzerId, anzeigename, neu}
+// GET /api/ich: ohne Login {angemeldet:false}; mit Login {angemeldet:true, benutzerId, anzeigename, neu, freigeschaltet, dozent}
 async function ichLesen(request) {
   const b = benutzerOderNull(request);
   if (!b) return ok({ angemeldet: false });
   return gebremst(b.benutzerId, request, async () => {
     const { profil, neu } = await ablage().benutzerHolenOderAnlegen(b.benutzerId);
-    return ok({ angemeldet: true, benutzerId: b.benutzerId, anzeigename: profil.anzeigename || '', neu, freigeschaltet: zugang.freigeschaltet(profil) });
+    return ok({ angemeldet: true, benutzerId: b.benutzerId, anzeigename: profil.anzeigename || '', neu, freigeschaltet: zugang.freigeschaltet(profil), dozent: istDozent(b.benutzerId) });
   });
 }
 

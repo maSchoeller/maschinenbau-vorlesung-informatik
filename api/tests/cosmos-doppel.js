@@ -26,6 +26,8 @@ const ABFRAGEN = {
     .map((d) => (d.groesse === undefined ? {} : { groesse: d.groesse })),
   'SELECT VALUE c.id FROM c': (docs) => docs.map((d) => d.id),
   'SELECT * FROM c WHERE c.benutzerId = @b': (docs, p) => docs.filter((d) => d.benutzerId === p['@b']),
+  'SELECT c.benutzerId, c.pfad, c.wert FROM c WHERE c.geloescht = false AND ARRAY_CONTAINS(@pfade, c.pfad)': (docs, p) => docs
+    .filter((d) => d.geloescht === false && p['@pfade'].includes(d.pfad)).map((d) => ({ benutzerId: d.benutzerId, pfad: d.pfad, wert: d.wert })),
   'SELECT VALUE c.id FROM c WHERE c.benutzerId = @b': (docs, p) => docs.filter((d) => d.benutzerId === p['@b']).map((d) => d.id),
 };
 

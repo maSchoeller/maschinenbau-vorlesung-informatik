@@ -4,6 +4,7 @@
      dist/app/daten/suche.json    Lektionen, Abschnitte, Aufgaben, Bibliothek, Glossar
      dist/app/daten/glossar.json  alle abbr.k-begriff[data-erklaerung], je Begriff die erste Lektion
      api/daten/aufgaben.json      Aufgabentexte und Musterlösungen für den Tutor (nicht öffentlich!)
+                                  und die Kursstruktur (Feld kurs) für das Gruppenbild der Dozierenden
    Parser (node-html-parser) nur zum Lesen; Inhalte werden hier nicht neu geschrieben.
    ============================================================= */
 import fs from 'node:fs';
@@ -99,6 +100,7 @@ export default function indexBauen() {
   const suche = [];
   const glossar = glossarSammler();
   const aufgabenApi = [];
+  const kursApi = [];
   const erlaubtBis = [];
 
   const begriffe = (dom, rel, lektion) => glossar.sammle(dom, rel, lektion);
@@ -141,6 +143,9 @@ export default function indexBauen() {
         return a;
       });
     }
+    /* Kursstruktur für das Gruppenbild der Dozierenden (api/src/lib/kursstruktur.js) */
+    const quiz = le.querySelector('[data-quiz]');
+    kursApi.push({ nr: t.nr, quiz: quiz ? quiz.getAttribute('data-quiz') : null, abschnitte: abschnitte.map((a) => a.id), stationen: aufgaben.map((a) => ({ id: a.id, teil: a.teil, pruefbar: a.pruefbar })) });
     return {
       nr: t.nr, titel: t.titel, kurz: t.kurz, hook: t.hook, python: t.python, phase: t.phase, freigabe: t.freigabe,
       lerneinheit: leUrl, labor: t.labor ? `lektionen/${t.labor}` : null, notebook: t.notebook ? `notebooks/${t.notebook}` : null,
@@ -162,7 +167,7 @@ export default function indexBauen() {
   schreibe(path.join(daten, 'kurs.json'), { phasen, termine: kursTermine });
   schreibe(path.join(daten, 'suche.json'), { eintraege: suche });
   schreibe(path.join(daten, 'glossar.json'), { begriffe: glossarListe });
-  schreibe(path.join(API_DATEN, 'aufgaben.json'), { erstellt: new Date().toISOString(), aufgaben: aufgabenApi });
+  schreibe(path.join(API_DATEN, 'aufgaben.json'), { erstellt: new Date().toISOString(), aufgaben: aufgabenApi, kurs: kursApi });
   const nA = kursTermine.reduce((s, t) => s + t.aufgaben.length, 0);
   console.log(`index-bauen: ${kursTermine.length} Termine, ${nA} Labor-Aufgaben, ${suche.length} Sucheinträge, ${glossarListe.length} Begriffe, ${aufgabenApi.length} Aufgaben mit Lösung für den Tutor`);
 }

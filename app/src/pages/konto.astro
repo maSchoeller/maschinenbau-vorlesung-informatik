@@ -37,6 +37,7 @@ import App from '../layouts/App.astro';
           <p id="k-name-hilfe" class="konto-klein">Wird angezeigt, wenn du ein Programm teilst. 2 bis 30 Zeichen: Buchstaben, Ziffern, Leerzeichen sowie <code>-</code>, <code>_</code> und <code>.</code>. Ohne Anzeigenamen kannst du nichts teilen.</p>
           <p id="k-name-status" class="konto-status" role="status" aria-live="polite" data-konto-name-status></p>
         </form>
+        <p data-konto-dozent hidden><a href="dozent.html">Kursübersicht für Dozierende</a></p>
         <p><button type="button" class="k-btn k-btn--ghost" data-konto-aktion="abmelden">Abmelden</button></p>
       </section>
 
@@ -77,6 +78,7 @@ import App from '../layouts/App.astro';
       <h2 id="k-datenschutz">Datenschutz</h2>
       <p>Mit Konto speichert der Server nur das, was für den Abgleich nötig ist: eine pseudonyme Kennung (aus deiner GitHub-Kennung berechnet, ohne dass man sie zurückrechnen kann), deinen Lernstand, deine Programme und deinen Anzeigenamen. Keine Namen, keine E-Mail-Adressen, keine Matrikelnummern. Die Daten liegen in der EU.</p>
       <p>Weitere Empfänger: Die Anmeldung läuft über GitHub. Fragen an den Tutor gehen samt bisherigem Gespräch und, wenn du es zulässt, deinem Code, der letzten Ausgabe und der Aufgabe an Anthropic in den USA. Geteilte Programme kann jeder mit dem Link ohne Anmeldung sehen, mit deinem Anzeigenamen. Videos kommen aus einem Azure-Speicher in der EU.</p>
+      <p>Für die Kursübersicht der Dozierenden zählt der Server über alle Konten zusammen, wie viele eine Aufgabe gelöst, begonnen oder einen Abschnitt abgehakt haben. Dozierende sehen nur diese Zahlen der ganzen Gruppe, nie einzelne Konten und nie deinen Code.</p>
       <p>Ohne Konto fragt jede Seite nur kurz beim Server nach, ob du angemeldet bist (ohne Daten von dir); dein Stand bleibt im Browser.</p>
       <p>Beim Löschen verschwinden Lernstand, Programme, geteilte Links und Anzeigename. Nach dem Löschen bleiben nur Zähler ohne Inhalt, die nach höchstens 30 Tagen verfallen.</p>
     </section>

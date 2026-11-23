@@ -226,7 +226,7 @@
   function kontoSetzen(s) {
     var alt = kontoStand;
     kontoStand = s; kontoMerken(s);
-    if (!alt || alt.angemeldet !== s.angemeldet || alt.benutzerId !== s.benutzerId || alt.anzeigename !== s.anzeigename) sende('konto', s);
+    if (!alt || alt.angemeldet !== s.angemeldet || alt.benutzerId !== s.benutzerId || alt.anzeigename !== s.anzeigename || !!alt.dozent !== !!s.dozent) sende('konto', s);
     return s;
   }
   var konto = {
@@ -236,7 +236,7 @@
       kontoAnfrage = api('ich').then(function (d) {
         if (!d || !d.angemeldet) { gastMerken(); return kontoSetzen(NICHT_ANGEMELDET); }
         gastVergessen();
-        return kontoSetzen({ angemeldet: true, anzeigename: d.anzeigename || null, benutzerId: d.benutzerId || null, neu: !!d.neu });
+        return kontoSetzen({ angemeldet: true, anzeigename: d.anzeigename || null, benutzerId: d.benutzerId || null, neu: !!d.neu, dozent: !!d.dozent });
       }, function (e) {
         if (e && e.offline) { kontoAnfrage = null; return kontoStand || NICHT_ANGEMELDET; }
         return kontoSetzen(NICHT_ANGEMELDET);   /* 401, 404 (API fehlt), 5xx: als nicht angemeldet behandeln */
