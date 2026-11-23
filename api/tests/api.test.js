@@ -46,6 +46,7 @@ for (const [name, fabrik] of Object.entries(backends)) {
         assert.equal(r.status, 200);
         assert.equal(r.daten.ok, true);
         assert.equal(typeof r.daten.version, 'string');
+        assert.equal(typeof r.daten.stand, 'string');
         assert.equal(typeof r.daten.tutor, 'boolean');
         assert.equal(r.daten.ablage, name === 'speicher' ? 'speicher' : 'cosmos');
         assert.equal(r.headers['cache-control'], 'no-store');
