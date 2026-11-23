@@ -1,0 +1,1 @@
+Merke dir vier Regeln. Ein Plan hat genau einen Start und genau ein Ende. Gelesen wird von oben nach unten. In jedem Symbol steht ein Schritt. Und was der Plan nicht zeigt, tut das Programm nicht. In der Klausur zeichnest du solche Pläne von Hand. Im nächsten Schritt wird aus dem Plan dein erstes Programm.

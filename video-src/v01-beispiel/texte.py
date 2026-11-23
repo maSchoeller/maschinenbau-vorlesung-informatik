@@ -1,0 +1,38 @@
+"""Sprechertext Termin 01, Video 3: Vorgerechnet: Pendelstrecke, vom Plan zum Programm (Quelltext mit Markup)."""
+SRC = [
+ ["Die Aufgabe: Wie viele Kilometer fährst du pro Woche zur Hochschule und zurück?",
+  "Gegeben sind die einfache Strecke in Kilometern und die Zahl der Tage pro Woche.",
+  "Wir gehen so vor wie bei jeder Aufgabe: erst der Plan, dann der Code."],
+ ["Was ist gegeben? Die Strecke und die Tage: zwei Eingaben.",
+  "Was wird getan? Strecke mal 2, weil du hin und zurück fährst, mal die Tage: eine Verarbeitung.",
+  "Was soll herauskommen? Die Kilometer pro Woche: eine Ausgabe."],
+ ["Daraus wird der Plan.",
+  "Start. Parallelogramm: Strecke einlesen. Parallelogramm: Tage einlesen.",
+  "Rechteck: Woche ist Strecke mal 2 mal Tage.",
+  "Parallelogramm: Woche ausgeben. Ende.",
+  "Vier Symbole zwischen Start und Ende."],
+ ["Jetzt der Code, Symbol für Symbol.",
+  "Die erste Zeile ist ein Kommentar. Alles hinter der Raute ist eine Notiz für Menschen.",
+  "Dann die beiden Eingaben.",
+  "Die Strecke ist eine Kommazahl, also `float`. Die Tage sind eine ganze Zahl, also `int`."],
+ ["Das Rechteck wird eine Zuweisung: Rechts wird gerechnet, links wird das Ergebnis gemerkt.",
+  "Das letzte Parallelogramm wird ein `print`.",
+  "Der Text davor sagt, was die Zahl bedeutet."],
+ ["Wir geben 18,5 Kilometer und 4 Tage ein.",
+  "Das Programm antwortet: Kilometer pro Woche: [[148.0|hundertachtundvierzig Punkt null]].",
+  "Stimmt das? Rechne im Kopf nach: 18,5 mal 2 sind 37, mal 4 sind 148.",
+  "Diese Probe von Hand machst du bei jedem Programm."],
+ ["Jetzt du: Was änderst du im Plan und im Code, wenn auch die Kilometer pro Monat ausgegeben werden sollen?",
+  "Ein Rechteck mehr, eine Ausgabe mehr.",
+  "Probier es im Labor aus."],
+]
+
+SZENEN = [
+ "Aufgabe als Text, Zuhause und Hochschule mit der Strecke dazwischen, Leitsatz: erst der Plan, dann der Code.",
+ "Drei Fragen mit Antworten: Eingabe, Verarbeitung, Ausgabe.",
+ "Der Plan baut sich Symbol für Symbol auf: Start, Eingabe: strecke, Eingabe: tage, woche = strecke * 2 * tage, Ausgabe: woche, Ende.",
+ "Links der Plan klein, rechts der Code: Zeilen 1 bis 3 tippen sich ein, das passende Symbol leuchtet.",
+ "Zeilen 4 und 5 tippen sich ein, das passende Symbol leuchtet.",
+ "Programmlauf: Eingaben 18.5 und 4, Ausgabe Kilometer pro Woche: 148.0, daneben die Kopfrechnung 18,5 · 2 = 37, 37 · 4 = 148.",
+ "Frage als Text, Plan mit einem gestrichelten zusätzlichen Rechteck und einer zusätzlichen Ausgabe.",
+]

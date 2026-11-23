@@ -1,0 +1,105 @@
+WEBVTT
+
+1
+00:00:00.400 --> 00:00:07.217
+Vier Werkzeuge reichen für dein erstes Programm: ausgeben, merken, rechnen und einlesen.
+
+2
+00:00:08.274 --> 00:00:11.250
+Jedes Symbol im Plan wird eine Zeile in Python.
+
+3
+00:00:12.150 --> 00:00:14.076
+Mit print gibst du etwas aus.
+
+4
+00:00:14.619 --> 00:00:18.127
+Text steht in Anführungszeichen, Zahlen stehen ohne.
+
+5
+00:00:19.146 --> 00:00:23.988
+Mehrere Dinge trennst du mit einem Komma. print setzt ein Leerzeichen dazwischen.
+
+6
+00:00:24.589 --> 00:00:26.920
+Jedes print beginnt eine neue Zeile.
+
+7
+00:00:27.820 --> 00:00:33.384
+Eine Variable ist ein Name für einen Wert. Stell dir eine beschriftete Schachtel vor.
+
+8
+00:00:33.234 --> 00:00:35.804
+Links steht der Name, rechts der Wert.
+
+9
+00:00:35.654 --> 00:00:38.034
+Kommazahlen schreibst du mit Punkt.
+
+10
+00:00:37.884 --> 00:00:42.110
+Namen bestehen aus Kleinbuchstaben, Ziffern und dem Unterstrich.
+
+11
+00:00:43.010 --> 00:00:48.575
+Gerechnet wird mit Plus, Minus, Stern für mal und Schrägstrich für geteilt.
+
+12
+00:00:49.444 --> 00:00:56.017
+Wichtig ist die Richtung: Erst wird die rechte Seite ausgerechnet, dann kommt das Ergebnis in die Variable links.
+
+13
+00:00:56.297 --> 00:01:00.188
+Das Gleichheitszeichen ist also ein Auftrag, keine Gleichung.
+
+14
+00:01:01.608 --> 00:01:06.740
+18,5 mal 2 mal 4 ergibt 148.
+
+15
+00:01:07.640 --> 00:01:10.253
+Ein Beispiel, das oft überrascht.
+
+16
+00:01:10.103 --> 00:01:14.506
+a bekommt 5. b bekommt den Wert von a, also auch 5.
+
+17
+00:01:14.356 --> 00:01:18.461
+Dann wird a um 1 erhöht. Jetzt ist a gleich 6.
+
+18
+00:01:18.311 --> 00:01:23.610
+Und b? Bleibt 5. Die Schachteln sind nach dem Kopieren unabhängig.
+
+19
+00:01:24.510 --> 00:01:29.160
+Mit input kommt ein Wert von außen. Das Programm zeigt die Frage und wartet.
+
+20
+00:01:29.435 --> 00:01:31.604
+input liefert immer Text.
+
+21
+00:01:31.906 --> 00:01:38.157
+Zum Rechnen brauchst du eine Zahl: float macht aus dem Text eine Kommazahl, int eine ganze Zahl.
+
+22
+00:01:38.505 --> 00:01:42.560
+Merke dir das als festen Baustein: Zahl einlesen.
+
+23
+00:01:43.460 --> 00:01:47.513
+Und wenn etwas schiefgeht? Dann meldet Python einen Fehler mit Zeilennummer.
+
+24
+00:01:47.662 --> 00:01:50.274
+Lies die letzte Zeile der Meldung zuerst.
+
+25
+00:01:50.531 --> 00:01:54.360
+Ein NameError heißt meistens: Ein Name ist falsch geschrieben.
+
+26
+00:01:54.996 --> 00:01:58.230
+Jetzt probier die vier Karten im Werkzeugkasten selbst aus.

@@ -1,1 +1,1 @@
-Heute rechnest du ein Prüfprotokoll vor: die Zugspannung in einem Rundstab. Bekannt sind die Zugkraft von zwölftausend Newton und der Durchmesser von zehn Millimetern. Das Programm fragt nach Prüfer und Bauteil, berechnet Fläche und Spannung und gibt ein Protokoll aus. Dafür reichen print, Variablen, Kommentare und input aus diesem Kapitel.
+Die Aufgabe: Wie viele Kilometer fährst du pro Woche zur Hochschule und zurück? Gegeben sind die einfache Strecke in Kilometern und die Zahl der Tage pro Woche. Wir gehen so vor wie bei jeder Aufgabe: erst der Plan, dann der Code.

@@ -1,228 +1,197 @@
-"""V01 Vorgerechnet: Pruefprotokoll fuer einen Zugstab (Code = briefing/v01-beispiel.py). Aufruf: python render.py [text|stills t..|full|mux]"""
+"""Termin 01, Video 3: Vorgerechnet: Pendelstrecke, vom Plan zum Programm (Aufgabe, drei Fragen, Plan, Code Symbol fuer Symbol, Programmlauf mit Probe, Jetzt du).
+Aufruf: python render.py [text|probe [Ordner]|zeiten|scan|stills t1 t2..|full|mux]   (Vertonung vorher: python ../v01-common/tts_run.py v01-beispiel)
+Der Code wird aus briefing/v01-beispiel.py gelesen und muss zeichengleich mit der Seite sein (app/inhalte/v01/labor/w-vorgemacht.vorlage.py)."""
 import os, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, "..", "v01-common"))
-from ext import *
-from sprechen import anzeige, sprechfassung, pruefen, tts
-HERE = os.path.dirname(os.path.abspath(__file__))
+from bausteine import *
+from texte import SRC
 
-NAME = "v01-beispiel"; LABEL = "DHBW · Informatik · V01 · Prüfprotokoll Zugstab"
-CODE = open(os.path.join(HERE, "..", "..", "briefing", "v01-beispiel.py"), encoding="utf-8").read().splitlines()
-assert len(CODE) == 18
+NAME = "v01-beispiel"; LABEL = "DHBW · Informatik · Termin 01 · Vorgerechnet: Pendelstrecke"
+SECS = make_secs(SRC)
+AT = {i: zeiten(SECS, i) for i in range(1, len(SECS) + 1)}
+NL = chr(10)
 
-class Satz(tuple):
-    """(Untertitel, Sprechfassung) mit Quelltext .q (Markup)."""
+# ---------------------------------------------------------------- Code (zeichengenau wie auf der Seite) und echter Programmlauf
+_ROOT = os.path.join(HERE, "..", "..")
+_BRIEF = open(os.path.join(_ROOT, "briefing", "v01-beispiel.py"), encoding="utf-8").read()
+_SEITE = os.path.join(_ROOT, "app", "inhalte", "v01", "labor", "w-vorgemacht.vorlage.py")
+if os.path.exists(_SEITE): assert open(_SEITE, encoding="utf-8").read() == _BRIEF, "briefing/v01-beispiel.py weicht vom Code der Seite ab"
+CODE = _BRIEF.splitlines()
+assert CODE == ["# Pendelstrecke: Kilometer pro Woche", 'strecke = float(input("Einfache Strecke in km: "))', 'tage = int(input("Tage pro Woche: "))',
+                "woche = strecke * 2 * tage", 'print("Kilometer pro Woche:", woche)'], CODE
+EINGABEN = ["18.5", "4"]
+LAUF = run(_BRIEF, EINGABEN)
+assert LAUF == ["Einfache Strecke in km: 18.5", "Tage pro Woche: 4", "Kilometer pro Woche: 148.0"], LAUF
+assert 18.5 * 2 == 37 and 37 * 4 == 148 == float(LAUF[2].split(": ")[1])          # Probe von Hand
 
-def S(t):
-    """Ein Quelltext mit Markup: Untertitel = anzeige(t), Audio = tts(t) -> sprechfassung(t) (sprechen.py)."""
-    r = Satz((anzeige(t), sprechfassung(t))); r.q = t
-    return r
+_ITEMS = [("s", "term", "Start"), ("e1", "io", "Eingabe: strecke"), ("e2", "io", "Eingabe: tage"),
+          ("p", "proc", "woche = strecke * 2 * tage"), ("o", "io", "Ausgabe: woche"), ("end", "term", "Ende")]
+PLAN = plan(_ITEMS)
+PLAN8 = plan(_ITEMS[:4] + [("x1", "proc", "?", dict(minw=210))] + _ITEMS[4:5] + [("x2", "io", "?", dict(minw=210))] + _ITEMS[5:], gap=16)
 
-SECS = [
- [S("Heute rechnest du ein Prüfprotokoll vor: die Zugspannung in einem Rundstab."),
-  S("Bekannt sind die Zugkraft von 12 000 Newton und der Durchmesser von 10 Millimetern."),
-  S("Das Programm fragt nach Prüfer und Bauteil, berechnet Fläche und Spannung und gibt ein Protokoll aus."),
-  S("Dafür reichen `print`, Variablen, Kommentare und `input` aus diesem Kapitel.")],
- [S("Die ersten beiden Zeilen sind Kommentare. Sie beginnen mit einer Raute und sagen, worum es geht."),
-  S("In Zeile 4 und 5 liest `input` zwei Texte ein: den Namen der Prüferin oder des Prüfers und die Bauteil-Bezeichnung."),
-  S("Der Text in den Klammern ist die Aufforderung, die Antworten landen in den Variablen [[pruefer|prüfer]] und `bauteil`."),
-  S("Beides bleibt Text, damit wird nichts gerechnet.")],
- [S("Dann folgen die festen Werte: [[kraft_n|kraft n]] ist 12000, [[durchmesser_mm|durchmesser m m]] ist 10."),
-  S("Die Einheit steckt im Namen und im Kommentar, so verwechselst du später nichts."),
-  S("Pi ist hier eine Näherung: [[3,14159|drei Komma eins vier eins fünf neun]]."),
-  S("Alle Zahlen stehen noch fest im Code. Zahlen einlesen lernst du in Lektion 3.")],
- [S("Jetzt wird gerechnet. Zeile 11 berechnet die Fläche: `pi * d * d / 4`."),
-  S("Denk an die Zuweisung von rechts nach links: Erst wird die rechte Seite ausgerechnet, dann bekommt [[flaeche_mm2|fläche m m zwei]] das Ergebnis."),
-  S("Zeile 12 teilt die Kraft durch die Fläche und speichert die Spannung."),
-  S("Die Fläche liegt in Quadratmillimetern vor, also kommt Newton pro Quadratmillimeter heraus, das sind Megapascal."),
-  S("Die Reihenfolge zählt: Die Fläche muss existieren, bevor du sie benutzt.")],
- [S("Zum Schluss folgen fünf [[print-Zeilen|print Zeilen]]."),
-  S("Die erste gibt die Überschrift aus."),
-  S("Die nächsten vier haben je zwei Argumente, einen Text und eine Variable. `print` setzt dazwischen ein Leerzeichen."),
-  S("So landen Prüfer, Bauteil, Fläche und Spannung im Protokoll.")],
- [S("Jetzt der Probelauf. Als Prüfer gibst du Max Mustermann ein, als Bauteil Welle W siebzehn."),
-  S("Danach läuft der Rest ohne weitere Eingabe, Zeile für Zeile."),
-  S("Die Fläche beträgt [[78,53975|achtundsiebzig Komma fünf drei neun sieben fünf]] Quadratmillimeter."),
-  S("Die Spannung beginnt mit [[152,78887|hundertzweiundfünfzig Komma sieben acht acht acht sieben]], danach folgen noch viele weitere Stellen, in Megapascal.")],
- [S("Jetzt der wichtigste Schritt: Passt das Ergebnis? Im Kopf überschlägst du 12 000 durch rund 80, das sind etwa 150."),
-  S("Unser Ergebnis liegt bei etwa 153 Megapascal, die Größenordnung stimmt."),
-  S("Das passt zu Baustahl [[S235|S zwei drei fünf]]: Die Streckgrenze liegt bei 235 Megapascal, der Stab bleibt also darunter."),
-  S("Die vielen Nachkommastellen formatieren wir in Lektion 3."),
-  S("Ein Ergebnis wie 0,153 oder 150 000 Megapascal würde dir dagegen sofort auffallen.")],
-]
+# ---------------------------------------------------------------- Bildzeichen
+def haus(d, cx, by, col=DARK):
+    d.rectangle((cx - 58, by - 78, cx + 58, by), fill=WHITE, outline=col, width=5)
+    dach = [(cx - 78, by - 78), (cx, by - 142), (cx + 78, by - 78)]
+    d.polygon(dach, fill=WHITE); d.line(dach + [dach[0]], fill=col, width=5, joint="curve")
+    d.rectangle((cx - 15, by - 46, cx + 15, by), fill=col)
 
-def rise(f, t, ti, fn):
-    f.el(ap(t, ti, 0.5), fn, dy=int((1 - ap(t, ti, 0.5)) * 12))
+def hochschule(d, cx, by, col=DARK):
+    d.rectangle((cx - 100, by - 92, cx + 100, by), fill=WHITE, outline=col, width=5)
+    dach = [(cx - 116, by - 92), (cx, by - 142), (cx + 116, by - 92)]
+    d.polygon(dach, fill=WHITE); d.line(dach + [dach[0]], fill=col, width=5, joint="curve")
+    for k in range(4):
+        x = cx - 72 + k * 48; d.rectangle((x - 7, by - 76, x + 7, by - 6), fill=col)
 
-# ---------------------------------------------------------------- Code-Szenen
-CS, CLH, CX, CW, CY = 20, 27, 90, 1100, 94
-CPS = 70
-for _l in CODE: assert fits_mono(_l, CS, CW - 62 - 20), _l
+# ---------------------------------------------------------------- 1 Die Aufgabe
+def sc1(f, t, ct):
+    a = lambda k, fr=0.0: AT[1](ct, k, fr)
+    kopf(f, t, "Die Aufgabe: Pendelstrecke")
+    def aufgabe(d, dy):
+        card(d, 60, 118 + dy, 1160, 96)
+        TB(d, 644, 166 + dy, "Wie viele Kilometer fährst du pro Woche zur Hochschule und zurück?", F(36, 700), DARK, 1100, "mm")
+    E(f, t, 0.4, aufgabe)
+    by = 446
+    E(f, t, a(0, 0.3), lambda d, dy: (haus(d, 200, by + dy), TB(d, 200, by + 10 + dy, "Zuhause", F(28, 700), DARK, 240, "ma")))
+    E(f, t, a(0, 0.62), lambda d, dy: (hochschule(d, 1060, by + dy), TB(d, 1060, by + 10 + dy, "Hochschule", F(28, 700), DARK, 240, "ma")))
+    def hin(d, dy):
+        pfeil(d, 310, 334 + dy, 920, 334 + dy, DARK, 6, 20); TB(d, 615, 296 + dy, "hin", F(26, 700), GREY, 200, "ma")
+    def zurueck(d, dy):
+        pfeil(d, 920, 430 + dy, 310, 430 + dy, DARK, 6, 20); TB(d, 615, 438 + dy, "zurück", F(26, 700), GREY, 200, "ma")
+    E(f, t, a(0, 0.66), hin); E(f, t, a(0, 0.86), zurueck)
+    E(f, t, a(1, 0.1), lambda d, dy: tag(d, 385, 354 + dy, 460, 56, "gegeben: einfache Strecke in km", LIGHTB, BLUE, 26, 700, outl=BLUE))
+    E(f, t, a(1, 0.55), lambda d, dy: tag(d, 385, 498 + dy, 460, 56, "gegeben: Tage pro Woche", LIGHTA, AMB, 26, 700, outl=AMB))
+    E(f, t, a(2, 0.5), lambda d, dy: tag(d, 60, 578 + dy, 1160, 80, "Erst der Plan, dann der Code", RED, WHITE, 46))
 
-def seq(idxs, start, gap=0.1):
-    out = {}; c = start
-    for i in idxs:
-        out[i] = c; c += len(CODE[i]) / CPS + gap
-    return out
-
-def draw_code(f, t, tm, hl):
-    times = [tm.get(i, 1e9) for i in range(len(CODE))]
-    f.el(ap(t, 0.0, 0.3), lambda d, dy: code_panel(d, CX, CY + dy, CW, CODE, times, t, CS, CPS, hl=hl, dim_others=bool(hl), lh=CLH))
-
-def captions(f, t, ct, caps):
-    for i, tx in enumerate(caps):
-        if tx is None: continue
-        t0 = ct(i); t1 = ct(i + 1) if i + 1 < len(caps) else 1e9
-        a = ap(t, t0, 0.3) * (1 - ap(t, t1 - 0.1, 0.25))
-        if a <= 0: continue
-        def fn(d, dy, tx=tx):
-            card(d, 90, 626 + dy, 1100, 56)
-            sz = 28
-            while F(sz, 600).getlength(tx) > 1030 and sz > 16: sz -= 1
-            assert sz >= 22, tx
-            T(d, 120, 654 + dy, tx, F(sz, 600), DARK, "lm")
-        f.el(a, fn, dy=int((1 - ap(t, t0, 0.3)) * 8))
-
-def which(t, ct, spans):
-    """spans: Liste (ab Satz, Zeilenmenge) -> aktuelle Menge."""
-    cur = set()
-    for si, s in spans:
-        if t >= ct(si): cur = s
-    return cur
-
-ALL = lambda a, b: set(range(a, b + 1))
-FULLY = lambda idxs: {i: -1 for i in idxs}
-
+# ---------------------------------------------------------------- 2 Drei Fragen
 def sc2(f, t, ct):
-    heading(f, t, "Abschnitt 1: Kommentare und Eingaben")
-    tm = {}; tm.update(seq([0, 1], ct(0) + 0.3)); tm.update(seq([3, 4], ct(1) + 0.3))
-    hl = which(t, ct, [(0, {0, 1}), (1, {3, 4}), (3, {3, 4})])
-    draw_code(f, t, tm, hl)
-    captions(f, t, ct, ["Kommentare: beginnen mit #, Python ignoriert sie", "input liest zwei Texte ein",
-                        "Aufforderung in Klammern, Antwort in pruefer und bauteil", "Beides sind Texte: damit wird nicht gerechnet"])
+    a = lambda k, fr=0.0: AT[2](ct, k, fr)
+    kopf(f, t, "Drei Fragen, drei Antworten")
+    sp = [dict(t_karte=0.4, frage="Was ist gegeben?", t_frage=a(0, 0.0), t_titel=a(0, 0.76),
+               punkte=[("Strecke", a(0, 0.3)), ("Tage", a(0, 0.52))], fuss=("zwei Eingaben", a(0, 0.76))),
+          dict(t_karte=0.7, frage="Was wird getan?", t_frage=a(1, 0.0), t_titel=a(1, 0.82),
+               punkte=[("Strecke mal 2", a(1, 0.2)), ("mal die Tage", a(1, 0.66))], fuss=("eine Verarbeitung", a(1, 0.82))),
+          dict(t_karte=1.0, frage="Was soll herauskommen?", t_frage=a(2, 0.0), t_titel=a(2, 0.78),
+               punkte=[("Kilometer pro Woche", a(2, 0.38))], fuss=("eine Ausgabe", a(2, 0.78)))]
+    eva_spalten(f, t, sp, y=140, h=400)
+    E(f, t, a(1, 0.34), lambda d, dy: TB(d, 640, 600 + dy, "mal 2, weil du hin und zurück fährst", F(30, 600), GREY, 1100, "mm"), tout=a(2, 0.0) - 0.2)
+
+# ---------------------------------------------------------------- 3 Der Plan, Symbol fuer Symbol
+PBOX3 = (60, 104, 640, 572)
+FORM = {"e1": "Parallelogramm", "e2": "Parallelogramm", "p": "Rechteck", "o": "Parallelogramm"}
 
 def sc3(f, t, ct):
-    heading(f, t, "Abschnitt 2: feste Werte")
-    tm = FULLY([0, 1, 3, 4]); tm.update(seq([6, 7, 8], ct(0) + 0.5))
-    hl = which(t, ct, [(0, {6, 7, 8}), (1, {6, 7}), (2, {8}), (3, {6, 7, 8})])
-    draw_code(f, t, tm, hl)
-    captions(f, t, ct, ["Feste Werte: Kraft, Durchmesser, Pi", "Einheit im Namen und im Kommentar: kraft_n, durchmesser_mm",
-                        "pi = 3.14159 ist eine Näherung", "Noch alles fest im Code: Zahlen einlesen in V03"])
+    a = lambda k, fr=0.0: AT[3](ct, k, fr)
+    kopf(f, t, "Aus den Antworten wird der Plan")
+    tin = {"s": a(1, 0.0), "e1": a(1, 0.14), "e2": a(1, 0.58), "p": a(2, 0.0), "o": a(3, 0.0), "end": a(3, 0.74)}
+    tm = dict(tin); tm.update({"s-e1": tin["e1"], "e1-e2": tin["e2"], "e2-p": tin["p"], "p-o": tin["o"], "o-end": tin["end"]})
+    cur = aktuell(t, sorted((z, k) for k, z in tin.items()))
+    hl = {k: RED for k in ("e1", "e2", "p", "o")} if t >= a(4, 0.0) else ({cur: RED} if cur else None)
+    z, cam = plan_draw(f, 1.0, PLAN, PBOX3, vis=reveal(t, tm), hl=hl, maxzoom=1.5)
+    for k, name in FORM.items():
+        x0, y0, x1, y1 = plan_kasten(PBOX3, z, cam, PLAN.nodes[k])
+        E(f, t, tin[k] + 0.2, lambda d, dy, x1=x1, y0=y0, y1=y1, name=name: TB(d, x1 + 18, (y0 + y1) / 2 + dy, name, F(24, 600), GREY, 780 - x1 - 18, "lm", "Symbolname"))
+    teile = [("2 Eingaben", BLUE, LIGHTB), ("1 Verarbeitung", AMB, LIGHTA), ("1 Ausgabe", GREEN, LIGHTG)]
+    for j, (txt, col, fill) in enumerate(teile):
+        E(f, t, 0.5 + 0.35 * j, lambda d, dy, j=j, txt=txt, col=col, fill=fill: chip(d, 800, 150 + j * 82 + dy, 420, 64, txt, fill, col, 32))
+    def vier(d, dy):
+        card(d, 800, 430 + dy, 420, 124)
+        TB(d, 834, 444 + dy, "Vier Symbole", F(38, 700), RED, 370)
+        TB(d, 834, 498 + dy, "zwischen Start und Ende", F(30, 600), DARK, 370)
+    E(f, t, a(4, 0.0), vier)
+
+# ---------------------------------------------------------------- 4 und 5 Vom Plan zum Code
+PBOX4 = (40, 104, 400, 572); CX, CY, CW, CSIZE, CLH = 460, 124, 760, 24, 42
+NY = CY + code_h(5, CLH) + 22          # Notizen unter dem Code
+
+def plan_und_code(f, t, zeiten_code, hl_code, hl_plan):
+    plan_draw(f, ap(t, 0.2, 0.3), PLAN, PBOX4, hl={hl_plan: RED} if hl_plan else None, maxzoom=1.4)
+    cpanel(f, t, CODE, CX, CY, CW, CSIZE, CLH, hl_code, zeiten_code)
 
 def sc4(f, t, ct):
-    heading(f, t, "Abschnitt 3: rechnen")
-    tm = FULLY([0, 1, 3, 4, 6, 7, 8]); tm.update(seq([10], ct(0) + 0.6)); tm.update({11: ct(2) - 0.4})
-    hl = which(t, ct, [(0, {10}), (2, {11}), (4, {10, 11})])
-    draw_code(f, t, tm, hl)
-    captions(f, t, ct, ["Zeile 11: A = π · d · d / 4, rechts zuerst, dann speichern", "Rechte Seite wird berechnet, flaeche_mm2 bekommt das Ergebnis",
-                        "Zeile 12: σ = F / A", "N / mm² = MPa", "Reihenfolge zählt: erst die Fläche, dann die Spannung"])
+    a = lambda k, fr=0.0: AT[4](ct, k, fr)
+    kopf(f, t, "Vom Plan zum Code: Zeilen 1 bis 3")
+    t1, t2, t3 = a(1, 0.0) + 0.2, a(2, 0.0) + 0.1, a(2, 0.0) + 1.2
+    hl_code = aktuell(t, [(a(1, 0.0), {0}), (a(2, 0.0), {1}), (t3, {2}), (a(3, 0.0), {1}), (a(3, 0.5), {2})])
+    hl_plan = aktuell(t, [(a(2, 0.0), "e1"), (t3, "e2"), (a(3, 0.0), "e1"), (a(3, 0.5), "e2")])
+    plan_und_code(f, t, [t1, t2, t3, 1e9, 1e9], hl_code, hl_plan)
+    E(f, t, a(1, 0.0), lambda d, dy: tag(d, CX, NY + dy, CW, 60, "Kommentar: hinter der Raute # steht eine Notiz für Menschen", LIGHTK, DARK, 26, 700, outl=GREY), tout=a(2, 0.0) - 0.2)
+    E(f, t, a(2, 0.0), lambda d, dy: tag(d, CX, NY + dy, CW, 60, "zwei Parallelogramme: zwei Zeilen mit input", LIGHTR, RED, 28, 700, outl=RED), tout=a(3, 0.0) - 0.2)
+    E(f, t, a(3, 0.0), lambda d, dy: tag(d, CX, NY + dy, CW, 60, "strecke: eine Kommazahl, also float", LIGHTB, BLUE, 28, 700, outl=BLUE))
+    E(f, t, a(3, 0.5), lambda d, dy: tag(d, CX, NY + 76 + dy, CW, 60, "tage: eine ganze Zahl, also int", LIGHTA, AMB, 28, 700, outl=AMB))
 
 def sc5(f, t, ct):
-    heading(f, t, "Abschnitt 4: Ausgabe")
-    tm = FULLY(list(range(0, 12))); tm.update(seq([13, 14, 15, 16, 17], ct(0) + 0.5))
-    hl = which(t, ct, [(1, {13}), (2, {14, 15, 16, 17})])
-    draw_code(f, t, tm, hl)
-    captions(f, t, ct, ["Fünf print-Zeilen geben das Protokoll aus", "Zeile 14: die Überschrift",
-                        "Zeilen 15 bis 18: Text, Komma, Variable (je zwei Argumente)", "Prüfer, Bauteil, Fläche und Spannung stehen im Protokoll"])
+    a = lambda k, fr=0.0: AT[5](ct, k, fr)
+    kopf(f, t, "Vom Plan zum Code: Zeilen 4 und 5")
+    t4, t5 = a(0, 0.0) + 0.3, a(1, 0.0) + 0.2
+    hl_code = aktuell(t, [(a(0, 0.0), {3}), (a(1, 0.0), {4})])
+    hl_plan = aktuell(t, [(a(0, 0.0), "p"), (a(1, 0.0), "o")])
+    plan_und_code(f, t, [-1, -1, -1, t4, t5], hl_code, hl_plan)
+    E(f, t, a(0, 0.5), lambda d, dy: tag(d, CX + 390, NY + dy, 370, 60, "rechts wird gerechnet", LIGHTA, AMB, 28, 700, outl=AMB))
+    E(f, t, a(0, 0.75), lambda d, dy: tag(d, CX, NY + dy, 370, 60, "links wird gemerkt", LIGHTB, BLUE, 28, 700, outl=BLUE))
+    E(f, t, a(1, 0.2), lambda d, dy: tag(d, CX, NY + 76 + dy, CW, 60, "letztes Parallelogramm: ein print", LIGHTR, RED, 28, 700, outl=RED))
+    E(f, t, a(2, 0.0), lambda d, dy: tag(d, CX, NY + 152 + dy, CW, 60, "Der Text davor sagt, was die Zahl bedeutet", LIGHTG, GREEN, 28, 700, outl=GREEN))
 
-# ---------------------------------------------------------------- freie Szenen
-def sc1(f, t, ct):
-    heading(f, t, "Die Aufgabe: Prüfprotokoll Zugstab")
-    def rod(d, dy):
-        card(d, 60, 130 + dy, 560, 300)
-        T(d, 90, 146 + dy, "Rundstab unter Zug", F(28, 700), DARK)
-        d.rectangle((190, 260 + dy, 470, 310 + dy), fill=(190, 198, 210), outline=DARK, width=3)
-        arrow(d, 188, 285 + dy, 100, 285 + dy, RED, 7, 22); arrow(d, 472, 285 + dy, 560, 285 + dy, RED, 7, 22)
-    rise(f, t, ct(0) + 0.3, rod)
-    def vals(d, dy):
-        T(d, 540, 254 + dy, "F = 12 000 N", F(26, 700), RED, "ms"); T(d, 330, 350 + dy, "Durchmesser d = 10 mm", F(28, 700), DARK, "ma")
-        T(d, 330, 388 + dy, "gesucht: σ = F / A", F(24, 400), GREY, "ma")
-    rise(f, t, ct(1) + 0.2, vals)
-    rows = [("Eingabe", RED, "Prüfer und Bauteil (Texte)", 130), ("Verarbeitung", DARK, "Fläche A und Spannung σ", 262), ("Ausgabe", GREEN, "Prüfprotokoll mit fünf Zeilen", 394)]
-    for k, (lab, col, body, y) in enumerate(rows):
-        def fn(d, dy, lab=lab, col=col, body=body, y=y):
-            d.rectangle((660, y + dy, 1220, y + 112 + dy), fill=WHITE, outline=DARK, width=2)
-            d.rectangle((660, y + dy, 850, y + 112 + dy), fill=col)
-            T(d, 755, y + 56 + dy, lab, F(30, 700), WHITE, "mm")
-            TW(d, 870, y + 28 + dy, body, 26, 400, 330, DARK, 32)
-        rise(f, t, ct(2) + 0.2 + k * 0.5, fn)
-    rise(f, t, ct(3), lambda d, dy: pill(d, 160, 500 + dy, 960, 76, "print · Variablen · Kommentare · input", 38))
-
-RUN = [(0.5, [("Name der Prüferin / des Prüfers: ", CODE_T), ("Max Mustermann", CODE_N)]),
-       (1.0, [("Bauteil-Bezeichnung: ", CODE_T), ("Welle W-17", CODE_N)]),
-       (None, O("Prüfprotokoll Zugstab")), (None, O("Prüfer: Max Mustermann")), (None, O("Bauteil: Welle W-17")),
-       (None, O("Querschnitt A in mm²: 78.53975", CODE_G)), (None, O("Spannung in MPa: 152.78887442346073", CODE_G))]
-
+# ---------------------------------------------------------------- 6 Programmlauf und Probe von Hand
 def sc6(f, t, ct):
-    heading(f, t, "Probelauf")
-    times = [ct(0) + 2.2, ct(0) + 4.5, ct(1) + 0.6, ct(1) + 1.2, ct(1) + 1.8, ct(2) + 0.8, ct(3) + 0.8]
-    ents = [(tm_, s if isinstance(s, list) else s) for tm_, (_, s) in zip(times, RUN)]
-    for _, s in ents: assert fits_mono("".join(x for x, _ in s), 28, 1160 - 44)
-    f.el(ap(t, 0.0, 0.3), lambda d, dy: console_panel(d, 60, 130 + dy, 1160, 350, ents, t, 28, lh=42))
-    def tile(x, w, big, small, col, ti):
-        def fn(d, dy):
-            card(d, x, 506 + dy, w, 130); T(d, x + 28, 520 + dy, big, F(34, 700), col)
-            TW(d, x + 28, 570 + dy, small, 24, 400, w - 56, GREY, 30)
-        rise(f, t, ti, fn)
-    tile(60, 370, "A = 78,53975 mm²", "π · 10 · 10 / 4 mit π = 3,14159", DARK, ct(2) + 1.2)
-    tile(455, 370, "σ ≈ 152,79 MPa", "12 000 N / 78,53975 mm²", DARK, ct(3) + 1.2)
-    tile(850, 370, "viele Stellen", "so viele Nachkommastellen sind unnötig", AMBER, ct(3) + 3.2)
+    a = lambda k, fr=0.0: AT[6](ct, k, fr)
+    kopf(f, t, "Programmlauf und Probe von Hand")
+    cpanel(f, t, CODE, 60, 116, 720, 22, 34)
+    y = 116 + code_h(5, 34) + 18
+    p1, p2 = LAUF[0][:-len(EINGABEN[0])], LAUF[1][:-len(EINGABEN[1])]
+    zeilen = [(0.5, p1, a(0, 0.3), EINGABEN[0]), (a(0, 0.5), p2, a(0, 0.72), EINGABEN[1]), (a(1, 0.4), LAUF[2], None, None, CODE_G)]
+    E(f, t, 0.4, lambda d, dy: lauf_panel(d, 60, y + dy, 720, zeilen, t, 26, 42, hl={2} if t >= a(1, 0.4) else None))
+    def probe_karte(d, dy):
+        card(d, 820, 116 + dy, 400, 290)
+        TB(d, 852, 132 + dy, "Probe im Kopf", F(34, 700), DARK, 350)
+    E(f, t, a(2, 0.0), probe_karte)
+    E(f, t, a(2, 0.42), lambda d, dy: TB(d, 852, 200 + dy, "18,5 · 2 = 37", F(46, 700), DARK, 350))
+    E(f, t, a(2, 0.72), lambda d, dy: TB(d, 852, 270 + dy, "37 · 4 = 148", F(46, 700), DARK, 350))
+    E(f, t, a(2, 0.9), lambda d, dy: (check_circle(d, 876, 368 + dy, 20), TB(d, 908, 368 + dy, "stimmt mit 148.0 überein", F(24, 700), GREEN, 290, "lm")))
+    E(f, t, a(3, 0.2), lambda d, dy: tag(d, 60, 584 + dy, 1160, 72, "Probe von Hand: bei jedem Programm", RED, WHITE, 38))
+
+# ---------------------------------------------------------------- 7 Jetzt du
+PBOX7 = (60, 110, 480, 520); Z8, CAM8 = plan_fit(PLAN8, PBOX7, 1.4)
 
 def sc7(f, t, ct):
-    heading(f, t, "Plausibilitätscheck")
-    rise(f, t, ct(0) + 1.6, lambda d, dy: (card(d, 60, 130 + dy, 560, 120), T(d, 90, 142 + dy, "Überschlag im Kopf", F(26, 600), GREY), T(d, 90, 182 + dy, "12 000 / 80 ≈ 150 MPa", F(44, 700), DARK)))
-    rise(f, t, ct(1), lambda d, dy: (card(d, 660, 130 + dy, 560, 120), T(d, 690, 142 + dy, "Programm", F(26, 600), GREY), T(d, 690, 182 + dy, "σ ≈ 153 MPa", F(44, 700), GREEN), check(d, 1150, 180 + dy, GREEN, 1.6)))
-    X0, X1, Y = 120, 1110, 420
-    def XV(v): return X0 + v / 300.0 * (X1 - X0)
-    def scale(d, dy):
-        y = Y + dy
-        d.rectangle((X0, y - 18, XV(235), y + 18), fill=(205, 235, 217))
-        d.line((X0, y, X1, y), fill=GREY, width=4)
-        for v in (0, 100, 200, 300):
-            d.line((XV(v), y - 12, XV(v), y + 12), fill=GREY, width=3); T(d, XV(v), y + 30, f"{v}", F(24, 400), GREY, "ma")
-        T(d, X1 + 14, y, "σ in MPa", F(24, 400), GREY, "lm")
-        d.polygon([(XV(153), y - 2), (XV(153) - 14, y - 38), (XV(153) + 14, y - 38)], fill=RED)
-        d.ellipse((XV(153) - 20, y - 80, XV(153) + 20, y - 40), fill=RED); T(d, XV(153), y - 60, "σ", F(30, 700), WHITE, "mm")
-    rise(f, t, ct(1) + 0.6, scale)
-    def sg(d, dy):
-        y = Y + dy
-        d.line((XV(235), y - 60, XV(235), y + 20), fill=DARK, width=4)
-        T(d, XV(235), y - 92, "Streckgrenze S235: 235 MPa", F(26, 700), DARK, "ms")
-        T(d, XV(120), y + 110, "darunter: elastisch", F(28, 600), GREEN, "mm")
-    rise(f, t, ct(2) + 0.4, sg)
-    rise(f, t, ct(3), lambda d, dy: pill(d, 160, 570 + dy, 960, 70, "Nachkommastellen formatieren: V03", 34, DARK))
-    def bad(d, dy):
-        y = Y + dy
-        d.ellipse((XV(0.153) - 8, y - 8, XV(0.153) + 8, y + 8), fill=RED)
-        T(d, X0, y + 62, "0,153: viel zu klein", F(26, 700), RED, "la")
-        T(d, X1, y + 62, "150 000: viel zu groß", F(26, 700), RED, "ra")
-    rise(f, t, ct(4), bad)
+    a = lambda k, fr=0.0: AT[7](ct, k, fr)
+    kopf(f, t, "Jetzt du: auch die Kilometer pro Monat")
+    t1, t2 = a(1, 0.0), a(1, 0.5)
+    a8 = ap(t, t1 - 0.3, 0.4)                       # Wechsel vom Plan zum Plan mit zwei freien Plaetzen
+    if a8 < 0.999: plan_draw(f, ap(t, 0.2, 0.3), PLAN, PBOX7, maxzoom=Z8)
+    unsichtbar = lambda k: 0.0 if k in ("x1", "x2") else 1.0
+    if a8 > 0.001: plan_draw(f, a8, PLAN8, PBOX7, vis=unsichtbar, maxzoom=1.4)
+    def frage(d, dy):
+        card(d, 600, 124 + dy, 620, 160)
+        absatz(d, 632, 142 + dy, "Was änderst du im Plan und im Code, wenn auch die Kilometer pro Monat ausgegeben werden sollen?", F(31, 700), DARK, 560, 40, 4)
+    E(f, t, 0.5, frage)
+    for key, tin, txt in (("x1", t1, "ein Rechteck mehr"), ("x2", t2, "eine Ausgabe mehr")):
+        n = PLAN8.nodes[key]; x0, y0, x1, y1 = plan_kasten(PBOX7, Z8, CAM8, n); ym = (y0 + y1) / 2
+        def neu(d, dy, n=n, x1=x1, ym=ym, txt=txt):
+            symbol_gestrichelt(d, PBOX7, Z8, CAM8, n, RED)
+            d.line((x1 + 8, ym, 596, ym), fill=RED, width=3)
+            tag(d, 600, ym - 30, 380, 60, txt, LIGHTR, RED, 30, 700, outl=RED)
+        f.el(show(t, tin + 0.1), neu)
+    E(f, t, a(2, 0.0), lambda d, dy: tag(d, 600, 590 + dy, 620, 68, "Probier es im Labor aus", RED, WHITE, 36))
 
 SCENES = {1: sc1, 2: sc2, 3: sc3, 4: sc4, 5: sc5, 6: sc6, 7: sc7}
+assert len(SRC) == 7 == len(SCENES)
 
 def poster(path):
     f = Frame()
     def fn(d, dy):
         d.rectangle((0, 0, 24, H), fill=RED)
-        T(d, 90, 110, "V01 · Informatik", F(34, 600), GREY)
-        T(d, 90, 160, "Vorgerechnet", F(104, 700), DARK)
-        T(d, 90, 290, "Prüfprotokoll für einen Zugstab", F(52, 400), GREY)
-        code_panel(d, 90, 390, 1000, [CODE[10], CODE[11], CODE[17]], [0, 0, 0], 9, 24, lineno=False)
-        d.rectangle((190, 580, 470, 620), fill=(190, 198, 210), outline=DARK, width=3)
-        arrow(d, 188, 600, 110, 600, RED, 7, 20); arrow(d, 472, 600, 550, 600, RED, 7, 20)
-        T(d, 600, 600, "F = 12 000 N,  d = 10 mm", F(34, 700), DARK, "lm")
-        T(d, 1220, 694, LABEL, F(16, 400), GREY, "ra")
-    f.el(1, fn); f.img.save(path)
+        T2(d, 90, 110, "Termin 01 · Informatik", F(34, 600), GREY)
+        T2(d, 90, 160, "Vorgerechnet:", F(84, 700), DARK)
+        T2(d, 90, 256, "Pendelstrecke", F(84, 700), DARK)
+        T2(d, 90, 384, "Vom Plan zum Programm", F(40, 400), GREY)
+        tag(d, 90, 450, 520, 66, "Erst der Plan, dann der Code", RED, WHITE, 34)
+        code_n(d, 90, 536, 620, CODE[3:], [4, 5], [-1] * 2, 0, 22, 34)
+        T2(d, 1220, 694, LABEL, F(16, 400), GREY, "ra")
+    f.el(1, fn)
+    f.img.paste(plan_bild(PLAN, (440, 580), hl={"p": RED}), (790, 60))
+    f.img.save(path)
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1 and sys.argv[1] in ("text", "tts"):
-        tot = 0
-        for i, sec in enumerate(SECS, 1):
-            q = " ".join(x.q for x in sec); sp = sprechfassung(q); tot += len(sp)
-            print(f"s{i} ({len(sp)} Z.)")
-            for h in pruefen(q): print("  PRUEFEN:", h)
-            if sys.argv[1] == "tts": tts(q, os.path.join(HERE, "audio", f"s{i}.mp3"))
-            else: open(os.path.join(HERE, "audio", f"s{i}.sprech.txt"), "w", encoding="utf-8").write(sp)
-        print("Zeichen gesamt", tot)
-    else:
-        main(HERE, SECS, SCENES, LABEL, poster, NAME)
+    dispatch(HERE, SRC, SECS, SCENES, LABEL, poster, NAME)
