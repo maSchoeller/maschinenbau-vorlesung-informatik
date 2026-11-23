@@ -575,6 +575,18 @@ for (const [name, fabrik] of Object.entries(backends)) {
         assert.equal(erg.filter((x) => x.status === 403).length, 30);
         assert.equal((await h.aufruf('GET', '/api/geteilt', { benutzer: 'u1' })).daten.eintraege.length, 50);
       });
+      it('gleichzeitiges doppeltes Löschen gibt nur einen Platz frei', async () => {
+        await anzeigename('u1', 'Anna');
+        const ids = [];
+        for (let i = 0; i < 50; i++) ids.push((await h.aufruf('POST', '/api/geteilt', { benutzer: 'u1', body: { titel: 'T' + i, code: 'x' } })).daten.id);
+        // jedes Programm mit drei gleichzeitigen DELETE löschen
+        for (const id of ids.slice(0, 10)) {
+          await Promise.all([1, 2, 3].map(() => h.aufruf('DELETE', `/api/geteilt/${id}`, { benutzer: 'u1' })));
+        }
+        const erg = await Promise.all(Array.from({ length: 40 }, (_, i) => h.aufruf('POST', '/api/geteilt', { benutzer: 'u1', body: { titel: 'N' + i, code: 'x' } })));
+        assert.equal(erg.filter((x) => x.status === 201).length, 10);
+        assert.equal((await h.aufruf('GET', '/api/geteilt', { benutzer: 'u1' })).daten.eintraege.length, 50);
+      });
     });
 
     // ------------------------------------------------------------ konto

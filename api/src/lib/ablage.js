@@ -188,7 +188,12 @@ function speicherBackend({ datei = null } = {}) {
     },
     async gLesen(id) { const d = stand.geteilt[id]; return d ? kopie(d) : null; },
     async gVonBenutzer(bid) { return Object.values(stand.geteilt).filter((d) => d.benutzerId === bid).map(kopie); },
-    async gLoeschen(id) { delete stand.geteilt[id]; sichern(); },
+    async gLoeschen(id) {
+      if (!stand.geteilt[id]) return false;
+      delete stand.geteilt[id];
+      sichern();
+      return true;
+    },
 
     async zAendern(id, benutzerId, delta, grenze) {
       const cur = stand.zaehler[id];
@@ -262,8 +267,9 @@ function cosmosBackend(client, datenbank = 'lernapp') {
       throw err;
     }
   }
+  /** → true, wenn dieser Aufruf das Dokument gelöscht hat (404: schon weg → false). */
   async function punktLoeschen(container, id, pk) {
-    try { await container.item(id, pk).delete(); } catch (err) { if (cosmosStatus(err) !== 404) throw err; }
+    try { await container.item(id, pk).delete(); return true; } catch (err) { if (cosmosStatus(err) !== 404) throw err; return false; }
   }
   async function abfrage(container, query, parameters, partitionKey) {
     const opt = partitionKey === undefined ? {} : { partitionKey };
@@ -332,7 +338,7 @@ function cosmosBackend(client, datenbank = 'lernapp') {
       const docs = await abfrage(cG, 'SELECT * FROM c WHERE c.benutzerId = @b', [{ name: '@b', value: bid }]);
       return docs.map(ohneSystemfelder);
     },
-    async gLoeschen(id) { await punktLoeschen(cG, id, id); },
+    async gLoeschen(id) { return punktLoeschen(cG, id, id); },
 
     async zAendern(id, benutzerId, delta, grenze) {
       const d = Math.trunc(delta);
@@ -709,8 +715,10 @@ function fachlich(be) {
     async geteiltLesen(id) { return be.gLesen(id); },
     async geteiltVonBenutzer(bid) { return be.gVonBenutzer(bid); },
     async geteiltLoeschen(id, bid) {
-      await be.gLoeschen(id);
-      if (bid) await freigeben(bid, { g: 1 });
+      // nur freigeben, wenn DIESER Aufruf gelöscht hat: zwei gleichzeitige DELETE dürfen den Zähler
+      // nicht zweimal senken (sonst ließe sich die Grenze von 50 durch Löschen in Paaren aushebeln)
+      const geloescht = await be.gLoeschen(id);
+      if (bid && geloescht) await freigeben(bid, { g: 1 });
     },
 
     // ---- Zähler (für limits.js)

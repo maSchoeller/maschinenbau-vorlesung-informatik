@@ -1,6 +1,6 @@
 # Übergabe: API und Infrastruktur
 
-Stand: 2026-11-22. Für die Rollen Tutor, Konto und Abgleich, Werkbank, Fundament und Tests.
+Stand: 2026-11-23 (Korrekturrunde 1). Für die Rollen Tutor, Konto und Abgleich, Werkbank, Fundament und Tests.
 
 ## 1. Für die Tutor-Rolle
 
@@ -86,26 +86,32 @@ it('mit Login', async () => {
 
 ## 2. Für Konto und Abgleich (speicher-azure.js)
 
+Stand nach Korrekturrunde 1 (2026-11-23). **Geändert gegenüber der ersten Fassung:** Format von `abgelehnt`, Sicherheitsabstand 5 s, neue Fehler 410 und 429, Grenze 10 MB.
+
 - Pfade in der URL nicht als Ganzes kodieren: `/api/eintraege/inf-mb/v07/code:t-3` (Schrägstriche bleiben). `%XX` wird serverseitig dekodiert, ist also auch erlaubt (z. B. `encodeURIComponent` je Segment).
-- `POST /api/abgleich` → `{uebernommen: <Anzahl>, eintraege: [...], serverzeit, abgelehnt?: [pfad, ...]}`.
-  - Alles Gesendete ist danach erledigt: entweder übernommen (zählt in `uebernommen`; auch Gleichstand mit gleichem Inhalt) oder der Server ist neuer/gleich alt mit anderem Inhalt – dann steht sein Stand in `eintraege`.
-  - `abgelehnt` gibt es nur, wenn die Grenze von 5000 Einträgen erreicht ist (diese Pfade wurden nicht gespeichert).
-  - Höchstens 500 Einträge je Aufruf (sonst 413 `zu-viele`); doppelte Pfade in einer Anfrage: der neueste gilt.
-  - Ohne `seit` liefert `eintraege` den ganzen Serverstand (außer dem gerade Übernommenen) – geeignet für den ersten Abgleich.
-- `serverzeit` liegt absichtlich 3 Sekunden zurück (Sicherheitsabstand für gleichzeitige Schreiber). Beim nächsten Aufruf als `seit` mitschicken; Doppelte sind möglich und harmlos (gleicher Zeitstempel).
-- Löschmarken kommen als `{pfad, geaendert, geloescht: true}` ohne `wert`.
-- `geaendert` mehr als 5 Minuten in der Zukunft wird durch die Serverzeit ersetzt; der zurückgegebene Eintrag zeigt den gespeicherten Zeitstempel.
-- PUT: 200 `{eintrag}` bzw. 409 `{fehler:'server-neuer', eintrag}`; 403 `grenze-erreicht` bei 5000 Einträgen.
+- `POST /api/abgleich` → `{uebernommen: <Anzahl>, eintraege: [...], serverzeit, abgelehnt?: [{pfad, fehler, meldung}]}`.
+  - Alles Gesendete ist danach erledigt: übernommen (zählt in `uebernommen`; auch Gleichstand mit gleichem Inhalt), oder der Server ist neuer bzw. gleich alt mit anderem Inhalt – dann steht sein Stand in `eintraege` –, oder es steht in `abgelehnt`.
+  - **`abgelehnt`** (neu als Liste von Objekten): Einträge, die der Server nicht speichert. Die übrigen der Anfrage werden trotzdem angewendet. `fehler` ist einer von `pfad-ungueltig`, `zeit-ungueltig`, `eintrag-ungueltig`, `wert-fehlt`, `wert-ungueltig`, `eintrag-zu-gross` (über 64 KB), `grenze-erreicht` (5000 lebende Einträge oder 10 MB je Konto), `konto-geloescht` (Stand von vor einer Konto-Löschung). `pfad` ist `null`, wenn er fehlte oder keine Zeichenkette war. **Bitte abgelehnte Einträge aus „offen“ nehmen** (sonst werden sie ewig wiederholt) und `meldung` einmal anzeigen; der lokale Stand bleibt.
+  - 400 gibt es nur noch für die Form der Anfrage selbst (kein JSON-Objekt, `eintraege` keine Liste, `seit` ungültig), 413 `zu-viele` über 500 Einträge, 413 `zu-gross` über 256 KB Body.
+  - Doppelte Pfade in einer Anfrage: der neueste gilt.
+  - Ohne `seit` liefert `eintraege` den ganzen Serverstand (außer dem gerade Übernommenen) – für den ersten Abgleich. Das Konto ist auf 10 MB Werte begrenzt, die Antwort also auch.
+  - `geaendert` mehr als 5 Minuten in der Zukunft ersetzt der Server durch seine Zeit; der Eintrag kommt dann **mit dem gespeicherten Zeitstempel in `eintraege` zurück** (lokal übernehmen, sonst hält das Gerät mit falscher Uhr seinen Stand für neuer).
+- `serverzeit` liegt 5 Sekunden zurück. Gefiltert wird nach der Commit-Zeit der Datenbank, langsame Schreiber gehen also nicht verloren. Beim nächsten Aufruf als `seit` mitschicken; Doppelte sind möglich und harmlos (gleicher Zeitstempel).
+- Löschmarken kommen als `{pfad, geaendert, geloescht: true}` ohne `wert`. Löschen eines Pfads, den der Server nicht kennt, legt keine Marke an (Antwort trotzdem 200 bzw. „übernommen“). Löschmarken zählen nicht zur Grenze und verfallen nach 180 Tagen.
+- PUT: 200 `{eintrag}` bzw. 409 `{fehler:'server-neuer', eintrag}`; 403 `grenze-erreicht` (5000 Einträge oder 10 MB); 410 `konto-geloescht`.
+- **429 `mengenbremse`** auf allen Routen außer Tutor und Status: Tagesgrenze des Kontos (5000 Punkte; eine Anfrage oder angefangene 16 KB = 1 Punkt) oder des Kurses erreicht. Wie offline behandeln: lokal weiterarbeiten, „offen“ behalten, nicht in kurzen Abständen wiederholen (frühestens beim nächsten 60-s-Takt, besser erst nach Tageswechsel oder Neuladen).
+- **Konto löschen:** Danach lehnt der Server 30 Tage lang Einträge ab, deren `geaendert` vor der Löschung liegt (`konto-geloescht`). Andere, noch angemeldete Geräte füllen das Konto so nicht wieder auf. Bitte auf der Konto-Seite einen Satz ergänzen: „Melde dich auch auf deinen anderen Geräten ab und entferne dort den Stand.“
 - `GET /api/ich`: `{angemeldet:false}` auch bei fremdem Anbieter (Entra); `neu: true` nur beim allerersten Aufruf.
-- `PUT /api/ich {anzeigename}` → `{angemeldet, benutzerId, anzeigename}`; 400 `anzeigename-ungueltig`.
-- `DELETE /api/konto` braucht ebenfalls `content-type: application/json` (Body darf leer sein) → `{geloescht:true, eintraege:n, geteilt:n}`.
+- `PUT /api/ich {anzeigename}` → `{angemeldet, benutzerId, anzeigename}`; 400 `anzeigename-ungueltig`; 400 `anzeigename-reserviert` (Wörter wie Prof, Dozent, Tutor, Admin, DHBW als ganzes Wort). Unicode-Formatzeichen (Bidi) werden abgelehnt.
+- `DELETE /api/konto` braucht ebenfalls `content-type: application/json` (Body darf leer sein) → `{geloescht:true, eintraege:n, geteilt:n}`. Die Tutor-Tageszähler bleiben dabei bis zu 8 Tage stehen (sonst ließe sich das Kontingent durch Löschen erneuern); bitte im Datenschutzhinweis nennen: „Nach dem Löschen bleiben nur Zähler ohne Inhalt, die nach höchstens 30 Tagen verfallen.“
 
 ## 3. Für die Werkbank
 
-- `POST /api/geteilt {titel, code, lektion?}` → 201 `{id, erstellt}`; 409 `anzeigename-fehlt` (freundlicher Hinweis mit Weg zum Konto); 403 `grenze-erreicht` (50); 400/413 bei Titel/Code.
+- `POST /api/geteilt {titel, code, lektion?}` → 201 `{id, erstellt}`; 409 `anzeigename-fehlt` (freundlicher Hinweis mit Weg zum Konto); 403 `grenze-erreicht` (50); 400/413 bei Titel/Code (Titel ohne Zeilenumbrüche und ohne Unicode-Formatzeichen); 429 `mengenbremse`.
 - `GET /api/geteilt` → `{eintraege:[{id, titel, lektion, erstellt}]}` (neueste zuerst).
 - `GET /api/geteilt/{id}` ohne Login → `{id, titel, code, lektion, autor, erstellt}`; unbekannt oder ungültiges Format → 404 `nicht-gefunden`.
 - `DELETE /api/geteilt/{id}` → 200; fremd → 403 `nicht-eigen`; unbekannt → 404.
+- Anzeigenamen sind nicht geprüft (nur Rollenwörter gesperrt). Auf `geteilt.html` den Autor deshalb neutral zeigen („geteilt von <Name>“), nicht als Bestätigung.
 
 ## 4. Wünsche an das Fundament
 
@@ -121,3 +127,15 @@ it('mit Login', async () => {
 
 - Lokal mit dem Emulator: `api/local.settings.json` aus `api/local.settings.beispiel.json` kopieren (`ABLAGE=datei` speichert unter `api/.daten/ablage.json`, `ABLAGE=speicher` nur im Arbeitsspeicher).
 - Rauchtest gegen eine beliebige Adresse: `node api/skripte/rauchtest.mjs <basis-url>`.
+
+## 6. Wünsche an die PWA-Rolle
+
+- **Precache je Datei versionieren** (Hash je Datei in der Precache-Liste, beim Aktivieren nur Geänderte neu holen), statt bei jeder neuen Build-Version alles neu zu laden. Grund: SWA Free hat 100 GB Bandbreite im Monat ohne Zukauf; ein vollständiger Neuabruf kostet bei 200 Geräten ca. 5 GB je Bereitstellung (Rechnung in `BETRIEB.md`, Abschnitt 2). Alternativ beim Neuladen `cache: 'no-cache'` nutzen, damit die SWA mit 304 antwortet (ETag), wo sich nichts geändert hat.
+- Pyodide nur auf Wunsch („Python offline bereit machen“) bzw. beim ersten Ausführen laden, nicht bei der Installation (83 MB je Gerät).
+
+## 7. Korrekturrunde 1: was sich in der API geändert hat (für alle)
+
+- Obergrenzen (5000 lebende Einträge, 10 MB Werte, 50 geteilte Programme) werden über einen Kontozähler atomar reserviert; parallele Anfragen umgehen sie nicht mehr. Doppeltes gleichzeitiges Löschen eines geteilten Programms gibt nur einen Platz frei.
+- Mengenbremse für alle Nicht-Tutor-Routen (`limits.gebremst`), 429 `mengenbremse`. Die Tutor-Rolle braucht sie nicht (eigene Kontingente).
+- `seit` filtert nach der Commit-Zeit (`_ts`), Cosmos-Wiederholungen bei 429 höchstens ca. 8 s, danach 503 `ueberlastet`.
+- Testdoppel `tests/cosmos-doppel.js` kann Verzögerung und Fehler einspielen (`doppel.stoerung`); siehe `tests/robustheit.test.js`.

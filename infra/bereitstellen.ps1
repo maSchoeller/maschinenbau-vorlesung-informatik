@@ -181,8 +181,11 @@ function Invoke-Infrastruktur {
     Write-Info "Video-Basis:    $($a.VideoBasis)"
     Write-Info "Cosmos-Konto:   $($a.CosmosKonto)"
     # nur die NAMEN der Einstellungen anzeigen, nie die Werte
-    $namen = Invoke-AzBefehl @('staticwebapp', 'appsettings', 'list', '-n', $a.SwaName, '-g', $Ressourcengruppe, '--query', 'keys(properties)', '-o', 'tsv')
-    Write-Info "App-Einstellungen (Namen): $(($namen -split "`r?`n" | Where-Object { $_ }) -join ', ')"
+    # (kein JMESPath mit Klammern: az.cmd reicht sie unter Windows nicht sauber durch)
+    $einst = Invoke-AzBefehl @('staticwebapp', 'appsettings', 'list', '-n', $a.SwaName, '-g', $Ressourcengruppe, '--query', 'properties', '-o', 'json') | ConvertFrom-Json
+    $namen = (@($einst.PSObject.Properties.Name) | Sort-Object) -join ', '
+    $einst = $null
+    Write-Info "App-Einstellungen (Namen): $namen"
     if ($namen -notmatch 'ANTHROPIC_API_KEY') { Write-Info 'Hinweis: ANTHROPIC_API_KEY ist noch nicht gesetzt (Tutor aus). Siehe BETRIEB.md.' }
   }
 }

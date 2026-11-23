@@ -207,6 +207,13 @@ Allgemein:
 | `DELETE /api/geteilt/{id}` | ja | nur eigene |
 | `POST /api/tutor` | ja | siehe Abschnitt 10 |
 
+**Nachtrag 2026-11-23 (nach der Sicherheitsprüfung der API; maßgeblich sind die Details in `docs/app/uebergaben/api.md`, Abschnitte 2, 3 und 7):**
+- `POST /api/abgleich` liefert zusätzlich `abgelehnt: [{pfad, fehler, meldung}]`; ungültige Einträge werden einzeln abgelehnt, der Rest wird angewendet.
+- Obergrenzen je Konto: 5000 lebende Einträge, 10 MB Werte, 50 geteilte Programme (atomar; 403 `grenze-erreicht`). Löschmarken zählen nicht und verfallen nach 180 Tagen.
+- Mengenbremse auf allen Routen außer Tutor und Status: 429 `mengenbremse` (Client: wie offline behandeln).
+- Nach „Konto löschen“ lehnt der Server 30 Tage lang ältere Stände ab (410 `konto-geloescht`), damit andere Geräte das Konto nicht wieder auffüllen. Die Tageszähler des Tutors bleiben dabei bis zum Tagesende stehen (sonst ließe sich das Kontingent durch Löschen zurücksetzen).
+- Anzeigenamen mit Rollenwörtern (Prof, Dozent, Tutor, Admin, DHBW) sind gesperrt.
+
 Zeitstempel: ISO-8601 UTC. Der Server verwirft `geaendert` mehr als 5 Minuten in der Zukunft und setzt dann die Serverzeit. Bei Gleichstand bleibt der Serverstand.
 
 Ablage (`api/src/lib/ablage.js`), eine Schnittstelle, zwei Umsetzungen:
