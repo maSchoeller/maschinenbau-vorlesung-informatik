@@ -63,7 +63,7 @@ async function tutor(request, context) {
   const p = e.protokoll;
   log(context, {
     client: client.art, versuche: p.versuche, prueferAufrufe: p.prueferAufrufe, prueferAusfall: p.prueferAusfall,
-    prueferUrsache: p.prueferUrsache || null, ersetzt: p.ersetzt, abgelehnt: p.abgelehnt, gruende: p.gruende, mitAufgabe: Boolean(anfrage.aufgabe),
+    prueferUrsache: p.prueferUrsache || null, ersetzt: p.ersetzt, abgelehnt: p.abgelehnt, gruende: p.gruende, mitAufgabe: Boolean(anfrage.aufgabe), bezug: p.bezug,
     tokens: p.tokens, ms: p.ms,
   });
   return ok({ antwort: e.antwort, rest: { heute: k.restNutzer } });

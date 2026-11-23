@@ -12,6 +12,7 @@
 const { systemBloecke, nutzerNachricht } = require('./prompt');
 const { pruefeDeterministisch, pruefeMitModell } = require('./pruefer');
 const { alleAufgaben } = require('./kontext');
+const { aufgabenbezug } = require('./bezug');
 
 const GESAMT_MS = 38000;
 const MAX_TOKENS = 450;
@@ -22,9 +23,39 @@ class ModellFehler extends Error {
 
 const ERSATZ_MIT_AUFGABE = 'Da würde ich dir zu viel verraten, und dann hättest du die Aufgabe nicht selbst gelöst. Lass uns kleiner anfangen: Was genau soll dein Programm am Ende ausgeben oder zurückgeben, und welche Werte bekommt es dafür? Schreib nur die erste Zeile, führe sie aus und schau, was passiert. Wo hängst du dann?';
 const ERSATZ_OHNE_AUFGABE = 'Da würde ich dir zu viel verraten. Erzähl mir lieber, was du schon versucht hast und an welcher Stelle du nicht weiterkommst. Dann suchen wir zusammen den nächsten kleinen Schritt.';
+// Reine Konzeptfrage ohne Aufgabenbezug: ehrlich und neutral (Grund kann Länge oder Nähe zu einer
+// Kursaufgabe sein), statt „zu viel verraten“
+const ERSATZ_KONZEPT = 'Mein Beispiel dazu ist zu lang oder zu nah an einer Kursaufgabe geraten, deshalb halte ich es zurück. Magst du die Frage enger stellen, zum Beispiel nach einem einzelnen Teil davon? Kurze Beispiele zur Schreibweise findest du auch in den Syntax-Karten im Labor und in der Bibliothek der Lektion.';
+const ERSATZ_TEXTE = [ERSATZ_MIT_AUFGABE, ERSATZ_OHNE_AUFGABE, ERSATZ_KONZEPT];
 const ABLEHNUNG = 'Dabei kann ich dir nicht helfen. Wenn du eine Frage zu Python oder zu einer Aufgabe aus dem Kurs hast, bin ich gern für dich da. Woran arbeitest du gerade?';
 
-function ersatz(anfrage) { return anfrage.aufgabe ? ERSATZ_MIT_AUFGABE : ERSATZ_OHNE_AUFGABE; }
+function ersatz(anfrage, bezug) {
+  if (anfrage.aufgabe) return ERSATZ_MIT_AUFGABE;
+  return bezug.streng ? ERSATZ_OHNE_AUFGABE : ERSATZ_KONZEPT;
+}
+
+/**
+ * Prüfkontext für die deterministische Nachprüfung (auch vom Angriffs-Skript benutzt).
+ * Ohne Aufgaben-id, aber im Text erkannte Kursaufgabe: deren Musterlösung gilt wie die der aktuellen Aufgabe.
+ */
+function pruefKontext(anfrage, alle) {
+  const bezug = aufgabenbezug(anfrage, alle);
+  const ziel = bezug.aufgabe;
+  return {
+    bezug,
+    pk: {
+      loesung: ziel ? ziel.loesung : '',
+      aufgabentext: ziel ? ziel.text : '',
+      titel: ziel ? ziel.titel || '' : '',
+      code: anfrage.code,
+      frueher: anfrage.verlauf.filter((b) => b.rolle === 'tutor').map((b) => b.text),
+      // alle übrigen Aufgaben des Kurses: Aufgabentext kann in Werkbank oder Lerneinheit eingefügt sein
+      alle: alle.filter((a) => a !== ziel),
+      streng: bezug.streng,
+      mittel: bezug.mittel,
+    },
+  };
+}
 
 function textVon(r) {
   return (r && Array.isArray(r.content) ? r.content : []).filter((b) => b && b.type === 'text').map((b) => b.text).join('').trim();
@@ -52,14 +83,8 @@ async function beantworte(anfrage, o) {
   const tokens = { ein: 0, aus: 0, cacheLesen: 0, cacheSchreiben: 0 };
   const p = { versuche: 0, ersetzt: false, abgelehnt: false, gruende: [], prueferAusfall: false, prueferAufrufe: 0, tokens, ms: 0 };
   const nachricht = nutzerNachricht(anfrage);
-  const pk = {
-    loesung: anfrage.aufgabe ? anfrage.aufgabe.loesung : '',
-    aufgabentext: anfrage.aufgabe ? anfrage.aufgabe.text : '',
-    code: anfrage.code,
-    frueher: anfrage.verlauf.filter((b) => b.rolle === 'tutor').map((b) => b.text),
-    // alle übrigen Aufgaben des Kurses: Aufgabentext kann in Werkbank oder Lerneinheit eingefügt sein
-    alle: (o.alleAufgaben || alleAufgaben)().filter((a) => a !== anfrage.aufgabe),
-  };
+  const { bezug, pk } = pruefKontext(anfrage, (o.alleAufgaben || alleAufgaben)());
+  p.bezug = bezug.grund || 'konzept';   // nur ein Code, kein Inhalt
 
   async function erzeuge(verschaerft, timeout, maxRetries) {
     p.versuche += 1;
@@ -68,7 +93,7 @@ async function beantworte(anfrage, o) {
       max_tokens: MAX_TOKENS,
       thinking: { type: 'disabled' },
       output_config: { effort: 'low' },
-      system: systemBloecke(anfrage, { verschaerft }),
+      system: systemBloecke(anfrage, { verschaerft, streng: bezug.streng, mittel: bezug.mittel, erkannt: anfrage.aufgabe ? null : bezug.aufgabe, gruende: p.gruende }),
       messages: [{ role: 'user', content: nachricht }],
     }, { timeout, maxRetries });
     addiere(tokens, r && r.usage);
@@ -82,7 +107,7 @@ async function beantworte(anfrage, o) {
     if (!gruende.length && o.pruefer) {
       if (rest() > 5000) {
         p.prueferAufrufe += 1;
-        const b = await pruefeMitModell(o.client, { anfrage, entwurf, modell: o.modell, timeoutMs: Math.min(7000, rest() - 1500) });
+        const b = await pruefeMitModell(o.client, { anfrage, entwurf, modell: o.modell, streng: bezug.streng, timeoutMs: Math.min(7000, rest() - 1500) });
         addiere(tokens, b.usage);
         if (b.ursache) p.prueferUrsache = b.ursache;   // nur ein Code (max_tokens, json, zeit …), kein Inhalt
         if (b.ausfall) p.prueferAusfall = true;
@@ -127,7 +152,7 @@ async function beantworte(anfrage, o) {
 
   // 3. feste Ersatzantwort
   p.ersetzt = true;
-  return fertig(ersatz(anfrage));
+  return fertig(ersatz(anfrage, bezug));
 }
 
-module.exports = { beantworte, ModellFehler, GESAMT_MS, MAX_TOKENS, ERSATZ_MIT_AUFGABE, ERSATZ_OHNE_AUFGABE, ABLEHNUNG };
+module.exports = { beantworte, pruefKontext, ModellFehler, GESAMT_MS, MAX_TOKENS, ERSATZ_MIT_AUFGABE, ERSATZ_OHNE_AUFGABE, ERSATZ_KONZEPT, ERSATZ_TEXTE, ABLEHNUNG };

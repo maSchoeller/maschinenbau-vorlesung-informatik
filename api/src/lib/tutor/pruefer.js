@@ -16,9 +16,24 @@
 
 const { STABIL, KENNUNG, PRUEFER_SYSTEM, PRUEFER_SCHEMA, prueferNachricht } = require('./prompt');
 
+// Mit Aufgabenbezug (bezug.js) streng, bei reinen Konzeptfragen großzügiger: ein sinnvolles
+// if/elif/else- oder try/except-Beispiel hat 5 bis 8 Zeilen.
 const GRENZE_AM_STUECK = 3;
 const GRENZE_GESAMT = 6;
+const GRENZE_AM_STUECK_LOCKER = 8;
+const GRENZE_GESAMT_LOCKER = 12;
+// „wort“ ohne erkannte Aufgabe („Ich brauche das für eine Aufgabe“): Beispiele bis 5 Zeilen am Stück
+const GRENZE_AM_STUECK_MITTEL = 5;
+const GRENZE_GESAMT_MITTEL = 8;
 const SCHWELLE_UEBERDECKUNG = 0.5;
+const SCHWELLE_ANDERE_LOCKER = 0.4;
+
+/** Code-Grenzen je nach Aufgabenbezug: k.streng (Standard true), k.mittel (streng, aber ohne bekannte Aufgabe). */
+function grenzen(k = {}) {
+  if (k.streng === false) return { amStueck: GRENZE_AM_STUECK_LOCKER, gesamt: GRENZE_GESAMT_LOCKER };
+  if (k.mittel) return { amStueck: GRENZE_AM_STUECK_MITTEL, gesamt: GRENZE_GESAMT_MITTEL };
+  return { amStueck: GRENZE_AM_STUECK, gesamt: GRENZE_GESAMT };
+}
 // Schema mit Urteil zuerst und Begründung „höchstens 15 Wörter“; 250 lässt auch bei langer deutscher
 // Begründung Luft (Haiku 5.5 zählt laut Skill etwa 30 % mehr Token als ältere Modelle).
 const PRUEFER_MAX_TOKENS = 250;
@@ -157,7 +172,13 @@ function zerlege(text, { bekannt } = {}) {
     const spans = [];
     zeile.replace(INLINE_RE, (_, inhalt) => { spans.push(inhalt.trim()); return ''; });
     let codeInZeile = false;
+    let prosaZeile = false;
     if (spans.length) {
+      // Ein Satz mit Inline-Code („Welcher Zweig läuft bei `t = 5`?“) setzt keinen Codeblock fort:
+      // Der Inline-Code zählt für „gesamt“, der Lauf beginnt danach neu.
+      const ausserhalb = zeile.replace(INLINE_RE, ' ').split(/\s+/).filter((w) => /^[A-Za-zÄÖÜäöüß]{2,}[,.!?:;]?$/.test(w));
+      prosaZeile = ausserhalb.length >= 3;
+      if (prosaZeile) lauf = 0;
       for (const sp of spans) {
         kandidaten.push(sp);
         for (const teil of teile(sp)) {
@@ -174,7 +195,7 @@ function zerlege(text, { bekannt } = {}) {
       }
       if (!codeInZeile && /[=()*/+\-]/.test(zeile) && zeile.length < 120) kandidaten.push(zeile);
     }
-    if (!codeInZeile) lauf = 0;                 // Prosa unterbricht den Lauf
+    if (!codeInZeile || prosaZeile) lauf = 0;   // Prosa unterbricht den Lauf
   }
   return { gesamt, amStueck, kandidaten };
 }
@@ -194,9 +215,12 @@ const BEHALTEN = new Set(('and as assert break class continue def del elif else 
 
 /** Wie norm, aber eigene Namen durch „v“ ersetzt (erkennt umbenannte Variablen). */
 function normNamen(z) {
-  // Zeichenketten bleiben wörtlich (sonst würden print("A:", a) und print("B:", b) gleich)
-  return norm(z).split(/("[^"]*")/).map((teil, i) => (i % 2 === 1 ? teil
-    : teil.replace(/[a-zäöüß_][a-zäöüß0-9_]*/g, (w) => (BEHALTEN.has(w) ? w : 'v')))).join('');
+  const namen = (s) => s.replace(/[a-zäöüß_][a-zäöüß0-9_]*/g, (w) => (BEHALTEN.has(w) ? w : 'v'));
+  // Zeichenketten bleiben wörtlich (sonst würden print("A:", a) und print("B:", b) gleich), außer den
+  // Ausdrücken in {…} eines f-Strings: f"Summe: {gesamt}" und f"Summe: {summe}" sind dieselbe Zeile.
+  return norm(z).split(/("[^"]*")/).map((teil, i) => (i % 2 === 1
+    ? teil.replace(/\{([^}:!]*)/g, (m, e) => '{' + namen(e))
+    : namen(teil))).join('');
 }
 
 function istTrivial(zeile) {
@@ -353,7 +377,10 @@ function ueberdeckungAlle(kand, alle, eigen, { nurMit } = {}) {
     if (!a || !a.loesung) continue;
     if (nurMit && !nurMit.has(a)) continue;
     const u = ueberdeckungV(kand, { loesung: a.loesung, aufgabentext: a.text }, eigen);
-    if (u.getroffen < 2 && !u.schwer) continue;
+    // sehr kurze Aufgaben (2–3 wesentliche Zeilen, etwa input/print-Etiketten aus V01) nur ganz:
+    // sonst bleiben gewöhnliche Konzeptbeispiele mit input und print daran hängen
+    const mindest = u.zeilen < 4 ? Math.max(2, u.zeilen) : 2;
+    if (u.getroffen < mindest && !u.schwer) continue;
     if (u.anteil > best.anteil) best = { ...u, id: a.lektion + '/' + a.id, aufgabe: a };
   }
   return best;
@@ -382,9 +409,12 @@ function woerter(s) {
   return String(s).toLowerCase().replace(/[^a-zäöüß0-9 ]+/g, ' ').split(/\s+/).filter(Boolean);
 }
 const SCHINDELN = (() => {
-  const w = woerter(STABIL.replace(/Regelwerk.*$/s, ''));
+  // Beispiel-Zitate („…“) zählen nicht: Der Tutor darf eine vorgeschlagene Rückfrage wörtlich stellen.
   const set = new Set();
-  for (let i = 0; i + 8 <= w.length; i++) set.add(w.slice(i, i + 8).join(' '));
+  for (const teil of STABIL.replace(/Regelwerk.*$/s, '').split(/„[^“]*“/)) {
+    const w = woerter(teil);
+    for (let i = 0; i + 8 <= w.length; i++) set.add(w.slice(i, i + 8).join(' '));
+  }
   return set;
 })();
 
@@ -396,20 +426,153 @@ function promptLeck(text) {
   return treffer >= 3;
 }
 
+// ---------------------------------------------------------------- Lösungsweg in Worten, benannte Korrektur
+//
+// Mit Aufgabenbezug gegen die bekannte Musterlösung; ohne Bezug nur loesungsweg/loesungsausdruck gegen
+// Aufgaben, deren Rechenzahlen im Entwurf stehen (wegOhneBezug). Bewusst wenige, enge Signale (echter
+// Lauf 2026-11-23, Fälle A39 und A47); jedes hat in tutor-pruefer.test.js ein Gegenbeispiel.
+//   loesungsweg       mindestens zwei Sätze/Listenpunkte mit einer Rechenhandlung („teile“, „Rest“ …)
+//                     und einer Zahl, die in der Musterlösung steht, aber nicht im Aufgabentext
+//                     („Teile durch 3600 …“, „Teile den Rest durch 60.“)
+//   loesungsausdruck  mindestens zwei Operator-Zahl-Paare der Musterlösung (`3725 // 3600`, `% 3600`)
+//   korrektur-benannt „wo müsste ein return stehen“, „ersetze … durch return“, „return statt print“,
+//                     „es fehlt ein return“, mit einem Schlüsselwort aus der Musterlösung
+
+const AKTION_RE = /(teil|dividier|multiplizier|addier|subtrahier|zieh|rechne|berechn|nimm|quadrier|potenzier|rest|ganzzahl|modulo|\bmal\b)/i;
+const ZAHL_RE = /\d+(?:\.\d+)?(?:e[+-]?\d+)?/gi;
+const ZU_ALLGEMEIN = new Set(['0', '1', '2']);
+// Schlüsselwörter, die zugleich deutsche Wörter oder zu allgemein sind
+const KEIN_FIX_WORT = new Set(['in', 'is', 'as', 'or', 'and', 'not', 'set', 'type', 'open', 'get', 'log', 'exp', 'zip', 'min', 'max', 'sum', 'list', 'v']);
+
+const MERKMAL_CACHE = new Map();
+function wegMerkmale(loesung, aufgabentext, code) {
+  const schluessel = loesung + '\u0000' + (aufgabentext || '') + '\u0000' + (code || '');
+  let m = MERKMAL_CACHE.get(schluessel);
+  if (m) return m;
+  const bekannteZahlen = new Set([...String(aufgabentext || '').matchAll(ZAHL_RE), ...String(code || '').matchAll(ZAHL_RE)].map((x) => x[0]));
+  const zeilen = relevanteZeilen(loesung, aufgabentext).map((l) => l.roh.replace(/"[^"]*"|'[^']*'/g, '""'));
+  const zahlen = new Set();
+  const paare = new Set();
+  const fixWoerter = new Set();
+  for (const z of zeilen) {
+    for (const x of z.matchAll(ZAHL_RE)) if (!bekannteZahlen.has(x[0]) && !ZU_ALLGEMEIN.has(x[0])) zahlen.add(x[0]);
+    for (const x of z.matchAll(/(\/\/|\*\*|%|[+\-*/])\s*(\d+(?:\.\d+)?(?:e[+-]?\d+)?)/gi)) {
+      if (zahlen.has(x[2])) paare.add(x[1] + ' ' + x[2]);
+    }
+    for (const w of z.toLowerCase().match(/[a-z_]+/g) || []) if (BEHALTEN.has(w) && !KEIN_FIX_WORT.has(w)) fixWoerter.add(w);
+    for (const op of z.match(/<=|>=|==|!=|\/\/|%/g) || []) fixWoerter.add(op);
+  }
+  // Rechenzahlen: Zahlen hinter einem Operator (`// 3600`), nicht Datenwerte wie `t1_spannung = 150`
+  const rechen = new Set([...paare].map((x) => x.split(' ')[1]));
+  m = { zahlen, rechen, paare: [...paare], fixRes: [...fixWoerter].map(fixMuster) };
+  if (MERKMAL_CACHE.size > 2000) MERKMAL_CACHE.clear();
+  MERKMAL_CACHE.set(schluessel, m);
+  return m;
+}
+
+function esc(s) { return s.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&'); }
+
+function fixMuster(wort) {
+  // „for-Schleife“, „if-Zweig“, „input-Aufruf“ benennen ein Konstrukt, nicht die Korrektur
+  const kein = '(?![-\\s]?(?:schleife|zweig|bedingung|anweisung|aufruf|funktion|abfrage|block)[a-zäöüß]*)';
+  const y = /^\w+$/.test(wort) ? `\\b${esc(wort)}\\b${kein}` : `(?<![<>=!/*%])${esc(wort)}(?![=/*])`;
+  const art = '(?:(?:ein|eine|einen|das|der|die|dein|deine)\\s+)?';
+  return new RegExp([
+    `(?:müsste|müssten|muss|sollte|gehört|gehören)[^.?!]{0,50}${y}[^.?!]{0,25}(?:stehen|hin(?:ein)?\\b|rein\\b)`,
+    `ersetze?n?\\b[^.?!]{0,50}\\bdurch\\s+${art}${y}`,
+    `${y}\\s+(?:statt|anstatt|anstelle)\\b`,
+    `statt\\b[^.?!]{0,40}(?:schreibst du|schreib|nimm|nimmst du|brauchst du|verwende|benutze)\\b[^.?!]{0,15}?\\s${art}${y}`,
+    // nur „gegen/zu“: „in“ ist eine Ortsangabe („wenn du in range den zweiten Wert änderst“)
+    `(?:tausch|änder|wechsel)[a-zäöüß]*\\b[^.?!]{0,50}\\b(?:gegen|zu)\\s+${art}${y}`,
+    `\\bfehlt\\s+(?:noch\\s+|nur\\s+)?${art}${y}`,
+  ].join('|'), 'i');
+}
+
+/** Wortfolgen (ab 3 Wörtern) aus dem Titel der Aufgabe: „print statt return“ im Titel ist kein Hinweis des Tutors. */
+function ohneTitel(satz, titel) {
+  const w = String(titel || '').toLowerCase().split(/[^a-zäöüß0-9_]+/).filter(Boolean);
+  let s = satz.toLowerCase();
+  for (let n = w.length; n >= 3; n--) {
+    for (let i = 0; i + n <= w.length; i++) {
+      const folge = w.slice(i, i + n).join('\\W+');
+      s = s.replace(new RegExp(folge, 'g'), ' ');
+    }
+  }
+  return s;
+}
+
+/** Sätze und Listenpunkte einer Antwort, ohne Backticks und Markdown-Hervorhebung. */
+function einheiten(text) {
+  return String(text || '').replace(/`/g, '').replace(/\*\*/g, '').split('\n')
+    .flatMap((z) => ohneListenmarke(z).split(/(?<=[.!?])\s+(?=[A-ZÄÖÜ„"])/))
+    .map((s) => s.trim()).filter(Boolean);
+}
+
+function wegUndKorrektur(antwort, k, { korrektur = true, nurRechenzahlen = false } = {}) {
+  const gruende = [];
+  if (!k.loesung) return gruende;
+  const m = wegMerkmale(k.loesung, k.aufgabentext, k.code);
+  const teile = einheiten(antwort);
+  const zahlen = nurRechenzahlen ? m.rechen : m.zahlen;
+  const zahlIn = (s) => [...s.matchAll(ZAHL_RE)].some((x) => zahlen.has(x[0]) && !/\d/.test(s[x.index + x[0].length] || ''));
+  const schritte = teile.filter((s) => AKTION_RE.test(s) && zahlIn(s)).length;
+  if (schritte >= 2) gruende.push('loesungsweg');
+  const flach = String(antwort).replace(/`/g, '');
+  const paare = m.paare.filter((p) => {
+    const [op, zahl] = p.split(' ');
+    return new RegExp(`(?<![/*])${esc(op)}\\s*${esc(zahl)}(?!\\d|\\.\\d)`).test(flach);
+  });
+  if (paare.length >= 2) gruende.push('loesungsausdruck');
+  if (korrektur && teile.some((s) => { const t = ohneTitel(s, k.titel); return m.fixRes.some((re) => re.test(t)); })) gruende.push('korrektur-benannt');
+  return gruende;
+}
+
+/**
+ * Ohne Aufgabenbezug (Konzeptfrage, auch umschriebene Aufgabe in der Lerneinheit): Lösungsweg in Worten
+ * und Lösungsausdrücke gegen die bekannte Aufgabe und gegen jede Aufgabe, von deren Rechenzahlen
+ * (hinter einem Operator in der Musterlösung, nicht im Aufgabentext) mindestens zwei im Entwurf stehen.
+ * Nur Rechenzahlen, weil Datenwerte (Testtabellen, Grenzwerte) in Konzeptbeispielen zufällig vorkommen.
+ * Ohne Korrektur-Signal, weil es ohne Aufgabe keinen zu korrigierenden Code gibt.
+ */
+function wegOhneBezug(antwort, k, andere) {
+  const imEntwurf = new Set([...String(antwort || '').matchAll(ZAHL_RE)].map((x) => x[0]));
+  if (imEntwurf.size < 2) return null;
+  const kandidaten = (k.loesung ? [{ loesung: k.loesung, text: k.aufgabentext, titel: k.titel }] : []).concat(andere);
+  for (const a of kandidaten) {
+    if (!a || !a.loesung) continue;
+    const m = wegMerkmale(a.loesung, a.text, '');
+    let n = 0;
+    for (const z of m.rechen) if (imEntwurf.has(z)) n += 1;
+    if (n < 2) continue;
+    const g = wegUndKorrektur(antwort, { loesung: a.loesung, aufgabentext: a.text, code: k.code }, { korrektur: false, nurRechenzahlen: true });
+    if (g.length) return { gruende: g, id: a.lektion ? a.lektion + '/' + a.id : null };
+  }
+  return null;
+}
+
 // ---------------------------------------------------------------- a) deterministische Prüfung
 
 /**
  * @param {string} antwort  Antwortentwurf des Modells
- * @param {{loesung?: string, aufgabentext?: string, code?: string, frueher?: string[]}} k
- *   Server-Kontext (Musterlösung nur hier); frueher = frühere Tutor-Beiträge des Gesprächs
+ * @param {{loesung?: string, aufgabentext?: string, code?: string, frueher?: string[], alle?: object[], streng?: boolean}} k
+ *   Server-Kontext (Musterlösung nur hier); frueher = frühere Tutor-Beiträge des Gesprächs;
+ *   streng = Aufgabenbezug (bezug.js), Standard true; false nur bei reinen Konzeptfragen
  * @returns {{loesung: boolean, gruende: string[], werte: object}}
  */
 function pruefeDeterministisch(antwort, k = {}) {
   const gruende = [];
+  const streng = k.streng !== false;
+  const g = grenzen(k);
   const bekannt = new Set(String(k.code || '').split('\n').map(norm).filter((n) => n.length >= 6));
   const z = zerlege(antwort, { bekannt });
-  if (z.amStueck > GRENZE_AM_STUECK) gruende.push('zu-viel-code-am-stueck');
-  if (z.gesamt > GRENZE_GESAMT) gruende.push('zu-viel-code');
+  if (z.amStueck > g.amStueck) gruende.push('zu-viel-code-am-stueck');
+  if (z.gesamt > g.gesamt) gruende.push('zu-viel-code');
+  let wegAndere = null;
+  if (streng) gruende.push(...wegUndKorrektur(antwort, k));
+  else {
+    wegAndere = wegOhneBezug(antwort, k, Array.isArray(k.alle) ? k.alle : []);
+    if (wegAndere) gruende.push(...wegAndere.gruende);
+  }
 
   const dekodiert = dekodiereVerdaechtiges(antwort);
   let kandidaten = z.kandidaten;
@@ -451,7 +614,10 @@ function pruefeDeterministisch(antwort, k = {}) {
     // 2) alle anderen Aufgaben des Kurses (Werkbank, Lerneinheit, eingefügter Aufgabentext)
     if (andere.length && !gruende.includes('musterloesung')) {
       ueAlle = ueberdeckungAlle(kand, andere, eigen);
-      if (ueAlle.anteil >= SCHWELLE_UEBERDECKUNG) gruende.push('musterloesung-andere');
+      // Ohne Aufgabenbezug sind längere Beispiele erlaubt; ein langer Block, der drei oder mehr Zeilen
+      // einer Kursaufgabe trifft, ist dann aber schon ab 40 % deren Lösung (umschriebene Aufgabe, A66).
+      const schwelle = !streng && z.amStueck > GRENZE_AM_STUECK && ueAlle.getroffen >= 3 ? SCHWELLE_ANDERE_LOCKER : SCHWELLE_UEBERDECKUNG;
+      if (ueAlle.anteil >= schwelle) gruende.push('musterloesung-andere');
       else if (frueher && !gruende.includes('stueckeln')) {
         // nur Aufgaben, zu denen dieser Entwurf selbst etwas beiträgt
         const beteiligt = new Set(andere.filter((a) => a && a.loesung
@@ -466,7 +632,7 @@ function pruefeDeterministisch(antwort, k = {}) {
   if (promptLeck(antwort)) gruende.push('system-prompt');
 
   const andereTreffer = ueAlle.id ? { id: ueAlle.id, anteil: ueAlle.anteil, getroffen: ueAlle.getroffen, zeilen: ueAlle.zeilen } : null;
-  return { loesung: gruende.length > 0, gruende, werte: { gesamt: z.gesamt, amStueck: z.amStueck, ueberdeckung: ue, andere: andereTreffer } };
+  return { loesung: gruende.length > 0, gruende, werte: { gesamt: z.gesamt, amStueck: z.amStueck, ueberdeckung: ue, andere: andereTreffer, weg: wegAndere ? wegAndere.id : null } };
 }
 
 // ---------------------------------------------------------------- b) Prüfer-Aufruf
@@ -475,7 +641,7 @@ function pruefeDeterministisch(antwort, k = {}) {
  * Zweiter, kurzer Modellaufruf. Liefert {loesung: true|false} oder {ausfall: true}.
  * Fehler, Zeitüberschreitung, Ablehnung oder unlesbare Antwort gelten als Ausfall (dann gilt nur a).
  */
-async function pruefeMitModell(client, { anfrage, entwurf, modell, timeoutMs }) {
+async function pruefeMitModell(client, { anfrage, entwurf, modell, timeoutMs, streng = true }) {
   try {
     const r = await client.erzeuge({
       model: modell,
@@ -483,7 +649,7 @@ async function pruefeMitModell(client, { anfrage, entwurf, modell, timeoutMs }) 
       thinking: { type: 'disabled' },
       output_config: { effort: 'low', format: { type: 'json_schema', schema: PRUEFER_SCHEMA } },
       system: PRUEFER_SYSTEM,
-      messages: [{ role: 'user', content: prueferNachricht(anfrage, entwurf) }],
+      messages: [{ role: 'user', content: prueferNachricht(anfrage, entwurf, { streng }) }],
     }, { timeout: timeoutMs, maxRetries: 0 });
     if (!r) return { ausfall: true, ursache: 'leer' };
     if (r.stop_reason === 'refusal') return { ausfall: true, ursache: 'refusal', usage: r.usage };
@@ -505,6 +671,7 @@ async function pruefeMitModell(client, { anfrage, entwurf, modell, timeoutMs }) 
 
 module.exports = {
   pruefeDeterministisch, pruefeMitModell,
-  zerlege, istCodeZeile, ueberdeckung, loesungsZeilen, norm, normNamen, promptLeck, dekodiereVerdaechtiges, trifft, stuecke,
-  GRENZE_AM_STUECK, GRENZE_GESAMT, SCHWELLE_UEBERDECKUNG, PRUEFER_MAX_TOKENS,
+  zerlege, istCodeZeile, ueberdeckung, loesungsZeilen, norm, normNamen, promptLeck, dekodiereVerdaechtiges, trifft, stuecke, wegUndKorrektur, grenzen,
+  GRENZE_AM_STUECK, GRENZE_GESAMT, GRENZE_AM_STUECK_LOCKER, GRENZE_GESAMT_LOCKER, GRENZE_AM_STUECK_MITTEL, GRENZE_GESAMT_MITTEL,
+  SCHWELLE_UEBERDECKUNG, SCHWELLE_ANDERE_LOCKER, PRUEFER_MAX_TOKENS,
 };
