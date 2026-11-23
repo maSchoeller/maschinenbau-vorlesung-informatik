@@ -1,0 +1,6 @@
+---
+/* Symbol aus dem Sprite site/assets/img/icons.svg. Immer aria-hidden: der Text daneben trägt die Bedeutung. */
+interface Props { id: string; basis: string; klasse?: string }
+const { id, basis, klasse } = Astro.props;
+---
+<svg class={'k-ic' + (klasse ? ' ' + klasse : '')} viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href={`${basis}assets/img/icons.svg#i-${id}`}></use></svg>

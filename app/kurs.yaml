@@ -1,0 +1,261 @@
+# Eine Quelle für die 22 Termine des Kurses (Architektur-Vertrag, Abschnitt 2).
+# Dateinamen beziehen sich auf site/lektionen/ bzw. site/notebooks/.
+# Fehlt eine genannte Datei, bricht der Build ab (src/lib/kurs.mjs).
+# freigabe: Datum (JJJJ-MM-TT) oder null. Noch nicht freigegebene Lektionen bleiben sichtbar.
+
+phasen:
+  - nr: 1
+    name: Fundament
+    bereich: V01–V09
+    leitsatz: KI als Erklärer, nicht als Generator. Du tippst selbst.
+  - nr: 2
+    name: Werkzeug
+    bereich: V10–V13
+    leitsatz: KI erzeugt, du prüfst (Testfälle vorher von Hand).
+  - nr: 3
+    name: Projekt
+    bereich: V14–V22
+    leitsatz: "Jeweils die letzten 30 Min: kleines Ingenieurwerkzeug mit Copilot."
+
+termine:
+  - nr: V01
+    titel: Warum programmieren, wenn KI es kann?
+    kurz: Warum programmieren?
+    hook: KI-Rechnung um Faktor 1000 falsch
+    python: [print, Variablen & Zuweisung, Kommentare, input, Namensregeln]
+    phase: 1
+    lerneinheit: v01-warum-programmieren.html
+    labor: v01-labor.html
+    notebook: V01-Erste-Schritte.ipynb
+    freigabe: null
+
+  - nr: V02
+    titel: Bits, Binär, Hex, Zweierkomplement
+    kurz: Bits und Bytes
+    hook: Encoder-Zähler läuft über
+    python: [int, "Rechenoperatoren (+ - * / // % **)", Operatorrangfolge, int(text), "bin()/hex()/int(x, 2)"]
+    phase: 1
+    lerneinheit: v02-bits-und-bytes.html
+    labor: v02-labor.html
+    notebook: V02-Bits-und-Bytes.ipynb
+    freigabe: null
+
+  - nr: V03
+    titel: Fließkommazahlen & Datentypen
+    kurz: Fließkommazahlen
+    hook: 0.1+0.2, Toleranzen addieren
+    python: [float, type(), Typumwandlung, input → Zahl, f-Strings mit Format, math-Modul, math.isclose]
+    phase: 1
+    lerneinheit: v03-fliesskommazahlen.html
+    labor: v03-labor.html
+    notebook: V03-Fliesskommazahlen.ipynb
+    freigabe: null
+
+  - nr: V04
+    titel: Logik & Verzweigungen
+    kurz: Logik und Verzweigungen
+    hook: Zweihand-Sicherheitsschaltung
+    python: [bool, Vergleichsoperatoren, and/or/not, if / elif / else, Einrückung]
+    phase: 1
+    lerneinheit: v04-logik-und-verzweigungen.html
+    labor: v04-labor.html
+    notebook: V04-Logik-und-Verzweigungen.ipynb
+    freigabe: null
+
+  - nr: V05
+    titel: Problemanalyse & Programmablaufplan
+    kurz: Programmablaufplan
+    hook: Der PAP wird zum Prompt
+    python: [PAP → Code, verschachtelte Verzweigungen, Eingabe prüfen]
+    phase: 1
+    lerneinheit: v05-programmablaufplan.html
+    labor: v05-labor.html
+    notebook: V05-Programmablaufplan.ipynb
+    freigabe: null
+
+  - nr: V06
+    titel: Schleifen
+    kurz: Schleifen
+    hook: Abkühlkurve, Newton-Verfahren
+    python: [while, for, range, break/continue, Zähler & Summen]
+    phase: 1
+    lerneinheit: v06-schleifen.html
+    labor: v06-labor.html
+    notebook: V06-Schleifen.ipynb
+    freigabe: null
+
+  - nr: V07
+    titel: Funktionen, Zerlegung, KISS/DRY
+    kurz: Zerlegung und Funktionen
+    hook: Wellen-Rechner aus Bausteinen
+    python: [def, Parameter, return, Default-Werte, Docstring, lokale Variablen]
+    phase: 1
+    lerneinheit: v07-funktionen.html
+    labor: v07-labor.html
+    notebook: V07-Funktionen.ipynb
+    freigabe: null
+
+  - nr: V08
+    titel: Datenstrukturen (Basis)
+    kurz: Datenstrukturen
+    hook: Stückliste, Messreihe
+    python: ["Listen (Index, Slicing, append, len)", for über Listen, Tupel, Dictionaries]
+    phase: 1
+    lerneinheit: v08-datenstrukturen.html
+    labor: v08-labor.html
+    notebook: V08-Datenstrukturen.ipynb
+    freigabe: null
+
+  - nr: V09
+    titel: Dateien & Fehlerbehandlung
+    kurz: Dateien und Fehler
+    hook: eigene Smartphone-Messdaten (phyphox)
+    python: ["Strings (split, strip)", with open, csv-Modul, try/except]
+    phase: 1
+    lerneinheit: v09-dateien-und-fehler.html
+    labor: v09-labor.html
+    notebook: V09-Dateien-und-Fehler.ipynb
+    freigabe: null
+
+  - nr: V10
+    titel: Wie funktioniert KI?
+    kurz: Wie funktioniert KI?
+    hook: warum KI selbstbewusst falsch liegt
+    python: [String-Methoden vertieft, List Comprehension, einfacher Tokenizer]
+    phase: 2
+    lerneinheit: v10-wie-funktioniert-ki.html
+    labor: v10-labor.html
+    notebook: V10-Wie-funktioniert-KI.ipynb
+    freigabe: null
+
+  - nr: V11
+    titel: Programmieren mit Copilot
+    kurz: Programmieren mit Copilot
+    hook: Prompt A vs. PAP als Prompt
+    python: [import, Module & pip, Codespaces/VS Code, Copilot-Workflow]
+    phase: 2
+    lerneinheit: v11-copilot.html
+    labor: v11-labor.html
+    notebook: V11-Copilot.ipynb
+    freigabe: null
+
+  - nr: V12
+    titel: Testen & Debuggen von KI-Code
+    kurz: Testen und Debuggen
+    hook: Testfälle von Hand, Grenzwerte
+    python: [assert, Testfälle schreiben, Tracebacks lesen, Debugger]
+    phase: 2
+    lerneinheit: v12-testen-und-debuggen.html
+    labor: v12-labor.html
+    notebook: V12-Testen-und-Debuggen.ipynb
+    freigabe: null
+
+  - nr: V13
+    titel: Laufzeit-Intuition
+    kurz: Laufzeit-Intuition
+    hook: "1 Mio. Messpunkte: Schleife vs. Vektor"
+    python: [NumPy-Arrays, Vektorisierung, Zeit messen]
+    phase: 2
+    lerneinheit: v13-laufzeit.html
+    labor: v13-labor.html
+    notebook: V13-Laufzeit.ipynb
+    freigabe: null
+
+  - nr: V14
+    titel: Visualisierung & Projekt-Kickoff
+    kurz: Visualisierung
+    hook: Diagramme, die täuschen
+    python: ["matplotlib (plot, Achsen, Einheiten, Subplots)"]
+    phase: 3
+    lerneinheit: v14-visualisierung.html
+    labor: v14-labor.html
+    notebook: V14-Visualisierung.ipynb
+    freigabe: null
+
+  - nr: V15
+    titel: Datenanalyse mit pandas
+    kurz: Datenanalyse
+    hook: Cp/Cpk, SPC-Regelkarte
+    python: ["pandas (read_csv, Filtern, groupby, describe)"]
+    phase: 3
+    lerneinheit: v15-datenanalyse.html
+    labor: v15-labor.html
+    notebook: V15-Datenanalyse.ipynb
+    freigabe: null
+
+  - nr: V16
+    titel: Rechner & Betriebssystem kompakt
+    kurz: Rechner und Betriebssystem
+    hook: Warum ruckelt mein CAD?
+    python: [pathlib/os, Dateien durchsuchen, Prozesse/Zeit]
+    phase: 3
+    lerneinheit: v16-rechner-und-betriebssystem.html
+    labor: v16-labor.html
+    notebook: V16-Rechner-und-Betriebssystem.ipynb
+    freigabe: null
+
+  - nr: V17
+    titel: Netzwerke & Industrie 4.0
+    kurz: Netzwerke
+    hook: IP/Subnetz einer Fertigungszelle, MQTT
+    python: [JSON, "requests (HTTP-API abfragen)"]
+    phase: 3
+    lerneinheit: v17-netzwerke.html
+    labor: v17-labor.html
+    notebook: V17-Netzwerke.ipynb
+    freigabe: null
+
+  - nr: V18
+    titel: IT-Sicherheit für Ingenieure
+    kurz: IT-Sicherheit
+    hook: CRA, Firmware-Signatur, KI & vertrauliche Daten
+    python: [hashlib, Prüfsummen von Dateien]
+    phase: 3
+    lerneinheit: v18-it-sicherheit.html
+    labor: v18-labor.html
+    notebook: V18-IT-Sicherheit.ipynb
+    freigabe: null
+
+  - nr: V19
+    titel: Datenbanken & SQL
+    kurz: Datenbanken und SQL
+    hook: Fertigungsaufträge abfragen, SQL-Injection
+    python: [sqlite3, Parameter-Platzhalter]
+    phase: 3
+    lerneinheit: v19-datenbanken-und-sql.html
+    labor: v19-labor.html
+    notebook: V19-Datenbanken-und-SQL.ipynb
+    freigabe: null
+
+  - nr: V20
+    titel: Objekte & CAD-Automatisierung
+    kurz: Objekte und CAD
+    hook: parametrisches Bauteil per Skript
+    python: [class, __init__, Attribute, "Methoden (lesen & einfach schreiben)"]
+    phase: 3
+    lerneinheit: v20-objekte-cad.html
+    labor: v20-labor.html
+    notebook: V20-Objekte-und-CAD.ipynb
+    freigabe: null
+
+  - nr: V21
+    titel: Projektwerkstatt
+    kurz: Projektwerkstatt
+    hook: Werkzeug fertigstellen
+    python: [Wiederholung nach Bedarf]
+    phase: 3
+    lerneinheit: v21-projektwerkstatt.html
+    labor: null
+    notebook: null
+    freigabe: null
+
+  - nr: V22
+    titel: Code-Walkthroughs & Klausurtraining
+    kurz: Klausurtraining
+    hook: eigenen Code erklären
+    python: [Klausuraufgaben von Hand]
+    phase: 3
+    lerneinheit: v22-klausurtraining.html
+    labor: null
+    notebook: null
+    freigabe: null

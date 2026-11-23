@@ -8,3 +8,14 @@ video-src/**/out/
 Thumbs.db
 .claude/settings.local.json
 audio-test/
+
+# Lern-App
+.werkzeuge/
+app/dist*/
+app/.cache/
+app/.astro/
+api/.daten/
+api/daten/
+api/local.settings.json
+test-results/
+playwright-report/

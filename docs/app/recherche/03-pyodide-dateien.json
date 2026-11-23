@@ -1,0 +1,134 @@
+{
+  "version": "0.26.4",
+  "basisUrl": "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/",
+  "hinweis": "bytes = Content-Length (HEAD) auf jsDelivr; Netz-Transfer mit gzip/brotli kleiner, nicht gemessen",
+  "gruppen": {
+    "kern": [
+      {
+        "datei": "pyodide.js",
+        "bytes": 14761
+      },
+      {
+        "datei": "pyodide.asm.js",
+        "bytes": 1229099
+      },
+      {
+        "datei": "pyodide.asm.wasm",
+        "bytes": 10088051
+      },
+      {
+        "datei": "python_stdlib.zip",
+        "bytes": 2341872
+      },
+      {
+        "datei": "pyodide-lock.json",
+        "bytes": 106335
+      }
+    ],
+    "daten": [
+      {
+        "datei": "numpy-1.26.4-cp312-cp312-pyodide_2024_0_wasm32.whl",
+        "bytes": 11959269
+      },
+      {
+        "datei": "pandas-2.2.0-cp312-cp312-pyodide_2024_0_wasm32.whl",
+        "bytes": 23759073
+      },
+      {
+        "datei": "matplotlib-3.5.2-cp312-cp312-pyodide_2024_0_wasm32.whl",
+        "bytes": 15742868
+      },
+      {
+        "datei": "matplotlib_pyodide-0.2.2-py3-none-any.whl",
+        "bytes": 77772
+      },
+      {
+        "datei": "pillow-10.2.0-cp312-cp312-pyodide_2024_0_wasm32.whl",
+        "bytes": 3042026
+      },
+      {
+        "datei": "fonttools-4.51.0-py3-none-any.whl",
+        "bytes": 4266602
+      },
+      {
+        "datei": "kiwisolver-1.4.5-cp312-cp312-pyodide_2024_0_wasm32.whl",
+        "bytes": 133464
+      },
+      {
+        "datei": "cycler-0.12.1-py3-none-any.whl",
+        "bytes": 23552
+      },
+      {
+        "datei": "pyparsing-3.1.2-py3-none-any.whl",
+        "bytes": 394748
+      },
+      {
+        "datei": "python_dateutil-2.9.0.post0-py2.py3-none-any.whl",
+        "bytes": 444927
+      },
+      {
+        "datei": "pytz-2024.1-py2.py3-none-any.whl",
+        "bytes": 1083571
+      },
+      {
+        "datei": "six-1.16.0-py2.py3-none-any.whl",
+        "bytes": 38737
+      },
+      {
+        "datei": "packaging-23.2-py3-none-any.whl",
+        "bytes": 194236
+      }
+    ],
+    "netz": [
+      {
+        "datei": "requests-2.31.0-py3-none-any.whl",
+        "bytes": 198551
+      },
+      {
+        "datei": "pyodide_http-0.2.1-py3-none-any.whl",
+        "bytes": 24641
+      },
+      {
+        "datei": "urllib3-2.2.1-py3-none-any.whl",
+        "bytes": 397071
+      },
+      {
+        "datei": "charset_normalizer-3.3.2-py3-none-any.whl",
+        "bytes": 170113
+      },
+      {
+        "datei": "idna-3.7-py3-none-any.whl",
+        "bytes": 317915
+      },
+      {
+        "datei": "certifi-2024.2.2-py3-none-any.whl",
+        "bytes": 302634
+      }
+    ],
+    "extras": [
+      {
+        "datei": "micropip-0.6.0-py3-none-any.whl",
+        "bytes": 125054
+      },
+      {
+        "datei": "jedi-0.19.1-py2.py3-none-any.whl",
+        "bytes": 4873188
+      },
+      {
+        "datei": "parso-0.8.4-py2.py3-none-any.whl",
+        "bytes": 349734
+      },
+      {
+        "datei": "sqlite3-1.0.0.zip",
+        "bytes": 1454039
+      }
+    ]
+  },
+  "summen": {
+    "kern": 13780118,
+    "daten": 61160845,
+    "netz": 1410925,
+    "extras": 6802015,
+    "gesamt": 83153903
+  }
+}
