@@ -119,16 +119,16 @@ async function lauf(browser, breite, hoehe) {
   const basis = URL_ARG || `http://127.0.0.1:${PORT}/`;
 
   // ---- Labor: langer Verlauf, dann Fehler
-  await page.goto(basis + 'lektionen/v05-labor.html#a-fuellstand');
+  await page.goto(basis + 'lektionen/v04-labor.html#a-eigene');
   await panelOeffnen(page);
   pruefe(await page.evaluate(() => document.activeElement && document.activeElement.id === 'tutor-frage'), `${g} Fokus im Eingabefeld nach dem Öffnen`);
   const hinweis = await page.evaluate(() => { const s = getComputedStyle(document.querySelector('.tutor-hinweis')); return { kante: s.borderLeftWidth, farbe: s.backgroundColor }; });
   const rot = /rgb\((\d+), (\d+), (\d+)\)/.exec(hinweis.farbe);
   pruefe(parseFloat(hinweis.kante) === 0 && !(rot && Number(rot[1]) > Number(rot[3]) + 12), `${g} Hinweiskasten neutral (Kante ${hinweis.kante}, Fläche ${hinweis.farbe})`);
   const kontextText = await page.locator('#tutor-kontext').textContent();
-  pruefe(/a-fuellstand/.test(kontextText), `${g} Kontextzeile nennt die Aufgabe: „${kontextText}“`);
+  pruefe(/a-eigene/.test(kontextText), `${g} Kontextzeile nennt die Aufgabe: „${kontextText}“`);
   for (let i = 0; i < 5; i++) await fragen(page, 'Wie fange ich an? Frage ' + (i + 1));
-  pruefe(gesendet.length === 5 && gesendet[0].kontext.aufgabe === 'a-fuellstand', `${g} Labor schickt die Aufgabe mit (${gesendet[0] && gesendet[0].kontext.aufgabe})`);
+  pruefe(gesendet.length === 5 && gesendet[0].kontext.aufgabe === 'a-eigene', `${g} Labor schickt die Aufgabe mit (${gesendet[0] && gesendet[0].kontext.aufgabe})`);
   pruefe(await page.evaluate(() => /Heute noch 25 Fragen/.test(document.querySelector('.tutor-rest').textContent)), `${g} Restkontingent angezeigt`);
   await fragen(page, 'testfall:fehler');
   await page.waitForTimeout(100);
@@ -158,7 +158,7 @@ async function lauf(browser, breite, hoehe) {
   await foto(page, `labor-kontingent-${breite}`);
 
   // ---- Lerneinheit: Rest seitenübergreifend, Aufgabe der Lerneinheit
-  await page.goto(basis + 'lektionen/v05-programmablaufplan.html');
+  await page.goto(basis + 'lektionen/v04-logik-und-verzweigungen.html');
   await panelOeffnen(page);
   pruefe(/Heute noch 0 Fragen/.test(await page.locator('.tutor-rest').textContent()), `${g} Lerneinheit: Rest seitenübergreifend sichtbar`);
   pruefe(await page.locator('.tutor-senden').isDisabled(), `${g} Lerneinheit: Senden bleibt aus`);

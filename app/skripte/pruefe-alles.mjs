@@ -11,7 +11,7 @@
      4. Emulator      swa start app/<ausgabe> --swa-config-location app/<ausgabe> --api-location api (TUTOR_DOPPEL=1, eigene Datei-Ablage
                       api/.daten/<ausgabe>/ablage.json, frisch je Lauf; ANTHROPIC_API_KEY wird entfernt;
                       DOZENT_IDS = Testidentität „pruef-dozent“ aus pruefe-dozent.mjs)
-     5. dozent (zuerst: braucht die frische Ablage), seiten, navigation, offline, abgleich, werkbank,
+     5. dozent (zuerst: braucht die frische Ablage), loesungen (Musterlösungen der neuen Terminseiten), seiten, navigation, offline, abgleich, werkbank,
                       tutor-oberflaeche, zusammenspiel (Browser)
      6. tutor-angriffe  Trockenlauf mit Modell-Doppel
    Am Ende: Tabelle je Teil (bestanden/Fehler, Zahl der Prüfungen, Dauer). Alle gestarteten Prozesse
@@ -98,6 +98,7 @@ const TEILE = [
   { id: 'api', name: 'api npm test', fn: () => lauf('npm', ['test'], { cwd: API, zeitlimit: 10 * 60000 }), zahl: zaehler.api },
   { id: 'selbsttest', name: 'selbsttest', fn: () => lauf('npm', ['run', 'selbsttest'], { zeitlimit: 5 * 60000 }), zahl: zaehler.selbsttest },
   { id: 'dozent', name: 'pruefe-dozent', emulator: true, fn: () => lauf('node', ['skripte/pruefe-dozent.mjs', BASIS], { zeitlimit: 10 * 60000 }), zahl: zaehler.allgemein },
+  { id: 'loesungen', name: 'pruefe-loesungen', emulator: true, fn: () => lauf('node', ['skripte/pruefe-loesungen.mjs', BASIS], { zeitlimit: 15 * 60000 }), zahl: zaehler.allgemein },
   { id: 'seiten', name: 'pruefe-seiten', emulator: true, fn: () => lauf('node', ['skripte/pruefe-seiten.mjs', BASIS, '--ohne-fotos'], { zeitlimit: 15 * 60000 }), zahl: zaehler.seiten },
   { id: 'navigation', name: 'pruefe-navigation', emulator: true, fn: () => lauf('node', ['skripte/pruefe-navigation.mjs', BASIS], { zeitlimit: 10 * 60000 }), zahl: zaehler.allgemein },
   { id: 'offline', name: 'pruefe-offline', emulator: true, fn: () => lauf('node', ['skripte/pruefe-offline.mjs', BASIS], { zeitlimit: 30 * 60000 }), zahl: zaehler.allgemein },

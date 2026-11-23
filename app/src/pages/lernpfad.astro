@@ -6,10 +6,11 @@ import App from '../layouts/App.astro';
 import Icon from '../components/Icon.astro';
 import { ladeKurs } from '../lib/kurs.mjs';
 const { semester, termine, lektionen } = ladeKurs();
-const lektion = (nr: string) => lektionen.find((l) => l.nr === nr);
+const lektion = (nr: string) => lektionen.find((l) => l.nr === nr && l.aktiv);
 const ab = (iso: string | null) => { const m = /^\d{4}-(\d\d)-(\d\d)$/.exec(iso || ''); return m ? `ab ${m[2]}.${m[1]}.` : ''; };
 const namen = (t: any, strang: string) => t.teile.filter((x: any) => x.strang === strang);
 const imUmbau = termine.some((t) => !t.lektion);
+const mitMaterial = termine.some((t) => t.stoff.length > 0);
 /* Jede Lektion bekommt ihren Anker (#v01) nur an der ersten Stelle, an der sie vorkommt */
 const gesehen = new Set<string>();
 const anker = (nr: string) => { if (gesehen.has(nr)) return undefined; gesehen.add(nr); return nr.toLowerCase(); };
@@ -18,7 +19,8 @@ const anker = (nr: string) => { if (gesehen.has(nr)) return undefined; gesehen.a
   <main id="inhalt" class="app-seite np-seite lp">
     <h1>Lernpfad</h1>
     <p class="np-lead">20 Termine in zwei Semestern. Jeder Termin hat einen Theorie-Teil und einen Programmier-Teil.</p>
-    {imUmbau && <p class="lp-umbau">Der Kurs wird gerade auf diesen Plan umgestellt. Hat ein Termin noch keine eigenen Seiten, steht daneben das bisherige Material zum Stoff.</p>}
+    {imUmbau && mitMaterial && <p class="lp-umbau">Der Kurs wird gerade auf diesen Plan umgestellt. Hat ein Termin noch keine eigenen Seiten, steht daneben das bisherige Material zum Stoff.</p>}
+    {imUmbau && !mitMaterial && <p class="lp-umbau">Die Seiten eines Termins werden rechtzeitig vor dem Termin freigeschaltet. Bis dahin siehst du hier schon, was dich erwartet.</p>}
     <p class="k-small" data-lp-sprung hidden></p>
 
     {semester.map((s) => (

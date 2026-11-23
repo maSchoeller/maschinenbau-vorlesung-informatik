@@ -1,0 +1,434 @@
+---
+titel: Termin 01 · Erst der Ablauf, dann der Code · Lerneinheit · Informatik Maschinenbau
+beschreibung: "Vom Problem zum Programm: Eingabe, Verarbeitung und Ausgabe, der Programmablaufplan mit seinen Grundsymbolen, Variablen, print und input. Mit Trinkgeld-Rechner zum Ausprobieren."
+body:
+  data-lesson: V01
+  data-page: lerneinheit
+stile:
+  - ../assets/css/dhbw-base.css
+  - ../assets/css/kurs.css
+  - ../assets/css/aufgaben.css
+  - ../assets/css/editor.css
+  - ../assets/css/v05.css
+  - ../assets/css/v01.css
+skripte:
+  - ../assets/js/speicher.js
+  - ../assets/js/icons.js
+  - src: ../assets/js/editor.js
+    defer: true
+  - ../assets/js/pap-engine.js
+  - ../assets/js/explorables-v01.js
+  - ../assets/js/kurs.js
+  - ../assets/js/aufgaben.js
+---
+
+<Lerneinheit nr="V01" name="Termin 01" labor="v01-labor.html">
+
+<Kopf marke="Termin 01 · 1. Semester · Lerneinheit" titel="Erst der Ablauf, dann der Code">
+
+Programmieren heißt: einem Rechner Schritt für Schritt sagen, was er tun soll. Bevor du die erste Zeile schreibst, legst du diese Schritte fest. Wie zeichnest du einen Ablauf, und wie wird daraus dein erstes Programm?
+
+- ein Problem in Eingabe, Verarbeitung und Ausgabe zerlegen
+- einen Programmablaufplan lesen und seine drei Grundsymbole benennen
+- mit Variablen rechnen und Ergebnisse mit `print` ausgeben
+- Werte mit `input` einlesen und aus einem Plan ein Programm machen
+
+Du musst nichts installieren: Python läuft hier im Browser. Geübt wird im [Programmierlabor](v01-labor.html).
+
+</Kopf>
+
+<Abschnitt id="ablauf" nr="1" titel="Vom Problem zum Ablauf">
+
+Ihr wart essen, die Rechnung macht 40 Euro, und ihr gebt 10 Prozent Trinkgeld. Im Kopf geht das schnell: 4 Euro dazu, also 44 Euro. Ein Rechner kann das nicht „einfach so“. Er braucht jeden Schritt einzeln und in der richtigen Reihenfolge.
+
+Schau dir an, was du im Kopf getan hast. Es sind immer dieselben drei Teile:
+
+<div class="k-tablewrap">
+<table class="k-types">
+<thead><tr><th scope="col">Teil</th><th scope="col">Frage</th><th scope="col">Beim Trinkgeld</th></tr></thead>
+<tbody>
+<tr><td><strong>Eingabe</strong></td><td>Was ist gegeben?</td><td>Rechnungsbetrag und Prozentsatz</td></tr>
+<tr><td><strong>Verarbeitung</strong></td><td>Was wird damit getan?</td><td>Trinkgeld ausrechnen, zum Betrag addieren</td></tr>
+<tr><td><strong>Ausgabe</strong></td><td>Was soll herauskommen?</td><td>Trinkgeld und Gesamtbetrag</td></tr>
+</tbody>
+</table>
+</div>
+
+Eine solche Folge von Schritten heißt <Begriff e="Ein Algorithmus ist eine Folge von eindeutigen Schritten, die nach endlich vielen Schritten zum Ergebnis führt. Ein Kochrezept ist ein Algorithmus für Menschen.">Algorithmus</Begriff>. Jeder Schritt muss eindeutig sein, und nach endlich vielen Schritten muss ein Ergebnis da sein. Der Rechner denkt nicht mit: Was du nicht hinschreibst, passiert nicht.
+
+<Explorable name="eva" titel="Trinkgeld-Rechner: Eingabe, Verarbeitung, Ausgabe">
+
+Schieb die beiden Regler und beobachte, welche Zahlen sich in der Mitte und rechts ändern. Vermute zuerst: Verdoppelt sich der Gesamtbetrag, wenn du das Trinkgeld von 10 auf 20 Prozent verdoppelst?
+
+<Ohne>
+
+Für den Trinkgeld-Rechner wird JavaScript benötigt. Beispiel: Aus 40 Euro und 10 Prozent werden 4 Euro Trinkgeld und 44 Euro Gesamtbetrag.
+
+</Ohne>
+
+</Explorable>
+
+Der Gesamtbetrag verdoppelt sich nicht, nur das Trinkgeld: Aus 44 Euro werden 48 Euro. Solche Vermutungen prüfst du ab jetzt immer selbst. Erst überlegen, dann ausprobieren.
+
+### Erklärvideo (ca. 3 Min)
+
+<Video name="v01-theorie" id="video-theorie" titel="Erklärvideo: Vom Problem zum Programmablaufplan" fehlt="Video folgt. Bis dahin: Der Trinkgeld-Rechner oben und der Plan im nächsten Abschnitt zeigen dasselbe.">
+
+Erklärvideo: Vom Problem zum Programmablaufplan (ca. 3 Min). Untertitel sind eingeschaltet (Deutsch).
+
+</Video>
+
+<Hinweis art="merke">
+
+Jede Aufgabe beginnt mit drei Fragen: Was ist **gegeben** (Eingabe)? Was wird **getan** (Verarbeitung)? Was soll **herauskommen** (Ausgabe)?
+
+</Hinweis>
+
+</Abschnitt>
+
+<Abschnitt id="pap" nr="2" titel="Der Programmablaufplan">
+
+Einen Ablauf schreibt man nicht als Aufsatz auf, man zeichnet ihn. Die Zeichnung heißt <Begriff e="Ein Programmablaufplan (PAP) zeigt die Schritte eines Programms als genormte Symbole, die durch Pfeile verbunden sind. Die Symbole legt die Norm DIN 66001 fest.">Programmablaufplan</Begriff>, kurz PAP. Die Symbole sind genormt, damit jeder denselben Plan gleich liest. Für heute brauchst du drei:
+
+<div class="k-tablewrap">
+<table class="k-types">
+<thead><tr><th scope="col">Symbol</th><th scope="col">Name</th><th scope="col">Bedeutung</th></tr></thead>
+<tbody>
+<tr><td>abgerundetes Feld</td><td>Grenzstelle</td><td>Start oder Ende des Ablaufs</td></tr>
+<tr><td>Parallelogramm</td><td>Ein- und Ausgabe</td><td>ein Wert kommt von außen hinein oder geht nach außen</td></tr>
+<tr><td>Rechteck</td><td>Verarbeitung</td><td>es wird gerechnet oder ein Wert gemerkt</td></tr>
+<tr><td>Pfeil</td><td>Ablauflinie</td><td>die Reihenfolge: von oben nach unten</td></tr>
+</tbody>
+</table>
+</div>
+
+<Explorable name="papschritt" titel="Der Plan des Trinkgeld-Rechners, Schritt für Schritt">
+
+Geh mit „Nächster Schritt“ durch den Plan oder klick ein Symbol an. Rechts steht, welches Symbol es ist und was dort passiert. Die Tabelle zeigt, was sich der Ablauf bis dahin gemerkt hat.
+
+<Ohne>
+
+Für den Schritt-für-Schritt-Plan wird JavaScript benötigt. Der Plan lautet: Start, Eingabe betrag, Eingabe prozent, trinkgeld berechnen, gesamt berechnen, Ausgabe trinkgeld und gesamt, Ende.
+
+</Ohne>
+
+</Explorable>
+
+Vier Regeln für jeden Plan:
+
+- Es gibt genau **einen Start** und genau **ein Ende**.
+- Gelesen wird **von oben nach unten**, immer dem Pfeil nach.
+- In jedem Symbol steht **ein Schritt**, kurz und eindeutig.
+- Was der Plan nicht zeigt, tut das Programm nicht.
+
+Für Entscheidungen („Wenn …, dann …“) gibt es ein viertes Symbol, die Raute. Sie kommt in Termin 02.
+
+<Hinweis art="warum">
+
+In der Klausur zeichnest du Pläne von Hand und überträgst Pläne in Code. Und beim Programmieren selbst gilt: Einen Denkfehler findest du im Plan in Sekunden, im fertigen Code oft erst nach langem Suchen. Deshalb steht in diesem Kurs vor jeder Programmieraufgabe der Plan.
+
+</Hinweis>
+
+</Abschnitt>
+
+<Abschnitt id="variablen" nr="3" titel="Variablen und Ausgabe">
+
+Jetzt wird aus dem Plan ein Programm. Die Sprache heißt <Begriff e="Python ist eine Programmiersprache, die sich fast wie Englisch liest. Du schreibst Anweisungen als Text, der Rechner führt sie Zeile für Zeile aus.">Python</Begriff>. Die Regel ist einfach: **Jedes Symbol im Plan wird eine Zeile im Programm.**
+
+Die Ausgabe schreibst du mit `print`. Text steht in Anführungszeichen, Zahlen ohne. Ändere den Text und führ das Programm aus:
+
+```python
+print("Hallo aus Horb")
+print(40 + 4)
+```
+
+Für das Rechteck „etwas merken“ gibt es <Begriff e="Eine Variable ist ein Name für einen Wert, den sich das Programm merkt. Stell dir eine beschriftete Schachtel vor: außen steht der Name, innen liegt der Wert.">Variablen</Begriff>: Namen für Werte. Die Zeile `betrag = 40` heißt: Merke dir 40 unter dem Namen `betrag`. Das nennt man <Begriff e="Eine Zuweisung legt einen Wert unter einem Namen ab: Erst wird ausgerechnet, was rechts vom Gleichheitszeichen steht, dann kommt das Ergebnis in die Variable links.">Zuweisung</Begriff>. Gerechnet wird mit `+`, `-`, `*` (mal) und `/` (geteilt).
+
+```python
+betrag = 40
+prozent = 10
+trinkgeld = betrag * prozent / 100
+gesamt = betrag + trinkgeld
+print("Trinkgeld:", trinkgeld)
+print("Zu zahlen:", gesamt)
+```
+
+Mit „Schritt für Schritt“ am Codeblock siehst du, wie sich die Variablen Zeile für Zeile füllen. `print` nimmt mehrere Dinge, durch Komma getrennt, und schreibt sie mit einem Leerzeichen dazwischen in eine Zeile.
+
+Das Zeichen `=` ist kein „ist gleich“ wie in der Mathematik. Es ist ein Auftrag: **Rechne aus, was rechts steht, und leg das Ergebnis links ab.**
+
+<Explorable name="schachteln" titel="Variablen als Schachteln">
+
+Klick Zeilen an und beobachte die beiden Schachteln. Vermute zuerst: Du führst `a = 5`, dann `b = a`, dann `a = a + 1` aus. Steht danach in `b` eine 5 oder eine 6?
+
+<Ohne>
+
+Für die Schachteln wird JavaScript benötigt. Nach a = 5, b = a und a = a + 1 hat a den Wert 6 und b weiter den Wert 5.
+
+</Ohne>
+
+</Explorable>
+
+<div class="k-try">
+
+### Vorhersage: Wer bekommt welchen Wert?
+
+<Vorhersage>
+
+Was gibt die letzte Zeile aus?
+
+- 5 5
+- [x] 5 3
+- 3 3
+- eine Fehlermeldung
+
+`5 3`. Die Zeile `b = a` kopiert den Wert 3 in `b`. Danach haben die beiden nichts mehr miteinander zu tun: `a = a + 2` ändert nur `a`.
+
+</Vorhersage>
+
+```python
+a = 3
+b = a
+a = a + 2
+print(a, b)
+```
+
+</div>
+
+Namen wählst du selbst. Gute Namen sagen, was drinsteht: `betrag` statt `x`. Sie bestehen aus Kleinbuchstaben, Ziffern und dem Unterstrich, ohne Leerzeichen und ohne Umlaute, zum Beispiel `strecke_km`. Groß und klein sind verschieden: `Betrag` ist ein anderer Name als `betrag`.
+
+<Hinweis art="merke">
+
+Eine Zuweisung liest du von rechts nach links: erst ausrechnen, dann ablegen. Der alte Wert in der Schachtel ist danach weg.
+
+</Hinweis>
+
+</Abschnitt>
+
+<Abschnitt id="eingabe" nr="4" titel="Eingabe: das erste ganze Programm">
+
+Bisher stehen 40 und 10 fest im Programm. Ein Parallelogramm im Plan heißt aber: Der Wert kommt von außen. Dafür gibt es `input`. Das Programm hält an, zeigt deine Frage und wartet auf eine Eingabe.
+
+`input` liefert immer **Text**, auch wenn jemand Ziffern tippt. Zum Rechnen brauchst du eine Zahl. Dafür packst du `input` in `float(…)` für eine Kommazahl oder in `int(…)` für eine ganze Zahl. Nimm das vorerst als festen Baustein „Zahl einlesen“; warum es zwei Sorten Zahlen gibt, klärt Termin 07.
+
+Links der Plan, rechts das Programm. Vergleiche Symbol für Symbol und Zeile für Zeile:
+
+<div class="v01-paar">
+
+<Plan titel="Trinkgeld-Rechner">
+
+```text
+Eingabe: betrag
+Eingabe: prozent
+trinkgeld = betrag * prozent / 100
+gesamt = betrag + trinkgeld
+Ausgabe: trinkgeld, gesamt
+```
+
+</Plan>
+
+<div>
+
+```python data-stdin="40\n10"
+betrag = float(input("Rechnungsbetrag in Euro: "))
+prozent = float(input("Trinkgeld in Prozent: "))
+trinkgeld = betrag * prozent / 100
+gesamt = betrag + trinkgeld
+print("Trinkgeld:", trinkgeld)
+print("Zu zahlen:", gesamt)
+```
+
+<p class="k-small k-muted">Im Feld „Eingaben“ steht für jedes `input` eine Zeile. Ändere die Werte und führ das Programm noch einmal aus. Punkt statt Komma: 12.5, nicht 12,5.</p>
+
+</div>
+
+</div>
+
+Start und Ende schreibst du in Python nicht hin: Das Programm beginnt in der ersten Zeile und endet nach der letzten.
+
+<div class="k-try">
+
+### Vorhersage: ein Tippfehler
+
+<Vorhersage>
+
+In der letzten Zeile steht `gesammt` mit zwei m. Was passiert beim Ausführen?
+
+- Es wird 44.0 ausgegeben
+- Es wird nichts ausgegeben
+- [x] Die erste Ausgabe erscheint, dann kommt eine Fehlermeldung
+
+Die erste Ausgabe erscheint noch, dann bricht das Programm mit `NameError: name 'gesammt' is not defined` ab. Python kennt nur Namen, die vorher genau so angelegt wurden. Lies eine Fehlermeldung von unten: In der letzten Zeile steht, was nicht stimmt, darüber, in welcher Zeile.
+
+</Vorhersage>
+
+```python
+betrag = 40
+gesamt = betrag + 4
+print("Trinkgeld:", 4)
+print("Zu zahlen:", gesammt)
+```
+
+</div>
+
+<Hinweis art="achtung">
+
+Eine Fehlermeldung ist kein Urteil über dich, sondern ein Hinweis mit Zeilennummer. Lies sie, bevor du etwas änderst. Die häufigsten am Anfang: ein Name ist falsch geschrieben (`NameError`), eine Klammer oder ein Anführungszeichen fehlt (`SyntaxError`).
+
+</Hinweis>
+
+</Abschnitt>
+
+<Abschnitt id="selbstcheck" nr="5" titel="Selbstcheck">
+
+Sechs Fragen in den Formen der Klausur: Plan lesen, Ausgabe bestimmen, Fehler finden. Die Reihenfolge der Fragen und Antworten ist bei jedem Aufruf anders. Rechne im Kopf oder auf Papier, nicht im Editor.
+
+<Quiz id="v01">
+
+<Frage id="symbol" typ="mc" punkte="2" titel="Symbol bestimmen">
+
+In einem Plan soll der Schritt „Rechnungsbetrag einlesen“ stehen. Welches Symbol ist richtig?
+
+- Rechteck
+- [x] Parallelogramm
+- abgerundetes Feld
+- Raute
+
+<Erklaerung>
+
+Der Wert kommt von außen in den Ablauf: Das ist eine Eingabe, also ein Parallelogramm. Im Rechteck steht, was mit den Werten getan wird.
+
+</Erklaerung>
+
+</Frage>
+
+<Frage id="ausgabe" typ="output" punkte="3" antwort="9" titel="Ausgabe bestimmen">
+
+Was gibt das Programm aus?
+
+```python class="k-code" data-run="nach-antwort"
+a = 4
+b = a * 2
+a = 1
+print(a + b)
+```
+
+<Erklaerung>
+
+`b` bekommt 4 · 2 = 8. Dass `a` danach auf 1 gesetzt wird, ändert `b` nicht mehr. Ausgegeben wird 1 + 8 = 9.
+
+</Erklaerung>
+
+</Frage>
+
+<Frage id="wert" typ="num" punkte="3" antwort="40" tol="0" titel="Wert einer Variable">
+
+Welchen Wert hat `gesamt` nach diesen Zeilen?
+
+```python class="k-code" data-run="nach-antwort"
+preis = 12
+anzahl = 3
+gesamt = preis * anzahl
+gesamt = gesamt + 4
+```
+
+<Erklaerung>
+
+Erst 12 · 3 = 36. In der letzten Zeile wird rechts 36 + 4 = 40 ausgerechnet und wieder in `gesamt` abgelegt.
+
+</Erklaerung>
+
+</Frage>
+
+<Frage id="aussagen" typ="mc" punkte="4" titel="Aussagen prüfen (mehrere richtig)">
+
+Welche Aussagen stimmen? Kreuze alle richtigen an.
+
+- [x] Ein Programmablaufplan hat genau einen Start.
+- [x] Die Zeile <code>x = x + 1</code> erhöht den Wert von <code>x</code> um 1.
+- <code>input</code> liefert eine Zahl, wenn jemand Ziffern eintippt.
+- [x] Die Pfeile im Plan legen die Reihenfolge der Schritte fest.
+- Im Rechteck steht eine Eingabe oder eine Ausgabe.
+
+<Erklaerung>
+
+<code>input</code> liefert immer Text; zum Rechnen brauchst du <code>int(…)</code> oder <code>float(…)</code>. Ein- und Ausgaben stehen im Parallelogramm, im Rechteck steht die Verarbeitung.
+
+</Erklaerung>
+
+</Frage>
+
+<Frage id="plan" typ="mc" punkte="3" titel="Vom Problem zum Plan">
+
+Du fährst an mehreren Tagen pro Woche zur Hochschule. Eingegeben werden die einfache Strecke in Kilometern und die Zahl der Tage. Ausgegeben werden die Kilometer pro Woche. Was steht im Rechteck?
+
+- strecke einlesen
+- [x] woche = strecke \* 2 \* tage
+- woche ausgeben
+- woche = strecke \* tage
+
+<Erklaerung>
+
+Im Rechteck steht die Rechnung. Hin und zurück sind es zwei Fahrten am Tag, deshalb mal 2. Einlesen und Ausgeben gehören ins Parallelogramm.
+
+</Erklaerung>
+
+</Frage>
+
+<Frage id="fehler" typ="mc" punkte="3" titel="Fehler finden">
+
+Das Programm bricht mit einer Fehlermeldung ab. In welcher Zeile steckt der Fehler?
+
+```python class="k-code" data-run="nach-antwort"
+preis = 3
+menge = 4
+summe = preis * menge
+print("Summe:", Summe)
+```
+
+- <code>preis = 3</code>
+- <code>summe = preis \* menge</code>
+- [x] <code>print("Summe:", Summe)</code>
+- In keiner Zeile, das Programm läuft.
+
+<Erklaerung>
+
+Angelegt wurde <code>summe</code> mit kleinem s. <code>Summe</code> mit großem S ist für Python ein anderer Name, den es nicht gibt: <code>NameError</code>.
+
+</Erklaerung>
+
+</Frage>
+
+</Quiz>
+
+</Abschnitt>
+
+<Weiter ziel="v01-labor.html">
+
+Jetzt bist du dran. Im Labor liest du Abläufe, zeichnest deinen ersten Plan und schreibst danach den Code dazu. Zwei weitere Videos findest du dort an der passenden Station: der Python-Werkzeugkasten und das vorgerechnete Beispiel.
+
+</Weiter>
+
+<Dozent titel="Für Dozierende: Ablauf des Termins (135 Minuten) und Training">
+
+<p class="k-small k-muted">Vier Blöcke à 30 Minuten: zwei Theorie (T1 Problemanalyse und PAP-Symbole), zwei Programmieren (P1 Variablen, Ein- und Ausgabe, Teil 1 von 2). Die Lerneinheit ist zum Zeigen und Nachlesen, geübt wird im <a href="v01-labor.html">Programmierlabor</a>.</p>
+
+<div class="k-tablewrap">
+<table class="k-plan">
+<thead><tr><th scope="col">Minuten</th><th scope="col">Wo</th><th scope="col">Was zu tun ist</th></tr></thead>
+<tbody>
+<tr><td>0–10</td><td>–</td><td><strong>Ankommen.</strong> Leitsatz des Kurses: Erst der Ablauf, dann der Code. App zeigen, alle öffnen die Seite. Frage in die Runde: „Wie rechnet ihr 10 Prozent Trinkgeld aus?“ Schritte an der Tafel sammeln.</td></tr>
+<tr><td>10–40</td><td>Lerneinheit 1 und 2</td><td><strong>Theorie.</strong> Eingabe, Verarbeitung, Ausgabe am Trinkgeld-Rechner (Regler, Vermutung abstimmen lassen). Drei Symbole, Plan Schritt für Schritt am Beamer, die vier Regeln.</td></tr>
+<tr><td>40–70</td><td>Labor Teil A, Stationen 1 bis 4</td><td><strong>Programmieren 1: der Plan zuerst.</strong> Werkzeugkasten überfliegen, vorgerechnetes Beispiel Pendelstrecke vormachen (Plan, dann Code), Ablauf verfolgen. Alle zeichnen ihren ersten Plan im Editor.</td></tr>
+<tr><td>70–80</td><td>–</td><td><strong>Pause.</strong></td></tr>
+<tr><td>80–110</td><td>Lerneinheit 3 und 4, Labor Stationen 5 bis 7</td><td><strong>Programmieren 2: der Code.</strong> Schachteln und Vorhersage gemeinsam, dann <code>input</code> und der Baustein „Zahl einlesen“. Zeilen ordnen, Lücken füllen, erste eigene Aufgabe. Rundgang: Tippfehler in Namen, fehlende Anführungszeichen, Komma statt Punkt.</td></tr>
+<tr><td>110–135</td><td>Labor Station 8, Lerneinheit 5</td><td><strong>Zweiter Theorie-Block.</strong> Fehler finden gemeinsam am Beamer, Fehlermeldungen von unten lesen. Selbstcheck als Abschluss. Auftrag: Training (Teil B), 45 Minuten, Pflicht. Der nächste Termin beginnt mit einer Aufgabe daraus.</td></tr>
+</tbody>
+</table>
+</div>
+
+<p class="k-small k-muted">Wie weit die Gruppe im Training ist und an welcher Aufgabe sie hängt, zeigt vor dem nächsten Termin die Kursübersicht (Konto, „Kursübersicht für Dozierende“). Gezählt wird dort nur, wer mit Konto lernt.</p>
+
+</Dozent>
+
+</Lerneinheit>

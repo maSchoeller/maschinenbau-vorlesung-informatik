@@ -1,6 +1,6 @@
 # Lern-App: Architektur-Vertrag
 
-Stand: 2026-11-23. Verbindlich für alle, die an `app/`, `api/`, `infra/` und `tests/` arbeiten.
+Stand: 2026-11-23. Verbindlich für alle, die an `app/`, `api/`, `infra/` und `tests/` arbeiten. Abschnitt 11 („`site/` ist tabu“) gilt nicht mehr für die Inhalte: Die alten Lektionen werden durch neue Terminseiten ersetzt (Abschnitt 16), und `site/assets/js/kurs.js`, `labor.js` sowie die Explorables dürfen dafür geändert werden.
 Ergänzend lesen: `KONZEPT.md`, `DESIGN.md`, `docs/ARCHITEKTUR-BACKEND.md` (älterer Entwurf; wo er diesem Dokument widerspricht, gilt dieses), `docs/app/recherche/*.md` (belegte Fakten zu Azure, Pyodide, Claude-API, Astro).
 
 ## 1. Ziel und Grundsätze
@@ -382,8 +382,16 @@ Der Build (`src/lib/kurs.mjs`) prüft den Plan: genau 20 Termine, je Termin 4 Bl
 
 `kurs.json` für den Browser: `semester`, `einheiten`, `termine` (die 20 Termine des Plans) und `lektionen` (Seiten mit Abschnitten und Aufgaben). Lektionswähler, Heute, Fortschritt, Suche und die Kursübersicht für Dozierende arbeiten mit `lektionen`; nur der Lernpfad zeigt die Termine. In der Hülle heißt eine Lektion an einigen Stellen noch „termin“ (`terminZuDatei`, `KursApp.fortschritt.termin`); gemeint ist dort immer ein Eintrag aus `lektionen`.
 
-Übergang: Die Seiten der 20 Termine gibt es noch nicht. Sie entstehen Termin für Termin als MDX (Abschnitt 15) aus dem bisherigen Material und mit neuen Beispielen. Ist ein Termin fertig, bekommt er einen Eintrag unter `lektionen` und `lektion: <Kennung>` am Termin; die Lektionen, die ganz in neuen Terminen aufgegangen sind, entfallen dann. Neue Terminseiten brauchen eigene Kennungen, die sich nicht mit denen des bisherigen Materials (V01 bis V22) überschneiden, weil der Lernstand unter der Kennung gespeichert wird; das Muster dafür ist beim ersten Termin festzulegen (`kurs.mjs` erlaubt bisher nur `V` und zwei Ziffern).
+Übergang: Die Seiten entstehen Termin für Termin neu als MDX (Abschnitt 15), mit neuen Beispielen und neuen Aufgaben. Das alte Material darf ersatzlos weg: Es wurde noch keine Vorlesung danach gehalten, es gibt keinen Lernstand zu schützen (Entscheidung des Dozenten, 2026-11-23). Ein fertiger Termin bekommt die Kennung `V` plus Terminnummer (Termin 01 = `V01`), einen Eintrag unter `lektionen` und `lektion: V01` am Termin; die alte Lektion gleicher Kennung und das Material, das der Termin ersetzt, werden gelöscht. Stand: **Termin 01 ist gebaut und die Referenz** für alle weiteren (`app/inhalte/v01/`, `site/assets/js/explorables-v01.js`); die alten V01 und V05 sind entfernt.
 
 Aus der App genommen (2026-11-23): V11, V12, V13, V15, V20, V21 und die Projektseite samt Reiter „Projekt“. Ihre Notebooks, Explorable-Skripte, Bilder und Videos liegen noch unter `site/` und werden mit ausgeliefert, aber nirgends verlinkt. Das Modul `bauteil3d` und die 3D-Vorschau bleiben als Beispielwelt.
 
 Offen: Die bleibenden Lektionen verweisen an rund 80 Stellen auf die Projektseite oder auf entfallene Lektionen (ins Leere, bis die Seiten neu gebaut sind). „Über den Kurs“ (`kurs.astro`, Inhalte aus `site/index.html`), `DESIGN.md` und `briefing/LEKTION-BRIEF.md` beschreiben noch den alten Kurs (Leitidee, Wissens-Ampel, 22 Termine). Heute und der Lektionswähler gehen die Lektionen in der bisherigen Reihenfolge durch, nicht in der des neuen Plans.
+
+Regeln für die Seiten eines Termins (Vorgaben des Dozenten, 2026-11-23; Einzelheiten in `docs/app/INHALTE.md`):
+
+- Je Termin vier Blöcke; die Lerneinheit hat je Block einen Abschnitt und einen Selbstcheck, das Labor Teil A (im Termin) und Teil B (Training, 45 Minuten, Pflicht).
+- Wenige, einfache interaktive Bausteine zum Ausprobieren, höchstens einer je Kerninhalt.
+- Quizfragen, ihre Antworten und die Antworten von Vorhersagen erscheinen bei jedem Aufruf in zufälliger Reihenfolge (`site/assets/js/kurs.js`, Funktion `mische`; für Prüfskripte abschaltbar mit `window.KURS_NICHT_MISCHEN`).
+- Vor jeder Programmieraufgabe steht der Plan; „Fehler finden“ ersetzt den KI-Spiegel; die Wissens-Ampel entfällt.
+- Erklärvideos werden erst inhaltlich geplant (`video-src/<name>/texte.py`) und erst vertont, wenn die Seite steht.

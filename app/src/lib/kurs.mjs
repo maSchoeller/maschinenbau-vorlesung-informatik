@@ -2,7 +2,7 @@
      semester   die zwei Semester
      einheiten  der Stoff (P1–P11, T1–T11) mit Blöcken und dem bisherigen Material
      termine    die 20 Termine des Plans, je 4 Blöcke
-     lektionen  Seiten, die es gibt (Lerneinheit, Labor, Notebook)
+     lektionen  Seiten, die es gibt (Lerneinheit, Labor, Notebook); aktiv: false = gebaut, aber nirgends angeboten
    In der Hülle heißt eine Lektion mit Seiten an vielen Stellen noch „termin“ (terminZuDatei, App.astro):
    gemeint ist dort immer ein Eintrag aus lektionen. */
 import fs from 'node:fs';
@@ -49,6 +49,7 @@ export function ladeKurs() {
       hook: String(t.hook),
       python: Array.isArray(t.python) ? t.python.map(String) : [],
       semester: t.semester,
+      aktiv: t.aktiv !== false,
       lerneinheit: pruefe('lektionen', t.lerneinheit, 'lerneinheit'),
       labor: pruefe('lektionen', t.labor, 'labor'),
       notebook: pruefe('notebooks', t.notebook, 'notebook'),
@@ -94,9 +95,9 @@ export function ladeKurs() {
     let freigabe = t.freigabe == null ? null : t.freigabe;
     if (freigabe instanceof Date) freigabe = freigabe.toISOString().slice(0, 10);
     if (freigabe != null && !/^\d{4}-\d\d-\d\d$/.test(String(freigabe))) fehler(`${wo}: freigabe "${freigabe}" ist kein Datum JJJJ-MM-TT`);
-    /* Bisheriges Material: die Lektionen, aus denen die Einheiten des Termins entstehen (ohne Doppelte) */
+    /* Bisheriges Material: die Lektionen, aus denen die Einheiten des Termins entstehen (ohne Doppelte, ohne abgeschaltete) */
     const stoff = [];
-    for (const x of teile) for (const nr of einheit(x.einheit).stoff) if (!stoff.includes(nr)) stoff.push(nr);
+    for (const x of teile) for (const nr of einheit(x.einheit).stoff) if (!stoff.includes(nr) && lektionen.find((l) => l.nr === nr).aktiv) stoff.push(nr);
     return { nr: t.nr, kennung: zwei(t.nr), semester: t.nr <= TERMINE / 2 ? 1 : 2, teile, puffer, lektion, stoff: lektion ? [] : stoff, freigabe: freigabe == null ? null : String(freigabe) };
   });
   for (const e of einheiten) if (verplant.get(e.id) !== e.bloecke) fehler(`${e.id}: ${verplant.get(e.id)} Blöcke in den Terminen, laut Einheit ${e.bloecke}`);
@@ -122,7 +123,10 @@ export function terminZuDatei(datei) {
 
 /* Nachbar in derselben Ansicht: Labor -> Labor der Nachbarlektion, sonst deren Lerneinheit */
 export function nachbar(nr, richtung, art) {
-  const { lektionen } = ladeKurs();
+  /* Nachbarn nur unter Lektionen mit demselben Zustand: von einer aktiven Lektion führt kein Pfeil zu einer abgeschalteten */
+  const alle = ladeKurs().lektionen;
+  const selbst = alle.find((t) => t.nr === nr);
+  const lektionen = alle.filter((t) => t.aktiv === (selbst ? selbst.aktiv : true));
   const i = lektionen.findIndex((t) => t.nr === nr);
   const n = lektionen[i + richtung];
   if (!n) return null;

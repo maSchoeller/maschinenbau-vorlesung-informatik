@@ -33,8 +33,11 @@ test('Teil x von y zählt eine Einheit über ihre Termine durch', () => {
 
 test('bisheriges Material: jede Lektion steht bei mindestens einem Termin, entfallene kommen nicht vor', () => {
   const genannt = new Set(termine.flatMap((t) => t.stoff));
-  for (const l of lektionen) assert.ok(genannt.has(l.nr) || termine.some((t) => t.lektion === l.nr), `${l.nr} steht bei keinem Termin`);
-  for (const nr of ['V11', 'V12', 'V13', 'V15', 'V20', 'V21']) assert.ok(!lektionen.some((l) => l.nr === nr), `${nr} ist entfallen`);
-  assert.deepEqual(termine[0].stoff, ['V05', 'V01']);
+  for (const l of lektionen.filter((x) => x.aktiv)) assert.ok(genannt.has(l.nr) || termine.some((t) => t.lektion === l.nr), `${l.nr} steht bei keinem Termin`);
+  assert.deepEqual(lektionen.filter((x) => x.aktiv).map((x) => x.nr), ['V01'], 'nur Termin 01 ist freigeschaltet');
+  for (const nr of ['V05', 'V11', 'V12', 'V13', 'V15', 'V20', 'V21']) assert.ok(!lektionen.some((l) => l.nr === nr), `${nr} ist entfallen`);
+  assert.equal(termine[0].lektion, 'V01', 'Termin 01 hat eigene Seiten');
+  assert.deepEqual(termine[0].stoff, [], 'ein Termin mit eigenen Seiten zeigt kein bisheriges Material');
+  assert.deepEqual(termine[3].stoff, [], 'abgeschaltete Lektionen erscheinen nicht als bisheriges Material');
   assert.deepEqual(termine[18].stoff, [], 'Termin 19: Puffer und Schiffe versenken werden neu gebaut');
 });

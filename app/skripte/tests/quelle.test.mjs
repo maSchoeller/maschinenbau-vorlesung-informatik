@@ -27,7 +27,7 @@ const seiten = alleSeiten();
 const distDa = fs.existsSync(path.join(DIST, 'lektionen'));
 
 test('es gibt die erwarteten Seiten', () => {
-  assert.ok(seiten.length >= 36, `nur ${seiten.length} Seiten`);
+  assert.ok(seiten.length >= 30, `nur ${seiten.length} Seiten`);
   assert.ok(!seiten.includes('werkzeuge/labor-test.html'));
 });
 
@@ -109,11 +109,11 @@ for (const s of seiten) {
 }
 
 test('VIDEO_BASIS schreibt nur <source …/assets/video/X.mp4> um', () => {
-  const rel = 'lektionen/v01-warum-programmieren.html';
+  const rel = 'lektionen/v02-bits-und-bytes.html';
   const text = fs.readFileSync(path.join(SITE, rel), 'utf8');
   const ohne = zerlegeText(text, rel, { videoBasis: '' });
   const mit = zerlegeText(text, rel, { videoBasis: 'https://speicher.example/video/' });
-  assert.match(mit.inhalt, /<source src="https:\/\/speicher\.example\/video\/v01-theorie\.mp4"/);
+  assert.match(mit.inhalt, /<source src="https:\/\/speicher\.example\/video\/v02-theorie\.mp4"/);
   assert.doesNotMatch(mit.inhalt, /assets\/video\/[^"]+\.mp4"/);
   const zurueck = mit.inhalt.replace(/https:\/\/speicher\.example\/video\/([^"/]+\.mp4)"/g, '../assets/video/$1"');
   assert.equal(zurueck, ohne.inhalt, 'sonst nichts verändert (Poster und Untertitel bleiben)');

@@ -43,5 +43,5 @@ export function lektionsKontext(termin, art) {
     const n = nachbar(termin.nr, 1, 'lerneinheit');
     if (n) weiter = { datei: n.termin.lerneinheit, text: `Weiter mit ${n.termin.nr} · ${n.termin.kurz}` };
   }
-  return { termin, art, vor, nach, weiter, semester, termine: lektionen };
+  return { termin, art, vor, nach, weiter, semester, termine: lektionen.filter((l) => l.aktiv) };
 }

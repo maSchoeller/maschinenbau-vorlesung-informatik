@@ -1,0 +1,1 @@
+{"baum": [{"k": "in", "v": "anzahl", "typ": "int"}, {"k": "in", "v": "preis", "typ": "float"}, {"k": "op", "v": "gesamt = anzahl * preis"}, {"k": "out", "v": "gesamt"}]}

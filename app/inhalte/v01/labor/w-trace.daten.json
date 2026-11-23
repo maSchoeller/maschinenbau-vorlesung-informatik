@@ -1,0 +1,48 @@
+{
+ "code": [
+  "preis = 3",
+  "menge = 4",
+  "summe = preis * menge",
+  "menge = 5",
+  "print(summe, menge)"
+ ],
+ "vars": [
+  "preis",
+  "menge",
+  "summe"
+ ],
+ "steps": [
+  {
+   "line": 1,
+   "set": {
+    "preis": "3"
+   },
+   "hint": "Die 3 kommt in die Schachtel preis."
+  },
+  {
+   "line": 2,
+   "set": {
+    "menge": "4"
+   }
+  },
+  {
+   "line": 3,
+   "set": {
+    "summe": "12"
+   },
+   "hint": "Rechts ausrechnen: 3 mal 4. Das Ergebnis kommt in summe."
+  },
+  {
+   "line": 4,
+   "set": {
+    "menge": "5"
+   },
+   "hint": "Nur menge ändert sich. summe wurde schon berechnet und bleibt, wie sie ist."
+  },
+  {
+   "line": 5,
+   "out": "12 5",
+   "hint": "print schreibt beide Werte mit einem Leerzeichen dazwischen."
+  }
+ ]
+}

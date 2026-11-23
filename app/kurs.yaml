@@ -8,9 +8,12 @@
 # termine    die 20 Termine in Kursreihenfolge, je Termin 4 Blöcke (theorie, programmieren, puffer).
 #            lektion:  Kennung der eigenen Seiten des Termins, sobald es sie gibt (Eintrag unter lektionen).
 #            freigabe: Datum (JJJJ-MM-TT) oder weglassen.
-# lektionen  Seiten, die es gibt: bis zum Neuzuschnitt die bleibenden Lektionen des bisherigen Kurses.
+# lektionen  Seiten, die es gibt: die fertigen Termine (bisher V01 = Termin 01) und, bis sie ersetzt sind,
+#            die bleibenden Lektionen des bisherigen Kurses.
 #            Dateinamen sind die Adressen unter lektionen/; die Quelle liegt in app/inhalte/vNN/ (MDX) oder site/lektionen/.
 #            Fehlt eine genannte Datei, bricht der Build ab (src/lib/kurs.mjs).
+#            aktiv: false schaltet eine Lektion ab: Ihre Seiten werden noch gebaut, aber nirgends angeboten
+#            (nicht im Lernpfad, nicht im Lektionswähler, nicht in Heute, Suche, Glossar und Kursübersicht).
 
 semester:
   - nr: 1
@@ -23,7 +26,7 @@ semester:
     leitsatz: Listen, Messwerte und ein Spielfeld. Am Ende baust du Schiffe versenken gegen den Computer.
 
 einheiten:
-  P1: { name: "Variablen, Ein- und Ausgabe, Ausgabe formatieren", kurz: "Variablen, Ein- und Ausgabe", bloecke: 3, stoff: [V01] }
+  P1: { name: "Variablen, Ein- und Ausgabe, Ausgabe formatieren", kurz: "Variablen, Ein- und Ausgabe", bloecke: 3 }
   P2: { name: Verzweigungen, kurz: Verzweigungen, bloecke: 4, stoff: [V04] }
   P3: { name: "Schleifen (while, for)", kurz: Schleifen, bloecke: 7, stoff: [V06] }
   P4: { name: "Funktionen, lokale und globale Namen", kurz: Funktionen, bloecke: 6, stoff: [V07] }
@@ -34,7 +37,7 @@ einheiten:
   P9: { name: "Raster (Liste in Liste)", kurz: Raster, bloecke: 2 }
   P10: { name: Schiffe versenken gegen den Computer, kurz: Schiffe versenken, bloecke: 9 }
   P11: { name: Klausurtraining Programmierteil, kurz: Klausurtraining Programmieren, bloecke: 2, stoff: [V22] }
-  T1: { name: "Problemanalyse, Algorithmus, PAP-Symbole", kurz: Problemanalyse und PAP, bloecke: 2, stoff: [V05] }
+  T1: { name: "Problemanalyse, Algorithmus, PAP-Symbole", kurz: Problemanalyse und PAP, bloecke: 2 }
   T2: { name: "Boolesche Logik: und, oder, nicht, Wahrheitstabelle", kurz: Boolesche Logik, bloecke: 3, stoff: [V04] }
   T3: { name: "Zahlensysteme: dezimal, binär, hexadezimal", kurz: Zahlensysteme, bloecke: 4, stoff: [V02] }
   T4: { name: Bitoperationen, kurz: Bitoperationen, bloecke: 1, stoff: [V02] }
@@ -47,7 +50,7 @@ einheiten:
   T11: { name: Klausurtraining Theorieteil, kurz: Klausurtraining Theorie, bloecke: 2, stoff: [V22] }
 
 termine:
-  - { nr: 1,  theorie: { T1: 2 },        programmieren: { P1: 2 } }
+  - { nr: 1,  theorie: { T1: 2 },        programmieren: { P1: 2 }, lektion: V01 }
   - { nr: 2,  theorie: { T2: 1 },        programmieren: { P1: 1, P2: 2 } }
   - { nr: 3,  theorie: { T2: 2 },        programmieren: { P2: 2 } }
   - { nr: 4,  theorie: { T3: 2 },        programmieren: { P3: 2 } }
@@ -70,16 +73,17 @@ termine:
 
 lektionen:
   - nr: V01
-    titel: Warum programmieren, wenn KI es kann?
-    kurz: Warum programmieren?
-    hook: KI-Rechnung um Faktor 1000 falsch
-    python: [print, Variablen & Zuweisung, Kommentare, input, Namensregeln]
+    titel: Erst der Ablauf, dann der Code
+    kurz: Ablauf und erste Programme
+    hook: Trinkgeld ausrechnen, Schritt für Schritt
+    python: [print, Variablen & Zuweisung, "Rechnen (+ - * /)", input, "Zahl einlesen: int(input()), float(input())"]
     semester: 1
-    lerneinheit: v01-warum-programmieren.html
+    lerneinheit: v01-ablauf-und-erste-programme.html
     labor: v01-labor.html
-    notebook: V01-Erste-Schritte.ipynb
+    notebook: null
     freigabe: null
   - nr: V02
+    aktiv: false
     titel: Bits, Binär, Hex, Zweierkomplement
     kurz: Bits und Bytes
     hook: Encoder-Zähler läuft über
@@ -90,6 +94,7 @@ lektionen:
     notebook: V02-Bits-und-Bytes.ipynb
     freigabe: null
   - nr: V03
+    aktiv: false
     titel: Fließkommazahlen & Datentypen
     kurz: Fließkommazahlen
     hook: 0.1+0.2, Toleranzen addieren
@@ -100,6 +105,7 @@ lektionen:
     notebook: V03-Fliesskommazahlen.ipynb
     freigabe: null
   - nr: V04
+    aktiv: false
     titel: Logik & Verzweigungen
     kurz: Logik und Verzweigungen
     hook: Zweihand-Sicherheitsschaltung
@@ -109,17 +115,8 @@ lektionen:
     labor: v04-labor.html
     notebook: V04-Logik-und-Verzweigungen.ipynb
     freigabe: null
-  - nr: V05
-    titel: Problemanalyse & Programmablaufplan
-    kurz: Programmablaufplan
-    hook: Der PAP wird zum Prompt
-    python: [PAP → Code, verschachtelte Verzweigungen, Eingabe prüfen]
-    semester: 1
-    lerneinheit: v05-programmablaufplan.html
-    labor: v05-labor.html
-    notebook: V05-Programmablaufplan.ipynb
-    freigabe: null
   - nr: V06
+    aktiv: false
     titel: Schleifen
     kurz: Schleifen
     hook: Abkühlkurve, Newton-Verfahren
@@ -130,6 +127,7 @@ lektionen:
     notebook: V06-Schleifen.ipynb
     freigabe: null
   - nr: V07
+    aktiv: false
     titel: Funktionen, Zerlegung, KISS/DRY
     kurz: Zerlegung und Funktionen
     hook: Wellen-Rechner aus Bausteinen
@@ -140,6 +138,7 @@ lektionen:
     notebook: V07-Funktionen.ipynb
     freigabe: null
   - nr: V08
+    aktiv: false
     titel: Datenstrukturen (Basis)
     kurz: Datenstrukturen
     hook: Stückliste, Messreihe
@@ -150,6 +149,7 @@ lektionen:
     notebook: V08-Datenstrukturen.ipynb
     freigabe: null
   - nr: V09
+    aktiv: false
     titel: Dateien & Fehlerbehandlung
     kurz: Dateien und Fehler
     hook: eigene Smartphone-Messdaten (phyphox)
@@ -160,6 +160,7 @@ lektionen:
     notebook: V09-Dateien-und-Fehler.ipynb
     freigabe: null
   - nr: V10
+    aktiv: false
     titel: Wie funktioniert KI?
     kurz: Wie funktioniert KI?
     hook: warum KI selbstbewusst falsch liegt
@@ -170,6 +171,7 @@ lektionen:
     notebook: V10-Wie-funktioniert-KI.ipynb
     freigabe: null
   - nr: V14
+    aktiv: false
     titel: Visualisierung & Projekt-Kickoff
     kurz: Visualisierung
     hook: Diagramme, die täuschen
@@ -180,6 +182,7 @@ lektionen:
     notebook: V14-Visualisierung.ipynb
     freigabe: null
   - nr: V16
+    aktiv: false
     titel: Rechner & Betriebssystem kompakt
     kurz: Rechner und Betriebssystem
     hook: Warum ruckelt mein CAD?
@@ -190,6 +193,7 @@ lektionen:
     notebook: V16-Rechner-und-Betriebssystem.ipynb
     freigabe: null
   - nr: V17
+    aktiv: false
     titel: Netzwerke & Industrie 4.0
     kurz: Netzwerke
     hook: IP/Subnetz einer Fertigungszelle, MQTT
@@ -200,6 +204,7 @@ lektionen:
     notebook: V17-Netzwerke.ipynb
     freigabe: null
   - nr: V18
+    aktiv: false
     titel: IT-Sicherheit für Ingenieure
     kurz: IT-Sicherheit
     hook: CRA, Firmware-Signatur, KI & vertrauliche Daten
@@ -210,6 +215,7 @@ lektionen:
     notebook: V18-IT-Sicherheit.ipynb
     freigabe: null
   - nr: V19
+    aktiv: false
     titel: Datenbanken & SQL
     kurz: Datenbanken und SQL
     hook: Fertigungsaufträge abfragen, SQL-Injection
@@ -220,6 +226,7 @@ lektionen:
     notebook: V19-Datenbanken-und-SQL.ipynb
     freigabe: null
   - nr: V22
+    aktiv: false
     titel: Code-Walkthroughs & Klausurtraining
     kurz: Klausurtraining
     hook: eigenen Code erklären

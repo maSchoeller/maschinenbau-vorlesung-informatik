@@ -1,6 +1,6 @@
 # Lektionen als MDX schreiben
 
-Stand: 2026-11-23. Gilt für Lektionen, die nach MDX umgezogen sind (bisher V07 als Pilot). Vertrag: `docs/app/ARCHITEKTUR.md`, Abschnitt 15.
+Stand: 2026-11-23. Gilt für alle Seiten, deren Quelle MDX ist: die neuen Terminseiten (Referenz: Termin 01 unter `app/inhalte/v01/`) und umgezogene Lektionen (V07). Vertrag: `docs/app/ARCHITEKTUR.md`, Abschnitt 15.
 
 Der Kurs wird auf 20 Termine umgestellt (`KONZEPT.md`, Architektur Abschnitt 16). Neue Terminseiten entstehen direkt als MDX. V11, V12, V13, V15, V20 und V21 sind aus der App genommen und werden nicht umgezogen.
 
@@ -133,6 +133,42 @@ Text für Browser ohne JavaScript.
 
 Bei `<Frage>` stehen `antwort="4"` und `tol="0.1"` für Zahlen- und Ausgabefragen. Die Punktzahl rechts oben („2 Punkte“) entsteht aus `punkte`.
 
+### Seitenrahmen, Pläne, Aufgaben (seit Termin 01)
+
+```mdx
+<Lerneinheit nr="V01" name="Termin 01" labor="v01-labor.html">     Inhaltsverzeichnis, Fortschritt und <main> entstehen aus den Abschnitten
+<Kopf marke="Termin 01 · 1. Semester · Lerneinheit" titel="…">      erster Absatz = Vorspann, Liste = Lernziele, weitere Absätze = kleiner Hinweis
+<Video name="v01-theorie" id="video-theorie" titel="…" fehlt="Video folgt. …">   Dateien: assets/video/<name>.mp4, .vtt, -poster.png
+<Weiter ziel="v01-labor.html"> … </Weiter>                          „Wie geht es weiter?“ mit Knopf ins Labor
+<Dozent titel="Für Dozierende: …"> … </Dozent>                      eingeklappter Ablaufplan
+
+<Plan titel="Pendelstrecke">          Programmablaufplan als Bild, beim Build gezeichnet; die Seite braucht v05.css
+
+```text
+Eingabe: strecke
+woche = strecke * 2 * tage
+Ausgabe: woche
+```
+
+</Plan>
+
+<Labor nr="V01" name="Termin 01" lerneinheit="v01-….html">          Aufgabenliste, Auswahl, Werkzeugkasten-Knopf, Blättern
+<Werkzeugkasten> <Syntaxkarte id="sk-print" nr="1" titel="…"> … </Syntaxkarte> </Werkzeugkasten>   in der ersten Station
+<Aufgabe art="code" id="tr-1" titel="…" data-mode="code"> … </Aufgabe>   art: trace, parsons, gap, code, run, klausur, pap-zeichnen
+<Tipps>      nummerierte Liste der gestuften Hinweise
+<Schritte>   nummerierte Liste, die ein vorgerechnetes Beispiel erklärt
+<Fehlersuche titel="Pizza teilen" fehler="3 4">   Beschreibung, Programm als ```text, danach die Auflösung
+```
+
+Eine Zeile je Symbol im `<Plan>`: „Eingabe: …“ und „Ausgabe: …“ werden Parallelogramme, alles andere ein Rechteck; Start und Ende kommen von selbst. `<Station … data-seen="manual">` zählt erst als angesehen, wenn die Fehlersuche aufgelöst wurde. Vorbelegte Eingaben eines Codeblocks mit mehreren Zeilen: ```` ```python data-stdin="40\n10" ````.
+
+Regeln für neue Terminseiten (Vorgaben vom 2026-11-23):
+
+- **Interaktive Bausteine:** Jeder Termin bekommt wenige, einfache Bausteine zum Ausprobieren (Regler, Schritt-Knopf, Schalter), je Kerninhalt höchstens einen. Sie liegen als `site/assets/js/explorables-vNN.js` mit `site/assets/css/vNN.css` und werden mit `<Explorable name="…">` eingebunden. Der Rechenkern steht oben in der Datei und wird ohne Browser getestet (`app/skripte/tests/termin01.test.mjs` als Muster).
+- **Fragen werden gemischt:** `kurs.js` ordnet Quizfragen, ihre Antworten und die Antworten einer `<Vorhersage>` bei jedem Aufruf zufällig an. Deshalb keine Nummern im Titel einer Frage und keine Formulierungen wie „die erste Antwort“ oder „keine der oben genannten“.
+- **Plan zuerst:** Jede Programmieraufgabe zeigt oder verlangt einen Plan. Die drei Klausurformen (Plan zeichnen, Plan in Code übertragen, Code lesen) kommen in jedem Labor vor.
+- **Jede Musterlösung besteht ihre Tests:** `node skripte/pruefe-loesungen.mjs <Ausgabeordner>` lässt die Lösungen aller Aufgaben der neuen Terminseiten im Browser gegen ihre Tests laufen (auch Lückentexte und gezeichnete Pläne) und ist Teil von `npm run pruefen:alles`.
+
 `<Html>{`…`}</Html>` gibt HTML unverändert aus. Das benutzt nur der Konverter für Stellen, die er nicht umziehen konnte; neu schreibt man so nichts.
 
 Die genaue Ausgabe jedes Bausteins steht in `app/src/lib/mdx/bausteine.mjs` (kurz, ein Baustein je Funktion). Ein neuer Baustein ist eine Funktion dort, die Knoten mit `h('div', {class: '…'}, kinder)` zurückgibt.
@@ -160,6 +196,6 @@ Der Konverter versucht jeden Block in der lesbarsten Form (Baustein oder Markdow
 
 ## Noch nicht umgesetzt
 
-- Rahmen der Seite (Inhaltsverzeichnis der Lerneinheit, Aufgabenliste des Labors, Seitenkopf), Video, Bild, Wissens-Ampel, Deep Dive, „Für Dozierende“ und die Aufgabentypen des Labors stehen noch als HTML im MDX. Dafür fehlen Bausteine.
-- Prüfung im Build, dass jede Musterlösung ihre Tests besteht und kein Konstrukt vor seiner Einführung vorkommt.
+- Der Konverter kennt die Bausteine für Seitenrahmen, Video, Plan und Aufgaben noch nicht; umgezogene Altseiten (V07) haben diese Teile deshalb als HTML im MDX.
+- Prüfung, dass kein Konstrukt vor seiner Einführung vorkommt.
 - Vorschau beim Schreiben (`astro dev`) lädt MDX-Änderungen nicht von selbst neu; geprüft wird der gebaute Stand.

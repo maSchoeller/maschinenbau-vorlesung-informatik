@@ -159,9 +159,11 @@ try {
   pruefe('t5 Tablet: Kennzahlen in zwei Spalten', spalten === 2, String(spalten));
   await doz.page.setViewportSize({ width: 1440, height: 900 });
   const v02 = kurs.lektionen[1];
-  await doz.page.locator('[data-dz-lektion]').selectOption('V02');
-  const zeilen2 = await doz.page.locator('[data-dz-aufgaben] tr').count();
-  pruefe('t5 Wechsel auf V02: Tabelle und Adresse folgen', zeilen2 === v02.aufgaben.filter((a) => a.pruefbar.length > 0).length && new URL(doz.page.url()).hash === '#v02', zeilen2 + ' Zeilen, ' + doz.page.url());
+  if (v02) {
+    await doz.page.locator('[data-dz-lektion]').selectOption(v02.nr);
+    const zeilen2 = await doz.page.locator('[data-dz-aufgaben] tr').count();
+    pruefe('t5 Wechsel auf ' + v02.nr + ': Tabelle und Adresse folgen', zeilen2 === v02.aufgaben.filter((a) => a.pruefbar.length > 0).length && new URL(doz.page.url()).hash === '#' + v02.nr.toLowerCase(), zeilen2 + ' Zeilen, ' + doz.page.url());
+  } else console.log('  (nur eine Lektion freigeschaltet: Lektionswechsel übersprungen)');
   pruefe('t5 keine Konsolenfehler', doz.konsole.length === 0, doz.konsole.join(' | '));
   await doz.page.goto(BASIS + '/konto.html', { waitUntil: 'load' });
   await doz.page.waitForFunction(() => { const n = document.querySelector('[data-konto-laedt]'); return n && n.hidden; });

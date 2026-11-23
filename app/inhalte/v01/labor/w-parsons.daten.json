@@ -1,0 +1,13 @@
+{
+ "solution": [
+  "minuten = float(input(\"Minuten: \"))",
+  "stunden = minuten / 60",
+  "print(\"Stunden:\", stunden)"
+ ],
+ "distractors": [
+  "stunden = minuten * 60",
+  "print(\"Stunden:\", minuten)"
+ ],
+ "alts": [],
+ "ok": "Genau die drei Symbole des Plans, in derselben Reihenfolge."
+}
