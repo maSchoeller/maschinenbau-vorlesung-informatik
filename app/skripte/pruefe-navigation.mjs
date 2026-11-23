@@ -137,7 +137,7 @@ async function main() {
       }, t);
       await page.reload(); await page.waitForTimeout(700);
       const prim = page.locator('main a.k-btn:not(.k-btn--ghost)');
-      pruefe(await prim.count() === 1 && /Klausurtrainer/.test(await prim.innerText()), 'Alles fertig: genau ein primärer Knopf, und zwar Klausurtrainer');
+      pruefe(await prim.count() === 1 && /Lernpfad|Klausurtrainer/.test(await prim.innerText()), 'Alles fertig: genau ein primärer Knopf (Lernpfad, solange Termine fehlen; sonst Klausurtrainer)');
 
       /* Lernpfad */
       await page.goto(basis + 'lernpfad.html'); await page.waitForTimeout(500);
