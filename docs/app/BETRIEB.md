@@ -90,7 +90,7 @@ Rauchtest von Hand: `node api/skripte/rauchtest.mjs https://<host> --erwarte-abl
 
 ### Automatische Bereitstellung (GitHub Action)
 
-`.github/workflows/lernapp.yml` baut und prüft bei jedem Pull Request und stellt bei jedem Push auf `main` (Pfade `site/`, `app/`, `api/`) nach Azure bereit; von Hand über Actions → „Lern-App“ → Run workflow. Ablauf: Bilder aus Git LFS (ohne Videos), App bauen, Selbsttest, API-Tests, Prüfung der Ausgabe (keine LFS-Zeiger, keine Videos, Größe), API-Paket, Bereitstellung, Rauchtest (neue Version online, API antwortet, Cosmos angebunden).
+`.github/workflows/lernapp.yml` baut und prüft bei jedem Pull Request und stellt bei jedem Push auf `main` (Pfade `site/`, `app/`, `api/`) nach Azure bereit; von Hand über Actions → „Lern-App“ → Run workflow. Zwei Jobs: „bauen“ (Bilder aus Git LFS ohne Videos, App bauen, Selbsttest, API-Tests, Prüfung der Ausgabe auf LFS-Zeiger, Videos und Größe, API-Paket; ohne Zugriff auf das Secret) und „bereitstellen“ (nur auf `main`: lädt das Ergebnis des ersten Jobs, stellt bereit, Rauchtest: neue Version online, API antwortet, Cosmos angebunden).
 
 Einmalig einrichten (PowerShell, angemeldet mit `az` und `gh`; `<swa-name>` aus der Ausgabe von `-Schritt Infrastruktur`):
 
@@ -107,7 +107,7 @@ Was die Action bewusst nicht tut, bleibt bei `infra/bereitstellen.ps1`:
 - **Infrastruktur, Salt, Key Vault** (`-Schritt Infrastruktur`, `-Schritt SaltPruefen`): selten und heikel, deshalb nicht automatisch und ohne Azure-Anmeldung in der Action.
 - **Videos hochladen** (`-Schritt Videos`): Nach einem neuen Video einmal lokal ausführen. Fehlt ein Video im Speicher, warnt der Lauf (Zusammenfassung und gelbe Hinweise); die Seite zeigt dort „Video folgt“.
 
-Der Token im Secret erlaubt nur das Bereitstellen dieser einen App. Erneuern: im Portal „Bereitstellungstoken verwalten → zurücksetzen“ und den Befehl oben erneut ausführen. Pull Requests aus Forks bekommen weder Secret noch Variablen und werden nur gebaut und geprüft.
+**Was der Token kann:** Wer ihn hat, kann die komplette App einschließlich der API ersetzen und käme über eigenen API-Code an alle App-Einstellungen (Cosmos-Verbindung, Salt, Tutor-Schlüssel). Er liegt deshalb nur als Secret in GitHub, und nur der Job „bereitstellen“ bekommt ihn; dieser Job führt keinen Code aus dem Repository und keine npm-Pakete aus. Bei Verdacht sofort erneuern mit `az staticwebapp secrets reset-api-key -n <swa-name> -g rg-informatik-lernapp`, den Befehl oben erneut ausführen und danach den Cosmos-Schlüssel und den Anthropic-Schlüssel rotieren. Pull Requests aus Forks bekommen weder Secret noch Variablen und werden nur gebaut und geprüft.
 
 ## 4. API-Schlüssel für den Tutor setzen (Besitzer)
 
