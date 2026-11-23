@@ -1,6 +1,6 @@
 # Konzeptpapier: Migration der Inhalte (Informatik T4MB1006, Campus Horb)
 
-Stand: 2026-11-23, vom Dozenten übernommen. Dieses Papier legt fest, für wen die Inhalte gebaut werden, was in den Kurs gehört und wie viel davon in die Zeit passt. Wo es `KONZEPT.md` widerspricht (Termine, Leitidee, Themen, Prüfung, Projekt, Rolle der KI), gilt dieses Papier; `KONZEPT.md` ist dort noch nicht nachgezogen.
+Stand: 2026-11-23, vom Dozenten übernommen. Dieses Papier legt fest, für wen die Inhalte gebaut werden, was in den Kurs gehört und wie viel davon in die Zeit passt. `KONZEPT.md` ist auf diesen Stand umgeschrieben und enthält den Plan in Kurzform; dieses Papier hält die Herleitung, den Zielgruppen-Steckbrief und die Zuordnung des alten Materials fest.
 
 Leitsatz des Kurses: **Erst der Ablauf, dann der Code.**
 
@@ -255,7 +255,8 @@ Erste Zuordnung der 22 vorhandenen Lektionen. „Stoff“ heißt: Erklärungen, 
 | V11, V12, V13, V15, V20, V21 | entfallen |
 | `site/projekt.html` | entfällt; an die Stelle tritt die Schrittfolge für Schiffe versenken (P10) |
 | Probeklausur 2026/27, Klausurtrainer | Teil B5 „Kurze Programmieraufgaben“ und Klausur-Modus (Code auf Papier) umbauen; Theorieteil auf die neue Auswahl |
-| `app/kurs.yaml`, `KONZEPT.md` | 20 statt 22 Termine, neue Einheiten, Phasen „Werkzeug“ und „Projekt“ entfallen |
+| `KONZEPT.md` | umgeschrieben (2026-11-23) |
+| `app/kurs.yaml`, `DESIGN.md`, `briefing/LEKTION-BRIEF.md`, `README.md` | 20 statt 22 Termine, neue Einheiten, Phasen „Werkzeug“ und „Projekt“ entfallen; noch nicht nachgezogen |
 
 Neu zu bauen, ohne Vorlage: P5 Zahlenraten, P6 und T7 Auffrischer, P9 Raster, P10 Schiffe versenken mit abnehmender Führung.
 
@@ -265,3 +266,5 @@ Neu zu bauen, ohne Vorlage: P5 Zahlenraten, P6 und T7 Auffrischer, P9 Raster, P1
 - 72 h Präsenz laut Handbuch gegenüber 20 Terminen à 135 Minuten (60 Unterrichtseinheiten): Wo liegen die übrigen Stunden, oder ist die Abweichung mit der Studiengangsleitung abgestimmt?
 - Reihenfolge der Vertiefungsthemen im 2. Semester und ob „Wie funktioniert KI?“ besser schon in Termin 01 angerissen wird, weil es die Haltung „gibt ja KI“ trifft.
 - Aufbau der Lektionsseiten (Lerneinheit, Labor, Training zu Hause, Videos): Was davon bleibt, wenn im Termin geübt wird und eine Einheit über mehrere Termine läuft?
+- Wissens-Ampel, KI-Spiegel und Klausur-Modus aus dem alten Konzept: Die Ampelstufe „Delegieren: die KI macht das“ und der Klausur-Modus (Code auf Papier) widersprechen den neuen Entscheidungen.
+- Ob einzelne entfallene Lektionen als freiwillige Vertiefung online bleiben.
