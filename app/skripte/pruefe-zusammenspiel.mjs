@@ -119,9 +119,11 @@ async function ersterKlickAusfuehren(page, runner, wo, { ohneEditor = false } = 
   await runner.scrollIntoViewIfNeeded();
   if (!ohneEditor) await runner.locator('.cm-content').first().click();
   const knopf = runner.locator('.k-runner__bar button', { hasText: 'Ausführen' }).first();
-  const vorher = await knopf.boundingBox();
+  /* Lage im Dokument, nicht im Fenster: Steht der Knopf am unteren Fensterrand, scrollt der Klick selbst die Seite */
+  const lage = async () => ({ y: (await knopf.boundingBox()).y + await page.evaluate(() => window.scrollY) });
+  const vorher = await lage();
   await knopf.click();
-  const nachher = await knopf.boundingBox();
+  const nachher = await lage();
   const lief = await bis(() => runner.evaluate((r) => {
     const o = r.querySelector('.k-runner__out'), s = r.querySelector('.k-runner__status');
     return (o && !o.hidden && o.textContent.trim().length > 0) || (s && /läuft|lädt|fertig|Python wird/i.test(s.textContent));
