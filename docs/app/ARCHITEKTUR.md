@@ -1,6 +1,6 @@
 # Lern-App: Architektur-Vertrag
 
-Stand: 2026-11-23. Verbindlich für alle, die an `app/`, `api/`, `infra/` und `tests/` arbeiten.
+Stand: 2026-11-23. Verbindlich für alle, die an `app/`, `api/`, `infra/` und `tests/` arbeiten. Abschnitt 11 („`site/` ist tabu“) gilt nicht mehr für die Inhalte: Die alten Lektionen werden durch neue Terminseiten ersetzt (Abschnitt 16), und `site/assets/js/kurs.js`, `labor.js` sowie die Explorables dürfen dafür geändert werden.
 Ergänzend lesen: `KONZEPT.md`, `DESIGN.md`, `docs/ARCHITEKTUR-BACKEND.md` (älterer Entwurf; wo er diesem Dokument widerspricht, gilt dieses), `docs/app/recherche/*.md` (belegte Fakten zu Azure, Pyodide, Claude-API, Astro).
 
 ## 1. Ziel und Grundsätze
@@ -9,7 +9,7 @@ Aus der statischen Vorlesungs-Website wird eine installierbare Lern-App (PWA) f�
 
 Grundsätze:
 
-1. **`site/` bleibt die Quelle der Inhalte.** Die 43 Lektionsseiten und Werkzeugseiten werden weiter dort gepflegt (Lektions-Sessions und Videoproduktion arbeiten unverändert; `site/` bleibt auch für sich allein über einen einfachen Dateiserver lauffähig). Die App ist eine Build-Schicht darüber: Sie nimmt den Inhalt jeder Seite unverändert und setzt ihn in die gemeinsame Hülle. Eine spätere Umstellung der Inhalte auf MDX ist ausdrücklich nicht Teil dieser Arbeit.
+1. **`site/` bleibt die Quelle der Inhalte.** Die 43 Lektionsseiten und Werkzeugseiten werden weiter dort gepflegt (Lektions-Sessions und Videoproduktion arbeiten unverändert; `site/` bleibt auch für sich allein über einen einfachen Dateiserver lauffähig). Die App ist eine Build-Schicht darüber: Sie nimmt den Inhalt jeder Seite unverändert und setzt ihn in die gemeinsame Hülle. **Nachtrag 2026-11-23:** Lektionen ziehen lektionsweise nach MDX um (`app/inhalte/`, Abschnitt 15); eine umgezogene Lektion hat nur noch die MDX-Quelle, ihre Seite unter `site/lektionen/` entfällt. Pilot: V07.
 2. **Ohne Login bleibt alles nutzbar** (Lernen, Python, Fortschritt lokal, Werkbank lokal). Konto braucht nur: Abgleich, Teilen, Tutor.
 3. **Offline zuerst.** Lesen und Schreiben gehen immer zuerst lokal; das Netz gleicht im Hintergrund ab.
 4. **Weniger ist mehr.** Keine Funktion, die nicht in diesem Dokument steht. Keine Punkte, Ranglisten, Abzeichen. Details gehören hinter „Mehr“.
@@ -24,11 +24,13 @@ Grundsätze:
 ```
 site/                    Inhalte (Bestand). Nur die in Abschnitt 11 genannten Dateien dürfen geändert werden.
 app/                     Astro-Projekt (Hülle, neue Seiten, Build)
-  kurs.yaml              eine Quelle für die 22 Termine (Titel, Hook, Python, Phase, Dateien, Freigabe)
+  kurs.yaml              eine Quelle für den Kurs: Semester, Einheiten, 20 Termine, Lektionen mit Seiten (Abschnitt 16)
+  inhalte/vNN/           umgezogene Lektionen: lerneinheit.mdx, labor.mdx und ihre Python-/JSON-Dateien (Abschnitt 15)
   astro.config.mjs       output static, build.format 'file', outDir dist
   src/layouts/App.astro  die Hülle (Leiste, Kopfzeile, Panel, Skript-Reihenfolge)
   src/components/        Bausteine der Hülle und der neuen Seiten
-  src/lib/               Build-Logik: kurs.mjs (kurs.yaml lesen), quelle.mjs (site/-HTML zerlegen), navigation.mjs
+  src/lib/               Build-Logik: kurs.mjs (kurs.yaml lesen), quelle.mjs (site/-HTML zerlegen), navigation.mjs,
+                         mdx/ (MDX übersetzen, Bausteine, Vergleich)
   src/pages/             neue Seiten und Durchreich-Routen für site/-Seiten
   public/app/            Client-Skripte und CSS der App (nicht gebündelt, per <script is:inline src>)
   skripte/               Node-Skripte: nach-build.mjs (ruft die folgenden), assets-kopieren, index-bauen, sw-bauen, pyodide-holen
@@ -55,6 +57,8 @@ Dateizuständigkeit ist strikt. Wer etwas außerhalb seines Bereichs braucht, ä
 | Konto und Abgleich | `public/app/speicher-azure.js`, `konto.js`, `konto.css`, `src/pages/konto.astro` |
 | Werkbank | `src/pages/werkbank.astro`, `geteilt.astro`, `public/app/werkbank.js`, `geteilt.js`, `werkbank.css` |
 | Tutor | `api/src/functions/tutor.js`, `api/src/lib/tutor/`, `api/tests/tutor*.js` (Tests, Angriffs- und Oberflächenlauf), `api/tests/tutor-angriffe.json`, `public/app/tutor.js`, `tutor.css` |
+| Dozent | `api/src/functions/dozent.js`, `api/src/lib/dozent.js`, `gruppenbild.js`, `kursstruktur.js`, `api/tests/dozent.test.js`, `src/pages/dozent.astro`, `public/app/dozent.js`, `dozent.css`, `skripte/pruefe-dozent.mjs` (Abschnitt 14) |
+| Inhalte (MDX) | `app/inhalte/`, `app/src/lib/mdx/`, `app/skripte/html-nach-mdx.mjs`, `app/skripte/tests/mdx.test.mjs`, `docs/app/INHALTE.md` (Abschnitt 15) |
 | Integration | Zusammenspiel über alle Bereiche: `app/skripte/pruefe-alles.mjs`, `pruefe-zusammenspiel.mjs`, `skripte/tests/kern.test.mjs`, `docs/app/uebergaben/integration.md`; darf für das Zusammenspiel in `app/`, `api/`, `infra/`, `docs/app/` ändern |
 | Tests | `tests/e2e/`, `playwright.config.*`, Wurzel-`package.json` (nur Test-Skripte) |
 
@@ -70,13 +74,14 @@ Dateizuständigkeit ist strikt. Wer etwas außerhalb seines Bereichs braucht, ä
    - die `<script src>`-Tags am Ende (Reihenfolge und `defer` erhalten).
    Der Inhalt wird byte-genau übernommen (Leerzeichen in `<pre>`, `<textarea>`, `<script type="text/x-python">` und `application/json` dürfen sich nicht ändern). Nur diese Umschreibungen sind erlaubt: Verweise auf `index.html#lernpfad` → `lernpfad.html`; `<source src="…/assets/video/X.mp4">` → `${VIDEO_BASIS}/X.mp4`, wenn die Umgebungsvariable `VIDEO_BASIS` gesetzt ist.
    `lektionen/v03-training.html` ist nur eine Weiterleitung und wird als solche übernommen. `werkzeuge/labor-test.html` wird nicht veröffentlicht.
+   Hat eine Lektionsseite eine MDX-Quelle (`app/inhalte/vNN/lerneinheit.mdx` bzw. `labor.mdx`), liefert `quelle.mjs` dieselben Felder aus dem übersetzten MDX (Abschnitt 15); die Umschreibungen gelten unverändert.
 3. **`skripte/nach-build.mjs`** (läuft nach Astro, ruft der Reihe nach):
    - `assets-kopieren.mjs`: `site/assets/**` → `dist/assets/**`, `site/notebooks/**` → `dist/notebooks/**`. Mit gesetztem `VIDEO_BASIS` werden `*.mp4` ausgelassen.
    - `index-bauen.mjs`: erzeugt aus `kurs.yaml` und den `site/`-Seiten
      - `dist/app/daten/kurs.json` (Termine, je Lektion Abschnitte und Aufgaben mit id, Titel, Teil, Sternen, Minuten),
      - `dist/app/daten/suche.json` (Lektionen, Abschnitte, Aufgaben, Bibliothekseinträge, Glossarbegriffe),
      - `dist/app/daten/glossar.json` (aus allen `abbr.k-begriff[data-erklaerung]`, je Begriff die erste Lektion),
-     - `api/daten/aufgaben.json` (je Aufgabe: Lektion, id, Titel, Aufgabentext als Klartext, Musterlösung aus `script[data-role="solution"]`, erlaubte Konstrukte bis zu dieser Lektion). Diese Datei wird nicht nach `dist/` geschrieben.
+     - `api/daten/aufgaben.json` (je Aufgabe: Lektion, id, Titel, Aufgabentext als Klartext, Musterlösung aus `script[data-role="solution"]`, erlaubte Konstrukte bis zu dieser Lektion) und im Feld `kurs` die Kursstruktur für das Gruppenbild (je Lektion Abschnitte, Quiz, Stationen mit prüfbaren Teilen; Abschnitt 14). Diese Datei wird nicht nach `dist/` geschrieben.
    - `pyodide-holen.mjs` (PWA): lädt die in `docs/app/recherche/03-pyodide-dateien.json` gelisteten Dateien einmalig nach `app/.cache/pyodide/` und kopiert sie nach `dist/pyodide/`.
    - `sw-bauen.mjs` (PWA): schreibt `dist/sw.js` mit Precache-Liste und Versions-Hash.
    Solange ein Skript der PWA-Rolle fehlt, überspringt `nach-build.mjs` es mit einem Hinweis.
@@ -104,12 +109,12 @@ Dateizuständigkeit ist strikt. Wer etwas außerhalb seines Bereichs braucht, ä
 | Bereich | Reiter in der Kopfzeile | Seiten |
 |---|---|---|
 | Heute | keine | `index.html` |
-| Kurs | Lernpfad · Projekt · Glossar · Über den Kurs | `lernpfad.html`, `projekt.html`, `glossar.html`, `kurs.html` |
-| Kurs, in einer Lektion | Lektionswähler „V07 · Zerlegung und Funktionen“ (öffnet Liste aller 22 mit Fortschritt) · Pfeile vorige/nächste Lektion · Umschalter Verstehen / Labor · „Notebook“ als Link | `lektionen/vXX-*.html` |
+| Kurs | Lernpfad · Glossar · Über den Kurs | `lernpfad.html`, `glossar.html`, `kurs.html` |
+| Kurs, in einer Lektion | Lektionswähler „V07 · Zerlegung und Funktionen“ (öffnet Liste aller Lektionen mit Fortschritt, nach Semester) · Pfeile vorige/nächste Lektion · Umschalter Verstehen / Labor · „Notebook“ als Link | `lektionen/vXX-*.html` |
 | Werkbank | Programme · PAP-Editor · 3D-Vorschau | `werkbank.html`, `pap-editor.html`, `werkzeuge/3d-vorschau.html` |
 | Bibliothek | keine | `bibliothek.html` |
 | Klausur | Klausurtrainer · Probeklausur | `klausurtrainer.html`, `probeklausur-2026-27.html` |
-| Konto | keine | `konto.html` |
+| Konto | keine | `konto.html`, `dozent.html` (Kursübersicht, nur über den Verweis auf der Kontoseite) |
 
 - Pfeile vorige/nächste Lektion bleiben in derselben Ansicht (Labor → Labor der Nachbarlektion; hat die Nachbarlektion kein Labor, dann ihre Lerneinheit). Am Ende jeder Lerneinheit und jedes Labors steht ein klarer nächster Schritt (Lerneinheit → Labor → nächste Lektion); die Hülle ergänzt ihn, falls der Inhalt ihn nicht hat.
 - Die Hülle merkt sich die zuletzt besuchte Seite samt Anker unter `inf-mb/app/zuletzt` (über `KursSpeicher`), damit „Heute“ und andere Geräte daran anknüpfen.
@@ -159,7 +164,7 @@ KursApp.url(p)     // 'lernpfad.html' → relativ zur aktuellen Seite korrekt
 KursApp.kurs()     // Promise<kurs.json> (einmal geladen, danach aus dem Speicher)
 KursApp.api(pfad, opt)   // fetch auf /api/…; JSON rein/raus; setzt Kopfzeile 'X-Kurs-App: 1';
                          // wirft Error mit .status, .daten; ohne Netz .offline === true
-KursApp.konto.status()   // Promise<{angemeldet, anzeigename, benutzerId}>; zwischengespeichert; offline: letzter bekannter Stand
+KursApp.konto.status()   // Promise<{angemeldet, anzeigename, benutzerId, dozent}>; zwischengespeichert; offline: letzter bekannter Stand
 KursApp.konto.anmelden() // leitet zu /.auth/login/github?post_login_redirect_uri=<aktuelle Seite>
 KursApp.konto.abmelden()
 KursApp.an(name, fn)     // Ereignisse: 'konto' (Statuswechsel), 'abgleich' ({zustand:'laeuft'|'ok'|'offen'|'fehler', offen:n}), 'netz' ({online})
@@ -177,11 +182,12 @@ Fortschritt liegt wie bisher in `KursSpeicher`: `inf-mb/<lektion>/done` (Abschni
 ## 5. Seiten der App (neu)
 
 - **Heute** (`index.html`): 1. „Weiter, wo du warst“ (ein großer Knopf zur letzten Seite). 2. Die aktuelle Lektion (erste nicht abgeschlossene bzw. nach Freigabedatum) mit ihren zwei Schritten Verstehen und Labor und deren Stand. 3. „Warm-up“: drei offene Aufgaben aus früheren, bereits begonnenen Lektionen (Wiederholung). 4. Dezent: Hinweis auf Installation und Konto, solange nicht geschehen. Kein Dashboard, keine Statistikflut.
-- **Lernpfad** (`lernpfad.html`): drei Phasen, 22 Stationen mit Titel, Hook, neuem Python, Stand (offen, begonnen, fertig) und direkten Zielen Verstehen/Labor. Noch nicht freigegebene Lektionen (Feld `freigabe` in `kurs.yaml`, Datum) sind sichtbar, aber als „ab TT.MM.“ markiert und nicht gesperrt (Hinweis statt Schloss).
+- **Lernpfad** (`lernpfad.html`): die 20 Termine des Plans in zwei Semestern (Abschnitt 16). Je Termin Theorie und Programmieren mit „Teil x von y“, wenn eine Einheit über mehrere Termine läuft. Rechts die eigenen Seiten des Termins mit Stand und den Zielen Verstehen/Labor; solange es sie nicht gibt, das bisherige Material (Lektionen, aus denen der Termin entsteht) mit Stand. Freigabedaten (Feld `freigabe`) erscheinen als „ab TT.MM.“, gesperrt wird nichts.
 - **Über den Kurs** (`kurs.html`): Leitidee, Wissens-Ampel, Ablauf eines Termins, „Startklar“ (Inhalte der bisherigen Startseite `site/index.html`, redaktionell unverändert).
 - **Glossar** (`glossar.html`): alle Begriffe A bis Z mit Erklärung und Link zur Lektion der ersten Einführung; Filterfeld.
 - **Suche** (Dialog, Strg+K): durchsucht `suche.json`; Gruppen Lektionen, Aufgaben, Bibliothek, Glossar; Pfeiltasten und Enter.
 - **Werkbank**, **Geteilt**, **Konto**, **Offline**: siehe Abschnitte 7 bis 9.
+- **Kursübersicht** (`dozent.html`, nur für Dozierende): siehe Abschnitt 14.
 
 ## 6. API (`/api/*`, Azure Functions)
 
@@ -196,7 +202,7 @@ Allgemein:
 | Methode und Route | Login | Zweck |
 |---|---|---|
 | `GET /api/status` | nein | `{ok, version, tutor: true|false, ablage: 'cosmos'|'datei'}` |
-| `GET /api/ich` | nein | ohne Login `{angemeldet:false}`; mit Login `{angemeldet:true, benutzerId, anzeigename, neu}`; legt beim ersten Aufruf das Benutzerdokument an (Anzeigename leer) |
+| `GET /api/ich` | nein | ohne Login `{angemeldet:false}`; mit Login `{angemeldet:true, benutzerId, anzeigename, neu, freigeschaltet, dozent}`; legt beim ersten Aufruf das Benutzerdokument an (Anzeigename leer) |
 | `PUT /api/ich` | ja | `{anzeigename}` (2 bis 30 Zeichen, Buchstaben, Ziffern, Leerzeichen, `-_.`) |
 | `GET /api/eintraege?seit=<ISO>` | ja | `{eintraege:[{pfad, wert, geaendert, geloescht}], serverzeit}`; mit `seit` nur Änderungen danach (nach Server-Schreibzeit) |
 | `PUT /api/eintraege/{*pfad}` | ja | Body `{wert, geaendert}`; legt an oder überschreibt, wenn `geaendert` neuer ist; 200 `{eintrag}`; 409 `{eintrag}` mit dem neueren Serverstand |
@@ -209,6 +215,7 @@ Allgemein:
 | `GET /api/geteilt` | ja | eigene geteilte Programme `{eintraege:[{id, titel, erstellt}]}` |
 | `DELETE /api/geteilt/{id}` | ja | nur eigene |
 | `POST /api/tutor` | ja | siehe Abschnitt 10 |
+| `GET /api/dozent/uebersicht` | ja, Dozent | Gruppenbild, siehe Abschnitt 14 |
 
 **Nachtrag 2026-11-23 (nach der Sicherheitsprüfung der API; maßgeblich sind die Details in `docs/app/uebergaben/api.md`, Abschnitte 2, 3 und 7):**
 - `POST /api/abgleich` liefert zusätzlich `abgelehnt: [{pfad, fehler, meldung}]`; ungültige Einträge werden einzeln abgelehnt, der Rest wird angewendet.
@@ -233,12 +240,12 @@ Ablage (`api/src/lib/ablage.js`), eine Schnittstelle, zwei Umsetzungen:
   - `zaehler` (Partition `/id`; kursweite Tageszähler für den Tutor)
 - **Datei** (lokal und Tests; `ABLAGE=datei`, JSON-Datei unter `api/.daten/`, bzw. `ABLAGE=speicher` rein im Arbeitsspeicher). Fehlt in Produktion `COSMOS_VERBINDUNG`, antwortet die API mit 503 statt still in den Arbeitsspeicher zu schreiben.
 
-App-Einstellungen: `COSMOS_VERBINDUNG`, `BENUTZER_SALT`, `ANTHROPIC_API_KEY` (vom Besitzer gesetzt), `TUTOR_MODELL`, `TUTOR_LIMIT_NUTZER_TAG` (Standard 40), `TUTOR_LIMIT_KURS_TAG` (Standard 1500), `TUTOR_PRUEFER` (`an`/`aus`, Standard `an`), `KURS_CODE` (optional, Tutor-Freischaltung, vom Besitzer gesetzt).
+App-Einstellungen: `COSMOS_VERBINDUNG`, `BENUTZER_SALT`, `ANTHROPIC_API_KEY` (vom Besitzer gesetzt), `TUTOR_MODELL`, `TUTOR_LIMIT_NUTZER_TAG` (Standard 40), `TUTOR_LIMIT_KURS_TAG` (Standard 1500), `TUTOR_PRUEFER` (`an`/`aus`, Standard `an`), `KURS_CODE` (optional, Tutor-Freischaltung, vom Besitzer gesetzt), `DOZENT_IDS` (Kennungen der Dozierenden, vom Besitzer gesetzt; Abschnitt 14).
 
 ## 7. Konto und Abgleich (Client)
 
 - Anmelden über GitHub (`/.auth/login/github`). Der Entra-Anbieter ist per Routenregel gesperrt.
-- `konto.html`: Status (angemeldet oder nicht), Anzeigename ändern, „Arbeitsstand sichern / laden“ (Datei, wie bisher über `KursSpeicher.exportieren/importieren`), „Meine Daten herunterladen“ (`/api/konto/export`), „Konto und Daten löschen“ (mit Bestätigung), Abschnitt „Offline nutzen“ (Platzhalter, den die PWA-Rolle füllt: Element `<div data-pwa-einstellungen>`), kurzer Datenschutzhinweis (was gespeichert wird: pseudonyme Kennung, Lernstand, Programme, Anzeigename; keine Namen/E-Mails; Region EU; Tutor-Fragen gehen an Anthropic).
+- `konto.html`: Status (angemeldet oder nicht), Anzeigename ändern, „Arbeitsstand sichern / laden“ (Datei, wie bisher über `KursSpeicher.exportieren/importieren`), „Meine Daten herunterladen“ (`/api/konto/export`), „Konto und Daten löschen“ (mit Bestätigung), Abschnitt „Offline nutzen“ (Platzhalter, den die PWA-Rolle füllt: Element `<div data-pwa-einstellungen>`), kurzer Datenschutzhinweis (was gespeichert wird: pseudonyme Kennung, Lernstand, Programme, Anzeigename; keine Namen/E-Mails; Region EU; Tutor-Fragen gehen an Anthropic; Dozierende sehen nur Zahlen der ganzen Gruppe). Für Dozierende zusätzlich der Verweis „Kursübersicht für Dozierende“.
 - `speicher-azure.js`: Adapter für `KursSpeicher` nach `site/assets/js/speicher.js`. Wichtig: Jede Seite ist ein eigener Seitenaufruf und liest beim Start synchron (`sofort.lesen`). Der Adapter muss deshalb **lokal zuerst** arbeiten: Er behält den localStorage-Stand als synchrone Quelle (`alleSync`) und gleicht zusätzlich mit dem Server ab. Schreibvorgänge gehen sofort lokal und werden gebündelt (kurze Wartezeit, z. B. 1,5 s) per `POST /api/abgleich` übertragen. Nicht Übertragenes bleibt als „offen“ markiert (eigener localStorage-Schlüssel) und wird bei Start, `online`, Tab-Fokus und alle 60 s (nur sichtbarer Tab) nachgereicht; dabei holt derselbe Aufruf Änderungen anderer Geräte (`seit`). Änderungen von außen erreichen die Seite über den Abonnenten-Mechanismus des Kerns.
 - Erster Login auf einem Gerät mit lokalem Stand: Dialog „Deinen bisherigen Arbeitsstand aus diesem Browser in dein Konto übernehmen?“ mit Anzahl der Einträge. Ja: zusammenführen (neuester gewinnt). Nein: lokaler Stand bleibt lokal und wird nicht hochgeladen, der Kontostand wird geladen.
 - Abmelden: Abgleich stoppen; fragen, ob der Stand auf diesem Gerät bleiben oder entfernt werden soll.
@@ -302,11 +309,12 @@ Nur diese (alle so, dass `site/` für sich allein weiter funktioniert):
 - `site/assets/js/kurs.js`: Pyodide-Basis über `window.KURS_PYODIDE_BASIS` überschreibbar machen; sicherstellen, dass keine Laufzeit-Abhängigkeit zu fremden Hosts bleibt, wenn die Basis gesetzt ist (PWA-Rolle). Gleiches in `editor.js`, falls dort Pakete nachgeladen werden.
 - `site/assets/img/icons.svg`: neue Symbole für die Hülle im vorhandenen Stil (Fundament).
 Alles andere in `site/` ist tabu. Fällt ein Fehler im Bestand auf, wird er gemeldet, nicht nebenbei behoben.
+Ausnahme: Beim Umzug einer Lektion nach MDX (Abschnitt 15) werden ihre beiden Seiten unter `site/lektionen/` gelöscht.
 
 ## 12. Tests und Abnahme
 
 - `api/tests`: jede Route (Erfolg, ohne Login, fremde Daten, Grenzen, Konfliktregel), mit `ABLAGE=speicher`.
-- Ende-zu-Ende-Prüfungen (Playwright, Chromium, 1440×900 und 1024×768; umgesetzt als `app/skripte/pruefe-*.mjs`, gesammelt über `npm run pruefen:alles`, siehe `docs/app/uebergaben/integration.md`; einen eigenen Ordner `tests/e2e` gibt es nicht): Navigation (Leiste, Lektionswähler, vor/zurück, Suche), eine Lerneinheit und ein Labor laufen wie im Bestand (Python ausführen über lokales Pyodide, Aufgabe prüfen, Fortschritt sichtbar), Login über den Emulator, Abgleich zwischen zwei Browser-Kontexten, Werkbank speichern und teilen, geteilten Link ohne Login öffnen, Offline (nach Installation des Service Workers: Lektion neu laden, Python läuft), Tutor mit Modell-Doppel.
+- Ende-zu-Ende-Prüfungen (Playwright, Chromium, 1440×900 und 1024×768; umgesetzt als `app/skripte/pruefe-*.mjs`, gesammelt über `npm run pruefen:alles`, siehe `docs/app/uebergaben/integration.md`; einen eigenen Ordner `tests/e2e` gibt es nicht): Navigation (Leiste, Lektionswähler, vor/zurück, Suche), eine Lerneinheit und ein Labor laufen wie im Bestand (Python ausführen über lokales Pyodide, Aufgabe prüfen, Fortschritt sichtbar), Login über den Emulator, Abgleich zwischen zwei Browser-Kontexten, Werkbank speichern und teilen, geteilten Link ohne Login öffnen, Offline (nach Installation des Service Workers: Lektion neu laden, Python läuft), Tutor mit Modell-Doppel, Kursübersicht für Dozierende (`pruefe-dozent.mjs`: Gast, fremdes Konto, unter fünf Konten, Gruppenbild gegen angelegten Lernstand, Tablet).
 - Bestandsprüfung (`pruefe-seiten.mjs`): alle veröffentlichten Seiten laden ohne Konsolenfehler und ohne fehlgeschlagene Anfragen; je Seite, dass die Bausteine initialisiert sind (Quiz, Explorables, Begriffs-Erklärungen, Labor-Liste), eine h1 und auf dem Tablet Ziele ab 44 px.
 - Ports: Jeder Agent benutzt die ihm zugewiesenen Ports und beendet seine Prozesse am Ende.
 
@@ -317,3 +325,73 @@ Alles andere in `site/` ist tabu. Fällt ein Fehler im Bestand auf, wird er geme
 - Kostenbudget 30 USD im Monat mit Warnung per E-Mail.
 - `BENUTZER_SALT` ist im Key Vault der Ressourcengruppe gesichert (Geheimnis `benutzer-salt`, RBAC, Soft-Delete 90 Tage, Purge-Schutz). Quelle der Wahrheit: Tresor vor SWA-Einstellung vor neuem Zufallswert (nur beim Erstdeployment); die Fallunterscheidung macht `infra/bereitstellen.ps1` (`infra/salt-fall.ps1`), Einzelheiten in `docs/app/BETRIEB.md`, Abschnitt 5.
 - `docs/app/BETRIEB.md` beschreibt: Ressourcen, Kosten, Bereitstellen, API-Schlüssel setzen, Einstellungen, Datenexport und Löschung, Aufräumen nach dem Semester.
+
+## 14. Kursübersicht für Dozierende (Gruppenbild)
+
+Zweck: Vor einem Termin drei Fragen beantworten. Wie viele haben das Training der Lektion gemacht? An welcher Aufgabe hängt die Gruppe? Wie lief der Selbstcheck? Die Seite zeigt **nur Anzahlen über alle Konten, nie einzelne Personen** (Entscheidung des Dozenten vom 2026-11-23: Gruppenbild statt Kontrolle je Person).
+
+Regeln:
+- **Wer ist Dozent:** Die Einstellung `DOZENT_IDS` nennt pseudonyme Kennungen (benutzerId), getrennt durch Komma, Semikolon oder Leerzeichen. Ohne Wert ist niemand Dozent. `GET /api/ich` meldet `dozent: true|false`. Die eigene Kennung zeigt `dozent.html`, solange das Konto nicht eingetragen ist (Einrichten: `docs/app/BETRIEB.md`, Abschnitt 5).
+- **Was gezählt wird:** nur Konten (Gäste haben keinen Stand auf dem Server). Gelesen werden je Lektion genau die Einträge `aufg`, `begonnen`, `done` und `quiz-<id>`; Code, Programme und alles andere bleiben unberührt.
+- **Mindestgröße:** Unter 5 Konten mit Lernstand liefert die API nur die Zahl der Konten (`genug: false`, `lektionen: []`).
+- **Zählregel wie in der App** (4.4, Fortschritt): Eine Station gilt als gelöst, wenn alle ihre prüfbaren Teile gelöst sind; als begonnen, wenn mindestens ein Teil gelöst oder angefangen ist, aber nicht alle gelöst sind. Stationen ohne prüfbaren Teil (Werkzeugkasten, vorgerechnetes Beispiel) kommen nicht vor.
+- **Nur die Kursstruktur zählt:** Die Eimer schreibt der Browser der Studierenden. Der Server wertet sie gegen `api/daten/aufgaben.json`, Feld `kurs`, aus; unbekannte Schlüssel zählen nirgends mit und machen kein Konto „aktiv“.
+- Die Antwort enthält keine Kennungen. Der Server bewahrt das Bild je Function-Instanz 30 Sekunden auf; die Abfrage ist die einzige partitionsübergreifende auf `eintraege` (feste Pfadliste, höchstens 4 Pfade je Lektion).
+
+`GET /api/dozent/uebersicht` → 200
+```json
+{ "stand": "2026-11-23T18:17:02.120Z", "mindest": 5, "konten": 23, "genug": true,
+  "lektionen": [ { "nr": "V07", "konten": 17,
+      "abschnitte": [{"id": "warum", "n": 17}],
+      "stationen":  [{"id": "t-3", "geloest": 5, "begonnen": 4}],
+      "teile": {"A": {"stationen": 5, "alle": 14, "begonnen": 3}, "B": {"stationen": 8, "alle": 0, "begonnen": 11}},
+      "quiz": {"konten": 12, "anteil": 0.83} } ] }
+```
+`konten` (oben) = Konten mit Lernstand in irgendeiner Lektion; je Lektion = dort aktive Konten. `teile.X.alle` = Konten, die alle Stationen des Teils gelöst haben, `begonnen` = angefangen, aber nicht alle. `quiz.anteil` = Mittel aus erreichten durch mögliche Punkte. 401 ohne Login; 403 `kein-dozent`; 503 `nicht-eingerichtet`, wenn die Kursstruktur fehlt.
+
+Seite `dozent.html` (`dozent.js`): Lektionswahl (Vorauswahl aus der Adresse `#v07`, sonst die späteste Lektion, in der mindestens ein Viertel der Konten aktiv ist), dann drei Abschnitte: „Wie weit ist die Gruppe?“ (vier Kennzahlen), „Wo hängt es?“ (die drei am häufigsten begonnenen, nicht gelösten Aufgaben und die Tabelle aller Stationen mit Verweis ins Labor), „Lerneinheit“ (abgehakte Abschnitte). Titel und Reihenfolge kommen aus `kurs.json`. Die Seite ruft die API nur, wenn `/api/ich` das Konto als Dozent meldet; Gäste sehen den Anmelde-Hinweis. Kein Eintrag in der Leiste: Der Weg führt über den Verweis auf der Kontoseite, den nur Dozierende sehen.
+
+Nicht umgesetzt (bewusst): Ansicht je Person, Verlauf über die Zeit, Auswertung je Quizfrage (gespeichert wird nur das Gesamtergebnis je Quiz), Live-Modus für die Präsenz.
+
+## 15. Lektionen als MDX
+
+Zweck: Die Lektionen sind 3,5 MB handgeschriebenes HTML aus wiederkehrenden Bausteinen. Als MDX stehen Fließtext als Markdown, die Bausteine als Elemente mit Namen und der Python-Code der Aufgaben in eigenen Dateien. Anleitung zum Schreiben und Umziehen: `docs/app/INHALTE.md`.
+
+- **Quelle:** `app/inhalte/vNN/lerneinheit.mdx` und `labor.mdx`, daneben Unterordner `lerneinheit/` und `labor/` mit Python (`<kennung>.tests.py`, `.solution.py`, `.vorlage.py`) und JSON. Adressen und Dateinamen der Seiten bleiben wie in `kurs.yaml`. Gibt es die MDX-Datei, ist sie die einzige Quelle der Seite.
+- **Übersetzen** (`src/lib/mdx/`): `@mdx-js/mdx` übersetzt die Datei beim Build; statt React entsteht ein Baum aus schlichten Knoten (`knoten.mjs`), den die Bausteine (`bausteine.mjs`) zu genau dem HTML machen, das `kurs.js`, `labor.js`, `aufgaben.js` und das CSS erwarten. Kein Framework im Browser, das Ergebnis ist statisches HTML wie bisher. `quelle.mjs` liefert für eine MDX-Lektion dieselben Felder wie für eine `site/`-Seite; Hülle, Index, Glossar, Suche und die Tutor-Daten lesen das übersetzte HTML und merken keinen Unterschied.
+- **Gleichheit beim Umzug:** `skripte/html-nach-mdx.mjs` zieht eine Seite um und prüft jeden Block gegen das Original (`vergleich.mjs`: gleiche Elemente, Attribute und Texte; Leerraum zählt, wo der Browser ihn zeigt). Was sich nicht lesbar umziehen lässt, bleibt als `<Html>`-Block unverändert. Solange die alte Seite noch neben der MDX-Datei liegt, vergleicht `npm run selbsttest` beide.
+- **Fehler brechen den Build ab:** unbekannter Baustein, fehlende Code-Datei, `<Vorhersage>` ohne richtige Antwort, Kopf ohne Pflichtfeld. Die Meldung nennt Datei und Zeile.
+- **Tests:** `skripte/tests/mdx.test.mjs` (Bausteine, Vergleich), `quelle.test.mjs` (jede MDX-Lektion übersetzbar; gebaut: Inhalt genau einmal, Skripte in Reihenfolge). Die Browser-Prüfungen laufen unverändert über alle Seiten.
+
+Stand 2026-11-23: V07 (Lerneinheit und Labor) ist umgezogen. Der Konverter zieht alle 42 Lektionsseiten mit gleichem Ergebnis um. Offen: Bausteine für Seitenrahmen, Video, Bild, Wissens-Ampel, Deep Dive, „Für Dozierende“ und die Aufgabentypen des Labors (stehen noch als HTML im MDX); Prüfung im Build, dass jede Musterlösung ihre Tests besteht und kein Konstrukt vor seiner Einführung vorkommt.
+
+## 16. Kursplan: 20 Termine
+
+Seit 2026-11-23 gilt der Plan aus `KONZEPT.md` (Herleitung und Zuordnung des alten Materials: `KONZEPT-MIGRATION.md`): 20 Termine in zwei Semestern, je Termin 4 Blöcke à 30 Minuten. Der Stoff ist in Einheiten gegliedert (Programmierstrang P1–P11, Theoriestrang T1–T11), die über mehrere Termine laufen. Die Seiten folgen den Terminen: je Termin eine Lerneinheit und ein Programmierlabor.
+
+`app/kurs.yaml` ist die eine Quelle und hat vier Abschnitte:
+
+| Abschnitt | Inhalt |
+|---|---|
+| `semester` | die zwei Semester (Name, Bereich, Leitsatz) |
+| `einheiten` | P1–P11 und T1–T11 mit Name, Kurzname, Zahl der Blöcke und `stoff`: den Lektionen des bisherigen Kurses, aus denen die Einheit entsteht. Ohne `stoff` wird die Einheit neu gebaut |
+| `termine` | die 20 Termine in Reihenfolge: Blöcke je Einheit unter `theorie` und `programmieren`, `puffer`, optional `freigabe` und `lektion` (Kennung der eigenen Seiten, sobald es sie gibt) |
+| `lektionen` | Seiten, die es gibt (Kennung, Titel, Dateien, Notebook). Bis zum Neuzuschnitt sind das die 16 bleibenden Lektionen des bisherigen Kurses |
+
+Der Build (`src/lib/kurs.mjs`) prüft den Plan: genau 20 Termine, je Termin 4 Blöcke, die Blöcke jeder Einheit in den Terminen ergeben ihre Gesamtzahl, jede genannte Einheit und Lektion gibt es. Er berechnet „Teil x von y“ und je Termin das bisherige Material (Vereinigung des `stoff` seiner Einheiten).
+
+`kurs.json` für den Browser: `semester`, `einheiten`, `termine` (die 20 Termine des Plans) und `lektionen` (Seiten mit Abschnitten und Aufgaben). Lektionswähler, Heute, Fortschritt, Suche und die Kursübersicht für Dozierende arbeiten mit `lektionen`; nur der Lernpfad zeigt die Termine. In der Hülle heißt eine Lektion an einigen Stellen noch „termin“ (`terminZuDatei`, `KursApp.fortschritt.termin`); gemeint ist dort immer ein Eintrag aus `lektionen`.
+
+Übergang: Die Seiten entstehen Termin für Termin neu als MDX (Abschnitt 15), mit neuen Beispielen und neuen Aufgaben. Das alte Material darf ersatzlos weg: Es wurde noch keine Vorlesung danach gehalten, es gibt keinen Lernstand zu schützen (Entscheidung des Dozenten, 2026-11-23). Ein fertiger Termin bekommt die Kennung `V` plus Terminnummer (Termin 01 = `V01`), einen Eintrag unter `lektionen` und `lektion: V01` am Termin; die alte Lektion gleicher Kennung und das Material, das der Termin ersetzt, werden gelöscht. Stand: **Termin 01 ist gebaut und die Referenz** für alle weiteren (`app/inhalte/v01/`, `site/assets/js/explorables-v01.js`); die alten V01 und V05 sind entfernt.
+
+Aus der App genommen (2026-11-23): V11, V12, V13, V15, V20, V21 und die Projektseite samt Reiter „Projekt“. Ihre Notebooks, Explorable-Skripte, Bilder und Videos liegen noch unter `site/` und werden mit ausgeliefert, aber nirgends verlinkt. Das Modul `bauteil3d` und die 3D-Vorschau bleiben als Beispielwelt.
+
+Offen: Die bleibenden Lektionen verweisen an rund 80 Stellen auf die Projektseite oder auf entfallene Lektionen (ins Leere, bis die Seiten neu gebaut sind). „Über den Kurs“ (`kurs.astro`, Inhalte aus `site/index.html`), `DESIGN.md` und `briefing/LEKTION-BRIEF.md` beschreiben noch den alten Kurs (Leitidee, Wissens-Ampel, 22 Termine). Heute und der Lektionswähler gehen die Lektionen in der bisherigen Reihenfolge durch, nicht in der des neuen Plans.
+
+Regeln für die Seiten eines Termins (Vorgaben des Dozenten, 2026-11-23; Einzelheiten in `docs/app/INHALTE.md`):
+
+- Je Termin vier Blöcke; die Lerneinheit hat je Block einen Abschnitt und einen Selbstcheck, das Labor Teil A (im Termin) und Teil B (Training, 45 Minuten, Pflicht).
+- Wenige, einfache interaktive Bausteine zum Ausprobieren, höchstens einer je Kerninhalt.
+- Quizfragen, ihre Antworten und die Antworten von Vorhersagen erscheinen bei jedem Aufruf in zufälliger Reihenfolge (`site/assets/js/kurs.js`, Funktion `mische`; für Prüfskripte abschaltbar mit `window.KURS_NICHT_MISCHEN`).
+- Vor jeder Programmieraufgabe steht der Plan; „Fehler finden“ ersetzt den KI-Spiegel; die Wissens-Ampel entfällt.
+- Erklärvideos werden erst inhaltlich geplant (`video-src/<name>/texte.py`) und erst vertont, wenn die Seite steht.

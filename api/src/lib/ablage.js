@@ -172,6 +172,16 @@ function speicherBackend({ datei = null } = {}) {
       sichern();
       return n;
     },
+    async eNachPfaden(pfade) {
+      const menge = new Set(pfade);
+      const treffer = [];
+      for (const p of Object.values(stand.eintraege)) {
+        for (const d of Object.values(p)) {
+          if (!d.geloescht && menge.has(d.pfad)) treffer.push({ benutzerId: d.benutzerId, pfad: d.pfad, wert: kopie(d.wert) });
+        }
+      }
+      return treffer;
+    },
 
     async bLesen(id) {
       const d = stand.benutzer[id];
@@ -328,6 +338,12 @@ function cosmosBackend(client, datenbank = 'lernapp') {
       const ids = await abfrage(cE, 'SELECT VALUE c.id FROM c', [], bid);
       await parallel(ids, 20, (id) => punktLoeschen(cE, id, bid));
       return ids.length;
+    },
+    async eNachPfaden(pfade) {
+      // partitionsübergreifend, nur für das Gruppenbild (Dozent): feste Pfadliste, /pfad ist indiziert
+      if (pfade.length === 0) return [];
+      return abfrage(cE, 'SELECT c.benutzerId, c.pfad, c.wert FROM c WHERE c.geloescht = false AND ARRAY_CONTAINS(@pfade, c.pfad)',
+        [{ name: '@pfade', value: pfade }]);
     },
 
     async bLesen(id) {
@@ -659,6 +675,12 @@ function fachlich(be) {
       if (abgelehnt.length) antwort.abgelehnt = abgelehnt;
       return antwort;
     },
+
+    /**
+     * Lebende Einträge ALLER Konten zu einer festen Pfadliste: [{benutzerId, pfad, wert}].
+     * Nur für das Gruppenbild (lib/gruppenbild.js); die Kennungen verlassen den Server nie.
+     */
+    async eintraegeNachPfaden(pfade) { return be.eNachPfaden(pfade); },
 
     // ---- Benutzer
 

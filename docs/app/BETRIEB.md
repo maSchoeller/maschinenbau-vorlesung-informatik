@@ -135,6 +135,7 @@ Remove-Variable k
 | `TUTOR_PRUEFER` | Bicep (`an`) | zweite Prüfung jeder Antwort |
 | `APP_VERSION` | optional | Version in `/api/status` |
 | `KURS_CODE` | Besitzer per CLI (nicht in Bicep, nicht ins Repository) | Tutor nur nach einmaliger Freischaltung mit diesem Code (Groß-/Kleinschreibung und Leerzeichen egal; am besten drei Wörter). Ohne Wert: keine Freischaltung. `az staticwebapp appsettings set -n <swa> -g rg-informatik-lernapp --setting-names KURS_CODE="…"` |
+| `DOZENT_IDS` | Besitzer per CLI (nicht in Bicep, nicht ins Repository) | Wer die Kursübersicht (`dozent.html`) sehen darf: pseudonyme Kennungen, getrennt durch Komma. Einrichten: mit dem eigenen GitHub-Konto anmelden, `dozent.html` öffnen, die angezeigte Kennung kopieren, dann `az staticwebapp appsettings set -n <swa> -g rg-informatik-lernapp --setting-names DOZENT_IDS="<kennung>"`. Ohne Wert sieht niemand die Übersicht. Die Kennung hängt am Salt und am GitHub-Konto; sie ist kein Geheimnis, gehört aber nicht ins Repository |
 
 Bicep-verwaltete Werte ändert man in `infra/main.bicepparam` und deployt erneut; ein per CLI geänderter Tutor-Grenzwert würde beim nächsten Deployment auf den Bicep-Wert zurückgesetzt.
 
@@ -204,6 +205,7 @@ E-Mails gehen an die beim Deployment angegebene Adresse, sobald die Ist-Kosten 5
 - Nach dem Löschen bleiben nur: die Tageszähler der Kontingente (pseudonyme Kennung und Anzahl, verfallen nach 8 Tagen; sonst ließe sich ein Tageskontingent durch Löschen erneuern) und ein Löschvermerk (Zeitpunkt, verfällt nach 30 Tagen). Der Vermerk sorgt dafür, dass andere, noch angemeldete Geräte ihren alten Stand nicht wieder hochladen: Einträge, die vor dem Löschen geändert wurden, lehnt der Server ab (`konto-geloescht`). Neu Geschriebenes wird angenommen. **Abweichung vom Architekturvertrag** (Abschnitt 6 nennt „Tutor-Zähler“ beim Löschen): von der Koordination zu bestätigen.
 - Gespeichert werden nur: pseudonyme Kennung (HMAC aus GitHub-Kennung und Salt), Anzeigename, Lernstand, Programme, geteilte Schnappschüsse, Tages- und Kontozähler. Keine Namen, E-Mails, GitHub-Logins. Logs enthalten keine Inhalte.
 - Anzeigenamen sind frei gewählt und nicht geprüft; Rollenwörter (Prof, Dozent, Tutor, Admin, DHBW …) lehnt die API ab. Wer als Dozent teilen will, wählt einen Namen ohne diese Wörter.
+- Kursübersicht für Dozierende (`GET /api/dozent/uebersicht`, Architekturvertrag Abschnitt 14): liefert nur Anzahlen über alle Konten (gelöst, begonnen, abgehakt, Mittel im Selbstcheck), nie Kennungen, nie Code; unter 5 Konten mit Lernstand gar keine Zahlen je Lektion. Der Datenschutztext auf der Kontoseite nennt das.
 - Gesamtexport für den Dozenten (z. B. vor dem Aufräumen): Cosmos-Daten im Portal (Data Explorer) oder per Skript mit einem nur lesenden Schlüssel (`az cosmosdb keys list --type read-only-keys`, Wert nirgends ablegen).
 
 ## 8. Aufräumen nach dem Semester
@@ -259,6 +261,7 @@ Lokal getestet sind alle Routen gegen die Arbeitsspeicher-Ablage und gegen die C
 - Serverless und Continuous Backup in Germany West Central.
 - `listAppSettings()`-Zusammenführung beim Erst- und beim Folgedeployment (erwartet: Salt bleibt, `ANTHROPIC_API_KEY` bleibt). Der Trockenlauf deckt das nicht ab (Abschnitt 3).
 - Salt-Sicherung: erstes Anlegen von Tresor und Geheimnis über ARM ohne Datenrolle (Fall `sichern`), Wirksamwerden der Rolle „Key Vault Secrets User“ (Schritt `SaltPruefen` wartet bis gut 10 Minuten, danach nur Warnung), ob `az keyvault secret list-deleted` mit „Key Vault Secrets User“ klappt (Learn nennt dafür nur die Berechtigung „list“; klappt es nicht, gilt der Löschstatus als unklar), Reihenfolge Geheimnis vor App-Einstellungen (`dependsOn`), Folgedeployment ohne neue Geheimnis-Version (`az keyvault secret list-versions --vault-name <tresor> -n benutzer-salt --query "length(@)"` bleibt 1). Die Fallunterscheidung selbst ist ohne Azure getestet (`infra/salt-fall.test.ps1`), die Fälle `wiederherstellen`, `abweichung` und `tresor-geloescht` in Azure nicht.
+- Die partitionsübergreifende Abfrage des Gruppenbilds (`ARRAY_CONTAINS(@pfade, c.pfad)` über alle Konten, feste Liste von höchstens 88 Pfaden) gegen das echte Konto: Ergebnis und RU-Kosten. Sie läuft höchstens alle 30 Sekunden je Function-Instanz und nur für Dozierende.
 - Budget-Folgedeployment mit ausgelesenem Startdatum (`az rest` auf `Microsoft.Consumption/budgets`).
 - Bedingtes Patch mit mehreren Feldern (`FROM c WHERE c.n <= … AND c.b <= …`) für die Kontozähler, Ablauf der Löschmarken über `ttl` am Dokument, Filter `c._ts >= @s`.
 - Wie viele Function-Instanzen SWA Free parallel startet (bestimmt die Genauigkeit der Mengenbremse).

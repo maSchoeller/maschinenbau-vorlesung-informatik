@@ -1,0 +1,1 @@
+{"baum": [{"k": "in", "v": "laenge", "typ": "float"}, {"k": "in", "v": "breite", "typ": "float"}, {"k": "op", "v": "flaeche = laenge * breite"}, {"k": "op", "v": "umfang = 2 * laenge + 2 * breite"}, {"k": "out", "v": "flaeche"}, {"k": "out", "v": "umfang"}]}

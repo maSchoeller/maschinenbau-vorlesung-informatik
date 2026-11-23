@@ -1,105 +1,117 @@
 WEBVTT
 
 1
-00:00:00.400 --> 00:00:03.789
-Eine KI soll die Zugspannung in einem Rundstab berechnen.
+00:00:00.400 --> 00:00:04.567
+Du warst essen. Die Rechnung macht 40 Euro, und du gibst 10 Prozent Trinkgeld.
 
 2
-00:00:03.941 --> 00:00:08.031
-Die Zugkraft beträgt 12 000 Newton, der Durchmesser 10 Millimeter.
+00:00:04.714 --> 00:00:09.138
+Im Kopf geht das schnell: 4 Euro dazu, also 44 Euro.
 
 3
-00:00:08.162 --> 00:00:13.042
-Die KI antwortet selbstsicher: 0,153 Megapascal.
+00:00:09.525 --> 00:00:14.829
+Ein Rechner kann das nicht einfach so. Er braucht jeden Schritt einzeln, in der richtigen Reihenfolge.
 
 4
-00:00:13.273 --> 00:00:16.938
-Das klingt plausibel, ist aber um den Faktor 1000 falsch.
+00:00:15.069 --> 00:00:19.730
+Genau darum geht es in diesem Kurs: Erst der Ablauf, dann der Code.
 
 5
-00:00:17.079 --> 00:00:21.127
-Richtig sind etwa 152,8 Megapascal.
+00:00:20.630 --> 00:00:23.007
+Jede Aufgabe zerlegst du mit drei Fragen.
 
 6
-00:00:21.408 --> 00:00:28.661
-Die Fläche wurde von Quadratmillimetern falsch in Quadratmeter umgerechnet: durch 1000 statt durch eine Million.
+00:00:23.424 --> 00:00:28.659
+Was ist gegeben? Das ist die Eingabe: der Rechnungsbetrag und der Prozentsatz.
 
 7
-00:00:28.869 --> 00:00:32.610
-Wer das nicht merkt, dimensioniert danach ein Bauteil falsch.
+00:00:29.531 --> 00:00:35.484
+Was wird damit getan? Das ist die Verarbeitung: Trinkgeld ausrechnen und zum Betrag addieren.
 
 8
-00:00:33.510 --> 00:00:39.052
-Warum also selbst programmieren lernen, wenn eine KI das kann? Dafür gibt es vier Gründe.
+00:00:36.457 --> 00:00:41.863
+Was soll herauskommen? Das ist die Ausgabe: das Trinkgeld und der Gesamtbetrag.
 
 9
-00:00:39.640 --> 00:00:45.764
-Erstens: Du musst Code lesen können, um ihn zu prüfen. Wer ihn nicht versteht, kann nur glauben.
+00:00:42.818 --> 00:00:48.600
+Eingabe, Verarbeitung, Ausgabe. Diese drei Teile findest du in jedem Programm wieder.
 
 10
-00:00:46.569 --> 00:00:55.245
-Zweitens: Eine KI verstärkt deine Spezifikation. Ist die Aufgabe unklar, bekommst du schnell und überzeugend das Falsche.
+00:00:49.500 --> 00:00:52.477
+Eine solche Folge von Schritten heißt Algorithmus.
 
 11
-00:00:56.251 --> 00:01:06.130
-Drittens: Du musst überschlagen können. Rechne im Kopf: 12 000 durch rund 80 sind etwa 150, und schon fällt der Fehler auf.
+00:00:52.750 --> 00:00:58.348
+Jeder Schritt muss eindeutig sein, und nach endlich vielen Schritten muss ein Ergebnis da sein.
 
 12
-00:01:07.299 --> 00:01:16.040
-Viertens: Im Betrieb läuft oft gar keine KI. Steuerungen, Messgeräte und Skripte sind Code, den du verstehen und anpassen musst.
+00:00:59.034 --> 00:01:03.310
+Ein Rechner denkt nicht mit. Was du nicht hinschreibst, passiert nicht.
 
 13
-00:01:16.940 --> 00:01:21.135
-Du musst aber nicht alles selbst können. Dafür gibt es die Wissens-Ampel.
+00:01:04.210 --> 00:01:11.502
+Einen Ablauf schreibt man nicht als Aufsatz auf, man zeichnet ihn. Die Zeichnung heißt Programmablaufplan.
 
 14
-00:01:21.998 --> 00:01:31.193
-Im Kopf: Das brauchst du ohne Hilfe, sonst kannst du KI-Ergebnisse nicht beurteilen, zum Beispiel Größenordnungen und Einheiten.
+00:01:11.665 --> 00:01:14.816
+Die Symbole sind genormt, und heute brauchst du drei.
 
 15
-00:01:32.256 --> 00:01:37.466
-Lesen und erkennen: Du verstehst Code, musst ihn aber nicht zwingend selbst schreiben.
+00:01:15.069 --> 00:01:18.174
+Das abgerundete Feld steht für Start und Ende.
 
 16
-00:01:38.480 --> 00:01:43.431
-Delegieren: Die KI übernimmt, du musst nur wissen, dass es das gibt.
+00:01:18.260 --> 00:01:22.085
+Das Parallelogramm steht für eine Eingabe oder eine Ausgabe.
 
 17
-00:01:44.353 --> 00:01:48.190
-Bei jedem Thema im Kurs zeigt dir die Ampel, in welche Stufe es gehört.
+00:01:22.295 --> 00:01:26.227
+Das Rechteck steht für die Verarbeitung: Hier wird gerechnet.
 
 18
-00:01:49.090 --> 00:01:51.125
-Doch was ist eigentlich ein Programm?
+00:01:26.465 --> 00:01:30.180
+Pfeile geben die Reihenfolge an, von oben nach unten.
 
 19
-00:01:51.975 --> 00:01:57.340
-Ein Programm folgt fast immer demselben Muster: Eingabe, Verarbeitung, Ausgabe.
+00:01:31.080 --> 00:01:34.347
+So sieht der Plan für das Trinkgeld aus.
 
 20
-00:01:58.068 --> 00:02:04.953
-Hier stehen in den ersten beiden Zeilen die Eingaben, in der dritten wird gerechnet, und die vierte gibt das Ergebnis aus.
+00:01:34.197 --> 00:01:38.477
+Start. Eingabe: der Betrag. Eingabe: der Prozentsatz.
 
 21
-00:02:05.882 --> 00:02:10.903
-Der Interpreter arbeitet den Code Zeile für Zeile von oben nach unten ab.
+00:01:38.327 --> 00:01:48.140
+Dann zwei Rechtecke: Das Trinkgeld ist Betrag mal Prozent geteilt durch 100. Der Gesamtbetrag ist Betrag plus Trinkgeld.
 
 22
-00:02:10.931 --> 00:02:16.531
-Und er ist deterministisch: gleiche Eingabe, gleiches Ergebnis, jedes Mal.
+00:01:47.990 --> 00:01:50.634
+Danach die Ausgabe und das Ende.
 
 23
-00:02:17.516 --> 00:02:24.980
-Genau das macht ein Programm überprüfbar, anders als eine KI-Antwort, die bei jeder Anfrage anders ausfallen kann.
+00:01:50.484 --> 00:01:59.050
+Mit 40 Euro und 10 Prozent merkt sich der Ablauf nacheinander 40, 10, 4 und 44.
 
 24
-00:02:25.880 --> 00:02:32.188
-Merke dir: Die KI ist ein starkes Werkzeug, aber die Verantwortung für das Ergebnis bleibt bei dir.
+00:01:59.950 --> 00:02:01.403
+Merke dir vier Regeln.
 
 25
-00:02:32.513 --> 00:02:38.329
-Dafür brauchst du Wissen im Kopf, Leseverständnis und ein Gefühl für Größenordnungen.
+00:02:01.651 --> 00:02:04.933
+Ein Plan hat genau einen Start und genau ein Ende.
 
 26
-00:02:39.248 --> 00:02:42.170
-Im nächsten Video schreibst du deine ersten Zeilen Python.
+00:02:05.249 --> 00:02:07.558
+Gelesen wird von oben nach unten.
+
+27
+00:02:07.951 --> 00:02:10.029
+In jedem Symbol steht ein Schritt.
+
+28
+00:02:10.289 --> 00:02:13.600
+Und was der Plan nicht zeigt, tut das Programm nicht.
+
+29
+00:02:14.547 --> 00:02:20.960
+In der Klausur zeichnest du solche Pläne von Hand. Im nächsten Schritt wird aus dem Plan dein erstes Programm.

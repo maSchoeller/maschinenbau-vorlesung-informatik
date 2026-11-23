@@ -1,0 +1,1 @@
+Und wenn etwas schiefgeht? Dann meldet Python einen Fehler mit Zeilennummer. Lies die letzte Zeile der Meldung zuerst. Ein NameError heißt meistens: Ein Name ist falsch geschrieben. Jetzt probier die vier Karten im Werkzeugkasten selbst aus.

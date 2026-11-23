@@ -5,7 +5,7 @@
    Startet einen eigenen kleinen Dateiserver für die Ausgabe (kein Emulator nötig).
    Aufruf: node skripte/pruefe-navigation.mjs [ausgabeordner=dist-nav] [port=4321]
            node skripte/pruefe-navigation.mjs http://localhost:4340   (gegen einen laufenden Server, ohne eigenen)
-   Fängt unter anderem: leere Suche zeigt nur die 22 Lektionen, „Weiter“ führt nie auf Navigationsseiten,
+   Fängt unter anderem: leere Suche zeigt nur die Lektionen, „Weiter“ führt nie auf Navigationsseiten,
    im Fertig-Zustand genau ein primärer Knopf, Warm-up mit bis zu drei Aufgaben, Glossar-Filter ae/oe/ue,
    Suche findet Python-Themen, Fokus kehrt zurück (Suche, Hinweis wegklicken).
    ============================================================= */
@@ -61,10 +61,11 @@ async function main() {
       await page.waitForSelector('dialog.suche[open] a.suche-treffer');
       let opt = await page.locator('dialog.suche a.suche-treffer').count();
       let grp = await page.locator('dialog.suche .suche-gruppe__name').allTextContents();
-      pruefe(opt === 22 && grp.length === 1 && grp[0] === 'Lektionen', 'Leere Suche: genau die 22 Lektionen in einer Gruppe (' + opt + ' Treffer, Gruppen: ' + grp.join(',') + ')');
+      const nLek = (await page.evaluate(() => window.KursApp.kurs())).lektionen.length;
+      pruefe(opt === nLek && nLek >= 1 && grp.length === 1 && grp[0] === 'Lektionen', 'Leere Suche: genau die ' + nLek + ' Lektionen in einer Gruppe (' + opt + ' Treffer, Gruppen: ' + grp.join(',') + ')');
       await page.waitForTimeout(400);
-      pruefe(/Alle 22 Lektionen/.test(await page.locator('dialog.suche .suche-status').textContent()), 'Statusmeldung „Alle 22 Lektionen“');
-      for (const [q, erwartet] of [['numpy', 'V13'], ['for schleife', 'V06'], ['zaehler', null]]) {
+      pruefe(new RegExp('Alle ' + nLek + ' Lektionen').test(await page.locator('dialog.suche .suche-status').textContent()), 'Statusmeldung „Alle ' + nLek + ' Lektionen“');
+      for (const [q, erwartet] of [['input', 'V01'], ['zuweisung', 'V01'], ['ablauf', null]]) {
         await page.fill('#suche-feld', q);
         const t = await page.locator('dialog.suche a.suche-treffer').allInnerTexts();
         if (erwartet) {
@@ -84,35 +85,35 @@ async function main() {
 
       /* Glossar */
       await page.goto(basis + 'glossar.html');
-      await page.fill('#gl-filter', 'zaehler');
+      await page.fill('#gl-filter', 'ablauf');
       const z = await page.locator('.gl-eintrag:not([hidden])').count();
-      pruefe(z > 0, 'Glossar-Filter „zaehler“ findet Begriffe (' + z + ')');
+      pruefe(z > 0, 'Glossar-Filter „ablauf“ findet Begriffe (' + z + ')');
 
       /* Heute nach dem Besuch einer Navigationsseite: „Weiter“ nie auf Glossar */
       await page.goto(basis + 'lektionen/v01-start.html').catch(() => {});
       await page.goto(basis + 'index.html'); await page.evaluate(() => localStorage.clear());
       const kurs = await page.evaluate(() => window.KursApp.kurs());
-      const t = kurs.termine;
+      const t = kurs.lektionen;
       const seed = (n, was) => page.evaluate(({ nr, was }) => {
         const KS = window.KursSpeicher;
         for (const [k, ids] of Object.entries(was)) { const b = KS.sofort.lesen(KS.pfad(nr, k)) || {}; ids.forEach((i) => { b[i] = 1; }); KS.sofort.schreiben(KS.pfad(nr, k), b); }
       }, { nr: n, was });
       await seed(t[0].nr, { done: [t[0].abschnitte[0].id] });
-      await seed(t[1].nr, { done: [t[1].abschnitte[0].id] });
-      await seed(t[2].nr, { done: [t[2].abschnitte[0].id] });
+      for (const x of t.slice(1, 3)) await seed(x.nr, { done: [x.abschnitte[0].id] });
       await page.evaluate(() => window.KursSpeicher.sofort.schreiben('inf-mb/app/zuletzt', { url: 'glossar.html', titel: 'Glossar', art: 'glossar', lektion: null, zeit: new Date().toISOString() }));
       await page.reload(); await page.waitForTimeout(700);
       let haupt = await page.locator('main').innerText();
       pruefe(!/Weiter, wo du warst/.test(haupt), 'Zuletzt = Glossar: kein „Weiter, wo du warst“ auf Heute');
       pruefe(await page.locator('main a.k-btn:not(.k-btn--ghost)').count() === 1, 'Heute: genau ein primärer Knopf (Stand begonnen)');
       const warm = await page.locator('.np-warmup li').count();
-      pruefe(warm === 3, 'Warm-up zeigt drei offene Aufgaben aus V01 und V02 (' + warm + ')');
+      const warmSoll = Math.min(3, 2 * (Math.min(t.length, 3) - 1));   /* aus den früheren begonnenen Lektionen, höchstens 2 je Lektion */
+      pruefe(warm === warmSoll, 'Warm-up zeigt ' + warmSoll + ' offene Aufgaben aus den begonnenen Lektionen (' + warm + ')');
       const proLektion = await page.locator('.np-aufgabe__lektion').allInnerTexts();
       const maxLek = Math.max(...Object.values(proLektion.reduce((a, x) => ((a[x] = (a[x] || 0) + 1), a), {})), 0);
       pruefe(maxLek <= 2, 'Warm-up: höchstens 2 Aufgaben je Lektion');
 
       /* Zuletzt = Lektion: Weiter-Knopf zeigt auf die Lektion */
-      await page.evaluate((u) => window.KursSpeicher.sofort.schreiben('inf-mb/app/zuletzt', { url: 'lektionen/' + u, titel: 'Test', art: 'lerneinheit', lektion: 'V03', zeit: new Date().toISOString() }), t[2].lerneinheit);
+      await page.evaluate((u) => window.KursSpeicher.sofort.schreiben('inf-mb/app/zuletzt', { url: 'lektionen/' + u, titel: 'Test', art: 'lerneinheit', lektion: 'V01', zeit: new Date().toISOString() }), t[t.length - 1].lerneinheit);
       await page.reload(); await page.waitForTimeout(700);
       pruefe(await page.locator('main a.k-btn:not(.k-btn--ghost)').count() === 1, 'Heute mit „Weiter“: genau ein primärer Knopf');
       pruefe(/Weiter, wo du warst/.test(await page.locator('main').innerText()), 'Zuletzt = Lektion: „Weiter, wo du warst“ erscheint');
@@ -136,11 +137,12 @@ async function main() {
       }, t);
       await page.reload(); await page.waitForTimeout(700);
       const prim = page.locator('main a.k-btn:not(.k-btn--ghost)');
-      pruefe(await prim.count() === 1 && /Klausurtrainer/.test(await prim.innerText()), 'Alles fertig: genau ein primärer Knopf, und zwar Klausurtrainer');
+      pruefe(await prim.count() === 1 && /Lernpfad|Klausurtrainer/.test(await prim.innerText()), 'Alles fertig: genau ein primärer Knopf (Lernpfad, solange Termine fehlen; sonst Klausurtrainer)');
 
       /* Lernpfad */
       await page.goto(basis + 'lernpfad.html'); await page.waitForTimeout(500);
-      pruefe(await page.locator('.lp-station, [data-lektion]').count() >= 22, 'Lernpfad zeigt 22 Stationen');
+      pruefe(await page.locator('.lp-station').count() === kurs.termine.length && kurs.termine.length === 20, 'Lernpfad zeigt die 20 Termine');
+      pruefe(await page.locator('.lp-material [data-nr], .lp-seite[data-nr]').count() >= t.length, 'Lernpfad nennt zu den Terminen alle aktiven Lektionen (' + t.length + ')');
       if (g.n === 'desktop') await page.screenshot({ path: path.join(APP, '.cache', 'nav-lernpfad.png') }).catch(() => {});
       pruefe(konsole.length === 0, 'keine Konsolenfehler' + (konsole.length ? ': ' + konsole.slice(0, 3).join(' | ') : ''));
       await ctx.close();

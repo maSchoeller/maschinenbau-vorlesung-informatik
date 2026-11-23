@@ -1,5 +1,7 @@
 # Briefing: neue Lektion nach dem Muster von V03
 
+> **Stand 2026-11-23:** Lektionen ziehen nach MDX um. Ist eine Lektion umgezogen (bisher V07), liegt ihre Quelle unter `app/inhalte/vXX/` und nicht mehr unter `site/lektionen/`; geschrieben und geprüft wird sie nach `docs/app/INHALTE.md`. Dieses Briefing gilt unverändert für Lektionen, die noch unter `site/lektionen/` liegen.
+
 Repo-Wurzel: dieses Verzeichnis. Website in `site/`. Verbindlich: `KONZEPT.md` (Tabelle „22 Termine“: Informatik-Strang, Python-Strang, Hook), `DESIGN.md` (Seitenstruktur, Gestaltungsregeln, keine Emojis, SVG-Icons aus `site/assets/img/icons.svg` / `assets/js/icons.js`).
 
 **Vorlage:** V03 ist fertig und vom Dozenten abgenommen. Baue die neue Lektion strukturell exakt so: `site/lektionen/v03-fliesskommazahlen.html` (Lerneinheit) und `site/lektionen/v03-labor.html` (Programmierlabor), `site/notebooks/V03-Fliesskommazahlen.ipynb`. Gleiche Bausteine, Klassen, Skripte, Abschnittsfolge, Labor-Stationen (Werkzeugkasten · Vorgerechnetes Beispiel · Ablauf verfolgen · Zeilen ordnen · Lücken füllen · Erste eigene Aufgabe · Code-Review · Typische Fehlermeldungen) und Training zu Hause (6–8 gestufte Aufgaben inkl. 1 Wiederholung früherer Konzepte – entfällt bei V01 – und 1 Klausur-Modus-Aufgabe), „Videos zur Nachbereitung“, „Für Dozierende“ mit Ablaufplan 135 Min.

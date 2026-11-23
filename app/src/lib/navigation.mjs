@@ -10,9 +10,7 @@ export const BEREICHE = [
     id: 'kurs', name: 'Kurs', icon: 'route', ziel: 'lernpfad.html', label: 'Kurs',
     reiter: [
       { id: 'lernpfad', name: 'Lernpfad', ziel: 'lernpfad.html' },
-      { id: 'projekt', name: 'Projekt', ziel: 'projekt.html' },
       { id: 'glossar', name: 'Glossar', ziel: 'glossar.html' },
-      { id: 'kurs', name: 'Über den Kurs', ziel: 'kurs.html' },
     ],
   },
   {
@@ -24,14 +22,10 @@ export const BEREICHE = [
     ],
   },
   { id: 'bibliothek', name: 'Bibliothek', icon: 'book', ziel: 'bibliothek.html', reiter: [] },
-  {
-    id: 'klausur', name: 'Klausur', icon: 'exam', ziel: 'klausurtrainer.html', label: 'Klausur',
-    reiter: [
-      { id: 'klausurtrainer', name: 'Klausurtrainer', ziel: 'klausurtrainer.html' },
-      { id: 'probeklausur', name: 'Probeklausur', ziel: 'probeklausur-2026-27.html' },
-    ],
-  },
 ];
+
+/* Abgeschaltet, bis sie zum neuen Kurs passen (2026-11-23): der Reiter „Über den Kurs“ (kurs.html) und der Bereich
+   „Klausur“ (klausurtrainer.html, probeklausur-2026-27.html). Die Seiten werden noch gebaut, aber nicht angeboten. */
 
 /* Unten in der Leiste */
 export const UNTEN = [
@@ -44,17 +38,17 @@ export const UNTEN = [
 export const SEITEN = {
   'index.html': { bereich: 'heute', reiter: null, titel: 'Heute' },
   'lernpfad.html': { bereich: 'kurs', reiter: 'lernpfad', titel: 'Lernpfad' },
-  'projekt.html': { bereich: 'kurs', reiter: 'projekt', titel: 'Projekt' },
   'glossar.html': { bereich: 'kurs', reiter: 'glossar', titel: 'Glossar' },
-  'kurs.html': { bereich: 'kurs', reiter: 'kurs', titel: 'Über den Kurs' },
+  'kurs.html': { bereich: 'kurs', reiter: null, titel: 'Über den Kurs' },
   'werkbank.html': { bereich: 'werkbank', reiter: 'werkbank', titel: 'Werkbank' },
   'geteilt.html': { bereich: 'werkbank', reiter: null, titel: 'Geteiltes Programm' },
   'pap-editor.html': { bereich: 'werkbank', reiter: 'pap-editor', titel: 'PAP-Editor' },
   'werkzeuge/3d-vorschau.html': { bereich: 'werkbank', reiter: '3d-vorschau', titel: '3D-Vorschau' },
   'bibliothek.html': { bereich: 'bibliothek', reiter: null, titel: 'Bibliothek' },
-  'klausurtrainer.html': { bereich: 'klausur', reiter: 'klausurtrainer', titel: 'Klausurtrainer' },
-  'probeklausur-2026-27.html': { bereich: 'klausur', reiter: 'probeklausur', titel: 'Probeklausur' },
+  'klausurtrainer.html': { bereich: null, reiter: null, titel: 'Klausurtrainer' },
+  'probeklausur-2026-27.html': { bereich: null, reiter: null, titel: 'Probeklausur' },
   'konto.html': { bereich: 'konto', reiter: null, titel: 'Konto' },
+  'dozent.html': { bereich: 'konto', reiter: null, titel: 'Kursübersicht' },
   'offline.html': { bereich: null, reiter: null, titel: 'Offline' },
   '404.html': { bereich: null, reiter: null, titel: 'Seite nicht gefunden' },
 };

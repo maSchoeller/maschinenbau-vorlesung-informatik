@@ -1,0 +1,18 @@
+[
+ {
+  "p": 1,
+  "t": "Beide Werte werden mit input eingelesen und in eine Zahl umgewandelt (float oder int)"
+ },
+ {
+  "p": 1,
+  "t": "Die Reihenfolge stimmt mit dem Plan überein: erst stunden, dann lohn"
+ },
+ {
+  "p": 1,
+  "t": "Die Rechnung steht in einer eigenen Zeile: verdienst = stunden * lohn"
+ },
+ {
+  "p": 1,
+  "t": "Der Verdienst wird mit print ausgegeben, Klammern und Anführungszeichen stimmen"
+ }
+]

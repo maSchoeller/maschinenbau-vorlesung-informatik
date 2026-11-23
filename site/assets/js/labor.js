@@ -64,7 +64,7 @@
   var items = {};
 
   ['A', 'B'].forEach(function (part) {
-    var h = el('h2', { class: 'lab__group', text: partName[part] + (part === 'A' ? ' (Präsenz)' : ' (ca. 60 Min)') });
+    var h = el('h2', { class: 'lab__group', text: partName[part] + (part === 'A' ? ' (im Termin)' : ' (45 Min, Pflicht)') });
     var ol = el('ol', { class: 'lab__items' });
     var og = el('optgroup', { label: partName[part] });
     tasks.filter(function (t) { return t.getAttribute('data-part') === part; }).forEach(function (t) {

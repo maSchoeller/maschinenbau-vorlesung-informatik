@@ -143,7 +143,7 @@ async function gast() {
   const p = A.page;
   await p.goto(BASIS + '/index.html');
   pruefe(await p.locator('main h1').count() === 1, 'Heute lädt');
-  await p.goto(BASIS + '/lektionen/v01-warum-programmieren.html');
+  await p.goto(BASIS + '/lektionen/v01-ablauf-und-erste-programme.html');
   await p.waitForSelector('.k-done button');
   await p.locator('.k-done button').first().click();
   const done = await lies(p, 'inf-mb/v01/done');
@@ -175,7 +175,7 @@ async function gast() {
   await aufgabe.locator('.cm-content').waitFor({ timeout: 20000 });
   await p.evaluate(() => {
     const ta = document.querySelector('.a-task[data-id="tr-1"] textarea');
-    window.KursEditor.setValue(ta, 'bauteil = "Nabe"\nanzahl = 3\nprint("Prüfbericht für:", bauteil)\nprint("Anzahl:", anzahl)\n');
+    window.KursEditor.setValue(ta, 'karten = 3\npreis = 9.5\ngesamt = karten * preis\nprint("Gesamt:", gesamt)\n');
   });
   await aufgabe.locator('.cm-content').click();
   await aufgabe.locator('button', { hasText: 'Prüfen' }).first().click();
@@ -193,14 +193,14 @@ async function gast() {
   await p.waitForSelector('.np-schritte');
   const heute = await p.locator('.np-schritte').innerText();
   const weiter = await p.locator('a.np-gross').getAttribute('href').catch(() => null);
-  pruefe(/1 von 4 Abschnitten/.test(heute) && /1 von \d+ Aufgaben gelöst/.test(heute), 'Heute: V01 mit Stand', zahlen(heute));
+  pruefe(/1 von 5 Abschnitten/.test(heute) && /1 von \d+ Aufgaben gelöst/.test(heute), 'Heute: V01 mit Stand', zahlen(heute));
   pruefe(/v01-labor\.html/.test(weiter || ''), 'Heute: „Weiter, wo du warst“ führt ins Labor', weiter);
 
   /* Eine Zählung für Lektionswähler, Heute und Lernpfad (Deep Dive zählt nicht) */
   await p.goto(BASIS + '/lernpfad.html');
   await p.waitForFunction(() => document.querySelector('#v01 [data-zahlen]') && document.querySelector('#v01 [data-zahlen]').textContent.trim());
   const lernpfad = await p.locator('#v01 [data-zahlen]').innerText();
-  await p.goto(BASIS + '/lektionen/v01-warum-programmieren.html');
+  await p.goto(BASIS + '/lektionen/v01-ablauf-und-erste-programme.html');
   await p.click('[data-app-waehler]');
   await p.waitForFunction(() => { const n = document.querySelector('[data-app-stand="V01"]'); return n && n.textContent.trim(); });
   const waehler = await p.locator('[data-app-stand="V01"]').innerText();
@@ -211,19 +211,19 @@ async function gast() {
   await p.goto(BASIS + '/index.html');
   await p.keyboard.press('Control+k');
   await p.waitForSelector('dialog[open] input');
-  await p.keyboard.type('Dateien');
+  await p.keyboard.type('Zuweisung');
   await p.waitForFunction(() => document.querySelectorAll('dialog[open] [role="option"]').length > 0, null, { timeout: 8000 });
   const treffer = await p.locator('dialog[open] [role="option"]').allInnerTexts();
-  pruefe(treffer.some((t) => /Datei/.test(t)), 'Suche findet „Dateien“', treffer.slice(0, 3).map((t) => t.split('\n')[0]).join(' | '));
+  pruefe(treffer.some((t) => /Zuweisung/.test(t)), 'Suche findet „Zuweisung“', treffer.slice(0, 3).map((t) => t.split('\n')[0]).join(' | '));
   await p.keyboard.press('Enter');
   await p.waitForURL((u) => !/index\.html$/.test(u.pathname), { timeout: 8000 }).catch(() => {});
   const ziel = new URL(p.url());
   const zielDa = ziel.hash ? await p.evaluate((h) => !!document.getElementById(decodeURIComponent(h.slice(1))), ziel.hash) : true;
   pruefe(!/index\.html$/.test(ziel.pathname) && zielDa, 'Suche: Enter springt zum Treffer, Anker existiert', ziel.pathname + ziel.hash);
   /* Glossar: alte Pluralanker bleiben gültig, Singular/Plural sind zusammengeführt */
-  await p.goto(BASIS + '/glossar.html#g-dateien');
+  await p.goto(BASIS + '/glossar.html#g-zuweisung');
   const glossar = await p.evaluate(() => ({ alt: !!document.getElementById('g-dateien'), haupt: !!document.getElementById('g-datei'), dt: [...document.querySelectorAll('.gl-eintrag dt')].filter((d) => /^Datei(en)?\b/.test(d.textContent)).length }));
-  pruefe(glossar.alt && glossar.haupt && glossar.dt === 1, 'Glossar: „Datei“ und „Dateien“ ein Eintrag, alter Anker #g-dateien bleibt', glossar);
+  pruefe(await p.evaluate(() => !!document.getElementById('g-zuweisung') && document.querySelectorAll('.gl-eintrag').length >= 5), 'Glossar: Begriffe aus Termin 01 mit Anker (#g-zuweisung)', glossar);
   sauber(A, 'Heute, Lernpfad, Suche, Glossar');
 
   /* Content-Security-Policy: fremde Verbindungsziele sind gesperrt (zur Sicherheit verlässt ohnehin nichts den Rechner) */
@@ -268,7 +268,7 @@ async function konto() {
   await abgleichFertig(B.page);
   await B.page.goto(BASIS + '/index.html');
   await B.page.waitForSelector('.np-schritte');
-  pruefe(/1 von 4 Abschnitten/.test(await B.page.locator('.np-schritte').innerText()), 'Gerät B: Heute zeigt den Fortschritt aus Gerät A');
+  pruefe(/1 von 5 Abschnitten/.test(await B.page.locator('.np-schritte').innerText()), 'Gerät B: Heute zeigt den Fortschritt aus Gerät A');
   await B.page.goto(BASIS + '/werkbank.html#' + programmId);
   await B.page.waitForSelector('#wb-liste a');
   pruefe(/^V01 · /.test(await B.page.inputValue('#wb-titel')), 'Gerät B: Werkbank-Programm aus Gerät A ist da');
@@ -394,12 +394,12 @@ async function tutor() {
   pruefe(await p.evaluate(() => document.activeElement && document.activeElement.id === 'tutor-frage'), 'Tutor: Panel offen, Fokus im Eingabefeld');
   const schalter = p.locator('#tutor-code-schalter');
   if (await schalter.count() && !(await schalter.isChecked())) await schalter.check();
-  await p.fill('#tutor-frage', 'Warum brauche ich Anführungszeichen bei bauteil?');
+  await p.fill('#tutor-frage', 'Warum brauche ich Anführungszeichen bei Gesamt?');
   await p.click('.tutor-senden');
   const antwort = await p.waitForSelector('.tutor-verlauf .tutor-beitrag--tutor', { timeout: 20000 }).then(() => true, () => false);
   pruefe(antwort, 'Tutor: Antwort erscheint');
   const gesendet = anfragen[0] || {};
-  pruefe(gesendet.kontext && /bauteil/.test(gesendet.kontext.code || '') && gesendet.kontext.lektion === 'V01', 'Tutor: Code der Aufgabe wurde mitgeschickt', gesendet.kontext ? { lektion: gesendet.kontext.lektion, aufgabe: gesendet.kontext.aufgabe, code: (gesendet.kontext.code || '').length + ' Zeichen' } : 'keine Anfrage');
+  pruefe(gesendet.kontext && /Kinoabend|karten/.test(gesendet.kontext.code || '') && gesendet.kontext.lektion === 'V01', 'Tutor: Code der Aufgabe wurde mitgeschickt', gesendet.kontext ? { lektion: gesendet.kontext.lektion, aufgabe: gesendet.kontext.aufgabe, code: (gesendet.kontext.code || '').length + ' Zeichen' } : 'keine Anfrage');
   const rest1 = await p.locator('.tutor-rest').innerText();
   await p.fill('#tutor-frage', 'Und was macht print?');
   await p.click('.tutor-senden');
@@ -411,9 +411,11 @@ async function tutor() {
   pruefe(await p.evaluate(() => document.querySelector('[data-app-slot="panel"]').hidden && !window.KursApp.panel.istOffen()), 'Tutor: Esc schließt das Panel');
   /* Labor bleibt bedienbar: Ausführen in der Aufgabe */
   const aufgabe = p.locator('.a-task[data-id="tr-1"]');
+  await p.evaluate(() => window.KursEditor.setValue(document.querySelector('.a-task[data-id="tr-1"] textarea'), 'print("Kinoabend läuft")
+'));
   await aufgabe.locator('.cm-content').click();
   await aufgabe.locator('button', { hasText: 'Ausführen' }).first().click();
-  const lief = await bis(() => aufgabe.evaluate((a) => /Prüfbericht/.test(a.textContent.replace(a.querySelector('.a-editor') ? a.querySelector('.a-editor').textContent : '', ''))), 60000, 300);
+  const lief = await bis(() => aufgabe.evaluate((a) => /Kinoabend läuft/.test(a.textContent.replace(a.querySelector('.a-editor') ? a.querySelector('.a-editor').textContent : '', ''))), 60000, 300);
   pruefe(lief, 'Labor nach dem Tutor bedienbar (Ausführen liefert Ausgabe)');
   /* Werkbank: das offene Programm geht mit (Befund: dort ging nur die Frage mit) */
   anfragen.length = 0;
@@ -536,8 +538,8 @@ async function offline() {
   /* Lektion einmal online öffnen (Seite im Cache), dann offline */
   O.offline = true;
   await O.ctx.setOffline(true);
-  await p.goto(BASIS + '/lektionen/v01-warum-programmieren.html');
-  pruefe(/Warum programmieren|V01/.test(await p.title()), 'offline: Lerneinheit V01 lädt', await p.title());
+  await p.goto(BASIS + '/lektionen/v01-ablauf-und-erste-programme.html');
+  pruefe(/Termin 01/.test(await p.title()), 'offline: Lerneinheit V01 lädt', await p.title());
   await p.waitForSelector('.k-runner .cm-content', { timeout: 20000 });
   await ersterKlickAusfuehren(p, p.locator('.k-runner').first(), 'offline');
   await p.goto(BASIS + '/werkbank.html');

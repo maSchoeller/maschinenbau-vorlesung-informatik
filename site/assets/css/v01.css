@@ -1,75 +1,58 @@
-/* =============================================================
-   v01.css – Explorables der Lerneinheit V01
-   (A) Ampel-Sortierspiel  (Präfix ak-)
-   (B) Variablen als Etiketten  (Präfix ek-)
-   Baut auf dhbw-base.css und kurs.css auf. Keine Rahmen um Rahmen:
-   Karten sind hier anklickbare Dinge, Rückmeldungen nur mit linker Linie.
-   ============================================================= */
+/* v01.css – Termin 01: Ablauf und erste Programme. Stile der drei interaktiven Bausteine
+   (explorables-v01.js). Ruhiger DHBW-Stil: keine Karten, Zahlen als Text, eine Akzentfarbe. */
 
-/* ── (A) Ampel-Sortierspiel ─────────────────────────────────── */
-.ak-bar { display: flex; flex-wrap: wrap; gap: var(--sp-2) var(--sp-4); align-items: center; justify-content: space-between; margin-bottom: var(--sp-3); }
-.ak-score { margin: 0; font-weight: 600; max-width: var(--k-measure); }
-.ak-list { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--sp-5); counter-reset: ak; }
-.ak-card { counter-increment: ak; display: grid; gap: var(--sp-2); padding-bottom: var(--sp-5); border-bottom: 1px solid var(--k-line); }
-.ak-card:last-child { border-bottom: 0; }
-.ak-card__text { margin: 0; font-weight: 600; max-width: var(--k-measure); }
-.ak-card__text::before { content: counter(ak) ". "; color: var(--red-dark); }
-.ak-choices { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
-.ak-choice {
-  font: inherit; font-weight: 700; font-size: var(--fs-sm); min-height: 44px; padding: 6px 14px;
-  display: inline-flex; align-items: center; gap: .4em;
-  background: #fff; border: 2px solid currentColor; border-radius: var(--r-base); cursor: pointer;
-}
-.ak-choice .k-ic { width: 1.3em; height: 1.3em; vertical-align: 0; }
-.ak-choice--kopf { color: #7A0010; }
-.ak-choice--lesen { color: var(--k-warn); }
-.ak-choice--deleg { color: var(--k-info); }
-.ak-choice:hover:not(:disabled) { background: var(--canvas); }
-.ak-choice:disabled { cursor: default; opacity: .6; }
-.ak-choice.is-chosen { opacity: 1; background: currentColor; }
-.ak-choice.is-chosen, .ak-choice.is-chosen .k-ic { color: #fff; }
-.ak-choice--kopf.is-chosen { background: #7A0010; }
-.ak-choice--lesen.is-chosen { background: var(--k-warn); }
-.ak-choice--deleg.is-chosen { background: var(--k-info); }
-.ak-choice.is-model:not(.is-chosen) { opacity: 1; box-shadow: 0 0 0 3px #fff, 0 0 0 5px currentColor; }
-.ak-fb { padding: var(--sp-3) var(--sp-4); border-left: 3px solid var(--k-info); background: var(--k-info-bg); font-size: var(--fs-sm); max-width: var(--k-measure); }
-.ak-fb.is-ok { border-color: var(--k-ok); background: var(--k-ok-bg); }
-.ak-fb.is-diff { border-color: var(--k-warn-line); background: var(--k-warn-bg); }
-.ak-fb strong .k-ic { margin-right: .2em; }
+/* 1. Eingabe, Verarbeitung, Ausgabe */
+.v01-eva { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1.25fr) auto minmax(0, 1fr); gap: var(--sp-4); align-items: stretch; }
+.v01-eva__teil { padding: var(--sp-4); border-top: 3px solid var(--k-line); background: var(--canvas); border-radius: 0 0 var(--r-base) var(--r-base); }
+.v01-eva__teil--ein { border-top-color: var(--k-info); }
+.v01-eva__teil--tun { border-top-color: var(--red); }
+.v01-eva__teil--aus { border-top-color: var(--k-ok); }
+.v01-eva__teil h4 { margin: 0 0 var(--sp-3); font-size: var(--fs-sm); text-transform: uppercase; letter-spacing: .08em; color: var(--k-muted); }
+.v01-eva__teil .k-field + .k-field { margin-top: var(--sp-3); }
+.v01-eva__zeile { margin: 0 0 var(--sp-2); font-family: var(--dhbw-font-mono); font-size: var(--fs-sm); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.v01-eva__aus { margin: 0 0 var(--sp-2); font-size: var(--fs-md); font-weight: 700; font-variant-numeric: tabular-nums; }
+.v01-eva__pfeil { align-self: center; font-size: var(--fs-lg); color: var(--k-muted); }
 
-/* ── (B) Variablen als Etiketten ────────────────────────────── */
-.ek { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: var(--sp-5); align-items: start; }
-@media (max-width: 760px) { .ek { grid-template-columns: minmax(0, 1fr); } }
-.ek-head { margin: 0 0 var(--sp-2); font-size: var(--fs-xs); font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--k-muted); }
-.ek-code {
-  list-style: none; margin: 0; padding: var(--sp-3) 0; counter-reset: ekl;
-  background: var(--code-bg); color: var(--code-text); border-radius: var(--r-base);
-  font-family: var(--dhbw-font-mono); font-size: var(--fs-sm); line-height: var(--lh-code); overflow-x: auto;
-}
-.ek-code li { counter-increment: ekl; display: flex; gap: var(--sp-3); padding: 2px var(--sp-4) 2px var(--sp-3); border-left: 3px solid transparent; white-space: pre; }
-.ek-code li::before { content: counter(ekl); min-width: 1.4em; text-align: right; color: var(--code-comment); }
-.ek-code li.is-cur { background: rgba(255, 255, 255, .12); border-left-color: #FF6B7D; }
-.ek-code code { font: inherit; background: none; color: inherit; padding: 0; }
+/* 2. Programmablaufplan Schritt für Schritt */
+.v01-pap { display: grid; grid-template-columns: minmax(280px, 1fr) minmax(0, 1.1fr); gap: var(--sp-5); align-items: start; }
+.v01-pap__plan .pap-n { cursor: pointer; }
+.v01-pap__seite { position: sticky; top: calc(var(--app-bar-h, 0px) + var(--sp-4)); }
+.v01-pap__erkl { min-height: 7.5em; padding: var(--sp-3) var(--sp-4); border-left: 3px solid var(--red); background: var(--canvas); }
+.v01-pap__symbol { margin: 0 0 var(--sp-1); font-weight: 700; }
+.v01-pap__text { margin: 0; }
+.v01-pap__werte { margin: var(--sp-4) 0; max-width: 320px; }
+.v01-pap__werte td { font-variant-numeric: tabular-nums; }
+.v01-pap__werte tr.is-neu th, .v01-pap__werte tr.is-neu td { background: var(--red-tint); }
 
-.ek-mem { position: relative; padding: var(--sp-3) 0; }
-.ek-arrows { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
-.ek-cols { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--sp-3) clamp(40px, 12%, 96px); }
-.ek-col { display: grid; gap: var(--sp-3); align-content: start; }
-.ek-name, .ek-val {
-  min-height: 44px; display: flex; align-items: center; justify-content: space-between; gap: var(--sp-2);
-  padding: 4px var(--sp-3); background: #fff; border: 2px solid #6B7280; border-radius: var(--r-base);
-  font-family: var(--dhbw-font-mono); font-size: var(--fs-sm);
+/* 3. Variablen als Schachteln */
+.v01-boxen { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--sp-5); align-items: start; }
+.v01-box__reihe { display: flex; gap: var(--sp-5); }
+.v01-box { display: grid; justify-items: center; gap: var(--sp-2); }
+.v01-box__name { padding: 2px 10px; border-radius: var(--r-sm); background: var(--text); color: #fff; font-weight: 700; }
+.v01-box__name code.k-i { background: none; color: inherit; padding: 0; }
+.v01-box__wert {
+  display: flex; align-items: center; justify-content: center; width: 112px; height: 88px;
+  border: 3px solid var(--text); border-top-style: dashed; border-radius: 0 0 var(--r-base) var(--r-base);
+  font-family: var(--dhbw-font-mono); font-size: var(--fs-xl); font-weight: 700; font-variant-numeric: tabular-nums; background: #fff;
 }
-.ek-name { border-radius: 4px 14px 14px 4px; justify-content: flex-start; font-weight: 600; }
-.ek-name code, .ek-val code { font: inherit; background: none; padding: 0; overflow-wrap: anywhere; }
-.ek-val { flex-direction: column; align-items: flex-start; justify-content: center; gap: 0; }
-.ek-val__t { font-family: var(--dhbw-font); font-size: var(--fs-xs); color: var(--k-muted); }
-.ek-name.is-new, .ek-val.is-new { border-color: var(--red-dark); background: #FFF7F8; }
-.ek-val.is-orphan { border-style: dashed; opacity: .7; }
-.ek-empty { margin: 0; font-size: var(--fs-sm); color: var(--k-muted); }
-.ek-bar { margin-top: var(--sp-4); }
-.ek-note { margin: var(--sp-3) 0 0; padding: var(--sp-3) var(--sp-4); border-left: 3px solid var(--k-info); background: var(--k-info-bg); max-width: var(--k-measure); min-height: 3.2em; }
-.ek-out { margin: 0 0 var(--sp-3); min-height: 2.6em; background: var(--code-bg); color: var(--code-text); font-family: var(--dhbw-font-mono); font-size: var(--fs-sm); line-height: var(--lh-code); padding: var(--sp-3) var(--sp-4); border-radius: var(--r-base); white-space: pre-wrap; }
-.ek-out:empty::before { content: "Noch keine Ausgabe."; color: var(--code-comment); }
-.ek-read { margin-top: var(--sp-3); }
-@media (prefers-reduced-motion: reduce) { .ak-choice, .ek-name, .ek-val { transition: none; } }
+.v01-box.is-leer .v01-box__wert { color: var(--k-muted); font-size: var(--fs-base); font-weight: 400; font-family: inherit; }
+.v01-box.is-neu .v01-box__wert { border-color: var(--red); background: var(--red-tint); }
+.v01-box__meldung { margin: var(--sp-4) 0 0; min-height: 4.5em; }
+.v01-box__meldung.is-fehler { color: var(--k-bad); font-weight: 600; }
+.v01-box__titel { margin: 0 0 var(--sp-2); font-size: var(--fs-sm); font-weight: 600; color: var(--k-muted); }
+.v01-box__zeilen { align-items: center; }
+.v01-box__zeile { font-family: var(--dhbw-font-mono); }
+.v01-box__programm { margin: 0 0 var(--sp-3); padding-left: 1.6em; }
+
+/* Plan und Programm nebeneinander */
+.v01-paar { display: grid; grid-template-columns: minmax(240px, .8fr) minmax(0, 1.2fr); gap: var(--sp-5); align-items: start; }
+
+@media (max-width: 1099px) {
+  .v01-eva { grid-template-columns: minmax(0, 1fr); }
+  .v01-eva__pfeil { justify-self: center; transform: rotate(90deg); }
+  .v01-pap, .v01-boxen, .v01-paar { grid-template-columns: minmax(0, 1fr); }
+  .v01-pap__seite { position: static; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .v01-box__wert, .v01-pap__werte td, .v01-pap__werte th { transition: background-color .2s, border-color .2s; }
+}

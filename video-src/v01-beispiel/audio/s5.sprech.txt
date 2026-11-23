@@ -1,1 +1,1 @@
-Zum Schluss folgen fünf print Zeilen. Die erste gibt die Überschrift aus. Die nächsten vier haben je zwei Argumente, einen Text und eine Variable. print setzt dazwischen ein Leerzeichen. So landen Prüfer, Bauteil, Fläche und Spannung im Protokoll.
+Das Rechteck wird eine Zuweisung: Rechts wird gerechnet, links wird das Ergebnis gemerkt. Das letzte Parallelogramm wird ein print. Der Text davor sagt, was die Zahl bedeutet.

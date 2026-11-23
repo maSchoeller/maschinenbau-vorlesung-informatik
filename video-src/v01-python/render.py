@@ -1,176 +1,250 @@
-"""V01 Python: print, Variablen, input. Aufruf: python render.py [text|stills t..|full|mux]"""
-import os, sys
+"""Termin 01, Video 2: Python-Werkzeugkasten (print, Variablen als Schachteln, rechnen und merken, a/b kopieren, input mit float/int, NameError).
+Aufruf: python render.py [text|probe [Ordner]|zeiten|scan|stills t1 t2..|full|mux]   (Vertonung vorher: python ../v01-common/tts_run.py v01-python)
+Nur Python aus Termin 01: print, Variablen, + - * /, input, int(), float(). Alle gezeigten Ausgaben stammen aus einem echten Lauf (run)."""
+import os, sys, io, contextlib, traceback
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, "..", "v01-common"))
-from ext import *
-from sprechen import anzeige, sprechfassung, pruefen, tts
-HERE = os.path.dirname(os.path.abspath(__file__))
+from bausteine import *
+from texte import SRC
 
-NAME = "v01-python"; LABEL = "DHBW · Informatik · V01 · Erste Schritte in Python"
+NAME = "v01-python"; LABEL = "DHBW · Informatik · Termin 01 · Python-Werkzeugkasten"
+SECS = make_secs(SRC)
+AT = {i: zeiten(SECS, i) for i in range(1, len(SECS) + 1)}
+NL = chr(10)
 
-class Satz(tuple):
-    """(Untertitel, Sprechfassung) mit Quelltext .q (Markup)."""
+# ---------------------------------------------------------------- Code der Szenen (wie auf der Seite) und nachgerechnete Ausgaben
+CODE2 = ['print("Hallo")', 'print("Kilometer:", 148)']
+OUT2 = run(NL.join(CODE2)); assert OUT2 == ["Hallo", "Kilometer: 148"]
+CODE3 = ["strecke = 18.5", "tage = 4"]
+CODE4 = CODE3 + ["woche = strecke * 2 * tage"]
+_g = {}; exec(NL.join(CODE4), _g); WOCHE = str(_g["woche"]); assert WOCHE == "148.0" and _g["woche"] == 18.5 * 2 * 4
+CODE5 = ["a = 5", "b = a", "a = a + 1"]
+_g = {}; exec(NL.join(CODE5), _g); assert (_g["a"], _g["b"]) == (6, 5)
+CODE6 = ['strecke = float(input("Einfache Strecke in km: "))', 'tage = int(input("Tage pro Woche: "))']
+_it = iter(["18.5", "4"]); _g = {"input": lambda p="": next(_it)}; exec(NL.join(CODE6), _g)
+assert _g["strecke"] == 18.5 and _g["tage"] == 4 and float("18.5") == 18.5 and int("4") == 4
+CODE7 = ["betrag = 40", "gesamt = betrag + 4", 'print("Trinkgeld:", 4)', 'print("Zu zahlen:", gesammt)']
 
-def S(t):
-    """Ein Quelltext mit Markup: Untertitel = anzeige(t), Audio = tts(t) -> sprechfassung(t) (sprechen.py)."""
-    r = Satz((anzeige(t), sprechfassung(t))); r.q = t
-    return r
+def _fehlerlauf(code):
+    """Ausgabe wie auf der Seite: Ausgaben bis zum Fehler, dann die Meldung ab der Zeile im eigenen Programm."""
+    buf = io.StringIO()
+    try:
+        with contextlib.redirect_stdout(buf): exec(compile(NL.join(code), "<exec>", "exec"), {})
+    except Exception as e:
+        tb = "".join(traceback.format_exception(e)).splitlines()
+        i = next(k for k, z in enumerate(tb) if 'File "<exec>"' in z)
+        return buf.getvalue().splitlines() + ["Traceback (most recent call last):"] + tb[i:]
+    raise AssertionError("kein Fehler")
+MELDUNG = _fehlerlauf(CODE7)
+assert MELDUNG[0] == "Trinkgeld: 4" and len(MELDUNG) == 4, MELDUNG
+assert MELDUNG[2] == '  File "<exec>", line 4, in <module>' and MELDUNG[3].startswith("NameError: name 'gesammt' is not defined"), MELDUNG
 
-SECS = [
- [S("Mit `print` gibst du etwas auf dem Bildschirm aus."),
-  S("Text steht in Anführungszeichen, Zahlen schreibst du ohne."),
-  S("Du kannst mehrere Argumente übergeben, getrennt durch Kommas."),
-  S("Python setzt zwischen die Teile automatisch ein Leerzeichen."),
-  S("Und jedes `print` beginnt in einer neuen Zeile.")],
- [S("Eine Variable ist ein Name für einen Wert."),
-  S("Mit dem Gleichheitszeichen gibst du einem Wert einen Namen."),
-  S("Das nennt man Zuweisung, und es ist keine Gleichung."),
-  S("Python liest sie von rechts nach links: Erst wird die rechte Seite berechnet, dann bekommt das Ergebnis den Namen auf der linken Seite."),
-  S("Danach kannst du den Namen überall verwenden, wo du den Wert brauchst.")],
- [S("Einer Variablen darfst du jederzeit einen neuen Wert zuweisen."),
-  S("Der alte Wert ist dann weg."),
-  S("Häufig siehst du `zähler = zähler + 1`."),
-  S("Das ist keine Gleichung, sondern eine Anweisung: Nimm den aktuellen Wert, addiere 1 und speichere das Ergebnis unter demselben Namen.")],
- [S("Kommentare beginnen mit einer Raute."),
-  S("Python ignoriert alles ab der Raute bis zum Zeilenende."),
-  S("Sie erklären dir und anderen, warum etwas im Code steht, zum Beispiel die Einheit."),
-  S("Mit `input` liest du eine Eingabe von der Tastatur."),
-  S("Der Text in den Klammern erscheint als Aufforderung, und die Antwort speichert Python in einer Variablen."),
-  S("Wichtig: `input` liefert immer Text, auch wenn du Ziffern tippst."),
-  S("Wie du daraus Zahlen machst, lernst du in Lektion 3.")],
- [S("Für Namen gelten feste Regeln."),
-  S("Erlaubt sind Buchstaben, Ziffern und der Unterstrich."),
-  S("Ein Name darf nicht mit einer Ziffer beginnen und keine Leerzeichen enthalten."),
-  S("Python unterscheidet Groß- und Kleinschreibung: `kraft` und `Kraft` sind zwei verschiedene Namen."),
-  S("Wähle sprechende Namen mit Einheit, zum Beispiel [[kraft_n|kraft Unterstrich n]] statt nur `k`.")],
- [S("Zum Schluss: Fehlermeldungen sind keine Strafe, sondern Hinweise."),
-  S("Ein `NameError` heißt: Python kennt diesen Namen nicht, hier wegen eines Tippfehlers."),
-  S("Die Meldung schlägt sogar den richtigen Namen vor."),
-  S("Ein `SyntaxError` heißt: Die Zeile ist grammatisch falsch, hier fehlt ein Komma. Dann läuft das Programm gar nicht erst los."),
-  S("Lies immer die letzte Zeile der Meldung und die Zeilennummer darüber."),
-  S("Jetzt bist du dran: Tippe alle Beispiele selbst ab und probiere sie aus.")],
-]
-
-CG = lambda s: O(s, CODE_G)
-CC = lambda s: O(s, CODE_C)
-ERR = lambda s: O(s, CODE_R)
-IN = lambda p, v: [(p, CODE_T), (v, CODE_N)]
+# ---------------------------------------------------------------- 1 Vier Werkzeuge
+WERKZEUGE = [("ausgeben", "print(...)"), ("merken", "name = wert"), ("rechnen", "+  -  *  /"), ("einlesen", "input(...)")]
 
 def sc1(f, t, ct):
-    heading(f, t, "1 · Ausgeben mit print()")
-    pages_scene(f, t, ct, [dict(t0=(0, 0.5),
-        code=[((0, 1.0), 'print("Prüfprotokoll")'), ((2, 0.2), 'print("Kraft:", 12000, "N")')],
-        out=[((0, 2.2), O("Prüfprotokoll")), ((2, 1.4), O("Kraft: 12000 N"))],
-        tiles=[((1, 0.2), "Text", "in Anführungszeichen", DARK), ((1, 1.6), "Zahl", "ohne Anführungszeichen", DARK),
-               ((2, 0.8), "Komma", "trennt die Argumente", DARK), ((3, 0.3), "Leerzeichen", "setzt print automatisch dazwischen", GREEN)])],
-        code_size=26, con_size=26)
+    a = lambda k, fr=0.0: AT[1](ct, k, fr)
+    kopf(f, t, "Vier Werkzeuge für dein erstes Programm")
+    for k, ((wort, code), fr) in enumerate(zip(WERKZEUGE, (0.56, 0.68, 0.78, 0.9))):
+        def kachel(d, dy, k=k, wort=wort, code=code):
+            x = 60 + k * 296
+            card(d, x, 130 + dy, 272, 200, stripe=False)
+            d.rounded_rectangle((x, 130 + dy, x + 272, 140 + dy), 5, fill=RED)
+            num_circle(d, x + 40, 184 + dy, 20, k + 1, RED)
+            TB(d, x + 72, 184 + dy, wort, F(38, 700), DARK, 190, "lm")
+            d.rounded_rectangle((x + 20, 240 + dy, x + 252, 304 + dy), 10, fill=BOX)
+            TB(d, x + 136, 272 + dy, code, M(26), CODE_T, 216, "mm")
+        E(f, t, a(0, fr), kachel)
+    # Symbol im Plan -> Zeile in Python
+    t1 = a(1, 0.0)
+    symbol(f, show(t, t1 + 0.1), "io", "Ausgabe: woche", (150, 430, 400, 130), bg=BG, maxzoom=1.6)
+    def paar(d, dy):
+        TB(d, 350, 400 + dy, "Symbol im Plan", F(28, 700), GREY, 400, "mm")
+        TB(d, 930, 400 + dy, "Zeile in Python", F(28, 700), GREY, 400, "mm")
+    E(f, t, t1, paar)
+    E(f, t, a(1, 0.45), lambda d, dy: pfeil(d, 580, 495 + dy, 690, 495 + dy, RED, 7, 22))
+    E(f, t, a(1, 0.55), lambda d, dy: monobox(d, 720, 455 + dy, 420, 80, "print(woche)", 36))
+    E(f, t, a(1, 0.7), lambda d, dy: TB(d, 640, 610 + dy, "Jedes Symbol im Plan wird eine Zeile in Python.", F(32, 700), DARK, 1100, "mm"))
 
+# ---------------------------------------------------------------- 2 print
 def sc2(f, t, ct):
-    heading(f, t, "2 · Variablen und Zuweisung")
-    pages_scene(f, t, ct, [
-      dict(t0=(0, 0.5), code=[((0, 1.2), "d_mm = 10")], out=[],
-           tiles=[((1, 0.3), "Name", "links: d_mm", DARK), ((1, 1.4), "Wert", "rechts: 10", DARK), ((2, 0.3), "Zuweisung", "keine Gleichung", RED)]),
-      dict(t0=(3, -0.4),
-           code=[(-1, "d_mm = 10"), ((3, 0.4), "flaeche_mm2 = 3.14159 * d_mm * d_mm / 4"), ((4, 0.2), 'print("Fläche in mm²:", flaeche_mm2)')],
-           out=[((4, 1.6), O("Fläche in mm²: 78.53975"))],
-           tiles=[((3, 1.4), "1. rechts", "der Ausdruck wird berechnet", DARK), ((3, 3.6), "2. links", "das Ergebnis bekommt den Namen", DARK),
-                  ((4, 0.6), "Name statt Wert", "überall verwendbar", GREEN)]),
-    ], code_size=24, con_size=24)
+    a = lambda k, fr=0.0: AT[2](ct, k, fr)
+    kopf(f, t, "print: etwas ausgeben")
+    hl = aktuell(t, [(0, {0}), (a(1, 0.0), {1}), (a(3, 0.0), None)])
+    cpanel(f, t, CODE2, 60, 124, 640, 32, 52, hl, [a(0, 0.0) + 0.3, a(1, 0.0) + 0.2])
+    y = 124 + code_h(2, 52) + 18; t_out2 = a(1, 0.78)
+    zeilen = [(a(0, 0.62), OUT2[0], None, None), (t_out2, OUT2[1], None, None)]
+    def ausgabe(d, dy):
+        h = lauf_panel(d, 60, y + dy, 640, zeilen, t, 32, 50, "Ausgabe", hl={0, 1} if t >= a(3, 0.3) else None)
+        return h
+    E(f, t, a(0, 0.55), ausgabe)
+    # Leerzeichen zwischen den beiden Teilen markieren
+    def leer(d, dy):
+        fm = M(32); x0 = 60 + 22 + fm.getlength("Kilometer:"); cw = fm.getlength(" "); yy = y + 46 + 50
+        d.rounded_rectangle((x0 + 1, yy - 4 + dy, x0 + cw - 1, yy + 36 + dy), 4, outline=CODE_R, width=3)
+    f.el(show(t, a(2, 0.55), a(3, 0.0)), leer)
+    kacheln = [(a(1, 0.0), 'Text: in Anführungszeichen', 'zum Beispiel "Hallo" und "Kilometer:"', GREEN),
+               (a(1, 0.6), "Zahlen: ohne", "zum Beispiel 148", AMB),
+               (a(2, 0.0), "Komma trennt mehrere Dinge", "print setzt ein Leerzeichen dazwischen", BLUE),
+               (a(3, 0.0), "Jedes print: eine neue Zeile", "zwei print, zwei Zeilen", RED)]
+    for k, (tin, gross, klein, col) in enumerate(kacheln):
+        fit(gross, F(28, 700), 480 - 50, "Kachel")
+        tile(f, t, tin, 740, 124 + k * 112, 480, 98, gross, klein, col)
 
+# ---------------------------------------------------------------- 3 Variablen als Schachteln
 def sc3(f, t, ct):
-    heading(f, t, "3 · Neu-Zuweisung")
-    pages_scene(f, t, ct, [
-      dict(t0=(0, 0.5), code=[((0, 1.0), "zaehler = 5"), ((0, 2.2), "zaehler = 8"), ((1, 0.0), "print(zaehler)")],
-           out=[((1, 1.0), O("8"))],
-           tiles=[((1, 0.3), "5 → 8", "der alte Wert ist weg", RED)]),
-      dict(t0=(2, -0.3), code=[((2, 0.2), "zaehler = 8"), ((2, 1.4), "zaehler = zaehler + 1"), ((3, 3.0), "print(zaehler)")],
-           out=[((3, 4.0), O("9"))],
-           tiles=[((3, 0.6), "rechts zuerst", "8 + 1 = 9", DARK), ((3, 1.8), "dann links", "9 wird wieder unter zaehler gespeichert", DARK),
-                  ((3, 3.2), "Anweisung", "keine Gleichung", GREEN)]),
-    ], code_size=26, con_size=26)
+    a = lambda k, fr=0.0: AT[3](ct, k, fr)
+    kopf(f, t, "Variable: ein Name für einen Wert")
+    cpanel(f, t, CODE3, 60, 124, 520, 32, 52, None, [a(0, 0.0) + 0.3, a(0, 0.3)])
+    E(f, t, a(0, 0.55), lambda d, dy: schachtel(d, 690, 136 + dy, 220, 150, "strecke", "18.5", BLUE))
+    E(f, t, a(0, 0.78), lambda d, dy: schachtel(d, 970, 136 + dy, 220, 150, "tage", "4", AMB))
+    # grosses Beispiel: links der Name, rechts der Wert
+    fm = M(48, True); cw = fm.getlength("x"); bsp = "strecke = 18.5"; x0 = 60 + (520 - cw * len(bsp)) / 2; yb = 334
+    def beispiel(d, dy):
+        card(d, 60, yb + dy, 520, 170, stripe=False)
+        TB(d, x0, yb + 26 + dy, bsp, fm, DARK, 480)
+    E(f, t, a(1, 0.0), beispiel)
+    def klammer(d, dy, i0, i1, txt, col):
+        xa, xb = x0 + cw * i0, x0 + cw * i1; yy = yb + 86 + dy
+        d.line((xa, yy, xa, yy + 10, xb, yy + 10, xb, yy), fill=col, width=4, joint="curve")
+        TB(d, (xa + xb) / 2, yy + 20, txt, F(30, 700), col, 200, "ma")
+    E(f, t, a(1, 0.1), lambda d, dy: klammer(d, dy, 0, 7, "Name", BLUE))
+    E(f, t, a(1, 0.55), lambda d, dy: klammer(d, dy, 10, 14, "Wert", AMB))
+    def punkt(d, dy):
+        cx = x0 + cw * 12.5; cy = yb + 26 + 40 + dy
+        d.ellipse((cx - 15, cy - 15, cx + 15, cy + 15), outline=RED, width=4)
+    E(f, t, a(2, 0.4), punkt)
+    E(f, t, a(2, 0.0), lambda d, dy: tag(d, 640, 350 + dy, 580, 64, "Kommazahl mit Punkt: 18.5", LIGHTR, RED, 32, 700, outl=RED))
+    E(f, t, a(2, 0.5), lambda d, dy: TB(d, 930, 448 + dy, "nicht 18,5", F(30, 600), GREY, 560, "mm"))
+    # Namen
+    E(f, t, a(3, 0.0), lambda d, dy: TB(d, 60, 584 + dy, "Namen:", F(34, 700), DARK, 150, "lm"))
+    teile = [("Kleinbuchstaben", 210, 280, a(3, 0.3)), ("Ziffern", 510, 170, a(3, 0.6)), ("Unterstrich", 700, 220, a(3, 0.78))]
+    for txt, x, w, tin in teile:
+        E(f, t, tin, lambda d, dy, txt=txt, x=x, w=w: chip(d, x, 554 + dy, w, 60, txt, LIGHTK, DARK, 30))
+    E(f, t, a(3, 0.9), lambda d, dy: monobox(d, 960, 554 + dy, 260, 60, "strecke_km", 30))
+
+# ---------------------------------------------------------------- 4 Rechnen und merken
+OPS = [("+", "plus"), ("-", "minus"), ("*", "mal"), ("/", "geteilt")]
 
 def sc4(f, t, ct):
-    heading(f, t, "4 · Kommentare und input()")
-    pages_scene(f, t, ct, [
-      dict(t0=(0, 0.5),
-           code=[((0, 1.0), "# Zugkraft des Prüfstabs"), ((0, 2.3), "kraft_n = 12000   # in Newton"), ((2, 0.0), 'print("Kraft in N:", kraft_n)')],
-           out=[((2, 1.2), O("Kraft in N: 12000"))],
-           tiles=[((1, 0.2), "#", "Kommentar bis Zeilenende", DARK), ((1, 1.8), "ignoriert", "Python überspringt den Kommentar", DARK),
-                  ((2, 2.0), "Warum, nicht was", "z. B. die Einheit", GREEN)]),
-      dict(t0=(3, -0.2),
-           code=[((3, 0.3), 'name = input("Dein Name: ")'), ((4, 1.0), 'print("Hallo,", name)')],
-           out=[((4, 2.5), IN("Dein Name: ", "Ada")), ((4, 3.5), O("Hallo, Ada"))],
-           tiles=[((4, 0.6), "input(...)", "Text in Klammern = Aufforderung", DARK), ((5, 0.3), "liefert Text", "auch bei Ziffern", RED),
-                  ((6, 0.3), "Zahlen daraus", "erst in Lektion 3", GREEN)]),
-    ], code_size=25, con_size=25)
+    a = lambda k, fr=0.0: AT[4](ct, k, fr)
+    kopf(f, t, "Rechnen und das Ergebnis merken")
+    for k, ((z, wort), fr) in enumerate(zip(OPS, (0.22, 0.38, 0.52, 0.8))):
+        def op(d, dy, k=k, z=z, wort=wort):
+            x = 60 + k * 296
+            d.rounded_rectangle((x, 120 + dy, x + 272, 186 + dy), 12, fill=WHITE, outline=LINE, width=2)
+            d.rounded_rectangle((x + 10, 128 + dy, x + 70, 178 + dy), 8, fill=BOX)
+            T2(d, x + 40, 153 + dy, z, M(36, True), CODE_T, "mm")
+            TB(d, x + 90, 153 + dy, wort, F(32, 700), DARK, 170, "lm")
+        E(f, t, a(0, fr), op)
+    t1 = a(1, 0.0)
+    cpanel(f, t, CODE4, 60, 206, 560, 26, 42, {2}, None, alpha_t=a(0, 0.92))
+    # rechte Seite ausrechnen
+    cx0, cy0, cw_, ch_ = 650, 206, 570, code_h(3, 42)
+    fm = M(34, True); cw = fm.getlength("x"); rhs = "strecke * 2 * tage"; rx = cx0 + 30
+    fv = M(34, True); erg = "= " + WOCHE
+    assert rx + fv.getlength("18.5 · 2 · 4 " + erg) <= cx0 + cw_ - 14 and rx + cw * len(rhs) <= cx0 + cw_ - 14, "Rechnung passt nicht in die Karte"
+    def karte(d, dy):
+        card(d, cx0, cy0 + dy, cw_, ch_, stripe=False)
+        num_circle(d, cx0 + 40, cy0 + 34 + dy, 18, 1, RED)
+        TB(d, cx0 + 70, cy0 + 34 + dy, "erst: rechte Seite ausrechnen", F(27, 700), DARK, cw_ - 90, "lm")
+        TB(d, rx, cy0 + 70 + dy, rhs, fm, DARK, cw_ - 40)
+    E(f, t, a(1, 0.22), karte)
+    werte = "18.5 · 2 · 4"; ex = rx + fv.getlength(werte + " ")
+    E(f, t, a(1, 0.34), lambda d, dy: T2(d, rx, cy0 + 150 + dy, werte, fv, AMB, "lm"))
+    E(f, t, a(1, 0.5), lambda d, dy: T2(d, ex, cy0 + 150 + dy, erg, fv, GREEN, "lm"))
+    # Ergebnis nach links in die Schachtel
+    px = ex + fv.getlength(erg) / 2; ty = a(1, 0.62)
+    def weg(d, dy):
+        d.line((px, cy0 + 176, px, 536, 420, 536), fill=GREEN, width=6, joint="curve")
+        pfeil(d, 440, 536, 396, 536, GREEN, 6, 20)
+        num_circle(d, 438, 492 + dy, 18, 2, RED)
+        TB(d, 466, 492 + dy, "dann: Ergebnis kommt in die Variable links", F(26, 700), DARK, px - 466 - 14, "lm")
+    E(f, t, ty, weg)
+    E(f, t, a(1, 0.55), lambda d, dy: schachtel(d, 110, 444 + dy, 260, 160, "woche", WOCHE if t >= a(1, 0.8) else None, BLUE, GREEN))
+    E(f, t, a(2, 0.3), lambda d, dy: tag(d, 440, 576 + dy, 780, 72, "= ist ein Auftrag, keine Gleichung", RED, WHITE, 38))
+    def rahmen(d, dy):
+        d.rounded_rectangle((rx - 14, cy0 + 122, ex + fv.getlength(erg) + 14, cy0 + 180), 10, outline=GREEN, width=4)
+    f.el(show(t, a(3, 0.0)), rahmen)
 
+# ---------------------------------------------------------------- 5 a und b: kopieren
 def sc5(f, t, ct):
-    heading(f, t, "5 · Namensregeln")
-    rows = [(1, "kraft_n", True, "Buchstaben und Unterstrich"), (1, "d2", True, "Ziffer nach dem ersten Zeichen ist erlaubt"),
-            (2, "2d", False, "beginnt mit einer Ziffer"), (2, "zug kraft", False, "enthält ein Leerzeichen"),
-            (3, "Kraft  ≠  kraft", None, "Groß- und Kleinschreibung zählt"), (4, "k  →  kraft_n", None, "sprechend, mit Einheit")]
-    for k, (si, nm, ok, note) in enumerate(rows):
-        def fn(d, dy, k=k, nm=nm, ok=ok, note=note):
-            y = 130 + k * 82 + dy
-            card(d, 60, y, 1160, 70, stripe=False)
-            T(d, 90, y + 35, nm, M(30, True), DARK, "lm")
-            sz = 28
-            while F(sz, 400).getlength(note) > 520 and sz > 18: sz -= 1
-            T(d, 520, y + 35, note, F(sz, 400), GREY, "lm")
-            if ok is True: check(d, 1150, y + 20, GREEN, 1.0)
-            elif ok is False: cross(d, 1150, y + 20, RED, 1.0)
-            else: d.ellipse((1148, y + 22, 1176, y + 50), fill=AMBER)
-        ti = ct(si) + (0.5 if k % 2 else 0.0)
-        rise_(f, t, ti, fn)
+    a = lambda k, fr=0.0: AT[5](ct, k, fr)
+    kopf(f, t, "Ein Beispiel, das oft überrascht")
+    t_a5, t_b5, t_a6 = a(1, 0.12), a(1, 0.62), a(2, 0.5)
+    hl = aktuell(t, [(a(1, 0.0), {0}), (a(1, 0.3), {1}), (a(2, 0.0), {2}), (a(3, 0.0), None)])
+    cpanel(f, t, CODE5, 60, 140, 480, 38, 60, hl, [a(1, 0.0) + 0.1, a(1, 0.3), a(2, 0.0) + 0.2])
+    wa = None if t < t_a5 else ("5" if t < t_a6 else "6"); wb = None if t < t_b5 else "5"
+    rot_a = t_a6 <= t < a(3, 0.0)
+    E(f, t, 0.5, lambda d, dy: schachtel(d, 640, 150 + dy, 230, 180, "a", wa, BLUE, RED if rot_a else DARK, 64))
+    E(f, t, 0.8, lambda d, dy: schachtel(d, 970, 150 + dy, 230, 180, "b", wb, AMB, GREEN if t >= a(3, 0.15) else DARK, 64))
+    def kopie(d, dy):
+        pfeil(d, 890, 262 + dy, 952, 262 + dy, GREY, 6, 18)
+        TB(d, 920, 226 + dy, "Kopie", F(24, 700), GREY, 90, "mm")
+    f.el(show(t, a(1, 0.45), a(2, 0.0)), kopie)
+    E(f, t, t_a6, lambda d, dy: tag(d, 640, 372 + dy, 230, 52, "5 + 1 = 6", LIGHTR, RED, 28, 700, outl=RED))
+    E(f, t, a(3, 0.15), lambda d, dy: tag(d, 970, 372 + dy, 230, 52, "bleibt 5", LIGHTG, GREEN, 28, 700, outl=GREEN))
+    E(f, t, a(3, 0.45), lambda d, dy: tag(d, 60, 500 + dy, 1160, 84, "Nach dem Kopieren sind die Schachteln unabhängig", GREEN, WHITE, 40))
 
-def rise_(f, t, ti, fn):
-    f.el(ap(t, ti, 0.5), fn, dy=int((1 - ap(t, ti, 0.5)) * 12))
-
-TBN = [O("Prüfprotokoll"), CC("Traceback (most recent call last):"), CC('  File "main.py", line 3, in <module>'),
-       CC('    print("Kraft in N:", kraft)'), ERR("                         ^^^^^"),
-       ERR("NameError: name 'kraft' is not defined. Did you mean: 'kraft_n'?")]
-TBS = [CC('  File "main.py", line 2'), CC('    print("Kraft:" kraft_n)'), ERR("          ^^^^^^^^^^^^^^^^"),
-       ERR("SyntaxError: invalid syntax. Perhaps you forgot a comma?")]
-
+# ---------------------------------------------------------------- 6 input, float, int
 def sc6(f, t, ct):
-    heading(f, t, "6 · Fehlermeldungen lesen")
-    pages_scene(f, t, ct, [
-      dict(t0=(0, 1.0),
-           code=[((1, -3.0), 'print("Prüfprotokoll")'), ((1, -2.2), "kraft_n = 12000"), ((1, -1.4), 'print("Kraft in N:", kraft)')],
-           out=[((1, 0.4 + 0.5 * i), s) for i, s in enumerate(TBN)],
-           tiles=[((1, 3.2), "NameError", "Python kennt den Namen kraft nicht", RED), ((2, 0.8), "Vorschlag", "Did you mean: 'kraft_n'?", GREEN)]),
-      dict(t0=(3, -0.2),
-           code=[((3, 0.2), "kraft_n = 12000"), ((3, 1.0), 'print("Kraft:" kraft_n)')],
-           out=[((3, 2.0 + 0.5 * i), s) for i, s in enumerate(TBS)],
-           tiles=[((3, 3.6), "SyntaxError", "Grammatikfehler: Komma fehlt", RED), ((3, 5.6), "Kein Start", "das Programm läuft gar nicht los", DARK),
-                  ((4, 0.4), "Letzte Zeile", "nennt Fehlerart und Ursache", GREEN), ((4, 2.0), "Zeilennummer", "steht direkt darüber", GREEN)]),
-    ], code_size=24, con_size=19)
+    a = lambda k, fr=0.0: AT[6](ct, k, fr)
+    kopf(f, t, "input: einen Wert einlesen")
+    t_z2 = a(2, 0.55)
+    hl = aktuell(t, [(0, {0}), (t_z2, {1}), (a(3, 0.0), None)])
+    cpanel(f, t, CODE6, 60, 120, 1160, 28, 46, hl, [a(0, 0.0) + 0.2, a(0, 0.0) + 1.3])
+    y = 120 + code_h(2, 46) + 18
+    zeilen = [(a(0, 0.5), "Einfache Strecke in km: ", a(1, 0.0) - 0.5, "18.5"), (t_z2, "Tage pro Woche: ", a(2, 0.72), "4")]
+    E(f, t, a(0, 0.45), lambda d, dy: lauf_panel(d, 60, y + dy, 620, zeilen, t, 26, 44))
+    E(f, t, a(0, 0.6), lambda d, dy: TB(d, 370, y + lauf_h(2, 44) + 14 + dy, "Das Programm zeigt die Frage und wartet.", F(24, 600), GREY, 620, "ma"), tout=a(1, 0.0) - 0.4)
+    fit("input liefert immer Text", F(28, 700), 500 - 50, "Kachel")
+    tile(f, t, a(1, 0.0), 720, y, 500, 98, "input liefert immer Text", 'getippt: 18.5   im Programm: "18.5"', RED)
+    def wandeln(d, dy, yy, code, wert, sorte, col, fill):
+        monobox(d, 720, yy + dy, 204, 60, code, 24)
+        pfeil(d, 932, yy + 30 + dy, 978, yy + 30 + dy, GREY, 5, 16)
+        chip(d, 988, yy + dy, 84, 60, wert, fill, col, 28, mono=True)
+        TB(d, 1084, yy + 30 + dy, sorte, F(24, 700), col, 136, "lm")
+    E(f, t, a(2, 0.3), lambda d, dy: wandeln(d, dy, y + 116, 'float("18.5")', "18.5", "Kommazahl", BLUE, LIGHTB))
+    E(f, t, a(2, 0.78), lambda d, dy: wandeln(d, dy, y + 190, 'int("4")', "4", "ganze Zahl", AMB, LIGHTA))
+    E(f, t, a(3, 0.35), lambda d, dy: tag(d, 60, 580 + dy, 1160, 76, "Fester Baustein: Zahl einlesen", RED, WHITE, 40))
 
-SCENES = {1: sc1, 2: sc2, 3: sc3, 4: sc4, 5: sc5, 6: sc6}
+# ---------------------------------------------------------------- 7 Fehlermeldung lesen
+def sc7(f, t, ct):
+    a = lambda k, fr=0.0: AT[7](ct, k, fr)
+    kopf(f, t, "Wenn etwas schiefgeht: die Fehlermeldung")
+    t_m = a(0, 0.42)
+    cpanel(f, t, CODE7, 60, 116, 600, 26, 40, {3} if t >= a(0, 0.6) else None)
+    def tippfehler(d, dy):
+        fm = M(26); xa = 60 + code_off(26) + fm.getlength('print("Zu zahlen:", '); xb = xa + fm.getlength("gesammt"); yy = 116 + 50 + 3 * 40 + 30
+        d.line((xa, yy, xb, yy), fill=CODE_R, width=4)
+    f.el(show(t, a(2, 0.0)), tippfehler)
+    E(f, t, a(0, 0.6), lambda d, dy: tag(d, 700, 124 + dy, 520, 60, "Fehler mit Zeilennummer: Zeile 4", LIGHTA, AMB, 28, 700, outl=AMB))
+    E(f, t, a(1, 0.0), lambda d, dy: tag(d, 700, 204 + dy, 520, 60, "Zuerst lesen: die letzte Zeile", LIGHTK, DARK, 28, 700, outl=GREY))
+    E(f, t, a(2, 0.0), lambda d, dy: tag(d, 700, 284 + dy, 520, 60, "NameError: Name falsch geschrieben", LIGHTR, RED, 27, 700, outl=RED))
+    y = 116 + code_h(4, 40) + 18
+    z3 = [('  File "<exec>", ', CODE_T), ("line 4", CODE_N), (", in <module>", CODE_T)]
+    zeilen = [(0.6, MELDUNG[0], None, None), (t_m, MELDUNG[1], None, None, CODE_C), (t_m, z3, None, None), (t_m, MELDUNG[3], None, None, CODE_R)]
+    assert "".join(s for s, _ in z3) == MELDUNG[2]
+    E(f, t, 0.4, lambda d, dy: lauf_panel(d, 60, y + dy, 1160, zeilen, t, 25, 38, "Ausgabe", hl={3} if t >= a(1, 0.0) else None))
+    E(f, t, a(3, 0.3), lambda d, dy: tag(d, 60, 590 + dy, 1160, 70, "Jetzt du: die vier Karten im Werkzeugkasten", RED, WHITE, 38))
+
+SCENES = {1: sc1, 2: sc2, 3: sc3, 4: sc4, 5: sc5, 6: sc6, 7: sc7}
+assert len(SRC) == 7 == len(SCENES)
 
 def poster(path):
     f = Frame()
     def fn(d, dy):
         d.rectangle((0, 0, 24, H), fill=RED)
-        T(d, 90, 130, "V01 · Informatik", F(34, 600), GREY)
-        T(d, 90, 180, "Erste Schritte", F(104, 700), DARK)
-        T(d, 90, 310, "print, Variablen, input", F(52, 400), GREY)
-        code_panel(d, 90, 410, 900, ['name = input("Dein Name: ")', 'kraft_n = 12000   # in Newton', 'print("Hallo,", name, kraft_n)'], [0, 0, 0], 9, 32, lineno=False)
-        for i, lab in enumerate(("print", "=", "input")):
-            d.rounded_rectangle((1030, 410 + i * 62, 1210, 460 + i * 62), 8, fill=RED if i == 1 else DARK)
-            T(d, 1120, 435 + i * 62, lab, M(30, True), WHITE, "mm")
-        T(d, 1220, 694, LABEL, F(16, 400), GREY, "ra")
+        T2(d, 90, 110, "Termin 01 · Informatik", F(34, 600), GREY)
+        T2(d, 90, 160, "Python-", F(84, 700), DARK)
+        T2(d, 90, 256, "Werkzeugkasten", F(84, 700), DARK)
+        T2(d, 90, 384, "print, Variablen, rechnen, einlesen", F(40, 400), GREY)
+        for k, (wort, _) in enumerate(WERKZEUGE):
+            chip(d, 90 + k * 186, 500, 170, 64, wort, LIGHTR, RED, 30)
+        code_n(d, 830, 150, 390, CODE4, [1, 2, 3], [-1] * 3, 0, 21, 36)
+        schachtel(d, 930, 440, 220, 150, "woche", WOCHE, BLUE, GREEN)
+        T2(d, 1220, 694, LABEL, F(16, 400), GREY, "ra")
     f.el(1, fn); f.img.save(path)
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1 and sys.argv[1] in ("text", "tts"):
-        tot = 0
-        for i, sec in enumerate(SECS, 1):
-            q = " ".join(x.q for x in sec); sp = sprechfassung(q); tot += len(sp)
-            print(f"s{i} ({len(sp)} Z.)")
-            for h in pruefen(q): print("  PRUEFEN:", h)
-            if sys.argv[1] == "tts": tts(q, os.path.join(HERE, "audio", f"s{i}.mp3"))
-            else: open(os.path.join(HERE, "audio", f"s{i}.sprech.txt"), "w", encoding="utf-8").write(sp)
-        print("Zeichen gesamt", tot)
-    else:
-        main(HERE, SECS, SCENES, LABEL, poster, NAME)
+    dispatch(HERE, SRC, SECS, SCENES, LABEL, poster, NAME)

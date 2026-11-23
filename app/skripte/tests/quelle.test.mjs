@@ -13,6 +13,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { zerlege, zerlegeText, alleSeiten, umschreiben } from '../../src/lib/quelle.mjs';
 import { SITE, DIST, APP } from '../../src/lib/pfade.mjs';
+import { mdxDatei, mdxSeiten } from '../../src/lib/mdx/inhalte.mjs';
+import { unterschied } from '../../src/lib/mdx/vergleich.mjs';
 
 const GESCHUETZT = [
   /<script\b[^>]*type="text\/x-python"[^>]*>[\s\S]*?<\/script>/g,
@@ -25,11 +27,12 @@ const seiten = alleSeiten();
 const distDa = fs.existsSync(path.join(DIST, 'lektionen'));
 
 test('es gibt die erwarteten Seiten', () => {
-  assert.ok(seiten.length >= 48, `nur ${seiten.length} Seiten`);
+  assert.ok(seiten.length >= 30, `nur ${seiten.length} Seiten`);
   assert.ok(!seiten.includes('werkzeuge/labor-test.html'));
 });
 
 for (const s of seiten) {
+  if (mdxDatei(s)) continue;   /* MDX-Quelle: eigene Tests weiter unten */
   test(`byte-genau: ${s}`, () => {
     const q = zerlege(s, { videoBasis: '' });
     if (q.weiterleitung) return;
@@ -53,6 +56,23 @@ for (const s of seiten) {
       for (const block of q.inhaltOriginal.match(re) || []) {
         assert.equal(zaehle(q.inhalt, block), zaehle(q.inhaltOriginal, block), `geschützter Block verändert: ${block.slice(0, 80)}`);
       }
+    }
+  });
+}
+
+/* Lektionen mit MDX-Quelle: übersetzbar, mit Inhalt und Skripten; solange die alte site/-Seite noch
+   daneben liegt, muss das Ergebnis für den Browser dasselbe sein (src/lib/mdx/vergleich.mjs). */
+for (const s of mdxSeiten()) {
+  test(`mdx: ${s}`, () => {
+    const q = zerlege(s, { videoBasis: '' });
+    assert.ok(q.mdx && q.inhalt.includes('id="inhalt"'), 'Inhalt mit id="inhalt"');
+    assert.ok(q.titel && q.stylesheets.length >= 2 && q.skripte.length >= 2, 'Titel, Stylesheets und Skripte im Kopf');
+    assert.ok(q.skripte.some((x) => x.src && /assets\/js\/speicher\.js$/.test(x.src)), 'speicher.js steht in der Skriptliste');
+    assert.doesNotMatch(q.inhalt, /<x-[a-z]+/, 'kein Teil-Baustein außerhalb seines Bausteins (Erklaerung, Ohne)');
+    const alt = path.join(SITE, s);
+    if (fs.existsSync(alt)) {
+      const o = zerlegeText(fs.readFileSync(alt, 'utf8'), s, { videoBasis: '' });
+      assert.equal(unterschied(o.inhaltOriginal, q.inhaltOriginal), null, 'MDX weicht von der alten site/-Seite ab');
     }
   });
 }
@@ -89,11 +109,11 @@ for (const s of seiten) {
 }
 
 test('VIDEO_BASIS schreibt nur <source …/assets/video/X.mp4> um', () => {
-  const rel = 'lektionen/v01-warum-programmieren.html';
+  const rel = 'lektionen/v02-bits-und-bytes.html';
   const text = fs.readFileSync(path.join(SITE, rel), 'utf8');
   const ohne = zerlegeText(text, rel, { videoBasis: '' });
   const mit = zerlegeText(text, rel, { videoBasis: 'https://speicher.example/video/' });
-  assert.match(mit.inhalt, /<source src="https:\/\/speicher\.example\/video\/v01-theorie\.mp4"/);
+  assert.match(mit.inhalt, /<source src="https:\/\/speicher\.example\/video\/v02-theorie\.mp4"/);
   assert.doesNotMatch(mit.inhalt, /assets\/video\/[^"]+\.mp4"/);
   const zurueck = mit.inhalt.replace(/https:\/\/speicher\.example\/video\/([^"/]+\.mp4)"/g, '../assets/video/$1"');
   assert.equal(zurueck, ohne.inhalt, 'sonst nichts verändert (Poster und Untertitel bleiben)');

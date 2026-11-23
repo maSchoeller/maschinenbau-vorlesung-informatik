@@ -1,0 +1,9 @@
+{"code":["def f(u):","    return u + 1","def g(v):","    y = f(v) * 2","    return y","r = g(3)","print(r)"],
+"vars":["r","v","u","y"],
+"steps":[
+{"line":6,"set":{"v":"3"},"hint":"Die Zeilen 1 bis 5 legen die beiden Funktionen nur an. Zeile 6 ruft g(3) auf: neuer Frame, das Argument 3 landet im Parameter v."},
+{"line":4,"set":{"u":"3"},"hint":"In g steht f(v): Ein zweiter Frame kommt obendrauf. Das Argument ist der Wert von v, also 3, und landet im Parameter u von f. Jetzt liegen drei Frames auf dem Stapel (Hauptprogramm, g, f)."},
+{"line":4,"set":{"y":"8"},"hint":"f gibt u + 1 = 4 zurück (Zeile 2), sein Frame verschwindet. Zurück in Zeile 4: y = 4 * 2 = 8."},
+{"line":6,"set":{"r":"8"},"hint":"return y (Zeile 5) gibt 8 zurück, auch der Frame von g wird abgebaut. In Zeile 6 bekommt r den Wert 8."},
+{"line":7,"out":"8","hint":"print gibt 8 aus. Die Variablen u, v und y existieren nach den Aufrufen nicht mehr."}
+]}

@@ -5,7 +5,7 @@ Interaktive Vorlesungs-Website für das Modul **Informatik (T4MB1006)** im Studi
 Leitidee: *KI schreibt Code – Ingenieure spezifizieren, prüfen und verantworten.*
 
 - **Lern-App:** https://nice-wave-051f81f03.3.azurestaticapps.net (installierbar, offline nutzbar, mit Konto, Werkbank und Tutor)
-- **Konzept** (Leitidee, Wissens-Ampel, 22 Termine, Ablauf): [KONZEPT.md](KONZEPT.md)
+- **Konzept** (Leitsatz, zwei Stränge, 20 Termine, Klausur): [KONZEPT.md](KONZEPT.md), Herleitung und Zuordnung des alten Materials: `KONZEPT-MIGRATION.md`. Der Kursplan für die App steht in `app/kurs.yaml` ([Architektur, Abschnitt 16](docs/app/ARCHITEKTUR.md))
 - **Seitenstruktur und Gestaltungsregeln:** [DESIGN.md](DESIGN.md)
 - **Lern-App: Architektur und Betrieb:** [docs/app/ARCHITEKTUR.md](docs/app/ARCHITEKTUR.md), [docs/app/BETRIEB.md](docs/app/BETRIEB.md)
 
@@ -17,7 +17,8 @@ Leitidee: *KI schreibt Code – Ingenieure spezifizieren, prüfen und verantwort
 | `app/` | Lern-App: Build-Schicht über `site/` (Astro) mit gemeinsamer Hülle, Navigation, Konto, Werkbank, Offline-Betrieb. `npm run build`, Gesamtprüfung `npm run pruefen:alles`. |
 | `api/` | Azure Functions: Abgleich, Konto, geteilte Programme, Tutor |
 | `infra/` | Azure-Infrastruktur (Bicep) und `bereitstellen.ps1` |
-| `site/lektionen/` | Pro Termin eine **Lerneinheit** (`vXX-<thema>.html`) und ein **Programmierlabor** (`vXX-labor.html`) |
+| `site/lektionen/` | Pro Termin eine **Lerneinheit** (`vXX-<thema>.html`) und ein **Programmierlabor** (`vXX-labor.html`), solange die Lektion nicht umgezogen ist |
+| `app/inhalte/` | Nach MDX umgezogene Lektionen (bisher V07): `vXX/lerneinheit.mdx`, `vXX/labor.mdx` und der Python-Code der Aufgaben als Dateien. Anleitung: [docs/app/INHALTE.md](docs/app/INHALTE.md) |
 | `site/notebooks/` | Jupyter-Notebooks zur Vertiefung |
 | `site/assets/data/bibliothek.json` | Befehls-Bibliothek (wird aus `tools/editor-build/bibliothek-quelle/` erzeugt und dabei getestet) |
 | `video-src/` | Quellen der Erklärvideos (Sprechertext, Render-Skripte) |

@@ -21,6 +21,7 @@
     var drin = !!(s && s.angemeldet);
     var laedt = $('[data-konto-laedt]'); if (laedt) laedt.hidden = true;
     block('gast', !drin); block('konto', drin); block('daten', drin);
+    var doz = $('[data-konto-dozent]'); if (doz) doz.hidden = !(drin && s.dozent);
     if (drin) {
       var f = $('#k-name');
       if (f && document.activeElement !== f) f.value = s.anzeigename || '';

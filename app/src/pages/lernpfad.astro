@@ -1,46 +1,85 @@
 ---
-/* Lernpfad: drei Phasen, 22 Stationen. Statisch gerendert; app/lernpfad.js ergänzt Stand und Hervorhebung. */
+/* Lernpfad: die 20 Termine des Kurses in zwei Semestern (Vertrag Abschnitt 16). Statisch gerendert;
+   app/lernpfad.js ergänzt Stand und Hervorhebung. Hat ein Termin eigene Seiten (lektion in kurs.yaml),
+   stehen sie rechts; sonst das bisherige Material, aus dem der Termin entsteht. */
 import App from '../layouts/App.astro';
 import Icon from '../components/Icon.astro';
 import { ladeKurs } from '../lib/kurs.mjs';
-const { phasen, termine } = ladeKurs();
+const { semester, termine, lektionen } = ladeKurs();
+const lektion = (nr: string) => lektionen.find((l) => l.nr === nr && l.aktiv);
 const ab = (iso: string | null) => { const m = /^\d{4}-(\d\d)-(\d\d)$/.exec(iso || ''); return m ? `ab ${m[2]}.${m[1]}.` : ''; };
+const namen = (t: any, strang: string) => t.teile.filter((x: any) => x.strang === strang);
+const imUmbau = termine.some((t) => !t.lektion);
+const mitMaterial = termine.some((t) => t.stoff.length > 0);
+/* Jede Lektion bekommt ihren Anker (#v01) nur an der ersten Stelle, an der sie vorkommt */
+const gesehen = new Set<string>();
+const anker = (nr: string) => { if (gesehen.has(nr)) return undefined; gesehen.add(nr); return nr.toLowerCase(); };
 ---
-<App pfad="lernpfad.html" art="lernpfad" titel="Lernpfad" beschreibung="Alle 22 Termine des Kurses in drei Phasen, mit Stand und direkten Wegen zu Verstehen und Labor." css={['seiten']} skripte={['stand']}>
+<App pfad="lernpfad.html" art="lernpfad" titel="Lernpfad" beschreibung="Die 20 Termine des Kurses in zwei Semestern: Theorie und Programmieren je Termin, mit Stand und direkten Wegen zu Verstehen und Labor." css={['seiten']} skripte={['stand']}>
   <main id="inhalt" class="app-seite np-seite lp">
     <h1>Lernpfad</h1>
-    <p class="np-lead">22 Termine in drei Phasen. Zu jedem gehören zwei Schritte: erst Verstehen, dann das Labor.</p>
+    <p class="np-lead">20 Termine in zwei Semestern. Jeder Termin hat einen Theorie-Teil und einen Programmier-Teil.</p>
+    {imUmbau && mitMaterial && <p class="lp-umbau">Der Kurs wird gerade auf diesen Plan umgestellt. Hat ein Termin noch keine eigenen Seiten, steht daneben das bisherige Material zum Stoff.</p>}
+    {imUmbau && !mitMaterial && <p class="lp-umbau">Die Seiten eines Termins werden rechtzeitig vor dem Termin freigeschaltet. Bis dahin siehst du hier schon, was dich erwartet.</p>}
     <p class="k-small" data-lp-sprung hidden></p>
 
-    {phasen.map((p) => (
-      <section class="lp-phase" aria-labelledby={`h-phase-${p.nr}`}>
-        <header class="lp-phase__kopf">
-          <p class="np-kicker">Phase {p.nr} · {p.bereich}</p>
-          <h2 id={`h-phase-${p.nr}`}>{p.name}</h2>
-          <p class="k-muted">{p.leitsatz}</p>
-        </header>
-        <ol class="lp-liste">
-          {termine.filter((t) => t.phase === p.nr).map((t) => (
-            <li class="lp-station" id={t.nr.toLowerCase()} data-nr={t.nr} data-freigabe={t.freigabe || undefined}>
-              <span class="lp-nr">{t.nr}</span>
-              <div class="lp-text">
-                <h3>{t.titel}</h3>
-                <p class="lp-hook">{t.hook}</p>
-                {t.python.length > 0 && <p class="lp-python k-small"><span class="k-muted">Neu in Python:</span> {t.python.join(' · ')}</p>}
-                {t.freigabe && <p class="lp-frei k-small" data-frei={t.freigabe}>Freigabe {ab(t.freigabe)}</p>}
-              </div>
-              <div class="lp-seite">
-                <p class="np-stand np-stand--offen" data-stand><Icon id="circle" basis="" /><span>Offen</span></p>
-                <p class="lp-zahlen k-small k-muted" data-zahlen></p>
-                <div class="lp-ziele">
-                  <a class="k-btn k-btn--ghost k-btn--small" href={`lektionen/${t.lerneinheit}`}>Verstehen <span class="np-sr">{t.nr}</span></a>
-                  {t.labor && <a class="k-btn k-btn--ghost k-btn--small" href={`lektionen/${t.labor}`}>Labor <span class="np-sr">{t.nr}</span></a>}
+    {semester.map((s) => (
+      <>
+        <section class="lp-phase" aria-labelledby={`h-semester-${s.nr}`}>
+          <header class="lp-phase__kopf">
+            <p class="np-kicker">{s.bereich}</p>
+            <h2 id={`h-semester-${s.nr}`}>{s.name}</h2>
+            <p class="k-muted">{s.leitsatz}</p>
+          </header>
+          <ol class="lp-liste">
+            {termine.filter((t) => t.semester === s.nr).map((t) => (
+              <li class="lp-station" id={`termin-${t.kennung}`} data-termin={t.kennung} data-freigabe={t.freigabe || undefined}>
+                <span class="lp-nr" aria-hidden="true">{t.kennung}</span>
+                <div class="lp-text">
+                  <h3 class="np-sr">Termin {t.kennung}</h3>
+                  {['theorie', 'programmieren'].map((strang) => namen(t, strang).length > 0 && (
+                    <p class="lp-teil">
+                      <span class="lp-teil__art">{strang === 'theorie' ? 'Theorie' : 'Programmieren'}</span>
+                      <span>{namen(t, strang).map((x: any, i: number) => (
+                        <>{i > 0 && ', '}{x.kurz}{x.vonTeilen > 1 && <span class="k-muted"> (Teil {x.teil} von {x.vonTeilen})</span>}</>
+                      ))}</span>
+                    </p>
+                  ))}
+                  {t.puffer > 0 && <p class="lp-teil"><span class="lp-teil__art">Puffer</span><span>Zeit zum Aufholen und Wiederholen</span></p>}
+                  {t.freigabe && <p class="lp-frei k-small" data-frei={t.freigabe}>Freigabe {ab(t.freigabe)}</p>}
                 </div>
-              </div>
-            </li>
-          ))}
-        </ol>
-      </section>
+                {t.lektion ? (
+                  <div class="lp-seite" id={anker(t.lektion)} data-nr={t.lektion}>
+                    <p class="np-stand np-stand--offen" data-stand><Icon id="circle" basis="" /><span>Offen</span></p>
+                    <p class="lp-zahlen k-small k-muted" data-zahlen></p>
+                    <div class="lp-ziele">
+                      <a class="k-btn k-btn--ghost k-btn--small" href={`lektionen/${lektion(t.lektion)!.lerneinheit}`}>Verstehen <span class="np-sr">Termin {t.kennung}</span></a>
+                      {lektion(t.lektion)!.labor && <a class="k-btn k-btn--ghost k-btn--small" href={`lektionen/${lektion(t.lektion)!.labor}`}>Labor <span class="np-sr">Termin {t.kennung}</span></a>}
+                    </div>
+                  </div>
+                ) : t.stoff.length > 0 ? (
+                  <div class="lp-seite">
+                    <p class="lp-material__titel k-small k-muted">Bisheriges Material</p>
+                    <ul class="lp-material">
+                      {t.stoff.map((nr: string) => (
+                        <li id={anker(nr)} data-nr={nr}>
+                          <a class="lp-material__ziel" href={`lektionen/${lektion(nr)!.lerneinheit}`}>{nr} · {lektion(nr)!.kurz}</a>
+                          {lektion(nr)!.labor && <a class="lp-material__labor k-small" href={`lektionen/${lektion(nr)!.labor}`}>Labor <span class="np-sr">{nr}</span></a>}
+                          <span class="np-stand np-stand--offen" data-stand><Icon id="circle" basis="" /><span>Offen</span></span>
+                          <span class="lp-zahlen k-small k-muted" data-zahlen></span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : (
+                  <div class="lp-seite"><p class="k-small k-muted">Seiten folgen.</p></div>
+                )}
+              </li>
+            ))}
+          </ol>
+        </section>
+        {s.nr === 1 && semester.length > 1 && <p class="lp-pause k-muted">Praxisphase, rund drei Monate</p>}
+      </>
     ))}
   </main>
 </App>

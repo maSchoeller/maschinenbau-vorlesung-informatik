@@ -1,9 +1,10 @@
 /* =============================================================
    index-bauen.mjs – Daten aus kurs.yaml und den site/-Seiten (Vertrag, Abschnitt 3)
-     dist/app/daten/kurs.json     Termine mit Abschnitten und Aufgaben
+     dist/app/daten/kurs.json     Plan (20 Termine, Einheiten) und Lektionen mit Abschnitten und Aufgaben
      dist/app/daten/suche.json    Lektionen, Abschnitte, Aufgaben, Bibliothek, Glossar
      dist/app/daten/glossar.json  alle abbr.k-begriff[data-erklaerung], je Begriff die erste Lektion
      api/daten/aufgaben.json      Aufgabentexte und Musterlösungen für den Tutor (nicht öffentlich!)
+                                  und die Kursstruktur (Feld kurs) für das Gruppenbild der Dozierenden
    Parser (node-html-parser) nur zum Lesen; Inhalte werden hier nicht neu geschrieben.
    ============================================================= */
 import fs from 'node:fs';
@@ -11,13 +12,13 @@ import path from 'node:path';
 import { parse } from 'node-html-parser';
 import { SITE, DIST, API_DATEN } from '../src/lib/pfade.mjs';
 import { ladeKurs } from '../src/lib/kurs.mjs';
-import { alleSeiten } from '../src/lib/quelle.mjs';
+import { alleSeiten, seitenHtml } from '../src/lib/quelle.mjs';
 
 const leer = (s) => String(s || '').replace(/\s+/g, ' ').trim();
 const kuerzen = (s, n) => (s.length > n ? s.slice(0, n - 1).replace(/\s+\S*$/, '') + ' …' : s);
 const zahl = (s) => (/^\d+$/.test(String(s || '')) ? parseInt(s, 10) : null);
 
-function lies(rel) { return parse(fs.readFileSync(path.join(SITE, rel), 'utf8'), { comment: false, blockTextElements: { script: true, style: true, pre: true, textarea: true } }); }
+function lies(rel) { return parse(seitenHtml(rel), { comment: false, blockTextElements: { script: true, style: true, pre: true, textarea: true } }); }
 
 /* Klartext eines Elements ohne Skripte, Editoren und Steuerknöpfe */
 function klartext(el) {
@@ -84,7 +85,7 @@ export function glossarSammler() {
 
 /* Glossar ohne den übrigen Index (für glossar.astro, das beim Astro-Build vor index-bauen läuft) */
 export function sammleGlossar() {
-  const { termine } = ladeKurs();
+  const termine = ladeKurs().lektionen.filter((l) => l.aktiv);
   const g = glossarSammler();
   for (const t of termine) {
     g.sammle(lies(`lektionen/${t.lerneinheit}`), `lektionen/${t.lerneinheit}`, t.nr);
@@ -95,10 +96,11 @@ export function sammleGlossar() {
 }
 
 export default function indexBauen() {
-  const { phasen, termine } = ladeKurs();
+  const { semester, einheiten, termine: plan, lektionen: termine } = ladeKurs();
   const suche = [];
   const glossar = glossarSammler();
   const aufgabenApi = [];
+  const kursApi = [];
   const erlaubtBis = [];
 
   const begriffe = (dom, rel, lektion) => glossar.sammle(dom, rel, lektion);
@@ -113,9 +115,9 @@ export default function indexBauen() {
       return { id: s.getAttribute('data-section'), anker: s.getAttribute('id') || null, titel };
     });
     const leUrl = `lektionen/${t.lerneinheit}`;
-    suche.push({ typ: 'lektion', titel: `${t.nr} · ${t.kurz}`, text: t.hook, url: leUrl, lektion: t.nr });
-    abschnitte.forEach((a) => { if (a.anker) suche.push({ typ: 'abschnitt', titel: a.titel, text: `${t.nr} · ${t.kurz}`, url: `${leUrl}#${a.anker}`, lektion: t.nr }); });
-    begriffe(le, leUrl, t.nr);
+    if (t.aktiv) suche.push({ typ: 'lektion', titel: `${t.nr} · ${t.kurz}`, text: t.hook, url: leUrl, lektion: t.nr });
+    abschnitte.forEach((a) => { if (a.anker && t.aktiv) suche.push({ typ: 'abschnitt', titel: a.titel, text: `${t.nr} · ${t.kurz}`, url: `${leUrl}#${a.anker}`, lektion: t.nr }); });
+    if (t.aktiv) begriffe(le, leUrl, t.nr);
 
     /* Aufgaben der Lerneinheit mit Musterlösung (z. B. Code im Selbstcheck) nur für den Tutor */
     le.querySelectorAll('[data-a][data-id]').forEach((a) => {
@@ -128,11 +130,11 @@ export default function indexBauen() {
     if (t.labor) {
       const lab = lies(`lektionen/${t.labor}`);
       const labUrl = `lektionen/${t.labor}`;
-      begriffe(lab, labUrl, t.nr);
+      if (t.aktiv) begriffe(lab, labUrl, t.nr);
       aufgaben = lab.querySelectorAll('section.l-task').map((s) => {
         const pruefbar = s.querySelectorAll('[data-a][data-id]').filter((n) => n.getAttribute('data-count') !== '0').map((n) => n.getAttribute('data-id'));
         const a = { id: s.getAttribute('id'), titel: leer(s.getAttribute('data-title')), teil: s.getAttribute('data-part') || null, sterne: zahl(s.getAttribute('data-stars')), minuten: zahl(s.getAttribute('data-min')), extra: leer(s.getAttribute('data-extra')) || null, pruefbar };
-        suche.push({ typ: 'aufgabe', titel: a.titel, text: `${t.nr} Labor${a.teil === 'B' ? ' · Training' : ''}`, url: `${labUrl}#${a.id}`, lektion: t.nr });
+        if (t.aktiv) suche.push({ typ: 'aufgabe', titel: a.titel, text: `${t.nr} Labor${a.teil === 'B' ? ' · Training' : ''}`, url: `${labUrl}#${a.id}`, lektion: t.nr });
         const sol = s.querySelectorAll('script[data-role="solution"]').map((x) => x.textContent.replace(/^\n+|\s+$/g, ''));
         if (sol.length) {
           const text = [klartext(s.querySelector('.l-task__intro')), ...s.querySelectorAll('.a-task__text').map(klartext)].filter(Boolean).join('\n\n');
@@ -141,8 +143,11 @@ export default function indexBauen() {
         return a;
       });
     }
+    /* Kursstruktur für das Gruppenbild der Dozierenden (api/src/lib/kursstruktur.js) */
+    const quiz = le.querySelector('[data-quiz]');
+    if (t.aktiv) kursApi.push({ nr: t.nr, quiz: quiz ? quiz.getAttribute('data-quiz') : null, abschnitte: abschnitte.map((a) => a.id), stationen: aufgaben.map((a) => ({ id: a.id, teil: a.teil, pruefbar: a.pruefbar })) });
     return {
-      nr: t.nr, titel: t.titel, kurz: t.kurz, hook: t.hook, python: t.python, phase: t.phase, freigabe: t.freigabe,
+      nr: t.nr, aktiv: t.aktiv, titel: t.titel, kurz: t.kurz, hook: t.hook, python: t.python, semester: t.semester, freigabe: t.freigabe,
       lerneinheit: leUrl, labor: t.labor ? `lektionen/${t.labor}` : null, notebook: t.notebook ? `notebooks/${t.notebook}` : null,
       abschnitte, aufgaben,
     };
@@ -159,10 +164,13 @@ export default function indexBauen() {
   for (const g of glossarListe) suche.push({ typ: 'glossar', titel: g.begriff, text: (g.formen ? 'Auch: ' + g.formen.join(', ') + '. ' : '') + kuerzen(g.erklaerung, 140), url: `glossar.html#${g.id}`, lektion: g.lektion });
 
   const daten = path.join(DIST, 'app', 'daten');
-  schreibe(path.join(daten, 'kurs.json'), { phasen, termine: kursTermine });
+  /* termine: die 20 Termine des Plans; lektionen: Seiten, die es gibt, mit Abschnitten und Aufgaben */
+  /* abgeschaltete Lektionen (aktiv: false) stehen nur noch in den Tutor-Daten, sonst nirgends */
+  const aktive = kursTermine.filter((t) => t.aktiv);
+  schreibe(path.join(daten, 'kurs.json'), { semester, einheiten, termine: plan, lektionen: aktive.map(({ aktiv, ...t }) => t) });
   schreibe(path.join(daten, 'suche.json'), { eintraege: suche });
   schreibe(path.join(daten, 'glossar.json'), { begriffe: glossarListe });
-  schreibe(path.join(API_DATEN, 'aufgaben.json'), { erstellt: new Date().toISOString(), aufgaben: aufgabenApi });
-  const nA = kursTermine.reduce((s, t) => s + t.aufgaben.length, 0);
-  console.log(`index-bauen: ${kursTermine.length} Termine, ${nA} Labor-Aufgaben, ${suche.length} Sucheinträge, ${glossarListe.length} Begriffe, ${aufgabenApi.length} Aufgaben mit Lösung für den Tutor`);
+  schreibe(path.join(API_DATEN, 'aufgaben.json'), { erstellt: new Date().toISOString(), aufgaben: aufgabenApi, kurs: kursApi });
+  const nA = aktive.reduce((s, t) => s + t.aufgaben.length, 0);
+  console.log(`index-bauen: ${plan.length} Termine, ${aktive.length} aktive Lektionen (${kursTermine.length - aktive.length} abgeschaltet), ${nA} Labor-Aufgaben, ${suche.length} Sucheinträge, ${glossarListe.length} Begriffe, ${aufgabenApi.length} Aufgaben mit Lösung für den Tutor`);
 }

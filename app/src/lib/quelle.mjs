@@ -1,5 +1,6 @@
 /* =============================================================
    quelle.mjs – zerlegt eine site/-Seite für die Hülle (Architektur-Vertrag, Abschnitt 3).
+   Lektionen mit MDX-Quelle (Abschnitt 15, src/lib/mdx/) liefern dieselben Felder aus dem übersetzten MDX.
    Byte-genau: Der Inhalt wird per Index aus dem Originaltext geschnitten, nie über einen
    Parser neu serialisiert. Entfernt werden nur Sprunglink (.k-skip), Kopf (header.dhbw-header)
    und Fuß (footer.dhbw-footer); die Skript-Tags am Ende kommen getrennt zurück.
@@ -9,6 +10,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { SITE } from './pfade.mjs';
+import { ladeMdx, mdxSeiten } from './mdx/inhalte.mjs';
 
 function fehler(datei, t) { throw new Error(`quelle.mjs (${datei}): ${t}`); }
 
@@ -72,6 +74,12 @@ export function umschreiben(s, videoBasis) {
  * }
  */
 export function zerlege(relPfad, optionen = {}) {
+  /* Lektion mit MDX-Quelle (app/inhalte/vNN/<art>.mdx): gleiche Felder, nur ohne Byte-Ausschnitte */
+  const mdx = ladeMdx(relPfad);
+  if (mdx) {
+    const videoBasis = optionen.videoBasis ?? process.env.VIDEO_BASIS ?? '';
+    return { ...mdx, inhalt: umschreiben(mdx.inhalt, videoBasis), inhaltOriginal: mdx.inhalt, ausschnitte: [], original: null };
+  }
   const datei = path.join(SITE, relPfad);
   const text = fs.readFileSync(datei, 'utf8');
   return zerlegeText(text, relPfad, optionen);
@@ -155,7 +163,13 @@ export function textVon(relPfad, re) {
   return m ? m[1] : '';
 }
 
-/* Alle zu veröffentlichenden site/-Seiten (relativ zu site/) */
+/* HTML einer Seite zum Auslesen (Index, Glossar, Tutor-Daten): site/-Datei oder übersetztes MDX */
+export function seitenHtml(relPfad) {
+  const mdx = ladeMdx(relPfad);
+  return mdx ? `<body>${mdx.inhalt}</body>` : fs.readFileSync(path.join(SITE, relPfad), 'utf8');
+}
+
+/* Alle zu veröffentlichenden Seiten (relativ zu site/): site/-Seiten und Lektionen mit MDX-Quelle */
 export const NICHT_VEROEFFENTLICHT = ['werkzeuge/labor-test.html', 'index.html'];
 export function alleSeiten() {
   const liste = [];
@@ -168,5 +182,6 @@ export function alleSeiten() {
     }
   };
   lauf('');
+  for (const r of mdxSeiten()) if (!liste.includes(r)) liste.push(r);
   return liste.sort();
 }

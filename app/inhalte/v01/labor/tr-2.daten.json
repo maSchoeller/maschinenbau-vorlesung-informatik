@@ -1,0 +1,45 @@
+{
+ "code": [
+  "a = 10",
+  "b = a / 2",
+  "a = a + b",
+  "b = 1",
+  "print(a, b)"
+ ],
+ "vars": [
+  "a",
+  "b"
+ ],
+ "steps": [
+  {
+   "line": 1,
+   "set": {
+    "a": "10"
+   }
+  },
+  {
+   "line": 2,
+   "set": {
+    "b": "5.0"
+   },
+   "hint": "Geteilt mit / ergibt in Python immer eine Kommazahl: 10 / 2 ist 5.0, nicht 5."
+  },
+  {
+   "line": 3,
+   "set": {
+    "a": "15.0"
+   },
+   "hint": "Rechts: 10 + 5.0 = 15.0. Das kommt in a, der alte Wert 10 ist weg."
+  },
+  {
+   "line": 4,
+   "set": {
+    "b": "1"
+   }
+  },
+  {
+   "line": 5,
+   "out": "15.0 1"
+  }
+ ]
+}

@@ -1,0 +1,481 @@
+---
+titel: Termin 01 · Programmierlabor · Informatik Maschinenbau
+beschreibung: "Programmierlabor zu Termin 01: Abläufe lesen, den ersten Programmablaufplan zeichnen, mit Variablen rechnen, Werte einlesen und ausgeben. Mit Training für zu Hause."
+body:
+  data-lesson: V01
+  data-page: labor
+stile:
+  - ../assets/css/dhbw-base.css
+  - ../assets/css/kurs.css
+  - ../assets/css/aufgaben.css
+  - ../assets/css/editor.css
+  - ../assets/css/labor.css
+  - ../assets/css/v05.css
+  - ../assets/css/pap-editor.css
+skripte:
+  - ../assets/js/speicher.js
+  - ../assets/js/icons.js
+  - src: ../assets/js/editor.js
+    defer: true
+  - ../assets/js/pap-engine.js
+  - ../assets/js/kurs.js
+  - ../assets/js/aufgaben.js
+  - ../assets/js/pap-editor.js
+  - ../assets/js/labor.js
+---
+
+<Labor nr="V01" name="Termin 01" lerneinheit="v01-ablauf-und-erste-programme.html">
+
+<Station id="a-werkzeugkasten" titel="Werkzeugkasten" teil="A" min="5">
+
+<p class="l-task__intro">Vier Karten, mehr brauchst du heute nicht. Jeder Codeblock läuft: Ändere etwas und führ ihn aus. Den Werkzeugkasten erreichst du später von jeder Aufgabe aus über den Knopf oben rechts.</p>
+
+<Video name="v01-python" titel="Python-Werkzeugkasten: print, Variablen, rechnen, einlesen" fehlt="Video folgt. Bis dahin: Lies die vier Karten und probier jeden Codeblock aus.">
+
+Python-Werkzeugkasten: print, Variablen, rechnen, einlesen (ca. 3 Min). Untertitel sind eingeschaltet (Deutsch).
+
+</Video>
+
+<Werkzeugkasten>
+
+<Syntaxkarte id="sk-print" nr="1" titel="print: etwas ausgeben">
+
+```python
+print("Hallo")
+print("Kilometer:", 148)
+```
+
+- Text steht in Anführungszeichen, Zahlen stehen ohne.
+- Mehrere Dinge trennst du mit Komma. `print` setzt ein Leerzeichen dazwischen.
+- Jedes `print` beginnt eine neue Zeile.
+
+</Syntaxkarte>
+
+<Syntaxkarte id="sk-var" nr="2" titel="Variable: einen Wert merken">
+
+```python
+strecke = 18.5
+tage = 4
+print(strecke, tage)
+```
+
+- Links der Name, rechts der Wert: `name = wert`.
+- Kommazahlen schreibst du mit Punkt: `18.5`.
+- Namen: Kleinbuchstaben, Ziffern, Unterstrich. Kein Leerzeichen, keine Umlaute.
+
+</Syntaxkarte>
+
+<Syntaxkarte id="sk-rechnen" nr="3" titel="Rechnen und das Ergebnis merken">
+
+```python
+strecke = 18.5
+tage = 4
+woche = strecke * 2 * tage
+print("Kilometer pro Woche:", woche)
+```
+
+- Rechenzeichen: `+`, `-`, `*` (mal), `/` (geteilt). Punkt vor Strich gilt, Klammern gehen auch.
+- Erst wird die rechte Seite ausgerechnet, dann kommt das Ergebnis in die Variable links.
+- `/` liefert immer eine Kommazahl: `10 / 2` ergibt `5.0`.
+
+</Syntaxkarte>
+
+<Syntaxkarte id="sk-input" nr="4" titel="Zahl einlesen">
+
+```python data-stdin="18.5\n4"
+strecke = float(input("Einfache Strecke in km: "))
+tage = int(input("Tage pro Woche: "))
+print(strecke, tage)
+```
+
+- `input("Frage: ")` zeigt die Frage und wartet auf eine Eingabe.
+- `float(…)` macht daraus eine Kommazahl, `int(…)` eine ganze Zahl. Ohne das ist die Eingabe Text, und mit Text kannst du nicht rechnen.
+- Hier auf der Seite trägst du die Eingaben vorher ins Feld „Eingaben“ ein, eine Zeile je `input`.
+
+</Syntaxkarte>
+
+</Werkzeugkasten>
+
+</Station>
+
+<Station id="a-vorgemacht" titel="Vorgerechnetes Beispiel: Pendelstrecke" teil="A" min="8">
+
+<p class="l-task__intro">Aufgabe: Wie viele Kilometer fährst du pro Woche zur Hochschule und zurück? Eingegeben werden die einfache Strecke in Kilometern und die Zahl der Tage pro Woche. So gehst du jede Aufgabe an: **erst der Plan, dann der Code.**</p>
+
+<Video name="v01-beispiel" titel="Vorgerechnet: Pendelstrecke, vom Plan zum Programm" fehlt="Video folgt. Bis dahin: Lies den Plan und den Code Zeile für Zeile und probier das Programm aus.">
+
+Vorgerechnet: Pendelstrecke, vom Plan zum Programm (ca. 3 Min). Untertitel sind eingeschaltet (Deutsch).
+
+</Video>
+
+<Plan titel="Pendelstrecke">
+
+```text
+Eingabe: strecke
+Eingabe: tage
+woche = strecke * 2 * tage
+Ausgabe: woche
+```
+
+</Plan>
+
+<Aufgabe art="run" id="w-vorgemacht" data-count="0" data-mode="programm" data-inputs="18.5|4">
+
+<Editor datei="labor/w-vorgemacht.vorlage.py" aria-label="Python-Code: Pendelstrecke" />
+
+</Aufgabe>
+
+<Schritte>
+
+1. **Der Plan:** zwei Eingaben, eine Rechnung, eine Ausgabe. Mehr Symbole braucht die Aufgabe nicht. Start und Ende gehören immer dazu.
+2. **Zeile 1, Kommentar:** Alles hinter `#` ist eine Notiz für Menschen. Python überspringt die Zeile.
+3. **Zeilen 2 und 3, Eingabe:** Aus jedem Parallelogramm wird eine Zeile mit `input`. Die Strecke ist eine Kommazahl, also `float`. Die Tage sind eine ganze Zahl, also `int`.
+4. **Zeile 4, Verarbeitung:** Das Rechteck wird eine Zuweisung. Mal 2, weil du hin und zurück fährst. Rechne zur Probe von Hand: 18,5 · 2 · 4 = 148.
+5. **Zeile 5, Ausgabe:** Das letzte Parallelogramm wird ein `print`. Der Text davor sagt, was die Zahl bedeutet.
+6. **Selbsterklärung:** Was änderst du im Plan und im Code, wenn zusätzlich die Kilometer pro Monat (4 Wochen) ausgegeben werden sollen? Probier es aus.
+
+</Schritte>
+
+</Station>
+
+<Station id="a-ablauf" titel="Ablauf verfolgen" teil="A" min="5">
+
+<p class="l-task__intro">Bevor du Programme schreibst, musst du sie lesen können. Führ das Programm im Kopf aus, **Zeile für Zeile, so wie Python es tut**, und trag nach jeder Zeile ein, was in den Variablen steht. Genau das wird in der Klausur verlangt.</p>
+
+<Aufgabe art="trace" id="w-trace">
+
+<Daten datei="labor/w-trace.daten.json" />
+
+</Aufgabe>
+
+</Station>
+
+<Station id="a-plan" titel="Dein erster Plan" teil="A" sterne="1" min="8">
+
+<p class="l-task__intro">Jetzt zeichnest du selbst. Füg die Symbole in der richtigen Reihenfolge ein und schreib in jedes, was dort passiert. „Prüfen“ führt deinen Plan mit Beispielwerten aus.</p>
+
+<Aufgabe art="pap-zeichnen" id="w-plan" titel="Getränke für die Lerngruppe" data-timeout="8000" data-erlaubt="in,out,op">
+
+Ihr kauft Getränke für die Lerngruppe. Eingelesen wird zuerst die Anzahl der Flaschen (ganze Zahl), dann der Preis pro Flasche in Euro (Kommazahl). Ausgegeben wird der Gesamtpreis.
+
+<Python rolle="tests" datei="labor/w-plan.tests.py" />
+
+<Daten datei="labor/w-plan.solution.json" rolle="solution" />
+
+<Tipps>
+
+1. Stell dir die drei Fragen: Was ist gegeben? Was wird getan? Was soll herauskommen?
+2. Du brauchst zwei Eingaben, eine Verarbeitung und eine Ausgabe.
+3. In der Verarbeitung steht eine Zuweisung, zum Beispiel: gesamt = anzahl \* preis.
+
+</Tipps>
+
+</Aufgabe>
+
+</Station>
+
+<Station id="a-zeilen" titel="Zeilen ordnen" teil="A" min="5">
+
+<p class="l-task__intro">Der Plan ist gegeben, die Zeilen des Programms sind durcheinander, und zwei gehören gar nicht dazu. Bring die passenden Zeilen in die Reihenfolge des Plans.</p>
+
+<Aufgabe art="parsons" id="w-parsons" titel="Minuten in Stunden">
+
+Das Programm liest eine Dauer in Minuten ein und gibt sie in Stunden aus.
+
+<Plan titel="Minuten in Stunden">
+
+```text
+Eingabe: minuten
+stunden = minuten / 60
+Ausgabe: stunden
+```
+
+</Plan>
+
+<Daten datei="labor/w-parsons.daten.json" />
+
+</Aufgabe>
+
+</Station>
+
+<Station id="a-luecken" titel="Lücken füllen" teil="A" min="5">
+
+<p class="l-task__intro">Der Trinkgeld-Rechner aus der Lerneinheit, aber mit fünf Lücken. Ergänze sie so, dass das Programm beide Werte einliest und den Gesamtbetrag ausgibt.</p>
+
+<Aufgabe art="gap" id="w-luecken" data-mode="programm">
+
+```text class="a-gap__src" data-run="no"
+betrag = @@float@@(input("Rechnungsbetrag in Euro: "))
+prozent = float(@@input@@("Trinkgeld in Prozent: "))
+trinkgeld = betrag * prozent @@/@@ 100
+gesamt = betrag @@+@@ trinkgeld
+@@print@@("Zu zahlen:", gesamt)
+```
+
+<Python rolle="tests" datei="labor/w-luecken.tests.py" />
+
+<Tipps>
+
+1. Lücke 1 und 2 gehören zum Baustein „Zahl einlesen“: Welches Wort fragt nach der Eingabe, welches macht daraus eine Kommazahl?
+2. Lücke 3: 10 Prozent von 40 sind 40 mal 10 geteilt durch 100.
+3. Lücke 5: Welches Wort gibt etwas aus?
+
+</Tipps>
+
+</Aufgabe>
+
+</Station>
+
+<Station id="a-eigene" titel="Erste eigene Aufgabe: vom Plan zum Programm" teil="A" sterne="1" min="10">
+
+<p class="l-task__intro">Dein erstes ganzes Programm. Der Plan steht schon da, du überträgst ihn Symbol für Symbol in Code.</p>
+
+<Aufgabe art="code" id="w-eigene" titel="Geschwindigkeit umrechnen" data-mode="programm" data-inputs="90">
+
+<div class="a-task__text">
+
+Das Programm liest eine Geschwindigkeit in Kilometern pro Stunde ein und gibt sie in Metern pro Sekunde aus. Dafür teilst du durch 3.6. Beispiel: 90 km/h sind 25.0 m/s.
+
+<Plan titel="Geschwindigkeit umrechnen">
+
+```text
+Eingabe: kmh
+ms = kmh / 3.6
+Ausgabe: ms
+```
+
+</Plan>
+
+</div>
+
+<Editor datei="labor/w-eigene.vorlage.py" aria-label="Python-Code: Geschwindigkeit umrechnen" />
+
+<Python rolle="tests" datei="labor/w-eigene.tests.py" />
+
+<Python rolle="solution" datei="labor/w-eigene.solution.py" />
+
+<Tipps>
+
+1. Drei Symbole, drei Zeilen: einlesen, rechnen, ausgeben.
+2. Die Eingabe ist eine Kommazahl: Schau auf Karte 4 im Werkzeugkasten.
+3. In der Ausgabe steht die Zahl am Ende, zum Beispiel: print("Meter pro Sekunde:", ms)
+
+</Tipps>
+
+</Aufgabe>
+
+</Station>
+
+<Station id="a-fehler" titel="Fehler finden" teil="A" min="7" data-seen="manual">
+
+<p class="l-task__intro">Programme, die du nicht selbst geschrieben hast, musst du prüfen können. Lies das Programm Zeile für Zeile und vergleiche es mit der Aufgabe.</p>
+
+<Fehlersuche titel="Pizza teilen" fehler="3 4">
+
+Eine Pizza kostet 24 Euro, drei Personen teilen sie. Das Programm soll ausrechnen, was jede Person zahlt. Erwartet wird 8.0. In zwei Zeilen steckt ein Fehler.
+
+```text
+preis = float(input("Preis der Pizza in Euro: "))
+personen = int(input("Anzahl Personen: "))
+anteil = preis * personen
+print("Jeder zahlt:", Anteil)
+```
+
+#### Fehler 1: falsch gerechnet (Zeile 3)
+
+Geteilt wird mit `/`, hier steht `*`. Das ist die gefährlichere Sorte Fehler: Das Programm läuft und liefert ein falsches Ergebnis, 72.0 statt 8.0. Du findest ihn nur, wenn du vorher im Kopf überschlägst, was herauskommen muss.
+
+#### Fehler 2: Name falsch geschrieben (Zeile 4)
+
+Angelegt wurde `anteil` mit kleinem a, ausgegeben werden soll `Anteil` mit großem A. Diesen Fehler meldet Python selbst: `NameError: name 'Anteil' is not defined`.
+
+So ist es richtig:
+
+```python data-stdin="24\n3"
+preis = float(input("Preis der Pizza in Euro: "))
+personen = int(input("Anzahl Personen: "))
+anteil = preis / personen
+print("Jeder zahlt:", anteil)
+```
+
+</Fehlersuche>
+
+</Station>
+
+<Station id="t-1" titel="Kinoabend" teil="B" sterne="1" min="6">
+
+<p class="l-task__intro">Das Training gehört zum Termin: etwa 45 Minuten, bis zum nächsten Mal. Der nächste Termin beginnt mit einer Aufgabe daraus. Zum Aufwärmen ein Programm ohne Eingabe.</p>
+
+<Aufgabe art="code" id="tr-1" titel="Kinoabend" data-mode="code">
+
+<div class="a-task__text">
+
+Drei Karten zu je 9.5 Euro. Leg die Variablen `karten` und `preis` an, berechne daraus `gesamt` und gib das Ergebnis aus. Die Ausgabe soll genau so aussehen:
+
+```text data-run="no"
+Gesamt: 28.5
+```
+
+<Plan titel="Kinoabend">
+
+```text
+karten = 3
+preis = 9.5
+gesamt = karten * preis
+Ausgabe: gesamt
+```
+
+</Plan>
+
+</div>
+
+<Editor datei="labor/tr-1.vorlage.py" aria-label="Python-Code: Kinoabend" />
+
+<Python rolle="tests" datei="labor/tr-1.tests.py" />
+
+<Python rolle="solution" datei="labor/tr-1.solution.py" />
+
+<Tipps>
+
+1. Jedes Rechteck im Plan wird eine Zuweisung.
+2. Schreib die Rechnung hin, nicht das Ergebnis: gesamt = karten \* preis
+3. Die Ausgabe hat zwei Teile, durch Komma getrennt: den Text "Gesamt:" und die Variable.
+
+</Tipps>
+
+</Aufgabe>
+
+</Station>
+
+<Station id="t-2" titel="Ausgabe vorhersagen" teil="B" sterne="1" min="5">
+
+<p class="l-task__intro">Ohne Ausführen: Verfolge das Programm Zeile für Zeile und trag die Werte ein. Achte auf die Zeile mit dem Geteilt-Zeichen.</p>
+
+<Aufgabe art="trace" id="tr-2">
+
+<Daten datei="labor/tr-2.daten.json" />
+
+</Aufgabe>
+
+</Station>
+
+<Station id="t-3" titel="Plan zeichnen: Rechteck" teil="B" sterne="2" min="8">
+
+<p class="l-task__intro">Klausurform „Plan zeichnen“. Zeichne zuerst auf Papier, dann im Editor, und vergleiche.</p>
+
+<Aufgabe art="pap-zeichnen" id="tr-3" titel="Fläche und Umfang eines Rechtecks" data-timeout="8000" data-erlaubt="in,out,op">
+
+Eingelesen werden die Länge und die Breite eines Rechtecks (zwei Kommazahlen, in dieser Reihenfolge). Ausgegeben wird zuerst die Fläche, dann der Umfang.
+
+<Python rolle="tests" datei="labor/tr-3.tests.py" />
+
+<Daten datei="labor/tr-3.solution.json" rolle="solution" />
+
+<Tipps>
+
+1. Zwei Eingaben, zwei Rechnungen, zwei Ausgaben.
+2. Fläche: Länge mal Breite. Umfang: zweimal die Länge plus zweimal die Breite.
+3. Jede Rechnung bekommt ein eigenes Rechteck.
+
+</Tipps>
+
+</Aufgabe>
+
+</Station>
+
+<Station id="t-4" titel="Plan in Code übertragen" teil="B" sterne="2" min="8">
+
+<p class="l-task__intro">Klausurform „Plan in Code übertragen“: Schreib das Programm wie auf Papier, ohne Ausführen und ohne Vorschläge des Editors. Dann abgeben und mit der Lösung vergleichen.</p>
+
+<Aufgabe art="klausur" id="tr-4" titel="Verdienst im Nebenjob" data-mode="programm" data-minutes="8">
+
+<div class="a-task__text">
+
+Übertrage den Plan in ein Python-Programm. Stunden und Stundenlohn sind Kommazahlen.
+
+<Plan titel="Verdienst im Nebenjob">
+
+```text
+Eingabe: stunden
+Eingabe: lohn
+verdienst = stunden * lohn
+Ausgabe: verdienst
+```
+
+</Plan>
+
+</div>
+
+<Editor data-assist="off" aria-label="Python-Code von Hand schreiben, ohne Ausführen" />
+
+<Python rolle="tests" datei="labor/tr-4.tests.py" />
+
+<Python rolle="solution" datei="labor/tr-4.solution.py" />
+
+<Daten datei="labor/tr-4.scheme.json" rolle="scheme" />
+
+</Aufgabe>
+
+</Station>
+
+<Station id="t-5" titel="Fehler finden und beheben" teil="B" sterne="2" min="6">
+
+<p class="l-task__intro">In diesem Programm stecken zwei Fehler: einer, den Python meldet, und einer, den nur du findest. Überschlage zuerst im Kopf: 40 Liter zu 1.80 Euro, was muss herauskommen?</p>
+
+<Aufgabe art="code" id="tr-5" titel="Tankfüllung" data-mode="programm" data-inputs="40|1.8">
+
+<div class="a-task__text">
+
+Das Programm soll ausrechnen, was eine Tankfüllung kostet: Liter mal Preis pro Liter. Behebe beide Fehler.
+
+</div>
+
+<Editor datei="labor/tr-5.vorlage.py" aria-label="Python-Code: Tankfüllung" />
+
+<Python rolle="tests" datei="labor/tr-5.tests.py" />
+
+<Python rolle="solution" datei="labor/tr-5.solution.py" />
+
+<Tipps>
+
+1. Führ das Programm aus und lies die Fehlermeldung von unten: Welche Zeile nennt sie?
+2. In der letzten Zeile fehlt ein Zeichen zwischen dem Text und der Variable.
+3. Läuft das Programm, prüf das Ergebnis: 40 Liter zu 1.80 Euro kosten 72 Euro, nicht 41.80.
+
+</Tipps>
+
+</Aufgabe>
+
+</Station>
+
+<Station id="t-6" titel="Sparziel" teil="B" sterne="3" min="10">
+
+<p class="l-task__intro">Ohne vorgegebenen Plan. Zeichne ihn zuerst auf Papier: Was ist gegeben, was wird getan, was soll herauskommen? Dann schreib das Programm.</p>
+
+<Aufgabe art="code" id="tr-6" titel="Sparziel" data-mode="programm" data-inputs="600|25">
+
+<div class="a-task__text">
+
+Du sparst jede Woche denselben Betrag. Das Programm liest zuerst das Sparziel in Euro ein, dann den Betrag pro Woche, und gibt aus, nach wie vielen Wochen das Geld zusammen ist. Beispiel: 600 Euro Ziel und 25 Euro pro Woche ergeben 24.0 Wochen.
+
+</div>
+
+<Editor datei="labor/tr-6.vorlage.py" aria-label="Python-Code: Sparziel" />
+
+<Python rolle="tests" datei="labor/tr-6.tests.py" />
+
+<Python rolle="solution" datei="labor/tr-6.solution.py" />
+
+<Tipps>
+
+1. Dein Plan hat zwei Eingaben, eine Verarbeitung und eine Ausgabe.
+2. Wie oft passt der Betrag pro Woche in das Sparziel? Das ist eine Division.
+3. Beide Eingaben sind Kommazahlen. Die Zahl der Wochen steht am Ende der Ausgabe.
+
+</Tipps>
+
+</Aufgabe>
+
+</Station>
+
+</Labor>

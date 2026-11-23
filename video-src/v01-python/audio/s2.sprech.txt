@@ -1,1 +1,1 @@
-Eine Variable ist ein Name für einen Wert. Mit dem Gleichheitszeichen gibst du einem Wert einen Namen. Das nennt man Zuweisung, und es ist keine Gleichung. Python liest sie von rechts nach links: Erst wird die rechte Seite berechnet, dann bekommt das Ergebnis den Namen auf der linken Seite. Danach kannst du den Namen überall verwenden, wo du den Wert brauchst.
+Mit print gibst du etwas aus. Text steht in Anführungszeichen, Zahlen stehen ohne. Mehrere Dinge trennst du mit einem Komma. print setzt ein Leerzeichen dazwischen. Jedes print beginnt eine neue Zeile.

@@ -143,8 +143,20 @@
     return String(s).replace(/\r/g, '').split('\n').map(function (l) { return l.replace(/\s+/g, ' ').trim(); }).filter(Boolean).join('\n');
   }
 
+  /* Reihenfolge mischen: Fragen und Antworten stehen bei jedem Aufruf anders, damit sich aus der
+     Position nichts ablesen lässt. Die Knoten tauschen nur ihre Plätze; was sonst zwischen ihnen steht,
+     bleibt, wo es ist. Für Prüfskripte abschaltbar: window.KURS_NICHT_MISCHEN = true (vor kurs.js). */
+  function mische(knoten) {
+    if (window.KURS_NICHT_MISCHEN || knoten.length < 2) return knoten;
+    var plaetze = knoten.map(function (n) { var m = document.createComment(''); n.parentNode.insertBefore(m, n); return m; });
+    var neu = knoten.slice();
+    for (var i = neu.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = neu[i]; neu[i] = neu[j]; neu[j] = t; }
+    neu.forEach(function (n, k) { plaetze[k].parentNode.replaceChild(n, plaetze[k]); });
+    return neu;
+  }
+
   function initQuiz(quiz) {
-    var qs = $$('.k-q', quiz);
+    var qs = mische($$('.k-q', quiz));
     var scoreBox = $('[data-score]', quiz);
     var lesson = document.body.getAttribute('data-lesson');
     var quizId = quiz.getAttribute('data-quiz') || 'quiz';
@@ -188,7 +200,7 @@
 
       if (type === 'mc') {
         var list = $('.k-q__options', q);
-        var items = $$('li', list);
+        var items = mische($$('li', list));
         var multi = items.filter(function (li) { return li.hasAttribute('data-correct'); }).length > 1;
         var fs = el('fieldset');
         fs.appendChild(el('legend', { class: 'k-sr', text: 'Antwortmöglichkeiten' }));
@@ -919,16 +931,20 @@ _result
     if (uploader) bar.insertAdjacentElement('afterend', uploader.el);
 
     var tryBox = box.closest('.k-try');
-    var predict = !auto && tryBox && $('.k-predict', tryBox);
+    /* Vorhersage: der erste Runner eines .k-try gehört zur Vorhersage darin, auch wenn er aus einem
+       Codeblock entstanden ist (MDX-Lektionen schreiben den Code als ```python). */
+    var predict = tryBox && $('.k-predict', tryBox);
+    if (predict && predict._kRunner && predict._kRunner !== box) predict = null;
     var predicted = null;
     if (predict) {
+      predict._kRunner = box;
       runBtn.disabled = true;
       status.textContent = 'Erst tippen, dann ausführen.';
       var expl = $('.k-predict__expl', predict);
       if (expl) expl.hidden = true;
       var result = $('.k-predict__result', predict) || el('div', { class: 'k-predict__result' });
       if (!result.parentNode) predict.appendChild(result);
-      var opts = $$('.k-predict__opts button', predict);
+      var opts = mische($$('.k-predict__opts button', predict));
       opts.forEach(function (b) {
         b.setAttribute('aria-pressed', 'false');
         b.addEventListener('click', function () {

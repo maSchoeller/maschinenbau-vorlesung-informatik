@@ -2,7 +2,7 @@
    app/suche.js – Suchdialog (Rolle Navigation)
    Öffnen: Knopf in der Kopfzeile oder Strg+K / Cmd+K (die Hülle sendet KursApp-Ereignis 'suche').
    Daten: app/daten/suche.json, erst beim ersten Öffnen geladen (liegt im Precache, geht also offline).
-   Bedienung: Pfeil auf/ab, Enter, Esc. Fokus kehrt zum Auslöser zurück. Leere Suche: die 22 Lektionen.
+   Bedienung: Pfeil auf/ab, Enter, Esc. Fokus kehrt zum Auslöser zurück. Leere Suche: alle Lektionen.
    ============================================================= */
 (function () {
   'use strict';
@@ -39,7 +39,7 @@
      stehen aber in einem eigenen Feld, das nicht angezeigt wird (sonst hingen sie ohne Trennung an der Unterzeile) */
   function lektionenAnreichern(d, k) {
     var py = {};
-    ((k && k.termine) || []).forEach(function (t) { if (t.python && t.python.length) py[t.nr] = t.python.join(' '); });
+    ((k && k.lektionen) || []).forEach(function (t) { if (t.python && t.python.length) py[t.nr] = t.python.join(' '); });
     (d.eintraege || []).forEach(function (e) {
       if (e.typ === 'lektion' && py[e.lektion]) e.stichwoerter = py[e.lektion];
     });
@@ -79,7 +79,7 @@
       var gruppe = null;
       GRUPPEN.forEach(function (g) { if (g.typen.indexOf(z.e.typ) >= 0) gruppe = g; });
       if (!gruppe) return;
-      if (leer && gruppe.id !== 'lektion') return;   /* leere Suche: nur die 22 Lektionen */
+      if (leer && gruppe.id !== 'lektion') return;   /* leere Suche: nur die Lektionen */
       var summe = 0;
       for (var k = 0; k < worte.length; k++) {
         var p = punkte(worte[k], z);
@@ -94,7 +94,7 @@
     return GRUPPEN.map(function (g) {
       var l = proGruppe[g.id];
       if (worte.length) l.sort(function (a, b) { return b.s - a.s; });
-      return { g: g, treffer: l.slice(0, worte.length ? g.max : 22), gesamt: l.length };
+      return { g: g, treffer: l.slice(0, worte.length ? g.max : l.length), gesamt: l.length };
     }).filter(function (r) { return r.treffer.length; });
   }
 

@@ -1,0 +1,86 @@
+---
+/* Kursübersicht für Dozierende: Gruppenbild je Lektion (Vertrag Abschnitt 14).
+   Nur Anteile der Gruppe, nie einzelne Personen. app/dozent.js füllt die Seite aus /api/dozent/uebersicht. */
+import App from '../layouts/App.astro';
+---
+<App pfad="dozent.html" art="dozent" titel="Kursübersicht" beschreibung="Für Dozierende: Wie weit ist die Gruppe in einer Lektion, und an welcher Aufgabe hängt sie?" css={['seiten']}>
+  <main id="inhalt" class="app-seite np-seite dz">
+    <h1>Kursübersicht</h1>
+    <p class="np-lead">Wie weit ist die Gruppe, und wo hängt sie? Du siehst Anteile über alle Konten, keine einzelnen Personen.</p>
+
+    <p class="dz-laedt" data-dz-laedt role="status">Einen Moment …</p>
+
+    <section class="dz-block" data-dz-block="gast" hidden>
+      <p>Diese Seite ist für Dozierende. Melde dich mit dem Konto an, das als Dozent eingetragen ist.</p>
+      <p><button type="button" class="k-btn" data-dz-aktion="anmelden">Mit GitHub anmelden</button></p>
+    </section>
+
+    <section class="dz-block" data-dz-block="fremd" hidden>
+      <p>Dieses Konto ist nicht als Dozent eingetragen.</p>
+      <p>Falls du den Kurs leitest: Trage diese Kennung in Azure in die Einstellung <code>DOZENT_IDS</code> ein und lade die Seite danach neu.</p>
+      <p class="dz-kennung"><code data-dz-kennung></code> <button type="button" class="k-btn k-btn--ghost k-btn--small" data-dz-aktion="kopieren">Kopieren</button></p>
+      <p class="dz-status" role="status" aria-live="polite" data-dz-kopiert></p>
+    </section>
+
+    <section class="dz-block" data-dz-block="fehler" hidden>
+      <p data-dz-fehler></p>
+      <p><button type="button" class="k-btn k-btn--ghost" data-dz-aktion="neu">Erneut versuchen</button></p>
+    </section>
+
+    <div data-dz-block="bild" hidden>
+      <div class="dz-kopf">
+        <div class="dz-wahl">
+          <label for="dz-lektion">Lektion</label>
+          <select id="dz-lektion" data-dz-lektion></select>
+        </div>
+        <p class="dz-stand k-small k-muted" role="status" aria-live="polite" data-dz-stand></p>
+        <button type="button" class="k-btn k-btn--ghost k-btn--small" data-dz-aktion="neu">Aktualisieren</button>
+      </div>
+
+      <p class="dz-wenig" data-dz-wenig hidden></p>
+
+      <div data-dz-inhalt>
+        <section class="dz-abschnitt" aria-labelledby="dz-h-gruppe">
+          <h2 id="dz-h-gruppe">Wie weit ist die Gruppe?</h2>
+          <dl class="dz-zahlen" data-dz-zahlen></dl>
+        </section>
+
+        <section class="dz-abschnitt" aria-labelledby="dz-h-haengt">
+          <h2 id="dz-h-haengt">Wo hängt es?</h2>
+          <p data-dz-haenger></p>
+          <div class="k-tablewrap">
+            <table class="dz-tabelle">
+              <thead>
+                <tr>
+                  <th scope="col">Aufgabe</th>
+                  <th scope="col">Teil</th>
+                  <th scope="col">Gelöst</th>
+                  <th scope="col" class="dz-zahl">Begonnen, nicht gelöst</th>
+                </tr>
+              </thead>
+              <tbody data-dz-aufgaben></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="dz-abschnitt" aria-labelledby="dz-h-verstehen">
+          <h2 id="dz-h-verstehen">Lerneinheit</h2>
+          <p data-dz-quiz></p>
+          <div class="k-tablewrap">
+            <table class="dz-tabelle dz-tabelle--schmal">
+              <thead>
+                <tr>
+                  <th scope="col">Abschnitt</th>
+                  <th scope="col">Abgehakt</th>
+                </tr>
+              </thead>
+              <tbody data-dz-abschnitte></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <p class="dz-fuss k-small k-muted">Gezählt wird nur, wer mit Konto lernt; wer ohne Anmeldung arbeitet, fehlt hier. Zahlen gibt es erst ab <span data-dz-mindest>5</span> Konten mit Lernstand.</p>
+    </div>
+  </main>
+</App>

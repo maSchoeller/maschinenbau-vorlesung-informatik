@@ -3,7 +3,7 @@
 import Durchreichen from '../../layouts/Durchreichen.astro';
 import { ladeKurs } from '../../lib/kurs.mjs';
 export function getStaticPaths() {
-  const dateien = ladeKurs().termine.flatMap((t) => [t.lerneinheit, t.labor]).filter(Boolean);
+  const dateien = ladeKurs().lektionen.flatMap((t) => [t.lerneinheit, t.labor]).filter(Boolean);
   return dateien.map((d) => ({ params: { seite: d.replace(/\.html$/, '') }, props: { datei: 'lektionen/' + d } }));
 }
 const { datei } = Astro.props;
