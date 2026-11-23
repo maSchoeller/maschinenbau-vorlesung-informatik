@@ -19,3 +19,4 @@ api/daten/
 api/local.settings.json
 test-results/
 playwright-report/
+docs/app/vorschau/
