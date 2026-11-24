@@ -1,8 +1,11 @@
 /* kurs.yaml lesen und prüfen. Eine Quelle für den Kurs (Vertrag, Abschnitt 16):
      semester   die zwei Semester
-     einheiten  der Stoff (P1–P11, T1–T11) mit Blöcken und dem bisherigen Material
+     einheiten  der Stoff (P1–P11, T1–T11) mit Blöcken; optional stoff: Lektionen, die bis zum Neubau als Material
+                zu den Terminen der Einheit gehören (seit dem Entfernen des alten Kurses nennt keine Einheit welche)
      termine    die 20 Termine des Plans, je 4 Blöcke
-     lektionen  Seiten, die es gibt (Lerneinheit, Labor, Notebook); aktiv: false = gebaut, aber nirgends angeboten
+     lektionen  Seiten, die es gibt (Lerneinheit, Labor, Notebook): je fertigem Termin NN die Lektion VNN.
+                aktiv: false = gebaut, aber nirgends angeboten (zurzeit bei keiner Lektion gesetzt); ein Termin darf
+                trotzdem darauf zeigen: Er hat dann lektion: null und entwurf: 'VNN' (Entwurf, siehe terminLektion)
    In der Hülle heißt eine Lektion mit Seiten an vielen Stellen noch „termin“ (terminZuDatei, App.astro):
    gemeint ist dort immer ein Eintrag aus lektionen. */
 import fs from 'node:fs';
@@ -18,6 +21,15 @@ let zwischen = null;
 function fehler(t) { throw new Error('kurs.yaml: ' + t); }
 const zwei = (n) => String(n).padStart(2, '0');
 
+/* Wohin zeigt „lektion: VNN“ an einem Termin? Aktive Lektion: lektion; abgeschaltete (aktiv: false): Entwurf,
+   der Termin hat dann noch keine Seiten im Angebot. Nur diese Zuordnung, ohne Dateien (testbar mit Testdaten). */
+export function terminLektion(nr, lektionen) {
+  if (nr == null || nr === '') return { lektion: null, entwurf: null };
+  const l = lektionen.find((x) => x.nr === String(nr));
+  if (!l) return { lektion: null, entwurf: null, fehlt: true };
+  return l.aktiv ? { lektion: l.nr, entwurf: null } : { lektion: null, entwurf: l.nr };
+}
+
 export function ladeKurs() {
   if (zwischen) return zwischen;
   const roh = YAML.parse(fs.readFileSync(path.join(APP, 'kurs.yaml'), 'utf8'));
@@ -31,7 +43,8 @@ export function ladeKurs() {
     if (!/^V\d\d$/.test(nr)) fehler(`Lektion ${i + 1}: nr "${nr}" ist ungültig`);
     for (const k of ['titel', 'kurz', 'hook', 'lerneinheit']) if (!t[k]) fehler(`${nr}: Feld ${k} fehlt`);
     if (!semester.some((s) => s.nr === t.semester)) fehler(`${nr}: Semester ${t.semester} unbekannt`);
-    /* Quelle einer Lektionsseite: app/inhalte/vNN/<feld>.mdx (umgezogen) oder site/lektionen/<datei> */
+    /* Quelle einer Lektionsseite: app/inhalte/vNN/<feld>.mdx; eine Seite unter site/lektionen/<datei> würde auch gelten
+       (so kam der alte Kurs in die App; dort liegt nichts mehr) */
     const pruefe = (ordner, datei, feld) => {
       if (datei == null) return null;
       const p = path.join(SITE, ordner, datei);
@@ -90,15 +103,17 @@ export function ladeKurs() {
     const puffer = t.puffer == null ? 0 : t.puffer;
     const summe = teile.reduce((s, x) => s + x.bloecke, 0) + puffer;
     if (summe !== BLOECKE_JE_TERMIN) fehler(`${wo}: ${summe} Blöcke statt ${BLOECKE_JE_TERMIN}`);
-    const lektion = t.lektion == null ? null : String(t.lektion);
-    if (lektion && !gibtLektion(lektion)) fehler(`${wo}: lektion ${lektion} gibt es nicht`);
+    const zuordnung = terminLektion(t.lektion, lektionen);
+    if (zuordnung.fehlt) fehler(`${wo}: lektion ${t.lektion} gibt es nicht`);
+    const { lektion, entwurf } = zuordnung;
     let freigabe = t.freigabe == null ? null : t.freigabe;
     if (freigabe instanceof Date) freigabe = freigabe.toISOString().slice(0, 10);
     if (freigabe != null && !/^\d{4}-\d\d-\d\d$/.test(String(freigabe))) fehler(`${wo}: freigabe "${freigabe}" ist kein Datum JJJJ-MM-TT`);
-    /* Bisheriges Material: die Lektionen, aus denen die Einheiten des Termins entstehen (ohne Doppelte, ohne abgeschaltete) */
+    /* Material aus stoff: die Lektionen, die die Einheiten des Termins nennen (ohne Doppelte, ohne abgeschaltete).
+       Zurzeit immer leer, weil keine Einheit stoff angibt. */
     const stoff = [];
     for (const x of teile) for (const nr of einheit(x.einheit).stoff) if (!stoff.includes(nr) && lektionen.find((l) => l.nr === nr).aktiv) stoff.push(nr);
-    return { nr: t.nr, kennung: zwei(t.nr), semester: t.nr <= TERMINE / 2 ? 1 : 2, teile, puffer, lektion, stoff: lektion ? [] : stoff, freigabe: freigabe == null ? null : String(freigabe) };
+    return { nr: t.nr, kennung: zwei(t.nr), semester: t.nr <= TERMINE / 2 ? 1 : 2, teile, puffer, lektion, entwurf, stoff: lektion || entwurf ? [] : stoff, freigabe: freigabe == null ? null : String(freigabe) };
   });
   for (const e of einheiten) if (verplant.get(e.id) !== e.bloecke) fehler(`${e.id}: ${verplant.get(e.id)} Blöcke in den Terminen, laut Einheit ${e.bloecke}`);
   /* Teil x von y, wenn eine Einheit über mehrere Termine läuft */
@@ -111,7 +126,7 @@ export function ladeKurs() {
   return zwischen;
 }
 
-/* Lektion zu einer Seitendatei (z. B. 'v07-labor.html') -> {termin: Lektion, art: 'lerneinheit'|'labor'} */
+/* Lektion zu einer Seitendatei (z. B. 'v01-labor.html') -> {termin: Lektion, art: 'lerneinheit'|'labor'} */
 export function terminZuDatei(datei) {
   const { lektionen } = ladeKurs();
   for (const t of lektionen) {

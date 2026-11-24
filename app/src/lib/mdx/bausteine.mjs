@@ -19,7 +19,7 @@
      <Python rolle="tests|solution|…" datei="x.py" />   Python aus einer Datei neben der MDX-Datei
      <Editor datei="x.py" … />                    Editor mit Startcode aus einer Datei
      <Daten datei="x.json" [rolle] />             JSON-Angaben einer Aufgabe
-     <Html>{`…`}</Html>                           unverändertes HTML (noch nicht umgezogen)
+     <Html>{`…`}</Html>                           unverändertes HTML (Notbehelf; neu schreibt man so nichts)
    ============================================================= */
 import fs from 'node:fs';
 import path from 'node:path';

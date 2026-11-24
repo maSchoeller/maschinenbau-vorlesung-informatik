@@ -1,7 +1,8 @@
 /* =============================================================
    pruefe-loesungen.mjs – jede Musterlösung der neuen Terminseiten besteht ihre Tests.
    Aufruf:  node skripte/pruefe-loesungen.mjs [http://localhost:4340 | <Ausgabeordner, Standard dist>]
-   Geprüft werden die Seiten der Termine, die eigene Seiten haben (kurs.json: termine[].lektion).
+   Geprüft werden die Seiten der Termine, die eigene Seiten haben (kurs.json: termine[].lektion), und die Seiten
+   der Entwürfe (kurs.json: entwuerfe, abgeschaltete Lektionen; in der Ausgabe als „Entwurf“ gekennzeichnet).
    Für jede Aufgabe mit Tests läuft die Lösung durch dieselbe Prüfung wie bei den Studierenden
    (KursAufgaben.runPython mit dem Python der Seite):
      code, klausur   Lösung aus <script data-role="solution">
@@ -43,11 +44,15 @@ function pruefe(name, ok, detail) {
 const browser = await chromium.launch();
 try {
   const kurs = await fetch(BASIS + '/app/daten/kurs.json').then((r) => r.json());
-  const lektionen = kurs.termine.filter((t) => t.lektion).map((t) => kurs.lektionen.find((l) => l.nr === t.lektion));
+  const lektionen = [
+    ...kurs.termine.filter((t) => t.lektion).map((t) => kurs.lektionen.find((l) => l.nr === t.lektion)),
+    ...(kurs.entwuerfe || []).map((e) => ({ ...e, entwurf: true })),
+  ];
   if (!lektionen.length) console.log('Noch kein Termin hat eigene Seiten.');
+  console.log(`${lektionen.filter((l) => !l.entwurf).length} Lektionen im Angebot, ${lektionen.filter((l) => l.entwurf).length} Entwürfe`);
   for (const l of lektionen) {
     for (const seite of [l.lerneinheit, l.labor].filter(Boolean)) {
-      console.log(`\n${l.nr} ${seite}`);
+      console.log(`\n${l.nr}${l.entwurf ? ' (Entwurf, nicht freigeschaltet)' : ''} ${seite}`);
       const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, serviceWorkers: 'block' });
       const page = await ctx.newPage();
       const konsole = [];

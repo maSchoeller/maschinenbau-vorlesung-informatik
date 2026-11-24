@@ -1,30 +1,29 @@
 # Lektionen als MDX schreiben
 
-Stand: 2026-11-23. Gilt für alle Seiten, deren Quelle MDX ist: die neuen Terminseiten (Referenz: Termin 01 unter `app/inhalte/v01/`) und umgezogene Lektionen (V07). Vertrag: `docs/app/ARCHITEKTUR.md`, Abschnitt 15.
+Stand: 2026-11-23. Gilt für alle Seiten, deren Quelle MDX ist: die neuen Terminseiten (Referenz: Termin 01 unter `app/inhalte/v01/`) Alte Lektionen gibt es nicht mehr. Vertrag: `docs/app/ARCHITEKTUR.md`, Abschnitt 15.
 
-Der Kurs wird auf 20 Termine umgestellt (`KONZEPT.md`, Architektur Abschnitt 16). Neue Terminseiten entstehen direkt als MDX. V11, V12, V13, V15, V20 und V21 sind aus der App genommen und werden nicht umgezogen.
+Der Kurs wird auf 20 Termine umgestellt (`KONZEPT.md`, Architektur Abschnitt 16). Neue Terminseiten entstehen direkt als MDX. Die Lektionen des alten Kurses sind ersatzlos entfernt.
 
 ## Wo was liegt
 
 ```
-app/inhalte/v07/lerneinheit.mdx        Lerneinheit  -> lektionen/v07-funktionen.html
-app/inhalte/v07/labor.mdx              Labor        -> lektionen/v07-labor.html
-app/inhalte/v07/lerneinheit/*.py|json  Python und JSON der Lerneinheit (Tests, Lösung, Bewertungsschema)
-app/inhalte/v07/labor/*.py|json        Python und JSON des Labors (Startcode, Tests, Lösung, Aufgabendaten)
+app/inhalte/v01/lerneinheit.mdx        Lerneinheit  -> lektionen/v01-ablauf-und-erste-programme.html
+app/inhalte/v01/labor.mdx              Labor        -> lektionen/v01-labor.html
+app/inhalte/v01/labor/*.py|json        Python und JSON des Labors (Startcode, Tests, Lösung, Aufgabendaten)
 ```
 
-Die Adressen der Seiten bleiben, wie sie in `app/kurs.yaml` stehen. Gibt es die MDX-Datei, ist sie die Quelle; die Seite unter `site/lektionen/` entfällt dann. Lektionen ohne MDX kommen weiter aus `site/lektionen/`.
+Die Adressen der Seiten bleiben, wie sie in `app/kurs.yaml` stehen. Die MDX-Datei ist die Quelle; unter `site/lektionen/` liegt nichts mehr.
 
-Namen der Code-Dateien: `<Kennung der Aufgabe>.<Rolle>.py`, zum Beispiel `tr-3.tests.py`, `tr-3.solution.py`, `tr-3.vorlage.py` (Startcode im Editor), `w-trace.daten.json`.
+Namen der Code-Dateien: `<Kennung der Aufgabe>.<Rolle>.py`, zum Beispiel `tr-1.tests.py`, `tr-1.solution.py`, `tr-1.vorlage.py` (Startcode im Editor), `w-trace.daten.json`.
 
 ## Kopf der Datei
 
 ```yaml
 ---
-titel: V07 Zerlegung & Funktionen · Lerneinheit · Informatik Maschinenbau
+titel: Termin 01 · Erst der Ablauf, dann der Code · Lerneinheit · Informatik Maschinenbau
 beschreibung: "Wellen-Rechner aus Bausteinen: …"
 body:                       # Attribute von <body>
-  data-lesson: V07
+  data-lesson: V01
   data-page: lerneinheit
 stile:                      # Stylesheets in dieser Reihenfolge
   - ../assets/css/dhbw-base.css
@@ -60,7 +59,7 @@ Absatz.
 </div>
 ```
 
-Diese Zeichen brauchen im Fließtext einen Rückstrich: `\{ \} \< \* \_ \[ \]`. Ein Absatz darf nicht mit `import` oder `export` beginnen (MDX hält das für Code); der Konverter schreibt dann `&#105;mport`.
+Diese Zeichen brauchen im Fließtext einen Rückstrich: `\{ \} \< \* \_ \[ \]`. Ein Absatz darf nicht mit `import` oder `export` beginnen (MDX hält das für Code); dann schreibt man `&#105;mport`.
 
 ## Bausteine
 
@@ -95,7 +94,7 @@ Welchen Wert hat `y` in der letzten Zeile?
 
 </Vorhersage>
 
-<Quiz id="v07">
+<Quiz id="v01">
 
 <Frage id="t4" typ="mc" punkte="2" titel="T4 · Welche Regel ist verletzt?">
 
@@ -126,8 +125,8 @@ Text für Browser ohne JavaScript.
 
 </Explorable>
 
-<Python rolle="tests" datei="labor/tr-3.tests.py" />
-<Editor datei="labor/tr-3.vorlage.py" data-lesson="V07" aria-label="Python-Code Aufgabe 3" />
+<Python rolle="tests" datei="labor/tr-1.tests.py" />
+<Editor datei="labor/tr-1.vorlage.py" data-lesson="V01" aria-label="Python-Code Aufgabe 1" />
 <Daten datei="labor/w-trace.daten.json" />
 ```
 
@@ -185,24 +184,13 @@ Regeln für neue Terminseiten (Vorgaben vom 2026-11-23):
 - **Plan zuerst:** Jede Programmieraufgabe zeigt oder verlangt einen Plan. Die drei Klausurformen (Plan zeichnen, Plan in Code übertragen, Code lesen) kommen in jedem Labor vor.
 - **Jede Musterlösung besteht ihre Tests:** `node skripte/pruefe-loesungen.mjs <Ausgabeordner>` lässt die Lösungen aller Aufgaben der neuen Terminseiten im Browser gegen ihre Tests laufen (auch Lückentexte und gezeichnete Pläne) und ist Teil von `npm run pruefen:alles`.
 
-`<Html>{`…`}</Html>` gibt HTML unverändert aus. Das benutzt nur der Konverter für Stellen, die er nicht umziehen konnte; neu schreibt man so nichts.
+`<Html>{`…`}</Html>` gibt HTML unverändert aus. Das braucht man nur im Ausnahmefall; neu schreibt man so nichts.
 
 Die genaue Ausgabe jedes Bausteins steht in `app/src/lib/mdx/bausteine.mjs` (kurz, ein Baustein je Funktion). Ein neuer Baustein ist eine Funktion dort, die Knoten mit `h('div', {class: '…'}, kinder)` zurückgibt.
 
 ## Eine Lektion umziehen
 
-```bash
-cd app
-node skripte/html-nach-mdx.mjs lektionen/v08-datenstrukturen.html lektionen/v08-labor.html             # nur Bericht
-node skripte/html-nach-mdx.mjs lektionen/v08-datenstrukturen.html lektionen/v08-labor.html --schreiben # schreibt app/inhalte/v08/
-node skripte/html-nach-mdx.mjs --alle                                                                  # Bericht über alle Lektionen
-npm run selbsttest      # solange die alte Seite noch daneben liegt: MDX und Original müssen gleich sein
-git rm ../site/lektionen/v08-datenstrukturen.html ../site/lektionen/v08-labor.html
-```
-
-Der Konverter versucht jeden Block in der lesbarsten Form (Baustein oder Markdown), übersetzt ihn sofort zurück und vergleicht mit dem Original. Passt es nicht, nimmt er die nächste Stufe: HTML-Element mit umgezogenem Inhalt, zuletzt `<Html>`. Das Ergebnis ist deshalb immer gleich dem Original; der Bericht nennt den Anteil, der noch als `<Html>` übrig ist. Stand 2026-11-23 (vor dem Entfernen der sechs entfallenen Lektionen gemessen): alle 42 Lektionsseiten lassen sich so umziehen, höchstens 11 % einer Seite bleiben roh (V03-Lerneinheit), bei 37 Seiten 0 %.
-
-„Gleich“ heißt (`app/src/lib/mdx/vergleich.mjs`): gleiche Elemente in gleicher Reihenfolge, gleiche Attribute, gleicher Text. Leerraum zählt in `<pre>` und `<textarea>` zeichengenau, im Fließtext als ein Leerzeichen, an Blockgrenzen gar nicht. Python in `<script type="text/x-python">` wird verglichen, wie `aufgaben.js` es liest; JSON nach seinem Wert.
+Entfällt. Der Konverter `html-nach-mdx.mjs` und das Umziehen alter Lektionen gibt es nicht mehr; jeder Termin wird neu als MDX geschrieben (Vorbild: `app/inhalte/v01/`).
 
 ## Prüfen
 
@@ -212,6 +200,5 @@ Der Konverter versucht jeden Block in der lesbarsten Form (Baustein oder Markdow
 
 ## Noch nicht umgesetzt
 
-- Der Konverter kennt die Bausteine für Seitenrahmen, Video, Plan und Aufgaben noch nicht; umgezogene Altseiten (V07) haben diese Teile deshalb als HTML im MDX.
 - Prüfung, dass kein Konstrukt vor seiner Einführung vorkommt.
 - Vorschau beim Schreiben (`astro dev`) lädt MDX-Änderungen nicht von selbst neu; geprüft wird der gebaute Stand.

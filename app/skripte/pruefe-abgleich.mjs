@@ -537,8 +537,8 @@ async function t11() {
     let schreib = 0, seiten = 0;
     await schritte(g, 45, async (m) => {
       await g.page.mouse.wheel(0, 30);
-      if (m % 5 === 4) { await g.page.goto(BASIS + '/' + (m % 2 ? 'lernpfad.html' : 'lektionen/v07-labor.html'), { waitUntil: 'domcontentloaded' }); seiten++; }
-      if (m % 2 === 0) { schreib++; await schreibe(g, 'inf-mb/v07/done', { ['s' + m]: true }); if (m % 6 === 0) await schreibe(g, 'inf-mb/v07/code:t-' + m, 'x = ' + m); }
+      if (m % 5 === 4) { await g.page.goto(BASIS + '/' + (m % 2 ? 'lernpfad.html' : 'lektionen/v01-labor.html'), { waitUntil: 'domcontentloaded' }); seiten++; }
+      if (m % 2 === 0) { schreib++; await schreibe(g, 'inf-mb/v01/done', { ['s' + m]: true }); if (m % 6 === 0) await schreibe(g, 'inf-mb/v01/code:t-' + m, 'x = ' + m); }
     });
     const a = g.aufrufe.slice(t0);
     rep.lernsitzung45min = { gesamt: a.length, abgleich: a.filter((x) => x.pfad === '/api/abgleich').length, aenderungen: schreib, seitenwechsel: seiten };

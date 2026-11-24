@@ -7,7 +7,7 @@
      ---
      titel: …            <title>
      beschreibung: …     <meta name="description">
-     body: {data-lesson: V07, data-page: lerneinheit}
+     body: {data-lesson: V01, data-page: lerneinheit}
      stile: [../assets/css/dhbw-base.css, …]
      skripte: [../assets/js/speicher.js, {src: ../assets/js/kurs.js, defer: true}]
      ---

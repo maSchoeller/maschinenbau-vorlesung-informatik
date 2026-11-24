@@ -346,8 +346,11 @@
   /* ── Videos einer Lektion offline speichern ──────────────── */
   function videoBlock() {
     if (!hatCaches) return;
+    /* Anker: Abschnitt id="videos" (Videoliste) oder, auf den Terminseiten, das erste Erklärvideo (Baustein <Video>) */
     var abschnitt = document.getElementById('videos');
-    if (!abschnitt) return;
+    var figuren = Array.prototype.slice.call(document.querySelectorAll('figure.k-video'));
+    var anker = figuren.filter(function (f) { return f.offsetParent !== null; })[0] || figuren[0];
+    if (!abschnitt && !anker) return;
     var urls = [];
     Array.prototype.forEach.call(document.querySelectorAll('video source[src], video[src]'), function (v) {
       try { var u = new URL(v.getAttribute('src'), location.href).href; if (urls.indexOf(u) < 0) urls.push(u); } catch (e) {}
@@ -363,8 +366,10 @@
     var fort = el('progress', { class: 'pwa-fortschritt', max: '100', value: '0', hidden: '', 'aria-label': 'Fortschritt Videos speichern' });
     zeile.appendChild(speichern); zeile.appendChild(entfernen);
     [titel, info, zeile, fort].forEach(function (n) { box.appendChild(n); });
-    var einfuegen = abschnitt.querySelector('.k-video-list');
-    if (einfuegen && einfuegen.parentNode) einfuegen.parentNode.insertBefore(box, einfuegen); else abschnitt.appendChild(box);
+    if (abschnitt) {
+      var einfuegen = abschnitt.querySelector('.k-video-list');
+      if (einfuegen && einfuegen.parentNode) einfuegen.parentNode.insertBefore(box, einfuegen); else abschnitt.appendChild(box);
+    } else anker.parentNode.insertBefore(box, anker.nextSibling);
 
     var groessen = null;
     function schluessel(u) { var x = new URL(u); x.search = ''; x.hash = ''; return x.href; }

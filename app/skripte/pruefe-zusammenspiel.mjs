@@ -117,6 +117,13 @@ async function serverStand(k) {
 /* Erster Klick auf „Ausführen“ nach einem Klick in den Editor: muss sofort wirken (Befund Werkbank, behoben in shell.css) */
 async function ersterKlickAusfuehren(page, runner, wo, { ohneEditor = false } = {}) {
   await runner.scrollIntoViewIfNeeded();
+  /* Vorhersage-Runner (.k-try mit .k-predict): „Ausführen“ ist gesperrt, bis ein Tipp abgegeben ist (gewolltes Verhalten) */
+  const tipp = runner.locator('xpath=ancestor::div[contains(@class,"k-try")][1]').locator('.k-predict__opts button').first();
+  if (await tipp.count()) {
+    await tipp.click();
+    await runner.locator('.k-runner__bar button', { hasText: 'Ausführen' }).first().waitFor({ state: 'visible' });
+    await bis(() => runner.locator('.k-runner__bar button', { hasText: 'Ausführen' }).first().isEnabled(), 5000, 100);
+  }
   if (!ohneEditor) await runner.locator('.cm-content').first().click();
   const knopf = runner.locator('.k-runner__bar button', { hasText: 'Ausführen' }).first();
   /* Lage im Dokument, nicht im Fenster: Steht der Knopf am unteren Fensterrand, scrollt der Klick selbst die Seite */
@@ -165,11 +172,13 @@ async function gast() {
   pruefe(/^V01 · /.test(await p.inputValue('#wb-titel')), 'Werkbank: Programm aus der Lerneinheit angelegt', await p.inputValue('#wb-titel'));
   sauber(A, 'Lerneinheit, Werkbank');
 
-  /* Automatisch erzeugte Runner (aus Codeblöcken) in einer Lerneinheit: dort trat der Fehler auf (V07) */
-  await p.goto(BASIS + '/lektionen/v07-funktionen.html');
+  /* Automatisch erzeugte Runner (aus Codeblöcken) in einer Lerneinheit: dort trat der Fehler „erster Klick geht verloren“ auf.
+     Zweiter und dritter Codeblock der Lerneinheit (Trinkgeld ohne Eingabe, Vorhersage a/b): beide laufen ohne input und ohne Fehler. */
+  await p.goto(BASIS + '/lektionen/v01-ablauf-und-erste-programme.html');
   await p.waitForSelector('.k-runner--auto .cm-content', { timeout: 20000 });
-  await ersterKlickAusfuehren(p, p.locator('.k-runner.k-runner--auto').nth(1), 'Lerneinheit V07 (automatischer Runner)');
-  await ersterKlickAusfuehren(p, p.locator('.k-runner.k-runner--auto').nth(2), 'Lerneinheit V07 (automatischer Runner)', { ohneEditor: true });
+  pruefe(await p.locator('.k-runner.k-runner--auto').count() >= 3, 'Lerneinheit V01: mindestens drei automatische Runner', await p.locator('.k-runner.k-runner--auto').count());
+  await ersterKlickAusfuehren(p, p.locator('.k-runner.k-runner--auto').nth(1), 'Lerneinheit V01 (automatischer Runner)');
+  await ersterKlickAusfuehren(p, p.locator('.k-runner.k-runner--auto').nth(2), 'Lerneinheit V01 (automatischer Runner)', { ohneEditor: true });
 
   /* Labor: Aufgabe tr-1 in Station t-1 */
   await p.goto(BASIS + '/lektionen/v01-labor.html#t-1');
@@ -374,7 +383,7 @@ async function teilen() {
   const aus = await bis(() => p.evaluate(() => { const o = document.querySelector('#gt-runner .k-runner__out'); return o && /PROBE import/.test(o.textContent) && o.textContent; }), 90000, 300) || '';
   const zeile = (u) => { const z = aus.split('\n').map((l) => l.trim().split(' ')).find((t) => t[0] === 'PROBE' && t[2] === u); return z ? z[3] : undefined; };
   pruefe(['/api/ich', '/api/konto/export', '/.auth/me', '/API/ich', '/assets/%2e%2e/api/ich', '/api/konto'].every((u) => zeile(u) === 'gesperrt'), 'Python-Worker: /api/ und /.auth/ gesperrt (auch Groß-/Kleinschreibung, %2e%2e)', aus.replace(/\s+/g, ' ').slice(0, 260));
-  pruefe(zeile('/assets/data/v17/api/D2.json') === '200', 'Python-Worker: Kursdateien unter assets/ weiter erreichbar (V17 requests)', zeile('/assets/data/v17/api/D2.json'));
+  pruefe(zeile('/assets/data/v17/api/D2.json') === '200', 'Python-Worker: Kursdateien unter assets/ weiter erreichbar (Beispieldatei unter assets/data)', zeile('/assets/data/v17/api/D2.json'));
   pruefe(/PROBE caches True indexedDB True Worker True/.test(aus) && /PROBE import gesperrt/.test(aus), 'Python-Worker: kein Cache Storage, kein IndexedDB, keine weiteren Worker, importScripts nur Kursdateien', (/PROBE caches.*|PROBE import.*/g.exec(aus) || [''])[0]);
   const nachher = Object.keys(await serverStand(A)).length;
   pruefe(nachher === vorher && nachher > 0 && (await p.evaluate(() => window.KursApp.konto.status(true))).angemeldet, 'Python-Worker: Konto und Einträge unverändert', `${vorher} → ${nachher}`);
@@ -606,7 +615,7 @@ async function seitenAngemeldet() {
     for (const e of fs.readdirSync(path.join(DIST, rel), { withFileTypes: true })) {
       const r = rel ? rel + '/' + e.name : e.name;
       if (e.isDirectory()) { if (!['assets', 'app', 'pyodide', 'notebooks'].includes(e.name)) lauf(r); }
-      else if (e.name.endsWith('.html') && r !== 'lektionen/v03-training.html') seiten.push(r);
+      else if (e.name.endsWith('.html')) seiten.push(r);
     }
   })('');
   let schlecht = 0;

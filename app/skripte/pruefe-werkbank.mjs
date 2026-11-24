@@ -295,7 +295,7 @@ async function main() {
 
       /* ── 12. „In der Werkbank öffnen“ ─────────────────────── */
       const lek = await ctx.newPage(); konsole(lek, fk);
-      await lek.goto(BASIS + 'lektionen/v07-funktionen.html');
+      await lek.goto(BASIS + 'lektionen/v01-ablauf-und-erste-programme.html');
       await lek.waitForSelector('.k-runner .k-runner__bar');
       await lek.waitForSelector('.wb-knopf');
       const stat = await lek.evaluate(() => {
@@ -324,14 +324,14 @@ async function main() {
       await lek.waitForSelector('#wb-arbeit:not([hidden])');
       await lek.waitForFunction(() => document.querySelector('#wb-runner .cm-content'));
       const t = await lek.inputValue('#wb-titel');
-      pruefe(/^V07 · .+/.test(t), 'Kopie heißt „' + t + '“');
+      pruefe(/^V01 · .+/.test(t), 'Kopie heißt „' + t + '“');
       pruefe((await codeLesen(lek)).trim() === ersterCode.trim(), 'Kopie enthält den Code des Blocks');
       const anzahlNach = await lek.evaluate(() => document.querySelectorAll('#wb-liste li').length);
       pruefe(anzahlNach === anzahlVor + 1, 'Genau ein Programm mehr (' + anzahlVor + ' → ' + anzahlNach + ')');
       await lek.close();
 
       const labor = await ctx.newPage(); konsole(labor, fk);
-      await labor.goto(BASIS + 'lektionen/v07-labor.html');
+      await labor.goto(BASIS + 'lektionen/v01-labor.html');
       await labor.waitForSelector('.k-runner .k-runner__bar', { timeout: 20000 }).catch(() => {});
       await warte(1200);
       pruefe(await labor.locator('.wb-knopf').count() === 0, 'Labor: kein „In der Werkbank öffnen“ (Trainingsaufgaben)');

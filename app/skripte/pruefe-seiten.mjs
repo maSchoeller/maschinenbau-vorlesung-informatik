@@ -7,7 +7,7 @@
    Ausnahme (eng): Liefert GET /api/status 404 (Azure) bzw. 502 (Emulator ohne API), gilt die API als noch nicht
    vorhanden; dann ist genau dieser Status auf /api/* (samt Chromium-Konsolenmeldung) erlaubt. Alles andere bleibt Fehler.
    Fehlt eine angefragte Datei unter assets/ oder notebooks/ schon in site/, ist das ein Bestandsmangel: gemeldet, nicht gezählt.
-   Aufruf: node skripte/pruefe-seiten.mjs http://localhost:4301 [--nur lektionen/v07] [--ohne-fotos]
+   Aufruf: node skripte/pruefe-seiten.mjs http://localhost:4301 [--nur lektionen/v01] [--ohne-fotos]
    ============================================================= */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -29,7 +29,7 @@ function bestandFehlt(u) {
 
 const GROESSEN = [{ name: 'desktop', width: 1440, height: 900 }, { name: 'tablet', width: 1024, height: 768 }];
 
-/* Alle HTML-Seiten der Ausgabe, außer der reinen Weiterleitung */
+/* Alle HTML-Seiten der Ausgabe (reine Weiterleitungen gibt es seit dem Entfernen des alten Kurses nicht mehr) */
 function seiten() {
   const liste = [];
   const lauf = (rel) => {
@@ -40,7 +40,7 @@ function seiten() {
     }
   };
   lauf('');
-  return liste.filter((s) => s !== 'lektionen/v03-training.html' && (!nur || s.includes(nur))).sort();
+  return liste.filter((s) => !nur || s.includes(nur)).sort();
 }
 
 async function main() {

@@ -41,7 +41,7 @@ function schreibe(datei, daten) {
    Schreibweise, andere Bedeutung). Es bleibt die kürzere Form mit der Erklärung der früheren
    Fundstelle; die anderen Formen stehen in `formen` und behalten ihren Anker in `aliase`. */
 const ENDUNGEN = ['e', 'n', 'en', 's', 'es'];
-const NIE_ZUSAMMEN = new Set(['schlüssel']);   /* Schlüssel (dict, V08) und Schlüsseln (Kryptografie, V18) */
+const NIE_ZUSAMMEN = new Set(['schlüssel']);   /* Schlüssel (dict) und Schlüsseln (Kryptografie) */
 export const glossarSlug = (s) => s.toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/ß/g, 'ss').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'begriff';
 
 export function glossarSammler() {
@@ -165,9 +165,12 @@ export default function indexBauen() {
 
   const daten = path.join(DIST, 'app', 'daten');
   /* termine: die 20 Termine des Plans; lektionen: Seiten, die es gibt, mit Abschnitten und Aufgaben */
-  /* abgeschaltete Lektionen (aktiv: false) stehen nur noch in den Tutor-Daten, sonst nirgends */
+  /* abgeschaltete Lektionen (aktiv: false; zurzeit keine) stehen nur in den Tutor-Daten und als entwuerfe in kurs.json
+     (Nummer und Adressen, damit Prüfskripte sie finden); Kursstruktur, Suche und Glossar kennen sie nicht.
+     Der Plan nennt sie nicht: ein Termin mit Entwurf hat dort lektion: null. */
   const aktive = kursTermine.filter((t) => t.aktiv);
-  schreibe(path.join(daten, 'kurs.json'), { semester, einheiten, termine: plan, lektionen: aktive.map(({ aktiv, ...t }) => t) });
+  const entwuerfe = kursTermine.filter((t) => !t.aktiv).map((t) => ({ nr: t.nr, lerneinheit: t.lerneinheit, labor: t.labor }));
+  schreibe(path.join(daten, 'kurs.json'), { semester, einheiten, termine: plan.map(({ entwurf, ...t }) => t), lektionen: aktive.map(({ aktiv, ...t }) => t), entwuerfe });
   schreibe(path.join(daten, 'suche.json'), { eintraege: suche });
   schreibe(path.join(daten, 'glossar.json'), { begriffe: glossarListe });
   schreibe(path.join(API_DATEN, 'aufgaben.json'), { erstellt: new Date().toISOString(), aufgaben: aufgabenApi, kurs: kursApi });

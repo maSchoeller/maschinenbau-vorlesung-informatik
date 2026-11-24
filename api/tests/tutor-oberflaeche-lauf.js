@@ -119,7 +119,7 @@ async function lauf(browser, breite, hoehe) {
   const basis = URL_ARG || `http://127.0.0.1:${PORT}/`;
 
   // ---- Labor: langer Verlauf, dann Fehler
-  await page.goto(basis + 'lektionen/v04-labor.html#a-eigene');
+  await page.goto(basis + 'lektionen/v01-labor.html#a-eigene');
   await panelOeffnen(page);
   pruefe(await page.evaluate(() => document.activeElement && document.activeElement.id === 'tutor-frage'), `${g} Fokus im Eingabefeld nach dem Öffnen`);
   const hinweis = await page.evaluate(() => { const s = getComputedStyle(document.querySelector('.tutor-hinweis')); return { kante: s.borderLeftWidth, farbe: s.backgroundColor }; });
@@ -158,27 +158,35 @@ async function lauf(browser, breite, hoehe) {
   await foto(page, `labor-kontingent-${breite}`);
 
   // ---- Lerneinheit: Rest seitenübergreifend, Aufgabe der Lerneinheit
-  await page.goto(basis + 'lektionen/v04-logik-und-verzweigungen.html');
+  await page.goto(basis + 'lektionen/v01-ablauf-und-erste-programme.html');
   await panelOeffnen(page);
   pruefe(/Heute noch 0 Fragen/.test(await page.locator('.tutor-rest').textContent()), `${g} Lerneinheit: Rest seitenübergreifend sichtbar`);
   pruefe(await page.locator('.tutor-senden').isDisabled(), `${g} Lerneinheit: Senden bleibt aus`);
   await foto(page, `lerneinheit-kontingent-${breite}`);
-  // neuer Tag simuliert: Kontingent zurücksetzen, dann Aufgabe der Lerneinheit fokussieren
+  // neuer Tag simuliert: Kontingent zurücksetzen.
   await page.evaluate(() => sessionStorage.removeItem('inf-mb-app:tutor:rest'));
   await page.reload();
-  const did = await page.evaluate(() => { const t = document.querySelector('.a-task[data-id] textarea.py-editor'); return t ? t.closest('.a-task').getAttribute('data-id') : null; });
-  if (did) {
-    await page.evaluate(() => { const t = document.querySelector('.a-task[data-id] textarea.py-editor'); t.dispatchEvent(new FocusEvent('focusin', { bubbles: true })); });
-    await panelOeffnen(page);
-    await fragen(page, 'Wie fange ich hier an?');
-    const b = gesendet[gesendet.length - 1];
-    pruefe(b.kontext.aufgabe === did && b.kontext.seite === 'lerneinheit', `${g} Lerneinheit schickt data-id ${did} mit (${b.kontext.aufgabe})`);
-    pruefe(/zuletzt bearbeitete Aufgabe/.test(await page.locator('#tutor-kontext').textContent()), `${g} Lerneinheit: Kontextzeile nennt die Aufgabe`);
-  } else {
-    await panelOeffnen(page);
-    await fragen(page, 'Was ist ein PAP?');
-    pruefe(!gesendet[gesendet.length - 1].kontext.aufgabe, `${g} Lerneinheit ohne Aufgabe: nur Lektion`);
-  }
+  // a) Ohne bearbeitete Aufgabe geht nur die Lektion mit.
+  await panelOeffnen(page);
+  await fragen(page, 'Was ist ein PAP?');
+  const b0 = gesendet[gesendet.length - 1];
+  pruefe(!b0.kontext.aufgabe && b0.kontext.lektion === 'V01' && b0.kontext.seite === 'lerneinheit', `${g} Lerneinheit ohne Aufgabe: nur Lektion (${b0.kontext.lektion}, ${b0.kontext.seite})`);
+  // b) Aufgabe der Lerneinheit als Kontext. Die Lerneinheit von Termin 01 hat keine Code-Aufgabe; deshalb wird sie nachgebildet
+  //    (gleicher Aufbau wie bei den Aufgaben im Labor: .a-task[data-id] mit textarea.py-editor) und der Fokus wirklich gesetzt.
+  //    Sobald eine Lerneinheit eine echte Aufgabe hat, läuft derselbe Weg mit ihrer data-id.
+  const echt = await page.evaluate(() => { const t = document.querySelector('.a-task[data-id] textarea.py-editor'); return t ? t.closest('.a-task').getAttribute('data-id') : null; });
+  const did = echt || 'nachbau-1';
+  if (!echt) await page.evaluate((id) => {
+    const d = document.createElement('div'); d.className = 'a-task'; d.setAttribute('data-id', id);
+    d.innerHTML = '<textarea class="py-editor" aria-label="Nachbau"></textarea>';
+    (document.querySelector('main') || document.body).appendChild(d);
+  }, did);
+  await page.evaluate(() => { const t = document.querySelector('.a-task[data-id] textarea.py-editor'); t.focus(); t.dispatchEvent(new FocusEvent('focusin', { bubbles: true })); });
+  await page.evaluate(() => sessionStorage.removeItem('inf-mb-app:tutor:rest'));
+  await fragen(page, 'Wie fange ich hier an?');
+  const b = gesendet[gesendet.length - 1];
+  pruefe(b.kontext.aufgabe === did && b.kontext.seite === 'lerneinheit', `${g} Lerneinheit schickt data-id ${did} mit (${b.kontext.aufgabe}${echt ? '' : ', nachgebildete Aufgabe'})`);
+  pruefe(/zuletzt bearbeitete Aufgabe/.test(await page.locator('#tutor-kontext').textContent()), `${g} Lerneinheit: Kontextzeile nennt die Aufgabe`);
   await foto(page, `lerneinheit-${breite}`);
   await context.close();
 }

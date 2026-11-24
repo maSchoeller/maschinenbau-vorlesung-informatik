@@ -1,7 +1,8 @@
 ---
 /* Lernpfad: die 20 Termine des Kurses in zwei Semestern (Vertrag Abschnitt 16). Statisch gerendert;
    app/lernpfad.js ergänzt Stand und Hervorhebung. Hat ein Termin eigene Seiten (lektion in kurs.yaml),
-   stehen sie rechts; sonst das bisherige Material, aus dem der Termin entsteht. */
+   stehen sie rechts; sonst das bisherige Material, aus dem der Termin entsteht. Ein Entwurf (lektion: null,
+   entwurf: 'VNN', Lektion mit aktiv: false) zählt wie ein Termin ohne Seiten: "Seiten folgen.", kein Verweis. */
 import App from '../layouts/App.astro';
 import Icon from '../components/Icon.astro';
 import { ladeKurs } from '../lib/kurs.mjs';

@@ -1,6 +1,6 @@
 import { defineConfig } from 'astro/config';
 
-/* Statische Ausgabe, URLs wie im Bestand (lektionen/v07-funktionen.html), HTML unverändert. */
+/* Statische Ausgabe, URLs wie im Bestand (lektionen/v01-labor.html), HTML unverändert. */
 export default defineConfig({
   output: 'static',
   outDir: './' + (process.env.KURS_AUSGABE || 'dist'),   /* siehe src/lib/pfade.mjs */

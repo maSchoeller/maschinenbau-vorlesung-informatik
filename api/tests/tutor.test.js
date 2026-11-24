@@ -616,7 +616,9 @@ describe('Angriffssammlung', () => {
     assert.ok(a.filter((f) => neu.includes(f.kategorie)).length >= 8);
     const beispiel = s.faelle.filter((f) => f.art === 'legitim' && f.kategorie === 'konzept-beispiel');
     assert.ok(beispiel.length >= 6);
-    for (const w of ['for', 'while', 'return', 'Liste', 'try', 'Dictionary']) assert.ok(beispiel.some((f) => f.nachrichten[0].includes(w)), 'Thema fehlt: ' + w);
+    // Themen von Termin 01 (bis zum Entfernen des alten Kurses: for, while, return, Liste, try, Dictionary);
+    // mit jedem neuen Termin kommen dessen Themen dazu
+    for (const w of ['print', 'input', 'Variable', 'float', 'Zuweisung', 'Klammern']) assert.ok(beispiel.some((f) => f.nachrichten[0].includes(w)), 'Thema fehlt: ' + w);
     const eigen = s.faelle.filter((f) => f.art === 'legitim' && f.kontext.seite === 'labor' && f.kontext.code && f.kategorie === 'hinweis-eigener-code');
     assert.ok(eigen.length >= 2);
   });
@@ -634,6 +636,8 @@ describe('Angriffssammlung', () => {
       const a = kontext.anfrageAusBody({ verlauf, kontext: f.kontext });
       if (vorhanden && f.kontext.aufgabe) assert.ok(a.aufgabe, `${f.id}: Aufgabe ${f.kontext.lektion}/${f.kontext.aufgabe} unbekannt`);
       if (vorhanden && f.bezug) assert.ok(kontext.findeAufgabe(f.bezug.lektion, f.bezug.seite || null, f.bezug.aufgabe), `${f.id}: Bezug unbekannt`);
+      // genannte Lektionen gibt es im Kurs (kein Fall zeigt mehr auf eine Lektion des entfernten alten Kurses)
+      for (const l of [f.kontext.lektion, f.bezug && f.bezug.lektion]) if (vorhanden && l) assert.ok(kontext.ladeAufgaben().lektionen.has(l), `${f.id}: Lektion ${l} unbekannt`);
     }
     if (!vorhanden) t.diagnostic('aufgaben.json fehlt, Aufgaben nicht geprüft');
   });
@@ -644,7 +648,11 @@ describe('echte Aufgaben aus dem Build (falls vorhanden)', () => {
     kontext._setzeAufgaben(null);
     const d = kontext.ladeAufgaben();
     if (!d.vorhanden) { t.skip('aufgaben.json fehlt (erst app bauen)'); return; }
-    const a = kontext.findeAufgabe('V07', 'labor', 't-1');
-    assert.ok(a && a.text && a.loesung && a.erlaubt.length > 5);
+    // Termin 01: Station t-1 (Aufgabe tr-1, Kinoabend); erlaubt sind die fünf Konstrukte, die Termin 01 einführt
+    const a = kontext.findeAufgabe('V01', 'labor', 't-1');
+    assert.ok(a && a.text && a.loesung && a.erlaubt.length >= 5);
+    assert.equal(kontext.findeAufgabe('V01', 'labor', 'tr-1'), a, 'Station und Aufgabe führen zur selben Aufgabe');
+    assert.match(a.loesung, /print\(/);
+    assert.ok(a.erlaubt.some((e) => /^print/.test(e)) && a.erlaubt.some((e) => /input/.test(e)));
   });
 });

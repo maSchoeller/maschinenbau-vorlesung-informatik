@@ -90,7 +90,7 @@ async function main() {
       pruefe(z > 0, 'Glossar-Filter „ablauf“ findet Begriffe (' + z + ')');
 
       /* Heute nach dem Besuch einer Navigationsseite: „Weiter“ nie auf Glossar */
-      await page.goto(basis + 'lektionen/v01-start.html').catch(() => {});
+      await page.goto(basis + 'lektionen/v01-ablauf-und-erste-programme.html').catch(() => {});
       await page.goto(basis + 'index.html'); await page.evaluate(() => localStorage.clear());
       const kurs = await page.evaluate(() => window.KursApp.kurs());
       const t = kurs.lektionen;

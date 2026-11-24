@@ -115,7 +115,7 @@ function eingaben(e) {
   return e;
 }
 
-/** Optionale Lektion ('V07' o. ä.) → Zeichenkette oder null. */
+/** Optionale Lektion ('V01' o. ä.) → Zeichenkette oder null. */
 function lektion(l) {
   if (l === undefined || l === null || l === '') return null;
   if (typeof l !== 'string' || !LEKTION_RE.test(l)) wirf(400, 'lektion-ungueltig', 'Die Lektion ist ungültig.');

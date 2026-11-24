@@ -1,9 +1,9 @@
 /* =============================================================
    inhalte.mjs – wo liegt die MDX-Quelle einer Lektionsseite?
-     lektionen/v07-funktionen.html  ->  app/inhalte/v07/lerneinheit.mdx
-     lektionen/v07-labor.html       ->  app/inhalte/v07/labor.mdx
+     lektionen/v01-ablauf-und-erste-programme.html  ->  app/inhalte/v01/lerneinheit.mdx
+     lektionen/v01-labor.html                       ->  app/inhalte/v01/labor.mdx
    Dateinamen der Seiten stehen weiter in kurs.yaml; die Adressen ändern sich nicht.
-   Gibt es die MDX-Datei, ist sie die Quelle; sonst gilt die Seite unter site/lektionen/.
+   Gibt es die MDX-Datei, ist sie die Quelle. Alle Lektionen sind MDX; unter site/lektionen/ liegt nichts mehr.
    ============================================================= */
 import fs from 'node:fs';
 import path from 'node:path';

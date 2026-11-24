@@ -2,7 +2,7 @@
    (20 Termine, 4 Blöcke je Termin, 48 Blöcke Programmieren, 32 Theorie einschließlich 2 Puffer). */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { ladeKurs, TERMINE, BLOECKE_JE_TERMIN } from '../../src/lib/kurs.mjs';
+import { ladeKurs, terminLektion, TERMINE, BLOECKE_JE_TERMIN } from '../../src/lib/kurs.mjs';
 
 const { semester, einheiten, termine, lektionen } = ladeKurs();
 const summe = (liste) => liste.reduce((s, x) => s + x, 0);
@@ -31,13 +31,29 @@ test('Teil x von y zählt eine Einheit über ihre Termine durch', () => {
   assert.deepEqual(p1, [[1, 1, 2], [2, 2, 2]]);
 });
 
-test('bisheriges Material: jede Lektion steht bei mindestens einem Termin, entfallene kommen nicht vor', () => {
-  const genannt = new Set(termine.flatMap((t) => t.stoff));
-  for (const l of lektionen.filter((x) => x.aktiv)) assert.ok(genannt.has(l.nr) || termine.some((t) => t.lektion === l.nr), `${l.nr} steht bei keinem Termin`);
-  assert.deepEqual(lektionen.filter((x) => x.aktiv).map((x) => x.nr), ['V01'], 'nur Termin 01 ist freigeschaltet');
-  for (const nr of ['V05', 'V11', 'V12', 'V13', 'V15', 'V20', 'V21']) assert.ok(!lektionen.some((l) => l.nr === nr), `${nr} ist entfallen`);
+test('Lektionen: nur Seiten fertiger Termine (Kennung V + Terminnummer); der alte Kurs ist entfernt', () => {
   assert.equal(termine[0].lektion, 'V01', 'Termin 01 hat eigene Seiten');
-  assert.deepEqual(termine[0].stoff, [], 'ein Termin mit eigenen Seiten zeigt kein bisheriges Material');
-  assert.deepEqual(termine[3].stoff, [], 'abgeschaltete Lektionen erscheinen nicht als bisheriges Material');
-  assert.deepEqual(termine[18].stoff, [], 'Termin 19: Puffer und Schiffe versenken werden neu gebaut');
+  assert.equal(termine[0].entwurf, null);
+  assert.ok(lektionen.some((l) => l.nr === 'V01'), 'V01 steht unter lektionen');
+  /* jede Lektion gehört zu genau einem Termin und trägt dessen Nummer: Termin 02 = V02 usw. */
+  for (const l of lektionen) {
+    const zu = termine.filter((t) => t.lektion === l.nr || t.entwurf === l.nr);
+    assert.equal(zu.length, 1, `${l.nr} gehört zu ${zu.length} Terminen`);
+    assert.equal(l.nr, 'V' + zu[0].kennung, `${l.nr} steht bei Termin ${zu[0].kennung}`);
+    assert.ok(l.lerneinheit && l.labor, `${l.nr}: Lerneinheit und Labor`);
+  }
+  assert.ok(lektionen.every((l) => l.aktiv), 'keine abgeschaltete Lektion');
+  /* bisheriges Material (stoff) gibt es nicht mehr: keine Einheit nennt alte Lektionen, kein Termin zeigt welche */
+  for (const e of einheiten) assert.deepEqual(e.stoff, [], `${e.id} nennt kein altes Material`);
+  for (const t of termine) assert.deepEqual(t.stoff, [], `Termin ${t.kennung} zeigt kein bisheriges Material`);
+});
+
+test('Termin mit Entwurf: abgeschaltete Lektion ergibt lektion null und entwurf', () => {
+  const lek = [{ nr: 'V02', aktiv: false }, { nr: 'V01', aktiv: true }];
+  assert.deepEqual(terminLektion('V02', lek), { lektion: null, entwurf: 'V02' });
+  assert.deepEqual(terminLektion('V01', lek), { lektion: 'V01', entwurf: null });
+  assert.deepEqual(terminLektion(null, lek), { lektion: null, entwurf: null });
+  assert.equal(terminLektion('V09', lek).fehlt, true, 'unbekannte Lektion wird gemeldet');
+  /* jeder Termin hat höchstens eins von beiden */
+  for (const t of termine) assert.ok(!(t.lektion && t.entwurf), `Termin ${t.kennung}`);
 });

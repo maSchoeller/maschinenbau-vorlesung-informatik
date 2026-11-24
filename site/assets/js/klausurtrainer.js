@@ -28,7 +28,7 @@
     { id: 'g2', name: 'Werkzeug', von: 10, bis: 13 },
     { id: 'g3', name: 'Projekt', von: 14, bis: 20 }
   ];
-  var LABOR_BIS = 18;   // Labor-Seiten gibt es bis V18
+  var LABOR_BIS = 1;    // Labor-Seiten gibt es nur für V01
 
   function $(sel, root) { return (root || document).querySelector(sel); }
   function $$(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }

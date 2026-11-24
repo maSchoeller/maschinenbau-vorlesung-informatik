@@ -1,8 +1,0 @@
-[
-{"p":1,"t":"Funktion mit def, Namen pruefe_drehzahl, zwei Parametern und Doppelpunkt, Rumpf eingerückt"},
-{"p":1,"t":"Der zweite Parameter hat den Default-Wert n_max=3000"},
-{"p":1,"t":"Der Vergleich ist richtig: n <= n_max ergibt „ok“ (die Grenze gehört dazu), sonst „Überdrehzahl“"},
-{"p":1,"t":"Die Funktion gibt mit return zurück (kein print in der Funktion), in beiden Zweigen"},
-{"p":1,"t":"Das Hauptprogramm liest n mit input() und wandelt es mit int() um"},
-{"p":1,"t":"Das Hauptprogramm ruft die Funktion auf und gibt „Ergebnis:“ und den Rückgabewert mit print aus"}
-]

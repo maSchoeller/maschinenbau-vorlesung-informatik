@@ -24,7 +24,7 @@
 
   var kurs = null;      /* kurs.json */
   var bild = null;      /* Antwort der API */
-  var gewaehlt = null;  /* 'V07' */
+  var gewaehlt = null;  /* 'V01' */
 
   function block(name) {
     $('[data-dz-laedt]').hidden = name !== 'laedt';
