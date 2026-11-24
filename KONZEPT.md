@@ -14,7 +14,7 @@ Stand: 2026-11-23. Herleitung, Zielgruppen-Steckbrief und die Zuordnung des alte
 
 **Erst der Ablauf, dann der Code.**
 
-Programmieren ist Denken in Abläufen. Wer den Ablauf zeichnen kann, kann ihn programmieren. Deshalb beginnt jede Programmieraufgabe ab dem ersten Termin mit einem Programmablaufplan (PAP, DIN 66001); der Code kommt danach.
+Programmieren ist Denken in Abläufen. Wer den Ablauf zeichnen kann, kann ihn programmieren. Deshalb ist der Programmablaufplan (PAP, DIN 66001) ab dem ersten Termin das Werkzeug dafür: Ein neuer Ablauf wird zuerst gezeichnet, dann programmiert. Nicht jede Programmieraufgabe muss mit einem PAP beginnen.
 
 Lernziel: Beides, Bauen zuerst. Die Studierenden können erst selbst ein Programm bauen, weil nur das zum Verstehen führt, und sie können fremden Code lesen und beurteilen.
 
@@ -27,7 +27,7 @@ Rund 25 Studierende in einem Raum, Konstruktion und Entwicklung und Produktionst
 Daraus folgen die Regeln für alle Inhalte:
 
 1. **Geübt wird im Termin, gefestigt zu Hause.** Alles Klausurrelevante wird im Hörsaal mindestens einmal selbst gemacht. Das Training zu Hause ist Pflicht: 45 Minuten je Termin. Der nächste Termin beginnt mit einer Warm-up-Aufgabe daraus.
-2. **PAP zuerst**, in jeder Programmieraufgabe.
+2. **PAP zuerst**, wenn ein neuer Ablauf eingeführt wird. Nicht jede Programmieraufgabe muss mit einem PAP beginnen (Festlegung des Dozenten, 2026-11-24).
 3. **Tempo nach der Mitte der Gruppe.** Schnelle bekommen Ausbauaufgaben.
 4. **Beispiele ohne Fachwissen.** Spiele und Rätsel, Alltag der Studierenden, Bauteile in 3D, dazu Vorgriffe auf spätere Module in einer Form, die ohne Vorwissen auskommt. Keine Auslegungsrechnungen, Passungen, Sicherheitsschaltungen oder Prozessfähigkeit.
 5. **In jedem Termin läuft etwas.** Kleine Schritte, ein lauffähiges Ergebnis, Fehlermeldungen lesen als Inhalt.

@@ -112,7 +112,7 @@ In einem Satz: Anfängerinnen und Anfänger ohne Vorerfahrung, die das Fach als 
 ### 4.2 Was daraus folgt
 
 1. **Geübt wird im Termin, gefestigt zu Hause.** Weil bisher wenige zu Hause üben, muss alles Klausurrelevante im Hörsaal mindestens einmal selbst gemacht worden sein. Das begrenzt den Stoff stärker als die Stundenzahl. Das Training zu Hause ist trotzdem Pflicht (45 Minuten je Termin); die Warm-up-Aufgabe des nächsten Termins greift es auf.
-2. **Der PAP ist Werkzeug ab dem ersten Termin, kein eigenes Thema.** Die schwerste Abbruchstelle ist der Weg vom Problem zum Programm. Bisher steht der PAP in einem Termin (V05). Er begleitet künftig jede Programmieraufgabe: erst Ablauf zeichnen, dann Code. Das ist zugleich das Klausurformat.
+2. **Der PAP ist Werkzeug ab dem ersten Termin, kein eigenes Thema.** Die schwerste Abbruchstelle ist der Weg vom Problem zum Programm. Bisher steht der PAP in einem Termin (V05). Er begleitet künftig das Programmieren in jedem Termin: Ein neuer Ablauf wird zuerst gezeichnet, dann kommt der Code. Das ist zugleich das Klausurformat. Nicht jede Programmieraufgabe muss mit einem PAP beginnen (Festlegung des Dozenten, 2026-11-24).
 3. **Die Programmierzeit liegt hinter den Verzweigungen.** Variablen, Ein- und Ausgabe und Verzweigungen gingen im Vorjahr; Schleifen, Funktionen und Listen nicht. Diese drei bekommen 19 der 48 Programmierblöcke, die beiden Spiele weitere 13.
 4. **Beispiele dürfen kein zweites Fach sein.** Wellen, Passungen, Cp/Cpk und Sicherheitsschaltungen kennen die Studierenden noch nicht, sie wirken aufgesetzt und machen keinen Spaß. Spiele und Alltag versteht jeder sofort. Vorgriffe auf spätere Module nur in einer Form, die ohne Vorwissen auskommt.
 5. **Früh etwas, das läuft und Spaß macht.** Gegen Angst und schnellen Frust: kleine Schritte, in jedem Termin ein lauffähiges Ergebnis, Fehlermeldungen lesen als eigener Inhalt statt als Störung.
@@ -152,7 +152,7 @@ Was den Studierenden in späteren Vorlesungen hilft (Modulhandbücher Horb, KE u
 
 In jedem Termin, ohne eigene Blöcke:
 
-- **PAP zuerst.** Jede Programmieraufgabe beginnt mit dem Ablauf.
+- **PAP zuerst.** Ein neuer Ablauf wird zuerst gezeichnet; nicht jede Programmieraufgabe muss mit einem PAP beginnen.
 - **Code lesen und beurteilen.** Ablauf verfolgen, Ausgabe vorhersagen, Fehler finden, Code als PAP darstellen.
 - **Fehlermeldungen lesen.**
 
