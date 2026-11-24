@@ -1,0 +1,43 @@
+{
+ "sprache": "plan",
+ "code": [
+  "Eingabe: punkte (45)",
+  "Raute: punkte >= 50?",
+  "ja-Weg: punkte = punkte + 10",
+  "nein-Weg: punkte = punkte - 10",
+  "Ausgabe: punkte"
+ ],
+ "vars": [
+  "punkte",
+  "Weg"
+ ],
+ "steps": [
+  {
+   "line": 1,
+   "set": {
+    "punkte": "45"
+   },
+   "hint": "Eingegeben wird 45. Diese Zahl kommt in punkte."
+  },
+  {
+   "line": 2,
+   "set": {
+    "Weg": "nein"
+   },
+   "frage": "Die Raute fragt: punkte >= 50? Trag den Weg ein: ja oder nein, klein und ohne Anführungszeichen.",
+   "hint": "45 >= 50 ist falsch. Am Ausgang der Raute heißt das nein. Schreib ja oder nein, klein, ohne Anführungszeichen."
+  },
+  {
+   "line": 4,
+   "set": {
+    "punkte": "35"
+   },
+   "hint": "Der ja-Weg wird nicht gegangen. Im nein-Weg: 45 − 10."
+  },
+  {
+   "line": 5,
+   "out": "35",
+   "hint": "Ausgegeben wird der Wert, der jetzt in punkte steht."
+  }
+ ]
+}

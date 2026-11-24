@@ -319,7 +319,7 @@
     return String(s).replace(/("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')|([≤≥≠−·×])/g, function (m, str, ch) { return str ? str : map[ch]; });
   }
   function pyStr(s) { return '"' + String(s).replace(/\\/g, '\\\\').replace(/"/g, '\\"') + '"'; }
-  function condOf(n, dflt) { return toPy(String(n.v).trim()) || dflt; }
+  function condOf(n, dflt) { return toPy(String(n.v).trim().replace(/\s*\?+$/, '')) || dflt; }   /* ein Fragezeichen am Ende der Raute gehört nicht in den Code */
   function lineOf(n) {
     var v = String(n.v).trim();
     if (n.k === 'in') {
@@ -389,9 +389,11 @@
         if (n.k === 'out') return P.io(outText(n.v), n.id, c);
         if (n.k === 'op') return P.op(t, n.id, c);
         if (n.k === 'call') return P.sub(String(n.v).trim() || '…', n.id, c);
-        if (n.k === 'while' || n.k === 'for') return P.whil(t + '?', conv(n.body), n.id, c);
-        if (n.k === 'repeat') return P.repeat(t + '?', conv(n.body), n.id, c);
-        return P.iff(t + '?', conv(n.yes), conv(n.no), n.id, c);
+        /* Die Anzeige hängt das Fragezeichen selbst an; wer es schon getippt hat, sieht keines doppelt (wie condOf im Code) */
+        var f = t.replace(/\s*\?+$/, '') + '?';
+        if (n.k === 'while' || n.k === 'for') return P.whil(f, conv(n.body), n.id, c);
+        if (n.k === 'repeat') return P.repeat(f, conv(n.body), n.id, c);
+        return P.iff(f, conv(n.yes), conv(n.no), n.id, c);
       });
     }
     return [P.start('start')].concat(conv(tree), [P.end('end')]);

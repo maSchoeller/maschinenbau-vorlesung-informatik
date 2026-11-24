@@ -53,6 +53,29 @@ for _e in helfer.EINTRAEGE:
     if _e["id"] in BEZ:
         _e["bezeichner"] = BEZ[_e["id"]]
 
+# Die Lektionen V02 bis V20 des alten Kurses sind entfernt (2026-11-24, Tag altbestand-alter-kurs); die Kennungen gehen an die neuen
+# Termine. Damit kein Eintrag dem neuen V02 oder V03 zugeordnet erscheint, steht statt der alten Kennung eine Aussage ohne Nummer,
+# die alte Kennung bleibt in eingefuehrt_alt (der Editor und die Bibliothek lesen nur eingefuehrt). V01 bleibt: Termin 01 ist gebaut.
+SPAETER = "einem späteren Termin"
+for _e in helfer.EINTRAEGE:
+    if _e["eingefuehrt"] != "V01":
+        _e["eingefuehrt_alt"] = _e["eingefuehrt"]
+        _e["eingefuehrt"] = SPAETER
+
+# Sprachmittel, die die gebauten Termine einführen oder voraussetzen (Termin 01: Rechnen, int/float, Umwandlung; Termin 02: Vergleiche,
+# if/else, bool, Einrückung, f-String; Termin 03: elif, and/or). Sie gelten ab diesem Termin, nicht „später“; die alte Kennung entfällt.
+# not und verschachtelte Verzweigungen bleiben später. Dieselbe Zuordnung prüft app/skripte/tests/bibliothek.test.mjs.
+NEUE_TERMINE = {
+    "V01": ["int", "float", "typumwandlung", "rechenoperatoren"],
+    "V02": ["bool", "vergleiche", "if", "else", "einrueckung", "fstring"],
+    "V03": ["elif", "and-or"],
+}
+for _v, _ids in NEUE_TERMINE.items():
+    for _e in helfer.EINTRAEGE:
+        if _e["id"] in _ids:
+            _e["eingefuehrt"] = _v
+            _e.pop("eingefuehrt_alt", None)
+
 ids = [e["id"] for e in helfer.EINTRAEGE]
 if len(ids) != len(set(ids)):
     PROBLEME.append("doppelte ids: " + str({i for i in ids if ids.count(i) > 1}))

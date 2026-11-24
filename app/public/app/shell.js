@@ -132,10 +132,16 @@
   var weiterNav = $('.app-weiter');
   var stationen = A.seite.art === 'labor' ? $$('.l-task') : [];
   if (weiterNav && stationen.length > 1) {
-    var letzte = stationen[stationen.length - 1];
-    var weiterSetzen = function () { weiterNav.hidden = letzte.hidden; };
+    /* Knobelaufgaben (data-knobel, freiwillig) stehen nach der letzten Pflichtstation: der Block erscheint dort und auf den Knobelaufgaben */
+    var pflicht = stationen.filter(function (s) { return !s.hasAttribute('data-knobel'); });
+    var knobel = stationen.filter(function (s) { return s.hasAttribute('data-knobel'); });
+    var letzte = pflicht[pflicht.length - 1];
+    var weiterSetzen = function () { weiterNav.hidden = letzte.hidden && knobel.every(function (s) { return s.hidden; }); };
     weiterSetzen();
-    if (window.MutationObserver) new MutationObserver(weiterSetzen).observe(letzte, { attributes: true, attributeFilter: ['hidden'] });
+    if (window.MutationObserver) {
+      var beobachter = new MutationObserver(weiterSetzen);
+      [letzte].concat(knobel).forEach(function (s) { beobachter.observe(s, { attributes: true, attributeFilter: ['hidden'] }); });
+    }
   }
 
   /* ── Zuletzt besuchte Seite (für „Heute“ und andere Geräte) ── */

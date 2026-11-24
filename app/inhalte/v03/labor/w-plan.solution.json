@@ -1,0 +1,1 @@
+{"baum": [{"k": "in", "v": "alter", "typ": "int"}, {"k": "if", "v": "alter < 6", "yes": [{"k": "op", "v": "preis = 0"}], "no": [{"k": "if", "v": "alter < 18", "yes": [{"k": "op", "v": "preis = 3"}], "no": [{"k": "op", "v": "preis = 5"}]}]}, {"k": "out", "v": "preis"}]}

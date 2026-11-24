@@ -79,6 +79,11 @@ try {
   const mitTeilen = v01.aufgaben.filter((a) => a.pruefbar.length > 0);
   const [b1, b2] = mitTeilen.filter((a) => a.teil === 'B');
   const eimer = (ids) => Object.fromEntries(ids.map((i) => [i, 1]));
+  /* Knobelaufgaben (freiwillig): zählen weder im Nenner noch im Zähler. Gibt es welche, bekommen s5 und s6 sie zusätzlich
+     als gelöst, und ein Konto nur mit Knobelaufgaben kommt dazu; alle Zahlen unten müssen trotzdem stimmen. */
+  const knobelIds = kurs.lektionen.flatMap((x) => x.nr === 'V01' ? x.aufgaben.flatMap((a) => a.knobel || []) : []);
+  const knobelTitel = v01.aufgaben.filter((a) => a.knobel).map((a) => a.titel);
+  if (knobelIds.length) console.log(`  (Knobelaufgaben in V01: ${knobelIds.join(', ')})`);
   console.log(`Dozenten-Prüfung gegen ${BASIS} (Lauf ${LAUF}; Stationen ${b1.id}, ${b2.id})`);
 
   console.log('\nt1 Gast');
@@ -121,7 +126,8 @@ try {
   }
 
   console.log('\nt4 Gruppenbild');
-  for (let i = 5; i <= 6; i++) await lernstand(`s${i}-${LAUF}`, { 'v01/aufg': eimer(b1.pruefbar) });
+  for (let i = 5; i <= 6; i++) await lernstand(`s${i}-${LAUF}`, { 'v01/aufg': eimer([...b1.pruefbar, ...knobelIds]), ...(knobelIds.length ? { 'v01/begonnen': eimer(knobelIds) } : {}) });
+  if (knobelIds.length) await lernstand(`nurknobel-${LAUF}`, { 'v01/aufg': eimer(knobelIds), 'v01/begonnen': eimer(knobelIds) });
   await warte(31000);   /* der Server bewahrt das Bild 30 s auf */
   await doz.page.locator('[data-dz-block="bild"] [data-dz-aktion="neu"]').click();
   await doz.page.waitForFunction(() => { const n = document.querySelector('[data-dz-inhalt]'); return n && !n.hidden && document.querySelector('[data-dz-aufgaben] tr'); }, null, { timeout: 15000 });
@@ -132,11 +138,16 @@ try {
   pruefe('t4 API zählt den angelegten Lernstand', N >= 6 && s1.geloest >= 6 && s2.begonnen >= 3 && l.quiz && l.quiz.konten >= 2, JSON.stringify({ N, s1, s2, quiz: l.quiz }));
   if (frisch.konten === 4) pruefe('t4 frische Ablage: genau 6 Konten, 6 gelöst, 3 begonnen, Selbstcheck 70 %', N === 6 && s1.geloest === 6 && s1.begonnen === 0 && s2.geloest === 0 && s2.begonnen === 3 && l.quiz.anteil === 0.7 && l.teile.B.alle === 0 && l.teile.B.begonnen === 6, JSON.stringify(l.teile));
   const text = JSON.stringify(bild);
+  if (knobelIds.length) {
+    pruefe('t4 Knobelaufgaben: keine Station und kein Teil für sie in der Antwort', l.stationen.every((x) => !knobelIds.includes(x.id) && x.id.indexOf('kn-') !== 0) && Object.keys(l.teile).sort().join() === 'A,B', JSON.stringify(l.teile));
+    pruefe('t4 Knobelaufgaben: ein Konto nur mit Knobelaufgaben zählt nicht (Konten wie ohne)', frisch.konten !== 4 || N === 6, 'Konten ' + N);
+  }
   pruefe('t4 Antwort ohne Kennungen', !/[0-9a-f]{32}/.test(text) && !text.includes('benutzerId'));
 
   const zeilen = await doz.page.evaluate(() => [...document.querySelectorAll('[data-dz-aufgaben] tr')].map((tr) => [...tr.children].map((c) => c.textContent.trim())));
   const zeile = (a) => zeilen.find((z) => z[0] === a.titel);
   pruefe('t4 Tabelle: eine Zeile je Station mit prüfbaren Teilen', zeilen.length === mitTeilen.length, zeilen.length + ' von ' + mitTeilen.length);
+  if (knobelTitel.length) pruefe('t4 Tabelle: keine Zeile für Knobelaufgaben', zeilen.every((z) => !knobelTitel.includes(z[0])), knobelTitel.join(', '));
   pruefe('t4 Zeile „' + b1.titel + '“ zeigt gelöst und begonnen wie die API', zeile(b1) && zeile(b1)[2] === `${s1.geloest} von ${N}` && zeile(b1)[3] === String(s1.begonnen), JSON.stringify(zeile(b1)));
   pruefe('t4 Zeile „' + b2.titel + '“ zeigt gelöst und begonnen wie die API', zeile(b2) && zeile(b2)[2] === `${s2.geloest} von ${N}` && zeile(b2)[3] === String(s2.begonnen), JSON.stringify(zeile(b2)));
   const breite = await doz.page.evaluate((id) => { const a = [...document.querySelectorAll('[data-dz-aufgaben] a')].find((x) => x.hash === '#' + id); return a.closest('tr').querySelector('.dz-balken__wert').style.width; }, b1.id);

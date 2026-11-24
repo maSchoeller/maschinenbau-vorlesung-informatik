@@ -291,15 +291,37 @@
      - Abschnitte: Pflichtabschnitte der Lerneinheit; „Deep Dive (freiwillig)“ zählt nirgends mit.
      - Aufgaben: je prüfbarem Teil (data-id) des Labors, wie labor.js zählt.
      - fertig: alle Pflichtabschnitte und alle prüfbaren Teile; begonnen: irgendein Eintrag in
-       done, aufg, begonnen oder gesehen; sonst offen. */
+       done, aufg, begonnen oder gesehen; sonst offen.
+     - Knobelaufgaben (freiwillig; in kurs.json a.knobel = ihre Kennungen, pruefbar leer) zählen nirgends: weder bei
+       „gelöst“ noch bei „begonnen“. Ihr Status liegt trotzdem in aufg und begonnen (Anzeige im Labor). */
   function lesen(lektion, k) { try { return (KS && KS.sofort.lesen(KS.pfad(lektion, k))) || {}; } catch (e) { return {}; } }
   function istFreiwillig(a) { return /freiwillig/i.test((a && a.titel) || ''); }
   function anzahl(o) { return Object.keys(o || {}).length; }
+  /* Kennungen der Knobelaufgaben eines Termins (aus kurs.json) */
+  function knobelIds(t) {
+    var ids = [];
+    (t.aufgaben || []).forEach(function (a) { (a.knobel || []).forEach(function (i) { ids.push(i); }); });
+    return ids;
+  }
+  /* Eimer ohne die Knobelaufgaben (Kopie) */
+  function ohneKnobel(t, eimer) {
+    var k = knobelIds(t), r = {};
+    Object.keys(eimer || {}).forEach(function (i) { if (k.indexOf(i) < 0) r[i] = eimer[i]; });
+    return r;
+  }
+  /* Eimer nur mit den prüfbaren Teilen des Labors (Kopie). Übungen in der Lerneinheit (Aufgabe mit eigener Kennung,
+     nicht in kurs.json) und Knobelaufgaben gehören nicht dazu: Wer nur die Lerneinheit bearbeitet hat, hat das Labor nicht begonnen. */
+  function nurPruefbare(t, eimer) {
+    var ids = [], r = {};
+    (t.aufgaben || []).forEach(function (a) { (a.pruefbar || []).forEach(function (i) { ids.push(i); }); });
+    Object.keys(eimer || {}).forEach(function (i) { if (ids.indexOf(i) >= 0) r[i] = eimer[i]; });
+    return r;
+  }
   /* Stationen mit prüfbaren Teilen, die noch nicht ganz gelöst sind */
   function offeneAufgaben(t, aufg, beg) {
     aufg = aufg || lesen(t.nr, 'aufg'); beg = beg || lesen(t.nr, 'begonnen');
     return (t.aufgaben || []).filter(function (a) {
-      return (a.pruefbar || []).length && !a.pruefbar.every(function (i) { return !!aufg[i]; });
+      return !a.knobel && (a.pruefbar || []).length && !a.pruefbar.every(function (i) { return !!aufg[i]; });
     }).map(function (a) {
       var angefangen = a.pruefbar.some(function (i) { return !!aufg[i] || !!beg[i]; });
       return { id: a.id, titel: a.titel, teil: a.teil, sterne: a.sterne, minuten: a.minuten, angefangen: angefangen };
@@ -318,7 +340,7 @@
     var hatLabor = !!t.labor && ids.length > 0;
     var verstehenFertig = pflicht.length === 0 || fertigA === pflicht.length;
     var laborFertig = !hatLabor || geloest === ids.length;
-    var gearbeitet = anzahl(done) + anzahl(aufg) + anzahl(beg) > 0;
+    var gearbeitet = anzahl(done) + anzahl(ohneKnobel(t, aufg)) + anzahl(ohneKnobel(t, beg)) > 0;
     var begonnen = gearbeitet || anzahl(ges) > 0;
     var status = (verstehenFertig && laborFertig && (pflicht.length || hatLabor)) ? 'fertig' : (begonnen ? 'begonnen' : 'offen');
     return {
@@ -344,6 +366,9 @@
     },
     termin: terminStand,
     offeneAufgaben: offeneAufgaben,
+    knobelIds: knobelIds,
+    ohneKnobel: ohneKnobel,
+    nurPruefbare: nurPruefbare,
     freiwillig: istFreiwillig
   };
 

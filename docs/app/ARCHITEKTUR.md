@@ -190,7 +190,7 @@ Was Studierende an einer Aufgabe bearbeitet haben, bleibt erhalten und kommt bei
 | Code, Ausführen, Klausur (`aufgaben.js`) | `code:<aufgabe>` | `{v, code, eingaben?, ab?, haken?}`: `eingaben` nur, wenn das Feld „Eingaben“ (Modus „vorab“) von der Vorgabe abweicht; `ab: 1` und `haken: [0/1, …]` nur bei der abgegebenen Klausuraufgabe (Selbstbewertung je Punkt des Schemas). Die Zeit wird nicht gespeichert, die Tests laufen beim Wiederherstellen nicht erneut. Ohne Änderung gegenüber der Vorlage gibt es keinen Eintrag. |
 | Lückentext | `luecken:<aufgabe>` | `{v, f, w: [Text je Lücke]}`; `f` = Kennung der Vorlage |
 | Zeilen ordnen | `zeilen:<aufgabe>` | `{v, f, p: [Zeilenkennung im Vorrat, in Reihenfolge], a: [[Zeilenkennung, Einrückung], …]}`; nach dem Wiederherstellen wird nicht neu gemischt |
-| Ablauf verfolgen | `ablauf:<aufgabe>` | `{v, f, n: erreichter Schritt, r: [aufgedeckte Schritte], e?: {Variable: Eintrag im offenen Schritt, '#out': Ausgabe}}`; „gelöst nur ohne Aufdecken“ gilt weiter |
+| Ablauf verfolgen | `ablauf:<aufgabe>` | `{v, f, n: erreichter Schritt, r: [aufgedeckte Schritte], e?: {Variable: Eintrag im offenen Schritt, '#out': Ausgabe}}`; „gelöst nur ohne Aufdecken“ gilt weiter; `f` ist ein Hash über Code, Spalten und Schritte (einschließlich `frage`), bei `ausgabe: false` mit Zusatz; die Schalter stehen in `docs/app/INHALTE.md` |
 | Fehlersuche (`kurs.js`) | `fehler:<Kennung>` | `{v, s: [markierte Zeilen ab 0], a: 1 wenn aufgelöst}` |
 | Vorhersage der Lerneinheit (`kurs.js`) | `tipp:<Kennung>` | `{v, t: Text des gewählten Tipps, g: 1 wenn das Programm danach lief}`; `t` statt Platz, weil die Antworten gemischt stehen |
 | Quiz und Selbstcheck (`kurs.js`) | `frage:<quiz>.<frage>` | `{v, f, p: Punkte im ersten Versuch, ok, a: Antwort (Auswahl: Nummern in der Reihenfolge der Vorlage; sonst Text), o: 1 wenn zum Nochmal-Versuch geöffnet}`; Fragen und Antworten stehen weiter in zufälliger Reihenfolge |
@@ -202,6 +202,26 @@ Nicht gespeichert: Reglerstellungen der interaktiven Bausteine (Explorables), Be
 „Zurücksetzen“ (bei Zeilen ordnen „Neu mischen“, bei der Klausur „Neu schreiben“, bei Ablauf und Fehlersuche „Von vorn“ / „Von vorn beginnen“, beim Runner mit Vorhersage „Zurücksetzen“) löscht den Eintrag und stellt die Vorlage her. Der Status „gelöst“ (`aufg`) bleibt davon unberührt.
 
 Prüfung: `app/skripte/pruefe-stand.mjs` (Teil von `pruefe-alles`).
+
+### 4.4b Knobelaufgaben (freiwillig): was wo zählt
+
+Je Termin 1 bis 2 freiwillige Aufgaben am Ende des Labors (Schreibweise: `docs/app/INHALTE.md`, „Knobelaufgaben“). Sie haben Status und Bearbeitung wie jede Aufgabe, zählen aber nirgends. Der Speichereintrag `aufg` (Kennung → gelöst, ein Eintrag je Lektion) genügt unverändert; es gibt kein neues Format. Entscheidend ist, dass jede Stelle, die zählt, die Knobel-Kennungen (`k-1`, `k-2`) ausschließt:
+
+| Stelle | Datei | Wie ausgeschlossen |
+|---|---|---|
+| Markup | `bausteine.mjs` (`<Knobel>`) | Station `data-part="K"` + `data-knobel`, Aufgabe `data-knobel`; Build bricht bei falscher Schreibweise ab |
+| „x von y gelöst“, Balken, Ereignis `kurs:progress` | `aufgaben.js` (`taskNodes`) | Auswahl `:not([data-knobel])`; `badgeNodes` nur für Abzeichen „gelöst“ und `is-solved` |
+| Liste, „x/11“ eingeklappt, Abschluss | `labor.js` (`countable` / `statusNodes`) | Zähler nur über `countable` (ohne Knobel); der Status in der Liste über `statusNodes` (mit) |
+| „Weiter“ | `labor.js` (`show`) | nach der letzten Pflichtstation „Weiter“ aus, stattdessen Hinweis mit Verweis |
+| Block „Nächster Schritt“ der Hülle | `shell.js` | erscheint auf der letzten Pflichtstation und auf den Knobel-Stationen |
+| kurs.json (Aufgaben je Lektion) | `index-bauen.mjs` (`stationDaten`) | `pruefbar: []`, `sterne`/`minuten: null`, Kennungen in `knobel: [...]`, Teil `K` |
+| Fortschritt, Heute, Lernpfad, Lektionswähler | `kern.js` (`terminStand`, `offeneAufgaben`) | lesen nur `pruefbar`; `gearbeitet`/`begonnen` zählen Knobel-Kennungen nicht (`ohneKnobel`); Heute (`hatLaborBeginn`) ebenso; Warm-up und „Weiter im Labor“ nennen nie eine Knobelaufgabe |
+| Kursübersicht der Dozierenden | `kursstruktur.js` (Filter `!s.knobel`), `gruppenbild.js` | Knobel-Stationen fehlen in der Kursstruktur; fremde Kennungen machen kein Konto „aktiv“ (Abschnitt 14) |
+| Suche | `index-bauen.mjs` | Eintrag „Knobelaufgabe (freiwillig)“, sonst wie andere Aufgaben |
+| Tutor | `aufgaben.json` (`ids`) | bekommt die Aufgabe als Kontext wie jede andere (Station `kn-1` und Kennung `k-1`); das Lösungsverbot gilt auch dort |
+| Musterlösungen | `pruefe-loesungen.mjs` | prüft alle `.a-task[data-a]`, Knobelaufgaben also mit |
+
+Die Zeitangaben („Minuten“) von Labor und Training stehen nur an Pflichtstationen; `<Knobel>` kennt kein `min`. Prüfung: `app/skripte/tests/knobel.test.mjs`, `api/tests/knobel.test.js`; am echten Labor `pruefe-seiten.mjs` (Regeln greifen, sobald Knobel-Stationen da sind), `pruefe-dozent.mjs`, `pruefe-stand.mjs --nur knobel`.
 
 ## 5. Seiten der App (neu)
 
@@ -365,6 +385,7 @@ Regeln:
 - **Was gezählt wird:** nur Konten (Gäste haben keinen Stand auf dem Server). Gelesen werden je Lektion genau die Einträge `aufg`, `begonnen`, `done` und `quiz-<id>`; Code, Programme und alles andere bleiben unberührt.
 - **Mindestgröße:** Unter 5 Konten mit Lernstand liefert die API nur die Zahl der Konten (`genug: false`, `lektionen: []`).
 - **Zählregel wie in der App** (4.4, Fortschritt): Eine Station gilt als gelöst, wenn alle ihre prüfbaren Teile gelöst sind; als begonnen, wenn mindestens ein Teil gelöst oder angefangen ist, aber nicht alle gelöst sind. Stationen ohne prüfbaren Teil (Werkzeugkasten, vorgerechnetes Beispiel) kommen nicht vor.
+- **Knobelaufgaben zählen nicht** (4.4b): Ihre Stationen stehen nicht in der Kursstruktur (`knobel: true` wird beim Einlesen verworfen), weder im Nenner noch im Zähler; ein Konto mit nur Knobelaufgaben ist nicht „aktiv“. Test: `api/tests/knobel.test.js`.
 - **Nur die Kursstruktur zählt:** Die Eimer schreibt der Browser der Studierenden. Der Server wertet sie gegen `api/daten/aufgaben.json`, Feld `kurs`, aus; unbekannte Schlüssel zählen nirgends mit und machen kein Konto „aktiv“.
 - Die Antwort enthält keine Kennungen. Der Server bewahrt das Bild je Function-Instanz 30 Sekunden auf; die Abfrage ist die einzige partitionsübergreifende auf `eintraege` (feste Pfadliste, höchstens 4 Pfade je Lektion).
 
@@ -406,7 +427,7 @@ Seit 2026-11-23 gilt der Plan aus `KONZEPT.md` (Herleitung und Zuordnung des alt
 | `semester` | die zwei Semester (Name, Bereich, Leitsatz) |
 | `einheiten` | P1–P11 und T1–T11 mit Name, Kurzname, Zahl der Blöcke und `stoff`: ursprünglich den Lektionen des alten Kurses, aus denen die Einheit entstehen sollte (diese Lektionen sind entfernt, die Einheit wird neu gebaut) |
 | `termine` | die 20 Termine in Reihenfolge: Blöcke je Einheit unter `theorie` und `programmieren`, `puffer`, optional `freigabe` und `lektion` (Kennung der eigenen Seiten, sobald es sie gibt) |
-| `lektionen` | Seiten, die es gibt (Kennung, Titel, Dateien, Notebook). Derzeit nur V01 (Termin 01) |
+| `lektionen` | Seiten, die es gibt (Kennung, Titel, Dateien, Notebook). Derzeit V01 (Termin 01, aktiv) sowie V02 und V03 als Entwürfe (`aktiv: false`, Gerüste unter `app/inhalte/v02/` und `v03/`) |
 
 Der Build (`src/lib/kurs.mjs`) prüft den Plan: genau 20 Termine, je Termin 4 Blöcke, die Blöcke jeder Einheit in den Terminen ergeben ihre Gesamtzahl, jede genannte Einheit und Lektion gibt es. Er berechnet „Teil x von y“ und je Termin das bisherige Material (Vereinigung des `stoff` seiner Einheiten).
 

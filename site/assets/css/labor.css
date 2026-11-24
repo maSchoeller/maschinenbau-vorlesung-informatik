@@ -121,3 +121,10 @@ html.lab-liste-zu { --lab-liste: 52px; }
   .lab__drawer { padding: var(--sp-4); }
   .l-task__title { font-size: 1.375rem; }
 }
+
+/* ── Knobelaufgaben (freiwillig): eigene, ruhig abgesetzte Gruppe am Ende; keine Warnfarbe, nichts nach Pflicht ── */
+.lab__group--knobel { margin-top: var(--sp-6); padding-top: var(--sp-4); border-top: 1px dashed var(--border); text-transform: none; letter-spacing: 0; font-size: var(--fs-sm); }
+.l-task__knobel { max-width: var(--k-measure); font-size: var(--fs-sm); color: var(--text); background: var(--canvas); border-left: 3px solid var(--border); border-radius: 0 var(--r-base) var(--r-base) 0; padding: var(--sp-3) var(--sp-4); }
+.l-task--knobel .l-task__kicker { font-weight: 600; }
+.lab__knobelhint { flex: 1 1 100%; margin: 0; order: -1; max-width: var(--k-measure); font-size: var(--fs-sm); color: var(--text); }
+.lab__knobelhint a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; }

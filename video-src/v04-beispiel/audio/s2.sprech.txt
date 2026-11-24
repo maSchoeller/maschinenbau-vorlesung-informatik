@@ -1,1 +1,0 @@
-Die ersten drei Zeilen sind Kommentare, die erklären den Zweck, und Python ignoriert sie. In den Zeilen fünf bis sieben liefert input immer Text. Der Vergleich gleich Jot macht daraus einen Wahrheitswert: Bei der Antwort Jot wird die Variable True, sonst False. In Zeile acht ist der Druck eine Zahl, deshalb wandelt float den Text um.

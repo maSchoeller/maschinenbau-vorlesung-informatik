@@ -1,1 +1,0 @@
-Jetzt der wichtigste Stolperstein bei Messwerten: input liefert immer Text. Auch wenn du eine Zahl eintippst, steht in der Variablen ein str. Zum Rechnen wandelst du um: float von input. So hast du in einer Zeile gleich eine Zahl.

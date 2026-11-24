@@ -51,7 +51,7 @@
 
   /* ── Stylesheet nachladen ────────────────────────────────── */
   function ensureCss() {
-    var has = $$('link[rel="stylesheet"]').some(function (l) { return /editor\.css(\?|$)/.test(l.href); });
+    var has = $$('link[rel="stylesheet"]').some(function (l) { return /(^|\/)editor\.css(\?|$)/.test(l.href); });
     if (!has) document.head.appendChild(el('link', { rel: 'stylesheet', href: URL_CSS }));
   }
 
@@ -124,7 +124,9 @@
     }
     return libPromise;
   }
-  function isLater(e, cur) { return cur != null && lessonNum(e.eingefuehrt) != null && lessonNum(e.eingefuehrt) > cur; }
+  /* eingefuehrt ohne Nummer („einem späteren Termin“): Zuordnung zu den entfernten Lektionen des alten Kurses, gilt als später als jeder Stand */
+  function ohneNummer(e) { return !!e.eingefuehrt && lessonNum(e.eingefuehrt) == null; }
+  function isLater(e, cur) { return cur != null && (ohneNummer(e) || (lessonNum(e.eingefuehrt) != null && lessonNum(e.eingefuehrt) > cur)); }
 
   /* ── Suche in der Bibliothek ─────────────────────────────── */
   function searchEntries(q, opts) {
@@ -134,7 +136,7 @@
     lib.entries.forEach(function (e) {
       if (opts.kategorie && e.kategorie !== opts.kategorie) return;
       if (opts.ampel && e.ampel !== opts.ampel) return;
-      if (opts.max != null && lessonNum(e.eingefuehrt) > opts.max) return;
+      if (opts.max != null && (ohneNummer(e) || lessonNum(e.eingefuehrt) > opts.max)) return;
       if (!terms.length) { res.push({ e: e, s: 0 }); return; }
       var name = norm(e.name), ids = norm(e.id + ' ' + (e.bezeichner || []).join(' ') + ' ' + (e.suchbegriffe || []).join(' '));
       var hay = name + ' ' + ids + ' ' + norm(e.kurz) + ' ' + norm(e.kategorie) + ' ' + norm(e.erklaerung || '');
@@ -628,9 +630,8 @@
       lib.entries.forEach(function (e) { if (cats.indexOf(e.kategorie) < 0) cats.push(e.kategorie); });
       cats.forEach(function (c) { catSel.appendChild(el('option', { value: c, text: c })); });
       standSel.appendChild(el('option', { value: 'alle', text: 'Alles anzeigen' }));
-      for (var i = 1; i <= 22; i++) standSel.appendChild(el('option', { value: String(i), text: 'bis ' + lessonName(i) }));
-      standSel.value = P.stand == null ? 'alle' : String(Math.min(9, P.stand));
-      if (P.stand != null && P.stand > 9) standSel.value = 'alle';
+      for (var i = 1; i <= 20; i++) standSel.appendChild(el('option', { value: String(i), text: 'bis ' + lessonName(i) }));   // der Kurs hat 20 Termine
+      standSel.value = P.stand == null ? 'alle' : String(Math.min(20, P.stand));
     }
 
     function showList() {

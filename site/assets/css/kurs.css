@@ -276,7 +276,7 @@ a:hover { color: var(--red); }
 .k-copy__btn:focus-visible { outline: 3px solid #fff; outline-offset: 1px; }
 .k-copy__btn[data-state="done"] { color: #86EFAC; border-color: #86EFAC; }
 .k-copy__btn[data-state="fail"] { color: #FFB3B3; border-color: #FFB3B3; }
-@media (max-width: 760px) { .k-copy__btn { min-height: 44px; min-width: 44px; } .k-copy__bar { min-height: 48px; } }
+@media (max-width: 1099px), (pointer: coarse) { .k-copy__btn { min-height: 44px; min-width: 44px; } .k-copy__bar { min-height: 48px; } }
 
 /* ── Quiz: Fragen stehen frei, Rückmeldung mit Symbol ───────── */
 .k-quiz { margin: var(--k-block-gap) 0; }
@@ -324,7 +324,7 @@ a:hover { color: var(--red); }
 .k-line.is-false { background: rgba(255,255,255,.14); border-left-color: #94A3B8; text-decoration: line-through; text-decoration-color: #94A3B8; }
 .k-line.is-false::after { content: "   ← kein Fehler"; color: #CBD5E1; font-family: var(--dhbw-font); font-size: var(--fs-xs); text-decoration: none; display: inline-block; }
 .k-verdict { font-weight: 600; margin: var(--sp-3) 0; }
-@media (max-width: 760px) { .k-line { min-height: 44px; align-items: center; display: flex; } .k-codelines li::before { align-self: center; padding-top: 0; } }
+@media (max-width: 1099px), (pointer: coarse) { .k-line { min-height: 44px; align-items: center; display: flex; } .k-codelines li::before { align-self: center; padding-top: 0; } }
 .k-mirror h3 { margin-top: var(--sp-6); }
 .k-mirror__task > * + * { margin-top: var(--sp-3); }
 

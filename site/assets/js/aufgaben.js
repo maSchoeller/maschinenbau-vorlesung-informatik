@@ -48,11 +48,15 @@
   function kurzHash(t) { return KS && KS.hash ? KS.hash(t) : String(String(t).length); }
 
   /* ── Fortschritt „x von y gelöst“ ────────────────────────── */
-  function taskNodes() { return $$('[data-a][data-id]:not([data-count="0"])'); }
+  /* Knobelaufgaben (data-knobel, freiwillig) haben Status und Abzeichen wie jede Aufgabe, zählen aber nicht mit:
+     taskNodes() ist die Menge, die zählt; badgeNodes() die, die „gelöst“ gezeigt bekommt. */
+  function taskNodes() { return $$('[data-a][data-id]:not([data-count="0"]):not([data-knobel])'); }
+  function badgeNodes() { return $$('[data-a][data-id]:not([data-count="0"])'); }
   function updateProgress() {
     var lesson = lessonId(), sv = Store.solved(lesson);
     var nodes = taskNodes(), n = 0;
     nodes.forEach(function (t) { var ok = !!sv[t.getAttribute('data-id')]; if (ok) n++; t.classList.toggle('is-solved', ok); });
+    $$('[data-a][data-knobel][data-id]').forEach(function (t) { t.classList.toggle('is-solved', !!sv[t.getAttribute('data-id')]); });
     $$('[data-a-progress]').forEach(function (p) {
       var pct = nodes.length ? Math.round(100 * n / nodes.length) : 0;
       var fill = $('.a-progress__fill', p), txt = $('.a-progress__text', p), bar = $('.a-progress__bar', p);
@@ -845,20 +849,37 @@ def _main(kind, src, inputs, tests_src, mode, term=None):
     if (!cfgEl) return;
     var cfg = JSON.parse(cfgEl.textContent);
     var code = cfg.code, vars = cfg.vars, steps = cfg.steps;
+    /* Schalter der Aufgabe: ausgabe: false blendet die Ausgabe-Spalte aus; frage an einem Schritt ersetzt dessen Starttext. */
+    var mitAusgabe = cfg.ausgabe !== false;
+    /* sprache: "plan" oder "tabelle": Die Zeilen sind ein Plan oder eine Tabelle, kein Python. Der Block heißt dann „Plan“ bzw. „Tabelle“
+       statt „Python“ und hat keinen Kopieren-Knopf. typhinweis: false lässt den festen Satz „Typen beachten: Text steht in Anführungszeichen.“
+       weg (bei Plan und Tabelle immer weggelassen). */
+    var istPlan = cfg.sprache === 'plan' || cfg.sprache === 'tabelle';
+    var mitTyphinweis = cfg.typhinweis !== false && !istPlan;
     var cur = 0, revealedCount = 0;
     var state = {};
-    var wrap = el('div', { class: 'a-trace' });
-    var codeOl = el('ol', { class: 'a-trace__code', 'aria-label': 'Programmzeilen' });
+    var wrap = el('div', { class: 'a-trace' + (cfg.sprache === 'tabelle' ? ' a-trace--tabelle' : '') });
+    /* Tabelle: Statt „Schritt“ und „Zeile“ stehen die Eingaben der Zeile (A, B) als Spalten, wie in der Wahrheitstabelle der Klausur. */
+    var tabellenSpalten = null;
+    if (cfg.sprache === 'tabelle') {
+      var gelesen = code.map(function (l) { var m = [], re = /(\w+)\s*=\s*([^,\s]+)/g, x; while ((x = re.exec(l))) m.push([x[1], x[2]]); return m; });
+      if (gelesen.length && gelesen[0].length && gelesen.every(function (g) { return g.length === gelesen[0].length && g.every(function (c, i) { return c[0] === gelesen[0][i][0]; }); })) tabellenSpalten = { namen: gelesen[0].map(function (c) { return c[0]; }), werte: gelesen.map(function (g) { return g.map(function (c) { return c[1]; }); }) };
+    }
+    var codeOl = el('ol', { class: 'a-trace__code', 'aria-label': istPlan ? (cfg.sprache === 'tabelle' ? 'Zeilen der Tabelle' : 'Zeilen des Plans') : 'Programmzeilen' });
+    if (istPlan) codeOl.setAttribute('data-sprache', cfg.sprache);
     code.forEach(function (l, i) {
       var li = el('li', { 'data-line': String(i + 1) }); li.appendChild(el('code', { text: l.length ? l : ' ' }));
       codeOl.appendChild(li);
     });
     var table = el('table', { class: 'a-trace__table' });
     var thead = el('thead'), htr = el('tr');
-    htr.appendChild(el('th', { scope: 'col', text: 'Schritt' }));
-    htr.appendChild(el('th', { scope: 'col', text: 'Zeile' }));
+    if (tabellenSpalten) tabellenSpalten.namen.forEach(function (n) { htr.appendChild(el('th', { scope: 'col', text: n })); });
+    else {
+      htr.appendChild(el('th', { scope: 'col', text: 'Schritt' }));
+      htr.appendChild(el('th', { scope: 'col', text: 'Zeile' }));
+    }
     vars.forEach(function (v) { htr.appendChild(el('th', { scope: 'col' }, [el('code', { text: v })])); });
-    htr.appendChild(el('th', { scope: 'col', text: 'Ausgabe' }));
+    if (mitAusgabe) htr.appendChild(el('th', { scope: 'col', text: 'Ausgabe' }));
     thead.appendChild(htr); table.appendChild(thead);
     var tbody = el('tbody'); table.appendChild(tbody);
     var tw = el('div', { class: 'k-tablewrap a-trace__tw' }, [table]);
@@ -875,7 +896,7 @@ def _main(kind, src, inputs, tests_src, mode, term=None):
     var tries = 0, inputs = [], outInput = null, rowEl = null, revList = [];
     /* Bearbeitungsstand: ablauf:<kennung> = {v, f, n (erreichter Schritt), r (aufgedeckte Schritte), e (Eintrag im offenen Schritt)} */
     var traceId = root.getAttribute('data-id');
-    var st = traceId ? stand('ablauf:' + traceId) : KEIN_STAND, traceF = kurzHash(JSON.stringify([code, vars, steps])), stelleWieder = false;
+    var st = traceId ? stand('ablauf:' + traceId) : KEIN_STAND, traceF = kurzHash(JSON.stringify(mitAusgabe ? [code, vars, steps] : [code, vars, steps, 'ohne-ausgabe'])), stelleWieder = false;
     function traceStand() {
       var e = {}, n = 0;
       inputs.forEach(function (inp) { if (inp.value) { e[inp.getAttribute('data-var')] = inp.value; n++; } });
@@ -897,8 +918,12 @@ def _main(kind, src, inputs, tests_src, mode, term=None):
     function addRow(ruhig) {
       var s = steps[cur];
       var tr = el('tr', { class: 'is-active' });
-      tr.appendChild(el('th', { scope: 'row', text: String(cur + 1) }));
-      tr.appendChild(el('td', { class: 'a-trace__line', text: String(s.line) }));
+      if (tabellenSpalten) {
+        tabellenSpalten.werte[s.line - 1].forEach(function (w, i) { tr.appendChild(el(i === 0 ? 'th' : 'td', i === 0 ? { scope: 'row', class: 'a-trace__line', text: w } : { class: 'a-trace__line', text: w })); });
+      } else {
+        tr.appendChild(el('th', { scope: 'row', text: String(cur + 1) }));
+        tr.appendChild(el('td', { class: 'a-trace__line', text: String(s.line) }));
+      }
       inputs = [];
       vars.forEach(function (v) {
         var td = el('td');
@@ -914,17 +939,18 @@ def _main(kind, src, inputs, tests_src, mode, term=None):
       });
       var tdo = el('td');
       outInput = null;
-      if (s.out !== undefined) {
+      if (!mitAusgabe) tdo = null;
+      else if (s.out !== undefined) {
         outInput = el('input', { type: 'text', class: 'a-trace__in a-trace__in--out', autocomplete: 'off', spellcheck: 'false', 'aria-label': 'Ausgabe von print() in Zeile ' + s.line });
         outInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); checkBtn.click(); } });
         tdo.appendChild(outInput);
       } else tdo.appendChild(el('span', { class: 'a-trace__undef', text: '' }));
-      tr.appendChild(tdo);
+      if (tdo) tr.appendChild(tdo);
       tbody.appendChild(tr); rowEl = tr;
       highlight(s.line);
       tries = 0; showBtn.hidden = true;
       msg.className = 'a-trace__msg';
-      msg.textContent = 'Zeile ' + s.line + ' wird ausgeführt. Was steht danach in den markierten Feldern' + (s.out !== undefined ? ' und in der Ausgabe?' : '?') + ' Typen beachten: Text steht in Anführungszeichen.';
+      msg.textContent = typeof s.frage === 'string' && s.frage ? s.frage : 'Zeile ' + s.line + ' wird ausgeführt. Was steht danach in den markierten Feldern' + (mitAusgabe && s.out !== undefined ? ' und in der Ausgabe?' : '?') + (mitTyphinweis ? ' Typen beachten: Text steht in Anführungszeichen.' : '');
       var first = (inputs[0] || outInput); if (first && cur > 0 && !ruhig) first.focus();
     }
     function lockRow(revealed) {
@@ -980,7 +1006,7 @@ def _main(kind, src, inputs, tests_src, mode, term=None):
       if (ok) { advance(false); return; }
       tries++;
       msg.className = 'a-trace__msg is-bad';
-      msg.textContent = 'Noch nicht richtig. ' + (s.hint ? s.hint : 'Geh die Zeile nochmal durch: Welcher Typ kommt heraus (Text mit Anführungszeichen, int ohne Punkt, float mit Punkt)?');
+      msg.textContent = 'Noch nicht richtig. ' + (s.hint ? s.hint : (s.frage || !mitTyphinweis) ? 'Geh die Zeile nochmal durch.' : 'Geh die Zeile nochmal durch: Welcher Typ kommt heraus (Text mit Anführungszeichen, int ohne Punkt, float mit Punkt)?');
       if (tries >= 2) showBtn.hidden = false;
     });
     showBtn.addEventListener('click', function () { advance(true); });
@@ -1230,7 +1256,7 @@ def _main(kind, src, inputs, tests_src, mode, term=None):
     $$('[data-a="gap"]').forEach(initGap);
     $$('[data-a="code"],[data-a="run"],[data-a="klausur"]').forEach(initCode);
     var sv = Store.solved(lessonId());
-    taskNodes().forEach(function (t) { if (sv[t.getAttribute('data-id')]) addBadge(t); });
+    badgeNodes().forEach(function (t) { if (sv[t.getAttribute('data-id')]) addBadge(t); });
     updateProgress();
     // „begonnen“: erste Eingabe oder Bedienung in einer Aufgabe
     function startedFrom(e) { var t = e.target && e.target.closest ? e.target.closest('[data-a][data-id]') : null; if (t) markStarted(t); }

@@ -1,0 +1,509 @@
+---
+titel: "Termin 03 · Und, oder: mehr als zwei Wege · Lerneinheit · Informatik Maschinenbau"
+beschreibung: "Aussagen mit UND und ODER verknüpfen, Wahrheitstabellen mit Hilfsspalte ausfüllen, Pläne mit zwei Rauten und elif, zwei Vergleiche mit and und or. Mit Schaltern und Ampel zum Ausprobieren."
+body:
+  data-lesson: V03
+  data-page: lerneinheit
+stile:
+  - ../assets/css/dhbw-base.css
+  - ../assets/css/kurs.css
+  - ../assets/css/aufgaben.css
+  - ../assets/css/editor.css
+  - ../assets/css/v05.css
+  - ../assets/css/v02.css
+  - ../assets/css/v03.css
+skripte:
+  - ../assets/js/speicher.js
+  - ../assets/js/icons.js
+  - src: ../assets/js/editor.js
+    defer: true
+  - ../assets/js/pap-engine.js
+  - ../assets/js/explorables-v02.js
+  - ../assets/js/explorables-v03.js
+  - ../assets/js/kurs.js
+  - ../assets/js/aufgaben.js
+---
+
+<Lerneinheit nr="V03" name="Termin 03" labor="v03-labor.html">
+
+<Kopf marke="Termin 03 · 1. Semester · Lerneinheit" titel="Und, oder: mehr als zwei Wege">
+
+Zwei Wege reichen oft nicht: Eine Ampel hat drei Farben, und bei Schere-Stein-Papier hängt das Ergebnis von zwei Dingen zugleich ab. Heute verknüpfst du Aussagen und baust Pläne mit mehr als einer Raute.
+
+- zwei Aussagen mit UND und ODER verknüpfen und die Wahrheitstabelle dazu aus dem Kopf aufschreiben
+- eine Wahrheitstabelle für eine Verknüpfung mit Klammer ausfüllen, zum Beispiel A UND (NICHT B), mit Hilfsspalte
+- einen Plan mit zwei Rauten zeichnen und in `if`, `elif`, `else` übertragen
+- zwei Vergleiche mit `and` oder `or` in einer Bedingung verbinden und die Ausgabe bestimmen
+
+Alles aus Termin 02 gilt weiter: Vergleiche, die Raute, `if` und `else`, der f-String. Geübt wird im [Programmierlabor](v03-labor.html).
+
+</Kopf>
+
+<Abschnitt id="und-oder" nr="1" titel="Und, oder">
+
+Eine Aussage ist wahr oder falsch, das kennst du aus Termin 02. NICHT dreht sie um. Heute verknüpfst du zwei Aussagen zu einer neuen.
+
+Für Tabellen gibt es eine Kurzschreibweise: **1 für wahr, 0 für falsch.** Die Aussagen bekommen Namen, A und B. So füllst du Tabellen auch in der Klausur aus.
+
+**UND: Beide müssen stimmen.** Der Getränkeautomat gibt die Cola nur aus, wenn das Geld reicht (A) UND noch eine Flasche im Fach ist (B). Fehlt eins von beiden, kommt keine Cola.
+
+Die Wahrheitstabelle hat eine Zeile für jede Kombination. Zwei Aussagen ergeben vier Zeilen, immer in der Reihenfolge 00, 01, 10, 11. So vergisst du keine.
+
+**ODER: Mindestens eine stimmt, auch beide.** Im Museum ist der Eintritt frei, wenn du unter 18 bist (A) ODER einen Studierendenausweis hast (B).
+
+<div class="k-tablewrap">
+<table class="k-types">
+<thead><tr><th scope="col">A</th><th scope="col">B</th><th scope="col">A UND B</th><th scope="col">A ODER B</th></tr></thead>
+<tbody>
+<tr><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>0</td><td>1</td><td>0</td><td>1</td></tr>
+<tr><td>1</td><td>0</td><td>0</td><td>1</td></tr>
+<tr><td>1</td><td>1</td><td>1</td><td>1</td></tr>
+</tbody>
+</table>
+</div>
+
+Das „oder“ im Alltag meint oft „entweder oder“: „Kaffee oder Tee?“ heißt eins von beiden. Das ODER der Logik ist auch wahr, wenn beides stimmt.
+
+<Explorable name="schalter" titel="Zwei Schalter, zwei Lampen">
+
+Leg die beiden Schalter um und beobachte die Lampen. Daneben steht die Wahrheitstabelle, die Zeile der aktuellen Stellung ist markiert. Vermute zuerst: In wie vielen der vier Stellungen leuchtet die UND-Lampe, in wie vielen die ODER-Lampe?
+
+<Ohne>
+
+Für die Schalter wird JavaScript benötigt. Beispiel: Schalter A ist an (1), Schalter B ist aus (0). Die UND-Lampe bleibt aus, denn 1 UND 0 ergibt 0. Die ODER-Lampe leuchtet, denn 1 ODER 0 ergibt 1.
+
+</Ohne>
+
+</Explorable>
+
+### Erklärvideo (ca. 2 Min)
+
+<Video name="v03-theorie" id="video-theorie" titel="Erklärvideo: Und, oder: die Wahrheitstabelle" fehlt="Video folgt. Bis dahin: Die Tabelle oben und die Schalter zeigen dasselbe.">
+
+Erklärvideo: Und, oder: die Wahrheitstabelle (ca. 2 Min). Untertitel sind eingeschaltet (Deutsch).
+
+</Video>
+
+<Hinweis art="merke">
+
+UND ist streng: Nur eine der vier Zeilen ist wahr. ODER ist großzügig: Drei der vier Zeilen sind wahr.
+
+</Hinweis>
+
+<div class="k-try">
+
+### Vorhersage: Beides stimmt
+
+<Vorhersage>
+
+Tom ist 16 und hat einen Studierendenausweis. Kommt er kostenlos ins Museum (unter 18 ODER Ausweis)?
+
+- [x] Ja, bei ODER dürfen auch beide Aussagen wahr sein.
+- Nein, bei ODER darf nur eine der beiden Aussagen wahr sein.
+- Das lässt sich nicht entscheiden.
+
+Ja. Das ist die Zeile 1 1 der Tabelle: 1 ODER 1 ergibt 1.
+
+</Vorhersage>
+
+</div>
+
+In diesem Abschnitt steht noch kein Code. In Abschnitt 3 stehen UND und ODER in der Raute.
+
+</Abschnitt>
+
+<Abschnitt id="elif" nr="2" titel="Mehr als zwei Wege: elif">
+
+Eine Ampel schaltet nach der Uhr. Ein Umlauf dauert 60 Sekunden: Sekunde 0 bis 29 ist Grün, 30 bis 34 Gelb, danach Rot. Das sind drei Farben, aber eine Raute hat nur zwei Ausgänge.
+
+Die Lösung im Plan: Die erste Raute fragt `sekunde < 30?`. Bei nein folgt eine zweite Raute mit der Frage `sekunde < 35?`. Ist auch sie nein, bleibt nur Rot.
+
+Im nein-Weg weißt du schon etwas: Die Sekunde ist mindestens 30. Deshalb genügt als zweite Frage `sekunde < 35`.
+
+Gefragt wird von oben nach unten. **Nach dem ersten Ja wird nicht weiter gefragt.** Es läuft wieder genau ein Weg.
+
+<Explorable name="weiche" titel="Welche Fragen werden gestellt?" data-plan="ampel">
+
+Wähl eine Sekunde und verfolge den Weg durch den Plan. Daneben stehen die Fragen, die gestellt werden, und die Ausgabe. Vermute zuerst: Bei Sekunde 10 ist auch `10 < 35` wahr. Wird diese zweite Frage überhaupt gestellt?
+
+<Ohne>
+
+Für den Plan zum Ausprobieren wird JavaScript benötigt. Beispiel: Bei Sekunde 32 ist 32 \< 30 falsch, also Weg nein. Dann ist 32 \< 35 wahr, also Weg ja: Die Ampel zeigt Gelb.
+
+</Ohne>
+
+</Explorable>
+
+In Python heißt die zweite Raute <Begriff e="elif ist die Kurzform von „else if“, auf Deutsch „sonst wenn“. Es steht zwischen if und else und hat eine eigene Bedingung.">elif</Begriff>, „sonst wenn“. Es hat eine eigene Bedingung und am Ende einen Doppelpunkt. `else` steht am Schluss, ohne Bedingung, und nimmt den Rest. `if`, `elif` und `else` stehen auf derselben Höhe.
+
+Hier das Programm zum Plan oben. Die Raute im nein-Weg wird die Zeile mit `elif`:
+
+```python data-stdin="32"
+sekunde = int(input("Sekunde im Umlauf (0 bis 59): "))
+if sekunde < 30:
+    print("Grün")
+elif sekunde < 35:
+    print("Gelb")
+else:
+    print("Rot")
+```
+
+<p class="k-small k-muted">Das Programm fragt im Terminal nach der Sekunde. Tipp sie dort ein und drück Enter. Probier 32, 10 und 50, dann die Grenzfälle 30 und 35.</p>
+
+
+Mit 32 kommt `Gelb`, mit 10 `Grün`, mit 50 `Rot`. Die Grenzfälle: 30 ergibt `Gelb`, 35 ergibt `Rot`.
+
+<div class="k-try">
+
+### Vorhersage: Der Rest
+
+<Vorhersage>
+
+Jemand tippt 75 ein, eine Sekunde, die es im Umlauf gar nicht gibt. Was gibt das Programm aus?
+
+- [x] Rot
+- nichts
+- eine Fehlermeldung
+- Gelb
+
+`Rot`. `else` fragt nicht. Es nimmt alles, was übrig bleibt, auch unsinnige Werte.
+
+</Vorhersage>
+
+```python data-stdin="75"
+sekunde = int(input("Sekunde im Umlauf (0 bis 59): "))
+if sekunde < 30:
+    print("Grün")
+elif sekunde < 35:
+    print("Gelb")
+else:
+    print("Rot")
+```
+
+<p class="k-small k-muted">Wähl erst deinen Tipp, dann führ das Programm aus und tipp 75 ein.</p>
+
+</div>
+
+<Hinweis art="merke">
+
+Drei Wege, zwei Fragen: Die zweite Raute steht im nein-Weg der ersten und wird `elif`. Was danach übrig bleibt, nimmt `else`. Das erste Ja gewinnt.
+
+</Hinweis>
+
+</Abschnitt>
+
+<Abschnitt id="and-or" nr="3" titel="Zwei Bedingungen in einer Raute: and und or">
+
+Achterbahn: Mitfahren darf, wer mindestens 140 cm groß UND mindestens 10 Jahre alt ist. Zwei Regeln, eine Raute.
+
+UND heißt in Python `and`, ODER heißt `or`, beide klein geschrieben. Links und rechts davon steht je ein vollständiger Vergleich.
+
+<Plan titel="Achterbahn">
+
+```text
+Eingabe: groesse
+Eingabe: alter
+Entscheidung: groesse >= 140 and alter >= 10?
+  ja:
+    Ausgabe: "Einsteigen"
+  nein:
+    Ausgabe: "Leider nicht"
+```
+
+</Plan>
+
+```python data-stdin="150\n9"
+groesse = int(input("Größe in cm: "))
+alter = int(input("Alter: "))
+if groesse >= 140 and alter >= 10:
+    print("Einsteigen")
+else:
+    print("Leider nicht")
+```
+
+<p class="k-small k-muted">Tipp im Terminal 150 und 9 ein, dann 145 und 12, dann den Grenzfall 140 und 10. Mit „Schritt für Schritt“ siehst du, welcher Weg gegangen wird.</p>
+
+
+So liest du die Zeile mit `if`: erst jeden Vergleich einzeln zu wahr oder falsch machen, dann die Tabelle aus Abschnitt 1 anwenden. Mit 150 und 9 ist `groesse >= 140` wahr und `alter >= 10` falsch. Wahr UND falsch ergibt falsch: `Leider nicht`. Mit 145 und 12 kommt `Einsteigen`, ebenso im Grenzfall 140 und 10.
+
+Eine Bedingung lesen heißt also: eine Zeile der Tabelle ausrechnen. Und ein Wort entscheidet. Stünde dort `or`, dürfte schon mitfahren, wer nur eine der beiden Regeln erfüllt.
+
+<Hinweis art="achtung">
+
+Rechts von `and` steht ein ganzer Vergleich mit Namen: `groesse >= 140 and alter >= 10`, nicht `groesse >= 140 and >= 10`. Und `and` und `or` mischst du vorerst nicht in einer Bedingung.
+
+</Hinweis>
+
+<div class="k-try">
+
+### Vorhersage: Ein Wort anders
+
+<Vorhersage>
+
+Im Programm steht versehentlich `or`. Was gibt es aus?
+
+- [x] Einsteigen
+- Leider nicht
+- Einsteigen, dann Leider nicht
+- eine Fehlermeldung
+
+`Einsteigen`. 150 >= 140 ist wahr, 9 >= 10 ist falsch. Wahr ODER falsch ergibt wahr. Mit `and` wäre es falsch gewesen.
+
+</Vorhersage>
+
+```python
+groesse = 150
+alter = 9
+if groesse >= 140 or alter >= 10:
+    print("Einsteigen")
+else:
+    print("Leider nicht")
+```
+
+</div>
+
+</Abschnitt>
+
+<Abschnitt id="tabelle" nr="4" titel="Wahrheitstabelle ausfüllen">
+
+Ein <Begriff e="Ein Ausdruck ist eine Verknüpfung von Aussagen mit UND, ODER und NICHT, die du zu wahr oder falsch ausrechnest. Beispiel: A UND (NICHT B).">Ausdruck</Begriff> verknüpft Aussagen mit UND, ODER und NICHT. Du rechnest ihn zu wahr oder falsch aus, zum Beispiel A UND (NICHT B). In der Klausur ist ein Ausdruck gegeben, und du füllst die Tabelle mit vier Zeilen aus. Das geht in drei Schritten:
+
+1. Die vier Zeilen für A und B hinschreiben: 00, 01, 10, 11.
+2. Für die Klammer eine Hilfsspalte anlegen und ausfüllen.
+3. Das Ergebnis aus der Hilfsspalte bestimmen, Zeile für Zeile.
+
+Wir schreiben immer Klammern. Dann ist klar, was zuerst gerechnet wird.
+
+Ein Beispiel: „Ich gehe joggen, wenn ich Zeit habe UND es NICHT regnet.“ A ist „Ich habe Zeit“, B ist „Es regnet“. Der Ausdruck heißt A UND (NICHT B). Die Hilfsspalte ist NICHT B:
+
+<div class="k-tablewrap">
+<table class="k-types">
+<thead><tr><th scope="col">A</th><th scope="col">B</th><th scope="col">NICHT B</th><th scope="col">A UND (NICHT B)</th></tr></thead>
+<tbody>
+<tr><td>0</td><td>0</td><td>1</td><td>0</td></tr>
+<tr><td>0</td><td>1</td><td>0</td><td>0</td></tr>
+<tr><td>1</td><td>0</td><td>1</td><td>1</td></tr>
+<tr><td>1</td><td>1</td><td>0</td><td>0</td></tr>
+</tbody>
+</table>
+</div>
+
+Gejoggt wird nur in einer Zeile: Zeit ja, Regen nein.
+
+<div class="k-try">
+
+### Übung: Tabelle ausfüllen
+
+Füll die Tabelle für NICHT (A ODER B) zuerst auf Papier aus, dann prüf sie hier Zeile für Zeile. Die Hilfsspalte ist A ODER B. Trag in jedes Feld 0 oder 1 ein, ohne Anführungszeichen.
+
+<Aufgabe art="trace" id="tabelle" titel="NICHT (A ODER B)">
+
+<Daten datei="lerneinheit/tabelle.daten.json" />
+
+</Aufgabe>
+
+</div>
+
+<div class="k-try">
+
+### Vorhersage: Ergebnisspalte
+
+<Vorhersage>
+
+Welche Ergebnisspalte gehört zu (NICHT A) ODER B? Die Zeilen stehen in der Reihenfolge 00, 01, 10, 11.
+
+- [x] 1, 1, 0, 1
+- 1, 0, 0, 0
+- 0, 1, 0, 0
+- 1, 1, 1, 0
+
+1, 1, 0, 1. Die Hilfsspalte NICHT A ist 1, 1, 0, 0. Falsch ist der Ausdruck nur bei A = 1 und B = 0.
+
+</Vorhersage>
+
+</div>
+
+<Hinweis art="warum">
+
+In der Klausur gehört eine Wahrheitstabelle zum Theorieteil. Und jede Bedingung mit `and` oder `or` im Programm ist eine Zeile dieser Tabelle: Wer die Tabelle kann, liest die Bedingung richtig.
+
+</Hinweis>
+
+</Abschnitt>
+
+<Abschnitt id="selbstcheck" nr="5" titel="Selbstcheck">
+
+Sechs Fragen in den Formen der Klausur: Tabelle ausfüllen, Ausgabe bestimmen, Plan lesen, Fehler finden. Die Reihenfolge der Fragen und Antworten ist bei jedem Aufruf anders. Rechne im Kopf oder auf Papier, nicht im Editor.
+
+<Quiz id="v03">
+
+<Frage id="oder" typ="mc" punkte="4" titel="Grundtabelle (mehrere richtig)">
+
+In welchen Fällen ist A ODER B wahr? Kreuze alle richtigen an.
+
+- [x] A = 0, B = 1
+- [x] A = 1, B = 0
+- [x] A = 1, B = 1
+- A = 0, B = 0
+
+<Erklaerung>
+
+ODER ist nur falsch, wenn beide Aussagen falsch sind.
+
+</Erklaerung>
+
+</Frage>
+
+<Frage id="spalte" typ="output" punkte="4" antwort="0 1 0 0|0100|0, 1, 0, 0|0,1,0,0" titel="Ergebnisspalte bestimmen">
+
+Füll auf Papier die Tabelle für (NICHT A) UND B aus (Zeilen 00, 01, 10, 11). Gib die Ergebnisspalte von oben nach unten an: vier Ziffern mit Leerzeichen dazwischen, in der Form 1 0 0 1 (das ist nur ein Muster für die Schreibweise, nicht die Lösung).
+
+<Erklaerung>
+
+Hilfsspalte NICHT A: 1, 1, 0, 0. Beide zugleich 1 nur in der Zeile 0 1. Die Ergebnisspalte ist 0 1 0 0.
+
+</Erklaerung>
+
+</Frage>
+
+<Frage id="drei-wege" typ="output" punkte="3" antwort="warm" titel="Ausgabe bestimmen: drei Wege">
+
+Was gibt das Programm aus?
+
+```python class="k-code" data-run="nach-antwort"
+grad = 30
+if grad > 25:
+    print("warm")
+elif grad > 15:
+    print("mild")
+else:
+    print("kalt")
+```
+
+<Erklaerung>
+
+30 > 25 ist wahr. Nach dem ersten Ja wird nicht weiter gefragt, auch wenn 30 > 15 ebenfalls stimmt.
+
+</Erklaerung>
+
+</Frage>
+
+<Frage id="zwei-bedingungen" typ="mc" punkte="3" titel="Zwei Bedingungen">
+
+Was gibt das Programm aus?
+
+```python class="k-code" data-run="nach-antwort"
+akku = 15
+minuten = 50
+if akku < 20 and minuten > 60:
+    print("Laden")
+else:
+    print("Weiter")
+```
+
+- [x] Weiter
+- Laden
+- Laden, dann Weiter
+- eine Fehlermeldung
+
+<Erklaerung>
+
+15 \< 20 ist wahr, 50 > 60 ist falsch. Wahr UND falsch ergibt falsch, also der Weg unter <code>else</code>.
+
+</Erklaerung>
+
+</Frage>
+
+<Frage id="plan" typ="num" punkte="3" antwort="3" tol="0" titel="Plan lesen: drei Wege">
+
+Ein Parkhaus rechnet nach diesem Plan ab. Welche Zahl gibt der Plan bei der Eingabe 4 aus?
+
+<Plan titel="Parkhaus">
+
+```text
+Eingabe: stunden
+Entscheidung: stunden <= 1?
+  ja:
+    preis = 0
+  nein:
+    Entscheidung: stunden <= 4?
+      ja:
+        preis = 3
+      nein:
+        preis = 8
+Ausgabe: preis
+```
+
+</Plan>
+
+<Erklaerung>
+
+4 \<= 1 ist falsch, also Weg nein zur zweiten Raute. 4 \<= 4 ist wahr, das ist der Grenzfall: preis = 3.
+
+</Erklaerung>
+
+</Frage>
+
+<Frage id="fehler" typ="mc" punkte="3" titel="Fehler finden">
+
+In welcher Zeile steckt der Fehler?
+
+```python class="k-code" data-run="nach-antwort"
+punkte = int(input("Punkte: "))
+if punkte >= 100:
+    print("Gold")
+elif punkte >= 50:
+    print("Silber")
+else punkte < 50:
+    print("Bronze")
+```
+
+- <code>if punkte >= 100:</code>
+- <code>elif punkte >= 50:</code>
+- [x] <code>else punkte {"<"} 50:</code>
+- In keiner Zeile, das Programm läuft.
+
+<Erklaerung>
+
+<code>else</code> hat nie eine Bedingung. Python meldet <code>SyntaxError: expected ':'</code>, weil es den Doppelpunkt direkt hinter <code>else</code> erwartet.
+
+</Erklaerung>
+
+</Frage>
+
+</Quiz>
+
+</Abschnitt>
+
+<Weiter ziel="v03-labor.html">
+
+Jetzt bist du dran. Im Labor zeichnest du einen Plan mit zwei Rauten, ordnest Zeilen mit `and`, spielst Schere-Stein-Papier und schreibst dein eigenes Programm mit zwei Bedingungen. Zwei weitere Videos findest du dort an der passenden Station: der Python-Werkzeugkasten und das vorgerechnete Beispiel.
+
+</Weiter>
+
+<Dozent titel="Für Dozierende: Ablauf des Termins (135 Minuten) und Training">
+
+<p class="k-small k-muted">Vier Blöcke à 30 Minuten: zwei Theorie (T2 Boolesche Logik, Teil 2 von 2), zwei Programmieren (P2 Verzweigungen, Teil 2 von 2). Jeder Block verplant höchstens 28 Minuten; die Minuten eines Abschnitts enthalten das Zeigen der genannten Karte. Die Lerneinheit ist zum Zeigen und Nachlesen, geübt wird im <a href="v03-labor.html">Programmierlabor</a>. Die Videos laufen nicht im Termin.</p>
+
+<div class="k-tablewrap">
+<table class="k-plan">
+<thead><tr><th scope="col">Minuten</th><th scope="col">Wo</th><th scope="col">Was zu tun ist</th></tr></thead>
+<tbody>
+<tr><td>0–10</td><td>Papier, Beamer</td><td><strong>Warm-up.</strong> Training Termin 02, „Ablauf verfolgen: Gutschein“: alle verfolgen das Programm auf Papier (4). Auflösung: Ausgabe <code>25 5</code>. Frage in die Runde: Welche Zeile wurde übersprungen, und warum? (Zeile 6, weil 30 >= 25 wahr ist.) Rückblick: eine Frage, zwei Wege, Doppelpunkt, Einrückung.</td></tr>
+<tr><td>10–40</td><td>Lerneinheit 1</td><td><strong>Theorie 1: und, oder.</strong> Automat (UND) und Museum (ODER), 1 und 0 als Schreibweise. Baustein „Zwei Schalter, zwei Lampen“ mit Vermutung. Alle schreiben beide Tabellen einmal aus dem Kopf auf Papier, der Nachbar vergleicht. Vorhersage „Beides stimmt“.</td></tr>
+<tr><td>40–70</td><td>Lerneinheit 2, Labor 1 (Karte 1), 2, 4</td><td><strong>Programmieren 1: drei Wege, Plan zuerst.</strong> Ampel-Plan mit zwei Rauten, Baustein „Welche Fragen werden gestellt?“, daneben <code>elif</code> mit Karte 1, Vorhersage (13). Automat mit drei Wegen am Beamer: Plan und Code nebeneinander, je Weg ein Wert (5). Alle zeichnen „Freibad mit drei Preisen“ (10). Verplant: 28. Station 3 läuft nicht einzeln: gemeinsam per Zuruf, wenn die Reserve übrig ist (2 bis 3 Minuten, nur die Schritte in Zeile 4 und 6), sonst zu Hause.</td></tr>
+<tr><td>70–80</td><td>–</td><td><strong>Pause.</strong></td></tr>
+<tr><td>80–110</td><td>Lerneinheit 3, Labor 1 (Karte 2), 5, 6, 7</td><td><strong>Programmieren 2: and und or.</strong> Achterbahn mit Rückgriff auf die Tabellen aus dem Theorie-Block, Karte 2, Vorhersage „Ein Wort anders“ (8). Zeilen ordnen (4). Schere-Stein-Papier als Lückentext (8; die Runde zu zweit nur, wenn Zeit bleibt, sie ist nicht eingerechnet). Eigene Aufgabe (8). Rundgang: unvollständiger Vergleich hinter <code>and</code>, <code>and</code> und <code>or</code> verwechselt. Verplant: 28.</td></tr>
+<tr><td>110–135</td><td>Lerneinheit 4, Labor 8</td><td><strong>Theorie 2: Wahrheitstabelle ausfüllen.</strong> Drei Schritte, Joggen-Tabelle an der Tafel vorrechnen (7). Alle füllen NICHT (A ODER B) auf Papier aus und prüfen in der Übung (7). „Freibad-Kasse“ gemeinsam, den Fehler mit der Tabelle begründen (6). Auftrag für zu Hause, Pflicht, zusammen 45 Minuten: Selbstcheck (7) und Training (38). Termin 04 beginnt mit der Tabelle aus dem Training.</td></tr>
+</tbody>
+</table>
+</div>
+
+<p class="k-small k-muted">Wenn die Zeit trotzdem knapp wird: Im Block 40–70 wird Station 2 nur gezeigt (Plan und Code auf der Seite, ein Lauf mit 2); der Plan wird gezeichnet. Im Block 80–110 gibt es das Spiel zu zweit nur mit Restzeit; ist die knapp, wird Station 7 die erste Trainingsaufgabe. Im letzten Block hat die Tabelle Vorrang vor Station 8. Wurde Station 3 nicht gemeinsam verfolgt, kommt sie zu Hause dazu (5 Minuten, zusammen dann 50).</p>
+
+<p class="k-small k-muted">Wie weit die Gruppe im Training ist und an welcher Aufgabe sie hängt, zeigt vor dem nächsten Termin die Kursübersicht (Konto, „Kursübersicht für Dozierende“). Gezählt wird dort nur, wer mit Konto lernt. Die Knobelaufgaben am Ende des Labors sind freiwillig und zählen dort nicht mit.</p>
+
+</Dozent>
+
+</Lerneinheit>

@@ -8,6 +8,7 @@
      code, klausur   Lösung aus <script data-role="solution">
      gap             Lückentext, jede Lücke mit ihrer ersten Antwort gefüllt
      pap-zeichnen    Musterplan (JSON, data-role="solution") in Python übersetzt wie im Editor
+   Knobelaufgaben (data-knobel, freiwillig) gehören dazu wie jede Aufgabe; eine Knobelaufgabe ohne Tests ist ein Fehler.
    Außerdem: Die Startvorlage einer Code-Aufgabe darf die Tests NICHT bestehen (sonst wäre nichts zu tun),
    und jede Aufgabe mit Tests hat eine Lösung.
    ============================================================= */
@@ -67,6 +68,7 @@ try {
         return [...quelle.querySelectorAll('.a-task[data-a]')].map((box) => {
           const art = box.getAttribute('data-a');
           const tests = lies(box, 'tests', 'text/x-python');
+          if (!tests && box.hasAttribute('data-knobel')) return { id: box.getAttribute('data-id'), art, ohneTests: true };
           if (!tests) return null;
           let loesung = lies(box, 'solution', 'text/x-python'), modus = box.getAttribute('data-mode') || 'programm', vorlage = null;
           if (art === 'gap') { const src = box.querySelector('.a-gap__src'); loesung = src ? src.textContent.replace(/@@(.*?)@@/g, (a, x) => x.split('|')[0]) : null; }
@@ -81,6 +83,7 @@ try {
       });
       if (!aufgaben.length) console.log('  (keine Aufgaben mit Tests)');
       for (const a of aufgaben) {
+        if (a.ohneTests) { pruefe(`${a.id} (Knobelaufgabe) hat Tests`, false); continue; }
         if (!a.loesung) { pruefe(`${a.id} (${a.art}) hat eine Musterlösung`, false); continue; }
         const lauf = (code) => page.evaluate(([c, t, m, z]) => window.KursAufgaben.runPython('test', c, [], t, m, z).then((r) => ({
           n: r.results.length, ok: r.results.filter((x) => x.ok).length, erste: (r.results.find((x) => !x.ok) || {}).msg || '', fatal: r.fatal, hinweis: r.loadError || r.jsError || (r.timedOut ? 'Zeitlimit' : ''),

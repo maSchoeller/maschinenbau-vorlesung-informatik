@@ -2,7 +2,7 @@
 from helfer import E, S
 
 KO = "Klassen & Objekte"
-AU = "Ausblick (ab V10)"
+AU = "Ausblick (spätere Termine)"
 
 E("klasse", "class (Klasse definieren)", KO, "V20", "kopf",
   "Ein Bauplan für Objekte: bündelt Maße (Attribute) und Rechnungen (Methoden) eines Bauteils.",

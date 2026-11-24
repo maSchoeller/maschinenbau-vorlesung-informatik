@@ -1,0 +1,69 @@
+{
+ "typhinweis": false,
+ "code": [
+  "punkte = 40",
+  "bonus = 30",
+  "punkte = punkte + bonus",
+  "if punkte >= 100:",
+  "    stufe = 3",
+  "elif punkte >= 50:",
+  "    stufe = 2",
+  "else:",
+  "    stufe = 1",
+  "print(punkte, stufe)"
+ ],
+ "vars": [
+  "punkte",
+  "bonus",
+  "stufe",
+  "Bedingung"
+ ],
+ "steps": [
+  {
+   "line": 1,
+   "set": {
+    "punkte": "40"
+   }
+  },
+  {
+   "line": 2,
+   "set": {
+    "bonus": "30"
+   }
+  },
+  {
+   "line": 3,
+   "set": {
+    "punkte": "70"
+   },
+   "hint": "Rechts ausrechnen: 40 + 30. Das Ergebnis kommt in punkte, der alte Wert 40 ist weg."
+  },
+  {
+   "line": 4,
+   "set": {
+    "Bedingung": "False"
+   },
+   "frage": "Zeile 4 prüft die Bedingung. Trag True oder False ein, wie Python es schreibt: großer Anfangsbuchstabe, ohne Anführungszeichen.",
+   "hint": "70 >= 100 ist falsch. Schreib True oder False wie Python, ohne Anführungszeichen."
+  },
+  {
+   "line": 6,
+   "set": {
+    "Bedingung": "True"
+   },
+   "frage": "Zeile 6 prüft die Bedingung. Trag True oder False ein, wie Python es schreibt: großer Anfangsbuchstabe, ohne Anführungszeichen.",
+   "hint": "70 >= 50 ist wahr. Schreib True, ohne Anführungszeichen."
+  },
+  {
+   "line": 7,
+   "set": {
+    "stufe": "2"
+   }
+  },
+  {
+   "line": 10,
+   "out": "70 2",
+   "hint": "Die Zeilen 8 und 9 werden übersprungen. print schreibt beide Werte mit einem Leerzeichen dazwischen."
+  }
+ ]
+}

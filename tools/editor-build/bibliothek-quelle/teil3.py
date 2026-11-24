@@ -4,7 +4,7 @@ LD = "Listen, Tupel & Dicts"
 DF = "Dateien & Fehler"
 TX = "Text & Formatierung"
 RE = "Rechnen"
-AU = "Ausblick (ab V10)"
+AU = "Ausblick (spätere Termine)"
 
 # ───────────── V08 ─────────────
 E("liste", "Liste", LD, "V08", "kopf",

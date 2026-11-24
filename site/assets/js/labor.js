@@ -39,14 +39,19 @@
   tasks.forEach(function (t, i) { index[t.id] = i; });
   var current = -1;
 
-  function countable(sec) { return $$('[data-a][data-id]:not([data-count="0"])', sec); }
+  /* Knobelaufgaben (data-knobel, Teil K) sind freiwillig: Status und Bearbeitung wie bei jeder Aufgabe, aber sie
+     zählen nirgends mit. countable() ist die Menge, die zählt („x/11“, Fortschritt); statusNodes() die, deren
+     Status die Liste zeigt (mit Knobelaufgaben). */
+  function statusNodes(sec) { return $$('[data-a][data-id]:not([data-count="0"])', sec); }
+  function countable(sec) { return $$('[data-a][data-id]:not([data-count="0"]):not([data-knobel])', sec); }
+  function istKnobel(sec) { return sec.hasAttribute('data-knobel'); }
   function stars(n) { n = parseInt(n, 10) || 0; if (!n) return null; return window.KStars(n, 4); }
   function setMark(node, s) { node.textContent = ''; node.appendChild(window.KIcon(MARK[s])); }
   function minText(m) { if (!m) return ''; return /^\d+$/.test(m) ? 'ca. ' + m + ' Min' : m; }
   function starLabel(n) { n = parseInt(n, 10) || 0; return n ? 'Schwierigkeit ' + n + ' von 4' : ''; }
 
   function statusOf(sec) {
-    var nodes = countable(sec);
+    var nodes = statusNodes(sec);
     if (!nodes.length) return bucket('gesehen')[sec.id] ? 'done' : 'open';
     var sv = bucket('aufg'), st = bucket('begonnen');
     var solved = nodes.filter(function (n) { return sv[n.getAttribute('data-id')]; }).length;
@@ -56,18 +61,21 @@
   }
 
   /* ── Kopf jeder Station, Liste, Auswahlmenü ──────────────── */
-  var partName = { A: 'Teil A · Im Labor', B: 'Teil B · Training zu Hause' };
-  var partNo = { A: 0, B: 0 }, partTotal = { A: 0, B: 0 };
+  var partName = { A: 'Teil A · Im Labor', B: 'Teil B · Training zu Hause', K: 'Knobelaufgaben (freiwillig)' };
+  var partNo = { A: 0, B: 0, K: 0 }, partTotal = { A: 0, B: 0, K: 0 };
   tasks.forEach(function (t) { if (!t.hasAttribute('data-nonumber')) partTotal[t.getAttribute('data-part')]++; });
   var listBox = $('[data-lab-items]', lab);
   var select = $('#lab-select');
   var items = {};
 
-  ['A', 'B'].forEach(function (part) {
-    var h = el('h2', { class: 'lab__group', text: partName[part] + (part === 'A' ? ' (im Termin)' : ' (45 Min, Pflicht)') });
-    var ol = el('ol', { class: 'lab__items' });
+  ['A', 'B', 'K'].forEach(function (part) {
+    var inPart = tasks.filter(function (t) { return t.getAttribute('data-part') === part; });
+    if (!inPart.length) return;
+    var kn = part === 'K';
+    var h = el('h2', { class: 'lab__group' + (kn ? ' lab__group--knobel' : ''), text: kn ? partName.K : partName[part] + (part === 'A' ? ' (im Termin)' : ' (' + (/^\d+$/.test(lab.getAttribute('data-zuhause') || '') ? lab.getAttribute('data-zuhause') + ' Min, ' : '') + 'Pflicht)') });
+    var ol = el('ol', { class: 'lab__items' + (kn ? ' lab__items--knobel' : '') });
     var og = el('optgroup', { label: partName[part] });
-    tasks.filter(function (t) { return t.getAttribute('data-part') === part; }).forEach(function (t) {
+    inPart.forEach(function (t) {
       var nonum = t.hasAttribute('data-nonumber');
       if (!nonum) partNo[part]++;
       var n = partNo[part];
@@ -77,7 +85,7 @@
       var meta = !!(st || metaMin);
       // Kopf der Station
       var kick = $('.l-task__kicker', t);
-      if (kick) kick.textContent = partName[part] + ' · ' + (nonum ? 'Zum Schluss' : (part === 'B' ? 'Aufgabe ' : 'Station ') + n + ' von ' + partTotal[part]);
+      if (kick) kick.textContent = kn ? 'Knobelaufgabe · freiwillig' : partName[part] + ' · ' + (nonum ? 'Zum Schluss' : (part === 'B' ? 'Aufgabe ' : 'Station ') + n + ' von ' + partTotal[part]);
       var mt = $('.l-task__meta', t);
       if (mt) {
         var bits = [];
@@ -116,10 +124,10 @@
       if (!it) return;
       setMark(it.mark, s);
       it.a.setAttribute('data-status', s);
-      it.sr.textContent = ' (' + (countable(t).length ? MARK_TXT[s] : (s === 'done' ? 'angesehen' : 'offen')) + ')';
+      it.sr.textContent = ' (' + (statusNodes(t).length ? MARK_TXT[s] : (s === 'done' ? 'angesehen' : 'offen')) + ')';
       if (t._stat) {
         t._stat.textContent = '';
-        if (s === 'done' && countable(t).length) { t._stat.appendChild(document.createTextNode(' · gelöst')); t._stat.appendChild(window.KIcon('check')); }
+        if (s === 'done' && statusNodes(t).length) { t._stat.appendChild(document.createTextNode(' · gelöst')); t._stat.appendChild(window.KIcon('check')); }
         else if (s === 'part') t._stat.textContent = ' · begonnen';
       }
     });
@@ -182,6 +190,15 @@
 
   /* ── Anzeigen ────────────────────────────────────────────── */
   var prev = $('#lab-prev'), next = $('#lab-next');
+  var ersteKnobel = null;
+  tasks.forEach(function (t) { if (!ersteKnobel && istKnobel(t)) ersteKnobel = t; });
+  var knobelHinweis = null;
+  if (ersteKnobel && next && next.parentNode) {
+    var knobelLink = el('a', { href: '#' + ersteKnobel.id, text: 'Knobelaufgaben ansehen' });
+    knobelHinweis = el('p', { class: 'lab__knobelhint', id: 'lab-knobelhint' }, ['Das war die letzte Pflichtaufgabe. Wenn du Lust auf mehr hast, gibt es noch Knobelaufgaben (freiwillig). ', knobelLink]);
+    knobelHinweis.hidden = true;
+    next.parentNode.appendChild(knobelHinweis);
+  }
   function show(id, initial) {
     var i = index[id];
     if (i === undefined) i = 0;
@@ -206,8 +223,12 @@
       a.appendChild(el('span', { class: 'lab__pagerto', text: tasks[k].getAttribute('data-title') }));
     }
     setLink(prev, i - 1, -1); setLink(next, i + 1, 1);
+    // Nach der letzten Pflichtstation führt „Weiter“ nicht stillschweigend in die freiwilligen Knobelaufgaben
+    var vorKnobel = !istKnobel(t) && !!tasks[i + 1] && istKnobel(tasks[i + 1]);
+    if (vorKnobel && next) next.hidden = true;
+    if (knobelHinweis) knobelHinweis.hidden = !vorKnobel;
     document.title = t.getAttribute('data-title') + ' · ' + BASE_TITLE;
-    if (!countable(t).length && t.getAttribute('data-seen') !== 'manual' && markSeen(t.id)) refreshStatus();
+    if (!statusNodes(t).length && t.getAttribute('data-seen') !== 'manual' && markSeen(t.id)) refreshStatus();
     // Editoren in der jetzt sichtbaren Station neu vermessen
     requestAnimationFrame(function () {
       $$('textarea.ke-source', t).forEach(function (ta) {

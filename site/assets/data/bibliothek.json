@@ -160,7 +160,7 @@
    "ampel": "kopf",
    "kurz": "Liest eine Eingabe von der Tastatur – immer als Text (str).",
    "syntax": "text = input('Fragetext: ')",
-   "erklaerung": "input() zeigt den Fragetext, wartet auf Enter und liefert das Eingegebene als Text zurück – auch wenn du eine Zahl tippst. Für Rechnungen wandelst du mit int() oder float() um. Im Browser-Runner dieser Seite gibt es keine Tastatureingabe; dort setzt du die Werte stattdessen direkt in den Code.",
+   "erklaerung": "input() zeigt den Fragetext, wartet auf Enter und liefert das Eingegebene als Text zurück – auch wenn du eine Zahl tippst. Für Rechnungen wandelst du mit int() oder float() um. Beim Ausführen hier öffnet sich ein Terminal, in das du die Antworten direkt tippst; mit dem Umschalter „Eingaben“ kannst du sie auch vorab eintragen.",
    "beispiel": "text = input(\"Durchmesser in mm: \")\nd = float(text)\nprint(\"Umfang:\", 3.14159 * d, \"mm\")",
    "wann_nutzen": "Wenn dein Programm Werte vom Benutzer braucht, die beim Schreiben noch nicht feststehen.",
    "transfer": [
@@ -299,7 +299,7 @@
    "id": "int",
    "name": "int (Ganzzahl)",
    "kategorie": "Variablen & Datentypen",
-   "eingefuehrt": "V02",
+   "eingefuehrt": "V01",
    "ampel": "kopf",
    "kurz": "Ganze Zahlen ohne Nachkommastellen.",
    "syntax": "zahl = 42     int(wert)",
@@ -348,7 +348,7 @@
    "id": "rechenoperatoren",
    "name": "Rechenoperatoren + − * /",
    "kategorie": "Rechnen",
-   "eingefuehrt": "V02",
+   "eingefuehrt": "V01",
    "ampel": "kopf",
    "kurz": "Addieren, Subtrahieren, Multiplizieren, Dividieren.",
    "syntax": "a + b    a - b    a * b    a / b",
@@ -401,7 +401,7 @@
    "id": "floordiv",
    "name": "Ganzzahldivision //",
    "kategorie": "Rechnen",
-   "eingefuehrt": "V02",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Teilt und rundet das Ergebnis ab auf die nächste ganze Zahl.",
    "syntax": "a // b",
@@ -444,13 +444,14 @@
      "code": "print(-7 // 2)",
      "meldung": "(keine Fehlermeldung) Ausgabe: -4 – // rundet Richtung minus unendlich, nicht Richtung null."
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V02"
   },
   {
    "id": "modulo",
    "name": "Rest (Modulo) %",
    "kategorie": "Rechnen",
-   "eingefuehrt": "V02",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Liefert den Rest der Division.",
    "syntax": "a % b",
@@ -493,13 +494,14 @@
      "code": "print(200 * 5 %)",
      "meldung": "SyntaxError: invalid syntax"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V02"
   },
   {
    "id": "potenz",
    "name": "Potenz **",
    "kategorie": "Rechnen",
-   "eingefuehrt": "V02",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Potenzieren und Wurzelziehen.",
    "syntax": "a ** b",
@@ -542,13 +544,14 @@
      "code": "print(0 ** -1)",
      "meldung": "ZeroDivisionError: 0.0 cannot be raised to a negative power"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V02"
   },
   {
    "id": "rangfolge",
    "name": "Operatorrangfolge",
    "kategorie": "Rechnen",
-   "eingefuehrt": "V02",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Punkt vor Strich – und wie Klammern die Reihenfolge ändern.",
    "syntax": "** vor * / // % vor + -   (Klammern gehen vor)",
@@ -590,13 +593,14 @@
      "code": "print(100 / 2 * 5)",
      "meldung": "(keine Fehlermeldung) Ausgabe: 250.0 – gemeint war vielleicht 100 / (2 * 5) = 10.0."
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V02"
   },
   {
    "id": "bin-hex",
    "name": "bin(), hex(), int(x, Basis)",
    "kategorie": "Rechnen",
-   "eingefuehrt": "V02",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "lesen",
    "kurz": "Zahlen in Binär- und Hexadezimalschreibweise umwandeln.",
    "syntax": "bin(n)    hex(n)    int('1010', 2)    0b1010    0xFF",
@@ -639,13 +643,14 @@
      "code": "bin(\"5\")",
      "meldung": "TypeError: 'str' object cannot be interpreted as an integer"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V02"
   },
   {
    "id": "float",
    "name": "float (Fließkommazahl)",
    "kategorie": "Variablen & Datentypen",
-   "eingefuehrt": "V03",
+   "eingefuehrt": "V01",
    "ampel": "kopf",
    "kurz": "Zahlen mit Nachkommastellen – mit Rundungsfehlern.",
    "syntax": "x = 3.14     float(wert)     1e-3",
@@ -695,7 +700,7 @@
    "id": "type",
    "name": "type()",
    "kategorie": "Variablen & Datentypen",
-   "eingefuehrt": "V03",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "lesen",
    "kurz": "Zeigt, welchen Datentyp ein Wert hat.",
    "syntax": "type(wert)",
@@ -734,13 +739,14 @@
      "code": "\"5\" * \"3\"",
      "meldung": "TypeError: can't multiply sequence by non-int of type 'str'"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V03"
   },
   {
    "id": "typumwandlung",
    "name": "Typumwandlung int() / float() / str()",
    "kategorie": "Variablen & Datentypen",
-   "eingefuehrt": "V03",
+   "eingefuehrt": "V01",
    "ampel": "kopf",
    "kurz": "Wandelt einen Wert in einen anderen Datentyp um.",
    "syntax": "int(x)    float(x)    str(x)",
@@ -791,7 +797,7 @@
    "id": "fstring",
    "name": "f-String & Formatierung",
    "kategorie": "Text & Formatierung",
-   "eingefuehrt": "V03",
+   "eingefuehrt": "V02",
    "ampel": "kopf",
    "kurz": "Werte direkt in Text einbauen und dabei formatieren.",
    "syntax": "f\"Text {wert}\"    {x:.2f}    {x:>8}    {x:.1%}",
@@ -845,7 +851,7 @@
    "id": "round",
    "name": "round()",
    "kategorie": "Rechnen",
-   "eingefuehrt": "V03",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Rundet auf eine bestimmte Stellenzahl.",
    "syntax": "round(x)    round(x, stellen)",
@@ -888,13 +894,14 @@
      "code": "print(round(2.675, 2))",
      "meldung": "(keine Fehlermeldung) Ausgabe: 2.67 – 2.675 ist intern etwas kleiner als 2,675."
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V03"
   },
   {
    "id": "abs",
    "name": "abs()",
    "kategorie": "Rechnen",
-   "eingefuehrt": "V03",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Betrag: entfernt das Vorzeichen.",
    "syntax": "abs(x)",
@@ -933,13 +940,14 @@
      "code": "abs -3",
      "meldung": "TypeError: unsupported operand type(s) for -: 'builtin_function_or_method' and 'int'"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V03"
   },
   {
    "id": "import-math",
    "name": "import math",
    "kategorie": "Mathematik (math)",
-   "eingefuehrt": "V03",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Holt das math-Modul mit Wurzel, Pi, Winkelfunktionen & Co.",
    "syntax": "import math    from math import sqrt",
@@ -978,13 +986,14 @@
      "code": "import Math",
      "meldung": "ModuleNotFoundError: No module named 'Math'"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V03"
   },
   {
    "id": "sqrt",
    "name": "math.sqrt()",
    "kategorie": "Mathematik (math)",
-   "eingefuehrt": "V03",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Quadratwurzel.",
    "syntax": "math.sqrt(x)",
@@ -1028,13 +1037,14 @@
      "code": "import math\nmath.sqrt(\"9\")",
      "meldung": "TypeError: must be real number, not str"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V03"
   },
   {
    "id": "pi",
    "name": "math.pi",
    "kategorie": "Mathematik (math)",
-   "eingefuehrt": "V03",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Die Kreiszahl π als float-Konstante.",
    "syntax": "math.pi",
@@ -1077,13 +1087,14 @@
      "code": "import math\nprint(math.pi())",
      "meldung": "TypeError: 'float' object is not callable"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V03"
   },
   {
    "id": "isclose",
    "name": "math.isclose()",
    "kategorie": "Mathematik (math)",
-   "eingefuehrt": "V03",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Vergleicht zwei Fließkommazahlen mit Toleranz.",
    "syntax": "math.isclose(a, b, rel_tol=1e-09, abs_tol=0.0)",
@@ -1123,13 +1134,14 @@
      "code": "import math\nprint(math.isclose(0.0, 1e-12))",
      "meldung": "(keine Fehlermeldung) Ausgabe: False – relative Toleranz hilft bei 0 nicht, abs_tol angeben."
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V03"
   },
   {
    "id": "bool",
    "name": "bool (Wahrheitswert)",
    "kategorie": "Variablen & Datentypen",
-   "eingefuehrt": "V04",
+   "eingefuehrt": "V02",
    "ampel": "kopf",
    "kurz": "Ein Wert, der nur True oder False sein kann.",
    "syntax": "True    False    bool(wert)",
@@ -1181,7 +1193,7 @@
    "id": "vergleiche",
    "name": "Vergleichsoperatoren",
    "kategorie": "Bedingungen",
-   "eingefuehrt": "V04",
+   "eingefuehrt": "V02",
    "ampel": "kopf",
    "kurz": "Vergleicht Werte und liefert True oder False.",
    "syntax": "==   !=   <   >   <=   >=",
@@ -1236,7 +1248,7 @@
    "id": "and-or",
    "name": "and / or",
    "kategorie": "Bedingungen",
-   "eingefuehrt": "V04",
+   "eingefuehrt": "V03",
    "ampel": "kopf",
    "kurz": "Verknüpft zwei Bedingungen: beide (and) oder mindestens eine (or).",
    "syntax": "a and b      a or b",
@@ -1286,7 +1298,7 @@
    "id": "not",
    "name": "not",
    "kategorie": "Bedingungen",
-   "eingefuehrt": "V04",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Dreht einen Wahrheitswert um.",
    "syntax": "not bedingung",
@@ -1329,13 +1341,14 @@
      "code": "print(not True == False)",
      "meldung": "(keine Fehlermeldung) Ausgabe: True – gelesen als not (True == False)."
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V04"
   },
   {
    "id": "if",
    "name": "if",
    "kategorie": "Bedingungen",
-   "eingefuehrt": "V04",
+   "eingefuehrt": "V02",
    "ampel": "kopf",
    "kurz": "Führt einen Block nur aus, wenn eine Bedingung wahr ist.",
    "syntax": "if bedingung:\n    anweisungen",
@@ -1385,7 +1398,7 @@
    "id": "else",
    "name": "else",
    "kategorie": "Bedingungen",
-   "eingefuehrt": "V04",
+   "eingefuehrt": "V02",
    "ampel": "kopf",
    "kurz": "Der Alternativ-Block, wenn die if-Bedingung nicht zutrifft.",
    "syntax": "if bedingung:\n    ...\nelse:\n    ...",
@@ -1429,7 +1442,7 @@
    "id": "elif",
    "name": "elif",
    "kategorie": "Bedingungen",
-   "eingefuehrt": "V04",
+   "eingefuehrt": "V03",
    "ampel": "kopf",
    "kurz": "Weitere Bedingung, die nur geprüft wird, wenn die vorherigen falsch waren.",
    "syntax": "if a:\n    ...\nelif b:\n    ...\nelse:\n    ...",
@@ -1474,7 +1487,7 @@
    "id": "einrueckung",
    "name": "Einrückung",
    "kategorie": "Bedingungen",
-   "eingefuehrt": "V04",
+   "eingefuehrt": "V02",
    "ampel": "kopf",
    "kurz": "Python erkennt Blöcke an der Einrückung, nicht an Klammern.",
    "syntax": "4 Leerzeichen pro Ebene (Tab im Editor = 4 Leerzeichen)",
@@ -1520,7 +1533,7 @@
    "id": "verschachtelte-if",
    "name": "Verschachtelte Verzweigung",
    "kategorie": "Bedingungen",
-   "eingefuehrt": "V05",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Eine Entscheidung innerhalb einer anderen – so setzt du Programmablaufpläne um.",
    "syntax": "if a:\n    if b:\n        ...\n    else:\n        ...\nelse:\n    ...",
@@ -1560,13 +1573,14 @@
      "code": "if True:\n    if True:\n    print(\"x\")",
      "meldung": "IndentationError: expected an indented block after 'if' statement on line 2"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V05"
   },
   {
    "id": "eingabe-pruefen",
    "name": "Eingabe prüfen (isdigit, Bereich)",
    "kategorie": "Text & Formatierung",
-   "eingefuehrt": "V05",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Prüft, ob ein Text eine brauchbare Zahl ist, bevor du damit rechnest.",
    "syntax": "text.isdigit()    if 1 <= n <= 100:",
@@ -1606,13 +1620,14 @@
      "code": "int(\"abc\")",
      "meldung": "ValueError: invalid literal for int() with base 10: 'abc'"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V05"
   },
   {
    "id": "while",
    "name": "while",
    "kategorie": "Schleifen",
-   "eingefuehrt": "V06",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Wiederholt einen Block, solange eine Bedingung wahr ist.",
    "syntax": "while bedingung:\n    anweisungen",
@@ -1656,13 +1671,14 @@
      "code": "n = 3\nwhile n > 0:\n    print(n)",
      "meldung": "(kein Abbruch) Das Programm hängt: Im Browser kommt nach ein paar Sekunden \"Abgebrochen\". Es fehlt n -= 1 im Block."
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V06"
   },
   {
    "id": "for",
    "name": "for",
    "kategorie": "Schleifen",
-   "eingefuehrt": "V06",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Läuft über eine Folge von Werten und führt den Block für jeden aus.",
    "syntax": "for variable in folge:\n    anweisungen",
@@ -1706,13 +1722,14 @@
      "code": "for i in 5:\n    print(i)",
      "meldung": "TypeError: 'int' object is not iterable"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V06"
   },
   {
    "id": "range",
    "name": "range()",
    "kategorie": "Schleifen",
-   "eingefuehrt": "V06",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Erzeugt eine Zahlenfolge für Schleifen.",
    "syntax": "range(stop)    range(start, stop)    range(start, stop, schritt)",
@@ -1755,13 +1772,14 @@
      "code": "for i in range(10, 0):\n    print(i)\nprint(\"fertig\")",
      "meldung": "(keine Fehlermeldung) Ausgabe: fertig – die Folge ist leer; für abwärts brauchst du den Schritt -1."
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V06"
   },
   {
    "id": "break",
    "name": "break",
    "kategorie": "Schleifen",
-   "eingefuehrt": "V06",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Verlässt die Schleife sofort.",
    "syntax": "break",
@@ -1800,13 +1818,14 @@
      "code": "for a in range(2):\n    for b in range(3):\n        if b == 1:\n            break\n        print(a, b)",
      "meldung": "(keine Fehlermeldung) Ausgabe: 0 0 und 1 0 – die äußere Schleife läuft weiter."
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V06"
   },
   {
    "id": "continue",
    "name": "continue",
    "kategorie": "Schleifen",
-   "eingefuehrt": "V06",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Springt zum nächsten Durchlauf und überspringt den Rest des Blocks.",
    "syntax": "continue",
@@ -1845,13 +1864,14 @@
      "code": "i = 0\nwhile i < 5:\n    if i == 2:\n        continue\n    i += 1",
      "meldung": "(kein Abbruch) Endlosschleife: bei i == 2 wird i += 1 nie erreicht."
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V06"
   },
   {
    "id": "zaehler-summe",
    "name": "Zähler & Summe (+=)",
    "kategorie": "Schleifen",
-   "eingefuehrt": "V06",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Ergebnisse in einer Schleife sammeln: hochzählen und aufsummieren.",
    "syntax": "summe = 0\nfor ...:\n    summe += wert",
@@ -1890,13 +1910,14 @@
      "code": "for i in range(1, 4):\n    summe = 0\n    summe += i\nprint(summe)",
      "meldung": "(keine Fehlermeldung) Ausgabe: 3 – die Summe wird in jedem Durchlauf auf 0 zurückgesetzt, übrig bleibt nur der letzte Wert."
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V06"
   },
   {
    "id": "def",
    "name": "def (Funktion definieren)",
    "kategorie": "Funktionen",
-   "eingefuehrt": "V07",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Fasst Code unter einem Namen zusammen, damit du ihn wiederverwenden kannst.",
    "syntax": "def name(parameter):\n    anweisungen\n    return ergebnis",
@@ -1936,13 +1957,14 @@
      "code": "def quadrat(x)\n    return x * x",
      "meldung": "SyntaxError: expected ':'"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V07"
   },
   {
    "id": "parameter",
    "name": "Parameter & Argumente",
    "kategorie": "Funktionen",
-   "eingefuehrt": "V07",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Werte, die du einer Funktion beim Aufruf mitgibst.",
    "syntax": "def f(a, b): ...    f(1, 2)    f(b=2, a=1)",
@@ -1981,13 +2003,14 @@
      "code": "def quadrat(x):\n    return x * x\n\nquadrat(2, 3)",
      "meldung": "TypeError: quadrat() takes 1 positional argument but 2 were given"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V07"
   },
   {
    "id": "return",
    "name": "return",
    "kategorie": "Funktionen",
-   "eingefuehrt": "V07",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Gibt einen Wert aus der Funktion zurück und beendet sie.",
    "syntax": "return ausdruck",
@@ -2026,13 +2049,14 @@
      "code": "def f():\n    return 1\n    print(\"nie\")\n\nf()",
      "meldung": "(keine Fehlermeldung) Die Zeile print(\"nie\") läuft nie, die Funktion endet beim return."
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V07"
   },
   {
    "id": "default-werte",
    "name": "Standardwerte für Parameter",
    "kategorie": "Funktionen",
-   "eingefuehrt": "V07",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Ein Parameter bekommt einen Vorgabewert, wenn du ihn weglässt.",
    "syntax": "def f(a, b=10): ...",
@@ -2070,13 +2094,14 @@
      "code": "def umfang(d, pi=3.14159):\n    return pi * d\n\numfang(10, PI=3.14)",
      "meldung": "TypeError: umfang() got an unexpected keyword argument 'PI'"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V07"
   },
   {
    "id": "docstring",
    "name": "Docstring",
    "kategorie": "Funktionen",
-   "eingefuehrt": "V07",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Beschreibung der Funktion als Text direkt unter der def-Zeile.",
    "syntax": "def f(x):\n    \"\"\"Kurzbeschreibung.\"\"\"",
@@ -2114,13 +2139,14 @@
      "code": "def f():\n    x = 1\n    \"\"\"Das ist kein Docstring\"\"\"\n    return x\n\nprint(f.__doc__)",
      "meldung": "(keine Fehlermeldung) Ausgabe: None – nur der Text als erste Anweisung zählt."
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V07"
   },
   {
    "id": "lokale-variablen",
    "name": "Lokale Variablen",
    "kategorie": "Funktionen",
-   "eingefuehrt": "V07",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Variablen in einer Funktion sind nur dort sichtbar.",
    "syntax": "def f(x):\n    lokal = x * 2    # nur innerhalb von f bekannt",
@@ -2159,13 +2185,14 @@
      "code": "zaehler = 0\n\ndef hoch():\n    zaehler = zaehler + 1\n\nhoch()",
      "meldung": "UnboundLocalError: cannot access local variable 'zaehler' where it is not associated with a value"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V07"
   },
   {
    "id": "liste",
    "name": "Liste",
    "kategorie": "Listen, Tupel & Dicts",
-   "eingefuehrt": "V08",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Eine geordnete, veränderbare Sammlung von Werten.",
    "syntax": "liste = [wert1, wert2, ...]",
@@ -2210,13 +2237,14 @@
      "code": "werte = [1, 2, 3]\nprint(werte[3])",
      "meldung": "IndexError: list index out of range"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V08"
   },
   {
    "id": "append",
    "name": "append()",
    "kategorie": "Listen, Tupel & Dicts",
-   "eingefuehrt": "V08",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Hängt ein Element ans Ende einer Liste an.",
    "syntax": "liste.append(wert)",
@@ -2255,13 +2283,14 @@
      "code": "liste = [1, 2]\nliste = liste.append(3)\nprint(len(liste))",
      "meldung": "TypeError: object of type 'NoneType' has no len()"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V08"
   },
   {
    "id": "len",
    "name": "len()",
    "kategorie": "Listen, Tupel & Dicts",
-   "eingefuehrt": "V08",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Anzahl der Elemente (oder Zeichen).",
    "syntax": "len(objekt)",
@@ -2300,13 +2329,14 @@
      "code": "w = [1, 2, 3]\nprint(w[len(w)])",
      "meldung": "IndexError: list index out of range"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V08"
   },
   {
    "id": "index",
    "name": "Index [ ]",
    "kategorie": "Listen, Tupel & Dicts",
-   "eingefuehrt": "V08",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Greift auf ein einzelnes Element zu – gezählt ab 0.",
    "syntax": "liste[0]    liste[-1]",
@@ -2345,13 +2375,14 @@
      "code": "w = [1, 2, 3]\nprint(w[1.0])",
      "meldung": "TypeError: list indices must be integers or slices, not float"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V08"
   },
   {
    "id": "slicing",
    "name": "Slicing [von:bis]",
    "kategorie": "Listen, Tupel & Dicts",
-   "eingefuehrt": "V08",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Schneidet einen Teil einer Liste oder eines Textes heraus.",
    "syntax": "liste[start:stop]    liste[start:stop:schritt]",
@@ -2394,13 +2425,14 @@
      "code": "m = [1, 2, 3]\nprint(m[1:10])",
      "meldung": "(keine Fehlermeldung) Ausgabe: [2, 3] – Slices schneiden nur ab, was da ist."
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V08"
   },
   {
    "id": "for-liste",
    "name": "for über eine Liste",
    "kategorie": "Listen, Tupel & Dicts",
-   "eingefuehrt": "V08",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Jedes Element einer Liste der Reihe nach bearbeiten.",
    "syntax": "for element in liste:\n    anweisungen",
@@ -2440,13 +2472,14 @@
      "code": "w = [1, 2, 3]\nfor x in w:\n    x = x * 10\nprint(w)",
      "meldung": "(keine Fehlermeldung) Ausgabe: [1, 2, 3] – x ist nur eine Kopie des Wertes."
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V08"
   },
   {
    "id": "sum-min-max",
    "name": "sum(), min(), max()",
    "kategorie": "Listen, Tupel & Dicts",
-   "eingefuehrt": "V08",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Summe, kleinster und größter Wert einer Liste.",
    "syntax": "sum(liste)    min(liste)    max(liste)",
@@ -2488,13 +2521,14 @@
      "code": "max([])",
      "meldung": "ValueError: max() iterable argument is empty"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V08"
   },
   {
    "id": "sorted",
    "name": "sorted() / sort()",
    "kategorie": "Listen, Tupel & Dicts",
-   "eingefuehrt": "V08",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Sortiert eine Liste.",
    "syntax": "sorted(liste)    sorted(liste, reverse=True)    liste.sort()",
@@ -2533,13 +2567,14 @@
      "code": "l = [3, 1, 2]\nl = l.sort()\nprint(l)",
      "meldung": "(keine Fehlermeldung) Ausgabe: None – sort() verändert die Liste und gibt None zurück."
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V08"
   },
   {
    "id": "tupel",
    "name": "Tupel",
    "kategorie": "Listen, Tupel & Dicts",
-   "eingefuehrt": "V08",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Wie eine Liste, aber unveränderlich.",
    "syntax": "t = (wert1, wert2)    a, b = t",
@@ -2582,13 +2617,14 @@
      "code": "a, b = (1, 2, 3)",
      "meldung": "ValueError: too many values to unpack (expected 2)"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V08"
   },
   {
    "id": "dict",
    "name": "Dictionary (dict)",
    "kategorie": "Listen, Tupel & Dicts",
-   "eingefuehrt": "V08",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Speichert Werte unter Schlüsseln – wie ein Datenblatt.",
    "syntax": "d = {'schluessel': wert}    d['schluessel']    d['neu'] = wert",
@@ -2631,13 +2667,14 @@
      "code": "d = {}\nd[[1, 2]] = \"x\"",
      "meldung": "TypeError: unhashable type: 'list'"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V08"
   },
   {
    "id": "dict-get",
    "name": "dict.get()",
    "kategorie": "Listen, Tupel & Dicts",
-   "eingefuehrt": "V08",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Liest einen Wert und liefert einen Ersatzwert, wenn der Schlüssel fehlt.",
    "syntax": "d.get(schluessel)    d.get(schluessel, ersatz)",
@@ -2675,13 +2712,14 @@
      "code": "d = {\"a\": 1}\nprint(d.get(\"b\") + 1)",
      "meldung": "TypeError: unsupported operand type(s) for +: 'NoneType' and 'int'"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V08"
   },
   {
    "id": "dict-items",
    "name": "dict.items(), keys(), values()",
    "kategorie": "Listen, Tupel & Dicts",
-   "eingefuehrt": "V08",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Ein Dictionary durchlaufen.",
    "syntax": "for k, v in d.items():    d.keys()    d.values()",
@@ -2722,13 +2760,14 @@
      "code": "d = {\"a\": 1, \"b\": 2}\nfor k in d:\n    d[k + \"x\"] = 0",
      "meldung": "RuntimeError: dictionary changed size during iteration"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V08"
   },
   {
    "id": "split",
    "name": "str.split()",
    "kategorie": "Text & Formatierung",
-   "eingefuehrt": "V09",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Zerlegt einen Text in eine Liste von Teilen.",
    "syntax": "text.split(trenner)    text.split()",
@@ -2768,13 +2807,14 @@
      "code": "teile = \"1;2;\".split(\";\")\nfor t in teile:\n    print(float(t))",
      "meldung": "ValueError: could not convert string to float: ''"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V09"
   },
   {
    "id": "strip",
    "name": "str.strip()",
    "kategorie": "Text & Formatierung",
-   "eingefuehrt": "V09",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Entfernt Leerzeichen und Zeilenumbrüche an Anfang und Ende.",
    "syntax": "text.strip()    text.strip(zeichen)",
@@ -2813,13 +2853,14 @@
      "code": "print(\"a  b\".strip())",
      "meldung": "(keine Fehlermeldung) Ausgabe: a  b – innere Leerzeichen bleiben stehen."
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V09"
   },
   {
    "id": "join",
    "name": "str.join()",
    "kategorie": "Text & Formatierung",
-   "eingefuehrt": "V09",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Setzt eine Liste von Texten zu einem Text zusammen.",
    "syntax": "trenner.join(liste_von_texten)",
@@ -2858,13 +2899,14 @@
      "code": "print([\"a\", \"b\"].join(\",\"))",
      "meldung": "AttributeError: 'list' object has no attribute 'join'"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V09"
   },
   {
    "id": "with-open",
    "name": "with open()",
    "kategorie": "Dateien & Fehler",
-   "eingefuehrt": "V09",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Öffnet eine Datei und schließt sie sicher wieder.",
    "syntax": "with open(name, modus, encoding='utf-8') as datei:",
@@ -2905,13 +2947,14 @@
      "code": "with open(\"x.txt\", \"w\") as f:\n    f.write(\"a\")\nf.write(\"b\")",
      "meldung": "ValueError: I/O operation on closed file."
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V09"
   },
   {
    "id": "csv-reader",
    "name": "csv.reader()",
    "kategorie": "Dateien & Fehler",
-   "eingefuehrt": "V09",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "lesen",
    "kurz": "Liest CSV-Dateien Zeile für Zeile als Listen von Texten.",
    "syntax": "import csv\ncsv.reader(datei, delimiter=';')",
@@ -2952,13 +2995,14 @@
      "code": "import csv, io\nr = csv.reader(io.StringIO(\"1;2;3\"))\nfor z in r:\n    print(z[1])",
      "meldung": "IndexError: list index out of range"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V09"
   },
   {
    "id": "try-except",
    "name": "try / except",
    "kategorie": "Dateien & Fehler",
-   "eingefuehrt": "V09",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Fängt Fehler ab, damit das Programm weiterläuft.",
    "syntax": "try:\n    riskanter_code\nexcept ValueError:\n    ersatz",
@@ -3002,13 +3046,14 @@
      "code": "try:\n    int(\"abc\")\nexcept TypeError:\n    print(\"nie erreicht\")",
      "meldung": "ValueError: invalid literal for int() with base 10: 'abc'"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V09"
   },
   {
    "id": "list-comprehension",
    "name": "List Comprehension",
-   "kategorie": "Ausblick (ab V10)",
-   "eingefuehrt": "V10",
+   "kategorie": "Ausblick (spätere Termine)",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "lesen",
    "kurz": "Baut eine Liste in einer Zeile: [x * 2 for x in daten if x > 0].",
    "syntax": "[ausdruck for x in folge if bedingung]",
@@ -3019,13 +3064,14 @@
    ],
    "bezeichner": [
     "comprehension"
-   ]
+   ],
+   "eingefuehrt_alt": "V10"
   },
   {
    "id": "tokenizer",
    "name": "Tokenizer",
-   "kategorie": "Ausblick (ab V10)",
-   "eingefuehrt": "V10",
+   "kategorie": "Ausblick (spätere Termine)",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "lesen",
    "kurz": "Zerlegt Text in Tokens, die kleinsten Einheiten eines Sprachmodells.",
    "syntax": "text.split()  → vereinfachter Tokenizer",
@@ -3035,13 +3081,14 @@
    ],
    "bezeichner": [
     "Tokenizer"
-   ]
+   ],
+   "eingefuehrt_alt": "V10"
   },
   {
    "id": "import",
    "name": "import & Module",
-   "kategorie": "Ausblick (ab V10)",
-   "eingefuehrt": "V11",
+   "kategorie": "Ausblick (spätere Termine)",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Holt fremden Code in dein Programm: import modul, from modul import name.",
    "syntax": "import modul    from modul import name    import modul as kurz",
@@ -3051,13 +3098,14 @@
    ],
    "bezeichner": [
     "from"
-   ]
+   ],
+   "eingefuehrt_alt": "V11"
   },
   {
    "id": "pip",
    "name": "pip install",
-   "kategorie": "Ausblick (ab V10)",
-   "eingefuehrt": "V11",
+   "kategorie": "Ausblick (spätere Termine)",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "lesen",
    "kurz": "Installiert zusätzliche Pakete aus dem Internet (Terminal).",
    "syntax": "pip install paketname",
@@ -3065,13 +3113,14 @@
    "verwandt": [],
    "bezeichner": [
     "pip install"
-   ]
+   ],
+   "eingefuehrt_alt": "V11"
   },
   {
    "id": "numpy-array",
    "name": "NumPy-Array",
-   "kategorie": "Ausblick (ab V10)",
-   "eingefuehrt": "V13",
+   "kategorie": "Ausblick (spätere Termine)",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "lesen",
    "kurz": "Schnelles Feld aus Zahlen, mit dem sich ganze Reihen auf einmal rechnen lassen.",
    "syntax": "import numpy as np\nnp.array([1, 2, 3])",
@@ -3082,13 +3131,14 @@
    "bezeichner": [
     "numpy",
     "np"
-   ]
+   ],
+   "eingefuehrt_alt": "V13"
   },
   {
    "id": "vektorisierung",
    "name": "Vektorisierung",
-   "kategorie": "Ausblick (ab V10)",
-   "eingefuehrt": "V13",
+   "kategorie": "Ausblick (spätere Termine)",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "lesen",
    "kurz": "Rechnen auf ganzen Arrays statt in Schleifen: a * 2 + b.",
    "syntax": "arr * 2 + 1",
@@ -3099,13 +3149,14 @@
    ],
    "bezeichner": [
     "Vektorisierung"
-   ]
+   ],
+   "eingefuehrt_alt": "V13"
   },
   {
    "id": "zeit-messen",
    "name": "Zeit messen (time)",
-   "kategorie": "Ausblick (ab V10)",
-   "eingefuehrt": "V13",
+   "kategorie": "Ausblick (spätere Termine)",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "lesen",
    "kurz": "Laufzeit eines Programmteils messen: time.perf_counter().",
    "syntax": "import time\nstart = time.perf_counter()",
@@ -3115,13 +3166,14 @@
    ],
    "bezeichner": [
     "time"
-   ]
+   ],
+   "eingefuehrt_alt": "V13"
   },
   {
    "id": "matplotlib-plot",
    "name": "matplotlib: plot()",
-   "kategorie": "Ausblick (ab V10)",
-   "eingefuehrt": "V14",
+   "kategorie": "Ausblick (spätere Termine)",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "lesen",
    "kurz": "Zeichnet Diagramme: plt.plot(x, y), Achsenbeschriftung nicht vergessen.",
    "syntax": "import matplotlib.pyplot as plt\nplt.plot(x, y)\nplt.show()",
@@ -3132,13 +3184,14 @@
    "bezeichner": [
     "matplotlib",
     "plt"
-   ]
+   ],
+   "eingefuehrt_alt": "V14"
   },
   {
    "id": "pandas-dataframe",
    "name": "pandas: DataFrame",
-   "kategorie": "Ausblick (ab V10)",
-   "eingefuehrt": "V15",
+   "kategorie": "Ausblick (spätere Termine)",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "lesen",
    "kurz": "Tabelle im Speicher mit Spaltennamen; read_csv, Filtern, groupby, describe.",
    "syntax": "import pandas as pd\ndf = pd.read_csv('daten.csv')",
@@ -3152,13 +3205,14 @@
     "pd",
     "read_csv",
     "groupby"
-   ]
+   ],
+   "eingefuehrt_alt": "V15"
   },
   {
    "id": "pathlib",
    "name": "pathlib / os",
-   "kategorie": "Ausblick (ab V10)",
-   "eingefuehrt": "V16",
+   "kategorie": "Ausblick (spätere Termine)",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "lesen",
    "kurz": "Dateien und Ordner finden und durchsuchen.",
    "syntax": "from pathlib import Path\nPath('.').glob('*.csv')",
@@ -3169,13 +3223,14 @@
    "bezeichner": [
     "Path",
     "os"
-   ]
+   ],
+   "eingefuehrt_alt": "V16"
   },
   {
    "id": "json",
    "name": "json",
-   "kategorie": "Ausblick (ab V10)",
-   "eingefuehrt": "V17",
+   "kategorie": "Ausblick (spätere Termine)",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "lesen",
    "kurz": "Austauschformat für Daten, sieht fast aus wie ein dict.",
    "syntax": "import json\njson.loads(text)",
@@ -3185,13 +3240,14 @@
    ],
    "bezeichner": [
     "json"
-   ]
+   ],
+   "eingefuehrt_alt": "V17"
   },
   {
    "id": "requests",
    "name": "requests (HTTP)",
-   "kategorie": "Ausblick (ab V10)",
-   "eingefuehrt": "V17",
+   "kategorie": "Ausblick (spätere Termine)",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "lesen",
    "kurz": "Fragt Daten von einer Web-API ab.",
    "syntax": "import requests\nrequests.get(url).json()",
@@ -3201,13 +3257,14 @@
    ],
    "bezeichner": [
     "requests (HTTP)"
-   ]
+   ],
+   "eingefuehrt_alt": "V17"
   },
   {
    "id": "sqlite3",
    "name": "sqlite3 (SQL)",
-   "kategorie": "Ausblick (ab V10)",
-   "eingefuehrt": "V19",
+   "kategorie": "Ausblick (spätere Termine)",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "lesen",
    "kurz": "Eingebaute Datenbank: Tabellen abfragen mit SQL und Platzhaltern.",
    "syntax": "import sqlite3\ncon = sqlite3.connect('daten.db')",
@@ -3217,13 +3274,14 @@
    ],
    "bezeichner": [
     "sql"
-   ]
+   ],
+   "eingefuehrt_alt": "V19"
   },
   {
    "id": "class",
    "name": "class",
-   "kategorie": "Ausblick (ab V10)",
-   "eingefuehrt": "V20",
+   "kategorie": "Ausblick (spätere Termine)",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "lesen",
    "kurz": "Eigener Datentyp mit Attributen und Methoden, z. B. ein parametrisches Bauteil.",
    "syntax": "class Bauteil:\n    def __init__(self, laenge):\n        self.laenge = laenge",
@@ -3234,13 +3292,14 @@
    "bezeichner": [
     "__init__",
     "self"
-   ]
+   ],
+   "eingefuehrt_alt": "V20"
   },
   {
    "id": "testfunktion",
    "name": "Testfunktion",
    "kategorie": "Testen & Fehlersuche",
-   "eingefuehrt": "V12",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "lesen",
    "kurz": "Eine Funktion test_...(), die mit assert prüft, ob deine Funktion das Richtige liefert.",
    "syntax": "def test_name():\n    assert funktion(eingabe) == erwartet\n    print(\"bestanden\")\n\ntest_name()",
@@ -3285,13 +3344,14 @@
      "code": "def test_null():\n    assert 0 == 0\n\ntest_null(5)",
      "meldung": "TypeError: test_null() takes 0 positional arguments but 1 was given"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V12"
   },
   {
    "id": "testfaelle-liste",
    "name": "Testfälle als Liste",
    "kategorie": "Testen & Fehlersuche",
-   "eingefuehrt": "V12",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "lesen",
    "kurz": "Alle Testfälle als Liste von Tupeln (Eingabe, erwartet) und eine Schleife, die sie abarbeitet.",
    "syntax": "faelle = [(eingabe1, erwartet1), (eingabe2, erwartet2)]\nfor eingabe, erwartet in faelle:\n    assert funktion(eingabe) == erwartet, f\"...\"",
@@ -3333,13 +3393,14 @@
      "code": "faelle = [(1, 2), (3, 4, 5)]\nfor eingabe, erwartet in faelle:\n    print(eingabe, erwartet)",
      "meldung": "ValueError: too many values to unpack (expected 2)"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V12"
   },
   {
    "id": "except-as",
    "name": "except … as fehler",
    "kategorie": "Testen & Fehlersuche",
-   "eingefuehrt": "V12",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "lesen",
    "kurz": "Fängt einen Fehler ab und gibt dir das Fehlerobjekt, dessen Meldung du ausgeben kannst.",
    "syntax": "try:\n    ...\nexcept AssertionError as fehler:\n    print(fehler)",
@@ -3383,13 +3444,14 @@
      "code": "try:\n    x = 1\nexcept ValueError as fehler\n    print(fehler)",
      "meldung": "SyntaxError: expected ':'"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V12"
   },
   {
    "id": "grenzwerte-testen",
    "name": "Grenzwerte testen",
    "kategorie": "Testen & Fehlersuche",
-   "eingefuehrt": "V12",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Merkkarte: Welche Testfälle du wählst, damit Fehler an den Rändern nicht durchrutschen.",
    "syntax": "Bereich: je ein typischer Wert\nGrenze: beide Seiten testen\nSonderfälle: 0, negativ, leere Liste",
@@ -3429,13 +3491,14 @@
      "code": "def mittelwert(werte):\n    return sum(werte) / len(werte)\n\nprint(mittelwert([2, 4]))\nprint(mittelwert([]))",
      "meldung": "ZeroDivisionError: division by zero"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V12"
   },
   {
    "id": "assertion-error",
    "name": "AssertionError",
    "kategorie": "Testen & Fehlersuche",
-   "eingefuehrt": "V12",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Die Fehlerart, wenn ein assert scheitert: Die Annahme war falsch.",
    "syntax": "AssertionError: Meldung",
@@ -3476,13 +3539,14 @@
      "code": "assert (1 == 2, \"wird nie geprüft\")\nprint(\"läuft durch, obwohl falsch\")",
      "meldung": "Kein Fehler, nur eine Warnung: SyntaxWarning: assertion is always true, perhaps remove parentheses?"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V12"
   },
   {
    "id": "assert",
    "name": "assert",
    "kategorie": "Testen & Fehlersuche",
-   "eingefuehrt": "V12",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Bricht mit AssertionError ab, wenn eine Annahme nicht stimmt: assert bedingung, \"Meldung\".",
    "syntax": "assert bedingung\nassert bedingung, \"Meldung\"",
@@ -3533,13 +3597,14 @@
      "code": "assert (1 == 2, \"wird nie geprüft\")\nprint(\"läuft durch, obwohl falsch\")",
      "meldung": "Kein Fehler, nur eine Warnung: SyntaxWarning: assertion is always true, perhaps remove parentheses?"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V12"
   },
   {
    "id": "traceback",
    "name": "Traceback lesen",
    "kategorie": "Testen & Fehlersuche",
-   "eingefuehrt": "V12",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Die Fehlermeldung von unten nach oben lesen: letzte Zeile = Fehlerart und Grund, darüber die Stelle im Code.",
    "syntax": "Traceback (most recent call last):\n  File \"...\", line 7, in <module>\n    ...\nFehlerart: Beschreibung",
@@ -3584,13 +3649,14 @@
      "code": "print(\"Wert: \" + 5)",
      "meldung": "TypeError: can only concatenate str (not \"int\") to str"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V12"
   },
   {
    "id": "numpy-reihen",
    "name": "np.arange / np.linspace",
-   "kategorie": "Ausblick (ab V10)",
-   "eingefuehrt": "V13",
+   "kategorie": "Ausblick (spätere Termine)",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "lesen",
    "kurz": "Zahlenreihen als Array: arange wie range (Stopp nicht dabei), linspace mit fester Anzahl (beide Enden dabei).",
    "syntax": "np.arange(0, 1, 0.25)\nnp.linspace(0, 1, 5)\nt = np.arange(N) / fs",
@@ -3602,13 +3668,14 @@
    "bezeichner": [
     "np.arange",
     "np.linspace"
-   ]
+   ],
+   "eingefuehrt_alt": "V13"
   },
   {
    "id": "numpy-kennwerte",
    "name": "np.mean / np.max / np.sqrt",
-   "kategorie": "Ausblick (ab V10)",
-   "eingefuehrt": "V13",
+   "kategorie": "Ausblick (spätere Termine)",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "lesen",
    "kurz": "Kennwerte eines Arrays: Mittelwert, Maximum, Minimum, Summe; np.sqrt wirkt auf jedes Element. Effektivwert: np.sqrt(np.mean(a ** 2)).",
    "syntax": "np.mean(a)    np.max(a)    np.sum(a)\nnp.sqrt(np.mean(a ** 2))",
@@ -3624,13 +3691,14 @@
     "np.sum",
     "np.sqrt",
     "np.median"
-   ]
+   ],
+   "eingefuehrt_alt": "V13"
   },
   {
    "id": "numpy-maske",
    "name": "Maske a[a > 3]",
-   "kategorie": "Ausblick (ab V10)",
-   "eingefuehrt": "V13",
+   "kategorie": "Ausblick (spätere Termine)",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "lesen",
    "kurz": "Ein Vergleich auf dem Array ergibt Wahr/Falsch je Element; a[maske] behält nur die passenden Werte. Zwei Bedingungen mit & bzw. | und Klammern.",
    "syntax": "a[a > 3]\nlen(a[a > 3]) / len(a)\na[(a > 1) & (a < 4)]",
@@ -3641,13 +3709,14 @@
    ],
    "bezeichner": [
     "Maske a[a > 3]"
-   ]
+   ],
+   "eingefuehrt_alt": "V13"
   },
   {
    "id": "numpy-loadtxt",
    "name": "np.loadtxt",
-   "kategorie": "Ausblick (ab V10)",
-   "eingefuehrt": "V13",
+   "kategorie": "Ausblick (spätere Termine)",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "lesen",
    "kurz": "Liest eine Textdatei mit Zahlen direkt als Array: Trennzeichen, Kopfzeile überspringen, Spalten wählen.",
    "syntax": "np.loadtxt('daten.csv', delimiter=',', skiprows=1, usecols=4)",
@@ -3658,13 +3727,14 @@
    ],
    "bezeichner": [
     "np.loadtxt"
-   ]
+   ],
+   "eingefuehrt_alt": "V13"
   },
   {
    "id": "plt-plot",
    "name": "plt.plot() mit Beschriftung",
    "kategorie": "Diagramme (matplotlib)",
-   "eingefuehrt": "V14",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Zeichnet eine Linie aus zwei gleich langen Listen und beschriftet die Achsen mit Größe und Einheit.",
    "syntax": "import matplotlib.pyplot as plt\nplt.plot(x_liste, y_liste)\nplt.xlabel(\"Größe Formelzeichen in Einheit\")\nplt.ylabel(\"...\")\nplt.title(\"...\")\nplt.show()",
@@ -3722,13 +3792,14 @@
      "code": "plt.plot([0, 1], [0, 1])",
      "meldung": "NameError: name 'plt' is not defined"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V14"
   },
   {
    "id": "plt-diagrammarten",
    "name": "scatter, bar, hist",
    "kategorie": "Diagramme (matplotlib)",
-   "eingefuehrt": "V14",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Punkte für Zusammenhänge, Balken für Kategorien, Histogramm für Verteilungen.",
    "syntax": "plt.scatter(x, y)\nplt.bar(namen, werte)\nplt.hist(werte, bins=12)",
@@ -3775,13 +3846,14 @@
      "code": "import matplotlib.pyplot as plt\nplt.bar([\"A\", \"B\", \"C\"], [1, 2])\nplt.show()",
      "meldung": "ValueError: shape mismatch: objects cannot be broadcast to a single shape.  Mismatch is between 'x' with shape (3,) and 'height' with shape (2,)."
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V14"
   },
   {
    "id": "plt-achsen",
    "name": "ylim, axhline, legend",
    "kategorie": "Diagramme (matplotlib)",
-   "eingefuehrt": "V14",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Achsengrenzen selbst festlegen, Hilfslinien zeichnen, Linien unterscheidbar beschriften.",
    "syntax": "plt.ylim(unten, oben)\nplt.axhline(y, color=\"gray\")\nplt.plot(x, y, label=\"...\")\nplt.legend()",
@@ -3835,13 +3907,14 @@
      "code": "import matplotlib.pyplot as plt\nplt.plot([0, 1], [0, 1])\nplt.legend()\nplt.title(\"Leere Legende\")\nplt.show()",
      "meldung": "Warnung: No artists with labels found to put in legend; die Legende bleibt leer"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V14"
   },
   {
    "id": "tupel-entpacken",
    "name": "Tupel entpacken (a, b = ...)",
    "kategorie": "Listen, Tupel & Dicts",
-   "eingefuehrt": "V14",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Verteilt mehrere Werte in einem Schritt auf mehrere Namen.",
    "syntax": "a, b = paar\nfig, ax = plt.subplots()",
@@ -3882,13 +3955,14 @@
      "code": "a, b, c = (1, 2)",
      "meldung": "ValueError: not enough values to unpack (expected 3, got 2)"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V14"
   },
   {
    "id": "plt-subplots",
    "name": "plt.subplots()",
    "kategorie": "Diagramme (matplotlib)",
-   "eingefuehrt": "V14",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Legt eine Abbildung mit einem oder mehreren Teilbildern an; gezeichnet wird über den Namen des Teilbilds.",
    "syntax": "fig, ax = plt.subplots()\nfig, (oben, unten) = plt.subplots(2, 1, sharex=True)\nax.plot(x, y)\nax.set_xlabel(\"...\")",
@@ -3940,13 +4014,14 @@
      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(2, 1)\nax.plot([0, 1], [0, 1])",
      "meldung": "AttributeError: 'numpy.ndarray' object has no attribute 'plot'"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V14"
   },
   {
    "id": "json-loads",
    "name": "json.loads() / json.dumps()",
    "kategorie": "Netzwerk & JSON",
-   "eingefuehrt": "V17",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Übersetzt JSON-Text in Python-Daten (loads) und Python-Daten in JSON-Text (dumps).",
    "syntax": "import json\ndaten = json.loads(text)\ntext = json.dumps(daten)\ntext = json.dumps(daten, indent=2)",
@@ -4004,13 +4079,14 @@
      "code": "import json\njson.loads({\"id\": \"D2\"})",
      "meldung": "TypeError: the JSON object must be str, bytes or bytearray, not dict"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V17"
   },
   {
    "id": "json-datei",
    "name": "json.load() / json.dump()",
    "kategorie": "Netzwerk & JSON",
-   "eingefuehrt": "V17",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "lesen",
    "kurz": "Liest JSON aus einer Datei bzw. schreibt Python-Daten als JSON in eine Datei.",
    "syntax": "with open(\"datei.json\", encoding=\"utf-8\") as f:\n    daten = json.load(f)\nwith open(\"datei.json\", \"w\", encoding=\"utf-8\") as f:\n    json.dump(daten, f, indent=2)",
@@ -4054,13 +4130,14 @@
      "code": "import json\nopen(\"x.json\", \"w\").close()\nwith open(\"x.json\", encoding=\"utf-8\") as f:\n    json.dump({\"a\": 1}, f)",
      "meldung": "io.UnsupportedOperation: not writable"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V17"
   },
   {
    "id": "verschachtelt",
    "name": "Verschachtelte Daten",
    "kategorie": "Listen, Tupel & Dicts",
-   "eingefuehrt": "V17",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Listen von Dicts und Dicts in Dicts: Zugriffe von außen nach innen aneinanderhängen.",
    "syntax": "zelle[\"maschinen\"][0][\"id\"]\nfor m in zelle[\"maschinen\"]:\n    print(m[\"id\"])\nd2[\"verschleiss\"][\"T4\"]",
@@ -4105,13 +4182,14 @@
      "code": "maschinen = [{\"id\": \"D2\", \"temperatur_c\": 48.5}, {\"id\": \"R1\"}]\nfor m in maschinen:\n    print(m[\"temperatur_c\"])",
      "meldung": "KeyError: 'temperatur_c'"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V17"
   },
   {
    "id": "ipaddress",
    "name": "ipaddress (IP und Subnetz)",
    "kategorie": "Netzwerk & JSON",
-   "eingefuehrt": "V17",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "lesen",
    "kurz": "Prüft IP-Adressen und Netze: Liegt ein Gerät im Netz, wie viele Adressen hat das Netz?",
    "syntax": "import ipaddress\nnetz = ipaddress.ip_network(\"192.168.30.0/24\")\nip = ipaddress.ip_address(\"192.168.30.11\")\nip in netz",
@@ -4167,13 +4245,14 @@
      "code": "print(\"192.168.31.20\".startswith(\"192.168.3\"))",
      "meldung": "kein Fehler, aber True: 192.168.31.20 liegt nicht in 192.168.30.0/24"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V17"
   },
   {
    "id": "pd-read-csv",
    "name": "pd.read_csv()",
    "kategorie": "Datenanalyse (pandas)",
-   "eingefuehrt": "V15",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Liest eine CSV-Datei als Tabelle (DataFrame) mit Spaltennamen ein.",
    "syntax": "import pandas as pd\ndf = pd.read_csv(\"datei.csv\")\ndf = pd.read_csv(\"datei.csv\", sep=\";\", decimal=\",\")",
@@ -4222,13 +4301,14 @@
      "code": "import pandas as pd\ndf = pd.read_csv(\"fehlt.csv\")",
      "meldung": "FileNotFoundError: [Errno 2] No such file or directory: 'fehlt.csv'"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V15"
   },
   {
    "id": "pd-spalte",
    "name": "Spalte df[\"name\"] (Series)",
    "kategorie": "Datenanalyse (pandas)",
-   "eingefuehrt": "V15",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Holt eine Spalte aus der Tabelle; mit ihr rechnest du wie mit einer Messreihe.",
    "syntax": "df[\"spalte\"]            # eine Spalte (Series)\ndf[[\"a\", \"b\"]]         # mehrere Spalten (DataFrame)\ndf[\"spalte\"].mean()     # auch .std() .min() .max() .count()",
@@ -4276,13 +4356,14 @@
      "code": "with open(\"wellen.csv\", \"w\", encoding=\"utf-8\") as f:\n    f.write(\"stichprobe,maschine,teil,durchmesser_mm\\n\"\n            \"1,D1,1,20.001\\n1,D1,2,19.998\\n1,D2,1,20.009\\n1,D2,2,20.012\\n\"\n            \"2,D1,1,20.002\\n2,D1,2,19.997\\n2,D2,1,20.015\\n2,D2,2,20.021\\n\")\nimport pandas as pd\ndf = pd.read_csv(\"wellen.csv\")\nprint(df[\"maschine\", \"durchmesser_mm\"])",
      "meldung": "KeyError: ('maschine', 'durchmesser_mm')"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V15"
   },
   {
    "id": "pd-describe",
    "name": "describe()",
    "kategorie": "Datenanalyse (pandas)",
-   "eingefuehrt": "V15",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "lesen",
    "kurz": "Zeigt die wichtigsten Kennwerte einer Spalte oder Tabelle auf einen Blick.",
    "syntax": "df[\"spalte\"].describe()\ndf.describe()",
@@ -4327,13 +4408,14 @@
      "code": "import statistics\nprint(round(statistics.pstdev([1.0, 2.0, 3.0]), 4), round(statistics.stdev([1.0, 2.0, 3.0]), 4))",
      "meldung": "(keine Fehlermeldung) pandas std() rechnet wie statistics.stdev mit n − 1, nicht wie pstdev."
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V15"
   },
   {
    "id": "pd-filtern",
    "name": "Filtern mit Maske df[bedingung]",
    "kategorie": "Datenanalyse (pandas)",
-   "eingefuehrt": "V15",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Behält nur die Zeilen, für die eine Bedingung wahr ist.",
    "syntax": "maske = df[\"spalte\"] > grenze\ndf[maske]\ndf[(bedingung1) & (bedingung2)]   # und\ndf[(bedingung1) | (bedingung2)]   # oder\ndf[~(bedingung)]                  # nicht",
@@ -4380,13 +4462,14 @@
      "code": "with open(\"wellen.csv\", \"w\", encoding=\"utf-8\") as f:\n    f.write(\"stichprobe,maschine,teil,durchmesser_mm\\n\"\n            \"1,D1,1,20.001\\n1,D1,2,19.998\\n1,D2,1,20.009\\n1,D2,2,20.012\\n\"\n            \"2,D1,1,20.002\\n2,D1,2,19.997\\n2,D2,1,20.015\\n2,D2,2,20.021\\n\")\nimport pandas as pd\ndf = pd.read_csv(\"wellen.csv\")\nprint(df[df[\"durchmesser_mm\"] > 20.01 & df[\"maschine\"] == \"D2\"])",
      "meldung": "TypeError: unsupported operand type(s) for &: 'float' and 'StringArray'"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V15"
   },
   {
    "id": "pd-groupby",
    "name": "groupby()",
    "kategorie": "Datenanalyse (pandas)",
-   "eingefuehrt": "V15",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Teilt die Tabelle in Gruppen auf und berechnet je Gruppe einen Kennwert.",
    "syntax": "df.groupby(\"gruppenspalte\")[\"wertspalte\"].mean()\ndf.groupby(\"gruppenspalte\")[\"wertspalte\"].agg([\"mean\", \"std\", \"count\"])",
@@ -4431,13 +4514,14 @@
      "code": "with open(\"wellen.csv\", \"w\", encoding=\"utf-8\") as f:\n    f.write(\"stichprobe,maschine,teil,durchmesser_mm\\n\"\n            \"1,D1,1,20.001\\n1,D1,2,19.998\\n1,D2,1,20.009\\n1,D2,2,20.012\\n\"\n            \"2,D1,1,20.002\\n2,D1,2,19.997\\n2,D2,1,20.015\\n2,D2,2,20.021\\n\")\nimport pandas as pd\ndf = pd.read_csv(\"wellen.csv\")\nprint(type(df.groupby(\"maschine\")[\"durchmesser_mm\"]).__name__)",
      "meldung": "(keine Fehlermeldung) Ausgabe: SeriesGroupBy. Erst .mean(), .std() oder .agg([...]) rechnet etwas aus."
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V15"
   },
   {
    "id": "pd-neue-spalte",
    "name": "Neue Spalte berechnen",
    "kategorie": "Datenanalyse (pandas)",
-   "eingefuehrt": "V15",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Rechnet aus vorhandenen Spalten eine neue, für alle Zeilen auf einmal.",
    "syntax": "df[\"neu\"] = ausdruck_mit_spalten\nkennwerte[\"Cp\"] = (OSG - USG) / (6 * kennwerte[\"std\"])",
@@ -4480,13 +4564,14 @@
      "code": "with open(\"wellen.csv\", \"w\", encoding=\"utf-8\") as f:\n    f.write(\"stichprobe,maschine,teil,durchmesser_mm\\n\"\n            \"1,D1,1,20.001\\n1,D1,2,19.998\\n1,D2,1,20.009\\n1,D2,2,20.012\\n\"\n            \"2,D1,1,20.002\\n2,D1,2,19.997\\n2,D2,1,20.015\\n2,D2,2,20.021\\n\")\nimport pandas as pd\ndf = pd.read_csv(\"wellen.csv\")\nprint(df[\"maschine\"] - 1)",
      "meldung": "TypeError: unsupported operand type(s) for -: 'str' and 'int'"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V15"
   },
   {
    "id": "pd-value-counts",
    "name": "value_counts() und unique()",
    "kategorie": "Datenanalyse (pandas)",
-   "eingefuehrt": "V15",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "lesen",
    "kurz": "Zählt, wie oft jeder Wert in einer Spalte vorkommt.",
    "syntax": "df[\"spalte\"].value_counts()\ndf[\"spalte\"].unique()",
@@ -4525,13 +4610,14 @@
      "code": "with open(\"wellen.csv\", \"w\", encoding=\"utf-8\") as f:\n    f.write(\"stichprobe,maschine,teil,durchmesser_mm\\n\"\n            \"1,D1,1,20.001\\n1,D1,2,19.998\\n1,D2,1,20.009\\n1,D2,2,20.012\\n\"\n            \"2,D1,1,20.002\\n2,D1,2,19.997\\n2,D2,1,20.015\\n2,D2,2,20.021\\n\")\nimport pandas as pd\ndf = pd.read_csv(\"wellen.csv\")\nprint(df.unique())",
      "meldung": "AttributeError: 'DataFrame' object has no attribute 'unique'. Did you mean: 'nunique'?"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V15"
   },
   {
    "id": "pd-cp-cpk",
    "name": "Cp und Cpk berechnen",
    "kategorie": "Datenanalyse (pandas)",
-   "eingefuehrt": "V15",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Prozessfähigkeit: Wie gut passt die Streuung (Cp) und die Lage (Cpk) in die Toleranz?",
    "syntax": "Cp  = (OSG - USG) / (6 * s)\nCpk = min(OSG - mittel, mittel - USG) / (3 * s)",
@@ -4578,13 +4664,14 @@
      "code": "import statistics\nwerte = [20.0, 20.0, 20.0]\nprint((20.02 - 19.98) / (6 * statistics.stdev(werte)))",
      "meldung": "ZeroDivisionError: float division by zero"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V15"
   },
   {
    "id": "hashlib-sha256",
    "name": "hashlib.sha256().hexdigest()",
    "kategorie": "Sicherheit & Prüfsummen",
-   "eingefuehrt": "V18",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Berechnet den SHA-256-Fingerabdruck (Hash) von Bytes: immer 64 Hex-Zeichen.",
    "syntax": "import hashlib\nhashlib.sha256(daten).hexdigest()\nhashlib.sha256(\"Text\".encode(\"utf-8\")).hexdigest()",
@@ -4645,13 +4732,14 @@
      "code": "import hashlib\nsoll = hashlib.sha256(b\"abc\").hexdigest()\nprint(hashlib.sha256(b\"abc\").digest() == soll)",
      "meldung": "kein Fehler, aber False: digest() liefert Bytes, hexdigest() Text"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V18"
   },
   {
    "id": "bytes-encode",
    "name": "bytes, b\"...\", .encode()",
    "kategorie": "Sicherheit & Prüfsummen",
-   "eingefuehrt": "V18",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "lesen",
    "kurz": "Bytes sind rohe Daten (Zahlen 0 bis 255). Text wird mit .encode() zu Bytes, mit .decode() zurück.",
    "syntax": "daten = b\"R1-FW\"\ndaten = \"Text\".encode(\"utf-8\")\ntext = daten.decode(\"utf-8\")",
@@ -4703,13 +4791,14 @@
      "code": "print(\"Ä\".encode(\"utf-8\").decode(\"ascii\"))",
      "meldung": "UnicodeDecodeError: 'ascii' codec can't decode byte 0xc3 in position 0: ordinal not in range(128)"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V18"
   },
   {
    "id": "datei-binaer",
    "name": "open(pfad, \"rb\") blockweise lesen",
    "kategorie": "Sicherheit & Prüfsummen",
-   "eingefuehrt": "V18",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "lesen",
    "kurz": "Öffnet eine Datei als Bytes (\"rb\") und liest sie Stück für Stück, z. B. für eine Prüfsumme.",
    "syntax": "with open(pfad, \"rb\") as datei:\n    while True:\n        block = datei.read(4096)\n        if not block:\n            break\n        h.update(block)",
@@ -4757,13 +4846,14 @@
      "code": "open(\"x.bin\", \"wb\").close()\nopen(\"x.bin\", \"rb\", encoding=\"utf-8\")",
      "meldung": "ValueError: binary mode doesn't take an encoding argument"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V18"
   },
   {
    "id": "pruefsumme-vergleichen",
    "name": "Prüfsumme vergleichen (Soll/Ist)",
    "kategorie": "Sicherheit & Prüfsummen",
-   "eingefuehrt": "V18",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Soll-Wert aus der .sha256-Datei lesen, bereinigen und mit dem selbst berechneten Ist-Wert vergleichen.",
    "syntax": "soll = f.read().split()[0].lower()\nist = sha256_datei(pfad)\nif ist == soll:\n    print(\"OK\")",
@@ -4809,13 +4899,14 @@
      "code": "zeile = \"\"\nsoll = zeile.split()[0]",
      "meldung": "IndexError: list index out of range"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V18"
   },
   {
    "id": "xor-bitweise",
    "name": "XOR ^ (bitweise)",
    "kategorie": "Sicherheit & Prüfsummen",
-   "eingefuehrt": "V18",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "lesen",
    "kurz": "Bitweises Exklusiv-Oder: a ^ b ist an jeder Stelle 1, wenn die Bits verschieden sind. Nicht die Potenz.",
    "syntax": "a ^ b\nergebnis ^= wert",
@@ -4868,13 +4959,14 @@
      "code": "print(1.5 ^ 2)",
      "meldung": "TypeError: unsupported operand type(s) for ^: 'float' and 'int'"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V18"
   },
   {
    "id": "sqlite-connect",
    "name": "sqlite3.connect() / cursor()",
    "kategorie": "Datenbanken (SQL)",
-   "eingefuehrt": "V19",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Öffnet eine SQLite-Datenbank und liefert einen Cursor, über den du SQL-Befehle ausführst.",
    "syntax": "import sqlite3\ndb = sqlite3.connect(\"datei.db\")   # oder \":memory:\"\ncur = db.cursor()\ncur.execute(\"SQL-Befehl\")\ndb.commit()\ndb.close()",
@@ -4923,13 +5015,14 @@
      "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ncur = db.cursor()\ncur.execute(\"CREATE TABLE auftraege (nr INTEGER PRIMARY KEY, teil TEXT, maschine TEXT, menge INTEGER, status TEXT)\")\ncur.executemany(\"INSERT INTO auftraege VALUES (?, ?, ?, ?, ?)\", [\n    (4711, \"WELLE_20H6\", \"D2\", 500, \"in Arbeit\"),\n    (4712, \"FLANSCH_80\", \"F1\", 120, \"offen\"),\n    (4713, \"WELLE_20H6\", \"D2\", 300, \"offen\"),\n    (4714, \"BUCHSE_30\", \"D2\", 800, \"fertig\"),\n    (4715, \"FLANSCH_80\", \"F1\", 60, \"fertig\"),\n])\ndb.commit()\ncur.execute(\"SELECT nummer FROM auftraege\")",
      "meldung": "sqlite3.OperationalError: no such column: nummer"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V19"
   },
   {
    "id": "sql-select",
    "name": "SELECT … FROM … WHERE",
    "kategorie": "Datenbanken (SQL)",
-   "eingefuehrt": "V19",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Fragt Zeilen einer Tabelle ab: welche Spalten, aus welcher Tabelle, unter welcher Bedingung.",
    "syntax": "SELECT spalte1, spalte2 FROM tabelle WHERE bedingung ORDER BY spalte DESC",
@@ -4980,13 +5073,14 @@
      "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ncur = db.cursor()\ncur.execute(\"CREATE TABLE auftraege (nr INTEGER PRIMARY KEY, teil TEXT, maschine TEXT, menge INTEGER, status TEXT)\")\ncur.executemany(\"INSERT INTO auftraege VALUES (?, ?, ?, ?, ?)\", [\n    (4711, \"WELLE_20H6\", \"D2\", 500, \"in Arbeit\"),\n    (4712, \"FLANSCH_80\", \"F1\", 120, \"offen\"),\n    (4713, \"WELLE_20H6\", \"D2\", 300, \"offen\"),\n    (4714, \"BUCHSE_30\", \"D2\", 800, \"fertig\"),\n    (4715, \"FLANSCH_80\", \"F1\", 60, \"fertig\"),\n])\ndb.commit()\ncur.execute(\"SELECT nr FROM auftraege WHERE status = offen\")",
      "meldung": "sqlite3.OperationalError: no such column: offen"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V19"
   },
   {
    "id": "sql-platzhalter",
    "name": "Platzhalter ? (gegen SQL-Injection)",
    "kategorie": "Datenbanken (SQL)",
-   "eingefuehrt": "V19",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Werte aus Python nie in den SQL-Text kleben, sondern mit ? und einem Tupel getrennt übergeben.",
    "syntax": "cur.execute(\"SELECT ... WHERE spalte = ? AND andere = ?\", (wert1, wert2))\ncur.execute(\"SELECT ... WHERE spalte = ?\", (wert,))   # Komma!",
@@ -5038,13 +5132,14 @@
      "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ncur = db.cursor()\ncur.execute(\"CREATE TABLE auftraege (nr INTEGER PRIMARY KEY, teil TEXT, maschine TEXT, menge INTEGER, status TEXT)\")\ncur.executemany(\"INSERT INTO auftraege VALUES (?, ?, ?, ?, ?)\", [\n    (4711, \"WELLE_20H6\", \"D2\", 500, \"in Arbeit\"),\n    (4712, \"FLANSCH_80\", \"F1\", 120, \"offen\"),\n    (4713, \"WELLE_20H6\", \"D2\", 300, \"offen\"),\n    (4714, \"BUCHSE_30\", \"D2\", 800, \"fertig\"),\n    (4715, \"FLANSCH_80\", \"F1\", 60, \"fertig\"),\n])\ndb.commit()\ncur.execute(\"SELECT nr FROM auftraege WHERE teil = 'x'; DELETE FROM auftraege\")",
      "meldung": "sqlite3.ProgrammingError: You can only execute one statement at a time."
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V19"
   },
   {
    "id": "sql-fetch",
    "name": "fetchall() / fetchone()",
    "kategorie": "Datenbanken (SQL)",
-   "eingefuehrt": "V19",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Holt das Ergebnis einer Abfrage: alle Zeilen als Liste von Tupeln oder eine Zeile (oder None).",
    "syntax": "zeilen = cur.fetchall()   # [(...), (...), ...]\nzeile = cur.fetchone()    # (...) oder None",
@@ -5083,13 +5178,14 @@
      "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ncur = db.cursor()\ncur.execute(\"CREATE TABLE auftraege (nr INTEGER PRIMARY KEY, teil TEXT, maschine TEXT, menge INTEGER, status TEXT)\")\ncur.executemany(\"INSERT INTO auftraege VALUES (?, ?, ?, ?, ?)\", [\n    (4711, \"WELLE_20H6\", \"D2\", 500, \"in Arbeit\"),\n    (4712, \"FLANSCH_80\", \"F1\", 120, \"offen\"),\n    (4713, \"WELLE_20H6\", \"D2\", 300, \"offen\"),\n    (4714, \"BUCHSE_30\", \"D2\", 800, \"fertig\"),\n    (4715, \"FLANSCH_80\", \"F1\", 60, \"fertig\"),\n])\ndb.commit()\ncur.execute(\"SELECT status FROM auftraege WHERE nr = ?\", (4799,))\nprint(cur.fetchone()[0])",
      "meldung": "TypeError: 'NoneType' object is not subscriptable"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V19"
   },
   {
    "id": "sql-insert",
    "name": "CREATE TABLE / INSERT / executemany",
    "kategorie": "Datenbanken (SQL)",
-   "eingefuehrt": "V19",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "lesen",
    "kurz": "Legt eine Tabelle an und fügt Zeilen ein, viele auf einmal mit executemany.",
    "syntax": "CREATE TABLE tabelle (spalte1 INTEGER PRIMARY KEY, spalte2 TEXT, spalte3 REAL)\ncur.execute(\"INSERT INTO tabelle VALUES (?, ?, ?)\", (1, \"a\", 2.5))\ncur.executemany(\"INSERT INTO tabelle VALUES (?, ?, ?)\", liste_von_tupeln)\ndb.commit()",
@@ -5141,13 +5237,14 @@
      "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ncur = db.cursor()\ncur.execute(\"CREATE TABLE auftraege (nr INTEGER PRIMARY KEY, teil TEXT, maschine TEXT, menge INTEGER, status TEXT)\")\ncur.executemany(\"INSERT INTO auftraege VALUES (?, ?, ?, ?, ?)\", [\n    (4711, \"WELLE_20H6\", \"D2\", 500, \"in Arbeit\"),\n    (4712, \"FLANSCH_80\", \"F1\", 120, \"offen\"),\n    (4713, \"WELLE_20H6\", \"D2\", 300, \"offen\"),\n    (4714, \"BUCHSE_30\", \"D2\", 800, \"fertig\"),\n    (4715, \"FLANSCH_80\", \"F1\", 60, \"fertig\"),\n])\ndb.commit()\ncur.execute(\"INSERT INTO auftraege VALUES (?, ?, ?)\", (4716, \"DECKEL_80\", \"F1\"))",
      "meldung": "sqlite3.OperationalError: table auftraege has 5 columns but 3 values were supplied"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V19"
   },
   {
    "id": "sql-update-delete",
    "name": "UPDATE / DELETE (immer mit WHERE)",
    "kategorie": "Datenbanken (SQL)",
-   "eingefuehrt": "V19",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "lesen",
    "kurz": "Ändert oder löscht Zeilen. Ohne WHERE trifft es jede Zeile der Tabelle.",
    "syntax": "cur.execute(\"UPDATE tabelle SET spalte = ? WHERE schluessel = ?\", (neu, nr))\ncur.execute(\"DELETE FROM tabelle WHERE schluessel = ?\", (nr,))\ndb.commit()\ncur.rowcount   # Anzahl betroffener Zeilen",
@@ -5195,13 +5292,14 @@
      "code": "import sqlite3\ndb = sqlite3.connect(\"t.db\")\ndb.execute(\"CREATE TABLE t (x INTEGER)\")\ndb.commit()\ndb.execute(\"INSERT INTO t VALUES (1)\")\ndb.close()\ndb = sqlite3.connect(\"t.db\")\nprint(db.execute(\"SELECT COUNT(*) FROM t\").fetchone())",
      "meldung": "(keine Fehlermeldung) Ausgabe (0,): Das INSERT wurde nie mit commit gespeichert."
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V19"
   },
   {
    "id": "sql-group-by",
    "name": "GROUP BY mit SUM / COUNT",
    "kategorie": "Datenbanken (SQL)",
-   "eingefuehrt": "V19",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "lesen",
    "kurz": "Fasst Zeilen zu Gruppen zusammen und rechnet je Gruppe eine Summe, Anzahl, Mittel, Min oder Max.",
    "syntax": "SELECT spalte, SUM(menge), COUNT(*) FROM tabelle GROUP BY spalte\n# weitere: AVG(x), MIN(x), MAX(x)",
@@ -5250,13 +5348,14 @@
      "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ncur = db.cursor()\ncur.execute(\"CREATE TABLE auftraege (nr INTEGER PRIMARY KEY, teil TEXT, maschine TEXT, menge INTEGER, status TEXT)\")\ncur.executemany(\"INSERT INTO auftraege VALUES (?, ?, ?, ?, ?)\", [\n    (4711, \"WELLE_20H6\", \"D2\", 500, \"in Arbeit\"),\n    (4712, \"FLANSCH_80\", \"F1\", 120, \"offen\"),\n    (4713, \"WELLE_20H6\", \"D2\", 300, \"offen\"),\n    (4714, \"BUCHSE_30\", \"D2\", 800, \"fertig\"),\n    (4715, \"FLANSCH_80\", \"F1\", 60, \"fertig\"),\n])\ndb.commit()\ncur.execute(\"SELECT maschine, teil, SUM(menge) FROM auftraege GROUP BY maschine ORDER BY maschine\")\nprint(cur.fetchall())",
      "meldung": "(keine Fehlermeldung) Das Teil je Gruppe ist eins der Teile, welches, ist nicht festgelegt. Andere Datenbanken melden hier einen Fehler."
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V19"
   },
   {
    "id": "sql-join",
    "name": "JOIN zweier Tabellen",
    "kategorie": "Datenbanken (SQL)",
-   "eingefuehrt": "V19",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "lesen",
    "kurz": "Verknüpft Zeilen zweier Tabellen über eine gemeinsame Spalte, z. B. Auftrag und Maschine.",
    "syntax": "SELECT a.nr, m.typ FROM auftraege a JOIN maschinen m ON a.maschine = m.id",
@@ -5300,13 +5399,14 @@
      "code": "import sqlite3\ndb = sqlite3.connect(\":memory:\")\ncur = db.cursor()\ncur.execute(\"CREATE TABLE auftraege (nr INTEGER PRIMARY KEY, teil TEXT, maschine TEXT, menge INTEGER, status TEXT)\")\ncur.executemany(\"INSERT INTO auftraege VALUES (?, ?, ?, ?, ?)\", [\n    (4711, \"WELLE_20H6\", \"D2\", 500, \"in Arbeit\"),\n    (4712, \"FLANSCH_80\", \"F1\", 120, \"offen\"),\n    (4713, \"WELLE_20H6\", \"D2\", 300, \"offen\"),\n    (4714, \"BUCHSE_30\", \"D2\", 800, \"fertig\"),\n    (4715, \"FLANSCH_80\", \"F1\", 60, \"fertig\"),\n])\ndb.commit()\ncur.execute(\"CREATE TABLE maschinen (id TEXT PRIMARY KEY, typ TEXT)\")\ncur.executemany(\"INSERT INTO maschinen VALUES (?, ?)\", [(\"D2\", \"Drehmaschine\"), (\"F1\", \"Fraesmaschine\")])\ncur.execute(\"SELECT a.nr, m.typ FROM auftraege a JOIN maschinen m\")\nprint(len(cur.fetchall()), \"Zeilen\")",
      "meldung": "(keine Fehlermeldung) 10 Zeilen statt 5: Ohne ON kombiniert der JOIN jeden Auftrag mit jeder Maschine."
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V19"
   },
   {
    "id": "path",
    "name": "Path (pathlib)",
    "kategorie": "Dateien & Fehler",
-   "eingefuehrt": "V16",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Ein Pfad als Objekt: Teile verbindest du mit /, geprüft und gelesen wird per Methode.",
    "syntax": "from pathlib import Path\nordner = Path(\"zelle\")\ndatei = ordner / \"maschinen\" / \"D2\"",
@@ -5354,13 +5454,14 @@
      "code": "from pathlib import Path\ntext = Path(\"messung.csv\").read_text(encoding=\"utf-8\")",
      "meldung": "FileNotFoundError: [Errno 2] No such file or directory: 'messung.csv'"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V16"
   },
   {
    "id": "path-teile",
    "name": "Path: name, stem, suffix, parent, parts",
    "kategorie": "Dateien & Fehler",
-   "eingefuehrt": "V16",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Zerlegt einen Pfad in Dateiname, Name ohne Endung, Endung und Ordner.",
    "syntax": "datei.name    datei.stem    datei.suffix    datei.parent    datei.parts",
@@ -5409,13 +5510,14 @@
      "code": "from pathlib import Path\nprint(Path(\"a/b.nc\").suffix == \"nc\")",
      "meldung": "False (die Endung ist \".nc\", mit Punkt)"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V16"
   },
   {
    "id": "glob",
    "name": "glob, rglob, iterdir",
    "kategorie": "Dateien & Fehler",
-   "eingefuehrt": "V16",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "lesen",
    "kurz": "Findet Dateien und Ordner nach Muster, auch in Unterordnern.",
    "syntax": "ordner.iterdir()    ordner.glob(\"*.log\")    ordner.rglob(\"*.nc\")",
@@ -5467,13 +5569,14 @@
      "code": "from pathlib import Path\nordner = Path(\"x/y\")\nordner.mkdir(parents=True)\n(ordner / \"a.nc\").write_text(\"G0\", encoding=\"utf-8\")\nprint(len(list(Path(\"x\").glob(\"*.nc\"))))",
      "meldung": "0 (glob sucht nur im Ordner selbst; rglob auch in Unterordnern)"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V16"
   },
   {
    "id": "path-pruefen",
    "name": "Path: exists, is_file, stat, read_text",
    "kategorie": "Dateien & Fehler",
-   "eingefuehrt": "V16",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "lesen",
    "kurz": "Prüft, ob es eine Datei oder einen Ordner gibt, liest die Größe und den Inhalt.",
    "syntax": "p.exists()    p.is_file()    p.is_dir()    p.stat().st_size    p.read_text(encoding=\"utf-8\")",
@@ -5525,13 +5628,14 @@
      "code": "from pathlib import Path\np = Path(\"a.txt\")\np.write_text(\"x\", encoding=\"utf-8\")\nprint(p.st_size)",
      "meldung": "AttributeError: 'PosixPath' object has no attribute 'st_size'"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V16"
   },
   {
    "id": "os-modul",
    "name": "os: getcwd, listdir (os.path, os.walk)",
    "kategorie": "Dateien & Fehler",
-   "eingefuehrt": "V16",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "lesen",
    "kurz": "Ältere Schreibweise für Ordner und Dateien; kommt in KI-Code und alten Skripten häufig vor.",
    "syntax": "import os\nos.getcwd()    os.listdir(\".\")    os.path.join(a, b)    os.walk(ordner)",
@@ -5581,13 +5685,14 @@
      "code": "print(os.getcwd())",
      "meldung": "NameError: name 'os' is not defined. Did you forget to import 'os'?"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V16"
   },
   {
    "id": "perf-counter",
    "name": "time.perf_counter()",
-   "kategorie": "Ausblick (ab V10)",
-   "eingefuehrt": "V16",
+   "kategorie": "Ausblick (spätere Termine)",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "lesen",
    "kurz": "Misst, wie lange ein Programmteil läuft: Zeit davor und danach, dann die Differenz.",
    "syntax": "import time\nstart = time.perf_counter()\n...\ndauer = time.perf_counter() - start",
@@ -5635,13 +5740,14 @@
      "code": "start = time.perf_counter()",
      "meldung": "NameError: name 'time' is not defined. Did you forget to import 'time'?"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V16"
   },
   {
    "id": "raw-string",
    "name": "Roher String r\"C:\\Users\\...\" (Windows-Pfade)",
    "kategorie": "Dateien & Fehler",
-   "eingefuehrt": "V16",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "lesen",
    "kurz": "Windows-Pfade mit \\ als rohen Text schreiben, damit Python den Backslash nicht als Sonderzeichen liest.",
    "syntax": "pfad = r\"C:\\Users\\name\\daten.csv\"\npfad = Path(\"C:/Users/name/daten.csv\")",
@@ -5688,13 +5794,14 @@
      "code": "pfad = r\"C:\\Daten\\\"\nprint(pfad)",
      "meldung": "SyntaxError: unterminated string literal (detected at line 1)"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V16"
   },
   {
    "id": "klasse",
    "name": "class (Klasse definieren)",
    "kategorie": "Klassen & Objekte",
-   "eingefuehrt": "V20",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Ein Bauplan für Objekte: bündelt Maße (Attribute) und Rechnungen (Methoden) eines Bauteils.",
    "syntax": "class Name:\n    def __init__(self, parameter):\n        self.parameter = parameter\n\n    def methode(self):\n        return ...",
@@ -5739,13 +5846,14 @@
      "code": "class Welle:\n    def __init__(self, d):\n        self.d = d\n\nprint(Welle.d)",
      "meldung": "AttributeError: type object 'Welle' has no attribute 'd'"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V20"
   },
   {
    "id": "init",
    "name": "__init__ (Konstruktor)",
    "kategorie": "Klassen & Objekte",
-   "eingefuehrt": "V20",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Richtet ein neues Objekt ein: nimmt die Maße entgegen und speichert sie als Attribute.",
    "syntax": "def __init__(self, d, l):\n    self.d = d\n    self.l = l",
@@ -5788,13 +5896,14 @@
      "code": "class Welle:\n    def __init__(self, d, l):\n        self.d = d\n        self.l = l\n\nw = Welle(20)",
      "meldung": "TypeError: Welle.__init__() missing 1 required positional argument: 'l'"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V20"
   },
   {
    "id": "self",
    "name": "self",
    "kategorie": "Klassen & Objekte",
-   "eingefuehrt": "V20",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Das Objekt, mit dem eine Methode gerade arbeitet: über self.name erreichst du seine Attribute.",
    "syntax": "def methode(self, ...):\n    return self.attribut",
@@ -5837,13 +5946,14 @@
      "code": "class Welle:\n    def __init__(self, d):\n        self.d = d\n\n    def umfang(self):\n        return 3.14159 * d\n\nprint(Welle(20).umfang())",
      "meldung": "NameError: name 'd' is not defined. Did you mean: 'self.d'?"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V20"
   },
   {
    "id": "attribut",
    "name": "Attribut lesen und ändern",
    "kategorie": "Klassen & Objekte",
-   "eingefuehrt": "V20",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Ein Maß oder Merkmal eines Objekts: mit objekt.name lesen, mit objekt.name = wert ändern.",
    "syntax": "w = Welle(20, 150)\nprint(w.d)\nw.d = 25",
@@ -5888,13 +5998,14 @@
      "code": "class Welle:\n    def __init__(self, d):\n        self.d = d\n\nw1 = Welle(20)\nw2 = w1\nw2.d = 99\nprint(w1.d)",
      "meldung": "(keine Fehlermeldung) Ausgabe 99: w1 und w2 sind dasselbe Objekt."
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V20"
   },
   {
    "id": "methode",
    "name": "Methode definieren und aufrufen",
    "kategorie": "Klassen & Objekte",
-   "eingefuehrt": "V20",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Eine Funktion, die zu einer Klasse gehört: Aufruf mit Klammern am Objekt, z. B. w.volumen().",
    "syntax": "class Welle:\n    def volumen(self):\n        return ...\n\nw.volumen()",
@@ -5944,13 +6055,14 @@
      "code": "class Welle:\n    def __init__(self, d):\n        self.d = d\n\n    def umfang(self):\n        return 3.14159 * self.d\n\nprint(Welle(20).umfang(5))",
      "meldung": "TypeError: Welle.umfang() takes 1 positional argument but 2 were given"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V20"
   },
   {
    "id": "objekt-erzeugen",
    "name": "Objekt erzeugen (Klassenname(...))",
    "kategorie": "Klassen & Objekte",
-   "eingefuehrt": "V20",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "kopf",
    "kurz": "Aus dem Bauplan ein konkretes Teil machen: name = Klasse(werte). Viele Objekte gehen in eine Liste.",
    "syntax": "w = Welle(20, 150)\nreihe = [Welle(16, 200), Welle(20, 200)]",
@@ -5997,13 +6109,14 @@
      "code": "class Welle:\n    def __init__(self, d, l):\n        self.d = d\n        self.l = l\n\nw = Welle(20, 150, 7)",
      "meldung": "TypeError: Welle.__init__() takes 3 positional arguments but 4 were given"
     }
-   ]
+   ],
+   "eingefuehrt_alt": "V20"
   },
   {
    "id": "bauteil3d",
    "name": "bauteil3d (Dreiecksnetz, STL)",
-   "kategorie": "Ausblick (ab V10)",
-   "eingefuehrt": "V20",
+   "kategorie": "Ausblick (spätere Termine)",
+   "eingefuehrt": "einem späteren Termin",
    "ampel": "delegieren",
    "kurz": "Mitgeliefertes Hilfsmodul: erzeugt aus Maßen ein Dreiecksnetz und zeigt es in 3D (flansch, welle, ring, zeige). Dein Anteil: die Klasse mit den Maßen.",
    "syntax": "import bauteil3d\nm = bauteil3d.flansch(120, 40, 15, 90, 6, 11)\nbauteil3d.zeige(m, \"Flansch\")",
@@ -6016,7 +6129,8 @@
     "bauteil3d",
     "STL",
     "mesh"
-   ]
+   ],
+   "eingefuehrt_alt": "V20"
   }
  ]
 }

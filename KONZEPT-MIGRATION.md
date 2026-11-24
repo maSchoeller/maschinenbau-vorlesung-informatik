@@ -271,6 +271,8 @@ Erste Zuordnung der 22 vorhandenen Lektionen. „Stoff“ heißt: Erklärungen, 
 | `KONZEPT.md` | umgeschrieben (2026-11-23) |
 | `app/kurs.yaml`, `DESIGN.md`, `briefing/LEKTION-BRIEF.md`, `README.md` | 20 statt 22 Termine, neue Einheiten, Phasen „Werkzeug“ und „Projekt“ entfallen; noch nicht nachgezogen |
 
+**Fundort des Altmaterials:** Die Lektionen V01 bis V22 des alten Kurses (Seiten, Notebooks, Explorables, Videos, Videoquellen) sind aus dem Arbeitszweig entfernt. Sie liegen unverändert im Git-Tag `altbestand-alter-kurs` (zum Nachschlagen: `git show altbestand-alter-kurs:site/lektionen/<Datei>`, zum Wiederherstellen einer Datei: `git checkout altbestand-alter-kurs -- <Pfad>`). Die Kennungen V02 und folgende gehören ab jetzt den neuen Terminen; in der Bibliothek (`site/assets/data/bibliothek.json`) steht für Einträge aus entfernten Lektionen „einem späteren Termin“, die alte Kennung bleibt in `eingefuehrt_alt`.
+
 Neu zu bauen, ohne Vorlage: P5 Zahlenraten, P6 und T7 Auffrischer, P9 Raster, P10 Schiffe versenken mit abnehmender Führung.
 
 ## 8. Offene Punkte

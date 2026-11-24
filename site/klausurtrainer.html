@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Klausurtrainer · Informatik Maschinenbau · DHBW Stuttgart Campus Horb</title>
-  <meta name="description" content="24 gemischte Klausuraufgaben aus V01 bis V20 im Papier-Modus: erst schreiben, dann aufdecken und nach Punkteschema selbst bewerten. Code schreiben, Ausgabe bestimmen, Fehler finden, PAP und Theorie.">
+  <meta name="description" content="21 gemischte Klausuraufgaben aus V01 bis V20 im Papier-Modus: erst schreiben, dann aufdecken und nach Punkteschema selbst bewerten. Code schreiben, Ausgabe bestimmen, Fehler finden, PAP und Theorie.">
   <link rel="stylesheet" href="assets/css/dhbw-base.css">
   <link rel="stylesheet" href="assets/css/kurs.css">
   <link rel="stylesheet" href="assets/css/aufgaben.css">
@@ -39,7 +39,7 @@
       <section class="kt-hero" aria-labelledby="h-kt">
         <p class="k-small k-muted">Phase 3 · Klausurvorbereitung · V01 bis V20</p>
         <h1 id="h-kt">Klausurtrainer</h1>
-        <p class="kt-hero__lead">24 gemischte Aufgaben im Stil der Klausur: Code von Hand schreiben, Ausgaben bestimmen, Fehler in KI-Code finden, Programmablaufpläne lesen und zeichnen, Zahlensysteme und Netze rechnen. Jede Aufgabe sagt dir, aus welcher Lektion sie stammt.</p>
+        <p class="kt-hero__lead">21 gemischte Aufgaben im Stil der Klausur: Code von Hand schreiben, Ausgaben bestimmen, Fehler in KI-Code finden, Programmablaufpläne lesen und zeichnen, Zahlensysteme und Netze rechnen. Jede Aufgabe sagt dir, aus welcher Lektion sie stammt.</p>
 
         <div class="hinweis hinweis--merke kt-howto">
           <strong class="hinweis__title">So trainierst du</strong>
@@ -120,129 +120,6 @@ Z-1717
 ]</script>
               <template data-role="loesung">
                 <p>Die Zuweisung <code>flaeche = laenge * breite</code> rechnet einmal mit dem Wert, den <code>laenge</code> in diesem Moment hat. Danach ändert sich <code>flaeche</code> nicht mehr. Bei <code>print</code> trennt ein Komma die Werte mit einem Leerzeichen, ein <code>+</code> zwischen Texten klebt sie zusammen.</p>
-              </template>
-            </div>
-          </article>
-
-          <!-- ===== k-02 · V02 · Theorie ===== -->
-          <article class="kt-task" id="k-02" data-lektion="V02" data-typ="theorie" data-punkte="9" data-minuten="10" aria-labelledby="h-k-02" hidden>
-            <header class="kt-task__head"><p class="kt-task__kicker"></p><h2 id="h-k-02" tabindex="-1">Zahlensysteme am Drehgeber</h2></header>
-            <div class="a-task kt-papier" data-a="papier" data-id="k-02" data-minutes="10">
-              <div class="a-task__text">
-                <p>Ein Drehgeber meldet die Wellenstellung als Zahl. Rechne ohne Taschenrechner und schreibe den Rechenweg auf.</p>
-                <p><strong>a)</strong> Wandle die Dezimalzahl 173 in eine 8-stellige Binärzahl und in eine Hexadezimalzahl um. (3 P.)</p>
-                <p><strong>b)</strong> Das Byte <code>1110 0101</code> ist eine Zahl mit Vorzeichen im Zweierkomplement (8 Bit). Welche Dezimalzahl ist das? (3 P.)</p>
-                <p><strong>c)</strong> Ein Absolutwertgeber liefert 12 Bit je Umdrehung. Wie viele verschiedene Stellungen kann er melden, was ist der größte Wert, und wie groß ist die Winkelauflösung in Grad? (3 P.)</p>
-              </div>
-              <script type="application/json" data-role="scheme">[
-{"p":2,"t":"a) Rechenweg 173 → binär (Stellenwerte 128 + 32 + 8 + 4 + 1 oder fortgesetzte Division durch 2): 1010 1101"},
-{"p":1,"t":"a) Hexadezimal: 1010 = A, 1101 = D, also AD"},
-{"p":1,"t":"b) Alle Bits invertieren: 0001 1010"},
-{"p":1,"t":"b) Eins addieren: 0001 1011 = 27"},
-{"p":1,"t":"b) Vorzeichen beachtet, Ergebnis −27 (das höchste Bit ist 1, die Zahl ist negativ)"},
-{"p":1,"t":"c) 2^12 = 4096 verschiedene Stellungen"},
-{"p":1,"t":"c) Größter Wert 4095 (die Zählung beginnt bei 0)"},
-{"p":1,"t":"c) Auflösung 360° / 4096 ≈ 0,088° je Schritt"}
-]</script>
-              <template data-role="loesung">
-                <p><strong>a)</strong> 173 = 128 + 32 + 8 + 4 + 1, also <code>1010 1101</code>. In Vierergruppen: <code>1010</code> = A, <code>1101</code> = D, also <code>AD</code> (hexadezimal).</p>
-                <p><strong>b)</strong> <code>1110 0101</code> invertiert ist <code>0001 1010</code>, plus 1 ergibt <code>0001 1011</code> = 27. Das höchste Bit war 1, die Zahl ist negativ: −27. Kontrolle: 229 − 256 = −27.</p>
-                <p><strong>c)</strong> 2<sup>12</sup> = 4096 Stellungen, gezählt von 0 bis 4095. Auflösung 360° / 4096 ≈ 0,088° je Schritt.</p>
-              </template>
-            </div>
-          </article>
-
-          <!-- ===== k-03 · V03 · Code ===== -->
-          <article class="kt-task" id="k-03" data-lektion="V03" data-typ="code" data-punkte="8" data-minuten="10" aria-labelledby="h-k-03" hidden>
-            <header class="kt-task__head"><p class="kt-task__kicker"></p><h2 id="h-k-03" tabindex="-1">Zugspannung im Rundstab</h2></header>
-            <div class="a-task" data-a="klausur" data-id="k-03" data-mode="programm" data-minutes="10">
-              <div class="a-task__text">
-                <p>Ein Rundstab wird auf Zug belastet. Schreibe ein Programm, das die Kraft <em>F</em> in kN und den Durchmesser <em>d</em> in mm (beides Kommazahlen) einliest und zwei Zeilen ausgibt: die Querschnittsfläche in mm² und die Zugspannung σ in N/mm² (= MPa), jeweils mit zwei Nachkommastellen. Benutze das Modul <code>math</code> für π. Achtung: 1 kN = 1000 N.</p>
-                <div class="a-spec"><strong>Ausgabe genau so (F = 50 kN, d = 20 mm):</strong><pre data-run="no">Fläche: 314.16 mm²
-Spannung: 159.15 MPa</pre></div>
-              </div>
-              <div class="a-editor"><textarea class="py-editor" data-assist="off" aria-label="Python-Code von Hand schreiben, ohne Ausführen"></textarea></div>
-              <script type="text/x-python" data-role="tests">
-import math as _m
-
-def _pruefe(F, d):
-    A = _m.pi / 4 * d ** 2
-    s = F * 1000 / A
-    z = _zeilen(_run_program([str(F), str(d)]))
-    for t in ("Fläche: %.2f mm²" % A, "Spannung: %.2f MPa" % s):
-        assert t in z, "Bei F = %s kN und d = %s mm wird die Zeile %r erwartet. Dein Programm gibt aus: %r" % (F, d, t, z)
-
-def test_beispiel():
-    """Beispiel: F = 50 kN, d = 20 mm"""
-    _pruefe(50, 20)
-
-def test_klein():
-    """kleiner Stab: F = 12.5 kN, d = 8 mm"""
-    _pruefe(12.5, 8)
-
-def test_dezimal():
-    """Kommazahl als Durchmesser: F = 3.2 kN, d = 7.5 mm"""
-    _pruefe(3.2, 7.5)
-
-def test_gross():
-    """großer Stab: F = 480 kN, d = 45 mm"""
-    _pruefe(480, 45)
-              </script>
-              <script type="text/x-python" data-role="solution">
-import math
-
-F = float(input("Kraft F in kN: "))
-d = float(input("Durchmesser d in mm: "))
-A = math.pi / 4 * d ** 2
-sigma = F * 1000 / A
-print(f"Fläche: {A:.2f} mm²")
-print(f"Spannung: {sigma:.2f} MPa")
-              </script>
-              <script type="application/json" data-role="scheme">[
-{"p":1,"t":"import math steht am Programmanfang"},
-{"p":1,"t":"F und d werden mit input() gelesen und mit float() in Kommazahlen umgewandelt (nicht int)"},
-{"p":2,"t":"Fläche richtig: π/4 · d² (math.pi, Potenz mit ** 2), nicht π · d"},
-{"p":2,"t":"Spannung richtig: F · 1000 / A, mit der Umrechnung kN in N"},
-{"p":2,"t":"Beide Ausgaben mit zwei Nachkommastellen (:.2f) und Einheit, Text wie in der Vorgabe"}
-]</script>
-            </div>
-          </article>
-
-          <!-- ===== k-04 · V04 · Theorie ===== -->
-          <article class="kt-task" id="k-04" data-lektion="V04" data-typ="theorie" data-punkte="8" data-minuten="9" aria-labelledby="h-k-04" hidden>
-            <header class="kt-task__head"><p class="kt-task__kicker"></p><h2 id="h-k-04" tabindex="-1">Freigabe einer Roboterzelle</h2></header>
-            <div class="a-task kt-papier" data-a="papier" data-id="k-04" data-minutes="9">
-              <div class="a-task__text">
-                <p>Eine Roboterzelle darf anlaufen (<em>Y</em> = 1), wenn weder die Lichtschranke unterbrochen (<em>A</em> = 1) noch die Schutztür offen (<em>B</em> = 1) ist und ein Startbefehl vorliegt (<em>C</em> = 1). Also: <em>Y</em> = ¬(<em>A</em> ∨ <em>B</em>) ∧ <em>C</em></p>
-                <p><strong>a)</strong> Stelle die vollständige Wahrheitstabelle für Y auf (alle 8 Kombinationen von A, B, C). (4 P.)</p>
-                <p><strong>b)</strong> Forme ¬(A ∨ B) mit den De-Morgan-Gesetzen um und schreibe Y ohne Klammer mit Negation. (2 P.)</p>
-                <p><strong>c)</strong> Schreibe die Bedingung als Python-Zuweisung. Die Variablen <code>a</code>, <code>b</code>, <code>c</code> sind vom Typ bool, das Ergebnis heißt <code>y</code>. (2 P.)</p>
-              </div>
-              <script type="application/json" data-role="scheme">[
-{"p":1,"t":"a) Alle 8 Kombinationen stehen in der Tabelle (000 bis 111), keine fehlt"},
-{"p":3,"t":"a) Y-Spalte richtig: nur bei A = 0, B = 0, C = 1 ist Y = 1, in allen anderen 7 Zeilen ist Y = 0 (je falscher Zeile 1 Punkt Abzug)"},
-{"p":1,"t":"b) De Morgan: ¬(A ∨ B) = ¬A ∧ ¬B"},
-{"p":1,"t":"b) Ergebnis: Y = ¬A ∧ ¬B ∧ C"},
-{"p":1,"t":"c) Klammer um den or-Teil, damit not für beide gilt: not (a or b)"},
-{"p":1,"t":"c) Vollständige Zeile: y = not (a or b) and c"}
-]</script>
-              <template data-role="loesung">
-                <table class="kt-tabelle">
-                  <caption class="k-sr">Wahrheitstabelle für Y</caption>
-                  <thead><tr><th scope="col">A</th><th scope="col">B</th><th scope="col">C</th><th scope="col">Y</th></tr></thead>
-                  <tbody>
-                    <tr><td>0</td><td>0</td><td>0</td><td>0</td></tr>
-                    <tr><td>0</td><td>0</td><td>1</td><td>1</td></tr>
-                    <tr><td>0</td><td>1</td><td>0</td><td>0</td></tr>
-                    <tr><td>0</td><td>1</td><td>1</td><td>0</td></tr>
-                    <tr><td>1</td><td>0</td><td>0</td><td>0</td></tr>
-                    <tr><td>1</td><td>0</td><td>1</td><td>0</td></tr>
-                    <tr><td>1</td><td>1</td><td>0</td><td>0</td></tr>
-                    <tr><td>1</td><td>1</td><td>1</td><td>0</td></tr>
-                  </tbody>
-                </table>
-                <p><strong>b)</strong> De Morgan: ¬(A ∨ B) = ¬A ∧ ¬B, also <em>Y</em> = ¬A ∧ ¬B ∧ C.</p>
-                <p><strong>c)</strong> <code>y = not (a or b) and c</code> (ohne Klammer würde <code>not</code> nur <code>a</code> verneinen).</p>
               </template>
             </div>
           </article>

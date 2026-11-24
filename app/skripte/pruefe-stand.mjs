@@ -1,6 +1,6 @@
 /* =============================================================
    pruefe-stand.mjs – Bearbeitungen der Aufgaben speichern und wiederherstellen
-   Aufruf:  node skripte/pruefe-stand.mjs [http://localhost:4340] [--nur code,klausur,luecken,zeilen,ablauf,fehler,tipp,quiz,konto]
+   Aufruf:  node skripte/pruefe-stand.mjs [http://localhost:4340] [--nur code,klausur,luecken,zeilen,ablauf,schalter,fehler,tipp,quiz,knobel,konto]
    Voraussetzung: Emulator mit API (wie bei pruefe-zusammenspiel.mjs). Chromium, 1440×900.
    Je Aufgabenart: bearbeiten, neu laden, Stand ist wieder da; Zurücksetzen, neu laden, Vorlage ist da;
    unpassende Stände werden verworfen; „gelöst“ bleibt vom Zurücksetzen unberührt.
@@ -14,7 +14,7 @@ const BASIS = (args.find((a) => /^https?:\/\//.test(a)) || 'http://localhost:434
 const NUR = (() => { const i = args.indexOf('--nur'); return i >= 0 ? args[i + 1].split(',') : null; })();
 const LAUF = Date.now().toString(36);
 const NUTZER = 'st-' + LAUF;
-const LABOR = BASIS + '/lektionen/v01-labor.html';
+const LABOR = BASIS + (process.env.STAND_LABOR || '/lektionen/v01-labor.html');   /* STAND_LABOR: eine Probe-Seite statt des echten Labors */
 const LERN = BASIS + '/lektionen/v01-ablauf-und-erste-programme.html';
 
 const ok = [], fehler = [];
@@ -119,6 +119,45 @@ async function code(k) {
   const alle = await p.evaluate(async () => (await window.KursSpeicher.liste('inf-mb/v01/')).map((e) => e.pfad.replace('inf-mb/v01/', '')));
   pruefe(alle.every((s) => /^(aufg|begonnen|done|gesehen|quiz-[\w-]+|pap:[\w-]+|code:[\w-]+|luecken:[\w-]+|zeilen:[\w-]+|ablauf:[\w-]+|fehler:[\w-]+|tipp:[\w-]+|frage:[\w.-]+)$/.test(s)), 'Alle Schlüssel dieser Lektion folgen dem dokumentierten Muster', alle.join(' '));
   sauber(k, 'Code');
+}
+
+/* ─────────────────────────────────────────────────────────── knobel */
+/* Knobelaufgaben (freiwillig): Bearbeitung und Status werden gespeichert wie bei jeder Aufgabe, ändern aber keinen Stand
+   des Termins (Fortschritt, begonnen, Zähler). Ohne Knobelaufgaben im Labor von Termin 01 nichts zu prüfen. */
+async function knobel(k) {
+  const p = k.page;
+  await p.goto(LABOR);
+  await p.waitForSelector('.l-task', { state: 'attached', timeout: 30000 });
+  const kn = await p.evaluate(() => [...document.querySelectorAll('.l-task[data-knobel]')].map((s) => ({ station: s.id, aufgabe: s.querySelector('[data-a][data-id]').getAttribute('data-id'), art: s.querySelector('[data-a][data-id]').getAttribute('data-a') })));
+  if (!kn.length) { console.log('\n== Knobelaufgaben: im Labor von Termin 01 gibt es noch keine (nichts zu prüfen)'); return; }
+  console.log('\n== Knobelaufgaben (' + kn.map((x) => x.aufgabe).join(', ') + '): speichern wie andere Aufgaben, zählen nirgends');
+  const stand = () => p.evaluate(() => window.KursApp.fortschritt.lektion('V01').then((x) => JSON.stringify(x)));
+  const zaehler = () => p.evaluate(() => [(document.querySelector('[data-lab-count]') || {}).textContent, (document.querySelector('.a-progress__text') || {}).textContent]);
+  const vorher = await stand(), zVorher = await zaehler();
+  const ersteCode = kn.find((x) => x.art === 'code' || x.art === 'run' || x.art === 'klausur');
+  if (ersteCode) {
+    await laborOeffnen(p, ersteCode.station, ersteCode.aufgabe);
+    await anhaengen(p, ersteCode.aufgabe, '\n# mein Knobel-Zusatz 7\n');
+    const v = await warteStand(p, 'code:' + ersteCode.aufgabe, (x) => x.code.includes('mein Knobel-Zusatz 7'));
+    pruefe(!!v, 'Tippen speichert code:' + ersteCode.aufgabe + ' wie bei anderen Aufgaben');
+    await p.reload();
+    await p.locator('.a-task[data-id="' + ersteCode.aufgabe + '"] .cm-content').waitFor({ timeout: 30000 });
+    pruefe((await editorText(p, ersteCode.aufgabe)).includes('mein Knobel-Zusatz 7'), 'Nach dem Neuladen steht der Code der Knobelaufgabe wieder im Editor');
+  }
+  const k0 = kn[0];
+  pruefe(await bis(async () => (await lies(p, 'begonnen')) && (await lies(p, 'begonnen'))[k0.aufgabe] === 1, 4000, 100) || !ersteCode, 'Beginn der Knobelaufgabe steht in begonnen');
+  await p.evaluate((i) => window.KursAufgaben.store.setSolved('V01', i), k0.aufgabe);
+  await p.goto(LABOR + '#' + k0.station);
+  await p.reload();
+  await p.waitForSelector('.lab__item', { timeout: 30000 });
+  const status = await p.locator('.lab__item[href="#' + k0.station + '"]').getAttribute('data-status');
+  pruefe(status === 'done', 'Die Liste zeigt die gelöste Knobelaufgabe als gelöst', status);
+  pruefe((await lies(p, 'aufg'))[k0.aufgabe] === 1, 'aufg enthält die Knobel-Kennung (kein neues Speicherformat)');
+  pruefe(JSON.stringify(await zaehler()) === JSON.stringify(zVorher), 'Zähler im Labor („x/y“, „x von y gelöst“) unverändert', JSON.stringify([zVorher, await zaehler()]));
+  pruefe(await stand() === vorher, 'Fortschritt des Termins (KursApp.fortschritt) unverändert durch gelöste und begonnene Knobelaufgabe');
+  const alle = await schluessel(p, 'code:');
+  pruefe(alle.every((x) => /^code:[\w-]+$/.test(x)), 'Schlüssel folgen dem dokumentierten Muster', alle.join(' '));
+  sauber(k, 'Knobelaufgaben');
 }
 
 /* ─────────────────────────────────────────────────────────── klausur */
@@ -330,6 +369,87 @@ async function ablauf(k) {
   pruefe((await ablaufZustand(p, 'w-trace')).fertigeZeilen === 0, 'Stand mit unmöglichem Schritt wird verworfen');
   await t.locator('button', { hasText: 'Von vorn' }).click();
   sauber(k, 'Ablauf verfolgen');
+}
+
+/* ─────────────────────────────────────────────────────────── ablauf mit Schaltern */
+/* Die Schalter von trace (frage je Schritt, ausgabe: false) sind für Termin 02 und 03 gebaut; solange keine echte Aufgabe sie benutzt,
+   wird eine Probeaufgabe mit denselben Daten in die Laborseite eingeschoben, bevor die Skripte laufen. */
+const PROBE = {
+  code: ['geld = 2.0', 'if geld >= 1.5:', '    print("Cola")'],
+  vars: ['geld', 'Bedingung', 'Weg'],
+  ausgabe: false,
+  steps: [
+    { line: 1, set: { geld: '2.0' }, frage: 'Zeile 1 wird ausgeführt. Trag den Wert von geld ein.' },
+    { line: 2, set: { Bedingung: 'True' }, frage: 'Zeile 2: Wie lautet die Bedingung? Trag True oder False ein, ohne Anführungszeichen.', hint: 'Ohne Anführungszeichen, und True mit großem T.' },
+    { line: 3, set: { Weg: 'ja' }, frage: 'Welchen Weg nimmt der Plan? Trag ja oder nein ein, ohne Anführungszeichen.' }
+  ]
+};
+async function ablaufSchalter(k) {
+  console.log('\n== Ablauf verfolgen mit Schaltern (frage, ausgabe: false)');
+  const p = k.page;
+  const einschub = `<div id="probe-schalter"><div class="a-task" data-a="trace" data-id="probe-schalter"><script type="application/json">${JSON.stringify(PROBE)}</script></div></div>`;
+  await p.route('**/lektionen/v01-labor.html*', async (route) => {
+    const r = await route.fetch();
+    const text = await r.text();
+    await route.fulfill({ response: r, body: text.replace(/(<body\b[^>]*>)/, '$1' + einschub) });
+  });
+  const t = p.locator('.a-task[data-id="probe-schalter"]');
+  await p.goto(LABOR);
+  await t.locator('tbody tr').first().waitFor({ timeout: 30000 });
+  const kopf = await t.locator('thead th').allInnerTexts();
+  pruefe(JSON.stringify(kopf) === JSON.stringify(['Schritt', 'Zeile', 'geld', 'Bedingung', 'Weg']), 'ausgabe: false: keine Spalte „Ausgabe“', kopf);
+  pruefe(await t.locator('.a-trace__in--out').count() === 0 && await t.locator('tbody tr:first-child td').count() === 4, 'ausgabe: false: kein Ausgabefeld in der Zeile');
+  const meldung = () => t.locator('.a-trace__msg').innerText();
+  pruefe(await meldung() === PROBE.steps[0].frage, 'frage ersetzt den festen Starttext des Schritts', await meldung());
+  pruefe(!/Typen beachten/.test(await meldung()), 'Der feste Hinweis „Typen beachten: Text steht in Anführungszeichen“ erscheint nicht');
+  /* falsch ohne eigenen Hinweis: neutraler Satz statt Typ-Hinweis */
+  await t.locator('tr.is-active input[data-var="geld"]').fill('3.0');
+  await t.locator('button', { hasText: 'Zeile prüfen' }).click();
+  pruefe(/^Noch nicht richtig\. Geh die Zeile nochmal durch\.$/.test(await meldung()), 'Fehlversuch ohne eigenen Hinweis: neutraler Satz statt Typ-Hinweis', await meldung());
+  await t.locator('tr.is-active input[data-var="geld"]').fill('2.0');
+  await t.locator('button', { hasText: 'Zeile prüfen' }).click();
+  pruefe(await meldung() === PROBE.steps[1].frage, 'Nächster Schritt zeigt seine eigene frage', await meldung());
+  /* Anführungszeichen werden nicht entfernt: "True", 'True' und true sind falsch */
+  for (const falsch of ['"True"', 'true', "'True'"]) {
+    await t.locator('tr.is-active input[data-var="Bedingung"]').fill(falsch);
+    await t.locator('button', { hasText: 'Zeile prüfen' }).click();
+    pruefe((await meldung()).startsWith('Noch nicht richtig. Ohne Anführungszeichen') && await t.locator('tbody tr.is-done').count() === 1, `Eintrag ${falsch} ist falsch, der Hinweis des Schritts erscheint`);
+  }
+  await t.locator('tr.is-active input[data-var="Bedingung"]').fill('True');
+  /* Stand mit frage und ohne Ausgabe: speichern und wiederherstellen (mitten im Schritt) */
+  const v = await warteStand(p, 'ablauf:probe-schalter', (x) => x.n === 1 && x.e && x.e.Bedingung === 'True' && !('#out' in x.e));
+  pruefe(!!v && v.v === 1 && typeof v.f === 'string', 'Stand ablauf:probe-schalter: erreichter Schritt und Eintrag, kein Ausgabefeld', v ? { n: v.n, e: v.e } : '');
+  await p.reload();
+  await t.locator('tbody tr').first().waitFor({ timeout: 30000 });
+  let z = await ablaufZustand(p, 'probe-schalter');
+  pruefe(z.fertigeZeilen === 1 && z.offen.includes('True') && z.meldung === PROBE.steps[1].frage, 'Nach dem Neuladen: Zeile 1 erledigt, Eintrag und frage des offenen Schritts sind wieder da', z);
+  await t.locator('button', { hasText: 'Zeile prüfen' }).click();
+  await t.locator('tr.is-active input[data-var="Weg"]').fill('nein');
+  await t.locator('button', { hasText: 'Zeile prüfen' }).click();
+  pruefe((await meldung()).startsWith('Noch nicht richtig.') && await t.locator('tbody tr.is-done').count() === 2, 'Falscher Weg „nein“ wird nicht angenommen');
+  await t.locator('tr.is-active input[data-var="Weg"]').fill('ja');
+  await t.locator('button', { hasText: 'Zeile prüfen' }).click();
+  pruefe(/Geschafft: alle 3 Schritte/.test(await meldung()) && await p.evaluate(() => window.KursAufgaben.store.solved('V01')['probe-schalter'] === 1), 'Ohne Aufdecken: Meldung „Geschafft“ und gelöst');
+  const v2 = await warteStand(p, 'ablauf:probe-schalter', (x) => x.n === 3 && x.r.length === 0);
+  pruefe(!!v2, 'Fertiger Stand wird gespeichert', v2 ? { n: v2.n } : '');
+  await p.reload();
+  await t.locator('tbody tr').first().waitFor({ timeout: 30000 });
+  z = await ablaufZustand(p, 'probe-schalter');
+  pruefe(z.fertigeZeilen === 3 && /Geschafft/.test(z.meldung), 'Nach dem Neuladen: alle drei Zeilen und „Geschafft“', z.meldung.slice(0, 40));
+  await setze(p, 'ablauf:probe-schalter', { v: 1, f: 'alt', n: 2, r: [] });
+  await p.reload();
+  await t.locator('tbody tr').first().waitFor({ timeout: 30000 });
+  pruefe((await ablaufZustand(p, 'probe-schalter')).fertigeZeilen === 0, 'Stand mit fremdem Fingerabdruck wird verworfen');
+  await t.locator('button', { hasText: 'Von vorn' }).click();
+  pruefe(await warteWeg(p, 'ablauf:probe-schalter'), '„Von vorn“ löscht den Stand');
+  /* bestehende Aufgabe ohne Schalter: unverändert */
+  await p.unroute('**/lektionen/v01-labor.html*');
+  await laborOeffnen(p, 'a-ablauf', 'w-trace');
+  const w = p.locator('.a-task[data-id="w-trace"]');
+  const kopf2 = await w.locator('thead th').allInnerTexts();
+  pruefe(kopf2[kopf2.length - 1] === 'Ausgabe', 'w-trace (ohne Schalter): Spalte „Ausgabe“ ist da', kopf2);
+  pruefe(/^Zeile 1 wird ausgeführt\. Was steht danach in den markierten Feldern\? Typen beachten: Text steht in Anführungszeichen\.$/.test(await w.locator('.a-trace__msg').innerText()), 'w-trace (ohne Schalter): fester Starttext wie bisher');
+  sauber(k, 'Ablauf mit Schaltern');
 }
 
 /* ─────────────────────────────────────────────────────────── fehler */
@@ -578,7 +698,7 @@ async function konto() {
 }
 
 /* ───────────────────────────────────────────────────────────── */
-const PLAN = [['code', code], ['klausur', klausur], ['luecken', luecken], ['zeilen', zeilen], ['ablauf', ablauf], ['fehler', fehlersuche], ['tipp', vorhersage], ['quiz', quiz]];
+const PLAN = [['code', code], ['klausur', klausur], ['luecken', luecken], ['zeilen', zeilen], ['ablauf', ablauf], ['schalter', ablaufSchalter], ['fehler', fehlersuche], ['tipp', vorhersage], ['quiz', quiz], ['knobel', knobel]];
 async function main() {
   const st = await fetch(BASIS + '/api/status').then((r) => r.json()).catch(() => null);
   if (!st || !st.ok) { console.error('API nicht erreichbar unter ' + BASIS + '/api/status'); process.exit(2); }
@@ -587,7 +707,7 @@ async function main() {
     const k = await kontext('Gast');
     for (const [id, fn] of PLAN) {
       if (NUR && !NUR.includes(id)) continue;
-      try { await fn(k); } catch (e) { pruefe(false, `Abbruch in „${id}“`, String(e && e.message || e).split('\n')[0]); }
+      try { await fn(id === 'schalter' ? await kontext('Schalter') : k); } catch (e) { pruefe(false, `Abbruch in „${id}“`, String(e && e.message || e).split('\n')[0]); }
     }
     await k.ctx.close();
     if (!NUR || NUR.includes('konto')) { try { await konto(); } catch (e) { pruefe(false, 'Abbruch in „konto“', String(e && e.message || e).split('\n')[0]); } }

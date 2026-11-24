@@ -376,6 +376,15 @@ sup, sub { font-size: 0.75em; }
 .dhbw-code .cm { color: var(--code-comment); font-style: italic; }
 .dhbw-code .bi { color: #F9A8D4; }
 
+/* Code ohne Schrift-Ligaturen: Fira Code zeigt sonst >= als ≥, <= als ≤ und == als Doppelstrich.
+   Studierende sollen sehen, was sie tippen. pruefe-seiten.mjs prüft jedes Element mit Fira Code. */
+code, pre, kbd, samp, textarea, input, .pk-formel, .dhbw-code, .cm-editor, .cm-content, .cm-line, .k-line, .k-copy, .k-codelines,
+.a-p-item, .a-gap__code, .a-gap__in, .a-trace__code, .a-trace__in, .a-trace__line, .k-predict__opts button, .v01-eva__zeile, .v01-box__zeile {
+  /* !important, weil die Kurzschrift „font: inherit“ vieler Bausteine beides sonst auf „normal“ zurücksetzt */
+  font-variant-ligatures: none !important;
+  font-feature-settings: "liga" 0, "calt" 0 !important;
+}
+
 code.dhbw-inline {
   background:    var(--code-bg-in);
   color:         var(--red-dark);

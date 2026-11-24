@@ -2,7 +2,7 @@
 from helfer import E
 
 DF = "Dateien & Fehler"
-AU = "Ausblick (ab V10)"
+AU = "Ausblick (spätere Termine)"
 
 E("path", "Path (pathlib)", DF, "V16", "kopf",
   "Ein Pfad als Objekt: Teile verbindest du mit /, geprüft und gelesen wird per Methode.",

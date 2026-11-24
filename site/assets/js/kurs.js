@@ -1577,7 +1577,9 @@ _result
     } else t = node.textContent;
     return t.replace(/\s+$/, '') + '\n';
   }
-  function copyBar(getText) {
+  function copyBar(getText, sprache) {
+    /* Ein Plan ist kein Python: Überschrift „Plan“ und nichts zum Kopieren */
+    if (sprache === 'plan' || sprache === 'tabelle') return el('div', { class: 'k-copy__bar' }, [el('span', { class: 'k-copy__lang', text: sprache === 'plan' ? 'Plan' : 'Tabelle' })]);
     var btn = el('button', { type: 'button', class: 'k-copy__btn', 'aria-label': 'Code kopieren' });
     btn.innerHTML = COPY_ICON + '<span class="k-copy__label">Kopieren</span>';
     var label = btn.querySelector('.k-copy__label');
@@ -1599,7 +1601,7 @@ _result
     node.setAttribute('data-copy', '1');
     var wrap = el('div', { class: 'k-copy' });
     node.parentNode.insertBefore(wrap, node);
-    wrap.appendChild(copyBar(function () { return blockText(node); }));
+    wrap.appendChild(copyBar(function () { return blockText(node); }, node.getAttribute('data-sprache')));
     wrap.appendChild(node);
   }
   function enhanceEditor(ke) {
@@ -1634,6 +1636,42 @@ _result
     }).observe(document.body, { childList: true, subtree: true });
   }
 
+  /* ── Vorhersage ohne Code ────────────────────────────────────
+     Steht in einem .k-try kein Runner (z. B. nur ein Plan zum Lesen), gibt es nichts auszuführen:
+     Der Klick auf eine Antwort löst sofort auf und speichert den Stand (tipp:<Kennung>, g = 1). */
+  function initVorhersageOhneRunner(predict) {
+    if (predict._kRunner || predict._kOhne) return;
+    var tryBox = predict.closest('.k-try');
+    if (tryBox && $('.k-runner', tryBox)) return;
+    predict._kOhne = true;
+    var expl = $('.k-predict__expl', predict);
+    if (expl) expl.hidden = true;
+    var res = $('.k-predict__result', predict);
+    if (!res) { res = el('div', { class: 'k-predict__result' }); predict.appendChild(res); }
+    res.setAttribute('aria-live', 'polite');
+    var optsOrig = $$('.k-predict__opts button', predict);
+    var opts = mische(optsOrig.slice());
+    var frage = $('.k-predict__q', predict);
+    var st = stand('tipp:' + kurzHash((frage ? frage.textContent : '') + '\n' + optsOrig.map(function (b) { return b.textContent + (b.hasAttribute('data-correct') ? '+' : ''); }).join('\n') + '\n'));
+    function zeige(b) {
+      opts.forEach(function (o) { o.setAttribute('aria-pressed', o === b ? 'true' : 'false'); });
+      var gut = b.hasAttribute('data-correct');
+      res.innerHTML = '';
+      res.appendChild(el('strong', { text: gut ? 'Dein Tipp „' + b.textContent + '“ stimmt. ' : 'Dein Tipp war „' + b.textContent + '“, das stimmt nicht. ' }));
+      if (expl) { var c = el('span'); c.innerHTML = expl.innerHTML; res.appendChild(c); }
+    }
+    opts.forEach(function (b) {
+      b.setAttribute('aria-pressed', 'false');
+      b.addEventListener('click', function () { zeige(b); st.aendern(function () { return { v: 1, t: b.textContent, g: 1 }; }); });
+    });
+    st.wiederherstellen(function (w) {
+      if (!w || typeof w.t !== 'string') return false;
+      var b = opts.filter(function (o) { return o.textContent === w.t; })[0];
+      if (!b) return false;
+      zeige(b);
+    });
+  }
+
   /* ── Start ───────────────────────────────────────────────── */
   function init() {
     initProgress();
@@ -1643,6 +1681,7 @@ _result
     ensureCss('../css/runner.css');
     $$('.k-runner').forEach(initRunner);
     enhanceRunners(document.body);      // vor initCopy: Codeblöcke werden Runner, nicht erst Kopier-Blöcke
+    $$('.k-predict').forEach(initVorhersageOhneRunner);
     $$('.k-mirror').forEach(initMirror);
     initVideo();
     initCopy();

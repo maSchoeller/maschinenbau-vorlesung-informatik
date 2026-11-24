@@ -394,6 +394,8 @@
           speichern.hidden = true; entfernen.hidden = false;
         } else {
           speichern.hidden = false; entfernen.hidden = s.da === 0;
+          /* ohne Netz lässt sich nichts speichern, und ob die Videodateien überhaupt veröffentlicht sind, weiß nur der Server */
+          if (navigator.onLine === false && !s.da) { info.textContent = 'Zum Speichern der Videos brauchst du eine Verbindung.'; speichern.hidden = true; return; }
           return groessenLesen().then(function (g) {
             var ok = (g || []).filter(function (x) { return x > 0; }), summe = ok.reduce(function (a, b) { return a + b; }, 0);
             var verfuegbar = g ? ok.length : urls.length;
@@ -438,6 +440,7 @@
       });
     });
     anzeigen();
+    window.addEventListener('online', anzeigen);
   }
 
   /* ── Start ───────────────────────────────────────────────── */

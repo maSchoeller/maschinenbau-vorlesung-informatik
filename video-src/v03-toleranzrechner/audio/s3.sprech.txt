@@ -1,1 +1,0 @@
-Abschnitt eins liest die Eingaben. input liefert Text, deshalb steht float drumherum. Ohne float bricht schon die Subtraktion mit einem TypeError ab. Abschnitt zwei rechnet: Untermaß ist Nennmaß minus Abmaß, Obermaß ist Nennmaß plus Abmaß. Abschnitt drei gibt die Grenzmaße aus. Der f-String mit Doppelpunkt, Punkt zwei f, zeigt zwei Nachkommastellen.

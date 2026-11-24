@@ -118,7 +118,8 @@
     ]);
   }
   function hatLaborBeginn(t) {
-    try { var b = KS.sofort.lesen(KS.pfad(t.nr, 'begonnen')) || {}; return Object.keys(b).length > 0; } catch (e) { return false; }
+    /* Nur prüfbare Teile des Labors zählen als Beginn: nicht Knobelaufgaben (freiwillig), nicht Übungen aus der Lerneinheit */
+    try { var b = window.KursApp.fortschritt.nurPruefbare(t, KS.sofort.lesen(KS.pfad(t.nr, 'begonnen')) || {}); return Object.keys(b).length > 0; } catch (e) { return false; }
   }
 
   function fertigBlock() {

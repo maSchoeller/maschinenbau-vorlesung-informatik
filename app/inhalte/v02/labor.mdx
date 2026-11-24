@@ -1,0 +1,530 @@
+---
+titel: "Termin 02 · Programmierlabor · Informatik Maschinenbau"
+beschreibung: "Programmierlabor zu Termin 02: einen Plan mit Raute verfolgen und zeichnen, if und else schreiben, Geldbeträge mit zwei Nachkommastellen ausgeben. Mit Training für zu Hause."
+body:
+  data-lesson: V02
+  data-page: labor
+stile:
+  - ../assets/css/dhbw-base.css
+  - ../assets/css/kurs.css
+  - ../assets/css/aufgaben.css
+  - ../assets/css/editor.css
+  - ../assets/css/labor.css
+  - ../assets/css/v05.css
+  - ../assets/css/pap-editor.css
+skripte:
+  - ../assets/js/speicher.js
+  - ../assets/js/icons.js
+  - src: ../assets/js/editor.js
+    defer: true
+  - ../assets/js/pap-engine.js
+  - ../assets/js/kurs.js
+  - ../assets/js/aufgaben.js
+  - ../assets/js/pap-editor.js
+  - ../assets/js/labor.js
+---
+
+<Labor nr="V02" zuhause="48" name="Termin 02" lerneinheit="v02-entscheiden.html">
+
+<Station id="a-werkzeugkasten" titel="Werkzeugkasten" teil="A" min="5">
+
+<p class="l-task__intro">Drei Karten: Karte 1 und 2 brauchst du für die Verzweigung, Karte 3 für die Ausgabe. Jeder Codeblock läuft: Ändere etwas und führ ihn aus. Den Werkzeugkasten erreichst du von jeder Aufgabe aus über den Knopf oben rechts.</p>
+
+<Video name="v02-python" titel="Python-Werkzeugkasten: vergleichen, if und else, f-String" fehlt="Video folgt. Bis dahin: Lies die drei Karten und probier jeden Codeblock aus.">
+
+Python-Werkzeugkasten: vergleichen, if und else, f-String (ca. 2 Min). Untertitel sind eingeschaltet (Deutsch).
+
+</Video>
+
+<Werkzeugkasten>
+
+<Syntaxkarte id="sk-vergleich" nr="1" titel="Vergleichen: wahr oder falsch">
+
+```python
+punkte = 48
+print(punkte >= 50)
+print(punkte == 48)
+```
+
+- Ausgabe: `False`, dann `True`.
+- Fünf Zeichen: `<`, `>`, `<=`, `>=`, `==`.
+- `==` fragt, ob zwei Werte gleich sind. `=` legt einen Wert ab.
+
+</Syntaxkarte>
+
+<Syntaxkarte id="sk-if" nr="2" titel="if und else: einer von zwei Wegen">
+
+```python
+punkte = 48
+if punkte >= 50:
+    print("Bestanden")
+else:
+    print("Nicht bestanden")
+```
+
+- Ausgabe: `Nicht bestanden`.
+- Doppelpunkt hinter der Bedingung und hinter `else`.
+- Vier Leerzeichen Einrückung. Genau ein Weg läuft.
+
+</Syntaxkarte>
+
+<Syntaxkarte id="sk-fstring" nr="3" titel="f-String: zwei Nachkommastellen">
+
+```python
+preis = 9.5
+print(f"Ticket: {preis:.2f} Euro")
+```
+
+- Ausgabe: `Ticket: 9.50 Euro`.
+- Das `f` steht direkt vor dem Anführungszeichen, der Name in `{}`.
+- `:.2f` hinter dem Namen zeigt genau zwei Nachkommastellen.
+
+</Syntaxkarte>
+
+</Werkzeugkasten>
+
+</Station>
+
+<Station id="a-vorgemacht" titel="Vorgerechnetes Beispiel: Einlass ab 16" teil="A" min="8">
+
+<p class="l-task__intro">Aufgabe: Das Programm liest das Alter ein (ganze Zahl). Ab 16 Jahren gibt es „Einlass“ aus, sonst „Kein Einlass“. Danach in jedem Fall „Der Nächste bitte“. Wie in Termin 01: **erst der Plan, dann der Code.**</p>
+
+<Video name="v02-beispiel" titel="Vorgerechnet: Einlass ab 16, vom Plan zum Programm" fehlt="Video folgt. Bis dahin: Lies den Plan und den Code Zeile für Zeile und probier das Programm aus.">
+
+Vorgerechnet: Einlass ab 16, vom Plan zum Programm (ca. 2 Min). Untertitel sind eingeschaltet (Deutsch).
+
+</Video>
+
+<Plan titel="Einlass ab 16">
+
+```text
+Eingabe: alter
+Entscheidung: alter >= 16?
+  ja:
+    Ausgabe: "Einlass"
+  nein:
+    Ausgabe: "Kein Einlass"
+Ausgabe: "Der Nächste bitte"
+```
+
+</Plan>
+
+<Aufgabe art="run" id="w-vorgemacht" data-count="0" data-mode="programm" data-inputs="17">
+
+<Editor datei="labor/w-vorgemacht.vorlage.py" aria-label="Python-Code: Einlass ab 16" />
+
+</Aufgabe>
+
+<Schritte>
+
+1. **Die Frage finden:** „Ab 16“ heißt mindestens 16, also `>=`.
+2. **Der Plan:** eine Eingabe, eine Raute, in jedem Weg eine Ausgabe, danach eine gemeinsame Ausgabe.
+3. **Zeile 2, Eingabe:** Das Alter ist eine ganze Zahl, also `int`.
+4. **Zeile 3, Raute:** Die Raute wird `if alter >= 16:`, mit Doppelpunkt am Ende.
+5. **Zeilen 4 bis 6, die zwei Wege:** Der ja-Weg steht eingerückt unter `if`. Dann kommt `else:` auf derselben Höhe wie `if`, darunter eingerückt der nein-Weg.
+6. **Zeile 7, die Wege laufen zusammen:** Die Zeile ist nicht eingerückt. Sie läuft immer.
+7. **Probe mit drei Werten:** 15, der Grenzfall 16 und 17. Bei 15 kommt „Kein Einlass“, bei 16 und 17 „Einlass“, danach jedes Mal „Der Nächste bitte“.
+8. **Selbsterklärung:** Was passiert bei 16, wenn du `>` statt `>=` schreibst? Überleg erst, dann probier es aus.
+
+</Schritte>
+
+</Station>
+
+<Station id="a-ablauf" titel="Ablauf verfolgen: ein Plan mit Raute" teil="A" min="5">
+
+<p class="l-task__intro">Diesmal verfolgst du einen Plan. Die Quiz-Regel: Wer mindestens 50 Punkte hat, bekommt 10 dazu, alle anderen verlieren 10. Eingegeben wird 45. An der Raute trägst du den Weg ein: **ja oder nein, klein geschrieben und ohne Anführungszeichen.**</p>
+
+<Plan titel="Quiz-Regel">
+
+```text
+Eingabe: punkte
+Entscheidung: punkte >= 50?
+  ja:
+    punkte = punkte + 10
+  nein:
+    punkte = punkte - 10
+Ausgabe: punkte
+```
+
+</Plan>
+
+<Aufgabe art="trace" id="w-trace">
+
+<Daten datei="labor/w-trace.daten.json" />
+
+</Aufgabe>
+
+<p>Zum Weiterdenken: Was käme beim Grenzfall 50 heraus?</p>
+
+<details class="k-deep">
+<summary>Auflösung</summary>
+
+60. Die Frage 50 >= 50 ist wahr, also geht es den ja-Weg: 50 + 10.
+
+</details>
+
+</Station>
+
+<Station id="a-plan" titel="Plan zeichnen" teil="A" sterne="1" min="10">
+
+<p class="l-task__intro">Jetzt zeichnest du selbst einen Plan mit Raute. Neu im Editor ist das Symbol „Verzweigung“: Es legt eine Raute mit einem ja-Weg und einem nein-Weg an. „Prüfen“ führt deinen Plan mit Beispielwerten aus.</p>
+
+<Aufgabe art="pap-zeichnen" id="w-plan" titel="Eintritt ins Freibad" data-timeout="8000" data-erlaubt="in,out,op,if">
+
+Eingelesen wird das Alter (ganze Zahl). Wer unter 18 ist, zahlt 3 Euro, alle anderen zahlen 5 Euro. Ausgegeben wird der Preis.
+
+<Python rolle="tests" datei="labor/w-plan.tests.py" />
+
+<Daten datei="labor/w-plan.solution.json" rolle="solution" />
+
+<Tipps>
+
+1. Welche Frage entscheidet über den Preis? Das Fragezeichen setzt der Editor selbst.
+2. Du brauchst eine Eingabe, eine Raute, in jedem Weg ein Rechteck und danach eine Ausgabe.
+3. In der Raute steht: alter \< 18.
+
+</Tipps>
+
+</Aufgabe>
+
+</Station>
+
+<Station id="a-zeilen" titel="Zeilen ordnen" teil="A" min="4">
+
+<p class="l-task__intro">Der Plan ist gegeben, die Zeilen sind durcheinander, und zwei gehören gar nicht dazu. Bring die passenden Zeilen in die Reihenfolge des Plans und rück die beiden Wege ein.</p>
+
+<Aufgabe art="parsons" id="w-parsons" titel="Sechs gewinnt">
+
+Das Programm liest einen Würfelwurf ein. Bei einer 6 gibt es „Gewonnen“ aus, sonst „Verloren“.
+
+<Plan titel="Sechs gewinnt">
+
+```text
+Eingabe: wurf
+Entscheidung: wurf == 6?
+  ja:
+    Ausgabe: "Gewonnen"
+  nein:
+    Ausgabe: "Verloren"
+```
+
+</Plan>
+
+<Daten datei="labor/w-parsons.daten.json" />
+
+</Aufgabe>
+
+</Station>
+
+<Station id="a-luecken" titel="Lücken füllen" teil="A" min="4">
+
+<p class="l-task__intro">Der Getränkeautomat aus der Lerneinheit, mit vier Lücken. Ergänze sie so, dass das Programm zum Plan passt. Im Termin ist das die Hausaufgabe, zu Hause der Einstieg vor dem Training.</p>
+
+<Aufgabe art="gap" id="w-luecken" data-mode="programm">
+
+<Plan titel="Getränkeautomat">
+
+```text
+Eingabe: geld
+Entscheidung: geld >= 1.5?
+  ja:
+    Ausgabe: "Cola kommt"
+  nein:
+    Ausgabe: "Zu wenig Geld"
+Ausgabe: "Danke"
+```
+
+</Plan>
+
+```text class="a-gap__src" data-run="no"
+geld = float(input("Eingeworfen in Euro: "))
+@@if@@ geld @@>=@@ 1.5@@:@@
+    print("Cola kommt")
+@@else@@:
+    print("Zu wenig Geld")
+print("Danke")
+```
+
+<Python rolle="tests" datei="labor/w-luecken.tests.py" />
+
+<Tipps>
+
+1. Welches Wort gehört zur Raute?
+2. „Reicht“ heißt mindestens 1,50 Euro.
+3. Welches Zeichen steht am Ende der Zeile mit `if`?
+
+</Tipps>
+
+</Aufgabe>
+
+</Station>
+
+<Station id="a-eigene" titel="Erste eigene Aufgabe: Jacke oder T-Shirt" teil="A" sterne="1" min="10">
+
+<p class="l-task__intro">Dein erstes Programm mit zwei Wegen. Der Plan steht schon da, du überträgst ihn Symbol für Symbol in Code.</p>
+
+<Aufgabe art="code" id="w-eigene" titel="Jacke oder T-Shirt" data-mode="programm" data-inputs="8">
+
+<div class="a-task__text">
+
+Das Programm liest die Temperatur in Grad ein (Kommazahl). Unter 15 Grad gibt es `Jacke anziehen` aus, sonst `T-Shirt reicht`.
+
+<Plan titel="Jacke oder T-Shirt">
+
+```text
+Eingabe: temperatur
+Entscheidung: temperatur < 15?
+  ja:
+    Ausgabe: "Jacke anziehen"
+  nein:
+    Ausgabe: "T-Shirt reicht"
+```
+
+</Plan>
+
+</div>
+
+<Editor datei="labor/w-eigene.vorlage.py" aria-label="Python-Code: Jacke oder T-Shirt" />
+
+<Python rolle="tests" datei="labor/w-eigene.tests.py" />
+
+<Python rolle="solution" datei="labor/w-eigene.solution.py" />
+
+<Tipps>
+
+1. Vier Symbole, fünf Zeilen.
+2. Vergiss die Doppelpunkte und die Einrückung nicht.
+3. Die Raute wird `if temperatur < 15:`. Karte 2 im Werkzeugkasten zeigt, wie es weitergeht.
+
+</Tipps>
+
+</Aufgabe>
+
+<p class="k-small k-muted">Für Schnelle: Schreib die Grenze am Anfang als eigene Variable (`grenze = 15`) und vergleich damit, statt 15 mitten in die Bedingung zu schreiben. Eingelesen wird weiter nur die Temperatur.</p>
+
+</Station>
+
+<Station id="a-fehler" titel="Fehler finden" teil="A" min="7" data-seen="manual">
+
+<p class="l-task__intro">Lies das Programm Zeile für Zeile und vergleiche es mit der Aufgabe. Einen der beiden Fehler meldet Python, den anderen nicht.</p>
+
+<Fehlersuche titel="Eis kaufen" fehler="3 7">
+
+Eine Kugel kostet 1,50 Euro, du hast 5 Euro. Das Programm zeigt den Preis mit zwei Nachkommastellen und sagt, ob das Geld reicht. Erwartet bei 2 Kugeln: `Preis: 3.00 Euro`, dann `Geld reicht`. In zwei Zeilen steckt ein Fehler.
+
+```text
+kugeln = int(input("Wie viele Kugeln? "))
+preis = kugeln * 1.5
+print("Preis: {preis:.2f} Euro")
+if preis <= 5:
+    print("Geld reicht")
+else:
+print("Zu teuer")
+```
+
+#### Fehler 1: Einrückung fehlt (Zeile 7)
+
+Die Zeile unter `else:` ist nicht eingerückt. Diesen Fehler meldet Python selbst: `IndentationError: expected an indented block after 'else' statement on line 6`.
+
+#### Fehler 2: das f fehlt (Zeile 3)
+
+Vor dem Anführungszeichen fehlt das `f`. Das findest nur du: Das Programm läuft und schreibt `Preis: {preis:.2f} Euro` wörtlich hin.
+
+So ist es richtig:
+
+```python data-stdin="2"
+kugeln = int(input("Wie viele Kugeln? "))
+preis = kugeln * 1.5
+print(f"Preis: {preis:.2f} Euro")
+if preis <= 5:
+    print("Geld reicht")
+else:
+    print("Zu teuer")
+```
+
+Bei 2 Kugeln: `Preis: 3.00 Euro`, `Geld reicht`. Bei 4 Kugeln: `Preis: 6.00 Euro`, `Zu teuer`.
+
+</Fehlersuche>
+
+</Station>
+
+<Station id="t-1" titel="Ablauf verfolgen: Gutschein" teil="B" sterne="1" min="5">
+
+<p class="l-task__intro">Das Training gehört zum Termin: zu Hause zusammen etwa 48 Minuten mit Station 6 und dem Selbstcheck. Der nächste Termin beginnt mit dieser Aufgabe. In der Zeile mit `if` trägst du in die Spalte Bedingung **True oder False ein, ohne Anführungszeichen.**</p>
+
+<Aufgabe art="trace" id="tr-1">
+
+<Daten datei="labor/tr-1.daten.json" />
+
+</Aufgabe>
+
+</Station>
+
+<Station id="t-2" titel="Plan zeichnen: Paketporto" teil="B" sterne="2" min="8">
+
+<p class="l-task__intro">Klausurform „Plan zeichnen“. Zeichne zuerst auf Papier, dann im Editor, und vergleiche.</p>
+
+<Aufgabe art="pap-zeichnen" id="tr-2" titel="Paketporto" data-timeout="8000" data-erlaubt="in,out,op,if">
+
+Eingelesen wird das Gewicht in Kilogramm (Kommazahl). Bis einschließlich 2 kg kostet das Paket 5 Euro, schwerere kosten 7 Euro. Ausgegeben wird das Porto.
+
+<Python rolle="tests" datei="labor/tr-2.tests.py" />
+
+<Daten datei="labor/tr-2.solution.json" rolle="solution" />
+
+<Tipps>
+
+1. Schreib die zwei Fälle auf: bis einschließlich 2 kg und schwerer. Welche eine Frage trennt sie?
+2. Du brauchst eine Eingabe, eine Raute, in jedem Weg ein Rechteck und danach eine Ausgabe.
+3. Für „bis einschließlich“ tippst du `<=`; der Editor zeigt ≤. In der Raute steht: gewicht \<= 2.
+
+</Tipps>
+
+</Aufgabe>
+
+</Station>
+
+<Station id="t-3" titel="Plan in Code übertragen: Zahlenraten" teil="B" sterne="2" min="8">
+
+<p class="l-task__intro">Klausurform „Plan in Code übertragen“: Schreib das Programm wie auf Papier, ohne Ausführen und ohne Vorschläge des Editors. Dann abgeben und mit der Lösung vergleichen.</p>
+
+<Aufgabe art="klausur" id="tr-3" titel="Zahlenraten, erster Schritt" data-mode="programm" data-minutes="8">
+
+<div class="a-task__text">
+
+Übertrage den Plan in ein Python-Programm. Der Tipp ist eine ganze Zahl.
+
+<Plan titel="Zahlenraten, erster Schritt">
+
+```text
+geheim = 7
+Eingabe: tipp
+Entscheidung: tipp == geheim?
+  ja:
+    Ausgabe: "Treffer"
+  nein:
+    Ausgabe: "Daneben"
+```
+
+</Plan>
+
+</div>
+
+<Editor data-assist="off" aria-label="Python-Code von Hand schreiben, ohne Ausführen" />
+
+<Python rolle="tests" datei="labor/tr-3.tests.py" />
+
+<Python rolle="solution" datei="labor/tr-3.solution.py" />
+
+<Daten datei="labor/tr-3.scheme.json" rolle="scheme" />
+
+</Aufgabe>
+
+</Station>
+
+<Station id="t-4" titel="Fehler finden und beheben: Achterbahn" teil="B" sterne="2" min="6">
+
+<p class="l-task__intro">Zwei Fehler: einer, den Python meldet, und einer, den du nur mit dem Grenzfall findest. Probier 140.</p>
+
+<Aufgabe art="code" id="tr-4" titel="Achterbahn" data-mode="programm" data-inputs="140">
+
+<div class="a-task__text">
+
+Mitfahren darf, wer mindestens 140 cm groß ist. Dann gibt das Programm `Einsteigen` aus, sonst `Leider zu klein`. Behebe beide Fehler.
+
+</div>
+
+<Editor datei="labor/tr-4.vorlage.py" aria-label="Python-Code: Achterbahn" />
+
+<Python rolle="tests" datei="labor/tr-4.tests.py" />
+
+<Python rolle="solution" datei="labor/tr-4.solution.py" />
+
+<Tipps>
+
+1. Führ das Programm aus und lies die Fehlermeldung von unten: Welche Zeile nennt sie, welches Zeichen fehlt dort?
+2. Läuft das Programm, probier den Grenzfall 140: Darf die Person laut Aufgabe mitfahren?
+3. „Mindestens 140“ schließt die 140 ein. Welches Vergleichszeichen zählt den gleichen Wert mit?
+
+</Tipps>
+
+</Aufgabe>
+
+</Station>
+
+<Station id="t-5" titel="Kinoticket" teil="B" sterne="3" min="10">
+
+<p class="l-task__intro">Ohne vorgegebenen Plan. Wenn du nicht weißt, wie du anfangen sollst, zeichne ihn zuerst auf Papier.</p>
+
+<Aufgabe art="code" id="tr-5" titel="Kinoticket" data-mode="programm" data-inputs="20">
+
+<div class="a-task__text">
+
+Ein Ticket kostet 9,50 Euro. Das Programm liest dein Geld in Euro ein (Kommazahl). Reicht es, gibt es aus, wie viel übrig bleibt, sonst, wie viel fehlt. Die Ausgabe soll genau so aussehen:
+
+```text data-run="no"
+Übrig: 10.50 Euro
+```
+
+oder
+
+```text data-run="no"
+Es fehlen 0.50 Euro
+```
+
+</div>
+
+<Editor datei="labor/tr-5.vorlage.py" aria-label="Python-Code: Kinoticket" />
+
+<Python rolle="tests" datei="labor/tr-5.tests.py" />
+
+<Python rolle="solution" datei="labor/tr-5.solution.py" />
+
+<Tipps>
+
+1. Zeichne den Plan: eine Eingabe, eine Raute, in jedem Weg ein Rechteck für die Rechnung und eine Ausgabe.
+2. Die Frage in der Raute: Reicht das Geld, also geld >= 9.5? Im ja-Weg rechnest du geld - 9.5, im nein-Weg 9.5 - geld.
+3. Zwei Nachkommastellen zeigt Karte 3, zum Beispiel: `print(f"Übrig: {uebrig:.2f} Euro")`
+
+</Tipps>
+
+</Aufgabe>
+
+</Station>
+
+<Knobel id="kn-1" titel="Wettlauf mit Vorsprung">
+
+<Aufgabe art="code" id="k-1" data-mode="programm" data-inputs="10|4|5">
+
+<div class="a-task__text">
+
+Anna und Ben laufen um die Wette, die Strecke ist 100 Meter lang. Anna bekommt einen Vorsprung: Sie startet ein Stück weiter vorn. Beide laufen gleichzeitig los und halten ihr Tempo bis ins Ziel. Das Programm liest den Vorsprung in Metern ein, dann Annas Tempo und Bens Tempo in Metern pro Sekunde (drei Kommazahlen, die Zeilen dafür stehen schon da). Es gibt aus, wer zuerst im Ziel ist und wie viele Sekunden früher. Kommen beide genau gleichzeitig an, gewinnt Anna.
+
+Beispiel: 10 Meter Vorsprung, Anna läuft 4 m/s, Ben 5 m/s. Die Ausgabe soll genau so aussehen:
+
+```text data-run="no"
+Ben gewinnt, 2.50 Sekunden vor Anna
+```
+
+Gewinnt Anna, heißt die Zeile entsprechend `Anna gewinnt, … Sekunden vor Ben`, immer mit zwei Nachkommastellen.
+
+</div>
+
+<Editor datei="labor/k-1.vorlage.py" aria-label="Python-Code: Wettlauf mit Vorsprung" />
+
+<Python rolle="tests" datei="labor/k-1.tests.py" />
+
+<Python rolle="solution" datei="labor/k-1.solution.py" />
+
+<Tipps>
+
+1. Rechne von Hand, bevor du programmierst: 30 Meter Vorsprung, Anna läuft 4 m/s, Ben 5 m/s. Wer ist zuerst im Ziel? Der Schnellere ist es nicht immer.
+2. Anna und Ben laufen verschieden weit. Welche Größe kannst du für beide ausrechnen und direkt vergleichen?
+
+</Tipps>
+
+</Aufgabe>
+
+</Knobel>
+
+</Labor>

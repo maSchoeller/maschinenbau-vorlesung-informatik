@@ -1,0 +1,15 @@
+{
+ "solution": [
+  "wurf = int(input(\"Dein Wurf: \"))",
+  "if wurf == 6:",
+  "    print(\"Gewonnen\")",
+  "else:",
+  "    print(\"Verloren\")"
+ ],
+ "distractors": [
+  "if wurf = 6:",
+  "else"
+ ],
+ "alts": [],
+ "ok": "Die Raute wird if mit ==, beide Wege stehen eingerückt."
+}

@@ -12,7 +12,9 @@
      <Icon n="head" />                            Symbol aus dem Sprite
      <Hinweis art="merke|achtung|warum">          die drei Hinweis-Typen
      <Abschnitt id nr titel [zusatz] [kopf]>      Abschnitt einer Lerneinheit
+     <Labor nr name lerneinheit [zuhause]>        [zuhause] = Minuten Training zu Hause für die Überschrift von Teil B
      <Station id titel teil [sterne] [min] [extra]>  Station im Labor
+     <Knobel id titel>                            freiwillige Knobelaufgabe, ganz am Ende des Labors (Regeln: INHALTE.md)
      <Vorhersage>  Frage, Liste der Antworten ([x] = richtig), Auflösung
      <Quiz id> mit <Frage id typ punkte titel [antwort] [tol]> … <Erklaerung>
      <Explorable name titel> Einleitung … <Ohne>Text ohne JavaScript</Ohne>
@@ -112,6 +114,20 @@ function auswahl(li) {
   else if (typeof kinder[0] === 'string') kinder[0] = kinder[0].replace(/^\s+/, '');
   return { richtig, kinder };
 }
+/* Knobelaufgaben: freiwillige Zugabe am Ende des Labors (docs/app/INHALTE.md, Abschnitt „Knobelaufgaben“).
+   Sie zählen nirgends als Fortschritt; der feste Satz steht auf jeder Knobel-Station. */
+export const KNOBEL_SATZ = 'Diese Aufgaben sind eine Zugabe für alle, die mit dem Rest durch sind und Lust auf mehr haben. Sie zählen nicht zu deinem Fortschritt, und in der Klausur kommen sie nicht vor. Wenn du sie auslässt, fehlt dir nichts.';
+export const KNOBEL_MAX = 2;
+const KNOBEL_AUFGABE = /^k-([1-9])$/;
+/* alle Aufgaben-Elemente (data-a + data-id) unterhalb von kinder */
+function aufgabenIn(kinder, ziel = []) {
+  for (const x of kinder) {
+    if (!istElement(x)) continue;
+    if (x.attrs['data-a'] && x.attrs['data-id']) ziel.push(x);
+    aufgabenIn(x.kinder, ziel);
+  }
+  return ziel;
+}
 const TEIL = (name) => ({ kinder }) => ({ tag: 'x-' + name, attrs: {}, kinder });
 const istTeil = (k, name) => istElement(k, 'x-' + name);
 
@@ -209,7 +225,14 @@ export function bausteine({ ordner = null, datei = 'MDX' } = {}) {
       h('details', { class: 'k-dozent' }, h('summary', null, titel), h('div', { class: 'k-dozent__body' }, ohneLeerraum(kinder)))),
     /* Erklärvideo mit Untertiteln und dem Ersatztext „Video folgt“ */
     Video({ name, id, titel, fehlt = 'Video folgt.', kinder }) {
-      return h('figure', { class: 'k-video', id },
+      /* Gibt es die Datei beim Bauen noch nicht, steht nur der sichtbare Platzhalter da: ohne <video>, <source> und
+         <track> fragt der Browser nichts an, es gibt keine 404 und keine Konsolenfehler. */
+      if (!fs.existsSync(path.join(SITE, 'assets', 'video', `${name}.mp4`))) {
+        return h('figure', { class: 'k-video', id, 'data-video': name },
+          h('div', { class: 'k-video__missing', role: 'img', 'aria-label': `${titel}: ${fehlt}` }, fehlt),
+          h('figcaption', null, kinder.length ? ausgepackt(kinder) : titel));
+      }
+      return h('figure', { class: 'k-video', id, 'data-video': name },
         h('video', { controls: true, preload: 'metadata', poster: `../assets/video/${name}-poster.png`, 'aria-label': titel },
           h('source', { src: `../assets/video/${name}.mp4`, type: 'video/mp4' }),
           h('track', { kind: 'subtitles', srclang: 'de', label: 'Deutsch', src: `../assets/video/${name}.vtt`, default: true }),
@@ -219,13 +242,19 @@ export function bausteine({ ordner = null, datei = 'MDX' } = {}) {
     },
 
     /* Labor: Aufgabenliste, Kopfzeile mit Auswahl und Werkzeugkasten-Knopf, Stationen, Blättern */
-    Labor({ nr, name, lerneinheit, kinder }) {
+    Labor({ nr, name, lerneinheit, zuhause, kinder }) {
       const k = ohneLeerraum(kinder);
       const stationen = k.filter((x) => hatKlasse(x, 'l-task'));
-      if (stationen.length < 2) throw new Error('<Labor>: mindestens zwei <Station> erwartet');
-      if (!stationen[0].kinder.some((x) => hatKlasse(x, 'lab__toolbox'))) throw new Error('<Labor>: die erste <Station> muss den <Werkzeugkasten> enthalten');
+      const knobel = stationen.filter((x) => x.attrs['data-knobel']);
+      const pflicht = stationen.filter((x) => !x.attrs['data-knobel']);
+      if (pflicht.length < 2) throw new Error('<Labor>: mindestens zwei <Station> erwartet');
+      if (knobel.length > KNOBEL_MAX) throw new Error(`<Labor>: höchstens ${KNOBEL_MAX} <Knobel> je Termin, gefunden ${knobel.length}`);
+      if (knobel.length && stationen.slice(pflicht.length).some((x) => !x.attrs['data-knobel'])) throw new Error('<Labor>: <Knobel> steht als letzte Gruppe, nach allen <Station>');
+      const doppelt = knobel.map((x) => x.attrs.id).filter((id, i, l) => l.indexOf(id) !== i);
+      if (doppelt.length) throw new Error(`<Labor>: <Knobel id="${doppelt[0]}"> kommt doppelt vor`);
+      if (stationen[0].attrs['data-knobel'] || !stationen[0].kinder.some((x) => hatKlasse(x, 'lab__toolbox'))) throw new Error('<Labor>: die erste <Station> muss den <Werkzeugkasten> enthalten');
       const zeichen = (n, text) => h('span', null, h('svg', { class: 'k-ic', 'aria-hidden': 'true', focusable: 'false' }, h('use', { href: `../assets/img/icons.svg#i-${n}` })), ' ' + text);
-      return h('div', { class: 'lab', 'data-lab': true },
+      return h('div', { class: 'lab', 'data-lab': true, 'data-zuhause': zuhause },
         h('nav', { class: 'lab__list', 'aria-label': 'Aufgabenliste' },
           h('div', { class: 'lab__listhead' },
             h('button', { type: 'button', class: 'lab__fold', 'data-lab-fold': true, 'aria-expanded': 'true', 'aria-label': 'Aufgabenliste einklappen' },
@@ -281,11 +310,36 @@ export function bausteine({ ordner = null, datei = 'MDX' } = {}) {
     },
 
     Station({ id, titel, teil, sterne = '', min = '', extra = '', kinder, ...rest }) {
+      if (!['A', 'B'].includes(teil)) throw new Error(`<Station id="${id}">: teil ist A oder B (Knobelaufgaben stehen in <Knobel>), nicht "${teil}"`);
+      const falsch = aufgabenIn(kinder).find((a) => KNOBEL_AUFGABE.test(a.attrs['data-id']));
+      if (falsch) throw new Error(`<Station id="${id}">: die Aufgabenkennung "${falsch.attrs['data-id']}" ist für Knobelaufgaben reserviert (<Knobel>)`);
       return h('section', { class: 'l-task', id, 'data-title': titel, 'data-part': teil, 'data-stars': sterne, 'data-min': min, 'data-extra': extra, 'aria-labelledby': 'h-' + id, hidden: true, ...rest },
         h('header', { class: 'l-task__head' },
           h('p', { class: 'l-task__kicker' }),
           h('h2', { class: 'l-task__title', id: 'h-' + id, tabindex: '-1' }, titel),
           h('p', { class: 'l-task__meta' })),
+        ohneLeerraum(kinder));
+    },
+
+    /* Knobelaufgabe: eine freiwillige Station, ganz am Ende des Labors. id="kn-1" oder "kn-2"; darin genau eine
+       <Aufgabe id="k-1" bzw. "k-2" …>. Der Baustein setzt data-knobel an Station und Aufgabe (damit zählt sie nirgends
+       mit), schreibt die Kennzeichnung und den festen Einleitungssatz und lässt Sterne und Minuten weg. */
+    Knobel({ id, titel, kinder, ...rest }) {
+      const nr = /^kn-([1-9])$/.exec(String(id || ''));
+      if (!nr) throw new Error(`<Knobel id="${id}">: erwartet id="kn-1" oder "kn-2"`);
+      if (!titel) throw new Error(`<Knobel id="${id}">: titel fehlt`);
+      if ('teil' in rest || 'sterne' in rest || 'min' in rest || 'extra' in rest) throw new Error(`<Knobel id="${id}">: teil, sterne, min und extra gibt es bei Knobelaufgaben nicht`);
+      const aufgaben = aufgabenIn(kinder);
+      if (aufgaben.length !== 1) throw new Error(`<Knobel id="${id}">: erwartet genau eine <Aufgabe id="k-${nr[1]}">, gefunden ${aufgaben.length}`);
+      if (aufgaben[0].attrs['data-id'] !== 'k-' + nr[1]) throw new Error(`<Knobel id="${id}">: die Aufgabe heißt "${aufgaben[0].attrs['data-id']}", erwartet "k-${nr[1]}"`);
+      if (aufgaben[0].attrs['data-count'] !== undefined) throw new Error(`<Knobel id="${id}">: data-count ist hier nicht nötig (Knobelaufgaben zählen ohnehin nicht)`);
+      aufgaben[0].attrs['data-knobel'] = true;
+      return h('section', { class: 'l-task l-task--knobel', id, 'data-title': titel, 'data-part': 'K', 'data-knobel': true, 'aria-labelledby': 'h-' + id, hidden: true, ...rest },
+        h('header', { class: 'l-task__head' },
+          h('p', { class: 'l-task__kicker' }),
+          h('h2', { class: 'l-task__title', id: 'h-' + id, tabindex: '-1' }, titel),
+          h('p', { class: 'l-task__meta' })),
+        h('p', { class: 'l-task__knobel' }, KNOBEL_SATZ),
         ohneLeerraum(kinder));
     },
 

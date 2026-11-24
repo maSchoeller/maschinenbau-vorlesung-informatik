@@ -1,0 +1,16 @@
+{
+ "solution": [
+  "geld = float(input(\"Eingeworfen in Euro: \"))",
+  "flaschen = int(input(\"Flaschen im Fach: \"))",
+  "if geld >= 1.5 and flaschen > 0:",
+  "    print(\"Cola kommt\")",
+  "else:",
+  "    print(\"Geld zurück\")"
+ ],
+ "distractors": [
+  "if geld >= 1.5 or flaschen > 0:",
+  "if geld >= 1.5 and > 0:"
+ ],
+ "alts": [],
+ "ok": "Beide Vergleiche sind vollständig, und and verlangt, dass beide stimmen."
+}
