@@ -175,7 +175,7 @@ Entscheidung: punkte >= 50?
 
 </Plan>
 ````
- `<Station … data-seen="manual">` zählt erst als angesehen, wenn die Fehlersuche aufgelöst wurde. Vorbelegte Eingaben eines Codeblocks mit mehreren Zeilen: ```` ```python data-stdin="40\n10" ````.
+ `<Station … data-seen="manual">` zählt erst als angesehen, wenn die Fehlersuche aufgelöst wurde. Vorbelegte Eingaben eines Codeblocks mit mehreren Zeilen: ```` ```python data-stdin="40\n10" ```` (bei Aufgaben `data-inputs="40|10"`). Sie gelten nur im Modus „vorab eintragen“; in der Voreinstellung „im Terminal“ tippen die Studierenden die Eingaben beim Lauf selbst. Texte auf den Seiten beschreiben deshalb das Tippen im Terminal, nicht das Feld.
 
 Regeln für neue Terminseiten (Vorgaben vom 2026-11-23):
 
@@ -187,6 +187,10 @@ Regeln für neue Terminseiten (Vorgaben vom 2026-11-23):
 `<Html>{`…`}</Html>` gibt HTML unverändert aus. Das braucht man nur im Ausnahmefall; neu schreibt man so nichts.
 
 Die genaue Ausgabe jedes Bausteins steht in `app/src/lib/mdx/bausteine.mjs` (kurz, ein Baustein je Funktion). Ein neuer Baustein ist eine Funktion dort, die Knoten mit `h('div', {class: '…'}, kinder)` zurückgibt.
+
+### Bearbeitungen werden von selbst gespeichert
+
+Alle Aufgaben mit Kennung (`<Aufgabe id="…">`, `<Frage id="…">` in einem `<Quiz id="…">`), Fehlersuchen und Vorhersagen speichern, was Studierende bearbeitet haben, und stellen es beim Öffnen wieder her (bei Konto auch auf anderen Geräten). Für neue Termine ist nichts zu tun. Zwei Regeln: Die Kennung einer Aufgabe oder Frage bleibt stabil (ändert sie sich, ist der Stand weg). Wer den Text einer Lückenaufgabe, der Zeilen oder des Ablaufs ändert, macht gespeicherte Stände damit unbrauchbar; sie werden verworfen und die Aufgabe beginnt von vorn. Fehlersuche und Vorhersage haben keine Kennung und werden an ihrem Inhalt erkannt. Schlüssel und Formate: `docs/app/ARCHITEKTUR.md`, 4.4a.
 
 ## Eine Lektion umziehen
 

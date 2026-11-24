@@ -227,7 +227,11 @@ export function bausteine({ ordner = null, datei = 'MDX' } = {}) {
       const zeichen = (n, text) => h('span', null, h('svg', { class: 'k-ic', 'aria-hidden': 'true', focusable: 'false' }, h('use', { href: `../assets/img/icons.svg#i-${n}` })), ' ' + text);
       return h('div', { class: 'lab', 'data-lab': true },
         h('nav', { class: 'lab__list', 'aria-label': 'Aufgabenliste' },
-          h('div', { class: 'lab__listhead' }, h('p', { class: 'lab__title' }, 'Programmierlabor ' + name), h('a', { class: 'lab__back', href: lerneinheit }, '← Lerneinheit')),
+          h('div', { class: 'lab__listhead' },
+            h('button', { type: 'button', class: 'lab__fold', 'data-lab-fold': true, 'aria-expanded': 'true', 'aria-label': 'Aufgabenliste einklappen' },
+              h('svg', { class: 'k-ic', 'aria-hidden': 'true', focusable: 'false' }, h('use', { href: '../assets/img/icons.svg#i-chevron-left' }))),
+            h('p', { class: 'lab__title' }, 'Programmierlabor ' + name), h('a', { class: 'lab__back', href: lerneinheit }, '← Lerneinheit')),
+          h('p', { class: 'lab__count', 'data-lab-count': true }),
           h('div', { class: 'a-progress', 'data-a-progress': true },
             h('span', { class: 'a-progress__bar' }, h('span', { class: 'a-progress__fill' })),
             h('span', { class: 'a-progress__text' }, '0 Aufgaben gelöst')),

@@ -123,6 +123,32 @@
         else if (s === 'part') t._stat.textContent = ' · begonnen';
       }
     });
+    // Kompakte Fortschrittsangabe für die eingeklappte Leiste („3/11“)
+    if (countEl) {
+      var zaehl = countable(lab), geloest = bucket('aufg');
+      var fertig = zaehl.filter(function (n) { return geloest[n.getAttribute('data-id')]; }).length;
+      countEl.textContent = '';
+      countEl.appendChild(el('span', { 'aria-hidden': 'true', text: fertig + '/' + zaehl.length }));
+      countEl.appendChild(el('span', { class: 'k-sr', text: fertig + ' von ' + zaehl.length + ' Aufgaben gelöst' }));
+    }
+  }
+
+  /* ── Aufgabenliste ein- und ausklappen (je Gerät gemerkt, kein Abgleich mit dem Konto) ── */
+  var LISTE_KEY = 'inf-mb-app:aufgabenleiste';
+  var listNav = $('.lab__list', lab), foldBtn = $('[data-lab-fold]', lab), countEl = $('[data-lab-count]', lab);
+  function setFold(zu, merken) {
+    if (!listNav || !foldBtn) return;
+    document.documentElement.classList.toggle('lab-liste-zu', zu);
+    if (zu) listNav.setAttribute('data-zu', ''); else listNav.removeAttribute('data-zu');
+    foldBtn.setAttribute('aria-expanded', zu ? 'false' : 'true');
+    foldBtn.setAttribute('aria-label', zu ? 'Aufgabenliste ausklappen' : 'Aufgabenliste einklappen');
+    if (merken) { try { if (zu) localStorage.setItem(LISTE_KEY, 'zu'); else localStorage.removeItem(LISTE_KEY); } catch (e) { /* gesperrt: gilt nur für diese Seite */ } }
+  }
+  if (foldBtn) {
+    foldBtn.addEventListener('click', function () { setFold(foldBtn.getAttribute('aria-expanded') === 'true', true); });
+    var gemerkt = null;
+    try { gemerkt = localStorage.getItem(LISTE_KEY); } catch (e) { /* ohne Speicher: ausgeklappt */ }
+    setFold(gemerkt === 'zu', false);
   }
 
   /* ── Werkzeugkasten: Schublade ───────────────────────────── */

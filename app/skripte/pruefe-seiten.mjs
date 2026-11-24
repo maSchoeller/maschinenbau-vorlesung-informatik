@@ -89,7 +89,7 @@ async function main() {
           const r = [];
           /* Tablet: Bedienelemente der Hülle mindestens 44 × 44 px */
           if (tablet) {
-            const klein = [...document.querySelectorAll('.app-ansicht a, .app-lektion__pfeil, .app-bar__suche, .app-bar__link, .app-waehler__knopf, .app-panel__zu, .gl-buchstaben a')]
+            const klein = [...document.querySelectorAll('.app-ansicht a, .app-lektion__pfeil, .app-bar__suche, .app-bar__link, .app-waehler__knopf, .app-panel__zu, .app-panel__griff, .lab__fold, .gl-buchstaben a, .k-btn--small')]
               .filter((x) => x.offsetParent !== null).map((x) => [x, x.getBoundingClientRect()]).filter(([, b]) => b.width < 43.5 || b.height < 43.5)
               .map(([x, b]) => `${x.className || x.tagName} ${Math.round(b.width)}×${Math.round(b.height)}`);
             if (klein.length) r.push('Ziele unter 44 px: ' + [...new Set(klein)].slice(0, 4).join(', '));

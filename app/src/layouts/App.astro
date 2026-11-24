@@ -86,6 +86,7 @@ const touchIcon = gibtPublic('app/icons/apple-touch-icon.png');
       )}
     </div>
     <aside class="app-panel" data-app-slot="panel" hidden aria-label="Tutor" tabindex="-1">
+      <div class="app-panel__griff" data-app-slot="panel-griff" role="separator" aria-orientation="vertical" aria-label="Breite des Tutors ändern" aria-valuemin="320" aria-valuemax="1000" aria-valuenow="380" tabindex="0"></div>
       <div class="app-panel__kopf">
         <h2 class="app-panel__titel" id="app-panel-titel">Tutor</h2>
         <button type="button" class="app-panel__zu" data-app-aktion="panel-zu" aria-label="Panel schließen"><Icon id="x" basis={basis} /></button>

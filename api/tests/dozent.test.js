@@ -145,6 +145,31 @@ for (const [name, fabrik] of Object.entries(backends)) {
       assert.ok(!text.includes('benutzerId'));
     });
 
+    it('Bearbeitungsstände der Aufgaben (code:, luecken:, zeilen:, ablauf:, fehler:, tipp:, frage:) zählen nicht und erscheinen nie', async () => {
+      const stand = {
+        'v07/code:t-1': { v: 1, code: 'geheim_code = 7', eingaben: 'geheim-eingabe', ab: 1, haken: [1, 0] },
+        'v07/luecken:a-luecken': { v: 1, f: 'x', w: ['geheim-luecke'] },
+        'v07/zeilen:t-2': { v: 1, f: 'x', p: ['z1'], a: [['z0', 1]] },
+        'v07/ablauf:t-2': { v: 1, f: 'x', n: 2, r: [], e: { x: 'geheim-wert' } },
+        'v07/fehler:abc123': { v: 1, s: [2], a: 1 },
+        'v07/tipp:abc123': { v: 1, t: 'geheim-tipp', g: 1 },
+        'v07/frage:v07.symbol': { v: 1, f: 'x', p: 2, ok: 1, a: 'geheim-antwort' },
+      };
+      // Konten nur mit Bearbeitungsständen: kein aktives Konto
+      for (const u of ['s1', 's2', 's3', 's4', 's5']) await lernstand(u, stand);
+      const leer = (await bild()).daten;
+      assert.equal(leer.konten, 0);
+      assert.equal(leer.genug, false);
+      assert.deepEqual(leer.lektionen, []);
+      // mit echtem Lernstand daneben: Zahlen wie ohne die Bearbeitungsstände, Inhalte nie in der Antwort
+      for (const u of ['s1', 's2', 's3', 's4', 's5']) await lernstand(u, { 'v07/aufg': { 't-1': 1 } });
+      const r = await bild();
+      assert.equal(r.daten.konten, 5);
+      assert.deepEqual(r.daten.lektionen[0].stationen.find((x) => x.id === 't-1'), { id: 't-1', geloest: 5, begonnen: 0 });
+      assert.equal(r.daten.lektionen[0].quiz, null);
+      assert.ok(!JSON.stringify(r.daten).includes('geheim'));
+    });
+
     it('gelöschte Einträge zählen nicht mehr', async () => {
       for (const u of ['s1', 's2', 's3', 's4', 's5']) await lernstand(u, { 'v07/aufg': { 't-1': 1 } });
       assert.equal((await bild()).daten.lektionen[0].stationen[1].geloest, 5);
@@ -185,6 +210,13 @@ describe('Gruppenbild: Zählregeln', () => {
       'inf-mb/v07/aufg', 'inf-mb/v07/begonnen', 'inf-mb/v07/done', 'inf-mb/v07/quiz-v07',
       'inf-mb/v08/aufg', 'inf-mb/v08/begonnen', 'inf-mb/v08/done',
     ]);
+  });
+
+  it('liest keinen Pfad der Bearbeitungsstände', () => {
+    const gelesen = [...gruppenbild.pfade(KURS).keys()];
+    for (const art of ['code:', 'luecken:', 'zeilen:', 'ablauf:', 'fehler:', 'tipp:', 'frage:']) {
+      assert.ok(!gelesen.some((p) => p.includes('/' + art)), art);
+    }
   });
 
   it('verträgt kaputte Werte und fremde Pfade', () => {

@@ -319,6 +319,71 @@
   };
   window.KursSpeicher = KS;
 
+  /* ── Bearbeitungsstand einer Aufgabe ────────────────────────
+     KursSpeicher.stand(lektion, schluessel) -> {pfad, lesen(), aendern(fn), sichern(), loeschen(), wiederherstellen(fn)}
+       aendern(fn)          die Person hat etwas geändert: fn() liefert in ca. 600 ms (und beim Verlassen der Seite)
+                            den Stand als JSON-Wert; null löscht den Eintrag. Mehr als 60 000 Zeichen werden nicht gespeichert.
+       wiederherstellen(fn) fn(wert) baut den Stand auf (false = passt nicht zur Aufgabe, wird ignoriert). Läuft sofort
+                            und, wenn der Stand erst später aus dem Konto eintrifft, nochmals – aber nur, solange die
+                            Person an dieser Aufgabe noch nichts geändert hat.
+       loeschen()           Stand entfernen („Zurücksetzen“)
+     KursSpeicher.hash(text) -> kurze Kennung (Base 36) für Inhalte, die keine eigene Kennung haben. */
+  var MAX_STAND = 60000, offeneStaende = [];   // Bytes (UTF-8); die API nimmt je Eintrag höchstens 64 KB
+  function bytes(t) { try { return new TextEncoder().encode(t).length; } catch (e) { return t.length * 3; } }
+  function kurzHash(t) {
+    t = String(t); var a = 5381, b = 52711;
+    for (var i = 0; i < t.length; i++) { var c = t.charCodeAt(i); a = ((a * 33) ^ c) >>> 0; b = ((b * 31 + c) ^ (b >>> 7)) >>> 0; }
+    return a.toString(36) + b.toString(36);
+  }
+  function jsonOderNull(w) { try { var s = JSON.stringify(w); return typeof s === 'string' ? s : null; } catch (e) { return null; } }
+  function alleSichern() { offeneStaende.slice().forEach(function (s) { try { s.sichern(); } catch (e) { /* weiter */ } }); }
+  KS.hash = kurzHash;
+  KS.stand = function (lektion, schluessel) {
+    var pfad = pfadVon(lektion, schluessel);
+    var timer = null, hol = null, beruehrt = false, anwenden = null;
+    var zuletzt = jsonOderNull(KS.sofort.lesen(pfad));
+    var s = {
+      pfad: pfad,
+      lesen: function () { return KS.sofort.lesen(pfad); },
+      aendern: function (fn) {
+        beruehrt = true; hol = fn;
+        if (offeneStaende.indexOf(s) < 0) offeneStaende.push(s);
+        clearTimeout(timer); timer = setTimeout(s.sichern, 600);
+      },
+      sichern: function () {
+        clearTimeout(timer); timer = null;
+        var i = offeneStaende.indexOf(s); if (i >= 0) offeneStaende.splice(i, 1);
+        if (!hol) return;
+        var f = hol; hol = null;
+        var w = f();
+        if (w === null || w === undefined) { if (zuletzt !== null) { zuletzt = null; KS.sofort.loeschen(pfad); } return; }
+        var j = jsonOderNull(w);
+        if (j === null || bytes(j) > MAX_STAND || j === zuletzt) return;
+        zuletzt = j; KS.sofort.schreiben(pfad, w);
+      },
+      loeschen: function () {
+        clearTimeout(timer); timer = null; hol = null; beruehrt = true;
+        var i = offeneStaende.indexOf(s); if (i >= 0) offeneStaende.splice(i, 1);
+        zuletzt = null; KS.sofort.loeschen(pfad);
+      },
+      wiederherstellen: function (fn) {
+        anwenden = fn;
+        var w = KS.sofort.lesen(pfad);
+        if (w !== undefined) { try { fn(w); } catch (e) { /* kaputter Stand: ignorieren */ } }
+        KS.abonnieren(pfad, function (ev) {
+          if (ev.pfad !== pfad || ev.geloescht || beruehrt || ev.wert === undefined) return;
+          var j = jsonOderNull(ev.wert);
+          if (j === zuletzt) return;
+          zuletzt = j;
+          try { anwenden(ev.wert); } catch (e) { /* ignorieren */ }
+        });
+      }
+    };
+    return s;
+  };
+  window.addEventListener('pagehide', alleSichern);
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') alleSichern(); });
+
   /* Start: Cache aus dem lokalen Adapter füllen, dann migrieren, dann abonnieren */
   cache = lokalerAdapter.alleSync() || {};
   migriere();

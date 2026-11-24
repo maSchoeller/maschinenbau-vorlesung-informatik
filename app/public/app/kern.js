@@ -413,6 +413,89 @@
     element: function () { return slot('panel-inhalt'); }
   };
 
+  /* ── Panelbreite: ziehbar (Zeiger und Tastatur), je Gerät in localStorage ──
+     Mindestens 320 px, höchstens der ganze Platz neben der Leiste. Gemerkt wird der Wunsch;
+     angezeigt wird er auf das aktuelle Fenster begrenzt (wächst das Fenster, kommt er zurück). */
+  var INHALT_MIN = 520, PANEL_MIN = 320, PANEL_STANDARD = 380, PANEL_SCHLUESSEL = 'inf-mb-app:panelbreite';
+  var panelWunsch = PANEL_STANDARD, panelIst = PANEL_STANDARD;
+  function panelMax() {
+    var wurzel = document.documentElement, rail = 76;   /* = --app-rail-w in shell.css */
+    var breit = (wurzel && wurzel.clientWidth) || 10000;
+    /* ab 1100 px steht das Panel neben dem Inhalt: dem Inhalt bleibt mindestens INHALT_MIN; darunter liegt es darüber */
+    return Math.max(PANEL_MIN, Math.floor(breit - rail - (breit >= 1100 ? INHALT_MIN : 0)));
+  }
+  function panelBegrenzt(b) { return Math.min(panelMax(), Math.max(PANEL_MIN, Math.round(b))); }
+  function panelGriffNachziehen() {
+    var g = slot('panel-griff');
+    if (!g) return;
+    g.setAttribute('aria-valuemin', String(PANEL_MIN));
+    g.setAttribute('aria-valuemax', String(panelMax()));
+    g.setAttribute('aria-valuenow', String(panelIst));
+    g.setAttribute('aria-valuetext', panelIst + ' Pixel');
+  }
+  function panelBreiteSetzen(b, merken) {
+    panelIst = panelBegrenzt(b);
+    if (merken) {
+      panelWunsch = panelIst;
+      try { if (panelWunsch === PANEL_STANDARD) localStorage.removeItem(PANEL_SCHLUESSEL); else localStorage.setItem(PANEL_SCHLUESSEL, String(panelWunsch)); } catch (e) { /* gesperrt: gilt nur für diese Seite */ }
+    }
+    if (document.documentElement && document.documentElement.style) document.documentElement.style.setProperty('--app-panel-w', panelIst + 'px');
+    panelGriffNachziehen();
+  }
+  try { var gemerkt = parseInt(localStorage.getItem(PANEL_SCHLUESSEL), 10); if (gemerkt > 0) panelWunsch = gemerkt; } catch (e) { /* ohne Speicher: Standard */ }
+  panelBreiteSetzen(panelWunsch, false);
+  window.addEventListener('resize', function () { panelBreiteSetzen(panelWunsch, false); });
+  /* Wird der Inhalt schmal (breites Panel), schalten die Seiten auf eine Spalte: html.app-eng (Regeln in kurs.css, v01.css) */
+  (function () {
+    var inh = document.querySelector('.app-inhalt');
+    if (!inh || typeof ResizeObserver === 'undefined') return;
+    function pruefen() { document.documentElement.classList.toggle('app-eng', inh.clientWidth > 0 && inh.clientWidth < 860); }
+    new ResizeObserver(pruefen).observe(inh);
+    pruefen();
+  })();
+  (function () {
+    var g = slot('panel-griff');
+    if (!g) return;
+    var zieht = false, rahmen = 0, ziel = 0;
+    function anwenden() { rahmen = 0; panelBreiteSetzen(ziel, false); }
+    g.addEventListener('pointerdown', function (e) {
+      if (e.button !== undefined && e.button > 0) return;
+      e.preventDefault();
+      zieht = true;
+      try { g.focus({ preventScroll: true }); } catch (x) {}
+      try { g.setPointerCapture(e.pointerId); } catch (x) {}
+      body.classList.add('app--ziehen');
+    });
+    g.addEventListener('pointermove', function (e) {
+      if (!zieht) return;
+      ziel = document.documentElement.clientWidth - e.clientX;
+      if (!rahmen) rahmen = requestAnimationFrame(anwenden);
+    });
+    function ende() {
+      if (!zieht) return;
+      zieht = false;
+      if (rahmen) { cancelAnimationFrame(rahmen); rahmen = 0; panelBreiteSetzen(ziel, false); }
+      body.classList.remove('app--ziehen');
+      panelBreiteSetzen(panelIst, true);
+    }
+    g.addEventListener('pointerup', ende);
+    g.addEventListener('pointercancel', ende);
+    g.addEventListener('lostpointercapture', ende);
+    g.addEventListener('dblclick', function () { panelBreiteSetzen(PANEL_STANDARD, true); });
+    g.addEventListener('keydown', function (e) {
+      var schritt = e.shiftKey ? 96 : 24, b = null;
+      if (e.altKey || e.ctrlKey || e.metaKey) return;
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') b = panelIst + schritt;
+      else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') b = panelIst - schritt;
+      else if (e.key === 'Home') b = PANEL_MIN;
+      else if (e.key === 'End') b = panelMax();
+      else if (e.key === 'Enter') b = PANEL_STANDARD;
+      if (b === null) return;
+      e.preventDefault();
+      panelBreiteSetzen(b, true);
+    });
+  })();
+
   /* ── Symbole ─────────────────────────────────────────────── */
   var NS = 'http://www.w3.org/2000/svg';
   function icon(id) {

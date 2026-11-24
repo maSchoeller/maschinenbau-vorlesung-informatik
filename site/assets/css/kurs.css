@@ -92,6 +92,16 @@ a:hover { color: var(--red); }
   .k-toc__lab { display: none; }
   .l-content { padding-top: var(--sp-4); }
 }
+/* Schmaler Inhalt (breites Tutor-Panel): wie unter 1000 px */
+  html.app-eng .l-page { display: block; }
+  html.app-eng .k-toc { position: static; padding: var(--sp-5) 0 0; }
+  html.app-eng .k-toc__list { display: flex; flex-wrap: wrap; gap: 0 var(--sp-3); }
+  html.app-eng .k-toc__list a { padding: 4px 8px 4px 0; border-left: 0; }
+  html.app-eng .k-toc__list a.is-active { text-decoration: underline; text-underline-offset: 4px; text-decoration-color: var(--red); }
+  html.app-eng .k-toc .k-progress { padding-left: 0; flex-direction: row; align-items: center; }
+  html.app-eng .k-toc .k-progress__bar { flex: 1; width: auto; }
+  html.app-eng .k-toc__lab { display: none; }
+  html.app-eng .l-content { padding-top: var(--sp-4); }
 
 /* ── Titel der Seite ────────────────────────────────────────── */
 .k-title { margin-bottom: var(--k-section-gap); }
@@ -124,6 +134,7 @@ a:hover { color: var(--red); }
 .k-btn[disabled] { opacity: .5; cursor: not-allowed; }
 .k-btn[aria-disabled="true"] { opacity: .55; cursor: not-allowed; }
 @media (max-width: 760px) { .k-btn, .k-btn--small { min-height: 44px; } }
+@media (max-width: 1099px), (pointer: coarse) { .k-btn--small { min-height: 44px; } }
 
 /* ── Abschnitte: Weißraum und Überschrift, kein Rahmen ──────── */
 .k-section { margin-top: var(--k-section-gap); scroll-margin-top: var(--sp-4); }

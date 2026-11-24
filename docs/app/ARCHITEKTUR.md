@@ -119,6 +119,8 @@ Dateizuständigkeit ist strikt. Wer etwas außerhalb seines Bereichs braucht, ä
 - Pfeile vorige/nächste Lektion bleiben in derselben Ansicht (Labor → Labor der Nachbarlektion; hat die Nachbarlektion kein Labor, dann ihre Lerneinheit). Am Ende jeder Lerneinheit und jedes Labors steht ein klarer nächster Schritt (Lerneinheit → Labor → nächste Lektion); die Hülle ergänzt ihn, falls der Inhalt ihn nicht hat.
 - Die Hülle merkt sich die zuletzt besuchte Seite samt Anker unter `inf-mb/app/zuletzt` (über `KursSpeicher`), damit „Heute“ und andere Geräte daran anknüpfen.
 - Tablet: gleiche Leiste; das Panel liegt über dem Inhalt statt daneben.
+- Panelbreite: Der Griff `.app-panel__griff` (role="separator", Pfeiltasten ±24 px, Umschalt ±96 px, Pos1 = 320 px, Ende = größte Breite, Eingabetaste oder Doppelklick = 380 px) setzt `--app-panel-w` (Logik in `kern.js`). Die gemerkte Breite wird nur angezeigt, soweit das Fenster sie zulässt. Ab 1100 px Fensterbreite (Panel neben dem Inhalt) bleiben dem Inhalt mindestens 520 px: größte Breite = Fenster − 76 − 520. Darunter liegt das Panel über dem Inhalt (größte Breite = Fenster − 76). Wird `.app-inhalt` schmaler als 860 px, setzt `kern.js` `html.app-eng`; dann stapeln sich Inhaltsleiste und Plan/Programm-Blöcke wie unter 1000 bzw. 1100 px (kurs.css, v01.css). `.app-inhalt` schneidet Überstand ab, die Seite scrollt nie quer; die Prüfung misst deshalb die rechte Kante der Bedienelemente.
+- Aufgabenleiste im Labor (`nav.lab__list`): Knopf `[data-lab-fold]` klappt sie zu einem 52-px-Streifen mit Knopf und Fortschritt („3/11“) ein; Zustand je Gerät unter `inf-mb-app:aufgabenleiste` (`labor.js`), Klasse `html.lab-liste-zu` setzt `--lab-liste` für alle Raster-Regeln (`labor.css`, `shell.css`). Die ausgeblendete Liste ist nicht per Tab erreichbar. Das Inhaltsverzeichnis der Lerneinheit bleibt unverändert.
 - Tastatur: Sprunglink „Zum Inhalt“, sichtbarer Fokus, alle Ziele per Tab erreichbar, Strg+K Suche, Esc schließt Panel und Dialoge.
 - Druck: Leiste, Kopfzeile, Panel ausgeblendet.
 
@@ -178,6 +180,28 @@ KursApp.icon(id)         // SVG-Element aus dem Sprite
 ```
 
 Fortschritt liegt wie bisher in `KursSpeicher`: `inf-mb/<lektion>/done` (Abschnitte), `…/aufg` (gelöste Aufgaben), `…/begonnen`, `…/gesehen`, `…/quiz-<id>`, `…/code:<aufgabe>`.
+
+### 4.4a Bearbeitungen der Aufgaben (Schlüssel)
+
+Was Studierende an einer Aufgabe bearbeitet haben, bleibt erhalten und kommt beim Wiederöffnen zurück. Ein Eintrag je Aufgabe unter `inf-mb/<lektion>/<schlüssel>` (Zeichen `A-Za-z0-9:._-`, höchstens 64 KB; der Abgleich mit dem Konto (`speicher-azure.js`) nimmt alle Einträge von selbst mit, auch das Löschen). Hilfe dafür: `KursSpeicher.stand(lektion, schlüssel)` und `KursSpeicher.hash(text)` in `speicher.js`. `aendern(fn)` schreibt entprellt (600 ms) und zusätzlich beim Verlassen der Seite (`pagehide`, Seite im Hintergrund); `wiederherstellen(fn)` baut den Stand beim Laden auf und noch einmal, wenn er erst später aus dem Konto eintrifft (anderes Gerät), solange an dieser Aufgabe noch nichts geändert wurde. Jeder Wert hat `v: 1`. Passt ein Stand nicht mehr zur Aufgabe (Fingerabdruck `f` der Vorlage, Zahl der Lücken oder Zeilen, unbekannte Kennungen), wird er verworfen und nichts falsch eingesetzt.
+
+| Aufgabenart | Schlüssel | Wert |
+|---|---|---|
+| Code, Ausführen, Klausur (`aufgaben.js`) | `code:<aufgabe>` | `{v, code, eingaben?, ab?, haken?}`: `eingaben` nur, wenn das Feld „Eingaben“ (Modus „vorab“) von der Vorgabe abweicht; `ab: 1` und `haken: [0/1, …]` nur bei der abgegebenen Klausuraufgabe (Selbstbewertung je Punkt des Schemas). Die Zeit wird nicht gespeichert, die Tests laufen beim Wiederherstellen nicht erneut. Ohne Änderung gegenüber der Vorlage gibt es keinen Eintrag. |
+| Lückentext | `luecken:<aufgabe>` | `{v, f, w: [Text je Lücke]}`; `f` = Kennung der Vorlage |
+| Zeilen ordnen | `zeilen:<aufgabe>` | `{v, f, p: [Zeilenkennung im Vorrat, in Reihenfolge], a: [[Zeilenkennung, Einrückung], …]}`; nach dem Wiederherstellen wird nicht neu gemischt |
+| Ablauf verfolgen | `ablauf:<aufgabe>` | `{v, f, n: erreichter Schritt, r: [aufgedeckte Schritte], e?: {Variable: Eintrag im offenen Schritt, '#out': Ausgabe}}`; „gelöst nur ohne Aufdecken“ gilt weiter |
+| Fehlersuche (`kurs.js`) | `fehler:<Kennung>` | `{v, s: [markierte Zeilen ab 0], a: 1 wenn aufgelöst}` |
+| Vorhersage der Lerneinheit (`kurs.js`) | `tipp:<Kennung>` | `{v, t: Text des gewählten Tipps, g: 1 wenn das Programm danach lief}`; `t` statt Platz, weil die Antworten gemischt stehen |
+| Quiz und Selbstcheck (`kurs.js`) | `frage:<quiz>.<frage>` | `{v, f, p: Punkte im ersten Versuch, ok, a: Antwort (Auswahl: Nummern in der Reihenfolge der Vorlage; sonst Text), o: 1 wenn zum Nochmal-Versuch geöffnet}`; Fragen und Antworten stehen weiter in zufälliger Reihenfolge |
+
+`<aufgabe>` ist die Kennung der Aufgabe (`data-id`). Fehlersuche und Vorhersage haben keine eigene Kennung: Ihr `<Kennung>` ist ein kurzer Hash aus Titel, Text und Code; ändert sich der Text, beginnt die Aufgabe von vorn (der alte Eintrag bleibt ungenutzt liegen). Das Gesamtergebnis `quiz-<id>` bleibt unverändert und ist weiter das Einzige, was die Dozenten-Übersicht liest (neben `aufg`, `begonnen`, `done`); sie zählt die neuen Einträge nicht und zeigt nie Inhalte (`api/tests/dozent.test.js`). Frei von Kollisionen mit `aufg`, `begonnen`, `done`, `gesehen`, `quiz-<id>`, `pap:<id>` (gezeichneter Plan) und `prog:<id>` (Werkbank).
+
+Nicht gespeichert: Reglerstellungen der interaktiven Bausteine (Explorables), Beispiel-Runner ohne Aufgabenkennung, Tutor-Verlauf, die im Terminal getippten Eingaben, Ausgaben und Testergebnisse.
+
+„Zurücksetzen“ (bei Zeilen ordnen „Neu mischen“, bei der Klausur „Neu schreiben“, bei Ablauf und Fehlersuche „Von vorn“ / „Von vorn beginnen“, beim Runner mit Vorhersage „Zurücksetzen“) löscht den Eintrag und stellt die Vorlage her. Der Status „gelöst“ (`aufg`) bleibt davon unberührt.
+
+Prüfung: `app/skripte/pruefe-stand.mjs` (Teil von `pruefe-alles`).
 
 ## 5. Seiten der App (neu)
 
@@ -254,6 +278,12 @@ App-Einstellungen: `COSMOS_VERBINDUNG`, `BENUTZER_SALT`, `ANTHROPIC_API_KEY` (vo
 ## 8. Werkbank und Teilen
 
 - `werkbank.html`: links Liste der eigenen Programme (Titel, zuletzt geändert), Mitte Editor mit Ausführen (bestehender Runner: `.k-runner` mit `textarea.k-runner__code.py-editor`, `KursRunner`, `KursEditor`), darüber Titel und Aktionen: Neu · Duplizieren · Löschen · Herunterladen (.py) · Teilen. Leerer Zustand mit einem Beispiel und einem Satz Erklärung.
+- Eingaben für `input()` (überall, wo Code läuft: Runner in `kurs.js`, Labor-Code-Aufgaben in `aufgaben.js`, Werkbank, geteilte Programme): Voreinstellung ist der **Terminal-Dialog**: Die Aufforderung erscheint in der Ausgabe, dahinter ein Eingabefeld (beschriftet mit der Aufforderung; Enter sendet, Escape oder „Abbrechen“ beendet). Der Umschalter „Eingaben: im Terminal | vorab eintragen“ erscheint nur, wenn der Code `input(` enthält; die Wahl gilt je Gerät für alle Laufoberflächen (`localStorage` `kurs-eingabemodus`, kein Abgleich mit dem Konto). „vorab eintragen“ ist der frühere Stand (Feld „Eingaben“, Vorbelegung über `data-stdin`/`data-inputs`, EOFError-Hinweis bei fehlender Zeile).
+  - Bauweise „Wiederholungslauf“ (`KursPy.terminal` in `kurs.js`): Das Programm läuft mit der Liste der bisher getippten Eingaben. Ist sie beim nächsten `input()` leer, endet der Lauf mit dem Signal `_KcEingabe` (von `BaseException` abgeleitet, damit `except Exception` es nicht schluckt; ein nacktes `except:` löst es über eine Trace-Funktion in seiner ersten Zeile erneut aus). Nach Enter startet das Programm von vorn mit der längeren Liste; angezeigt wird nur, was über das schon Gezeigte hinausgeht. Weicht ein Lauf ab, ersetzt seine Ausgabe die Anzeige. Grund: Die Seiten sind nicht cross-origin-isoliert (kein `SharedArrayBuffer`), Safari kennt kein JSPI; so geht es ohne neue Header und ohne Service-Worker-Umweg.
+  - `random` (und `numpy.random`, falls geladen) bekommt je „Ausführen“ einen frischen Startwert, der über die Wiederholungen gleich bleibt; ein eigenes `random.seed()` im Programm gilt weiter. Das Zeitlimit gilt je Wiederholung, Warten auf eine Eingabe zählt nicht. Code ändern, Aufgabe wechseln oder „Zurücksetzen“ beenden den Dialog; ein neues „Ausführen“ beginnt mit leerer Liste.
+  - Grenzen: Das Programm läuft je Eingabe erneut. Nebenwirkungen wiederholen sich (Dateien schreiben, Zeitmessung mit `time`, Ausgaben in Diagrammen werden neu gezeichnet); lange Rechnungen vor dem ersten `input()` kosten bei jeder Eingabe wieder Zeit. Programme, die sich ohne `random` zufällig verhalten (z. B. Uhrzeit), können abweichen; dann ersetzt die neue Ausgabe die alte.
+  - „Schritt für Schritt“ nimmt im Terminal-Modus die Eingaben des letzten vollständigen Laufs desselben Codes; gibt es keinen, läuft erst der Dialog, danach öffnet sich der Visualisierer. „Prüfen“ und `run_program([...])` in den Tests laufen unverändert mit festen Eingaben.
+  - Werkbank und geteilte Programme: Das gespeicherte Feld `eingaben` gilt nur im Modus „vorab“ (Datenformat und API unverändert). Im Terminal getippte Eingaben werden nicht gespeichert.
 - Speicherung über `KursSpeicher`: `inf-mb/werkbank/prog:<id>` → `{titel, code, erstellt, geaendert, quelle?}`; Liste über `KursSpeicher.liste('inf-mb/werkbank/')`. Dadurch gleicht das Konto Programme automatisch ab. Automatisches Speichern beim Tippen (entprellt).
 - „In der Werkbank öffnen“: kleiner Knopf an jedem ausführbaren Codeblock der Lektionen (per `app/werkbank-knopf.js`, ohne `kurs.js` zu ändern); legt eine Kopie als neues Programm an (Titel aus Lektion und Abschnitt) und öffnet sie.
 - Teilen: verlangt Login und Anzeigenamen (sonst freundlicher Hinweis mit Weg zum Konto). `POST /api/geteilt` → Link `geteilt.html?id=<id>` wird angezeigt und kopiert. Der Schnappschuss ändert sich nicht mehr; erneutes Teilen erzeugt einen neuen Link. Eigene Links lassen sich in der Werkbank auflisten und löschen.
@@ -279,7 +309,7 @@ App-Einstellungen: `COSMOS_VERBINDUNG`, `BENUTZER_SALT`, `ANTHROPIC_API_KEY` (vo
 
 Zweck: Studierende stellen Fragen und bekommen Hilfe zur Selbsthilfe. Der Tutor erklärt Konzepte und Fehlermeldungen, stellt Rückfragen und gibt gestufte Hinweise. **Er liefert nie die Lösung einer Aufgabe**, auch nicht auf Drängen, in Teilen zusammengesetzt, „nur zur Kontrolle“, als Übersetzung, in anderer Sprache/Kodierung oder nach behauptetem Rollenwechsel („ich bin der Dozent“).
 
-Oberfläche (`tutor.js`): Panel rechts (ca. 380 px), geöffnet über die Leiste. Kennt den Kontext der Seite: Lektion, im Labor die aktuelle Aufgabe (id), den Code im Editor und die letzte Ausgabe bzw. Fehlermeldung (wird nur auf Knopfdruck „Meinen Code mitschicken“ bzw. per sichtbarem Schalter übertragen, Standard an im Labor). Zeigt Restkontingent dezent. Ohne Login: Erklärung und Knopf „Mit GitHub anmelden“. Ohne Netz: Hinweis. Verlauf nur im Arbeitsspeicher der Seite (sessionStorage erlaubt), nicht auf dem Server.
+Oberfläche (`tutor.js`): Panel rechts (Standard 380 px, an der linken Kante ziehbar von 320 px bis zum ganzen Platz neben der Leiste; gemerkt je Gerät unter `inf-mb-app:panelbreite`), geöffnet über die Leiste. Kennt den Kontext der Seite: Lektion, im Labor die aktuelle Aufgabe (id), den Code im Editor und die letzte Ausgabe bzw. Fehlermeldung (wird nur auf Knopfdruck „Meinen Code mitschicken“ bzw. per sichtbarem Schalter übertragen, Standard an im Labor). Zeigt Restkontingent dezent. Ohne Login: Erklärung und Knopf „Mit GitHub anmelden“. Ohne Netz: Hinweis. Verlauf nur im Arbeitsspeicher der Seite (sessionStorage erlaubt), nicht auf dem Server.
 
 `POST /api/tutor`, Body:
 ```json
@@ -395,5 +425,5 @@ Regeln für die Seiten eines Termins (Vorgaben des Dozenten, 2026-11-23; Einzelh
 - Je Termin vier Blöcke; die Lerneinheit hat je Block einen Abschnitt und einen Selbstcheck, das Labor Teil A (im Termin) und Teil B (Training, 45 Minuten, Pflicht).
 - Wenige, einfache interaktive Bausteine zum Ausprobieren, höchstens einer je Kerninhalt.
 - Quizfragen, ihre Antworten und die Antworten von Vorhersagen erscheinen bei jedem Aufruf in zufälliger Reihenfolge (`site/assets/js/kurs.js`, Funktion `mische`; für Prüfskripte abschaltbar mit `window.KURS_NICHT_MISCHEN`).
-- Vor jeder Programmieraufgabe steht der Plan; „Fehler finden“ ersetzt den KI-Spiegel; die Wissens-Ampel entfällt.
+- Ein neuer Ablauf wird zuerst als Plan gezeichnet, aber nicht jede Programmieraufgabe beginnt mit einem Plan; „Fehler finden“ ersetzt den KI-Spiegel; die Wissens-Ampel entfällt.
 - Erklärvideos werden erst inhaltlich geplant (`video-src/<name>/texte.py`) und erst vertont, wenn die Seite steht.

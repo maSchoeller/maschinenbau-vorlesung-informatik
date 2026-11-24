@@ -1,4 +1,4 @@
-/* app/tutor.css – Tutor-Panel (im Panel der Hülle, ca. 380 px breit)
+/* app/tutor.css – Tutor-Panel (im Panel der Hülle, Standard 380 px, ziehbar von 320 px bis zur vollen Breite)
    Ruhig im Stil der Bestandsseiten: keine Rahmen um Inhalte, Rot nur für den einen Senden-Knopf,
    Code ist der einzige dunkle Block. */
 
@@ -36,6 +36,10 @@
 .tutor-text p, .tutor-text ul, .tutor-text ol { margin: 0 0 var(--sp-2); }
 .tutor-text ul, .tutor-text ol { padding-left: 1.25em; }
 .tutor-text code.k-i { overflow-wrap: anywhere; }
+/* Breites Panel: Fließtext bleibt gut lesbar (Zeilenlänge begrenzt), Code-Blöcke dürfen die ganze Breite nutzen */
+.tutor-text > :where(p, ul, ol, h1, h2, h3, h4, blockquote) { max-width: 72ch; }
+.tutor-beitrag--nutzer { max-width: min(88%, 72ch); }
+.tutor-hinweis, .tutor-leer, .tutor-status { max-width: 72ch; }
 .tutor-code { margin: var(--sp-2) 0; }
 .tutor-code .k-code { margin: 0; padding: var(--sp-3) var(--sp-4); font-size: var(--fs-xs); }
 .tutor-code .k-copy__bar { min-height: 32px; }

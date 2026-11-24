@@ -122,13 +122,23 @@ body.app { margin: 0; min-height: 100vh; background: var(--surface, #fff); }
 
 /* ── Fläche: Inhalt und Panel ───────────────────────────────── */
 .app-flaeche { margin-left: var(--app-rail-w); display: flex; align-items: flex-start; }
-.app-inhalt { flex: 1 1 auto; min-width: 0; }
+.app-inhalt { flex: 1 1 auto; min-width: 0; overflow-x: clip; }
 .app-panel {
   flex: 0 0 var(--app-panel-w); width: var(--app-panel-w); box-sizing: border-box;
   position: sticky; top: var(--app-bar-h); height: calc(100vh - var(--app-bar-h));
   display: flex; flex-direction: column; background: #fff; border-left: 1px solid var(--app-linie); outline: none;
 }
 .app-panel[hidden] { display: none; }
+/* Zieh-Griff an der linken Kante (Zeiger und Tastatur, Logik in kern.js) */
+.app-panel__griff {
+  position: absolute; top: 0; bottom: 0; left: -6px; width: 12px; z-index: 2;
+  cursor: col-resize; touch-action: none; outline: none;
+}
+.app-panel__griff::after { content: ""; position: absolute; top: 0; bottom: 0; left: 5px; width: 2px; background: transparent; }
+.app-panel__griff:hover::after, body.app--ziehen .app-panel__griff::after { background: var(--red, #E2001A); }
+.app-panel__griff:focus-visible::after { left: 4px; width: 4px; background: var(--k-focus, #1A1A1A); }
+body.app--ziehen, body.app--ziehen * { user-select: none !important; -webkit-user-select: none !important; cursor: col-resize !important; }
+body.app--ziehen .app-panel, body.app--ziehen .app-inhalt { transition: none !important; }
 .app-panel__kopf { flex: none; display: flex; align-items: center; justify-content: space-between; gap: var(--sp-2); padding: var(--sp-3) var(--sp-3) var(--sp-3) var(--sp-5); border-bottom: 1px solid var(--app-linie); }
 .app-panel__titel { margin: 0; font-size: var(--fs-md); }
 .app-panel__zu { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; color: var(--k-muted); background: none; border: 0; border-radius: var(--r-base); cursor: pointer; }
@@ -177,12 +187,12 @@ body.app--panel .kb-toggle:not(.kb-toggle--dock) { right: calc(var(--app-panel-w
 /* labor.js scrollt beim Aufgabenwechsel auf die Oberkante der Arbeitsfläche: Platz für die Kopfzeile lassen */
 .app .lab { padding-top: var(--app-bar-h); margin-top: calc(-1 * var(--app-bar-h)); }
 @media (min-width: 1100px) and (max-width: 1439px) {
-  .app .lab { grid-template-columns: 230px minmax(0, 1fr) 320px; gap: 0 var(--sp-5); padding-left: var(--sp-4); padding-right: var(--sp-4); }
-  html.kb-dock-closed .app .lab { grid-template-columns: 230px minmax(0, 1fr) 52px; }
+  .app .lab { grid-template-columns: var(--lab-liste, 230px) minmax(0, 1fr) 320px; gap: 0 var(--sp-5); padding-left: var(--sp-4); padding-right: var(--sp-4); }
+  html.kb-dock-closed .app .lab { grid-template-columns: var(--lab-liste, 230px) minmax(0, 1fr) 52px; }
 }
 /* Panel neben dem Labor: Bibliothek einklappen, damit der Editor breit genug bleibt */
 @media (min-width: 1100px) {
-  body.app--panel .lab, html.kb-dock-closed body.app--panel .lab { grid-template-columns: 220px minmax(0, 1fr); gap: 0 var(--sp-5); }
+  body.app--panel .lab, html.kb-dock-closed body.app--panel .lab { grid-template-columns: var(--lab-liste, 220px) minmax(0, 1fr); gap: 0 var(--sp-5); }
   body.app--panel .lab__dock { display: none; }
 }
 
@@ -225,6 +235,9 @@ body.app--panel .kb-toggle:not(.kb-toggle--dock) { right: calc(var(--app-panel-w
   .app-bar__link { min-height: 44px; min-width: 44px; justify-content: center; }
   .app-bar__suche { min-width: 44px; justify-content: center; }
   .app-panel__zu, .app-meldung__zu { width: 44px; height: 44px; }
+  .app-panel__griff { left: -22px; width: 44px; }
+  .app-panel__griff::after { left: 21px; }
+  .app-panel__griff:focus-visible::after { left: 20px; }
   .app-meldung__aktion { min-height: 44px; }
 }
 @media (max-width: 900px) {
