@@ -1,0 +1,38 @@
+"""Sprechertext Termin 03, Video 3: Vorgerechnet: Getränkeautomat mit drei Wegen (Quelltext mit Markup)."""
+SRC = [
+ ["Die Aufgabe: Die Cola kostet [[1,50 Euro|einen Euro fünfzig]].",
+  "Der Automat aus [[Termin 02|Termin zwei]] kannte zwei Fälle: Das Geld reicht, oder es reicht nicht.",
+  "Jetzt sind es drei. Schreib sie zuerst untereinander auf.",
+  "Zu wenig Geld. Zu viel Geld, dann gibt es Rückgeld. Oder es passt genau.",
+  "Drei Fälle, aber zwei Fragen genügen."],
+ ["Erst der Plan. Nach der Eingabe kommt die erste Raute: Ist das Geld kleiner als 1.5?",
+  "Bei ja ist es zu wenig Geld.",
+  "Bei nein weißt du schon: Das Geld reicht. In diesen Weg kommt die zweite Raute: Ist das Geld größer als 1.5?",
+  "Bei ja gibt es Rückgeld: das Geld minus 1.5.",
+  "Bei nein bleibt nur ein Fall übrig. Weder kleiner noch größer, also genau 1.5: Passt genau."],
+ ["Jetzt der Code, Raute für Raute.",
+  "Die erste Raute wird `if`.",
+  "Die Raute im nein-Weg wird [[elif|ell-iff]], mit eigener Bedingung und Doppelpunkt.",
+  "Der Rest wird [[else|els]], ohne Bedingung.",
+  "Alle drei stehen auf derselben Höhe. Was zu einem Weg gehört, ist eingerückt."],
+ ["Im mittleren Weg stehen zwei Zeilen: erst rechnen, dann ausgeben.",
+  "Im Plan steht nur: Ausgabe Rückgeld. Wie die Zahl aussieht, legt der Code fest.",
+  "Dafür nimmst du den [[f-String|Eff-String]] aus [[Termin 02|Termin zwei]].",
+  "Vor dem Anführungszeichen steht ein [[f|Eff]]. Der Name steht in geschweiften Klammern.",
+  "Hinter dem Namen, noch in der Klammer, steht die Angabe für zwei Nachkommastellen.",
+  "So zeigt das Programm [[0.50|null Punkt fünf null]] an und nicht [[0.5|null Punkt fünf]]."],
+ ["Die Probe: Wir werfen 2 Euro ein.",
+  "Erste Frage: Ist 2 kleiner als 1.5? Nein.",
+  "Zweite Frage: Ist 2 größer als 1.5? Ja.",
+  "Das Programm antwortet: Rückgeld: [[0.50|null Punkt fünf null]] Euro. Im Plan ist das der mittlere Weg.",
+  "Jetzt du: Tipp 1 ein. Und dann den Grenzfall: [[1.5|eins Punkt fünf]], mit Punkt geschrieben.",
+  "Ein Wert je Weg, dann ist das Programm geprüft."],
+]
+
+SZENEN = [
+ "Getränkeautomat, Preisschild Cola 1,50 €; klein der Plan aus Termin 02 mit zwei Wegen; dann drei Fälle untereinander: zu wenig: Zu wenig Geld, zu viel: Rückgeld, genau passend: Passt genau.",
+ "Der Plan baut sich auf: Eingabe: geld, Raute geld < 1.5? mit ja: Ausgabe \"Zu wenig Geld\"; im Weg nein die zweite Raute geld > 1.5? mit ja: rueckgeld = geld - 1.5 und Ausgabe: rueckgeld, nein: Ausgabe \"Passt genau\".",
+ "Links der Plan klein, rechts der Code, Zeile 1 (# Getränkeautomat mit drei Wegen) und Zeile 2 (geld = float(input(\"Eingeworfen in Euro: \"))) stehen schon da; if geld < 1.5: mit eingerücktem print(\"Zu wenig Geld\"), elif geld > 1.5: mit den zwei eingerückten Zeilen rueckgeld = geld - 1.5 und print(f\"Rückgeld: {rueckgeld:.2f} Euro\") und else: mit eingerücktem print(\"Passt genau\") tippen sich nacheinander ein; die jeweilige Raute leuchtet, bei else der nein-Weg der zweiten Raute; die drei Wörter stehen auf einer Linie, die Einrückung wird markiert.",
+ "Links klein das Parallelogramm Ausgabe: rueckgeld aus dem Plan mit Pfeil zur print-Zeile; der mittlere Weg im Code groß: rueckgeld = geld - 1.5 und print(f\"Rückgeld: {rueckgeld:.2f} Euro\"); das f, die geschweiften Klammern und :.2f werden markiert; daneben 0.5 durchgestrichen, 0.50 mit Haken.",
+ "Programmlauf mit Eingabe 2: an den Rauten steht 2 < 1.5 nein und 2 > 1.5 ja, der mittlere Weg leuchtet, Ausgabe Rückgeld: 0.50 Euro; darunter der Auftrag: Probier 1 (Zu wenig Geld) und 1.5 (Passt genau).",
+]

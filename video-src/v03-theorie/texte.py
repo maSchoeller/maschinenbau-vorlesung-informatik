@@ -1,0 +1,35 @@
+"""Sprechertext Termin 03, Video 1: Und, oder: die Wahrheitstabelle (Quelltext mit Markup)."""
+SRC = [
+ ["Den Getränkeautomaten kennst du aus [[Termin 02|Termin zwei]]: Die Cola kommt, wenn das Geld reicht.",
+  "Aber was ist, wenn das Fach leer ist? Dann hilft auch das Geld nicht.",
+  "Die Cola kommt nur, wenn das Geld reicht [[UND|und]] noch eine Flasche im Fach ist.",
+  "Das sind zwei Aussagen. Sie bekommen Namen: A heißt, das Geld reicht. B heißt, eine Flasche ist da."],
+ ["Die Wahrheitstabelle kennst du aus [[Termin 02|Termin zwei]]: Sie listet jeden Fall auf.",
+  "Zwei Aussagen ergeben vier Kombinationen, also vier Zeilen.",
+  "Ab jetzt schreibst du kurz: 1 für wahr, 0 für falsch.",
+  "Die Reihenfolge ist immer gleich: [[00, 01, 10, 11|null null, null eins, eins null, eins eins]]. So vergisst du keine.",
+  "Links stehen die Spalten A und B. Rechts kommt eine dritte Spalte für das [[UND|Und]] dazu: Hier müssen beide stimmen.",
+  "Nur in der letzten Zeile steht eine 1: Das Geld reicht, und eine Flasche ist da."],
+ ["Zweites Beispiel: das Museum. Der Eintritt ist frei, wenn du unter 18 bist [[ODER|oder]] einen Studierendenausweis hast.",
+  "A heißt jetzt: unter 18. B heißt: Studierendenausweis.",
+  "Beim [[ODER|Oder]] genügt eine der beiden Aussagen. Und wenn beide stimmen? Dann ist der Eintritt auch frei.",
+  "Im Alltag ist das oft anders. Kaffee oder Tee meint: entweder oder.",
+  "Das [[ODER|Oder]] der Logik ist auch wahr, wenn beides stimmt.",
+  "Die [[ODER-Spalte|Oder-Spalte]] hat deshalb drei Einsen. Eine 0 steht nur in der ersten Zeile: Du bist nicht unter 18 und hast keinen Ausweis."],
+ ["Jetzt stehen beide Spalten nebeneinander.",
+  "Das [[UND|Und]] ist streng: Nur eine von vier Zeilen ist wahr.",
+  "Das [[ODER|Oder]] ist großzügig: Drei von vier Zeilen sind wahr.",
+  "Diese beiden Spalten schreibst du in der Klausur aus dem Kopf auf."],
+ ["Merke dir: Aus zwei Aussagen wird eine neue.",
+  "Die Wahrheitstabelle zeigt für jede der vier Kombinationen, ob sie wahr ist.",
+  "Später in diesem Termin steht das [[UND|Und]] in der Raute, und genauso das [[ODER|Oder]].",
+  "Dann entscheidet ein Programm nach zwei Dingen zugleich."],
+]
+
+SZENEN = [
+ "Getränkeautomat aus Termin 02 mit leerem Fach; Satz: Die Cola kommt, wenn das Geld reicht UND eine Flasche im Fach ist; daraus zwei Karten: A = Das Geld reicht, B = Eine Flasche ist da.",
+ "Die Wahrheitstabelle aus Termin 02 als Erinnerung, dann Legende 1 = wahr, 0 = falsch; Tabelle mit den Spalten A, B, A UND B: die vier Zeilen 0 0, 0 1, 1 0, 1 1 erscheinen, dann füllt sich die Spalte A UND B mit 0, 0, 0, 1; die letzte Zeile leuchtet.",
+ "Museumskasse mit Schild: Eintritt frei unter 18 ODER mit Studierendenausweis; über der Tabelle zwei Karten: A = unter 18, B = Studierendenausweis; Tabelle mit den Spalten A, B, A ODER B füllt sich mit 0, 1, 1, 1; die Zeile 1 1 wird hervorgehoben, klein daneben: Kaffee oder Tee? = entweder oder.",
+ "Eine Tabelle mit beiden Spalten: A UND B (0, 0, 0, 1) und A ODER B (0, 1, 1, 1); darunter: UND ist streng (1 von 4), ODER ist großzügig (3 von 4).",
+ "Merksatz: Aus zwei Aussagen wird eine neue; dann Ausblick: eine Raute mit Fragezeichen, in die die Wörter UND und ODER wandern.",
+]

@@ -1,0 +1,37 @@
+"""Sprechertext Termin 03, Video 2: Python-Werkzeugkasten: elif, and, or (Quelltext mit Markup)."""
+SRC = [
+ ["Heute kommen zwei Karten in deinen Werkzeugkasten.",
+  "Alles aus [[Termin 02|Termin zwei]] gilt weiter: der Vergleich, `if` und [[else|els]], der [[f-String|Eff-String]].",
+  "Neu sind drei Wörter: [[elif|ell-iff]], [[and|änd]], `or`.",
+  "Mit dem ersten baust du mehr als zwei Wege. Mit den beiden anderen verbindest du zwei Vergleiche."],
+ ["Karte 1: die Ampel. Sie hat drei Farben, aber `if` und [[else|els]] kennen nur zwei Wege.",
+  "Sie schaltet nach der Uhr: bis Sekunde 29 Grün, bis Sekunde 34 Gelb, danach Rot.",
+  "Deshalb schiebt sich eine Zeile dazwischen: [[elif|ell-iff]]. Das heißt: sonst wenn.",
+  "Diese Zeile hat eine eigene Bedingung und einen Doppelpunkt, genau wie die Zeile mit `if`.",
+  "[[else|Els]] steht am Ende, ohne Bedingung, und nimmt den Rest.",
+  "Alle drei Wörter stehen auf derselben Höhe."],
+ ["Ein Lauf mit Sekunde 32.",
+  "Erste Frage: Ist 32 kleiner als 30? Nein, also nicht Grün.",
+  "Weiter zur zweiten Frage: Ist 32 kleiner als 35? Ja. Das Programm gibt Gelb aus.",
+  "Die Zeile unter [[else|els]], Rot, wird übersprungen.",
+  "Gefragt wird von oben nach unten, und das erste Ja gewinnt."],
+ ["Karte 2: zwei Vergleiche verbinden. In die Achterbahn darf, wer mindestens 140 groß und mindestens 10 Jahre alt ist.",
+  "Das sind zwei Vergleiche, einer links, einer rechts.",
+  "Dazwischen steht [[and|änd]], das [[UND|Und]] in Python. Beide müssen stimmen.",
+  "Jetzt ein Kind mit 150 Zentimetern und 9 Jahren: Der linke Vergleich ist wahr, der rechte ist falsch.",
+  "Wahr [[UND|und]] falsch ergibt falsch: Python gibt [[False|Fols]] aus.",
+  "Achte darauf: Links und rechts steht je ein vollständiger Vergleich."],
+ ["Jetzt dieselbe Zeile mit `or`, dem [[ODER|Oder]] in Python.",
+  "Hier genügt einer der beiden Vergleiche.",
+  "Der linke ist wahr, und das reicht. Wahr [[ODER|oder]] falsch ergibt wahr: Python gibt [[True|Truh]] aus.",
+  "Ein einziges Wort ändert also das Ergebnis.",
+  "Probier beide Karten aus und ändere die Werte."],
+]
+
+SZENEN = [
+ "Zwei neue Karten vorn: elif: mehr als zwei Wege und and und or: zwei Vergleiche verbinden; die drei Karten aus Termin 02 (Vergleichen, if und else, f-String) liegen blass dahinter; dann die drei Wörter elif, and, or groß.",
+ "Karte 1: Code mit sekunde = 32 (Zeitstrahl: bis 29 Grün, bis 34 Gelb, danach Rot), if sekunde < 30: print(\"Grün\"), else: print(\"Rot\"); dazwischen schiebt sich elif sekunde < 35: print(\"Gelb\"); Ampel mit drei Farben daneben; if, elif, else sind auf einer Linie markiert.",
+ "Derselbe Code als Lauf mit sekunde = 32: an der Zeile mit if steht 32 < 30 ist falsch: nein, an der Zeile mit elif steht 32 < 35 ist wahr: ja, Ausgabe Gelb; die Zeilen else und print(\"Rot\") werden grau.",
+ "Karte 2: Achterbahn-Regel mindestens 140 und mindestens 10 Jahre; groesse = 150, alter = 9, print(groesse >= 140 and alter >= 10); unter dem linken Vergleich steht wahr, unter dem rechten falsch, and ist hervorgehoben; Ausgabe False.",
+ "Die Zeile verdoppelt sich, im Duplikat wird and zu or: print(groesse >= 140 or alter >= 10); links wahr, rechts falsch, Ausgabe True; vier Zeilen Code, die Ausgaben False und True stehen untereinander.",
+]
