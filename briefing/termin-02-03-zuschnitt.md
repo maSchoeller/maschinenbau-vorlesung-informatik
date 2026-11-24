@@ -45,6 +45,19 @@ Vom Dozenten zu bestätigen:
 - Umfang zu Hause (Punkt 10): Selbstcheck zu Hause statt im Termin; Termin 02 48 Minuten, Termin 03 45 Minuten.
 - Kennungen V02 und V03 mit Löschen der Altlektionen V02, V03 und V04 (Bauhinweise, Kennung und Dateien).
 
+Stand 2026-11-24: Die vier Punkte sind wie vorgeschlagen umgesetzt. Sie lagen dem Dozenten zusammen mit den folgenden Abweichungen vor; seine Antwort auf die Frage nach den Abweichungen war „Ja, passt so“.
+
+Beim Bau abgewichen, vom Dozenten bestätigt (2026-11-24). Wo dieses Papier weiter unten etwas anderes sagt, gilt die gebaute Fassung:
+- Termin 03, Station 6 „Lücken füllen“: Der Plan zeigt nur die ersten zwei der vier Rauten, der Rest steht als Kasten „weitere Fälle“. Der volle Plan passte bei keiner Breite ohne Querscrollen.
+- Termin 03, Wahrheitstabelle (Lerneinheit Abschnitt 4 und Training 1): Spalten A und B statt „Schritt“ und „Zeile“, Überschrift „Tabelle“ statt „Python“.
+- Termin 03, Abschnitt 2 und 3: Plan und Code stehen untereinander statt nebeneinander. Der zusätzliche statische Ampel-Plan vor dem elif-Code ist gestrichen; der Baustein zeigt denselben Plan.
+- Termin 03, Station 6 „Danach zu zweit“: fertiges Programm in einem aufklappbaren Block, nicht eingerechnet in die 8 Minuten.
+- Termin 02, Station 7, Zusatz: Die Grenze steht als eigene Variable (`grenze = 15`) am Anfang; eingelesen wird weiter nur die Temperatur.
+- Termin 03, Übung „Tabelle“ in der Lerneinheit: Sie zählt nicht im Fortschritt. Die Plattform zählt nur Aufgaben im Labor.
+- Plan zuerst nur bei neuem Ablauf: Kinoticket (Termin 02) und Zahlenraten (Termin 03) verlangen den Plan nicht mehr vorab.
+
+Noch offen (bleibt wie gebaut, bis der Dozent etwas anderes sagt): Die Knobelaufgaben von Termin 03 brauchen `elif`, `and` und `or` aus demselben Termin. In der Aufgabenliste haben Knobelaufgaben denselben Status-Kreis wie Pflichtaufgaben.
+
 ## Hinweise für den Bau
 
 - **Kennung und Dateien (vor dem Bau festgelegt).** Es gilt die Regel aus `docs/app/ARCHITEKTUR.md`, Abschnitt 16: Ein fertiger Termin bekommt die Kennung `V` plus Terminnummer; die alte Lektion gleicher Kennung und das Material, das der Termin ersetzt, werden gelöscht. `app/src/lib/kurs.mjs` leitet den Ordner aus der Kennung ab (`app/inhalte/<kennung klein>/`).
