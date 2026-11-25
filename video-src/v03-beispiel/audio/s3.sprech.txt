@@ -1,0 +1,1 @@
+Jetzt der Code, Raute für Raute. Die erste Raute wird if. Die Raute im nein-Weg wird ell-iff, mit eigener Bedingung und Doppelpunkt. Der Rest wird els, ohne Bedingung. Alle drei stehen auf derselben Höhe. Was zu einem Weg gehört, ist eingerückt.

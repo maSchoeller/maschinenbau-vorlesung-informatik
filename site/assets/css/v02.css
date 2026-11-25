@@ -1,63 +1,59 @@
-/* =============================================================
-   v02.css – Explorables der Lektion V02 (Bit-Schalter, Überlauf-Zähler, Divisionsrestverfahren, Zahlenkreis)
-   Baut auf kurs.css auf (.k-bit, .k-seg, .k-chip, .k-readout, .k-chart).
-   ============================================================= */
-.v02-acts { margin: var(--sp-3) 0 0; align-items: center; }
-.v02-nibbles { display: flex; flex-wrap: wrap; gap: var(--sp-3) var(--sp-4); margin: var(--sp-4) 0; }
-.v02-nib { display: grid; gap: 4px; justify-items: start; }
-.v02-nib__hex { font-family: var(--dhbw-font-mono); font-weight: 700; font-size: var(--fs-md); color: var(--red-dark); border-bottom: 2px solid var(--red-mid); width: 100%; text-align: center; }
-.v02-nib__bits { display: flex; gap: 2px; }
-.v02-bit { display: grid; justify-items: center; gap: 2px; }
-.v02-bit .k-bit { width: 30px; }
-.v02-bit__w { font-size: var(--fs-xs); font-family: var(--dhbw-font-mono); color: var(--k-muted); line-height: 1.2; }
-.v02-counter { font-family: var(--dhbw-font-mono); font-weight: 700; font-size: var(--fs-xl); background: var(--code-bg); color: var(--code-text); padding: var(--sp-3) var(--sp-5); border-radius: var(--r-base); display: inline-block; min-width: 7ch; text-align: right; margin: var(--sp-3) 0; max-width: 100%; }
-.v02-msg { min-height: 1.65em; margin: var(--sp-3) 0 0; font-weight: 600; }
-.v02-msg.is-on { padding: var(--sp-3) var(--sp-4); border-left: 3px solid var(--k-bad); background: var(--k-bad-bg); color: var(--k-bad); max-width: var(--k-measure); }
-@media (max-width: 480px) {
-  .v02-bit .k-bit { width: 26px; }
-  .v02-bit__w { font-size: 0.625rem; letter-spacing: -0.03em; }
-  .v02-counter { font-size: var(--fs-lg); padding: var(--sp-3) var(--sp-4); }
-  .k-seg { flex-wrap: wrap; }
+/* v02.css – Termin 02: Wahr oder falsch. Stile der Bausteine in explorables-v02.js (vergleich, weiche).
+   Ruhiger DHBW-Stil wie v01.css: keine Karten, Zahlen als Text, eine Akzentfarbe.
+   „wahr“ und „falsch“ stehen immer auch als Wort da, nie nur als Farbe. Die Seite von Termin 03 lädt diese Datei mit. */
+
+/* Knopfgruppen (Vergleichszeichen, Beträge, Sekunden): gedrückt = dunkel gefüllt, mindestens 44 px hoch */
+.v02-titel { margin: 0 0 var(--sp-2); font-size: var(--fs-sm); font-weight: 600; color: var(--k-muted); }
+.v02-knoepfe { display: flex; flex-wrap: wrap; gap: var(--sp-2); margin: 0 0 var(--sp-4); }
+.v02-knopf {
+  font: inherit; font-weight: 600; font-size: var(--fs-sm); min-height: 44px; min-width: 44px; padding: 6px 16px;
+  border: 2px solid var(--red-dark); border-radius: var(--r-base); background: #fff; color: var(--red-dark); cursor: pointer;
+  font-variant-numeric: tabular-nums;
 }
+.v02-knopf.is-code { font-family: var(--dhbw-font-mono); min-width: 56px; }
+.v02-knopf:hover { background: var(--red-tint); }
+.v02-knopf[aria-pressed="true"] { background: var(--red-dark); color: #fff; }
 
-/* ── Divisionsrestverfahren ─────────────────────────────────── */
-.v02-rest__acts { margin: var(--sp-3) 0 0; align-items: center; }
-.v02-rest__msg { min-height: 1.65em; margin: var(--sp-3) 0; max-width: var(--k-measure); }
-.v02-rest__table { width: auto; min-width: min(100%, 520px); }
-.v02-rest__table td, .v02-rest__table th { font-variant-numeric: tabular-nums; }
-.v02-rest__table tr.is-cur td { background: var(--red-tint); }
-.v02-rest__r { font-family: var(--dhbw-font-mono); font-weight: 700; color: var(--red-dark); }
-.v02-rest__readhead { text-align: center !important; }
-.v02-rest__arrow { position: relative; width: 56px; padding: 0 !important; }
-.v02-rest__arrow span { position: absolute; left: 50%; top: 8px; bottom: 8px; width: 3px; transform: translateX(-50%); background: var(--red-dark); }
-.v02-rest__arrow span::before { content: ""; position: absolute; left: 50%; top: -2px; transform: translateX(-50%); border: 9px solid transparent; border-bottom: 13px solid var(--red-dark); border-top: 0; }
-.v02-rest__result p { margin: var(--sp-3) 0 0; }
-.v02-rest__digits { display: inline-flex; gap: 3px; vertical-align: middle; margin: 0 4px; }
-.v02-rest__digits b { display: grid; place-items: center; min-width: 30px; height: 36px; background: var(--red-dark); color: #fff; font-family: var(--dhbw-font-mono); border-radius: 3px; }
-.v02-rest__py { color: var(--k-muted); }
+/* 1. Reicht das Geld? */
+.v02-vergleich { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--sp-4) var(--sp-5); align-items: start; }
+.v02-vergleich__unten { grid-column: 1 / -1; }
+.v02-preis { margin: var(--sp-3) 0 var(--sp-4); }
+.v02-aussage { padding: var(--sp-3) var(--sp-4); border-left: 3px solid var(--red); background: var(--canvas); }
+.v02-aussage__zeile { margin: 0 0 var(--sp-2); }
+.v02-aussage__code, .v02-aussage__py { font-family: var(--dhbw-font-mono); font-size: var(--fs-md); font-weight: 700; font-variant-numeric: tabular-nums; }
+.v02-aussage__wort { display: block; margin: 0 0 var(--sp-2); font-size: var(--fs-xl); line-height: 1.2; }
+.v02-aussage__wort.is-wahr { color: var(--k-ok); }
+.v02-aussage__wort.is-falsch { color: var(--k-bad); }
+.v02-punkte__kopf { margin: 0 0 var(--sp-2); font-size: var(--fs-sm); color: var(--k-muted); }
+.v02-punkte { display: flex; flex-wrap: wrap; gap: var(--sp-2) var(--sp-3); margin: 0; padding: 0; list-style: none; }
+.v02-punkt { display: grid; justify-items: center; gap: 4px; padding: 6px 8px; min-width: 72px; border-bottom: 3px solid transparent; font-variant-numeric: tabular-nums; }
+.v02-punkt__kreis { width: 22px; height: 22px; border-radius: 50%; border: 3px solid var(--k-bad); background: transparent; }
+.v02-punkt.is-wahr .v02-punkt__kreis { border-color: var(--k-ok); background: var(--k-ok); }
+.v02-punkt__betrag { font-size: var(--fs-sm); }
+.v02-punkt.is-jetzt { border-bottom-color: var(--red); font-weight: 700; }
 
-/* ── Zahlenkreis ─────────────────────────────────────────────── */
-.v02-kreis { display: flex; flex-wrap: wrap; gap: var(--sp-5) var(--sp-6); align-items: center; }
-.v02-kreis__svg { width: min(100%, 400px); height: auto; flex: none; }
-.v02-kreis__side { flex: 1 1 260px; min-width: 0; }
-.v02-kreis__seg { fill: #F3F4F6; stroke: #fff; stroke-width: 2; }
-.v02-kreis__seg--in { fill: #E5E7EB; }
-.v02-kreis__seg--in.is-neg { fill: var(--red-tint); }
-.v02-kreis__seg.is-cur { fill: var(--red-dark); }
-.v02-kreis__num { font-family: var(--dhbw-font-mono); font-size: 17px; fill: var(--text); }
-.v02-kreis__num--in { font-size: 16px; }
-.v02-kreis__num.is-cur { fill: #fff; font-weight: 700; }
-.v02-kreis__seam { stroke: var(--red); stroke-width: 5; stroke-linecap: round; }
-.v02-kreis__note { font-family: var(--dhbw-font); font-size: 14px; font-weight: 700; fill: var(--red-dark); }
-.v02-kreis__hand { transform-box: view-box; transform-origin: 220px 220px; transition: transform .35s ease; }
-.v02-kreis__handline { stroke: var(--text); stroke-width: 3; stroke-linecap: round; }
-.v02-kreis__handtip { fill: var(--text); }
-.v02-kreis__bits { font-family: var(--dhbw-font-mono); font-size: 26px; font-weight: 700; fill: var(--red-dark); }
-.v02-kreis__bitslbl { font-family: var(--dhbw-font); font-size: 13px; fill: var(--k-muted); }
-.v02-kreis__legend { list-style: none; padding: 0; margin: var(--sp-4) 0 0; display: grid; gap: 4px; }
-.v02-kreis__legend li { display: flex; align-items: center; gap: 8px; margin: 0; }
-.v02-kreis__sw { display: inline-block; width: 16px; height: 16px; border-radius: 3px; flex: none; }
-.v02-kreis__sw--out { background: #F3F4F6; border: 1px solid #9CA3AF; }
-.v02-kreis__sw--in { background: linear-gradient(90deg, #E5E7EB 50%, var(--red-tint) 50%); border: 1px solid #9CA3AF; }
-.v02-kreis__sw--seam { background: var(--red); height: 5px; }
-@media (prefers-reduced-motion: reduce) { .v02-kreis__hand { transition: none; } }
+/* 2. Die Weiche: Plan, gegangener Weg, Fragen und Ausgabe */
+.v02-weiche { display: grid; grid-template-columns: minmax(300px, 1.15fr) minmax(0, 1fr); gap: var(--sp-5); align-items: start; }
+.v02-pap .pap-n .pap-shape, .v02-pap .pap-line, .v02-pap .pap-ah, .v02-pap .pap-t { transition: none; }
+.v02-pap .pap-n.is-nebenweg { opacity: .55; }
+.v02-pap .pap-n.is-nebenweg .pap-shape { stroke: #6B7280; stroke-dasharray: 5 4; }
+.v02-pap .pap-n.is-weg .pap-shape { fill: var(--red-tint); stroke: #E2001A; stroke-width: 3.2; }
+.v02-pap .pap-e.is-nebenweg { opacity: .55; }
+.v02-pap .pap-e.is-nebenweg .pap-line { stroke: #6B7280; stroke-dasharray: 5 4; }
+.v02-pap .pap-e.is-weg .pap-line { stroke: #E2001A; stroke-width: 3.4; }
+.v02-pap .pap-e.is-weg .pap-ah { fill: #E2001A; }
+.v02-fragen, .v02-ausgaben { margin: 0 0 var(--sp-4); padding-left: 1.4em; }
+.v02-fragen li, .v02-ausgaben li { margin-bottom: var(--sp-1); font-variant-numeric: tabular-nums; }
+.v02-fragen li.is-wahr { color: var(--k-ok); }
+.v02-fragen li.is-falsch { color: var(--k-bad); }
+.v02-fragen li code, .v02-ausgaben li code { color: var(--text); }
+.v02-fragen li { font-weight: 600; }
+
+@media (max-width: 1099px) {
+  .v02-vergleich, .v02-weiche { grid-template-columns: minmax(0, 1fr); }
+}
+/* Schmaler Inhalt (breites Tutor-Panel): einspaltig wie unter 1100 px */
+html.app-eng .v02-vergleich, html.app-eng .v02-weiche { grid-template-columns: minmax(0, 1fr); }
+
+/* Code in diesen Bausteinen ohne Ligaturen: >= , <= und == sollen so aussehen, wie sie getippt werden */
+.v02-knopf.is-code, .v02-aussage__code, .v02-aussage__py, .v02-fragen code, .v02-ausgaben code { font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }

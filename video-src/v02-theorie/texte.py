@@ -1,0 +1,37 @@
+"""Sprechertext Termin 02, Video 1: Wahr oder falsch: Aussagen und Vergleiche (Quelltext mit Markup)."""
+SRC = [
+ ["Ein Getränkeautomat. Die Cola kostet [[1,50 Euro|einen Euro fünfzig]].",
+  "Du hast 2 Euro. Der Satz „Das Geld reicht“ stimmt: Er ist wahr.",
+  "Mit [[1 Euro|einem Euro]] stimmt er nicht: Er ist falsch.",
+  "Ein Satz, der stimmt oder nicht stimmt, heißt Aussage.",
+  "Eine Aussage ist entweder wahr oder falsch. Dazwischen gibt es nichts."],
+ ["Ein Rechner braucht die Aussage mit Zahlen.",
+  "Das Geld reicht, wenn du mindestens so viel hast, wie die Cola kostet.",
+  "Mit 2 Euro heißt das als Vergleich: [[2 >= 1.5|zwei größer oder gleich eins Komma fünf]].",
+  "Für Vergleiche gibt es fünf Zeichen: kleiner, größer, kleiner gleich, größer gleich und ist gleich.",
+  "Das fünfte Zeichen, [[==|ist gleich]], besteht in Python aus zwei Gleichheitszeichen.",
+  "Auch ein Vergleich ist wahr oder falsch: Python schreibt dafür [[True|Truh]] und [[False|Fols]]."],
+ ["Aufpassen musst du genau auf der Grenze: Das ist der Grenzfall.",
+  "Du hast genau [[1,50 Euro|einen Euro fünfzig]].",
+  "Der Vergleich mit dem Zeichen [[>=|größer gleich]] ist wahr: Gleich viel reicht.",
+  "Der Vergleich mit dem Zeichen [[>|größer]] ist falsch: 1.5 ist nicht größer als 1.5.",
+  "Richtig ist hier also das Zeichen [[>=|größer gleich]].",
+  "Deshalb probierst du immer drei Werte: einen darunter, einen genau auf der Grenze und einen darüber."],
+ ["Ein kleines Wort dreht eine Aussage um: [[NICHT|nicht]].",
+  "A ist die Aussage „Das Geld reicht“. [[NICHT A|Nicht A]] ist dann „Das Geld reicht nicht“.",
+  "Aus wahr wird falsch, und aus falsch wird wahr.",
+  "Die beiden Fälle stehen in einer kleinen Tabelle.",
+  "Sie heißt Wahrheitstabelle und listet jeden Fall auf."],
+ ["Merke dir: Eine Aussage ist wahr oder falsch.",
+  "Ein Vergleich ist eine Aussage über Zahlen.",
+  "Und den Grenzfall prüfst du immer mit.",
+  "Im Plan bekommt so eine Aussage als Nächstes ein eigenes Symbol."],
+]
+
+SZENEN = [
+ "Getränkeautomat mit Preisschild Cola 1,50 €; der Satz „Das Geld reicht“ erscheint: bei 2 € der Stempel wahr, bei 1 € der Stempel falsch; zum Schluss das Wort Aussage mit den zwei Wahrheitswerten wahr und falsch.",
+ "Der Satz „Das Geld reicht“, darunter „mindestens so viel, wie die Cola kostet“; daraus wird der Vergleich 2 >= 1.5 (unter der 2 klein: dein Geld, unter der 1.5: Preis der Cola); die fünf Zeichen <, >, <=, >=, == werden nacheinander eingeblendet, == hervorgehoben; darunter True und False.",
+ "Der Grenzfall, genau 1,50 €: 1.5 >= 1.5 ist wahr, 1.5 > 1.5 ist falsch; das Zeichen >= bekommt einen Haken, > wird durchgestrichen; dann drei Probewerte nebeneinander: 1,00 € (darunter), 1,50 € (auf der Grenze), 2,00 € (darüber).",
+ "A: „Das Geld reicht“, NICHT A: „Das Geld reicht nicht“; daneben die Wahrheitstabelle mit zwei Zeilen: A wahr / NICHT A falsch, A falsch / NICHT A wahr; Beschriftung Wahrheitstabelle.",
+ "Merksatz groß: Eine Aussage ist wahr oder falsch; darunter klein: Ein Vergleich ist eine Aussage über Zahlen, Grenzfall mitprüfen; dann Ausblick: eine Raute mit geld >= 1.5? im Plan.",
+]

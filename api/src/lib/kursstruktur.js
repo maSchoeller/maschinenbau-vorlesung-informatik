@@ -24,7 +24,7 @@ function normal(roh) {
       quiz: typeof t.quiz === 'string' && ID_RE.test(t.quiz) ? t.quiz : null,
       abschnitte: ids(t.abschnitte),
       stationen: (Array.isArray(t.stationen) ? t.stationen : [])
-        .filter((s) => s && typeof s.id === 'string' && ID_RE.test(s.id))
+        .filter((s) => s && typeof s.id === 'string' && ID_RE.test(s.id) && !s.knobel)   // Knobelaufgaben (freiwillig) zählen nicht
         .map((s) => ({ id: s.id, teil: s.teil === 'A' || s.teil === 'B' ? s.teil : null, pruefbar: ids(s.pruefbar) })),
     });
   }

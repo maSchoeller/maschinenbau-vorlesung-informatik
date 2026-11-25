@@ -117,11 +117,20 @@ async function serverStand(k) {
 /* Erster Klick auf „Ausführen“ nach einem Klick in den Editor: muss sofort wirken (Befund Werkbank, behoben in shell.css) */
 async function ersterKlickAusfuehren(page, runner, wo, { ohneEditor = false } = {}) {
   await runner.scrollIntoViewIfNeeded();
+  /* Vorhersage-Runner (.k-try mit .k-predict): „Ausführen“ ist gesperrt, bis ein Tipp abgegeben ist (gewolltes Verhalten) */
+  const tipp = runner.locator('xpath=ancestor::div[contains(@class,"k-try")][1]').locator('.k-predict__opts button').first();
+  if (await tipp.count()) {
+    await tipp.click();
+    await runner.locator('.k-runner__bar button', { hasText: 'Ausführen' }).first().waitFor({ state: 'visible' });
+    await bis(() => runner.locator('.k-runner__bar button', { hasText: 'Ausführen' }).first().isEnabled(), 5000, 100);
+  }
   if (!ohneEditor) await runner.locator('.cm-content').first().click();
   const knopf = runner.locator('.k-runner__bar button', { hasText: 'Ausführen' }).first();
-  const vorher = await knopf.boundingBox();
+  /* Lage im Dokument, nicht im Fenster: Steht der Knopf am unteren Fensterrand, scrollt der Klick selbst die Seite */
+  const lage = async () => ({ y: (await knopf.boundingBox()).y + await page.evaluate(() => window.scrollY) });
+  const vorher = await lage();
   await knopf.click();
-  const nachher = await knopf.boundingBox();
+  const nachher = await lage();
   const lief = await bis(() => runner.evaluate((r) => {
     const o = r.querySelector('.k-runner__out'), s = r.querySelector('.k-runner__status');
     return (o && !o.hidden && o.textContent.trim().length > 0) || (s && /läuft|lädt|fertig|Python wird/i.test(s.textContent));
@@ -129,6 +138,84 @@ async function ersterKlickAusfuehren(page, runner, wo, { ohneEditor = false } = 
   pruefe(lief && Math.abs(nachher.y - vorher.y) < 1, `${wo}: erster Klick auf „Ausführen“${ohneEditor ? ' (Editor ohne Fokus)' : ' nach Klick in den Editor'} startet das Programm, Leiste bleibt stehen`, `Knopf y ${Math.round(vorher.y)} → ${Math.round(nachher.y)}`);
   const ausgabe = await bis(() => runner.evaluate((r) => { const o = r.querySelector('.k-runner__out'); return o && !o.hidden && o.textContent.trim(); }), 120000, 300);
   pruefe(!!ausgabe && !/konnte nicht gestartet|Ladefehler|Traceback/.test(ausgabe), `${wo}: Python läuft, Ausgabe erscheint`, String(ausgabe || '').slice(0, 50));
+}
+
+/* Terminal-Dialog in den Labor-Code-Aufgaben (aufgaben.js) und im Runner der Lerneinheit (data-stdin) */
+async function laborTerminal(p) {
+  const id = 'tr-5', aufgabe = p.locator(`.a-task[data-id="${id}"]`);
+  const feld = aufgabe.locator('.a-out .k-term__in');
+  const aus = () => aufgabe.evaluate((a) => a.querySelector('.a-out').textContent);
+  const status = () => aufgabe.evaluate((a) => a.querySelector('.a-status').textContent);
+  await p.goto(BASIS + '/lektionen/v01-labor.html#t-5');
+  await aufgabe.locator('.cm-content').waitFor({ timeout: 20000 });
+  pruefe(await aufgabe.locator('.k-imodus').isVisible() && await aufgabe.locator('.k-imodus__btn[data-modus="terminal"]').getAttribute('aria-pressed') === 'true' && await aufgabe.locator('.a-inputbox').isHidden(),
+    'Labor: Umschalter sichtbar, Voreinstellung „im Terminal“, Feld „Eingaben“ versteckt');
+  await p.evaluate((id) => window.KursEditor.setValue(document.querySelector(`.a-task[data-id="${id}"] textarea`), 'print("Start", end=" ")\nl = float(input("Liter: "))\nprint("ok", l)\np = float(input("Preis: "))\nprint("Kosten:", l * p)\n'), id);
+  await aufgabe.locator('button', { hasText: 'Ausführen' }).first().click();
+  const da1 = await feld.waitFor({ state: 'visible', timeout: 120000 }).then(() => true, () => false);
+  pruefe(da1 && await aus() === 'Start Liter: ' && /wartet/.test(await status()), 'Labor: Aufforderung erscheint mit Eingabefeld (auch nach print(..., end=" "))', JSON.stringify(da1 ? await aus() : ''));
+  pruefe(await p.evaluate(() => document.activeElement && document.activeElement.classList.contains('k-term__in')), 'Labor: Fokus im Eingabefeld');
+  await p.keyboard.type('40'); await p.keyboard.press('Enter');
+  const da2 = await bis(async () => await feld.count() === 1 && /Preis: $/.test(await aus()), 30000, 100);
+  pruefe(da2 && await aus() === 'Start Liter: 40\nok 40.0\nPreis: ', 'Labor: nach Enter weiter bis zum zweiten input(), keine doppelte Ausgabe', JSON.stringify(await aus()));
+  await p.keyboard.type('1.5'); await p.keyboard.press('Enter');
+  await bis(async () => /fertig|Fehler/.test(await status()), 30000, 100);
+  pruefe(await aus() === 'Start Liter: 40\nok 40.0\nPreis: 1.5\nKosten: 60.0\n', 'Labor: Programm endet mit beiden Eingaben', JSON.stringify(await aus()));
+
+  /* Abbrechen: Knopf sichtbar während des Wartens, Escape beendet */
+  await aufgabe.locator('button', { hasText: 'Ausführen' }).first().click();
+  await feld.waitFor({ state: 'visible', timeout: 30000 }).catch(() => {});
+  const abbruchDa = await aufgabe.locator('.k-term__abbruch').isVisible();
+  await p.keyboard.press('Escape');
+  pruefe(abbruchDa && await feld.count() === 0 && await status() === 'abgebrochen' && await aufgabe.locator('.k-term__abbruch').isHidden(), 'Labor: „Abbrechen“ sichtbar beim Warten, Escape bricht ab', await status());
+
+  /* Aufgabe wechseln, während das Programm wartet: der Dialog endet sauber */
+  await aufgabe.locator('button', { hasText: 'Ausführen' }).first().click();
+  await feld.waitFor({ state: 'visible', timeout: 30000 }).catch(() => {});
+  await p.goto(BASIS + '/lektionen/v01-labor.html#t-6');
+  const weg = await bis(async () => await feld.count() === 0, 5000, 100);
+  pruefe(weg && /gewechselt/.test(await aus()), 'Labor: Wechsel der Aufgabe beendet das Warten auf die Eingabe', JSON.stringify((await aus()).slice(-70)));
+
+  /* „vorab eintragen“: Feld mit data-inputs wie früher, kein Dialog; danach zurück zur Voreinstellung */
+  await p.goto(BASIS + '/lektionen/v01-labor.html#t-5');
+  await aufgabe.locator('.k-imodus__btn[data-modus="vorab"]').click();
+  pruefe(await aufgabe.locator('.a-inputbox').isVisible() && await aufgabe.locator('textarea.a-inputs').inputValue() === '40\n1.8', 'Labor, vorab: Feld „Eingaben“ sichtbar, vorbelegt aus data-inputs');
+  await aufgabe.locator('button', { hasText: 'Ausführen' }).first().click();
+  await bis(async () => /fertig|Fehler/.test(await status()), 60000, 100);
+  pruefe(await feld.count() === 0 && /Preis: 1\.8\nKosten: 72\.0/.test(await aus()), 'Labor, vorab: läuft mit den eingetragenen Eingaben wie früher', JSON.stringify(await aus()));
+  await p.reload();
+  await aufgabe.locator('.cm-content').waitFor({ timeout: 20000 });
+  pruefe(await aufgabe.locator('.k-imodus__btn[data-modus="vorab"]').getAttribute('aria-pressed') === 'true' && await aufgabe.locator('.a-inputbox').isVisible(), 'Labor, vorab: Wahl bleibt nach dem Neuladen gemerkt');
+
+  /* Lerneinheit: Runner mit data-stdin; vorab vorbelegt, im Terminal fragt das Programm */
+  await p.goto(BASIS + '/lektionen/v01-ablauf-und-erste-programme.html');
+  await p.waitForSelector('.k-runner .cm-content', { timeout: 20000 });
+  const runner = p.locator('.k-runner', { has: p.locator('textarea.k-runner__stdin') }).filter({ hasText: 'Trinkgeld in Prozent' }).first();
+  pruefe(await runner.count() === 1 && await runner.locator('.k-runner__stdin').inputValue() === '40\n10' && await runner.locator('.k-runner__stdinbox').isVisible(), 'Lerneinheit, vorab: Feld „Eingaben“ vorbelegt aus data-stdin');
+  await runner.locator('.k-imodus__btn[data-modus="terminal"]').click();
+  pruefe(await runner.locator('.k-runner__stdinbox').isHidden(), 'Lerneinheit: Umschalten auf „im Terminal“ versteckt das Feld');
+  await runner.locator('.k-runner__bar button', { hasText: 'Ausführen' }).click();
+  const rf = runner.locator('.k-runner__out .k-term__in');
+  pruefe(await rf.waitFor({ state: 'visible', timeout: 60000 }).then(() => true, () => false), 'Lerneinheit: Programm fragt im Terminal');
+  await p.keyboard.type('40'); await p.keyboard.press('Enter');
+  await bis(async () => await rf.count() === 1 && /Prozent/.test(await runner.locator('.k-runner__out').textContent()), 30000, 100);
+  await p.keyboard.type('10'); await p.keyboard.press('Enter');
+  await bis(async () => /fertig|Fehler/.test(await runner.locator('.k-runner__status').textContent()), 30000, 100);
+  const rt = await runner.locator('.k-runner__out').textContent();
+  pruefe(/Rechnungsbetrag in Euro: 40\n/.test(rt) && /Trinkgeld in Prozent: 10\n/.test(rt) && (rt.match(/Rechnungsbetrag/g) || []).length === 1, 'Lerneinheit: Dialog mit zwei Eingaben, keine doppelte Ausgabe', JSON.stringify(rt.slice(0, 90)));
+
+  /* print(..., end="") vor input() im Lerneinheit-Runner: die angefangene Zeile steht beim Warten schon da */
+  await runner.evaluate((e) => { e.id = 'rt-neu'; });
+  const runner2 = p.locator('#rt-neu'), rf2 = runner2.locator('.k-runner__out .k-term__in');
+  await p.evaluate(() => { const t = [...document.querySelectorAll('textarea.k-runner__code')].find((x) => /Trinkgeld in Prozent/.test(x.value)); window.KursEditor.setValue(t, 'print("Name", end="")\nprint(": ", end="")\nn = input()\nprint("Hallo", n)\n'); });
+  await runner2.locator('.k-runner__bar button', { hasText: 'Ausführen' }).click();
+  await rf2.waitFor({ state: 'visible', timeout: 60000 }).catch(() => {});
+  await p.waitForTimeout(500);
+  const rt2 = await runner2.locator('.k-runner__out').textContent();
+  pruefe(rt2 === 'Name: ', 'Lerneinheit: print(end="") vor input() steht beim Warten in der Ausgabe', JSON.stringify(rt2));
+  await p.keyboard.type('Bo'); await p.keyboard.press('Enter');
+  await bis(async () => /fertig|Fehler/.test(await runner2.locator('.k-runner__status').textContent()), 30000, 100);
+  pruefe(await runner2.locator('.k-runner__out').textContent() === 'Name: Bo\nHallo Bo\n', 'Lerneinheit: Ausgabe nach print(end="") und Eingabe vollständig', JSON.stringify(await runner2.locator('.k-runner__out').textContent()));
 }
 
 /* Zahlen (fertig, gesamt) aus einem Text wie „1 von 4 Abschnitten“ oder „1/4 Abschnitte“ */
@@ -160,14 +247,16 @@ async function gast() {
   await p.waitForURL(/werkbank\.html#p[a-z0-9]{6}/, { timeout: 10000 });
   programmId = new URL(p.url()).hash.slice(1);
   await p.waitForSelector('#wb-liste a');
-  pruefe(/^V01 · /.test(await p.inputValue('#wb-titel')), 'Werkbank: Programm aus der Lerneinheit angelegt', await p.inputValue('#wb-titel'));
+  pruefe(/^Termin 01 · /.test(await p.inputValue('#wb-titel')), 'Werkbank: Programm aus der Lerneinheit angelegt', await p.inputValue('#wb-titel'));
   sauber(A, 'Lerneinheit, Werkbank');
 
-  /* Automatisch erzeugte Runner (aus Codeblöcken) in einer Lerneinheit: dort trat der Fehler auf (V07) */
-  await p.goto(BASIS + '/lektionen/v07-funktionen.html');
+  /* Automatisch erzeugte Runner (aus Codeblöcken) in einer Lerneinheit: dort trat der Fehler „erster Klick geht verloren“ auf.
+     Zweiter und dritter Codeblock der Lerneinheit (Trinkgeld ohne Eingabe, Vorhersage a/b): beide laufen ohne input und ohne Fehler. */
+  await p.goto(BASIS + '/lektionen/v01-ablauf-und-erste-programme.html');
   await p.waitForSelector('.k-runner--auto .cm-content', { timeout: 20000 });
-  await ersterKlickAusfuehren(p, p.locator('.k-runner.k-runner--auto').nth(1), 'Lerneinheit V07 (automatischer Runner)');
-  await ersterKlickAusfuehren(p, p.locator('.k-runner.k-runner--auto').nth(2), 'Lerneinheit V07 (automatischer Runner)', { ohneEditor: true });
+  pruefe(await p.locator('.k-runner.k-runner--auto').count() >= 3, 'Lerneinheit V01: mindestens drei automatische Runner', await p.locator('.k-runner.k-runner--auto').count());
+  await ersterKlickAusfuehren(p, p.locator('.k-runner.k-runner--auto').nth(1), 'Lerneinheit V01 (automatischer Runner)');
+  await ersterKlickAusfuehren(p, p.locator('.k-runner.k-runner--auto').nth(2), 'Lerneinheit V01 (automatischer Runner)', { ohneEditor: true });
 
   /* Labor: Aufgabe tr-1 in Station t-1 */
   await p.goto(BASIS + '/lektionen/v01-labor.html#t-1');
@@ -181,6 +270,7 @@ async function gast() {
   await aufgabe.locator('button', { hasText: 'Prüfen' }).first().click();
   const geloest = await bis(async () => { const a = await lies(p, 'inf-mb/v01/aufg'); return a && a['tr-1']; }, 120000, 400);
   pruefe(!!geloest, 'Labor: Aufgabe tr-1 gelöst (erster Klick auf „Prüfen“ nach Klick in den Editor)');
+  await laborTerminal(p);
 
   /* Labor, Werkzeugkasten: automatischer Runner (Bestandsfehler „erster Klick geht verloren“) */
   await p.goto(BASIS + '/lektionen/v01-labor.html#a-werkzeugkasten');
@@ -271,7 +361,7 @@ async function konto() {
   pruefe(/1 von 5 Abschnitten/.test(await B.page.locator('.np-schritte').innerText()), 'Gerät B: Heute zeigt den Fortschritt aus Gerät A');
   await B.page.goto(BASIS + '/werkbank.html#' + programmId);
   await B.page.waitForSelector('#wb-liste a');
-  pruefe(/^V01 · /.test(await B.page.inputValue('#wb-titel')), 'Gerät B: Werkbank-Programm aus Gerät A ist da');
+  pruefe(/^Termin 01 · /.test(await B.page.inputValue('#wb-titel')), 'Gerät B: Werkbank-Programm aus Gerät A ist da');
   /* Programm auf B ändern */
   await B.page.locator('#wb-runner .cm-content').first().click();
   await B.page.keyboard.press('Control+End');
@@ -335,6 +425,16 @@ async function teilen() {
   await p.keyboard.press('Escape');
   await C.page.goto(kreisLink);
   await C.page.waitForSelector('#gt-runner .cm-content', { timeout: 20000 });
+  /* Voreinstellung „im Terminal“: die lesende Person tippt die Eingabe selbst */
+  await C.page.click('#gt-runner .k-runner__bar button:has-text("Ausführen")');
+  const kreisFeld = C.page.locator('#gt-runner .k-runner__out .k-term__in');
+  const kreisFrage = await kreisFeld.waitFor({ state: 'visible', timeout: 60000 }).then(() => true, () => false);
+  if (kreisFrage) { await kreisFeld.fill('25'); await kreisFeld.press('Enter'); }
+  const kreisTerm = await bis(() => C.page.evaluate(() => { const o = document.querySelector('#gt-runner .k-runner__out'); return /fertig|Fehler/.test(document.querySelector('#gt-runner .k-runner__status').textContent) && o.textContent; }), 60000, 300);
+  pruefe(kreisFrage && kreisTerm === 'Radius in mm: 25\nFläche: 1963.5 mm²\n', 'Geteiltes Programm mit input(): Dialog im Terminal', JSON.stringify(kreisTerm || ''));
+  /* „vorab eintragen“: die mitgeschickten Eingaben stehen im Feld */
+  await C.page.click('#gt-runner .k-imodus__btn[data-modus="vorab"]');
+  pruefe(await C.page.inputValue('#gt-runner .k-runner__stdin') === '25', 'Geteiltes Programm, vorab: mitgeschickte Eingabe steht im Feld');
   await C.page.click('#gt-runner .k-runner__bar button:has-text("Ausführen")');
   const kreisAus = await bis(() => C.page.evaluate(() => { const o = document.querySelector('#gt-runner .k-runner__out'); return o && !o.hidden && /Fläche|Error/.test(o.textContent) && o.textContent; }), 60000, 300);
   pruefe(/Fläche: 1963\.5/.test(kreisAus || '') && !/EOFError/.test(kreisAus || ''), 'Geteiltes Programm mit input(): Eingaben kommen mit, kein EOFError', String(kreisAus || '').trim().slice(0, 60));
@@ -372,7 +472,7 @@ async function teilen() {
   const aus = await bis(() => p.evaluate(() => { const o = document.querySelector('#gt-runner .k-runner__out'); return o && /PROBE import/.test(o.textContent) && o.textContent; }), 90000, 300) || '';
   const zeile = (u) => { const z = aus.split('\n').map((l) => l.trim().split(' ')).find((t) => t[0] === 'PROBE' && t[2] === u); return z ? z[3] : undefined; };
   pruefe(['/api/ich', '/api/konto/export', '/.auth/me', '/API/ich', '/assets/%2e%2e/api/ich', '/api/konto'].every((u) => zeile(u) === 'gesperrt'), 'Python-Worker: /api/ und /.auth/ gesperrt (auch Groß-/Kleinschreibung, %2e%2e)', aus.replace(/\s+/g, ' ').slice(0, 260));
-  pruefe(zeile('/assets/data/v17/api/D2.json') === '200', 'Python-Worker: Kursdateien unter assets/ weiter erreichbar (V17 requests)', zeile('/assets/data/v17/api/D2.json'));
+  pruefe(zeile('/assets/data/v17/api/D2.json') === '200', 'Python-Worker: Kursdateien unter assets/ weiter erreichbar (Beispieldatei unter assets/data)', zeile('/assets/data/v17/api/D2.json'));
   pruefe(/PROBE caches True indexedDB True Worker True/.test(aus) && /PROBE import gesperrt/.test(aus), 'Python-Worker: kein Cache Storage, kein IndexedDB, keine weiteren Worker, importScripts nur Kursdateien', (/PROBE caches.*|PROBE import.*/g.exec(aus) || [''])[0]);
   const nachher = Object.keys(await serverStand(A)).length;
   pruefe(nachher === vorher && nachher > 0 && (await p.evaluate(() => window.KursApp.konto.status(true))).angemeldet, 'Python-Worker: Konto und Einträge unverändert', `${vorher} → ${nachher}`);
@@ -411,8 +511,7 @@ async function tutor() {
   pruefe(await p.evaluate(() => document.querySelector('[data-app-slot="panel"]').hidden && !window.KursApp.panel.istOffen()), 'Tutor: Esc schließt das Panel');
   /* Labor bleibt bedienbar: Ausführen in der Aufgabe */
   const aufgabe = p.locator('.a-task[data-id="tr-1"]');
-  await p.evaluate(() => window.KursEditor.setValue(document.querySelector('.a-task[data-id="tr-1"] textarea'), 'print("Kinoabend läuft")
-'));
+  await p.evaluate(() => window.KursEditor.setValue(document.querySelector('.a-task[data-id="tr-1"] textarea'), 'print("Kinoabend läuft")\n'));
   await aufgabe.locator('.cm-content').click();
   await aufgabe.locator('button', { hasText: 'Ausführen' }).first().click();
   const lief = await bis(() => aufgabe.evaluate((a) => /Kinoabend läuft/.test(a.textContent.replace(a.querySelector('.a-editor') ? a.querySelector('.a-editor').textContent : '', ''))), 60000, 300);
@@ -605,7 +704,7 @@ async function seitenAngemeldet() {
     for (const e of fs.readdirSync(path.join(DIST, rel), { withFileTypes: true })) {
       const r = rel ? rel + '/' + e.name : e.name;
       if (e.isDirectory()) { if (!['assets', 'app', 'pyodide', 'notebooks'].includes(e.name)) lauf(r); }
-      else if (e.name.endsWith('.html') && r !== 'lektionen/v03-training.html') seiten.push(r);
+      else if (e.name.endsWith('.html')) seiten.push(r);
     }
   })('');
   let schlecht = 0;

@@ -24,7 +24,7 @@
 
   var kurs = null;      /* kurs.json */
   var bild = null;      /* Antwort der API */
-  var gewaehlt = null;  /* 'V07' */
+  var gewaehlt = null;  /* 'V01' */
 
   function block(name) {
     $('[data-dz-laedt]').hidden = name !== 'laedt';
@@ -77,7 +77,7 @@
     leeren(sel);
     bild.lektionen.forEach(function (l) {
       var t = termin(l.nr);
-      var o = el('option', null, l.nr + ' · ' + (t ? t.kurz : '') + ' (' + l.konten + ' aktiv)');
+      var o = el('option', null, KA.termin.lang(l.nr) + ' · ' + (t ? t.kurz : '') + ' (' + l.konten + ' aktiv)');
       o.value = l.nr;
       sel.appendChild(o);
     });

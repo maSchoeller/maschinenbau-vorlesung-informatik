@@ -1,0 +1,97 @@
+WEBVTT
+
+1
+00:00:00.400 --> 00:00:06.054
+Den Getränkeautomaten kennst du aus Termin 02: Die Cola kommt, wenn das Geld reicht.
+
+2
+00:00:06.111 --> 00:00:09.875
+Aber was ist, wenn das Fach leer ist? Dann hilft auch das Geld nicht.
+
+3
+00:00:09.952 --> 00:00:15.257
+Die Cola kommt nur, wenn das Geld reicht UND noch eine Flasche im Fach ist.
+
+4
+00:00:15.306 --> 00:00:22.210
+Das sind zwei Aussagen. Sie bekommen Namen: A heißt, das Geld reicht. B heißt, eine Flasche ist da.
+
+5
+00:00:23.110 --> 00:00:28.871
+Die Wahrheitstabelle kennst du aus Termin 02: Sie listet jeden Fall auf.
+
+6
+00:00:28.721 --> 00:00:33.345
+Zwei Aussagen ergeben vier Kombinationen, also vier Zeilen.
+
+7
+00:00:33.195 --> 00:00:37.819
+Ab jetzt schreibst du kurz: 1 für wahr, 0 für falsch.
+
+8
+00:00:37.669 --> 00:00:45.325
+Die Reihenfolge ist immer gleich: 00, 01, 10, 11. So vergisst du keine.
+
+9
+00:00:45.175 --> 00:00:53.666
+Links stehen die Spalten A und B. Rechts kommt eine dritte Spalte für das UND dazu: Hier müssen beide stimmen.
+
+10
+00:00:53.516 --> 00:00:59.960
+Nur in der letzten Zeile steht eine 1: Das Geld reicht, und eine Flasche ist da.
+
+11
+00:01:00.860 --> 00:01:08.789
+Zweites Beispiel: das Museum. Der Eintritt ist frei, wenn du unter 18 bist ODER einen Studierendenausweis hast.
+
+12
+00:01:08.768 --> 00:01:13.115
+A heißt jetzt: unter 18. B heißt: Studierendenausweis.
+
+13
+00:01:13.393 --> 00:01:20.041
+Beim ODER genügt eine der beiden Aussagen. Und wenn beide stimmen? Dann ist der Eintritt auch frei.
+
+14
+00:01:20.390 --> 00:01:25.669
+Im Alltag ist das oft anders. Kaffee oder Tee meint: entweder oder.
+
+15
+00:01:25.955 --> 00:01:29.544
+Das ODER der Logik ist auch wahr, wenn beides stimmt.
+
+16
+00:01:29.739 --> 00:01:38.030
+Die ODER-Spalte hat deshalb drei Einsen. Eine 0 steht nur in der ersten Zeile: Du bist nicht unter 18 und hast keinen Ausweis.
+
+17
+00:01:38.930 --> 00:01:41.150
+Jetzt stehen beide Spalten nebeneinander.
+
+18
+00:01:41.365 --> 00:01:45.207
+Das UND ist streng: Nur eine von vier Zeilen ist wahr.
+
+19
+00:01:45.573 --> 00:01:49.911
+Das ODER ist großzügig: Drei von vier Zeilen sind wahr.
+
+20
+00:01:50.759 --> 00:01:54.420
+Diese beiden Spalten schreibst du in der Klausur aus dem Kopf auf.
+
+21
+00:01:55.320 --> 00:01:58.402
+Merke dir: Aus zwei Aussagen wird eine neue.
+
+22
+00:01:58.674 --> 00:02:03.228
+Die Wahrheitstabelle zeigt für jede der vier Kombinationen, ob sie wahr ist.
+
+23
+00:02:03.417 --> 00:02:08.463
+Später in diesem Termin steht das UND in der Raute, und genauso das ODER.
+
+24
+00:02:08.882 --> 00:02:11.770
+Dann entscheidet ein Programm nach zwei Dingen zugleich.

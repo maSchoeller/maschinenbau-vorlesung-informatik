@@ -24,11 +24,11 @@ skripte:
   - ../assets/js/labor.js
 ---
 
-<Labor nr="V01" name="Termin 01" lerneinheit="v01-ablauf-und-erste-programme.html">
+<Labor nr="V01" zuhause="45" name="Termin 01" lerneinheit="v01-ablauf-und-erste-programme.html">
 
 <Station id="a-werkzeugkasten" titel="Werkzeugkasten" teil="A" min="5">
 
-<p class="l-task__intro">Vier Karten, mehr brauchst du heute nicht. Jeder Codeblock läuft: Ändere etwas und führ ihn aus. Den Werkzeugkasten erreichst du später von jeder Aufgabe aus über den Knopf oben rechts.</p>
+<p class="l-task__intro">Vier Karten, mehr brauchst du heute nicht. Jeder Codeblock läuft: Ändere etwas und führ ihn aus. Den Werkzeugkasten erreichst du später von jeder Aufgabe aus in der Befehls-Bibliothek oben rechts.</p>
 
 <Video name="v01-python" titel="Python-Werkzeugkasten: print, Variablen, rechnen, einlesen" fehlt="Video folgt. Bis dahin: Lies die vier Karten und probier jeden Codeblock aus.">
 
@@ -90,7 +90,7 @@ print(strecke, tage)
 
 - `input("Frage: ")` zeigt die Frage und wartet auf eine Eingabe.
 - `float(…)` macht daraus eine Kommazahl, `int(…)` eine ganze Zahl. Ohne das ist die Eingabe Text, und mit Text kannst du nicht rechnen.
-- Hier auf der Seite trägst du die Eingaben vorher ins Feld „Eingaben“ ein, eine Zeile je `input`.
+- Hier auf der Seite tippst du die Antwort in der Ausgabe direkt hinter die Frage und drückst Enter.
 
 </Syntaxkarte>
 
@@ -477,5 +477,72 @@ Du sparst jede Woche denselben Betrag. Das Programm liest zuerst das Sparziel in
 </Aufgabe>
 
 </Station>
+
+<Knobel id="kn-1" titel="Punkteschnitt">
+
+<Aufgabe art="code" id="k-1" data-mode="programm" data-inputs="4|70|75">
+
+<div class="a-task__text">
+
+Bei einem Spiel zählt am Ende dein Punkteschnitt über alle Runden. Du hast schon einige Runden gespielt und kennst deinen bisherigen Schnitt. Wie viele Punkte brauchst du in der nächsten Runde, damit dein Schnitt danach genau auf deinem Ziel liegt?
+
+Das Programm liest die Zahl der bisherigen Runden ein (ganze Zahl), dann den bisherigen Schnitt und den gewünschten Schnitt (Kommazahlen). Die Zeilen dafür stehen schon da. Beispiel: Nach 4 Runden hast du einen Schnitt von 70, du willst auf 75 kommen. Dann brauchst du 95.0 Punkte. Die Zahl steht am Ende der Ausgabe, zum Beispiel so:
+
+```text data-run="no"
+Nötig in der nächsten Runde: 95.0
+```
+
+</div>
+
+<Editor datei="labor/k-1.vorlage.py" aria-label="Python-Code: Punkteschnitt" />
+
+<Python rolle="tests" datei="labor/k-1.tests.py" />
+
+<Python rolle="solution" datei="labor/k-1.solution.py" />
+
+<Tipps>
+
+1. Der Schnitt allein hilft wenig. Was weißt du über alle bisherigen Runden zusammen?
+2. Prüf deine Idee von Hand mit dem Beispiel, bevor du programmierst: Kommt wirklich 75 heraus?
+
+</Tipps>
+
+</Aufgabe>
+
+</Knobel>
+
+<Knobel id="kn-2" titel="Treffpunkt">
+
+<Aufgabe art="code" id="k-2" data-mode="programm" data-inputs="20|15|25">
+
+<div class="a-task__text">
+
+Lea und Mia wohnen ein Stück auseinander. Sie fahren gleichzeitig mit dem Rad los, auf derselben Straße aufeinander zu, und halten ihr Tempo. Das Programm liest den Abstand in Kilometern ein, dann Leas Tempo und Mias Tempo in km/h (drei Kommazahlen, die Zeilen dafür stehen schon da). Es gibt aus, nach wie vielen Minuten sich die beiden treffen und wie viele Kilometer Lea bis dahin gefahren ist.
+
+Beispiel: 20 km Abstand, Lea fährt 15 km/h, Mia 25 km/h. Sie treffen sich nach 30.0 Minuten, Lea ist bis dahin 7.5 km gefahren. Gib zuerst die Minuten aus, dann die Kilometer, zum Beispiel so:
+
+```text data-run="no"
+Treffen nach: 30.0 Minuten
+Lea ist gefahren: 7.5 km
+```
+
+</div>
+
+<Editor datei="labor/k-2.vorlage.py" aria-label="Python-Code: Treffpunkt" />
+
+<Python rolle="tests" datei="labor/k-2.tests.py" />
+
+<Python rolle="solution" datei="labor/k-2.solution.py" />
+
+<Tipps>
+
+1. Schau nicht auf eine der beiden, sondern auf den Abstand zwischen ihnen: Um wie viele Kilometer wird er in einer Stunde kleiner?
+2. Rechne zuerst in Stunden, danach in Minuten um.
+
+</Tipps>
+
+</Aufgabe>
+
+</Knobel>
 
 </Labor>

@@ -64,7 +64,7 @@ E("kommentar", "Kommentar", AE, "V01", "kopf",
 E("input", "input", AE, "V01", "kopf",
   "Liest eine Eingabe von der Tastatur – immer als Text (str).",
   "text = input('Fragetext: ')",
-  "input() zeigt den Fragetext, wartet auf Enter und liefert das Eingegebene als Text zurück – auch wenn du eine Zahl tippst. Für Rechnungen wandelst du mit int() oder float() um. Im Browser-Runner dieser Seite gibt es keine Tastatureingabe; dort setzt du die Werte stattdessen direkt in den Code.",
+  "input() zeigt den Fragetext, wartet auf Enter und liefert das Eingegebene als Text zurück – auch wenn du eine Zahl tippst. Für Rechnungen wandelst du mit int() oder float() um. Beim Ausführen hier öffnet sich ein Terminal, in das du die Antworten direkt tippst; mit dem Umschalter „Eingaben“ kannst du sie auch vorab eintragen.",
   '''
   text = input("Durchmesser in mm: ")
   d = float(text)

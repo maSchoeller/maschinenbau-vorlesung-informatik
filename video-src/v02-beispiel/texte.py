@@ -1,0 +1,37 @@
+"""Sprechertext Termin 02, Video 3: Vorgerechnet: Einlass ab 16, vom Plan zum Programm (Quelltext mit Markup)."""
+SRC = [
+ ["Die Aufgabe: Das Programm liest das Alter ein, eine ganze Zahl.",
+  "Ab 16 Jahren lautet die Ausgabe: „Einlass“. Sonst lautet sie: „Kein Einlass“.",
+  "Danach kommt in jedem Fall: „Der Nächste bitte“.",
+  "Zuerst suchst du die Frage, die entscheidet.",
+  "Ab 16 heißt: mindestens 16. Die 16 gehört dazu.",
+  "Die Bedingung lautet also: Alter größer gleich 16."],
+ ["Erst der Plan, dann der Code.",
+  "Start. Parallelogramm: Alter einlesen.",
+  "Dann die Raute mit der Frage: Alter größer gleich 16?",
+  "Im ja-Weg steht die Ausgabe „Einlass“, im nein-Weg „Kein Einlass“.",
+  "Danach laufen die beiden Wege zusammen.",
+  "Darunter steht die gemeinsame Ausgabe: „Der Nächste bitte“. Ende."],
+ ["Jetzt der Code. Die Eingabe kennst du: Das Alter ist eine ganze Zahl, also `int`.",
+  "Aus der Raute wird die Zeile mit `if`: erst `if`, dann die Bedingung, dann ein Doppelpunkt.",
+  "Der ja-Weg steht eingerückt darunter: `print` mit dem Text „Einlass“.",
+  "Dann [[else|els]] mit Doppelpunkt, auf derselben Höhe wie `if`.",
+  "Darunter steht eingerückt der nein-Weg: „Kein Einlass“."],
+ ["Die letzte Zeile ist nicht eingerückt. Sie gehört zu keinem der beiden Wege.",
+  "Das ist die Stelle, an der die Wege im Plan zusammenlaufen.",
+  "„Der Nächste bitte“ erscheint deshalb in beiden Fällen."],
+ ["Die Probe machen wir mit dem Grenzfall: Wir geben 16 ein.",
+  "16 >= 16 ist wahr.",
+  "Im Plan geht es den ja-Weg, im Code läuft die Zeile unter `if`.",
+  "Die Ausgabe: Einlass. Der Nächste bitte.",
+  "Jetzt du: Probier 15 und 17.",
+  "Und überleg: Was passiert bei 16, wenn du [[> statt >=|das Zeichen größer statt größer gleich]] schreibst?"],
+]
+
+SZENEN = [
+ "Aufgabentext: Alter einlesen (ganze Zahl), ab 16 Jahren „Einlass“, sonst „Kein Einlass“, danach in jedem Fall „Der Nächste bitte“; „ab 16“ wird unterstrichen, daneben: mindestens 16, dann die Bedingung alter >= 16.",
+ "Der Plan baut sich Symbol für Symbol auf: Start, Eingabe: alter, Raute alter >= 16?, im ja-Weg (Ausgang ja) Ausgabe: \"Einlass\", im nein-Weg (Ausgang nein) Ausgabe: \"Kein Einlass\", die Wege laufen zusammen, Ausgabe: \"Der Nächste bitte\", Ende.",
+ "Links der Plan klein, rechts der Code: Zeile 1 # Einlass ab 16 und Zeile 2 alter = int(input(\"Alter: \")) stehen schon da; die Raute wandert nach rechts und wird Zeile 3 if alter >= 16: (Doppelpunkt hervorgehoben); dann tippen sich Zeile 4 print(\"Einlass\") eingerückt, Zeile 5 else: und Zeile 6 print(\"Kein Einlass\") eingerückt ein, das passende Symbol leuchtet.",
+ "Zeile 7 print(\"Der Nächste bitte\") tippt sich ohne Einrückung ein; im Plan leuchtet die Stelle, an der die Wege zusammenlaufen, und die gemeinsame Ausgabe.",
+ "Programmlauf mit der Eingabe 16: 16 >= 16 ist wahr; im Plan leuchtet der ja-Weg, im Code parallel die Zeilen 3, 4 und 7, die Zeilen 5 und 6 sind grau; Ausgabe Einlass, Der Nächste bitte; dann der Auftrag: Probier 15 und 17, und die Frage: Was passiert bei 16 mit > statt >=?",
+]

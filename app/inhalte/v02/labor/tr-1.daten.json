@@ -1,0 +1,51 @@
+{
+ "typhinweis": false,
+ "code": [
+  "preis = 30",
+  "gutschein = 5",
+  "if preis >= 25:",
+  "    preis = preis - gutschein",
+  "else:",
+  "    gutschein = 0",
+  "print(preis, gutschein)"
+ ],
+ "vars": [
+  "preis",
+  "gutschein",
+  "Bedingung"
+ ],
+ "steps": [
+  {
+   "line": 1,
+   "set": {
+    "preis": "30"
+   }
+  },
+  {
+   "line": 2,
+   "set": {
+    "gutschein": "5"
+   }
+  },
+  {
+   "line": 3,
+   "set": {
+    "Bedingung": "True"
+   },
+   "frage": "Zeile 3 prüft die Bedingung. Trag True oder False ein, wie Python es schreibt: großer Anfangsbuchstabe, ohne Anführungszeichen.",
+   "hint": "30 >= 25 ist wahr. Schreib True oder False wie Python, mit großem Anfangsbuchstaben und ohne Anführungszeichen."
+  },
+  {
+   "line": 4,
+   "set": {
+    "preis": "25"
+   },
+   "hint": "Die Bedingung ist wahr, also läuft der eingerückte ja-Weg: 30 − 5."
+  },
+  {
+   "line": 7,
+   "out": "25 5",
+   "hint": "Zeile 6 wurde übersprungen, gutschein ist noch 5."
+  }
+ ]
+}

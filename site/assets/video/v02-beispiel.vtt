@@ -1,105 +1,105 @@
 WEBVTT
 
 1
-00:00:00.400 --> 00:00:06.689
-Ein Inkrementalgeber liefert 1024 Impulse pro Umdrehung.
+00:00:00.400 --> 00:00:04.571
+Die Aufgabe: Das Programm liest das Alter ein, eine ganze Zahl.
 
 2
-00:00:07.242 --> 00:00:12.094
-Der Zähler steht auf 5000. Wie viele ganze Umdrehungen sind das, und in welchem Winkel steht die Welle jetzt?
+00:00:04.882 --> 00:00:10.395
+Ab 16 Jahren lautet die Ausgabe: „Einlass“. Sonst lautet sie: „Kein Einlass“.
 
 3
-00:00:13.714 --> 00:00:20.266
-5000 durch 1024 ist knapp 5, also vier ganze Umdrehungen und ein Rest.
+00:00:10.679 --> 00:00:13.806
+Danach kommt in jedem Fall: „Der Nächste bitte“.
 
 4
-00:00:21.173 --> 00:00:25.008
-Genau diese Aufteilung in Ganzteil und Rest übernimmt Python für uns.
+00:00:14.970 --> 00:00:17.459
+Zuerst suchst du die Frage, die entscheidet.
 
 5
-00:00:25.113 --> 00:00:28.130
-Wir gehen den Code Abschnitt für Abschnitt durch.
+00:00:17.665 --> 00:00:22.552
+Ab 16 heißt: mindestens 16. Die 16 gehört dazu.
 
 6
-00:00:29.030 --> 00:00:36.245
-Zuerst die Eingangsdaten: 1024 Impulse pro Umdrehung und ein Zählerstand von 5000.
+00:00:22.788 --> 00:00:26.770
+Die Bedingung lautet also: Alter größer gleich 16.
 
 7
-00:00:36.433 --> 00:00:41.099
-Die Variablennamen sagen, was drinsteht, so brauchst du kaum Kommentare.
+00:00:27.670 --> 00:00:30.628
+Erst der Plan, dann der Code.
 
 8
-00:00:42.009 --> 00:00:51.780
-Zeile 7: Der doppelte Schrägstrich liefert die ganzen Umdrehungen: 5000 // 1024 ist 4.
+00:00:31.292 --> 00:00:33.667
+Start. Parallelogramm: Alter einlesen.
 
 9
-00:00:52.743 --> 00:01:01.800
-Zeile 8: Das Prozentzeichen liefert den Rest: 5000 % 1024 ist 904.
+00:00:34.087 --> 00:00:38.127
+Dann die Raute mit der Frage: Alter größer gleich 16?
 
 10
-00:01:02.700 --> 00:01:10.338
-Zeile 9 rechnet den Winkel der angefangenen Umdrehung: 904 · 360 / 1024.
+00:00:39.019 --> 00:00:44.029
+Im ja-Weg steht die Ausgabe „Einlass“, im nein-Weg „Kein Einlass“.
 
 11
-00:01:11.112 --> 00:01:15.395
-Mal und Schrägstrich sind gleichrangig und werden von links nach rechts gerechnet.
+00:00:44.763 --> 00:00:46.834
+Danach laufen die beiden Wege zusammen.
 
 12
-00:01:15.529 --> 00:01:22.063
-Der einfache Schrägstrich liefert immer einen float: 317.8125 Grad.
+00:00:47.228 --> 00:00:51.560
+Darunter steht die gemeinsame Ausgabe: „Der Nächste bitte“. Ende.
 
 13
-00:01:22.238 --> 00:01:24.830
-Das ist knapp vor einer vollen Umdrehung.
+00:00:52.460 --> 00:00:58.609
+Jetzt der Code. Die Eingabe kennst du: Das Alter ist eine ganze Zahl, also int.
 
 14
-00:01:25.730 --> 00:01:28.614
-Die Zeilen 11 bis 15 geben die Ergebnisse aus.
+00:00:58.459 --> 00:01:05.216
+Aus der Raute wird die Zeile mit if: erst if, dann die Bedingung, dann ein Doppelpunkt.
 
 15
-00:01:29.670 --> 00:01:38.803
-Probelauf: Ganze Umdrehungen 4, Rest-Impulse 904, Winkel 317.8125 Grad.
+00:01:05.066 --> 00:01:10.304
+Der ja-Weg steht eingerückt darunter: print mit dem Text „Einlass“.
 
 16
-00:01:40.023 --> 00:01:44.355
-bin liefert die Binärdarstellung, hex die Hexdarstellung des Zählerstands.
+00:01:10.154 --> 00:01:14.253
+Dann else mit Doppelpunkt, auf derselben Höhe wie if.
 
 17
-00:01:44.694 --> 00:01:57.540
-Zur Probe: 0x1388 ist 1 · 4096 + 3 · 256 + 8 · 16 + 8, das sind wieder 5000.
+00:01:14.103 --> 00:01:18.430
+Darunter steht eingerückt der nein-Weg: „Kein Einlass“.
 
 18
-00:01:58.440 --> 00:02:09.187
-Die letzten Zeilen zeigen den Überlauf: Ein 16-Bit-Zähler kennt nur 0 bis 2 hoch 16 minus 1, also 65535.
+00:01:19.330 --> 00:01:23.154
+Die letzte Zeile ist nicht eingerückt. Sie gehört zu keinem der beiden Wege.
 
 19
-00:02:09.619 --> 00:02:17.925
-Ein Impuls weiter wäre 65536, und der Rest modulo 2 hoch 16 ist dann 0.
+00:01:23.229 --> 00:01:26.400
+Das ist die Stelle, an der die Wege im Plan zusammenlaufen.
 
 20
-00:02:18.403 --> 00:02:21.097
-Genau so läuft ein echter Zähler über.
+00:01:26.709 --> 00:01:30.020
+„Der Nächste bitte“ erscheint deshalb in beiden Fällen.
 
 21
-00:02:21.390 --> 00:02:27.050
-Bei 1024 Impulsen pro Umdrehung passiert das schon nach 64 Umdrehungen.
+00:01:30.920 --> 00:01:35.355
+Die Probe machen wir mit dem Grenzfall: Wir geben 16 ein.
 
 22
-00:02:27.950 --> 00:02:32.259
-Warum gehören // und % zusammen?
+00:01:35.205 --> 00:01:38.143
+16 >= 16 ist wahr.
 
 23
-00:02:33.010 --> 00:02:41.539
-Weil sie die Zahl vollständig zerlegen: 4 · 1024 + 904 ergibt wieder 5000.
+00:01:37.993 --> 00:01:42.292
+Im Plan geht es den ja-Weg, im Code läuft die Zeile unter if.
 
 24
-00:02:42.495 --> 00:02:49.355
-Für eine echte Achse bedeutet der Überlauf: Die Steuerung verliert die Position, obwohl die Achse weiterläuft.
+00:01:42.142 --> 00:01:45.012
+Die Ausgabe: Einlass. Der Nächste bitte.
 
 25
-00:02:50.453 --> 00:02:54.115
-Du musst Überläufe mitzählen oder einen größeren Zähler wählen.
+00:01:44.862 --> 00:01:47.733
+Jetzt du: Probier 15 und 17.
 
 26
-00:02:54.177 --> 00:02:57.920
-Ändere den Zählerstand und sage vorher, was herauskommt.
+00:01:47.583 --> 00:01:54.330
+Und überleg: Was passiert bei 16, wenn du > statt >= schreibst?

@@ -82,7 +82,7 @@
   function titelFuer(box) {
     var lek = APP && APP.seite && APP.seite.lektion;
     var h = ueberschriftText(ueberschriftDavor(box));
-    if (lek) return lek + ' · ' + (h || 'Beispiel');
+    if (lek) return APP.termin.lang(lek) + ' · ' + (h || 'Beispiel');   /* sichtbar „Termin 01“, die Kennung bleibt in quelle.lektion */
     return 'Bibliothek · ' + (h && h !== 'Spielwiese' ? h : 'Spielwiese');
   }
 

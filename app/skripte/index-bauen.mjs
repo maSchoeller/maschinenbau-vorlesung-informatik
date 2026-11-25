@@ -41,7 +41,7 @@ function schreibe(datei, daten) {
    Schreibweise, andere Bedeutung). Es bleibt die kürzere Form mit der Erklärung der früheren
    Fundstelle; die anderen Formen stehen in `formen` und behalten ihren Anker in `aliase`. */
 const ENDUNGEN = ['e', 'n', 'en', 's', 'es'];
-const NIE_ZUSAMMEN = new Set(['schlüssel']);   /* Schlüssel (dict, V08) und Schlüsseln (Kryptografie, V18) */
+const NIE_ZUSAMMEN = new Set(['schlüssel']);   /* Schlüssel (dict) und Schlüsseln (Kryptografie) */
 export const glossarSlug = (s) => s.toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/ß/g, 'ss').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'begriff';
 
 export function glossarSammler() {
@@ -95,6 +95,20 @@ export function sammleGlossar() {
   return g.liste();
 }
 
+/* Eine Labor-Station (section.l-task) -> Eintrag für kurs.json. Knobelaufgaben (data-knobel, freiwillig): pruefbar bleibt
+   leer, ihre Kennungen stehen in knobel, Sterne und Minuten entfallen. Dadurch zählt keine Stelle sie mit (Fortschritt,
+   Heute, Lernpfad, Kursübersicht der Dozierenden), denn alle lesen nur pruefbar. ids = alle Kennungen (für den Tutor). */
+export function stationDaten(s) {
+  const knobel = s.hasAttribute('data-knobel');
+  const ids = s.querySelectorAll('[data-a][data-id]').filter((n) => n.getAttribute('data-count') !== '0').map((n) => n.getAttribute('data-id'));
+  const a = {
+    id: s.getAttribute('id'), titel: leer(s.getAttribute('data-title')), teil: s.getAttribute('data-part') || null,
+    sterne: knobel ? null : zahl(s.getAttribute('data-stars')), minuten: knobel ? null : zahl(s.getAttribute('data-min')),
+    extra: leer(s.getAttribute('data-extra')) || null, pruefbar: knobel ? [] : ids, ...(knobel ? { knobel: ids } : {}),
+  };
+  return { a, ids, knobel };
+}
+
 export default function indexBauen() {
   const { semester, einheiten, termine: plan, lektionen: termine } = ladeKurs();
   const suche = [];
@@ -115,8 +129,8 @@ export default function indexBauen() {
       return { id: s.getAttribute('data-section'), anker: s.getAttribute('id') || null, titel };
     });
     const leUrl = `lektionen/${t.lerneinheit}`;
-    if (t.aktiv) suche.push({ typ: 'lektion', titel: `${t.nr} · ${t.kurz}`, text: t.hook, url: leUrl, lektion: t.nr });
-    abschnitte.forEach((a) => { if (a.anker && t.aktiv) suche.push({ typ: 'abschnitt', titel: a.titel, text: `${t.nr} · ${t.kurz}`, url: `${leUrl}#${a.anker}`, lektion: t.nr }); });
+    if (t.aktiv) suche.push({ typ: 'lektion', titel: `${t.terminLang} · ${t.kurz}`, text: t.hook, url: leUrl, lektion: t.nr });
+    abschnitte.forEach((a) => { if (a.anker && t.aktiv) suche.push({ typ: 'abschnitt', titel: a.titel, text: `${t.terminLang} · ${t.kurz}`, url: `${leUrl}#${a.anker}`, lektion: t.nr }); });
     if (t.aktiv) begriffe(le, leUrl, t.nr);
 
     /* Aufgaben der Lerneinheit mit Musterlösung (z. B. Code im Selbstcheck) nur für den Tutor */
@@ -132,22 +146,22 @@ export default function indexBauen() {
       const labUrl = `lektionen/${t.labor}`;
       if (t.aktiv) begriffe(lab, labUrl, t.nr);
       aufgaben = lab.querySelectorAll('section.l-task').map((s) => {
-        const pruefbar = s.querySelectorAll('[data-a][data-id]').filter((n) => n.getAttribute('data-count') !== '0').map((n) => n.getAttribute('data-id'));
-        const a = { id: s.getAttribute('id'), titel: leer(s.getAttribute('data-title')), teil: s.getAttribute('data-part') || null, sterne: zahl(s.getAttribute('data-stars')), minuten: zahl(s.getAttribute('data-min')), extra: leer(s.getAttribute('data-extra')) || null, pruefbar };
-        if (t.aktiv) suche.push({ typ: 'aufgabe', titel: a.titel, text: `${t.nr} Labor${a.teil === 'B' ? ' · Training' : ''}`, url: `${labUrl}#${a.id}`, lektion: t.nr });
+        const { a, ids, knobel } = stationDaten(s);
+        const pruefbar = a.pruefbar;
+        if (t.aktiv) suche.push({ typ: 'aufgabe', titel: a.titel, text: `${t.terminLang} Labor${a.teil === 'B' ? ' · Training' : knobel ? ' · Knobelaufgabe (freiwillig)' : ''}`, url: `${labUrl}#${a.id}`, lektion: t.nr });
         const sol = s.querySelectorAll('script[data-role="solution"]').map((x) => x.textContent.replace(/^\n+|\s+$/g, ''));
         if (sol.length) {
           const text = [klartext(s.querySelector('.l-task__intro')), ...s.querySelectorAll('.a-task__text').map(klartext)].filter(Boolean).join('\n\n');
-          aufgabenApi.push({ lektion: t.nr, seite: 'labor', id: a.id, ids: pruefbar, titel: a.titel, text, loesung: sol.join('\n\n'), erlaubt });
+          aufgabenApi.push({ lektion: t.nr, seite: 'labor', id: a.id, ids, titel: a.titel, text, loesung: sol.join('\n\n'), erlaubt });
         }
         return a;
       });
     }
     /* Kursstruktur für das Gruppenbild der Dozierenden (api/src/lib/kursstruktur.js) */
     const quiz = le.querySelector('[data-quiz]');
-    if (t.aktiv) kursApi.push({ nr: t.nr, quiz: quiz ? quiz.getAttribute('data-quiz') : null, abschnitte: abschnitte.map((a) => a.id), stationen: aufgaben.map((a) => ({ id: a.id, teil: a.teil, pruefbar: a.pruefbar })) });
+    if (t.aktiv) kursApi.push({ nr: t.nr, quiz: quiz ? quiz.getAttribute('data-quiz') : null, abschnitte: abschnitte.map((a) => a.id), stationen: aufgaben.map((a) => ({ id: a.id, teil: a.teil, pruefbar: a.pruefbar, ...(a.knobel ? { knobel: true } : {}) })) });
     return {
-      nr: t.nr, aktiv: t.aktiv, titel: t.titel, kurz: t.kurz, hook: t.hook, python: t.python, semester: t.semester, freigabe: t.freigabe,
+      nr: t.nr, terminNr: t.terminNr, terminLang: t.terminLang, terminKurz: t.terminKurz, aktiv: t.aktiv, titel: t.titel, kurz: t.kurz, hook: t.hook, python: t.python, semester: t.semester, freigabe: t.freigabe,
       lerneinheit: leUrl, labor: t.labor ? `lektionen/${t.labor}` : null, notebook: t.notebook ? `notebooks/${t.notebook}` : null,
       abschnitte, aufgaben,
     };
@@ -158,19 +172,24 @@ export default function indexBauen() {
 
   /* Bibliothek */
   const bib = JSON.parse(fs.readFileSync(path.join(SITE, 'assets/data/bibliothek.json'), 'utf8'));
-  for (const e of bib.eintraege || []) suche.push({ typ: 'bibliothek', titel: e.name, text: kuerzen(leer(e.kurz), 140), url: `bibliothek.html#${encodeURIComponent(e.id)}`, lektion: e.eingefuehrt || null });
+  /* Gehört ein Eintrag zu einem Entwurf (aktiv: false), nennt die Suche den Termin noch nicht: bis zur Freischaltung steht dort „einem späteren Termin“ */
+  const entwurfsNr = new Set(ladeKurs().lektionen.filter((l) => !l.aktiv).map((l) => l.nr));
+  for (const e of bib.eintraege || []) suche.push({ typ: 'bibliothek', titel: e.name, text: kuerzen(leer(e.kurz), 140), url: `bibliothek.html#${encodeURIComponent(e.id)}`, lektion: entwurfsNr.has(e.eingefuehrt) ? 'einem späteren Termin' : (e.eingefuehrt || null) });
 
   const glossarListe = glossar.liste();
   for (const g of glossarListe) suche.push({ typ: 'glossar', titel: g.begriff, text: (g.formen ? 'Auch: ' + g.formen.join(', ') + '. ' : '') + kuerzen(g.erklaerung, 140), url: `glossar.html#${g.id}`, lektion: g.lektion });
 
   const daten = path.join(DIST, 'app', 'daten');
   /* termine: die 20 Termine des Plans; lektionen: Seiten, die es gibt, mit Abschnitten und Aufgaben */
-  /* abgeschaltete Lektionen (aktiv: false) stehen nur noch in den Tutor-Daten, sonst nirgends */
+  /* abgeschaltete Lektionen (aktiv: false; zurzeit keine) stehen nur in den Tutor-Daten und als entwuerfe in kurs.json
+     (Nummer und Adressen, damit Prüfskripte sie finden); Kursstruktur, Suche und Glossar kennen sie nicht.
+     Der Plan nennt sie nicht: ein Termin mit Entwurf hat dort lektion: null. */
   const aktive = kursTermine.filter((t) => t.aktiv);
-  schreibe(path.join(daten, 'kurs.json'), { semester, einheiten, termine: plan, lektionen: aktive.map(({ aktiv, ...t }) => t) });
+  const entwuerfe = kursTermine.filter((t) => !t.aktiv).map((t) => ({ nr: t.nr, lerneinheit: t.lerneinheit, labor: t.labor }));
+  schreibe(path.join(daten, 'kurs.json'), { semester, einheiten, termine: plan.map(({ entwurf, ...t }) => t), lektionen: aktive.map(({ aktiv, ...t }) => t), entwuerfe });
   schreibe(path.join(daten, 'suche.json'), { eintraege: suche });
   schreibe(path.join(daten, 'glossar.json'), { begriffe: glossarListe });
-  schreibe(path.join(API_DATEN, 'aufgaben.json'), { erstellt: new Date().toISOString(), aufgaben: aufgabenApi, kurs: kursApi });
+  schreibe(path.join(API_DATEN, 'aufgaben.json'), { erstellt: new Date().toISOString(), aufgaben: aufgabenApi, kurs: kursApi, termine: Object.fromEntries(ladeKurs().lektionen.map((l) => [l.nr, l.terminLang])) });
   const nA = aktive.reduce((s, t) => s + t.aufgaben.length, 0);
   console.log(`index-bauen: ${plan.length} Termine, ${aktive.length} aktive Lektionen (${kursTermine.length - aktive.length} abgeschaltet), ${nA} Labor-Aufgaben, ${suche.length} Sucheinträge, ${glossarListe.length} Begriffe, ${aufgabenApi.length} Aufgaben mit Lösung für den Tutor`);
 }

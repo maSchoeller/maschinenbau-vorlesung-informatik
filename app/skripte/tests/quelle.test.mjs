@@ -14,6 +14,7 @@ import path from 'node:path';
 import { zerlege, zerlegeText, alleSeiten, umschreiben } from '../../src/lib/quelle.mjs';
 import { SITE, DIST, APP } from '../../src/lib/pfade.mjs';
 import { mdxDatei, mdxSeiten } from '../../src/lib/mdx/inhalte.mjs';
+import { ladeKurs } from '../../src/lib/kurs.mjs';
 import { unterschied } from '../../src/lib/mdx/vergleich.mjs';
 
 const GESCHUETZT = [
@@ -27,8 +28,16 @@ const seiten = alleSeiten();
 const distDa = fs.existsSync(path.join(DIST, 'lektionen'));
 
 test('es gibt die erwarteten Seiten', () => {
-  assert.ok(seiten.length >= 30, `nur ${seiten.length} Seiten`);
+  /* die Werkzeug- und Klausurseiten aus site/ und alle Lektionsseiten aus kurs.yaml (Quelle: MDX) */
+  for (const s of ['bibliothek.html', 'pap-editor.html']) assert.ok(seiten.includes(s), `${s} fehlt`);
+  const lektionsseiten = ladeKurs().lektionen.flatMap((l) => [l.lerneinheit, l.labor]).filter(Boolean).map((d) => 'lektionen/' + d);
+  assert.ok(lektionsseiten.length >= 2, 'kurs.yaml nennt keine Lektionsseiten');
+  for (const s of lektionsseiten) assert.ok(seiten.includes(s), `${s} fehlt`);
+  assert.deepEqual(seiten.filter((s) => s.startsWith('lektionen/')).sort(), lektionsseiten.sort(), 'unter lektionen/ steht nur, was kurs.yaml nennt');
+  assert.deepEqual(mdxSeiten().sort(), lektionsseiten.sort(), 'jede Lektionsseite hat eine MDX-Quelle');
   assert.ok(!seiten.includes('werkzeuge/labor-test.html'));
+  assert.ok(!seiten.includes('klausurtrainer.html'), 'der Klausurtrainer des alten Kurses ist entfernt');
+  assert.ok(!seiten.includes('probeklausur-2026-27.html'), 'die Probeklausur des alten Kurses ist entfernt');
 });
 
 for (const s of seiten) {
@@ -60,8 +69,9 @@ for (const s of seiten) {
   });
 }
 
-/* Lektionen mit MDX-Quelle: übersetzbar, mit Inhalt und Skripten; solange die alte site/-Seite noch
-   daneben liegt, muss das Ergebnis für den Browser dasselbe sein (src/lib/mdx/vergleich.mjs). */
+/* Lektionen mit MDX-Quelle: übersetzbar, mit Inhalt und Skripten. Läge unter site/lektionen/ noch eine
+   Seite gleichen Namens daneben, müsste das Ergebnis für den Browser dasselbe sein (src/lib/mdx/vergleich.mjs);
+   seit dem Entfernen des alten Kurses gibt es dort keine Seiten mehr. */
 for (const s of mdxSeiten()) {
   test(`mdx: ${s}`, () => {
     const q = zerlege(s, { videoBasis: '' });
@@ -109,14 +119,26 @@ for (const s of seiten) {
 }
 
 test('VIDEO_BASIS schreibt nur <source …/assets/video/X.mp4> um', () => {
-  const rel = 'lektionen/v02-bits-und-bytes.html';
-  const text = fs.readFileSync(path.join(SITE, rel), 'utf8');
-  const ohne = zerlegeText(text, rel, { videoBasis: '' });
-  const mit = zerlegeText(text, rel, { videoBasis: 'https://speicher.example/video/' });
-  assert.match(mit.inhalt, /<source src="https:\/\/speicher\.example\/video\/v02-theorie\.mp4"/);
+  /* a) an einer echten Lektionsseite (Termin 01, Quelle MDX) */
+  const rel = 'lektionen/v01-ablauf-und-erste-programme.html';
+  const ohne = zerlege(rel, { videoBasis: '' });
+  const mit = zerlege(rel, { videoBasis: 'https://speicher.example/video/' });
+  assert.match(ohne.inhalt, /<source src="\.\.\/assets\/video\/v01-theorie\.mp4"/, 'die Seite bindet ihr Video ein');
+  assert.match(mit.inhalt, /<source src="https:\/\/speicher\.example\/video\/v01-theorie\.mp4"/);
   assert.doesNotMatch(mit.inhalt, /assets\/video\/[^"]+\.mp4"/);
+  assert.match(mit.inhalt, /poster="\.\.\/assets\/video\/v01-theorie-poster\.png"/, 'Poster bleibt in der App');
   const zurueck = mit.inhalt.replace(/https:\/\/speicher\.example\/video\/([^"/]+\.mp4)"/g, '../assets/video/$1"');
   assert.equal(zurueck, ohne.inhalt, 'sonst nichts verändert (Poster und Untertitel bleiben)');
+  /* b) derselbe Weg für eine Seite aus site/ (zerlegeText): nur <source> wird umgeschrieben */
+  const html = '<html><head><title>T</title></head><body><header class="dhbw-header"></header><main id="inhalt">'
+    + '<video poster="../assets/video/x-poster.png"><source src="../assets/video/x.mp4" type="video/mp4"><track src="../assets/video/x.vtt"></video>'
+    + '<a href="../assets/video/x.mp4">laden</a></main><footer class="dhbw-footer"></footer></body></html>';
+  const s = zerlegeText(html, 'lektionen/x.html', { videoBasis: 'https://speicher.example/video' });
+  assert.match(s.inhalt, /<source src="https:\/\/speicher\.example\/video\/x\.mp4" type="video\/mp4">/);
+  assert.match(s.inhalt, /poster="\.\.\/assets\/video\/x-poster\.png"/);
+  assert.match(s.inhalt, /<track src="\.\.\/assets\/video\/x\.vtt">/);
+  assert.match(s.inhalt, /<a href="\.\.\/assets\/video\/x\.mp4">/, 'Verweise außerhalb von <source> bleiben');
+  assert.equal(zerlegeText(html, 'lektionen/x.html', { videoBasis: '' }).inhalt, s.inhaltOriginal);
 });
 
 test('Zerlegen bricht bei unerwartetem Aufbau ab', () => {

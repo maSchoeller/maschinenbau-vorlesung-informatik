@@ -65,7 +65,7 @@ export function umschreiben(s, videoBasis) {
 }
 
 /**
- * Zerlegt eine Seite. relPfad relativ zu site/, z. B. 'lektionen/v07-funktionen.html'.
+ * Zerlegt eine Seite. relPfad relativ zu site/, z. B. 'bibliothek.html' oder 'lektionen/v01-labor.html' (Quelle MDX).
  * Rückgabe: {
  *   relPfad, titel, beschreibung, stylesheets: [href], kopfStile: [roher <style>-Block],
  *   bodyAttribute: [{name, wert}], inhalt (umgeschrieben), inhaltOriginal (Ausschnitte ohne Umschreibung),

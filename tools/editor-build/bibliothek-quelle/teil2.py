@@ -230,7 +230,7 @@ E("while", "while", SC, "V06", "kopf",
 E("for", "for", SC, "V06", "kopf",
   "Läuft über eine Folge von Werten und führt den Block für jeden aus.",
   "for variable in folge:\n    anweisungen",
-  "for nimmt nacheinander jeden Wert der Folge, legt ihn in der Schleifenvariablen ab und führt den Block aus. Die Folge kann ein range(), eine Liste (ab V08) oder ein Text sein. Nimm for, wenn du weißt, wie oft oder worüber du wiederholst.",
+  "for nimmt nacheinander jeden Wert der Folge, legt ihn in der Schleifenvariablen ab und führt den Block aus. Die Folge kann ein range(), eine Liste (kommt später im Kurs) oder ein Text sein. Nimm for, wenn du weißt, wie oft oder worüber du wiederholst.",
   '''
   summe = 0
   for i in range(1, 6):

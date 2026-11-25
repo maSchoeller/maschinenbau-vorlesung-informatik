@@ -291,15 +291,37 @@
      - Abschnitte: Pflichtabschnitte der Lerneinheit; „Deep Dive (freiwillig)“ zählt nirgends mit.
      - Aufgaben: je prüfbarem Teil (data-id) des Labors, wie labor.js zählt.
      - fertig: alle Pflichtabschnitte und alle prüfbaren Teile; begonnen: irgendein Eintrag in
-       done, aufg, begonnen oder gesehen; sonst offen. */
+       done, aufg, begonnen oder gesehen; sonst offen.
+     - Knobelaufgaben (freiwillig; in kurs.json a.knobel = ihre Kennungen, pruefbar leer) zählen nirgends: weder bei
+       „gelöst“ noch bei „begonnen“. Ihr Status liegt trotzdem in aufg und begonnen (Anzeige im Labor). */
   function lesen(lektion, k) { try { return (KS && KS.sofort.lesen(KS.pfad(lektion, k))) || {}; } catch (e) { return {}; } }
   function istFreiwillig(a) { return /freiwillig/i.test((a && a.titel) || ''); }
   function anzahl(o) { return Object.keys(o || {}).length; }
+  /* Kennungen der Knobelaufgaben eines Termins (aus kurs.json) */
+  function knobelIds(t) {
+    var ids = [];
+    (t.aufgaben || []).forEach(function (a) { (a.knobel || []).forEach(function (i) { ids.push(i); }); });
+    return ids;
+  }
+  /* Eimer ohne die Knobelaufgaben (Kopie) */
+  function ohneKnobel(t, eimer) {
+    var k = knobelIds(t), r = {};
+    Object.keys(eimer || {}).forEach(function (i) { if (k.indexOf(i) < 0) r[i] = eimer[i]; });
+    return r;
+  }
+  /* Eimer nur mit den prüfbaren Teilen des Labors (Kopie). Übungen in der Lerneinheit (Aufgabe mit eigener Kennung,
+     nicht in kurs.json) und Knobelaufgaben gehören nicht dazu: Wer nur die Lerneinheit bearbeitet hat, hat das Labor nicht begonnen. */
+  function nurPruefbare(t, eimer) {
+    var ids = [], r = {};
+    (t.aufgaben || []).forEach(function (a) { (a.pruefbar || []).forEach(function (i) { ids.push(i); }); });
+    Object.keys(eimer || {}).forEach(function (i) { if (ids.indexOf(i) >= 0) r[i] = eimer[i]; });
+    return r;
+  }
   /* Stationen mit prüfbaren Teilen, die noch nicht ganz gelöst sind */
   function offeneAufgaben(t, aufg, beg) {
     aufg = aufg || lesen(t.nr, 'aufg'); beg = beg || lesen(t.nr, 'begonnen');
     return (t.aufgaben || []).filter(function (a) {
-      return (a.pruefbar || []).length && !a.pruefbar.every(function (i) { return !!aufg[i]; });
+      return !a.knobel && (a.pruefbar || []).length && !a.pruefbar.every(function (i) { return !!aufg[i]; });
     }).map(function (a) {
       var angefangen = a.pruefbar.some(function (i) { return !!aufg[i] || !!beg[i]; });
       return { id: a.id, titel: a.titel, teil: a.teil, sterne: a.sterne, minuten: a.minuten, angefangen: angefangen };
@@ -318,7 +340,7 @@
     var hatLabor = !!t.labor && ids.length > 0;
     var verstehenFertig = pflicht.length === 0 || fertigA === pflicht.length;
     var laborFertig = !hatLabor || geloest === ids.length;
-    var gearbeitet = anzahl(done) + anzahl(aufg) + anzahl(beg) > 0;
+    var gearbeitet = anzahl(done) + anzahl(ohneKnobel(t, aufg)) + anzahl(ohneKnobel(t, beg)) > 0;
     var begonnen = gearbeitet || anzahl(ges) > 0;
     var status = (verstehenFertig && laborFertig && (pflicht.length || hatLabor)) ? 'fertig' : (begonnen ? 'begonnen' : 'offen');
     return {
@@ -344,6 +366,9 @@
     },
     termin: terminStand,
     offeneAufgaben: offeneAufgaben,
+    knobelIds: knobelIds,
+    ohneKnobel: ohneKnobel,
+    nurPruefbare: nurPruefbare,
     freiwillig: istFreiwillig
   };
 
@@ -413,6 +438,89 @@
     element: function () { return slot('panel-inhalt'); }
   };
 
+  /* ── Panelbreite: ziehbar (Zeiger und Tastatur), je Gerät in localStorage ──
+     Mindestens 320 px, höchstens der ganze Platz neben der Leiste. Gemerkt wird der Wunsch;
+     angezeigt wird er auf das aktuelle Fenster begrenzt (wächst das Fenster, kommt er zurück). */
+  var INHALT_MIN = 520, PANEL_MIN = 320, PANEL_STANDARD = 380, PANEL_SCHLUESSEL = 'inf-mb-app:panelbreite';
+  var panelWunsch = PANEL_STANDARD, panelIst = PANEL_STANDARD;
+  function panelMax() {
+    var wurzel = document.documentElement, rail = 76;   /* = --app-rail-w in shell.css */
+    var breit = (wurzel && wurzel.clientWidth) || 10000;
+    /* ab 1100 px steht das Panel neben dem Inhalt: dem Inhalt bleibt mindestens INHALT_MIN; darunter liegt es darüber */
+    return Math.max(PANEL_MIN, Math.floor(breit - rail - (breit >= 1100 ? INHALT_MIN : 0)));
+  }
+  function panelBegrenzt(b) { return Math.min(panelMax(), Math.max(PANEL_MIN, Math.round(b))); }
+  function panelGriffNachziehen() {
+    var g = slot('panel-griff');
+    if (!g) return;
+    g.setAttribute('aria-valuemin', String(PANEL_MIN));
+    g.setAttribute('aria-valuemax', String(panelMax()));
+    g.setAttribute('aria-valuenow', String(panelIst));
+    g.setAttribute('aria-valuetext', panelIst + ' Pixel');
+  }
+  function panelBreiteSetzen(b, merken) {
+    panelIst = panelBegrenzt(b);
+    if (merken) {
+      panelWunsch = panelIst;
+      try { if (panelWunsch === PANEL_STANDARD) localStorage.removeItem(PANEL_SCHLUESSEL); else localStorage.setItem(PANEL_SCHLUESSEL, String(panelWunsch)); } catch (e) { /* gesperrt: gilt nur für diese Seite */ }
+    }
+    if (document.documentElement && document.documentElement.style) document.documentElement.style.setProperty('--app-panel-w', panelIst + 'px');
+    panelGriffNachziehen();
+  }
+  try { var gemerkt = parseInt(localStorage.getItem(PANEL_SCHLUESSEL), 10); if (gemerkt > 0) panelWunsch = gemerkt; } catch (e) { /* ohne Speicher: Standard */ }
+  panelBreiteSetzen(panelWunsch, false);
+  window.addEventListener('resize', function () { panelBreiteSetzen(panelWunsch, false); });
+  /* Wird der Inhalt schmal (breites Panel), schalten die Seiten auf eine Spalte: html.app-eng (Regeln in kurs.css, v01.css) */
+  (function () {
+    var inh = document.querySelector('.app-inhalt');
+    if (!inh || typeof ResizeObserver === 'undefined') return;
+    function pruefen() { document.documentElement.classList.toggle('app-eng', inh.clientWidth > 0 && inh.clientWidth < 860); }
+    new ResizeObserver(pruefen).observe(inh);
+    pruefen();
+  })();
+  (function () {
+    var g = slot('panel-griff');
+    if (!g) return;
+    var zieht = false, rahmen = 0, ziel = 0;
+    function anwenden() { rahmen = 0; panelBreiteSetzen(ziel, false); }
+    g.addEventListener('pointerdown', function (e) {
+      if (e.button !== undefined && e.button > 0) return;
+      e.preventDefault();
+      zieht = true;
+      try { g.focus({ preventScroll: true }); } catch (x) {}
+      try { g.setPointerCapture(e.pointerId); } catch (x) {}
+      body.classList.add('app--ziehen');
+    });
+    g.addEventListener('pointermove', function (e) {
+      if (!zieht) return;
+      ziel = document.documentElement.clientWidth - e.clientX;
+      if (!rahmen) rahmen = requestAnimationFrame(anwenden);
+    });
+    function ende() {
+      if (!zieht) return;
+      zieht = false;
+      if (rahmen) { cancelAnimationFrame(rahmen); rahmen = 0; panelBreiteSetzen(ziel, false); }
+      body.classList.remove('app--ziehen');
+      panelBreiteSetzen(panelIst, true);
+    }
+    g.addEventListener('pointerup', ende);
+    g.addEventListener('pointercancel', ende);
+    g.addEventListener('lostpointercapture', ende);
+    g.addEventListener('dblclick', function () { panelBreiteSetzen(PANEL_STANDARD, true); });
+    g.addEventListener('keydown', function (e) {
+      var schritt = e.shiftKey ? 96 : 24, b = null;
+      if (e.altKey || e.ctrlKey || e.metaKey) return;
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') b = panelIst + schritt;
+      else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') b = panelIst - schritt;
+      else if (e.key === 'Home') b = PANEL_MIN;
+      else if (e.key === 'End') b = panelMax();
+      else if (e.key === 'Enter') b = PANEL_STANDARD;
+      if (b === null) return;
+      e.preventDefault();
+      panelBreiteSetzen(b, true);
+    });
+  })();
+
   /* ── Symbole ─────────────────────────────────────────────── */
   var NS = 'http://www.w3.org/2000/svg';
   function icon(id) {
@@ -431,8 +539,30 @@
   window.addEventListener('online', function () { sende('netz', { online: true }); });
   window.addEventListener('offline', function () { sende('netz', { online: false }); });
 
+  /* ── Kennung intern, Termin sichtbar ─────────────────────
+     Die Kennung einer Lektion („V01“) bleibt Schlüssel (Speicher, Adressen, data-Attribute, API). Angezeigt wird
+     „Termin 01“ (lang) oder „T01“ (kurz, wo der Platz knapp ist). Die Zuordnung liefert der Build in jede Seite
+     (<script id="app-termine" type="application/json">, aus kurs.yaml). Ohne Eintrag, etwa auf einer Seite ohne Hülle,
+     ersetzt die Funktion die Kennung „VNN“ durch „Termin NN“; die Kennung selbst zeigt sie nie. */
+  var termineKarte = {};
+  try { var tn = document.getElementById('app-termine'); if (tn) termineKarte = JSON.parse(tn.textContent) || {}; } catch (e) { termineKarte = {}; }
+  function terminEintrag(k) {
+    k = String(k == null ? '' : k);
+    if (termineKarte[k]) return termineKarte[k];
+    var m = /^V(\d\d)$/.exec(k);
+    return m ? { lang: 'Termin ' + m[1], kurz: 'T' + m[1] } : { lang: k, kurz: k };
+  }
+  var termin = {
+    lang: function (k) { return terminEintrag(k).lang; },
+    kurz: function (k) { return terminEintrag(k).kurz; },
+    /* Text mit Kennungen („V01 · Entscheiden“, „bis V02“) für die Anzeige umschreiben; art 'kurz' für „T01“ */
+    text: function (t, art) { return String(t == null ? '' : t).replace(/\bV\d\d\b/g, function (k) { return art === 'kurz' ? termin.kurz(k) : termin.lang(k); }); }
+  };
+  window.KursTermine = termin;
+
   window.KursApp = {
     seite: seite,
+    termin: termin,
     url: url,
     wurzel: WURZEL,
     kurs: kurs,

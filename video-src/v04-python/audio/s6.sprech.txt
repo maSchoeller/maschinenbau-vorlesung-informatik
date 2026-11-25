@@ -1,1 +1,0 @@
-Jetzt die häufigsten Fehler. Erstens: ein einzelnes Gleichheitszeichen in der Bedingung. Python meldet einen SyntaxError. Zweitens: der vergessene Doppelpunkt, wieder ein SyntaxError. Drittens: fehlt die Einrückung, kommt ein IndentationError. Lies eine Fehlermeldung immer von unten: Die letzte Zeile nennt Art und Ursache.

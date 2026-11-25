@@ -3,7 +3,7 @@
 import App from './App.astro';
 import { zerlege } from '../lib/quelle.mjs';
 import { terminZuDatei } from '../lib/kurs.mjs';
-interface Props { datei: string }   // relativ zu site/, z. B. 'lektionen/v07-labor.html'
+interface Props { datei: string }   // relativ zu site/, z. B. 'lektionen/v01-labor.html'
 const { datei } = Astro.props;
 const q = zerlege(datei);
 const t = datei.startsWith('lektionen/') ? terminZuDatei(datei.slice('lektionen/'.length)) : null;

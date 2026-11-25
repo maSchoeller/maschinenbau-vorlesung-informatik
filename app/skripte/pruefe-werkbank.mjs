@@ -68,14 +68,147 @@ async function kontoDialogBeantworten(page) {
 async function speicherWarten(page) {
   await page.waitForFunction(() => /^Gespeichert/.test(document.getElementById('wb-status').textContent), null, { timeout: 5000 });
 }
-async function ausfuehren(page, erwartet, name, dauer = 90000) {
+/* eingaben: im Terminal-Modus nacheinander in das Eingabefeld der Ausgabe tippen (Enter) */
+async function ausfuehren(page, erwartet, name, dauer = 90000, eingaben = null) {
   await page.locator('#wb-runner .k-runner__bar button', { hasText: 'Ausführen' }).click();
+  for (const e of eingaben || []) {
+    if (!await tippen(page, '#wb-runner', e, dauer)) break;
+  }
   try {
     await page.waitForFunction(() => /fertig|Fehler|abgebrochen|Ladefehler/.test(document.querySelector('#wb-runner .k-runner__status').textContent), null, { timeout: dauer });
   } catch (e) { /* Zeitüberschreitung wird unten über die Ausgabe gemeldet */ }
   const aus = await page.locator('#wb-runner .k-runner__out').innerText();
   pruefe(erwartet.test(aus), name + ' (Ausgabe: ' + aus.replace(/\s+/g, ' ').slice(0, 120) + ')');
   return aus;
+}
+
+/* ── Terminal-Dialog (Eingaben direkt in der Ausgabe) ─────── */
+/* wartet auf das Eingabefeld in der Ausgabe, tippt text und drückt Enter; false, wenn kein Feld kam */
+async function tippen(page, wo, text, ms = 90000) {
+  const feld = page.locator(wo + ' .k-runner__out .k-term__in');
+  try { await feld.waitFor({ state: 'visible', timeout: ms }); } catch (e) { return false; }
+  await feld.fill(text);
+  await feld.press('Enter');
+  return true;
+}
+/* Ausgabe ohne das Eingabefeld (reiner Text, wie er angezeigt wird) */
+async function ausgabeText(page) { return page.evaluate(() => document.querySelector('#wb-runner .k-runner__out').textContent); }
+async function statusText(page) { return page.evaluate(() => document.querySelector('#wb-runner .k-runner__status').textContent); }
+async function wartenAufEnde(page, ms = 30000) {
+  return page.waitForFunction(() => /fertig|Fehler|abgebrochen|Ladefehler/.test(document.querySelector('#wb-runner .k-runner__status').textContent), null, { timeout: ms }).then(() => true, () => false);
+}
+async function feldDa(page, ms = 30000) {
+  return page.locator('#wb-runner .k-runner__out .k-term__in').waitFor({ state: 'visible', timeout: ms }).then(() => true, () => false);
+}
+async function ausfuehrenKlick(page) { await page.locator('#wb-runner .k-runner__bar button', { hasText: 'Ausführen' }).click(); }
+
+async function terminalPruefen(page, g) {
+  const desktop = g.n === 'desktop';
+  const original = await codeLesen(page);
+  /* Zwei input() hintereinander, leere Eingabe, keine doppelte Ausgabe, Fokus und Beschriftung */
+  await codeSetzen(page, 'a = input("A: ")\nprint("erst", a)\nb = input("B: ")\nprint("dann", repr(b))\n');
+  await ausfuehrenKlick(page);
+  pruefe(await feldDa(page), 'Terminal: Aufforderung erscheint mit Eingabefeld');
+  pruefe(await ausgabeText(page) === 'A: ', 'Terminal: Ausgabe zeigt die Aufforderung „A: “ (' + JSON.stringify(await ausgabeText(page)) + ')');
+  pruefe(await page.evaluate(() => document.activeElement && document.activeElement.classList.contains('k-term__in')), 'Terminal: Fokus steht im Eingabefeld');
+  pruefe(/^A\b/.test(await page.locator('#wb-runner .k-term__in').getAttribute('aria-label') || ''), 'Terminal: Eingabefeld ist mit der Aufforderung beschriftet');
+  pruefe(/wartet/.test(await statusText(page)) && await page.locator('#wb-runner .k-term__abbruch').isVisible(), 'Terminal: Status „wartet“, Knopf „Abbrechen“ sichtbar');
+  await page.keyboard.type('x'); await page.keyboard.press('Enter');
+  pruefe(await feldDa(page), 'Terminal: nach Enter läuft das Programm weiter bis zum zweiten input()');
+  const zwischen = await ausgabeText(page);
+  pruefe(zwischen === 'A: x\nerst x\nB: ', 'Terminal: Eingabe bleibt hinter der Aufforderung stehen, keine doppelte Ausgabe (' + JSON.stringify(zwischen) + ')');
+  await page.keyboard.press('Enter');   /* leere Eingabe ist gültig */
+  await wartenAufEnde(page);
+  const ende = await ausgabeText(page);
+  pruefe(ende === "A: x\nerst x\nB: \ndann ''\n" && /fertig/.test(await statusText(page)), 'Terminal: leere Eingabe ist gültig, Programm endet sauber (' + JSON.stringify(ende) + ')');
+
+  /* print(..., end="") vor input(): die angefangene Zeile ist beim Warten schon sichtbar */
+  await codeSetzen(page, 'print("Name", end="")\nprint(": ", end="")\nn = input()\nprint("Hallo", n)\n');
+  await ausfuehrenKlick(page);
+  pruefe(await feldDa(page), 'Terminal: Feld erscheint nach print(end="") und input()');
+  await page.waitForTimeout(500);
+  pruefe(await ausgabeText(page) === 'Name: ', 'Terminal: print(end="") vor input() steht beim Warten in der Ausgabe (' + JSON.stringify(await ausgabeText(page)) + ')');
+  await page.keyboard.type('Bo'); await page.keyboard.press('Enter');
+  await wartenAufEnde(page);
+  pruefe(await ausgabeText(page) === 'Name: Bo\nHallo Bo\n', 'Terminal: Ausgabe nach print(end="") und Eingabe vollständig (' + JSON.stringify(await ausgabeText(page)) + ')');
+
+  /* random: dieselbe Zahl über die Wiederholungen eines Laufs */
+  await codeSetzen(page, 'import random\nz = random.randint(1, 10**9)\nprint("Zahl", z)\nw = input("weiter: ")\nprint("Zahl", z)\n');
+  await ausfuehren(page, /^Zahl (\d+)\nweiter: ja\nZahl \1\s*$/, 'Terminal: Programm mit random zeigt über die Wiederholungen dieselbe Zahl, keine doppelte Zeile', 30000, ['ja']);
+
+  /* „except Exception“ schluckt das Warten nicht; nacktes except: im Lernenden-Code ebenfalls nicht */
+  await codeSetzen(page, 'try:\n    x = input("x: ")\nexcept Exception:\n    print("geschluckt")\n    x = "?"\nprint("weiter", x)\n');
+  await ausfuehren(page, /^x: 7\nweiter 7\s*$/, 'Terminal: except Exception im Code fängt das Warten nicht ab', 30000, ['7']);
+  await codeSetzen(page, 'while True:\n    try:\n        n = int(input("Zahl: "))\n        break\n    except:\n        print("Bitte eine Zahl")\nprint("ok", n)\n');
+  await ausfuehren(page, /^Zahl: abc\nBitte eine Zahl\nZahl: 5\nok 5\s*$/, 'Terminal: Eingabeschleife mit nacktem except: fragt erneut', 30000, ['abc', '5']);
+
+  /* Fehlermeldung von Python im Klartext */
+  await codeSetzen(page, 'n = int(input("n: "))\nprint(n)\n');
+  await ausfuehren(page, /n: abc[\s\S]*ValueError/, 'Terminal: int("abc") zeigt ValueError wie bisher', 30000, ['abc']);
+
+  /* Abbrechen (Knopf und Escape), neues Ausführen beginnt frisch, Code ändern beendet den Dialog */
+  await codeSetzen(page, 'a = input("A: ")\nprint("A war", a)\n');
+  await ausfuehrenKlick(page);
+  await feldDa(page);
+  await page.click('#wb-runner .k-term__abbruch');
+  pruefe(await page.locator('#wb-runner .k-term__in').count() === 0 && /abgebrochen/.test(await statusText(page)) && /\(abgebrochen\)/.test(await ausgabeText(page)), 'Terminal: „Abbrechen“ beendet das Warten');
+  await ausfuehrenKlick(page);
+  await feldDa(page);
+  await page.keyboard.press('Escape');
+  pruefe(await page.locator('#wb-runner .k-term__in').count() === 0 && /abgebrochen/.test(await statusText(page)), 'Terminal: Escape bricht ab');
+  await ausfuehrenKlick(page);
+  await feldDa(page);
+  await page.keyboard.type('1'); /* nicht abschicken */
+  await ausfuehrenKlick(page);
+  await feldDa(page);
+  pruefe(await ausgabeText(page) === 'A: ', 'Terminal: erneutes „Ausführen“ während des Wartens beginnt frisch');
+  await codeSetzen(page, 'a = input("A: ")\nprint("Neu", a)\n');
+  pruefe(await page.locator('#wb-runner .k-term__in').count() === 0 && /Code geändert/.test(await ausgabeText(page)), 'Terminal: Code ändern während des Wartens beendet den Dialog');
+
+  /* Zeitlimit: Warten zählt nicht (Werkbank 10 s), Endlosschleife bricht weiter ab */
+  if (desktop) {
+    await codeSetzen(page, 'a = input("A: ")\nprint("nach dem Warten", a)\n');
+    await ausfuehrenKlick(page);
+    await feldDa(page);
+    await warte(11500);
+    pruefe(await page.locator('#wb-runner .k-term__in').count() === 1 && !/Abgebrochen nach/.test(await ausgabeText(page)), 'Terminal: 11,5 s Warten auf die Eingabe lösen kein Zeitlimit aus');
+    await page.keyboard.type('ok'); await page.keyboard.press('Enter');
+    await wartenAufEnde(page);
+    pruefe(/nach dem Warten ok/.test(await ausgabeText(page)), 'Terminal: nach langem Warten läuft das Programm normal weiter');
+  }
+  await codeSetzen(page, 'a = input("A: ")\nwhile True:\n    pass\n');
+  await ausfuehrenKlick(page);
+  await tippen(page, '#wb-runner', 'los', 30000);
+  await wartenAufEnde(page, 90000);
+  pruefe(/Abgebrochen nach 10 s/.test(await ausgabeText(page)) && /abgebrochen/.test(await statusText(page)), 'Terminal: Endlosschleife nach der Eingabe bricht weiter nach dem Zeitlimit ab');
+  await codeSetzen(page, 'while True:\n    pass\nx = input()\n');
+  await ausfuehrenKlick(page);
+  await wartenAufEnde(page, 90000);
+  pruefe(/Abgebrochen nach 10 s/.test(await ausgabeText(page)), 'Terminal: Endlosschleife vor dem input() bricht ab');
+
+  /* Schritt für Schritt nimmt die getippten Eingaben */
+  await codeSetzen(page, 'a = input("A: ")\nprint("A ist", a)\n');
+  await page.locator('#wb-runner .k-runner__bar button', { hasText: 'Schritt für Schritt' }).click();
+  await tippen(page, '#wb-runner', 'Kai', 30000);
+  const vizOk = await page.waitForSelector('.kv__panel .kv__code', { timeout: 30000 }).then(() => true, () => false);
+  if (vizOk) {
+    await page.locator('.kv__panel button[aria-label="Zum Ende"]').click();
+    await warte(300);
+  }
+  const vizText = vizOk ? await page.locator('.kv__panel').innerText() : '';
+  pruefe(vizOk && /A ist Kai/.test(vizText), 'Terminal: Schritt für Schritt führt erst den Dialog und nimmt dann die getippte Eingabe');
+  await page.keyboard.press('Escape');
+  await page.waitForSelector('.kv__panel', { state: 'detached', timeout: 5000 }).catch(() => {});
+
+  /* Beispielprogramm wiederherstellen; die im Terminal getippten Eingaben werden nicht als „eingaben“ gespeichert */
+  await codeSetzen(page, original);
+  await speicherWarten(page);
+  const gespeichert = await page.evaluate(() => {
+    const id = decodeURIComponent(location.hash.slice(1));
+    const w = window.KursSpeicher.sofort.lesen(window.KursWerkbank.pfad(id));
+    return w && w.eingaben;
+  });
+  pruefe(gespeichert === '25', 'Werkbank: „eingaben“ (vorab) bleibt unverändert, getippte Terminal-Eingaben landen nicht darin (' + JSON.stringify(gespeichert) + ')');
 }
 
 async function anmelden(context, userId, name) {
@@ -117,12 +250,35 @@ async function main() {
       pruefe((await listenTitel(page)).join() === 'Kreisfläche', 'Beispiel steht in der Liste');
       pruefe(/#p[a-z0-9]{6,}$/.test(page.url()), 'Adresse trägt die Programm-ID (' + page.url().replace(BASIS, '') + ')');
       pruefe(await page.locator('#wb-liste a[aria-current="true"]').count() === 1, 'Aktuelles Programm ist in der Liste markiert');
-      const stdinSichtbar = await page.locator('#wb-runner .k-runner__stdinbox').isVisible();
-      pruefe(stdinSichtbar && await page.locator('#wb-runner .k-runner__stdin').inputValue() === '25', 'Eingabefeld bei input() sichtbar, Beispieleingabe 25');
+      /* Voreinstellung: Eingaben im Terminal; das Feld „Eingaben“ ist versteckt, der Umschalter sichtbar */
+      pruefe(await page.locator('#wb-runner .k-imodus').isVisible() && await page.locator('#wb-runner .k-imodus__btn[data-modus="terminal"]').getAttribute('aria-pressed') === 'true',
+        'Umschalter bei input() sichtbar, Voreinstellung „im Terminal“');
+      pruefe(await page.locator('#wb-runner .k-runner__stdinbox').isHidden(), 'Im Terminal-Modus ist das Feld „Eingaben“ versteckt');
 
-      /* ── 2. Ausführen: input und print ────────────────────── */
-      await ausfuehren(page, /Fläche: 1963\.5 mm²/, 'Beispiel läuft mit Eingabe (input, print)');
+      /* ── 2. Ausführen: input und print, Eingabe im Terminal ── */
+      await ausfuehren(page, /^Radius in mm: 25\nFläche: 1963\.5 mm²\s*$/, 'Beispiel läuft mit Eingabe im Terminal (input, print, keine doppelte Ausgabe)', 90000, ['25']);
       await page.screenshot({ path: path.join(FOTOS, g.n + '-beispiel-ausgabe.png') });
+
+      /* ── 2a. Terminal-Dialog im Einzelnen ─────────────────── */
+      await terminalPruefen(page, g);
+
+      /* ── 2b. Umschalten auf „vorab eintragen“: wie früher, und nach dem Neuladen gemerkt ── */
+      await page.click('#wb-runner .k-imodus__btn[data-modus="vorab"]');
+      await page.locator('#wb-liste a', { hasText: 'Kreisfläche' }).first().click();
+      await page.waitForFunction(() => window.KursEditor.getValue(document.getElementById('wb-code')).includes('math.pi'));
+      const stdinSichtbar = await page.locator('#wb-runner .k-runner__stdinbox').isVisible();
+      pruefe(stdinSichtbar && await page.locator('#wb-runner .k-runner__stdin').inputValue() === '25', 'Vorab-Modus: Eingabefeld bei input() sichtbar, Beispieleingabe 25');
+      await ausfuehren(page, /Fläche: 1963\.5 mm²/, 'Vorab-Modus: Beispiel läuft mit Eingabe aus dem Feld (input, print)');
+      pruefe(await page.locator('#wb-runner .k-term__in').count() === 0, 'Vorab-Modus: kein Eingabefeld in der Ausgabe');
+      await page.reload();
+      await page.waitForFunction(() => document.querySelector('#wb-runner .cm-content'), null, { timeout: 20000 });
+      await warte(300);
+      pruefe(await page.locator('#wb-runner .k-imodus__btn[data-modus="vorab"]').getAttribute('aria-pressed') === 'true' && await page.locator('#wb-runner .k-runner__stdinbox').isVisible(),
+        'Wahl „vorab eintragen“ bleibt nach dem Neuladen gemerkt');
+      pruefe(await page.evaluate(() => localStorage.getItem('kurs-eingabemodus')) === 'vorab', 'Wahl liegt je Gerät im localStorage');
+      await codeSetzen(page, 'x = input("x: ")\nprint("Wert:", x)\n');
+      await page.evaluate(() => window.KursEditor.setValue(document.querySelector('#wb-runner .k-runner__stdin'), ''));
+      await ausfuehren(page, /EOFError/, 'Vorab-Modus: fehlende Eingabe meldet EOFError wie bisher');
 
       /* ── 3. Tippen, Neuladen, Traceback ───────────────────── */
       await codeSetzen(page, 'print("Hallo Werkbank")\nprint(1 / 0)\n');
@@ -295,7 +451,7 @@ async function main() {
 
       /* ── 12. „In der Werkbank öffnen“ ─────────────────────── */
       const lek = await ctx.newPage(); konsole(lek, fk);
-      await lek.goto(BASIS + 'lektionen/v07-funktionen.html');
+      await lek.goto(BASIS + 'lektionen/v01-ablauf-und-erste-programme.html');
       await lek.waitForSelector('.k-runner .k-runner__bar');
       await lek.waitForSelector('.wb-knopf');
       const stat = await lek.evaluate(() => {
@@ -324,14 +480,14 @@ async function main() {
       await lek.waitForSelector('#wb-arbeit:not([hidden])');
       await lek.waitForFunction(() => document.querySelector('#wb-runner .cm-content'));
       const t = await lek.inputValue('#wb-titel');
-      pruefe(/^V07 · .+/.test(t), 'Kopie heißt „' + t + '“');
+      pruefe(/^Termin 01 · .+/.test(t), 'Kopie heißt „' + t + '“');
       pruefe((await codeLesen(lek)).trim() === ersterCode.trim(), 'Kopie enthält den Code des Blocks');
       const anzahlNach = await lek.evaluate(() => document.querySelectorAll('#wb-liste li').length);
       pruefe(anzahlNach === anzahlVor + 1, 'Genau ein Programm mehr (' + anzahlVor + ' → ' + anzahlNach + ')');
       await lek.close();
 
       const labor = await ctx.newPage(); konsole(labor, fk);
-      await labor.goto(BASIS + 'lektionen/v07-labor.html');
+      await labor.goto(BASIS + 'lektionen/v01-labor.html');
       await labor.waitForSelector('.k-runner .k-runner__bar', { timeout: 20000 }).catch(() => {});
       await warte(1200);
       pruefe(await labor.locator('.wb-knopf').count() === 0, 'Labor: kein „In der Werkbank öffnen“ (Trainingsaufgaben)');
@@ -411,9 +567,10 @@ async function main() {
       pruefe(await gp.evaluate(() => document.title.includes('<img src=x')), 'Seitentitel enthält den Titel als Text');
       await gp.waitForFunction(() => document.querySelector('#gt-runner .cm-content'), null, { timeout: 20000 });
       pruefe((await gp.evaluate(() => window.KursEditor.getValue(document.querySelector('#gt-runner textarea')))).includes('</textarea><script>window.__xss=3</script>'), 'Code mit </textarea>-Falle bleibt Text im Editor');
-      /* Ausführen ohne Login; Eingabe tippt die lesende Person selbst */
-      await gp.evaluate(() => window.KursEditor.setValue(document.querySelector('#gt-runner .k-runner__stdin'), 'Grace'));
+      /* Ausführen ohne Login; Eingabe tippt die lesende Person selbst (frischer Kontext: Voreinstellung Terminal) */
+      pruefe(await gp.locator('#gt-runner .k-runner__stdinbox').isHidden() && await gp.locator('#gt-runner .k-imodus').isVisible(), 'Geteilte Seite: Voreinstellung „im Terminal“, Umschalter sichtbar');
       await gp.locator('#gt-runner .k-runner__bar button', { hasText: 'Ausführen' }).click();
+      pruefe(await tippen(gp, '#gt-runner', 'Grace'), 'Geteilte Seite: Eingabe im Terminal');
       await gp.waitForFunction(() => /fertig|Fehler|Ladefehler/.test(document.querySelector('#gt-runner .k-runner__status').textContent), null, { timeout: 90000 });
       const gAus = await gp.locator('#gt-runner .k-runner__out').innerText();
       pruefe(/Hallo Grace/.test(gAus) && /<\/textarea><script>window\.__xss=3<\/script>/.test(gAus), 'Geteiltes Programm läuft ohne Anmeldung (Ausgabe: ' + gAus.replace(/\s+/g, ' ').slice(0, 80) + ')');

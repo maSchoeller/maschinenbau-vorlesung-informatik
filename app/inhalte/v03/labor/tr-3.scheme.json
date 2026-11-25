@@ -1,0 +1,18 @@
+[
+ {
+  "p": 1,
+  "t": "Der Wurf wird mit int(input(…)) als ganze Zahl eingelesen"
+ },
+ {
+  "p": 1,
+  "t": "Zwei vollständige Vergleiche mit ==: wurf == 1 und wurf == 6"
+ },
+ {
+  "p": 1,
+  "t": "Die Vergleiche sind mit or verbunden, am Ende der Zeile steht ein Doppelpunkt"
+ },
+ {
+  "p": 1,
+  "t": "else: steht auf der Höhe von if, beide Wege sind eingerückt"
+ }
+]

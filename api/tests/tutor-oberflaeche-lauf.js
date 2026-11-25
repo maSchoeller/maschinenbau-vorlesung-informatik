@@ -15,6 +15,8 @@
  *   - Lerneinheit schickt die data-id der zuletzt bearbeiteten Aufgabe mit
  *   - Hinweiskasten neutral (keine rote Kante, kein Rot-Ton)
  *   - Enter sendet, Fokus im Feld, Kontextzeile nennt, was mitgeht
+ *   - Panelbreite: Zieh-Griff (Maus, Tastatur, Doppelklick), Grenzen 320 px bis ganze Breite, Merken, kein Quer-Scrollen
+ *   - Labor: Aufgabenleiste ein- und ausklappen (Zustand, Tab, Breite der Aufgabe)
  */
 const fs = require('node:fs');
 const path = require('node:path');
@@ -76,6 +78,7 @@ function apiNachbilden(page, gesendet, stand) {
 }
 
 async function panelOeffnen(page) {
+  await page.waitForFunction(() => window.KursApp && document.readyState === 'complete');
   await page.locator('[data-app-aktion="tutor"]').first().click();
   await page.locator('#tutor-frage').waitFor({ state: 'visible' });
 }
@@ -109,6 +112,169 @@ async function foto(page, name) {
   await page.screenshot({ path: path.join(FOTOS, name + '.png') });
 }
 
+/** Panelbreite (Zieh-Griff, Tastatur, Merken, Grenzen) und einklappbare Aufgabenleiste im Labor */
+async function breiteUndLeiste(page, g, basis, breite) {
+  const SCHL = 'inf-mb-app:panelbreite', LISTE = 'inf-mb-app:aufgabenleiste';
+  const tablet = breite < 1100;
+  const hoehe = breite === 1440 ? 900 : 768;
+  const maxFuer = (b) => b - 76 - (b >= 1100 ? 520 : 0);   /* ab 1100 px bleibt dem Inhalt mindestens 520 px */
+  const max = maxFuer(breite);
+  const pw = () => page.evaluate(() => Math.round(document.querySelector('.app-panel').getBoundingClientRect().width));
+  const quer = () => page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  const wert = () => page.evaluate((k) => localStorage.getItem(k), SCHL);
+  async function frisch(url, vorbereitung) {
+    await page.goto(basis + url);
+    await page.evaluate(([a, b, v]) => { localStorage.removeItem(a); localStorage.removeItem(b); if (v) localStorage.setItem(v[0], v[1]); }, [SCHL, LISTE, vorbereitung || null]);
+    await page.reload();
+  }
+  const griff = page.locator('[data-app-slot="panel-griff"]');
+  async function ziehen(vonX, nachX) {
+    const b = await griff.boundingBox();
+    const y = b.y + b.height / 2;
+    await page.mouse.move(vonX, y);
+    await page.mouse.down();
+    await page.mouse.move((vonX + nachX) / 2, y, { steps: 3 });
+    await page.mouse.move(nachX, y, { steps: 3 });
+    await page.mouse.up();
+    await page.waitForTimeout(80);
+  }
+
+  // ---- Griff: Aufbau und Standardbreite
+  await frisch('lektionen/v01-labor.html#a-eigene');
+  await panelOeffnen(page);
+  const rolle = await griff.evaluate((e) => ({ r: e.getAttribute('role'), o: e.getAttribute('aria-orientation'), l: e.getAttribute('aria-label'), n: e.getAttribute('aria-valuenow'), lo: e.getAttribute('aria-valuemin'), hi: e.getAttribute('aria-valuemax'), t: e.tabIndex }));
+  pruefe(rolle.r === 'separator' && rolle.o === 'vertical' && rolle.l && rolle.t === 0, `${g} Griff: separator, senkrecht, beschriftet, per Tab erreichbar`);
+  pruefe(rolle.n === '380' && rolle.lo === '320' && Number(rolle.hi) === max, `${g} Griff: aria-valuenow ${rolle.n}, min ${rolle.lo}, max ${rolle.hi} (erwartet 380/320/${max})`);
+  pruefe(await pw() === 380, `${g} Panel ist zunächst 380 px breit (${await pw()})`);
+  const gb = await griff.boundingBox();
+  if (tablet) pruefe(gb.width >= 43.5 && gb.height >= 43.5, `${g} Griff mindestens 44 px (${Math.round(gb.width)}×${Math.round(gb.height)})`);
+
+  // ---- Ziehen mit der Maus
+  const p0 = await page.locator('.app-panel').boundingBox();
+  await ziehen(p0.x, p0.x - 200);
+  const w1 = await pw();
+  pruefe(Math.abs(w1 - 580) <= 3, `${g} Ziehen nach links macht das Panel breiter (${w1}, erwartet 580)`);
+  pruefe(await wert() === String(w1), `${g} gezogene Breite wird gemerkt (${await wert()})`);
+  pruefe(await page.evaluate(() => document.body.classList.contains('app--ziehen')) === false, `${g} nach dem Ziehen ist der Ziehzustand beendet`);
+  pruefe(await page.evaluate(() => String(getSelection())) === '', `${g} beim Ziehen wird kein Text markiert`);
+  pruefe(await quer() <= 1, `${g} 580 px: kein Quer-Scrollen (${await quer()})`);
+  // Grenzen
+  const p1 = await page.locator('.app-panel').boundingBox();
+  await ziehen(p1.x, 3);
+  pruefe(await pw() === max, `${g} Ziehen bis zum Rand: größte Breite ${max} (${await pw()})`);
+  const p2 = await page.locator('.app-panel').boundingBox();
+  await ziehen(p2.x, breite - 3);
+  pruefe(await pw() === 320, `${g} Ziehen nach rechts: Mindestbreite 320 (${await pw()})`);
+
+  // ---- Tastatur
+  await griff.focus();
+  await page.keyboard.press('ArrowLeft');
+  pruefe(await pw() === 344, `${g} Pfeil links: +24 px (${await pw()})`);
+  await page.keyboard.press('Shift+ArrowLeft');
+  pruefe(await pw() === 440, `${g} Umschalt+Pfeil links: +96 px (${await pw()})`);
+  await page.keyboard.press('ArrowRight');
+  pruefe(await pw() === 416 && await griff.getAttribute('aria-valuenow') === '416', `${g} Pfeil rechts: -24 px, aria-valuenow folgt (${await pw()})`);
+  await page.keyboard.press('End');
+  pruefe(await pw() === max, `${g} Ende: größte Breite (${await pw()})`);
+  await page.keyboard.press('ArrowLeft');
+  pruefe(await pw() === max, `${g} Pfeil links an der Obergrenze bleibt bei ${max} (${await pw()})`);
+  await page.keyboard.press('Home');
+  pruefe(await pw() === 320, `${g} Pos1: Mindestbreite (${await pw()})`);
+  await page.keyboard.press('ArrowRight');
+  pruefe(await pw() === 320, `${g} Pfeil rechts an der Untergrenze bleibt bei 320 (${await pw()})`);
+  pruefe(await quer() <= 1, `${g} 320 px: kein Quer-Scrollen (${await quer()})`);
+
+  // ---- Merken nach dem Neuladen, Doppelklick
+  await page.keyboard.press('Shift+ArrowLeft'); await page.keyboard.press('Shift+ArrowLeft');
+  const gemerkt = await pw();
+  await page.reload();
+  await panelOeffnen(page);
+  pruefe(await pw() === gemerkt && gemerkt === 512, `${g} Breite bleibt nach dem Neuladen (${await pw()}, erwartet 512)`);
+  await griff.dblclick();
+  pruefe(await pw() === 380 && await griff.getAttribute('aria-valuenow') === '380', `${g} Doppelklick stellt 380 px wieder her (${await pw()})`);
+  pruefe(await wert() === null, `${g} Standardbreite braucht keinen gemerkten Wert`);
+  // Fenster wird kleiner: gemerkte Breite wird begrenzt
+  await griff.focus();
+  await page.keyboard.press('End');
+  await page.setViewportSize({ width: breite - 200, height: 700 });
+  await page.waitForTimeout(150);
+  pruefe(await pw() === maxFuer(breite - 200) && await quer() <= 1, `${g} kleineres Fenster begrenzt die Breite (${await pw()}, Quer ${await quer()})`);
+  await page.setViewportSize({ width: breite, height: hoehe });
+  await page.waitForTimeout(150);
+
+  // ---- Kein Quer-Scrollen: Labor, Lerneinheit, Werkbank mit schmaler, mittlerer und größter Breite
+  for (const [name, url] of [['Labor', 'lektionen/v01-labor.html'], ['Lerneinheit', 'lektionen/v01-ablauf-und-erste-programme.html'], ['Werkbank', 'werkbank.html']]) {
+    for (const b of [320, 700, 99999]) {
+      await frisch(url, [SCHL, String(b)]);
+      await panelOeffnen(page);
+      await page.waitForTimeout(150);
+      const q = await quer();
+      pruefe(q <= 1, `${g} ${name} mit Panel ${await pw()} px: kein Quer-Scrollen (${q})`);
+      if (name === 'Labor' && b === 99999) await foto(page, `panel-breit-${breite}`);
+    }
+  }
+  // ---- Nichts abgeschnitten: sichtbare Bedienelemente liegen rechts innerhalb von .app-inhalt (Lerneinheit, Abschnitt Eingabe)
+  for (const b of [700, 99999]) {
+    await frisch('lektionen/v01-ablauf-und-erste-programme.html#eingabe', [SCHL, String(b)]);
+    await panelOeffnen(page);
+    await page.waitForTimeout(300);
+    const ab = await page.evaluate(() => {
+      const inh = document.querySelector('.app-inhalt').getBoundingClientRect();
+      const bad = [...document.querySelectorAll('.app-inhalt button, .app-inhalt select, .app-inhalt textarea, .app-inhalt .cm-editor')]
+        .filter((e) => e.offsetParent !== null && e.getBoundingClientRect().width > 0)
+        .filter((e) => e.getBoundingClientRect().right > inh.right + 1)
+        .map((e) => (e.textContent || e.className || e.tagName).trim().slice(0, 24));
+      return { bad: [...new Set(bad)].slice(0, 5), breite: Math.round(inh.width) };
+    });
+    pruefe(ab.bad.length === 0 && (tablet || ab.breite >= 500), `${g} Panel ${b}: Inhalt ${ab.breite} px, nichts abgeschnitten (${ab.bad.join(', ') || 'ok'})`);
+  }
+  await page.evaluate((k) => localStorage.removeItem(k), SCHL);
+
+  // ---- Aufgabenleiste einklappen (Labor)
+  await frisch('lektionen/v01-labor.html');
+  const knopf = page.locator('[data-lab-fold]');
+  const liste = page.locator('.lab__list');
+  const listeBreit = async () => Math.round((await liste.boundingBox()).width);
+  const hauptBreite = () => page.evaluate(() => Math.round(document.querySelector('.lab__main').getBoundingClientRect().width));
+  const bedienbar = () => page.evaluate(() => [...document.querySelectorAll('.lab__list a, .lab__list button, .lab__list select')].filter((e) => e.offsetParent !== null).length);
+  pruefe(await knopf.getAttribute('aria-expanded') === 'true' && /einklappen/.test(await knopf.getAttribute('aria-label')), `${g} Leiste ist zunächst ausgeklappt, Knopf „Aufgabenliste einklappen“`);
+  const kb = await knopf.boundingBox();
+  pruefe(kb.width >= 43.5 && kb.height >= 43.5, `${g} Einklapp-Knopf mindestens 44 px (${Math.round(kb.width)}×${Math.round(kb.height)})`);
+  const offen = await hauptBreite(), listeOffen = await listeBreit(), vorherPunkte = await bedienbar();
+  await knopf.click();
+  pruefe(await knopf.getAttribute('aria-expanded') === 'false' && /ausklappen/.test(await knopf.getAttribute('aria-label')), `${g} eingeklappt: aria-expanded=false, Beschriftung „ausklappen“`);
+  const zuBreit = await listeBreit();
+  pruefe(zuBreit <= 56 && zuBreit >= 48, `${g} eingeklappte Leiste ist ein schmaler Streifen (${zuBreit} px, vorher ${listeOffen})`);
+  pruefe(await hauptBreite() > offen + 100, `${g} die Aufgabe wird breiter (${offen} -> ${await hauptBreite()} px)`);
+  pruefe(await bedienbar() === 1 && vorherPunkte > 5, `${g} eingeklappt ist nur der Knopf bedienbar (${await bedienbar()} statt ${vorherPunkte})`);
+  const zaehler = (await page.locator('[data-lab-count] > span').first().textContent()).trim();
+  pruefe(/^\d+\/\d+$/.test(zaehler) && await page.locator('[data-lab-count]').isVisible(), `${g} eingeklappt: kompakte Fortschrittsangabe „${zaehler}“ sichtbar`);
+  pruefe(/^\d+ von \d+ Aufgaben gelöst$/.test(await page.locator('[data-lab-count] .k-sr').textContent()), `${g} Fortschrittsangabe hat eine vollständige Lesefassung`);
+  await knopf.focus();
+  await page.keyboard.press('Tab');
+  pruefe(await page.evaluate(() => !document.activeElement.closest('.lab__list')), `${g} Tab vom Knopf aus bleibt nicht in der Liste`);
+  pruefe(await page.evaluate((k) => localStorage.getItem(k), LISTE) === 'zu', `${g} eingeklappter Zustand wird gemerkt`);
+  // Weiter funktioniert wie zuvor
+  const t0 = await page.evaluate(() => document.querySelector('.l-task:not([hidden])').id);
+  await page.locator('#lab-next').click();
+  await page.waitForFunction((id) => document.querySelector('.l-task:not([hidden])').id !== id, t0);
+  const t1 = await page.evaluate(() => document.querySelector('.l-task:not([hidden])').id);
+  pruefe(await page.evaluate((id) => location.hash === '#' + id && document.querySelector('.lab__item[aria-current="page"]').getAttribute('href') === '#' + id, t1), `${g} „Weiter“ wechselt die Station bei eingeklappter Leiste (${t0} -> ${t1})`);
+  // Neuladen: bleibt eingeklappt
+  await page.reload();
+  pruefe(await knopf.getAttribute('aria-expanded') === 'false' && await listeBreit() <= 56, `${g} nach dem Neuladen bleibt die Leiste eingeklappt`);
+  pruefe(await quer() <= 1, `${g} eingeklappt: kein Quer-Scrollen (${await quer()})`);
+  await foto(page, `leiste-zu-${breite}`);
+  // mit offenem Tutor bleibt das Raster heil
+  await panelOeffnen(page);
+  pruefe(await listeBreit() <= 56 && await quer() <= 1, `${g} eingeklappt mit offenem Tutor: Streifen ${await listeBreit()} px, Quer ${await quer()}`);
+  await page.keyboard.press('Escape');
+  // wieder ausklappen
+  await knopf.click();
+  pruefe(await knopf.getAttribute('aria-expanded') === 'true' && await listeBreit() >= 200 && await page.evaluate((k) => localStorage.getItem(k), LISTE) === null, `${g} Ausklappen stellt die Liste wieder her und löscht den gemerkten Wert`);
+  pruefe(await bedienbar() > 5, `${g} ausgeklappt sind die Listeneinträge wieder bedienbar`);
+}
+
 async function lauf(browser, breite, hoehe) {
   const g = `${breite}×${hoehe}`;
   const context = await browser.newContext({ viewport: { width: breite, height: hoehe }, serviceWorkers: 'block' });
@@ -119,7 +285,7 @@ async function lauf(browser, breite, hoehe) {
   const basis = URL_ARG || `http://127.0.0.1:${PORT}/`;
 
   // ---- Labor: langer Verlauf, dann Fehler
-  await page.goto(basis + 'lektionen/v04-labor.html#a-eigene');
+  await page.goto(basis + 'lektionen/v01-labor.html#a-eigene');
   await panelOeffnen(page);
   pruefe(await page.evaluate(() => document.activeElement && document.activeElement.id === 'tutor-frage'), `${g} Fokus im Eingabefeld nach dem Öffnen`);
   const hinweis = await page.evaluate(() => { const s = getComputedStyle(document.querySelector('.tutor-hinweis')); return { kante: s.borderLeftWidth, farbe: s.backgroundColor }; });
@@ -158,28 +324,39 @@ async function lauf(browser, breite, hoehe) {
   await foto(page, `labor-kontingent-${breite}`);
 
   // ---- Lerneinheit: Rest seitenübergreifend, Aufgabe der Lerneinheit
-  await page.goto(basis + 'lektionen/v04-logik-und-verzweigungen.html');
+  await page.goto(basis + 'lektionen/v01-ablauf-und-erste-programme.html');
   await panelOeffnen(page);
   pruefe(/Heute noch 0 Fragen/.test(await page.locator('.tutor-rest').textContent()), `${g} Lerneinheit: Rest seitenübergreifend sichtbar`);
   pruefe(await page.locator('.tutor-senden').isDisabled(), `${g} Lerneinheit: Senden bleibt aus`);
   await foto(page, `lerneinheit-kontingent-${breite}`);
-  // neuer Tag simuliert: Kontingent zurücksetzen, dann Aufgabe der Lerneinheit fokussieren
+  // neuer Tag simuliert: Kontingent zurücksetzen.
   await page.evaluate(() => sessionStorage.removeItem('inf-mb-app:tutor:rest'));
   await page.reload();
-  const did = await page.evaluate(() => { const t = document.querySelector('.a-task[data-id] textarea.py-editor'); return t ? t.closest('.a-task').getAttribute('data-id') : null; });
-  if (did) {
-    await page.evaluate(() => { const t = document.querySelector('.a-task[data-id] textarea.py-editor'); t.dispatchEvent(new FocusEvent('focusin', { bubbles: true })); });
-    await panelOeffnen(page);
-    await fragen(page, 'Wie fange ich hier an?');
-    const b = gesendet[gesendet.length - 1];
-    pruefe(b.kontext.aufgabe === did && b.kontext.seite === 'lerneinheit', `${g} Lerneinheit schickt data-id ${did} mit (${b.kontext.aufgabe})`);
-    pruefe(/zuletzt bearbeitete Aufgabe/.test(await page.locator('#tutor-kontext').textContent()), `${g} Lerneinheit: Kontextzeile nennt die Aufgabe`);
-  } else {
-    await panelOeffnen(page);
-    await fragen(page, 'Was ist ein PAP?');
-    pruefe(!gesendet[gesendet.length - 1].kontext.aufgabe, `${g} Lerneinheit ohne Aufgabe: nur Lektion`);
-  }
+  // a) Ohne bearbeitete Aufgabe geht nur die Lektion mit.
+  await panelOeffnen(page);
+  await fragen(page, 'Was ist ein PAP?');
+  const b0 = gesendet[gesendet.length - 1];
+  pruefe(!b0.kontext.aufgabe && b0.kontext.lektion === 'V01' && b0.kontext.seite === 'lerneinheit', `${g} Lerneinheit ohne Aufgabe: nur Lektion (${b0.kontext.lektion}, ${b0.kontext.seite})`);
+  // b) Aufgabe der Lerneinheit als Kontext. Die Lerneinheit von Termin 01 hat keine Code-Aufgabe; deshalb wird sie nachgebildet
+  //    (gleicher Aufbau wie bei den Aufgaben im Labor: .a-task[data-id] mit textarea.py-editor) und der Fokus wirklich gesetzt.
+  //    Sobald eine Lerneinheit eine echte Aufgabe hat, läuft derselbe Weg mit ihrer data-id.
+  const echt = await page.evaluate(() => { const t = document.querySelector('.a-task[data-id] textarea.py-editor'); return t ? t.closest('.a-task').getAttribute('data-id') : null; });
+  const did = echt || 'nachbau-1';
+  if (!echt) await page.evaluate((id) => {
+    const d = document.createElement('div'); d.className = 'a-task'; d.setAttribute('data-id', id);
+    d.innerHTML = '<textarea class="py-editor" aria-label="Nachbau"></textarea>';
+    (document.querySelector('main') || document.body).appendChild(d);
+  }, did);
+  await page.evaluate(() => { const t = document.querySelector('.a-task[data-id] textarea.py-editor'); t.focus(); t.dispatchEvent(new FocusEvent('focusin', { bubbles: true })); });
+  await page.evaluate(() => sessionStorage.removeItem('inf-mb-app:tutor:rest'));
+  await fragen(page, 'Wie fange ich hier an?');
+  const b = gesendet[gesendet.length - 1];
+  pruefe(b.kontext.aufgabe === did && b.kontext.seite === 'lerneinheit', `${g} Lerneinheit schickt data-id ${did} mit (${b.kontext.aufgabe}${echt ? '' : ', nachgebildete Aufgabe'})`);
+  pruefe(/zuletzt bearbeitete Aufgabe/.test(await page.locator('#tutor-kontext').textContent()), `${g} Lerneinheit: Kontextzeile nennt die Aufgabe`);
   await foto(page, `lerneinheit-${breite}`);
+
+  // ---- Panelbreite und Aufgabenleiste
+  await breiteUndLeiste(page, g, basis, breite);
   await context.close();
 }
 

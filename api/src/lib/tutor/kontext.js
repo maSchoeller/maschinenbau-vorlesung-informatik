@@ -39,9 +39,11 @@ function ladeAufgaben() {
   if (cache) return cache;
   let liste = [];
   let vorhanden = false;
+  let termine = {};
   try {
     const roh = JSON.parse(fs.readFileSync(DATEI, 'utf8'));
     if (roh && Array.isArray(roh.aufgaben)) { liste = roh.aufgaben; vorhanden = true; }
+    if (roh && roh.termine && typeof roh.termine === 'object') termine = roh.termine;
   } catch (e) {
     vorhanden = false; // ohne Datei arbeitet der Tutor nur mit der Lektion (Zeilengrenzen gelten weiter)
   }
@@ -51,7 +53,7 @@ function ladeAufgaben() {
     if (!lektionen.has(a.lektion)) lektionen.set(a.lektion, { erlaubt: Array.isArray(a.erlaubt) ? a.erlaubt.slice() : [], aufgaben: [] });
     lektionen.get(a.lektion).aufgaben.push(a);
   }
-  cache = { vorhanden, lektionen };
+  cache = { vorhanden, lektionen, termine };
   return cache;
 }
 
@@ -64,8 +66,18 @@ function _setzeAufgaben(aufgaben) {
       if (!lektionen.has(a.lektion)) lektionen.set(a.lektion, { erlaubt: a.erlaubt || [], aufgaben: [] });
       lektionen.get(a.lektion).aufgaben.push(a);
     }
-    cache = { vorhanden: true, lektionen };
+    cache = { vorhanden: true, lektionen, termine: {} };
   }
+}
+
+/** Anzeigename einer Lektionskennung („V01“ → „Termin 01“). Die Kennung bleibt intern; Studierende hören nur den Termin.
+ *  Die Zuordnung steht in aufgaben.json (termine, vom Build aus kurs.yaml); ohne Eintrag gilt „VNN“ = „Termin NN“. */
+function terminLang(lektion) {
+  if (!lektion) return null;
+  const t = ladeAufgaben().termine || {};
+  if (t[lektion]) return String(t[lektion]);
+  const m = /^V(\d\d)$/.exec(lektion);
+  return m ? 'Termin ' + m[1] : 'Termin';
 }
 
 /** Alle Aufgaben mit Musterlösung (für den Abgleich ohne oder neben der aktuellen Aufgabe). */
@@ -140,6 +152,7 @@ function anfrageAusBody(body) {
     frage: letzte.text,
     verlauf,
     lektion,
+    terminLang: terminLang(lektion),
     seite,
     aufgabe,
     aufgabeId: aufgabe ? aufgabeId : null,
@@ -149,4 +162,4 @@ function anfrageAusBody(body) {
   };
 }
 
-module.exports = { anfrageAusBody, findeAufgabe, ladeAufgaben, alleAufgaben, saeubern, GRENZEN, _setzeAufgaben, DATEI };
+module.exports = { terminLang, anfrageAusBody, findeAufgabe, ladeAufgaben, alleAufgaben, saeubern, GRENZEN, _setzeAufgaben, DATEI };

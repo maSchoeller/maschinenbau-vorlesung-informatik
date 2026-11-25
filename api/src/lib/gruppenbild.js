@@ -9,10 +9,12 @@
 //   - Zählregel wie in der App (app/public/app/kern.js, Abschnitt Fortschritt): eine Station gilt
 //     als gelöst, wenn alle ihre prüfbaren Teile gelöst sind; als begonnen, wenn mindestens ein Teil
 //     gelöst oder angefangen ist, aber nicht alle gelöst sind.
+//   - Knobelaufgaben (freiwillig) zählen nicht: ihre Stationen fehlen in der Kursstruktur (lib/kursstruktur.js),
+//     ihre Kennungen sind keine prüfbaren Teile; sie machen kein Konto „aktiv“ (Test: tests/knobel.test.js).
 //   - Die Eimer (aufg, begonnen, done, quiz-<id>) schreibt der Browser der Studierenden. Sie werden
 //     hier nur gegen die Kursstruktur gelesen: fremde Schlüssel zählen nirgends mit.
 //
-// Kursstruktur (lib/kursstruktur.js): [{nr:'V07', quiz:'v07'|null, abschnitte:[id], stationen:[{id, teil, pruefbar:[id]}]}]
+// Kursstruktur (lib/kursstruktur.js): [{nr:'V01', quiz:'v01'|null, abschnitte:[id], stationen:[{id, teil, pruefbar:[id]}]}]
 
 const MINDEST = 5;
 const MAX_SCHLUESSEL = 500;   // je Eimer; mehr ist kein echter Lernstand

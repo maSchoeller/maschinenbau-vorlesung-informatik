@@ -2,7 +2,7 @@
 from helfer import E, S
 
 KO = "Klassen & Objekte"
-AU = "Ausblick (ab V10)"
+AU = "Ausblick (spätere Termine)"
 
 E("klasse", "class (Klasse definieren)", KO, "V20", "kopf",
   "Ein Bauplan für Objekte: bündelt Maße (Attribute) und Rechnungen (Methoden) eines Bauteils.",
@@ -119,7 +119,7 @@ E("attribut", "Attribut lesen und ändern", KO, "V20", "kopf",
 E("methode", "Methode definieren und aufrufen", KO, "V20", "kopf",
   "Eine Funktion, die zu einer Klasse gehört: Aufruf mit Klammern am Objekt, z. B. w.volumen().",
   "class Welle:\n    def volumen(self):\n        return ...\n\nw.volumen()",
-  "Eine Methode ist eine def-Funktion im Rumpf der Klasse. Ihr erster Parameter ist self. Aufgerufen wird sie am Objekt: objekt.methode(argumente). Die Klammern sind Pflicht, auch ohne Argumente; ohne Klammern bekommst du nur die Methode selbst (bound method), nicht ihr Ergebnis. Methoden können Standardwerte haben (masse(dichte=7.85)), etwas zurückgeben (return) oder ein Attribut verändern. Du nutzt Methoden seit V01: \"M10\".upper() und liste.append(x) sind Methodenaufrufe, denn str und list sind Klassen.",
+  "Eine Methode ist eine def-Funktion im Rumpf der Klasse. Ihr erster Parameter ist self. Aufgerufen wird sie am Objekt: objekt.methode(argumente). Die Klammern sind Pflicht, auch ohne Argumente; ohne Klammern bekommst du nur die Methode selbst (bound method), nicht ihr Ergebnis. Methoden können Standardwerte haben (masse(dichte=7.85)), etwas zurückgeben (return) oder ein Attribut verändern. Du nutzt Methoden seit Termin 01: \"M10\".upper() und liste.append(x) sind Methodenaufrufe, denn str und list sind Klassen.",
   '''
   import math
 

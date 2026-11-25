@@ -30,9 +30,13 @@
   var TRACE_PY = String.raw`
 import sys, builtins, json, time, types, tokenize, io, keyword
 _MAXS = int(_kc_max)
-_lines = _kc_stdin.split("\n") if _kc_stdin else []
-if _lines and _lines[-1] == "":
-    _lines.pop()
+if _kc_inputs:
+    # Eingaben aus dem Terminal-Dialog (Liste, auch leere Eingaben bleiben erhalten)
+    _lines = [str(x) for x in json.loads(_kc_inputs)]
+else:
+    _lines = _kc_stdin.split("\n") if _kc_stdin else []
+    if _lines and _lines[-1] == "":
+        _lines.pop()
 _pos = 0
 _out = []
 _olen = [0]
@@ -54,6 +58,8 @@ def _kc_input(prompt=""):
     sys.stdout.write(str(prompt))
     if _pos >= len(_lines):
         sys.stdout.write("\n")
+        if _kc_inputs:
+            raise EOFError("input() braucht eine weitere Eingabe, aber im letzten Lauf wurden nicht mehr getippt. Führe das Programm mit „Ausführen“ aus und tippe alle Eingaben.")
         raise EOFError("input() braucht eine Eingabe, aber im Feld „Eingaben“ steht keine Zeile mehr. Trage dort für jedes input() eine Zeile ein.")
     v = _lines[_pos]
     _pos += 1
@@ -488,7 +494,7 @@ json.dumps(_res)
     return window.KursPy.run(code, {
       timeout: o.timeout ? Math.max(o.timeout, 12000) : 15000,
       harness: TRACE_PY,
-      vars: { _kc_stdin: o.stdin || '', _kc_max: MAX_STEPS },
+      vars: { _kc_stdin: o.stdin || '', _kc_inputs: o.inputs ? JSON.stringify(o.inputs) : '', _kc_max: MAX_STEPS },
       onOut: function () {}, onErr: function () {}
     }).then(function (r) {
       if (r.timedOut) throw new Error('Das Programm braucht zu lange (Endlosschleife?). Die Aufzeichnung wurde abgebrochen.');
@@ -907,7 +913,7 @@ json.dumps(_res)
       // 8. Ausgabe, Eingabe
       if (st.o > prev.o) {
         var txt = data.out.slice(prev.o, st.o).replace(/\n$/, '');
-        if (prev.ev === 'line' && /\binput\s*\(/.test(src(prev.l))) items.push('input() liest die nächste Zeile aus dem Feld „Eingaben“. Das Ergebnis ist immer Text (str), auch wenn Ziffern darin stehen.');
+        if (prev.ev === 'line' && /\binput\s*\(/.test(src(prev.l))) items.push(o.inputs ? 'input() liest die nächste Eingabe, die du im Terminal getippt hast. Das Ergebnis ist immer Text (str), auch wenn Ziffern darin stehen.' : 'input() liest die nächste Zeile aus dem Feld „Eingaben“. Das Ergebnis ist immer Text (str), auch wenn Ziffern darin stehen.');
         items.push('Ausgabe im Terminal: ' + C(cut(txt, 90)));
       }
 

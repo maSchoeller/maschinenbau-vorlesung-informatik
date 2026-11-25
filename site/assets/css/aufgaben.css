@@ -87,6 +87,11 @@
 .a-trace__code code { font-family: var(--dhbw-font-mono); font-size: var(--fs-sm); line-height: var(--lh-code); }
 .a-trace__code li.is-cur { background: #35506B; border-left-color: #FFD166; }
 .a-trace__tw { margin: 0; }
+/* Tabelle ausfüllen: kurze Zeilenliste, daher immer untereinander (in der Lerneinheit und im Labor gleich), Spaltenköpfe ohne Umbruch */
+.a-trace--tabelle { grid-template-columns: minmax(0, 1fr); }
+.a-trace--tabelle .a-trace__code { width: max-content; max-width: 100%; }
+.a-trace--tabelle .a-trace__table th { white-space: nowrap; }
+.a-trace--tabelle .a-trace__table .a-trace__line { font-family: var(--dhbw-font-mono); font-weight: 400; }
 .a-trace__table { width: 100%; border-collapse: collapse; font-size: var(--fs-sm); }
 .a-trace__table th, .a-trace__table td { border-bottom: 1px solid var(--border); padding: 4px 6px; text-align: left; vertical-align: middle; }
 .a-trace__table thead th { border-bottom-width: 2px; }
@@ -121,8 +126,10 @@
 .a-p-item.is-right::before { content: ""; width: 1.1em; height: 1.1em; flex: none; background: var(--k-ok); -webkit-mask: var(--ic-check) center / contain no-repeat; mask: var(--ic-check) center / contain no-repeat; }
 .a-p-item.is-wrong { border-color: var(--k-bad); background: var(--k-bad-bg); }
 .a-p-item.is-wrong::before { content: ""; width: 1.1em; height: 1.1em; flex: none; background: var(--k-bad); -webkit-mask: var(--ic-x) center / contain no-repeat; mask: var(--ic-x) center / contain no-repeat; }
-.a-p-tools { display: none; gap: 2px; flex: 0 0 auto; }
-.a-p-item.is-sel .a-p-tools, .a-p-item:focus-within .a-p-tools, .a-p-item.is-grabbed .a-p-tools { display: inline-flex; }
+/* Die Leiste liegt über dem rechten Rand der Zeile und beansprucht keinen Platz im Fluss: Fokuswechsel verändert die Höhe der Liste nicht, der erste Klick auf „Prüfen“ trifft. Unsichtbar (visibility) bleibt sie unbedienbar, die Zeile selbst ist per Tastatur erreichbar. */
+.a-p-item { position: relative; }
+.a-p-tools { z-index: 1; position: absolute; right: 4px; top: 50%; transform: translateY(-50%); display: inline-flex; visibility: hidden; gap: 2px; padding: 2px; background: #fff; border-radius: 4px; box-shadow: 0 0 0 1px #B6C0CA; }
+.a-p-item.is-sel .a-p-tools, .a-p-item:focus-within .a-p-tools, .a-p-item.is-grabbed .a-p-tools { visibility: visible; }
 .a-p-tool { display: inline-flex; align-items: center; justify-content: center; font: inherit; font-size: var(--fs-sm); min-width: 36px; min-height: 36px; border: 1px solid #8A97A5; background: #fff; border-radius: 4px; cursor: pointer; padding: 0 4px; color: var(--text); }
 .a-p-tool:hover { background: var(--red-tint); }
 .a-p-empty { color: #5B6673; font-size: var(--fs-sm); padding: var(--sp-2); }
@@ -161,6 +168,11 @@
   .a-p-cols { grid-template-columns: minmax(0, 1fr); }
   .a-status { margin-left: 0; width: 100%; }
   .a-pts { margin-left: 0; }
+  .a-p-tool { min-width: 44px; min-height: 44px; }
+  .a-gap__in { min-height: 44px; }
+  .a-gap__code { line-height: 2.8; }
+}
+@media (max-width: 1099px), (pointer: coarse) {
   .a-p-tool { min-width: 44px; min-height: 44px; }
   .a-gap__in { min-height: 44px; }
   .a-gap__code { line-height: 2.8; }

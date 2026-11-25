@@ -2,7 +2,8 @@
    sw-bauen.mjs – schreibt <Ausgabe>/sw.js aus sw-vorlage.js (Architektur-Vertrag 3 und 9; Rolle PWA)
    Precache: alle HTML-Seiten, assets/{css,js,vendor,data,py,fonts}, Bilder (webp, svg; png nur ohne webp-Zwilling),
    Poster und Untertitel in assets/video (png, vtt), app/** (mit ?v=<Version>), Manifest.
-   Nicht im Precache: Videos (*.mp4), Pyodide, Notebooks, sw.js selbst.
+   Nicht im Precache: Videos (*.mp4), Pyodide, Notebooks, sw.js selbst und die Seiten abgeschalteter Lektionen
+   (kurs.json: entwuerfe; sie bleiben unter ihrer Adresse direkt aufrufbar).
    Die Version liest dieses Skript aus <Ausgabe>/app/daten/build.json (schreibt version.mjs vor diesem Schritt).
    Ruft man es allein auf (nach einem Build): node skripte/sw-bauen.mjs
    ============================================================= */
@@ -20,7 +21,8 @@ function alle(d) {
 }
 
 /* Gehört die Datei (Pfad relativ zur Wurzel, mit /) in den Precache? */
-export function gehoertInPrecache(rel, vorhanden) {
+export function gehoertInPrecache(rel, vorhanden, entwurfsseiten = new Set()) {
+  if (entwurfsseiten.has(rel)) return false;
   if (rel === 'sw.js' || rel === '404.html') return rel === '404.html';
   if (rel.startsWith('pyodide/') || rel.startsWith('notebooks/')) return false;
   if (rel.endsWith('.html')) return true;
@@ -47,6 +49,9 @@ export default async function swBauen() {
 
   const dateien = alle(DIST).map((p) => path.relative(DIST, p).split(path.sep).join('/'));
   const vorhanden = new Set(dateien);
+  const kursJson = path.join(DIST, 'app', 'daten', 'kurs.json');
+  const entwuerfe = fs.existsSync(kursJson) ? (JSON.parse(fs.readFileSync(kursJson, 'utf8')).entwuerfe || []) : [];
+  const entwurfsseiten = new Set(entwuerfe.flatMap((e) => [e.lerneinheit, e.labor]).filter(Boolean));
   let pyVersion = '0';
   const gj = path.join(DIST, 'pyodide', 'gruppen.json');
   if (fs.existsSync(gj)) pyVersion = JSON.parse(fs.readFileSync(gj, 'utf8')).version;
@@ -55,7 +60,7 @@ export default async function swBauen() {
   let bytes = 0;
   const teile = {};
   for (const rel of dateien.sort()) {
-    if (!gehoertInPrecache(rel, vorhanden)) continue;
+    if (!gehoertInPrecache(rel, vorhanden, entwurfsseiten)) continue;
     const inhalt = fs.readFileSync(path.join(DIST, rel));
     const hash = createHash('sha256').update(inhalt).digest('hex').slice(0, 12);
     const istApp = /^app\/.*\.(js|css)$/.test(rel);

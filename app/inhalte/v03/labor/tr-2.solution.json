@@ -1,0 +1,1 @@
+{"baum": [{"k": "in", "v": "gewicht", "typ": "float"}, {"k": "if", "v": "gewicht <= 2", "yes": [{"k": "op", "v": "porto = 5"}], "no": [{"k": "if", "v": "gewicht <= 10", "yes": [{"k": "op", "v": "porto = 8"}], "no": [{"k": "op", "v": "porto = 15"}]}]}, {"k": "out", "v": "porto"}]}

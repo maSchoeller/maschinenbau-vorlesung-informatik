@@ -1,0 +1,105 @@
+WEBVTT
+
+1
+00:00:00.400 --> 00:00:03.371
+Heute kommen zwei Karten in deinen Werkzeugkasten.
+
+2
+00:00:03.530 --> 00:00:09.698
+Alles aus Termin 02 gilt weiter: der Vergleich, if und else, der f-String.
+
+3
+00:00:10.011 --> 00:00:12.820
+Neu sind drei Wörter: elif, and, or.
+
+4
+00:00:12.947 --> 00:00:20.210
+Mit dem ersten baust du mehr als zwei Wege. Mit den beiden anderen verbindest du zwei Vergleiche.
+
+5
+00:00:21.110 --> 00:00:27.528
+Karte 1: die Ampel. Sie hat drei Farben, aber if und else kennen nur zwei Wege.
+
+6
+00:00:27.845 --> 00:00:34.990
+Sie schaltet nach der Uhr: bis Sekunde 29 Grün, bis Sekunde 34 Gelb, danach Rot.
+
+7
+00:00:35.013 --> 00:00:40.674
+Deshalb schiebt sich eine Zeile dazwischen: elif. Das heißt: sonst wenn.
+
+8
+00:00:40.909 --> 00:00:47.712
+Diese Zeile hat eine eigene Bedingung und einen Doppelpunkt, genau wie die Zeile mit if.
+
+9
+00:00:47.843 --> 00:00:51.552
+else steht am Ende, ohne Bedingung, und nimmt den Rest.
+
+10
+00:00:51.734 --> 00:00:54.280
+Alle drei Wörter stehen auf derselben Höhe.
+
+11
+00:00:55.180 --> 00:00:57.541
+Ein Lauf mit Sekunde 32.
+
+12
+00:00:58.080 --> 00:01:02.033
+Erste Frage: Ist 32 kleiner als 30? Nein, also nicht Grün.
+
+13
+00:01:02.719 --> 00:01:10.350
+Weiter zur zweiten Frage: Ist 32 kleiner als 35? Ja. Das Programm gibt Gelb aus.
+
+14
+00:01:11.284 --> 00:01:17.329
+Die Zeile unter else, Rot, wird übersprungen.
+
+15
+00:01:17.630 --> 00:01:21.630
+Gefragt wird von oben nach unten, und das erste Ja gewinnt.
+
+16
+00:01:22.530 --> 00:01:32.006
+Karte 2: zwei Vergleiche verbinden. In die Achterbahn darf, wer mindestens 140 groß und mindestens 10 Jahre alt ist.
+
+17
+00:01:32.087 --> 00:01:35.317
+Das sind zwei Vergleiche, einer links, einer rechts.
+
+18
+00:01:35.472 --> 00:01:40.420
+Dazwischen steht and, das UND in Python. Beide müssen stimmen.
+
+19
+00:01:40.870 --> 00:01:48.006
+Jetzt ein Kind mit 150 Zentimetern und 9 Jahren: Der linke Vergleich ist wahr, der rechte ist falsch.
+
+20
+00:01:48.262 --> 00:01:53.037
+Wahr UND falsch ergibt falsch: Python gibt False aus.
+
+21
+00:01:53.311 --> 00:01:57.860
+Achte darauf: Links und rechts steht je ein vollständiger Vergleich.
+
+22
+00:01:58.760 --> 00:02:04.521
+Jetzt dieselbe Zeile mit or, dem ODER in Python.
+
+23
+00:02:05.196 --> 00:02:07.178
+Hier genügt einer der beiden Vergleiche.
+
+24
+00:02:07.534 --> 00:02:11.440
+Der linke ist wahr, und das reicht. Wahr ODER falsch ergibt wahr: Python gibt True aus.
+
+25
+00:02:12.091 --> 00:02:14.736
+Ein einziges Wort ändert also das Ergebnis.
+
+26
+00:02:15.133 --> 00:02:17.850
+Probier beide Karten aus und ändere die Werte.

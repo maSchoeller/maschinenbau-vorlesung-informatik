@@ -14,6 +14,31 @@
 .k-runner__stdin:focus-visible { outline: 3px solid var(--k-focus, #1A1A1A); outline-offset: 1px; }
 .k-runner__stdinbox[hidden] { display: none; }
 
+/* Umschalter „Eingaben: im Terminal | vorab eintragen“ (nur sichtbar, wenn der Code input() enthält) */
+.k-imodus { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.k-imodus[hidden] { display: none; }
+.k-imodus__label { font-size: var(--fs-xs); font-weight: 600; color: var(--k-muted, #4B5563); }
+.k-imodus__btn {
+  font: inherit; font-size: var(--fs-xs); font-weight: 600; min-height: 44px; padding: 4px 10px; cursor: pointer;
+  color: var(--text, #1A1A1A); background: #fff; border: 1.5px solid #9CA3AF; border-radius: var(--r-sm, 4px);
+}
+.k-imodus__btn + .k-imodus__btn { margin-left: -7px; border-top-left-radius: 0; border-bottom-left-radius: 0; }
+.k-imodus__btn:first-of-type { border-top-right-radius: 0; border-bottom-right-radius: 0; }
+.k-imodus__btn[aria-pressed="true"] { background: #1F2937; border-color: #1F2937; color: #fff; }
+.k-imodus__btn:focus-visible { outline: 3px solid var(--k-focus, #1A1A1A); outline-offset: 2px; position: relative; z-index: 1; }
+.a-inputbox[hidden], .k-term__abbruch[hidden] { display: none; }
+
+/* Terminal-Dialog: Eingabefeld direkt hinter der Aufforderung in der Ausgabe */
+.k-term__in {
+  font: inherit; color: #fff; background: rgba(255, 255, 255, .08); caret-color: #fff;
+  border: 0; border-bottom: 2px solid #9CB0C2; border-radius: 0; padding: 0 4px; margin: 0;
+  min-height: 44px; min-width: 8ch; max-width: 100%; vertical-align: baseline; box-sizing: border-box;
+}
+.k-term__in:focus { outline: none; border-bottom-color: #fff; background: rgba(255, 255, 255, .14); }
+.k-term__in:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.k-runner__out .k-term__echo { color: #fff; font-weight: 600; }
+.k-runner__out:focus { outline: none; }
+
 /* Leiste: Knöpfe umbrechen auf dem Handy, Status wandert in eine eigene Zeile */
 .k-runner__bar .k-btn .k-ic { margin-right: .4em; }
 @media (max-width: 560px) { .k-runner__status { margin-left: 0; flex-basis: 100%; } }

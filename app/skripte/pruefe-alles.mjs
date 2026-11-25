@@ -12,7 +12,7 @@
                       api/.daten/<ausgabe>/ablage.json, frisch je Lauf; ANTHROPIC_API_KEY wird entfernt;
                       DOZENT_IDS = Testidentität „pruef-dozent“ aus pruefe-dozent.mjs)
      5. dozent (zuerst: braucht die frische Ablage), loesungen (Musterlösungen der neuen Terminseiten), seiten, navigation, offline, abgleich, werkbank,
-                      tutor-oberflaeche, zusammenspiel (Browser)
+                      tutor-oberflaeche, stand (Aufgaben speichern und wiederherstellen), zusammenspiel (Browser)
      6. tutor-angriffe  Trockenlauf mit Modell-Doppel
    Am Ende: Tabelle je Teil (bestanden/Fehler, Zahl der Prüfungen, Dauer). Alle gestarteten Prozesse
    werden beendet, auch bei Fehlern und Strg+C. Exit-Code 1, wenn ein Teil scheitert.
@@ -103,6 +103,7 @@ const TEILE = [
   { id: 'navigation', name: 'pruefe-navigation', emulator: true, fn: () => lauf('node', ['skripte/pruefe-navigation.mjs', BASIS], { zeitlimit: 10 * 60000 }), zahl: zaehler.allgemein },
   { id: 'offline', name: 'pruefe-offline', emulator: true, fn: () => lauf('node', ['skripte/pruefe-offline.mjs', BASIS], { zeitlimit: 30 * 60000 }), zahl: zaehler.allgemein },
   { id: 'abgleich', name: 'pruefe-abgleich', emulator: true, fn: () => lauf('node', ['skripte/pruefe-abgleich.mjs', BASIS], { zeitlimit: 20 * 60000 }), zahl: zaehler.allgemein },
+  { id: 'stand', name: 'pruefe-stand', emulator: true, fn: () => lauf('node', ['skripte/pruefe-stand.mjs', BASIS], { zeitlimit: 20 * 60000 }), zahl: zaehler.allgemein },
   { id: 'werkbank', name: 'pruefe-werkbank', emulator: true, fn: () => lauf('node', ['skripte/pruefe-werkbank.mjs', BASIS], { zeitlimit: 20 * 60000 }), zahl: zaehler.allgemein },
   { id: 'tutor', name: 'Tutor-Oberfläche', emulator: true, fn: () => lauf('node', ['tests/tutor-oberflaeche-lauf.js', BASIS], { cwd: API, zeitlimit: 10 * 60000 }), zahl: zaehler.allgemein },
   { id: 'zusammenspiel', name: 'pruefe-zusammenspiel', emulator: true, fn: () => lauf('node', ['skripte/pruefe-zusammenspiel.mjs', BASIS], { zeitlimit: 20 * 60000 }), zahl: zaehler.allgemein },

@@ -10,15 +10,24 @@
 :root { --lab-w: max(min(90vw, 2400px), min(100%, 1560px)); --lab-dock: clamp(340px, 18vw, 460px); }
 body[data-page="labor"] .dhbw-header__inner { max-width: none; width: var(--lab-w); padding-inline: var(--sp-5); }
 .lab {
-  display: grid; grid-template-columns: 260px minmax(0, 1fr) var(--lab-dock); gap: 0 var(--sp-6);
+  display: grid; grid-template-columns: var(--lab-liste, 260px) minmax(0, 1fr) var(--lab-dock); gap: 0 var(--sp-6);
   width: var(--lab-w); margin: 0 auto; padding: 0 var(--sp-5); align-items: start; box-sizing: border-box;
 }
-html.kb-dock-closed .lab { grid-template-columns: 260px minmax(0, 1fr) 52px; }
+html.kb-dock-closed .lab { grid-template-columns: var(--lab-liste, 260px) minmax(0, 1fr) 52px; }
+/* Aufgabenliste eingeklappt: schmaler Streifen (52 px), Platz geht an die Aufgabe */
+html.lab-liste-zu { --lab-liste: 52px; }
 
 /* ── links: Aufgabenliste ───────────────────────────────────── */
 .lab__list { position: sticky; top: var(--sp-4); max-height: calc(100vh - 2 * var(--sp-4)); overflow-y: auto; padding: var(--sp-5) 0; }
 .lab__listhead { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--sp-1) var(--sp-3); margin-bottom: var(--sp-3); }
 .lab__title { font-weight: 700; font-size: var(--fs-md); }
+.lab__fold { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; padding: 0; margin: 0 0 0 -10px; color: var(--k-muted); background: none; border: 0; border-radius: var(--r-base); cursor: pointer; }
+.lab__fold:hover { background: var(--canvas); color: var(--text); }
+.lab__fold:focus-visible { outline: 3px solid var(--k-focus); outline-offset: -3px; }
+.lab__fold .k-ic { width: 1.25rem; height: 1.25rem; vertical-align: 0; }
+.lab__count { display: none; margin: 0; text-align: center; font-size: var(--fs-sm); font-weight: 700; font-variant-numeric: tabular-nums; }
+.lab__listhead { display: grid; grid-template-columns: 44px minmax(0, 1fr); align-items: center; gap: 0 var(--sp-2); }
+.lab__listhead .lab__back { grid-column: 1 / -1; }
 .lab__back { font-size: var(--fs-sm); font-weight: 600; display: inline-flex; align-items: center; min-height: 44px; }
 .lab__legend { margin-top: var(--sp-2); }
 .lab__group { font-size: var(--fs-xs); font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--k-muted); margin: var(--sp-5) 0 var(--sp-2); }
@@ -81,8 +90,19 @@ html.kb-dock-closed .lab { grid-template-columns: 260px minmax(0, 1fr) 52px; }
 /* ── Tablet: zwei Spalten, Bibliothek als Overlay ───────────── */
 @media (max-width: 1099px) {
   :root { --lab-w: 100%; }
-  .lab, html.kb-dock-closed .lab { grid-template-columns: 240px minmax(0, 1fr); gap: 0 var(--sp-5); }
+  .lab, html.kb-dock-closed .lab { grid-template-columns: var(--lab-liste, 240px) minmax(0, 1fr); gap: 0 var(--sp-5); }
   .lab__dock { display: none; }
+}
+
+/* ── Aufgabenliste eingeklappt (ab 700 px): nur Knopf und Fortschritt; alles andere ist ausgeblendet, also auch nicht per Tab erreichbar ── */
+@media (min-width: 700px) {
+  .lab__list[data-zu] { padding-left: 0; padding-right: 0; overflow: hidden; }
+  .lab__list[data-zu] > :not(.lab__listhead):not(.lab__count) { display: none; }
+  .lab__list[data-zu] .lab__listhead { grid-template-columns: minmax(0, 1fr); justify-items: center; margin-bottom: var(--sp-2); }
+  .lab__list[data-zu] .lab__listhead > :not(.lab__fold) { display: none; }
+  .lab__list[data-zu] .lab__fold { margin: 0; }
+  .lab__list[data-zu] .lab__fold .k-ic { transform: rotate(180deg); }
+  .lab__list[data-zu] .lab__count { display: block; }
 }
 
 /* ── Mobil: Auswahlmenü statt Liste ─────────────────────────── */
@@ -92,11 +112,19 @@ html.kb-dock-closed .lab { grid-template-columns: 260px minmax(0, 1fr) 52px; }
   .lab .a-task textarea.py-editor { min-height: calc(10 * 1.6 * var(--fs-sm, .875rem) + 24px); }
   .lab, html.kb-dock-closed .lab { display: block; padding: 0 var(--gutter); }
   .lab__list { position: static; max-height: none; overflow: visible; padding: var(--sp-4) 0 0; }
-  .lab__list [data-lab-items], .lab__legend { display: none; }
-  .lab__listhead { margin-bottom: var(--sp-2); }
+  .lab__list [data-lab-items], .lab__legend, .lab__fold { display: none; }
+  .lab__listhead { display: flex; margin-bottom: var(--sp-2); }
+  .lab__listhead .lab__back { grid-column: auto; }
   .lab__select { display: block; }
   .lab__bar { justify-content: stretch; }
   .lab__main { padding-top: var(--sp-3); }
   .lab__drawer { padding: var(--sp-4); }
   .l-task__title { font-size: 1.375rem; }
 }
+
+/* ── Knobelaufgaben (freiwillig): eigene, ruhig abgesetzte Gruppe am Ende; keine Warnfarbe, nichts nach Pflicht ── */
+.lab__group--knobel { margin-top: var(--sp-6); padding-top: var(--sp-4); border-top: 1px dashed var(--border); text-transform: none; letter-spacing: 0; font-size: var(--fs-sm); }
+.l-task__knobel { max-width: var(--k-measure); font-size: var(--fs-sm); color: var(--text); background: var(--canvas); border-left: 3px solid var(--border); border-radius: 0 var(--r-base) var(--r-base) 0; padding: var(--sp-3) var(--sp-4); }
+.l-task--knobel .l-task__kicker { font-weight: 600; }
+.lab__knobelhint { flex: 1 1 100%; margin: 0; order: -1; max-width: var(--k-measure); font-size: var(--fs-sm); color: var(--text); }
+.lab__knobelhint a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; }

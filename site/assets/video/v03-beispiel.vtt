@@ -1,0 +1,109 @@
+WEBVTT
+
+1
+00:00:00.400 --> 00:00:04.259
+Die Aufgabe: Die Cola kostet 1,50 Euro.
+
+2
+00:00:04.489 --> 00:00:10.135
+Der Automat aus Termin 02 kannte zwei Fälle: Das Geld reicht, oder es reicht nicht.
+
+3
+00:00:10.288 --> 00:00:14.434
+Jetzt sind es drei. Schreib sie zuerst untereinander auf.
+
+4
+00:00:14.770 --> 00:00:20.259
+Zu wenig Geld. Zu viel Geld, dann gibt es Rückgeld. Oder es passt genau.
+
+5
+00:00:20.680 --> 00:00:23.570
+Drei Fälle, aber zwei Fragen genügen.
+
+6
+00:00:24.470 --> 00:00:30.585
+Erst der Plan. Nach der Eingabe kommt die erste Raute: Ist das Geld kleiner als 1.5?
+
+7
+00:00:30.792 --> 00:00:33.358
+Bei ja ist es zu wenig Geld.
+
+8
+00:00:33.451 --> 00:00:41.915
+Bei nein weißt du schon: Das Geld reicht. In diesen Weg kommt die zweite Raute: Ist das Geld größer als 1.5?
+
+9
+00:00:42.014 --> 00:00:45.581
+Bei ja gibt es Rückgeld: das Geld minus 1.5.
+
+10
+00:00:45.742 --> 00:00:53.800
+Bei nein bleibt nur ein Fall übrig. Weder kleiner noch größer, also genau 1.5: Passt genau.
+
+11
+00:00:54.700 --> 00:00:57.634
+Jetzt der Code, Raute für Raute.
+
+12
+00:00:58.608 --> 00:01:00.662
+Die erste Raute wird if.
+
+13
+00:01:01.954 --> 00:01:07.204
+Die Raute im nein-Weg wird elif, mit eigener Bedingung und Doppelpunkt.
+
+14
+00:01:07.921 --> 00:01:10.259
+Der Rest wird else, ohne Bedingung.
+
+15
+00:01:10.961 --> 00:01:15.390
+Alle drei stehen auf derselben Höhe. Was zu einem Weg gehört, ist eingerückt.
+
+16
+00:01:16.290 --> 00:01:20.559
+Im mittleren Weg stehen zwei Zeilen: erst rechnen, dann ausgeben.
+
+17
+00:01:20.742 --> 00:01:27.141
+Im Plan steht nur: Ausgabe Rückgeld. Wie die Zahl aussieht, legt der Code fest.
+
+18
+00:01:27.357 --> 00:01:30.053
+Dafür nimmst du den f-String aus Termin 02.
+
+19
+00:01:30.266 --> 00:01:35.255
+Vor dem Anführungszeichen steht ein f. Der Name steht in geschweiften Klammern.
+
+20
+00:01:35.482 --> 00:01:40.412
+Hinter dem Namen, noch in der Klammer, steht die Angabe für zwei Nachkommastellen.
+
+21
+00:01:41.138 --> 00:01:45.540
+So zeigt das Programm 0.50 an und nicht 0.5.
+
+22
+00:01:46.440 --> 00:01:49.046
+Die Probe: Wir werfen 2 Euro ein.
+
+23
+00:01:49.867 --> 00:01:54.199
+Erste Frage: Ist 2 kleiner als 1.5? Nein.
+
+24
+00:01:55.035 --> 00:01:58.803
+Zweite Frage: Ist 2 größer als 1.5? Ja.
+
+25
+00:01:59.573 --> 00:02:05.102
+Das Programm antwortet: Rückgeld: 0.50 Euro. Im Plan ist das der mittlere Weg.
+
+26
+00:02:05.519 --> 00:02:11.549
+Jetzt du: Tipp 1 ein. Und dann den Grenzfall: 1.5, mit Punkt geschrieben.
+
+27
+00:02:11.913 --> 00:02:18.010
+Ein Wert je Weg, dann ist das Programm geprüft.

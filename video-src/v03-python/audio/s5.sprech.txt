@@ -1,0 +1,1 @@
+Jetzt dieselbe Zeile mit or, dem Oder in Python. Hier genügt einer der beiden Vergleiche. Der linke ist wahr, und das reicht. Wahr oder falsch ergibt wahr: Python gibt Truh aus. Ein einziges Wort ändert also das Ergebnis. Probier beide Karten aus und ändere die Werte.

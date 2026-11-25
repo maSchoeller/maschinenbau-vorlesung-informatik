@@ -8,7 +8,9 @@ import sys, os
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE)
 import h01
 SP = h01.SP
-VIDEOS = ("v01-theorie", "v01-python", "v01-beispiel")
+VIDEOS = ("v01-theorie", "v01-python", "v01-beispiel",
+          "v02-theorie", "v02-python", "v02-beispiel",
+          "v03-theorie", "v03-python", "v03-beispiel")
 
 def tts_once(vdir, src, trocken=False):
     ad = os.path.join(vdir, "audio"); sent = 0

@@ -1,7 +1,7 @@
 /* =============================================================
    app/lernpfad.js – Stand und Hervorhebung auf dem statisch gerenderten Lernpfad (Rolle Navigation)
    Der Lernpfad zeigt die 20 Termine des Plans. Stand gibt es zu den Lektionen mit Seiten: Jedes
-   Element mit data-nr="V07" (eigene Seiten eines Termins oder bisheriges Material) bekommt Stand
+   Element mit data-nr="V01" (Kennung, nie sichtbar; eigene Seiten eines Termins; Material aus stoff gibt es zurzeit nicht) bekommt Stand
    und Zahlen. Eine Lektion kann bei mehreren Terminen stehen. Ohne JavaScript bleibt die Liste
    vollständig benutzbar.
    ============================================================= */
@@ -75,7 +75,7 @@
       if (ziel) {
         var a = document.createElement('a');
         a.href = '#' + ziel.id;
-        a.textContent = 'Zu deinem Stand: Termin ' + ziel.getAttribute('data-termin') + ' (' + aktNr + ' · ' + lektionen[akt.index].kurz + ')';
+        a.textContent = 'Zu deinem Stand: Termin ' + ziel.getAttribute('data-termin') + ' (' + lektionen[akt.index].kurz + ')';
         sprung.appendChild(a);
         sprung.hidden = false;
       } else sprung.hidden = true;

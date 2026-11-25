@@ -11,9 +11,10 @@ import Kopfzeile from '../components/huelle/Kopfzeile.astro';
 import Icon from '../components/Icon.astro';
 import { seiteInfo, basisVon } from '../lib/navigation.mjs';
 import { appDateien, appUrl, gibtPublic, lektionsKontext } from '../lib/huelle.mjs';
+import { ladeKurs } from '../lib/kurs.mjs';
 
 interface Props {
-  pfad: string;                 // Pfad der Seite relativ zur Wurzel, z. B. 'lektionen/v07-labor.html'
+  pfad: string;                 // Pfad der Seite relativ zur Wurzel, z. B. 'lektionen/v01-labor.html'
   art: string;                  // Seitenkennung (data-page), z. B. 'werkbank'
   titel: string;                // <title>; bei neuen Seiten wird ' · Informatik Maschinenbau' ergänzt
   beschreibung?: string;
@@ -39,7 +40,9 @@ const dateien = appDateien({ art: p.art, neu, skripte: p.skripte, css: p.css });
 const L = p.termin ? lektionsKontext(p.termin, p.lektionsArt) : null;
 const weiter = L && !p.hatWeiter ? L.weiter : null;
 /* Bestandsseiten ohne h1 (Laborseiten): eine nur für Screenreader sichtbare h1 aus dem Lektionstitel */
-const srH1 = L && !neu && !/<h1[\s>]/i.test(p.inhalt ?? '') ? `${p.lektionsArt === 'labor' ? 'Programmierlabor' : 'Lektion'} ${L.termin.nr} · ${L.termin.kurz}` : null;
+const srH1 = L && !neu && !/<h1[\s>]/i.test(p.inhalt ?? '') ? `${p.lektionsArt === 'labor' ? 'Programmierlabor' : 'Lektion'} ${L.termin.terminLang} · ${L.termin.kurz}` : null;
+/* Kennung intern, Termin sichtbar: die Zuordnung Kennung -> „Termin 01“ / „T01“ für app/kern.js (window.KursTermine) */
+const termineJson = JSON.stringify(Object.fromEntries(ladeKurs().lektionen.map((l) => [l.nr, { lang: l.terminLang, kurz: l.terminKurz }]))).replace(/</g, '\\u003c');
 
 /* Body-Attribute: class="app", data-bereich, dann die der Bestandsseite in Originalreihenfolge */
 const attrs: Record<string, string | boolean> = { class: 'app' };
@@ -86,6 +89,7 @@ const touchIcon = gibtPublic('app/icons/apple-touch-icon.png');
       )}
     </div>
     <aside class="app-panel" data-app-slot="panel" hidden aria-label="Tutor" tabindex="-1">
+      <div class="app-panel__griff" data-app-slot="panel-griff" role="separator" aria-orientation="vertical" aria-label="Breite des Tutors ändern" aria-valuemin="320" aria-valuemax="1000" aria-valuenow="380" tabindex="0"></div>
       <div class="app-panel__kopf">
         <h2 class="app-panel__titel" id="app-panel-titel">Tutor</h2>
         <button type="button" class="app-panel__zu" data-app-aktion="panel-zu" aria-label="Panel schließen"><Icon id="x" basis={basis} /></button>
@@ -94,6 +98,7 @@ const touchIcon = gibtPublic('app/icons/apple-touch-icon.png');
     </aside>
   </div>
   <div class="app-meldungen" data-app-slot="meldungen" aria-live="polite"></div>
+  <script is:inline type="application/json" id="app-termine" set:html={termineJson}></script>
   <script is:inline src={`${basis}assets/js/speicher.js`}></script>
   <script is:inline src={appUrl(basis, 'kern.js')}></script>
   {dateien.frueh.map((s) => <script is:inline src={appUrl(basis, s)}></script>)}

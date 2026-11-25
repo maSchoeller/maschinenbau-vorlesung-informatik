@@ -464,13 +464,13 @@
      Vorlagen (als Python-Text, die Engine macht daraus den Plan)
      ══════════════════════════════════════════════════════════ */
   var TEMPLATES = [
-    { name: 'Werkstoffvorschlag (V05)', code: [
+    { name: 'Werkstoffvorschlag', code: [
       'spannung = float(input("Maximale Spannung in MPa: "))', 'temperatur = float(input("Betriebstemperatur in °C: "))',
       'if spannung <= 0 or temperatur < -50 or temperatur > 600:', '    print("Eingabe unplausibel - bitte Werte prüfen")', 'else:',
       '    if temperatur > 300:', '        if spannung <= 200:', '            werkstoff = "16Mo3 (warmfest)"', '        else:', '            werkstoff = "Sonderwerkstoff - Rücksprache Konstruktion"',
       '    else:', '        if spannung <= 140:', '            werkstoff = "S235JR"', '        elif spannung <= 220:', '            werkstoff = "C45E"', '        else:', '            werkstoff = "42CrMo4 (vergütet)"',
       '    print("Empfohlener Werkstoff:", werkstoff)'].join('\n') },
-    { name: 'Abkühlkurve (V06)', code: [
+    { name: 'Abkühlkurve', code: [
       'temperatur = 850.0', 'umgebung = 20.0', 'k = 0.08', 'ziel = 60.0', 'minuten = 0', 'while temperatur > ziel:',
       '    temperatur = temperatur - k * (temperatur - umgebung)', '    minuten = minuten + 1', 'print(f"Nach {minuten} Minuten: {temperatur:.1f} °C")'].join('\n') },
     { name: 'Mittelwert der ersten 5 Minuten (Zählschleife)', code: [

@@ -1,125 +1,105 @@
 WEBVTT
 
 1
-00:00:00.400 --> 00:00:04.139
-Ein Drehgeber zählt Impulse, und sein Zähler hat 16 Bit.
+00:00:00.400 --> 00:00:05.327
+Ein Getränkeautomat. Die Cola kostet 1,50 Euro.
 
 2
-00:00:04.131 --> 00:00:10.733
-Bei 65535 ist Schluss: Der nächste Impuls setzt ihn auf 0 zurück.
+00:00:05.460 --> 00:00:10.153
+Du hast 2 Euro. Der Satz „Das Geld reicht“ stimmt: Er ist wahr.
 
 3
-00:00:11.392 --> 00:00:21.329
-Liest die Steuerung denselben Zähler mit Vorzeichen, springt er von 32767 auf −32768.
+00:00:10.165 --> 00:00:13.264
+Mit 1 Euro stimmt er nicht: Er ist falsch.
 
 4
-00:00:21.896 --> 00:00:26.643
-Die Achse bewegt sich nur einen Impuls, doch die Zahl springt über die ganze Skala.
+00:00:13.345 --> 00:00:18.526
+Ein Satz, der stimmt oder nicht stimmt, heißt Aussage.
 
 5
-00:00:27.568 --> 00:00:29.730
-Schauen wir, wie ein Rechner wirklich zählt.
+00:00:18.692 --> 00:00:23.650
+Eine Aussage ist entweder wahr oder falsch. Dazwischen gibt es nichts.
 
 6
-00:00:30.630 --> 00:00:34.274
-Im Dezimalsystem ist jede Stelle eine Zehnerpotenz.
+00:00:24.550 --> 00:00:27.945
+Ein Rechner braucht die Aussage mit Zahlen.
 
 7
-00:00:34.606 --> 00:00:38.297
-45 ist 4 · 10 plus 5 · 1.
+00:00:27.795 --> 00:00:33.228
+Das Geld reicht, wenn du mindestens so viel hast, wie die Cola kostet.
 
 8
-00:00:39.658 --> 00:00:46.245
-Ein Rechner kennt nur zwei Zustände, also zählt er binär: Jede Stelle ist eine Zweierpotenz.
+00:00:33.078 --> 00:00:39.190
+Mit 2 Euro heißt das als Vergleich: 2 >= 1.5.
 
 9
-00:00:46.967 --> 00:00:56.390
-45 ist dann 32 + 8 + 4 + 1, also 101101.
+00:00:39.040 --> 00:00:46.662
+Für Vergleiche gibt es fünf Zeichen: kleiner, größer, kleiner gleich, größer gleich und ist gleich.
 
 10
-00:00:57.849 --> 00:01:05.470
-Im Hexadezimalsystem steht jede Stelle für eine Sechzehnerpotenz, mit den Ziffern 0 bis 9 und A bis F.
+00:00:46.512 --> 00:00:52.549
+Das fünfte Zeichen, ==, besteht in Python aus zwei Gleichheitszeichen.
 
 11
-00:01:06.372 --> 00:01:14.200
-45 ist 2 · 16 + 13, und 13 schreibt man D: also 2D.
+00:00:52.399 --> 00:00:58.360
+Auch ein Vergleich ist wahr oder falsch: Python schreibt dafür True und False.
 
 12
-00:01:15.100 --> 00:01:18.996
-Dezimal in binär wandelst du mit dem Divisionsrestverfahren um.
+00:00:59.260 --> 00:01:03.061
+Aufpassen musst du genau auf der Grenze: Das ist der Grenzfall.
 
 13
-00:01:19.169 --> 00:01:22.445
-Du teilst immer wieder durch 2 und merkst dir den Rest.
+00:01:03.263 --> 00:01:05.664
+Du hast genau 1,50 Euro.
 
 14
-00:01:22.660 --> 00:01:28.859
-45 durch 2 ist 22 Rest 1, und so weiter, bis du bei 0 ankommst.
+00:01:05.798 --> 00:01:10.036
+Der Vergleich mit dem Zeichen >= ist wahr: Gleich viel reicht.
 
 15
-00:01:29.214 --> 00:01:34.487
-Die Reste liest du von unten nach oben: 101101.
+00:01:10.486 --> 00:01:16.956
+Der Vergleich mit dem Zeichen > ist falsch: 1.5 ist nicht größer als 1.5.
 
 16
-00:01:34.812 --> 00:01:38.590
-Zurück rechnest du, indem du die Stellenwerte der Einsen addierst.
+00:01:17.240 --> 00:01:20.622
+Richtig ist hier also das Zeichen >=.
 
 17
-00:01:39.490 --> 00:01:44.603
-Ein Bit ist eine Binärstelle, 0 oder 1. Acht Bit sind ein Byte.
+00:01:20.767 --> 00:01:27.230
+Deshalb probierst du immer drei Werte: einen darunter, einen genau auf der Grenze und einen darüber.
 
 18
-00:01:44.908 --> 00:01:52.134
-Mit n Bit gibt es 2ⁿ Werte, ohne Vorzeichen von 0 bis 2ⁿ − 1.
+00:01:28.130 --> 00:01:31.768
+Ein kleines Wort dreht eine Aussage um: NICHT.
 
 19
-00:01:53.031 --> 00:02:01.205
-Bei 8 Bit sind das 0 bis 255, bei 16 Bit 0 bis 65535.
+00:01:31.618 --> 00:01:37.682
+A ist die Aussage „Das Geld reicht“. NICHT A ist dann „Das Geld reicht nicht“.
 
 20
-00:02:01.989 --> 00:02:14.124
-Mit Vorzeichen halbiert sich der positive Bereich: Bei 16 Bit liegt er zwischen −32768 und +32767.
+00:01:37.532 --> 00:01:41.246
+Aus wahr wird falsch, und aus falsch wird wahr.
 
 21
-00:02:14.981 --> 00:02:18.980
-Wird der Bereich verlassen, läuft die Zahl über und beginnt von vorn.
+00:01:41.096 --> 00:01:44.961
+Die beiden Fälle stehen in einer kleinen Tabelle.
 
 22
-00:02:19.880 --> 00:02:23.249
-Negative Zahlen speichert der Rechner im Zweierkomplement.
+00:01:44.811 --> 00:01:48.980
+Sie heißt Wahrheitstabelle und listet jeden Fall auf.
 
 23
-00:02:23.440 --> 00:02:31.611
-Du schreibst den Betrag binär auf, invertierst alle Bits und addierst 1.
+00:01:49.880 --> 00:01:53.671
+Merke dir: Eine Aussage ist wahr oder falsch.
 
 24
-00:02:32.327 --> 00:02:42.009
-Beispiel −5 in 8 Bit: 00000101 invertiert, plus 1, ergibt 11111011.
+00:01:53.870 --> 00:01:57.283
+Ein Vergleich ist eine Aussage über Zahlen.
 
 25
-00:02:42.822 --> 00:02:47.165
-Ohne Vorzeichen gelesen wäre dasselbe Muster die 251.
+00:01:57.573 --> 00:02:00.853
+Und den Grenzfall prüfst du immer mit.
 
 26
-00:02:48.059 --> 00:02:54.170
-Am Zahlenkreis siehst du den Überlauf: Nach der größten positiven kommt die kleinste negative Zahl.
-
-27
-00:02:55.070 --> 00:03:02.276
-Lange Bitketten sind unlesbar. Hex ist die Kurzschrift: Vier Bit ergeben genau eine Hexziffer.
-
-28
-00:03:02.446 --> 00:03:11.398
-Jede Vierergruppe wird eine Ziffer: Das Register wird zu F, A, 3, 1, also 0xFA31.
-
-29
-00:03:12.278 --> 00:03:16.513
-In SPS-Registern und bei Fehlercodes begegnet dir Hex ständig.
-
-30
-00:03:16.695 --> 00:03:22.067
-Das Präfix 0x kennzeichnet Hex, 0b kennzeichnet binär.
-
-31
-00:03:22.919 --> 00:03:28.400
-Merke: Ein Zähler hat endlich viele Bits. Prüfe immer, ob dein Wertebereich reicht.
+00:02:02.013 --> 00:02:06.330
+Im Plan bekommt so eine Aussage als Nächstes ein eigenes Symbol.

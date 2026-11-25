@@ -40,12 +40,23 @@
     setStarted: function (lesson, id) { return bucketMark(lesson, 'begonnen', id); }
   };
 
+  /* ── Bearbeitungsstand (Schlüssel siehe docs/app/ARCHITEKTUR.md, 4.4a) ──────────
+     Je Aufgabe ein Eintrag inf-mb/<lektion>/<art>:<kennung>, entprellt gespeichert, beim Laden wiederhergestellt.
+     Passt ein gespeicherter Stand nicht mehr zur Aufgabe (Vorlage geändert), wird er verworfen. */
+  var KEIN_STAND = { pfad: '', lesen: function () {}, aendern: function () {}, sichern: function () {}, loeschen: function () {}, wiederherstellen: function () {} };
+  function stand(schluessel) { return KS && KS.stand ? KS.stand(lessonId(), schluessel) : KEIN_STAND; }
+  function kurzHash(t) { return KS && KS.hash ? KS.hash(t) : String(String(t).length); }
+
   /* ── Fortschritt „x von y gelöst“ ────────────────────────── */
-  function taskNodes() { return $$('[data-a][data-id]:not([data-count="0"])'); }
+  /* Knobelaufgaben (data-knobel, freiwillig) haben Status und Abzeichen wie jede Aufgabe, zählen aber nicht mit:
+     taskNodes() ist die Menge, die zählt; badgeNodes() die, die „gelöst“ gezeigt bekommt. */
+  function taskNodes() { return $$('[data-a][data-id]:not([data-count="0"]):not([data-knobel])'); }
+  function badgeNodes() { return $$('[data-a][data-id]:not([data-count="0"])'); }
   function updateProgress() {
     var lesson = lessonId(), sv = Store.solved(lesson);
     var nodes = taskNodes(), n = 0;
     nodes.forEach(function (t) { var ok = !!sv[t.getAttribute('data-id')]; if (ok) n++; t.classList.toggle('is-solved', ok); });
+    $$('[data-a][data-knobel][data-id]').forEach(function (t) { t.classList.toggle('is-solved', !!sv[t.getAttribute('data-id')]); });
     $$('[data-a-progress]').forEach(function (p) {
       var pct = nodes.length ? Math.round(100 * n / nodes.length) : 0;
       var fill = $('.a-progress__fill', p), txt = $('.a-progress__text', p), bar = $('.a-progress__bar', p);
@@ -133,13 +144,38 @@ def _format_exc(e, src):
         out.append("%s: %s" % (type(e).__name__, e))
     return "\n".join(out), _hint(e), lineno
 
-def _run_user(src, inputs, capture, echo):
+# Terminal-Dialog beim Ausführen (term = Startwert für random): Sind die Eingaben aufgebraucht, endet der Lauf mit
+# dem Signal _KcEingabe (an "except Exception" vorbei; ein nacktes "except:" löst es in seiner ersten Zeile erneut aus).
+class _KcEingabe(BaseException):
+    pass
+
+_NEED = [None]
+
+def _kc_stopp(prompt):
+    def _tr(frame, event, arg):
+        if event == "line" and frame.f_code.co_filename == _FILE:
+            raise _KcEingabe(prompt)
+        return _tr
+    f = sys._getframe(1)
+    while f is not None:
+        if f.f_code.co_filename == _FILE:
+            f.f_trace = _tr
+        f = f.f_back
+    sys.settrace(_tr)
+    raise _KcEingabe(prompt)
+
+def _run_user(src, inputs, capture, echo, term=None):
     buf = io.StringIO()
     ns = {"__name__": "__main__"}
     queue = list(inputs or [])
     real_input = builtins.input
+    _NEED[0] = None
     def fake_input(prompt=""):
         o = buf if capture else sys.stdout
+        if term is not None and (_NEED[0] is not None or not queue):
+            if _NEED[0] is None:
+                _NEED[0] = str(prompt)
+            _kc_stopp(_NEED[0])
         o.write(str(prompt))
         if not queue:
             raise EOFError("input() wurde aufgerufen, aber es gibt keine Eingabe mehr")
@@ -151,6 +187,14 @@ def _run_user(src, inputs, capture, echo):
         return v
     err = None
     builtins.input = fake_input
+    if term:
+        import random
+        random.seed(int(term))
+        if "numpy" in sys.modules:
+            try:
+                sys.modules["numpy"].random.seed(int(term) % 4294967296)
+            except Exception:
+                pass
     try:
         try:
             code = compile(src, _FILE, "exec")
@@ -163,11 +207,16 @@ def _run_user(src, inputs, capture, echo):
                         exec(code, ns)
                 else:
                     exec(code, ns)
+            except _KcEingabe:
+                pass
             except SystemExit:
                 pass
             except BaseException as e:
-                err = _format_exc(e, src)
+                if _NEED[0] is None:
+                    err = _format_exc(e, src)
     finally:
+        if term is not None:
+            sys.settrace(None)
         builtins.input = real_input
     return ns, buf.getvalue(), err
 
@@ -180,9 +229,14 @@ def zeilen(text):
 def zahlen(text):
     return [float(x) for x in re.findall(r"-?\d+(?:\.\d+)?(?:[eE][-+]?\d+)?", str(text))]
 
-def _main(kind, src, inputs, tests_src, mode):
+def _main(kind, src, inputs, tests_src, mode, term=None):
     if kind == "run":
-        ns, text, err = _run_user(src, inputs, False, True)
+        ns, text, err = _run_user(src, inputs, False, True, term)
+        if term is not None and _NEED[0] is not None:
+            sys.stdout.write("\x1d")
+            sys.stdout.flush()
+            _emit({"need": _NEED[0]})
+            return
         if err:
             sys.stderr.write(err[0] + ("\nHinweis: " + err[1] if err[1] else "") + "\n")
         return
@@ -232,21 +286,33 @@ def _main(kind, src, inputs, tests_src, mode):
   /*PY-END*/
 
   function jq(v) { return JSON.stringify(v).split(String.fromCharCode(8232)).join('\u2028').split(String.fromCharCode(8233)).join('\u2029'); }
-  function pyProgram(kind, src, inputs, tests, mode) {
-    return PY_PRELUDE + '\n_main(' + [kind, src, inputs, tests, mode].map(jq).join(', ') + ')\n';
+  /* term: Startwert (Zahl) für den Terminal-Dialog beim Ausführen; sonst weglassen (Prüfen läuft immer mit festen Eingaben) */
+  function pyProgram(kind, src, inputs, tests, mode, term) {
+    var args = [kind, src, inputs, tests, mode].map(jq);
+    if (term != null) args.push(String(Math.floor(Number(term)) || 0));
+    return PY_PRELUDE + '\n_main(' + args.join(', ') + ')\n';
   }
 
-  /* Führt kind=run|test über KursPy aus. Ergebnis: Promise {results, fatal, hint, done, timedOut, loadError, jsError} */
+  /* Führt kind=run|test über KursPy aus. Ergebnis: Promise {results, fatal, hint, done, timedOut, loadError, jsError, need}
+     hooks.term: Startwert für den Terminal-Dialog (nur kind=run); res.need ist dann die Aufforderung, falls eine Eingabe fehlt */
   function runPython(kind, src, inputs, tests, mode, timeout, hooks) {
     hooks = hooks || {};
-    var res = { results: [], fatal: null, hint: '', done: false, timedOut: false, loadError: null, jsError: null };
+    var res = { results: [], fatal: null, hint: '', done: false, timedOut: false, loadError: null, jsError: null, need: null };
     if (!window.KursPy) { res.loadError = 'kurs.js nicht geladen'; return Promise.resolve(res); }
     var buf = '';
     function line(l) {
+      /* Terminal-Dialog: "\x1d" beendet eine angefangene Ausgabezeile (print(..., end="")) ohne Zeilenumbruch */
+      var k = l.indexOf('\u001d');
+      if (k >= 0) {
+        if (k > 0 && hooks.onLine) hooks.onLine(l.slice(0, k));
+        l = l.slice(k + 1);
+        if (!l) return;
+      }
       if (l.charAt(0) === '\u001e') {
         try {
           var o = JSON.parse(l.slice(1));
           if (o.fatal) { res.fatal = o.fatal; res.hint = o.hint || ''; }
+          else if (o.need !== undefined) res.need = String(o.need);
           else if (o.done !== undefined) res.done = true;
           else res.results.push(o);
         } catch (e) { /* ignorieren */ }
@@ -258,7 +324,7 @@ def _main(kind, src, inputs, tests_src, mode):
       onErr: function (t) { if (hooks.onErr) hooks.onErr(t); }
     };
     if (hooks.py && window.KursPy.mix) window.KursPy.mix(ro, hooks.py);
-    return window.KursPy.run(pyProgram(kind, src, inputs, tests, mode), ro).then(function (r) {
+    return window.KursPy.run(pyProgram(kind, src, inputs, tests, mode, kind === 'run' ? hooks.term : null), ro).then(function (r) {
       if (hooks.py && hooks.py.finish) hooks.py.finish();
       if (buf) { line(buf); buf = ''; }
       if (r.timedOut) res.timedOut = true;
@@ -383,30 +449,62 @@ def _main(kind, src, inputs, tests_src, mode):
     var inputsAttr = root.getAttribute('data-inputs');
     var running = false;
 
-    // Eingaben für Ausführen
-    var inputsTa = null;
-    if (inputsAttr !== null && kind !== 'klausur') {
-      inputsTa = el('textarea', { class: 'a-inputs', rows: String(Math.max(1, inputsAttr.split('|').length)), 'aria-label': 'Eingaben für input(), eine Zeile pro Aufruf', spellcheck: 'false' });
-      inputsTa.value = inputsAttr.replace(/\|/g, '\n');
-      var ib = el('div', { class: 'a-inputbox' }, [el('label', { class: 'a-inputbox__label', text: 'Eingaben für input() (eine Zeile pro Aufruf)' }), inputsTa]);
+    // Eingaben für Ausführen: im Terminal (Dialog in der Ausgabe, Standard) oder vorab im Feld (data-inputs, Zeilen mit |)
+    var KP = window.KursPy || null;
+    var inputsTa = null, schalter = null;
+    if (kind !== 'klausur') {
+      var startInputs = inputsAttr !== null ? inputsAttr.replace(/\|/g, '\n') : '';
+      inputsTa = el('textarea', { class: 'a-inputs', rows: String(Math.max(1, startInputs.split('\n').length)), 'aria-label': 'Eingaben für input(), eine Zeile pro Aufruf', spellcheck: 'false' });
+      inputsTa.value = startInputs;
+      var ib = el('div', { class: 'a-inputbox', hidden: '' }, [el('label', { class: 'a-inputbox__label', text: 'Eingaben für input() (eine Zeile pro Aufruf)' }), inputsTa]);
       editorBox.insertAdjacentElement('afterend', ib);
       ui.inputBox = ib;
     }
+    function hatInput() { return /\binput\s*\(/.test(ta.value); }
+    function termMode() { return !!(KP && KP.terminal && KP.modus() === 'terminal' && hatInput()); }
+    function syncInputs() {
+      if (!ui.inputBox) return;
+      var vorab = !KP || !KP.modus || KP.modus() === 'vorab';
+      // vorab: Feld wie bisher (bei data-inputs immer, sonst sobald der Code input() enthält)
+      ui.inputBox.hidden = !(vorab ? (inputsAttr !== null || hatInput()) : (!KP.terminal && inputsAttr !== null));
+      if (schalter) schalter.el.hidden = !hatInput();
+    }
 
-    var runBtn = null, checkBtn = null, resetBtn, submitBtn = null;
+    var runBtn = null, checkBtn = null, resetBtn, submitBtn = null, abortBtn = null;
     if (kind !== 'klausur') runBtn = el('button', { type: 'button', class: 'k-btn k-btn--small' + (kind === 'code' ? ' k-btn--ghost' : ''), text: 'Ausführen' });
     var stepBtn = null;
     if (kind !== 'klausur') {
       stepBtn = el('button', { type: 'button', class: 'k-btn k-btn--small k-btn--ghost', text: 'Schritt für Schritt' });
       stepBtn.addEventListener('click', function () {
-        if (window.KursViz) window.KursViz.open(ta.value, { stdin: currentInputs().join(String.fromCharCode(10)), opener: stepBtn }).catch(function () { /* Fehler zeigt der Visualisierer */ });
+        if (!window.KursViz) return;
+        /* Terminal-Modus: Eingaben des letzten vollständigen Laufs desselben Codes; sonst erst der Dialog, dann der Visualisierer */
+        if (termMode()) {
+          if (term && term.complete() && termCode === ta.value) { openViz({ inputs: term.inputs() }); return; }
+          if (term && term.waiting() && termCode === ta.value) { vizNachLauf = true; ui.status.textContent = 'Tippe die Eingaben, danach startet Schritt für Schritt.'; return; }
+          if (running) return;
+          doRun({ viz: true });
+          return;
+        }
+        openViz({ stdin: currentInputs().join(String.fromCharCode(10)) });
       });
+      abortBtn = el('button', { type: 'button', class: 'k-btn k-btn--small k-btn--ghost k-term__abbruch', text: 'Abbrechen', hidden: '' });
+      abortBtn.addEventListener('click', function () { if (term) term.abort('abgebrochen'); if (runBtn) runBtn.focus(); });
+    }
+    function openViz(o) {
+      o.opener = stepBtn;
+      window.KursViz.open(ta.value, o).catch(function () { /* Fehler zeigt der Visualisierer */ });
     }
     if (kind === 'code') checkBtn = el('button', { type: 'button', class: 'k-btn k-btn--small', text: 'Prüfen' });
     if (kind === 'klausur') submitBtn = el('button', { type: 'button', class: 'k-btn k-btn--small', text: 'Abgeben und prüfen' });
     resetBtn = el('button', { type: 'button', class: 'k-btn k-btn--small k-btn--link', text: kind === 'klausur' ? 'Neu schreiben' : 'Zurücksetzen' });
-    [runBtn, stepBtn, checkBtn, submitBtn, resetBtn, ui.hintBtn, ui.solBtn].forEach(function (b) { if (b) ui.bar.appendChild(b); });
+    [runBtn, stepBtn, abortBtn, checkBtn, submitBtn, resetBtn, ui.hintBtn, ui.solBtn].forEach(function (b) { if (b) ui.bar.appendChild(b); });
+    if (kind !== 'klausur' && KP && KP.modusSchalter) {
+      schalter = KP.modusSchalter(function () { syncInputs(); });
+      ui.bar.appendChild(schalter.el);
+    }
     ui.bar.appendChild(ui.status);
+    syncInputs();
+    ta.addEventListener('input', syncInputs);
 
     var anchor = ui.inputBox || editorBox;
     anchor.insertAdjacentElement('afterend', ui.bar);
@@ -431,11 +529,59 @@ def _main(kind, src, inputs, tests_src, mode):
     function loadingText() { return window.KursPy && !window.KursPy.worker ? 'Python wird geladen (einmalig, ca. 10 MB) …' : 'läuft …'; }
     function currentInputs() { return inputsTa ? inputsTa.value.replace(/\r/g, '').split('\n').filter(function (l, i, a) { return !(i === a.length - 1 && l === ''); }) : []; }
 
-    function doRun() {
+    function app(t, cls) { var s = el('span', cls ? { class: cls } : null); s.textContent = t; ui.out.appendChild(s); ui.out.scrollTop = ui.out.scrollHeight; }
+
+    /* Terminal-Dialog (Wiederholungslauf über KursPy.terminal) */
+    var term = null, termCode = '', vizNachLauf = false;
+    function getTerm() {
+      if (term) return term;
+      term = KP.terminal(ui.out, {
+        exec: function (inputs, seed, sink) {
+          var rich = KP.ui ? KP.ui(ui.out, { files: dataFiles, upload: uploader ? uploader.get : null, scan: termCode }) : null;
+          return runPython('run', termCode, inputs, '', mode, timeout, { py: rich, files: dataFiles, term: seed, onLine: function (t) { sink(t); }, onErr: function (t) { sink(t, 'err'); } });
+        },
+        onWait: function () {
+          busy(false); abortBtn.hidden = false;
+          ui.status.textContent = vizNachLauf ? 'Tippe die Eingaben, danach startet Schritt für Schritt.' : 'wartet auf deine Eingabe';
+        },
+        onResume: function () { abortBtn.hidden = true; busy(true, 'läuft …'); },
+        onEnd: function (r) {
+          abortBtn.hidden = true;
+          if (r.fail) r = { loadError: r.fail.message || String(r.fail) };
+          if (r.loadError) app('Python konnte nicht gestartet werden. Bist du online? (' + r.loadError + ')\n', 'err');
+          else if (r.timedOut) app('\nAbgebrochen nach ' + (timeout / 1000) + ' s. Läuft da eine Endlosschleife?\n', 'err');
+          else if (r.jsError) app(r.jsError + '\n', 'err');
+          else if (!term.hasOutput()) app('(keine Ausgabe – hast du print() benutzt?)', 'sys');
+          busy(false);
+          ui.status.textContent = r.timedOut ? 'abgebrochen' : (r.loadError ? 'Ladefehler – erneut versuchen' : 'fertig');
+          var viz = vizNachLauf; vizNachLauf = false;
+          if (viz && !r.loadError && !r.timedOut && !r.jsError) openViz({ inputs: term.inputs() });
+        },
+        onAbort: function (text) {
+          abortBtn.hidden = true; vizNachLauf = false;
+          busy(false);
+          if (text) { app('(' + text + ')\n', 'sys'); ui.status.textContent = text; }
+        }
+      });
+      return term;
+    }
+    // Code geändert, während das Programm auf eine Eingabe wartet: Dialog sauber beenden
+    ta.addEventListener('input', function () { if (term && term.waiting() && ta.value !== termCode) term.abort('Code geändert. Starte das Programm neu mit „Ausführen“.'); });
+
+    function doRun(opt) {
       if (running) return;
+      if (term) term.stop();
+      vizNachLauf = !!(opt && opt.viz);
+      if (abortBtn) abortBtn.hidden = true;
+      if (termMode()) {
+        busy(true, loadingText());
+        ui.out.hidden = false; ui.out.textContent = '';
+        termCode = ta.value;
+        getTerm().start();
+        return;
+      }
       busy(true, loadingText());
       ui.out.hidden = false; ui.out.textContent = '';
-      function app(t, cls) { var s = el('span', cls ? { class: cls } : null); s.textContent = t; ui.out.appendChild(s); ui.out.scrollTop = ui.out.scrollHeight; }
       var got = false;
       var rich = window.KursPy && window.KursPy.ui ? window.KursPy.ui(ui.out, { files: dataFiles, upload: uploader ? uploader.get : null, scan: ta.value }) : null;
       runPython('run', ta.value, currentInputs(), '', mode, timeout, { py: rich, files: dataFiles, onLine: function (t) { got = true; app(t); }, onErr: function (t) { got = true; app(t, 'err'); } }).then(function (r) {
@@ -451,6 +597,7 @@ def _main(kind, src, inputs, tests_src, mode):
     function doCheck(afterwards) {
       if (running) return;
       if (!tests) return;
+      if (term && term.waiting()) term.abort(null);
       busy(true, loadingText());
       runPython('test', ta.value, [], tests, mode, timeout, { files: dataFiles }).then(function (r) {
         busy(false);
@@ -462,7 +609,7 @@ def _main(kind, src, inputs, tests_src, mode):
       });
     }
 
-    if (runBtn) runBtn.addEventListener('click', doRun);
+    if (runBtn) runBtn.addEventListener('click', function () { doRun(); });
     if (checkBtn) checkBtn.addEventListener('click', function () { doCheck(); });
     ta.addEventListener('keydown', function (e) {
       if ((e.ctrlKey || e.metaKey) && e.key === 'Enter' && kind !== 'klausur') { e.preventDefault(); doRun(); }
@@ -470,14 +617,41 @@ def _main(kind, src, inputs, tests_src, mode):
 
     resetBtn.addEventListener('click', function () {
       if (kind === 'klausur') return;
+      if (term) { term.abort(null); vizNachLauf = false; }
       setValue(ta, original);
-      if (inputsTa && inputsAttr !== null) inputsTa.value = inputsAttr.replace(/\|/g, '\n');
+      if (inputsTa) inputsTa.value = startInputs;
       if (ui.out) { ui.out.textContent = ''; ui.out.hidden = true; }
       ui.results.innerHTML = '';
       ui.status.textContent = 'zurückgesetzt';
+      st.loeschen();
     });
 
-    if (kind === 'klausur') initKlausur(root, ta, ui, { submitBtn: submitBtn, resetBtn: resetBtn, doCheck: doCheck, original: original, solution: solution, cursor: cursor });
+    /* Bearbeitungsstand: code:<kennung> = {v, code, eingaben?, ab?, haken?} (ab/haken nur bei der Klausuraufgabe) */
+    var stId = root.getAttribute('data-id');
+    var st = stId ? stand('code:' + stId) : KEIN_STAND, stelleWieder = false, kl = null;
+    function codeText() { return window.KursEditor && window.KursEditor.getValue ? window.KursEditor.getValue(ta) : ta.value; }
+    function codeStand() {
+      var c = codeText(), o = { v: 1, code: c };
+      if (inputsTa && inputsTa.value !== startInputs) o.eingaben = inputsTa.value;
+      var h = kl ? kl.stand() : null;
+      if (h) { o.ab = 1; o.haken = h; }
+      return (c === original && o.eingaben === undefined && !o.ab) ? null : o;
+    }
+    function speichern() { if (!stelleWieder) st.aendern(codeStand); }
+    ta.addEventListener('input', speichern);
+    if (inputsTa) inputsTa.addEventListener('input', speichern);
+
+    if (kind === 'klausur') kl = initKlausur(root, ta, ui, { submitBtn: submitBtn, resetBtn: resetBtn, doCheck: doCheck, original: original, solution: solution, cursor: cursor, speichern: speichern, loeschen: function () { st.loeschen(); } });
+    st.wiederherstellen(function (w) {
+      if (!w || typeof w.code !== 'string') return false;
+      stelleWieder = true;
+      try {
+        ta.value = w.code;
+        if (inputsTa && typeof w.eingaben === 'string') { inputsTa.value = w.eingaben; inputsTa.rows = Math.max(1, w.eingaben.split(String.fromCharCode(10)).length); }
+        syncInputs();
+        if (kl && w.ab) kl.stelle(w);
+      } finally { stelleWieder = false; }
+    });
   }
 
   /* ── Klausur-Modus ───────────────────────────────────────── */
@@ -487,6 +661,7 @@ def _main(kind, src, inputs, tests_src, mode):
     var scheme = [];
     try { scheme = schemeEl ? JSON.parse(schemeEl.textContent) : []; } catch (e) { scheme = []; }
     var maxPts = scheme.reduce(function (s, x) { return s + (x.p || 0); }, 0);
+    var boxes = [];
     var timerEl = el('span', { class: 'a-timer', 'aria-live': 'off' });
     var started = 0, tick = null, submitted = false;
     function fmt(ms) { var s = Math.floor(ms / 1000); return ('0' + Math.floor(s / 60)).slice(-2) + ':' + ('0' + (s % 60)).slice(-2); }
@@ -510,21 +685,26 @@ def _main(kind, src, inputs, tests_src, mode):
       schemeBox.innerHTML = '';
       var fs = el('fieldset', { class: 'a-scheme__fs' }, [el('legend', { text: 'Selbstbewertung nach Punkteschema (' + maxPts + ' Punkte)' })]);
       fs.appendChild(el('p', { class: 'k-small k-muted', text: 'Lies deinen Code und die Musterlösung. Setze ein Häkchen nur dort, wo dein Code die Anforderung wirklich erfüllt. Die Tests oben zeigen, ob es läuft; in der Klausur zählt der Code auf Papier.' }));
-      var boxes = [];
+      boxes = [];
       scheme.forEach(function (it, i) {
         var id = (root.getAttribute('data-id') || 'k') + '-s' + i;
         var cb = el('input', { type: 'checkbox', id: id });
         var lab = el('label', { class: 'a-scheme__item', 'for': id }, [cb, el('span', { text: it.t }), el('span', { class: 'a-scheme__pts', text: it.p + (it.p === 1 ? ' Punkt' : ' Punkte') })]);
-        cb.addEventListener('change', update);
+        cb.addEventListener('change', function () { update(); o.speichern(); });
         boxes.push({ cb: cb, p: it.p });
         fs.appendChild(lab);
       });
-      function update() {
+      function zeige() {
         var got = boxes.reduce(function (s, b) { return s + (b.cb.checked ? b.p : 0); }, 0);
         var pct = maxPts ? Math.round(100 * got / maxPts) : 0;
         scoreEl.textContent = 'Du gibst dir ' + got + ' von ' + maxPts + ' Punkten (' + pct + ' %). ' + (pct >= 50 ? 'Das wäre bestanden.' : 'Unter 50 %: Schau dir die Musterlösung an und schreib den Code morgen nochmal.');
+        return got;
+      }
+      function update() {
+        var got = zeige();
         if (got * 2 >= maxPts && maxPts) { markSolved(root); addBadge(root); }
       }
+      buildScheme.zeige = zeige;
       schemeBox.appendChild(fs); schemeBox.appendChild(scoreEl);
       scoreEl.textContent = 'Noch nichts angekreuzt.';
       schemeBox.hidden = false;
@@ -535,6 +715,7 @@ def _main(kind, src, inputs, tests_src, mode):
       submitted = true; if (tick) clearInterval(tick);
       ta.readOnly = true; ta.setAttribute('aria-readonly', 'true');
       root.classList.add('is-submitted');
+      o.speichern();
       o.doCheck(function (all) {
         ui.unlockSolution();
         if (ui.solBox) { ui.solBox.hidden = false; if (ui.solBtn) ui.solBtn.textContent = 'Musterlösung verbergen'; }
@@ -553,8 +734,29 @@ def _main(kind, src, inputs, tests_src, mode):
       if (ui.solBox) { ui.solBox.hidden = true; if (ui.solBtn) ui.solBtn.textContent = 'Musterlösung ansehen'; }
       o.submitBtn.hidden = false; o.resetBtn.hidden = true;
       ui.status.textContent = 'Neu starten: schreibe deinen Code ohne Ausführen.';
+      o.loeschen();
       ta.focus();
     });
+
+    /* Gespeicherter Stand: Abgabe und Selbstbewertung (die Zeit wird nicht gespeichert, die Tests laufen nicht erneut) */
+    return {
+      stand: function () { return submitted ? boxes.map(function (b) { return b.cb.checked ? 1 : 0; }) : null; },
+      stelle: function (w) {
+        if (submitted || !ta.value.trim()) return;
+        submitted = true; if (tick) clearInterval(tick);
+        ta.readOnly = true; ta.setAttribute('aria-readonly', 'true');
+        root.classList.add('is-submitted');
+        ui.unlockSolution();
+        if (ui.solBox) { ui.solBox.hidden = false; if (ui.solBtn) ui.solBtn.textContent = 'Musterlösung verbergen'; }
+        buildScheme(false);
+        if (Array.isArray(w.haken) && w.haken.length === boxes.length) {
+          boxes.forEach(function (b, i) { b.cb.checked = !!w.haken[i]; });
+          if (boxes.some(function (b) { return b.cb.checked; })) buildScheme.zeige();
+        }
+        o.submitBtn.hidden = true; o.resetBtn.hidden = false;
+        ui.status.textContent = 'Abgegeben. Dein Stand wurde wiederhergestellt; die Tests laufen erst bei einer neuen Abgabe.';
+      }
+    };
   }
 
   /* ── Typ: gap (Lückencode) ───────────────────────────────── */
@@ -619,7 +821,22 @@ def _main(kind, src, inputs, tests_src, mode):
     resetBtn.addEventListener('click', function () {
       gaps.forEach(function (g) { g.inp.value = ''; g.inp.classList.remove('is-ok', 'is-bad'); });
       ui.results.innerHTML = ''; ui.status.textContent = 'zurückgesetzt';
+      st.loeschen();
       if (gaps[0]) gaps[0].inp.focus();
+    });
+
+    /* Bearbeitungsstand: luecken:<kennung> = {v, f (Kennung der Vorlage), w (Inhalt je Lücke)} */
+    var gapId = root.getAttribute('data-id');
+    var st = gapId ? stand('luecken:' + gapId) : KEIN_STAND, gapF = kurzHash(raw);
+    gaps.forEach(function (g) {
+      g.inp.addEventListener('input', function () {
+        st.aendern(function () { var w = gaps.map(function (x) { return x.inp.value; }); return w.some(function (v) { return v !== ''; }) ? { v: 1, f: gapF, w: w } : null; });
+      });
+    });
+    st.wiederherstellen(function (w) {
+      if (!w || w.f !== gapF || !Array.isArray(w.w) || w.w.length !== gaps.length || !w.w.every(function (v) { return typeof v === 'string'; })) return false;
+      gaps.forEach(function (g, i) { g.inp.value = w.w[i]; g.inp.classList.remove('is-ok', 'is-bad'); });
+      ui.results.innerHTML = '';
     });
   }
 
@@ -632,20 +849,37 @@ def _main(kind, src, inputs, tests_src, mode):
     if (!cfgEl) return;
     var cfg = JSON.parse(cfgEl.textContent);
     var code = cfg.code, vars = cfg.vars, steps = cfg.steps;
+    /* Schalter der Aufgabe: ausgabe: false blendet die Ausgabe-Spalte aus; frage an einem Schritt ersetzt dessen Starttext. */
+    var mitAusgabe = cfg.ausgabe !== false;
+    /* sprache: "plan" oder "tabelle": Die Zeilen sind ein Plan oder eine Tabelle, kein Python. Der Block heißt dann „Plan“ bzw. „Tabelle“
+       statt „Python“ und hat keinen Kopieren-Knopf. typhinweis: false lässt den festen Satz „Typen beachten: Text steht in Anführungszeichen.“
+       weg (bei Plan und Tabelle immer weggelassen). */
+    var istPlan = cfg.sprache === 'plan' || cfg.sprache === 'tabelle';
+    var mitTyphinweis = cfg.typhinweis !== false && !istPlan;
     var cur = 0, revealedCount = 0;
     var state = {};
-    var wrap = el('div', { class: 'a-trace' });
-    var codeOl = el('ol', { class: 'a-trace__code', 'aria-label': 'Programmzeilen' });
+    var wrap = el('div', { class: 'a-trace' + (cfg.sprache === 'tabelle' ? ' a-trace--tabelle' : '') });
+    /* Tabelle: Statt „Schritt“ und „Zeile“ stehen die Eingaben der Zeile (A, B) als Spalten, wie in der Wahrheitstabelle der Klausur. */
+    var tabellenSpalten = null;
+    if (cfg.sprache === 'tabelle') {
+      var gelesen = code.map(function (l) { var m = [], re = /(\w+)\s*=\s*([^,\s]+)/g, x; while ((x = re.exec(l))) m.push([x[1], x[2]]); return m; });
+      if (gelesen.length && gelesen[0].length && gelesen.every(function (g) { return g.length === gelesen[0].length && g.every(function (c, i) { return c[0] === gelesen[0][i][0]; }); })) tabellenSpalten = { namen: gelesen[0].map(function (c) { return c[0]; }), werte: gelesen.map(function (g) { return g.map(function (c) { return c[1]; }); }) };
+    }
+    var codeOl = el('ol', { class: 'a-trace__code', 'aria-label': istPlan ? (cfg.sprache === 'tabelle' ? 'Zeilen der Tabelle' : 'Zeilen des Plans') : 'Programmzeilen' });
+    if (istPlan) codeOl.setAttribute('data-sprache', cfg.sprache);
     code.forEach(function (l, i) {
       var li = el('li', { 'data-line': String(i + 1) }); li.appendChild(el('code', { text: l.length ? l : ' ' }));
       codeOl.appendChild(li);
     });
     var table = el('table', { class: 'a-trace__table' });
     var thead = el('thead'), htr = el('tr');
-    htr.appendChild(el('th', { scope: 'col', text: 'Schritt' }));
-    htr.appendChild(el('th', { scope: 'col', text: 'Zeile' }));
+    if (tabellenSpalten) tabellenSpalten.namen.forEach(function (n) { htr.appendChild(el('th', { scope: 'col', text: n })); });
+    else {
+      htr.appendChild(el('th', { scope: 'col', text: 'Schritt' }));
+      htr.appendChild(el('th', { scope: 'col', text: 'Zeile' }));
+    }
     vars.forEach(function (v) { htr.appendChild(el('th', { scope: 'col' }, [el('code', { text: v })])); });
-    htr.appendChild(el('th', { scope: 'col', text: 'Ausgabe' }));
+    if (mitAusgabe) htr.appendChild(el('th', { scope: 'col', text: 'Ausgabe' }));
     thead.appendChild(htr); table.appendChild(thead);
     var tbody = el('tbody'); table.appendChild(tbody);
     var tw = el('div', { class: 'k-tablewrap a-trace__tw' }, [table]);
@@ -659,7 +893,20 @@ def _main(kind, src, inputs, tests_src, mode):
     wrap.appendChild(el('div', { class: 'a-trace__right' }, [tw, ctrl, msg]));
     root.appendChild(wrap);
 
-    var tries = 0, inputs = [], outInput = null, rowEl = null;
+    var tries = 0, inputs = [], outInput = null, rowEl = null, revList = [];
+    /* Bearbeitungsstand: ablauf:<kennung> = {v, f, n (erreichter Schritt), r (aufgedeckte Schritte), e (Eintrag im offenen Schritt)} */
+    var traceId = root.getAttribute('data-id');
+    var st = traceId ? stand('ablauf:' + traceId) : KEIN_STAND, traceF = kurzHash(JSON.stringify(mitAusgabe ? [code, vars, steps] : [code, vars, steps, 'ohne-ausgabe'])), stelleWieder = false;
+    function traceStand() {
+      var e = {}, n = 0;
+      inputs.forEach(function (inp) { if (inp.value) { e[inp.getAttribute('data-var')] = inp.value; n++; } });
+      if (outInput && outInput.value) { e['#out'] = outInput.value; n++; }
+      if (cur === 0 && !n) return null;
+      var o = { v: 1, f: traceF, n: cur, r: revList.slice() };
+      if (n && cur < steps.length) o.e = e;
+      return o;
+    }
+    function speichern() { if (!stelleWieder) st.aendern(traceStand); }
 
     function highlight(line, done) {
       $$('li', codeOl).forEach(function (li) {
@@ -668,11 +915,15 @@ def _main(kind, src, inputs, tests_src, mode):
         if (n === line) li.setAttribute('aria-current', 'step'); else li.removeAttribute('aria-current');
       });
     }
-    function addRow() {
+    function addRow(ruhig) {
       var s = steps[cur];
       var tr = el('tr', { class: 'is-active' });
-      tr.appendChild(el('th', { scope: 'row', text: String(cur + 1) }));
-      tr.appendChild(el('td', { class: 'a-trace__line', text: String(s.line) }));
+      if (tabellenSpalten) {
+        tabellenSpalten.werte[s.line - 1].forEach(function (w, i) { tr.appendChild(el(i === 0 ? 'th' : 'td', i === 0 ? { scope: 'row', class: 'a-trace__line', text: w } : { class: 'a-trace__line', text: w })); });
+      } else {
+        tr.appendChild(el('th', { scope: 'row', text: String(cur + 1) }));
+        tr.appendChild(el('td', { class: 'a-trace__line', text: String(s.line) }));
+      }
       inputs = [];
       vars.forEach(function (v) {
         var td = el('td');
@@ -688,18 +939,19 @@ def _main(kind, src, inputs, tests_src, mode):
       });
       var tdo = el('td');
       outInput = null;
-      if (s.out !== undefined) {
+      if (!mitAusgabe) tdo = null;
+      else if (s.out !== undefined) {
         outInput = el('input', { type: 'text', class: 'a-trace__in a-trace__in--out', autocomplete: 'off', spellcheck: 'false', 'aria-label': 'Ausgabe von print() in Zeile ' + s.line });
         outInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); checkBtn.click(); } });
         tdo.appendChild(outInput);
       } else tdo.appendChild(el('span', { class: 'a-trace__undef', text: '' }));
-      tr.appendChild(tdo);
+      if (tdo) tr.appendChild(tdo);
       tbody.appendChild(tr); rowEl = tr;
       highlight(s.line);
       tries = 0; showBtn.hidden = true;
       msg.className = 'a-trace__msg';
-      msg.textContent = 'Zeile ' + s.line + ' wird ausgeführt. Was steht danach in den markierten Feldern' + (s.out !== undefined ? ' und in der Ausgabe?' : '?') + ' Typen beachten: Text steht in Anführungszeichen.';
-      var first = (inputs[0] || outInput); if (first && cur > 0) first.focus();
+      msg.textContent = typeof s.frage === 'string' && s.frage ? s.frage : 'Zeile ' + s.line + ' wird ausgeführt. Was steht danach in den markierten Feldern' + (mitAusgabe && s.out !== undefined ? ' und in der Ausgabe?' : '?') + (mitTyphinweis ? ' Typen beachten: Text steht in Anführungszeichen.' : '');
+      var first = (inputs[0] || outInput); if (first && cur > 0 && !ruhig) first.focus();
     }
     function lockRow(revealed) {
       var s = steps[cur];
@@ -711,20 +963,25 @@ def _main(kind, src, inputs, tests_src, mode):
       });
       if (outInput) { var td2 = outInput.parentNode; td2.innerHTML = ''; td2.appendChild(el('span', { class: 'a-trace__val is-new' + (revealed ? ' is-revealed' : ''), text: s.out })); }
       rowEl.classList.remove('is-active'); rowEl.classList.add('is-done');
-      if (revealed) revealedCount++;
+      if (revealed) { revealedCount++; revList.push(cur); }
+    }
+    function fertig() {
+      highlight(0);
+      checkBtn.hidden = true; showBtn.hidden = true;
+      msg.className = 'a-trace__msg is-ok';
+      msg.textContent = revealedCount === 0 ? 'Geschafft: alle ' + steps.length + ' Schritte richtig verfolgt.' : 'Fertig. ' + revealedCount + ' von ' + steps.length + ' Schritten hast du dir zeigen lassen. Versuch es von vorn ohne Hilfe.';
     }
     function advance(revealed) {
       lockRow(revealed);
       cur++;
       if (cur >= steps.length) {
-        highlight(0);
-        checkBtn.hidden = true; showBtn.hidden = true;
-        msg.className = 'a-trace__msg is-ok';
-        msg.textContent = revealedCount === 0 ? 'Geschafft: alle ' + steps.length + ' Schritte richtig verfolgt.' : 'Fertig. ' + revealedCount + ' von ' + steps.length + ' Schritten hast du dir zeigen lassen. Versuch es von vorn ohne Hilfe.';
+        fertig();
         if (revealedCount === 0) { markSolved(root); addBadge(root); }
+        speichern();
         return;
       }
       addRow();
+      speichern();
     }
     checkBtn.addEventListener('click', function () {
       if (cur >= steps.length) return;
@@ -749,16 +1006,34 @@ def _main(kind, src, inputs, tests_src, mode):
       if (ok) { advance(false); return; }
       tries++;
       msg.className = 'a-trace__msg is-bad';
-      msg.textContent = 'Noch nicht richtig. ' + (s.hint ? s.hint : 'Geh die Zeile nochmal durch: Welcher Typ kommt heraus (Text mit Anführungszeichen, int ohne Punkt, float mit Punkt)?');
+      msg.textContent = 'Noch nicht richtig. ' + (s.hint ? s.hint : (s.frage || !mitTyphinweis) ? 'Geh die Zeile nochmal durch.' : 'Geh die Zeile nochmal durch: Welcher Typ kommt heraus (Text mit Anführungszeichen, int ohne Punkt, float mit Punkt)?');
       if (tries >= 2) showBtn.hidden = false;
     });
     showBtn.addEventListener('click', function () { advance(true); });
     resetBtn.addEventListener('click', function () {
-      tbody.innerHTML = ''; cur = 0; revealedCount = 0; state = {};
+      tbody.innerHTML = ''; cur = 0; revealedCount = 0; revList = []; state = {};
       checkBtn.hidden = false; addRow(); highlight(steps[0].line);
+      st.loeschen();
       (inputs[0] || outInput).focus();
     });
+    tbody.addEventListener('input', speichern);
     addRow();
+    st.wiederherstellen(function (w) {
+      if (!w || w.f !== traceF || !(w.n >= 0 && w.n <= steps.length) || w.n !== Math.floor(w.n) || !Array.isArray(w.r) || !w.r.every(function (i) { return i >= 0 && i < w.n && i === Math.floor(i); })) return false;
+      stelleWieder = true;
+      try {
+        tbody.innerHTML = ''; cur = 0; revealedCount = 0; revList = []; state = {}; checkBtn.hidden = false;
+        for (var i = 0; i < w.n; i++) { addRow(true); lockRow(w.r.indexOf(i) >= 0); cur++; }
+        if (cur >= steps.length) fertig();
+        else {
+          addRow(true);
+          if (w.e && typeof w.e === 'object') {
+            inputs.forEach(function (inp) { var v = w.e[inp.getAttribute('data-var')]; if (typeof v === 'string') inp.value = v; });
+            if (outInput && typeof w.e['#out'] === 'string') outInput.value = w.e['#out'];
+          }
+        }
+      } finally { stelleWieder = false; }
+    });
   }
 
   /* ── Typ: parsons ────────────────────────────────────────── */
@@ -800,6 +1075,12 @@ def _main(kind, src, inputs, tests_src, mode):
     root.appendChild(help); root.appendChild(cols); root.appendChild(bar); root.appendChild(fb); root.appendChild(live);
 
     var grabbed = null, focusId = null, dragId = null;
+    /* Bearbeitungsstand: zeilen:<kennung> = {v, f, p (Vorrat: Zeilenkennungen in Reihenfolge), a (Programm: [Zeilenkennung, Einrückung])} */
+    var parsId = root.getAttribute('data-id');
+    var st = parsId ? stand('zeilen:' + parsId) : KEIN_STAND, parsF = kurzHash(JSON.stringify([sol, cfg.distractors || [], cfg.alts || []])), ruhig = true;
+    function parsStand() {
+      return { v: 1, f: parsF, p: poolArr.map(function (x) { return x.id; }), a: ansArr.map(function (x) { return [x.id, x.level]; }) };
+    }
     function find(id) { return items.filter(function (x) { return x.id === id; })[0]; }
     function say(t) { live.textContent = ''; setTimeout(function () { live.textContent = t; }, 20); }
     function clearMarks() { $$('.is-right,.is-wrong', ansUl).forEach(function (n) { n.classList.remove('is-right', 'is-wrong'); }); fb.className = 'a-p-fb'; fb.textContent = ''; }
@@ -840,6 +1121,7 @@ def _main(kind, src, inputs, tests_src, mode):
       if (!poolArr.length) poolUl.appendChild(el('li', { class: 'a-p-empty', text: 'Vorrat leer.' }));
       if (!ansArr.length) ansUl.appendChild(el('li', { class: 'a-p-empty', text: 'Noch leer. Zeilen aus dem Vorrat hierher legen oder ziehen.' }));
       if (focusId) { var n = $('[data-id="' + focusId + '"]', root); if (n) n.focus(); focusId = null; }
+      if (!ruhig) st.aendern(parsStand);
     }
     function remove(it) { var i = poolArr.indexOf(it); if (i >= 0) poolArr.splice(i, 1); i = ansArr.indexOf(it); if (i >= 0) ansArr.splice(i, 1); }
     function toAns(it, at) {
@@ -944,9 +1226,27 @@ def _main(kind, src, inputs, tests_src, mode):
     resetBtn.addEventListener('click', function () {
       items.forEach(function (x) { x.level = 0; });
       poolArr = shuffle(items.slice()); ansArr = []; grabbed = null; clearMarks(); render();
+      st.loeschen();
       say('Zeilen neu gemischt');
     });
     render();
+    ruhig = false;
+    st.wiederherstellen(function (w) {
+      if (!w || w.f !== parsF || !Array.isArray(w.p) || !Array.isArray(w.a) || w.p.length + w.a.length !== items.length) return false;
+      var vorrat = [], programm = [], gesehen = {};
+      var ok = w.p.every(function (id) { var it = find(id); if (!it || gesehen[id]) return false; gesehen[id] = 1; vorrat.push(it); return true; }) &&
+        w.a.every(function (e) {
+          var it = Array.isArray(e) ? find(e[0]) : null;
+          if (!it || gesehen[e[0]] || !(e[1] >= 0 && e[1] <= MAXLVL) || e[1] !== Math.floor(e[1])) return false;
+          gesehen[e[0]] = 1; programm.push([it, e[1]]); return true;
+        });
+      if (!ok) return false;
+      items.forEach(function (x) { x.level = 0; });
+      programm.forEach(function (e) { e[0].level = e[1]; });
+      poolArr = vorrat; ansArr = programm.map(function (e) { return e[0]; });
+      grabbed = null; focusId = null; clearMarks();
+      ruhig = true; render(); ruhig = false;
+    });
   }
 
   /* ── Start ───────────────────────────────────────────────── */
@@ -956,7 +1256,7 @@ def _main(kind, src, inputs, tests_src, mode):
     $$('[data-a="gap"]').forEach(initGap);
     $$('[data-a="code"],[data-a="run"],[data-a="klausur"]').forEach(initCode);
     var sv = Store.solved(lessonId());
-    taskNodes().forEach(function (t) { if (sv[t.getAttribute('data-id')]) addBadge(t); });
+    badgeNodes().forEach(function (t) { if (sv[t.getAttribute('data-id')]) addBadge(t); });
     updateProgress();
     // „begonnen“: erste Eingabe oder Bedienung in einer Aufgabe
     function startedFrom(e) { var t = e.target && e.target.closest ? e.target.closest('[data-a][data-id]') : null; if (t) markStarted(t); }

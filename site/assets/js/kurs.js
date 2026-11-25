@@ -37,6 +37,17 @@
     }
   };
 
+  /* ── Bearbeitungsstand (Quiz, Vorhersage, Fehlersuche; Schlüssel siehe docs/app/ARCHITEKTUR.md, 4.4a) ──
+     Ein Eintrag je Frage, Vorhersage oder Fehlersuche, entprellt gespeichert, beim Laden wiederhergestellt.
+     Vorhersage und Fehlersuche haben keine eigene Kennung: Der Schlüssel enthält eine Kennung ihres Inhalts,
+     ändert sich der Text, beginnt die Aufgabe von vorn. */
+  var KEIN_STAND = { pfad: '', lesen: function () {}, aendern: function () {}, sichern: function () {}, loeschen: function () {}, wiederherstellen: function () {} };
+  function stand(schluessel) {
+    var l = document.body.getAttribute('data-lesson');
+    return l && window.KursSpeicher && window.KursSpeicher.stand ? window.KursSpeicher.stand(l, schluessel) : KEIN_STAND;
+  }
+  function kurzHash(t) { return window.KursSpeicher && window.KursSpeicher.hash ? window.KursSpeicher.hash(t) : String(String(t).length); }
+
   /* ── Fortschritt pro Abschnitt ───────────────────────────── */
   function doneSections(lesson) { return Store.get(lesson, 'done') || {}; }
 
@@ -57,7 +68,7 @@
       var bar = $('.k-progress__bar', p);
       if (fill) fill.style.width = pct + '%';
       if (txt) txt.textContent = n + ' von ' + sections.length + ' Abschnitten';
-      if (bar) { bar.setAttribute('role', 'progressbar'); bar.setAttribute('aria-valuemin', '0'); bar.setAttribute('aria-valuemax', '100'); bar.setAttribute('aria-valuenow', String(pct)); bar.setAttribute('aria-label', 'Fortschritt ' + lesson.toUpperCase()); }
+      if (bar) { bar.setAttribute('role', 'progressbar'); bar.setAttribute('aria-valuemin', '0'); bar.setAttribute('aria-valuemax', '100'); bar.setAttribute('aria-valuenow', String(pct)); bar.setAttribute('aria-label', 'Fortschritt ' + (window.KursTermine ? window.KursTermine.lang(lesson.toUpperCase()) : lesson.toUpperCase())); }
     });
   }
 
@@ -161,7 +172,7 @@
     var lesson = document.body.getAttribute('data-lesson');
     var quizId = quiz.getAttribute('data-quiz') || 'quiz';
     var state = {}; // id -> {answered, pts}
-    var total = 0;
+    var total = 0, stelleWieder = false;
     qs.forEach(function (q) { total += parseFloat(q.getAttribute('data-points') || '1'); });
 
     function renderScore() {
@@ -176,7 +187,7 @@
           : (pct >= 50 ? 'Bestanden (' + pct + ' %). ' : 'Noch unter 50 % (' + pct + ' %). ') + (got < total ? 'Schau dir die Erklärungen zu den Aufgaben ohne volle Punktzahl nochmal an.' : 'Volle Punktzahl.');
         scoreBox.appendChild(el('span', { text: msg, role: 'status' }));
       }
-      if (lesson && answered === qs.length && qs.length) {
+      if (lesson && answered === qs.length && qs.length && !stelleWieder) {
         Store.set(lesson, 'quiz-' + quizId, { got: got, total: total });
         var sec = quiz.closest('.k-section');
         if (sec && sec._markDone) sec._markDone();
@@ -196,11 +207,15 @@
       var checkBtn = el('button', { type: 'button', class: 'k-btn k-btn--small k-btn--ghost', text: 'Prüfen' });
       var retryBtn = el('button', { type: 'button', class: 'k-btn k-btn--small k-btn--link', text: 'Nochmal versuchen', hidden: '' });
       actions.appendChild(checkBtn); actions.appendChild(retryBtn);
-      var getAnswer, markOptions, lockInputs;
+      var getAnswer, markOptions, lockInputs, setAnswer, optTexte = '';
+      /* Bearbeitungsstand: frage:<quiz>.<frage> = {v, f, p (Punkte im ersten Versuch), a (mc: gewählte Antworten in Reihenfolge der Vorlage; sonst Text), ok, o (zum Nochmal-Versuch geöffnet)} */
+      var stFrage = lesson ? stand('frage:' + quizId + '.' + id) : KEIN_STAND;
 
       if (type === 'mc') {
         var list = $('.k-q__options', q);
-        var items = mische($$('li', list));
+        var vorlage = $$('li', list);
+        optTexte = vorlage.map(function (li) { return li.textContent.trim() + (li.hasAttribute('data-correct') ? '+' : ''); }).join('\n');
+        var items = mische(vorlage.slice());
         var multi = items.filter(function (li) { return li.hasAttribute('data-correct'); }).length > 1;
         var fs = el('fieldset');
         fs.appendChild(el('legend', { class: 'k-sr', text: 'Antwortmöglichkeiten' }));
@@ -211,7 +226,7 @@
           lab.appendChild(inp);
           var span = el('span'); span.innerHTML = li.innerHTML; lab.appendChild(span);
           lab._correct = li.hasAttribute('data-correct');
-          inputs.push({ inp: inp, lab: lab });
+          inputs.push({ inp: inp, lab: lab, nr: vorlage.indexOf(li) });
           fs.appendChild(lab);
         });
         list.replaceWith(fs);
@@ -219,10 +234,15 @@
           var sel = inputs.filter(function (o) { return o.inp.checked; });
           if (!sel.length) return null;
           var ok = inputs.every(function (o) { return o.inp.checked === o.lab._correct; });
-          return { ok: ok };
+          return { ok: ok, a: sel.map(function (o) { return o.nr; }).sort(function (x, y) { return x - y; }) };
         };
         markOptions = function () { inputs.forEach(function (o) { o.lab.classList.toggle('is-right', o.lab._correct); o.lab.classList.toggle('is-wrong', o.inp.checked && !o.lab._correct); }); };
         lockInputs = function (lock) { inputs.forEach(function (o) { o.inp.disabled = lock; if (!lock) { o.lab.classList.remove('is-right', 'is-wrong'); } }); };
+        setAnswer = function (a) {
+          if (!Array.isArray(a) || !a.every(function (n) { return n >= 0 && n < inputs.length && n === Math.floor(n); })) return false;
+          inputs.forEach(function (o) { o.inp.checked = a.indexOf(o.nr) >= 0; });
+          return true;
+        };
         q.appendChild(fs); // ensure position
         q.appendChild(actions); q.appendChild(fb);
       } else {
@@ -246,13 +266,23 @@
             var tol = parseFloat(q.getAttribute('data-tol') || '0');
             var rel = parseFloat(q.getAttribute('data-tol-rel') || '0');
             if (isNaN(x)) return { ok: false, invalid: true };
-            return { ok: Math.abs(x - target) <= Math.max(tol, Math.abs(target) * rel) + 1e-12 };
+            return { ok: Math.abs(x - target) <= Math.max(tol, Math.abs(target) * rel) + 1e-12, a: v };
           }
           var mine = normOut(v);
-          return { ok: ans.split('|').some(function (a) { return normOut(a.replace(/\\n/g, '\n')) === mine; }) };
+          return { ok: ans.split('|').some(function (a) { return normOut(a.replace(/\\n/g, '\n')) === mine; }), a: v };
         };
         markOptions = function (ok) { input.style.borderColor = ok ? 'var(--k-ok)' : 'var(--k-bad)'; };
         lockInputs = function (lock) { input.readOnly = lock; if (!lock) input.style.borderColor = ''; };
+        setAnswer = function (a) { if (typeof a !== 'string') return false; input.value = a; return true; };
+        optTexte = ans;
+      }
+      var frageF = kurzHash([type, q.getAttribute('data-answer') || '', q.getAttribute('data-points') || '', q.getAttribute('data-tol') || '', q.getAttribute('data-tol-rel') || '', optTexte].join('|'));
+      var letzter = null, offen = false;
+      function frageStand() {
+        if (!state[id].answered || !letzter) return null;
+        var o = { v: 1, f: frageF, p: state[id].pts, ok: letzter.ok ? 1 : 0 };
+        if (offen) o.o = 1; else o.a = letzter.a;
+        return o;
       }
 
       function show(res) {
@@ -278,7 +308,10 @@
           markOptions(ok);
           if (ok) { lockInputs(true); checkBtn.hidden = true; retryBtn.hidden = true; }
           else { lockInputs(true); checkBtn.hidden = true; retryBtn.hidden = false; }
+          offen = false;
+          letzter = { ok: ok, a: res.a };
           renderScore();
+          if (!stelleWieder) stFrage.aendern(frageStand);
         }
       }
       checkBtn.addEventListener('click', function () {
@@ -289,6 +322,22 @@
       });
       retryBtn.addEventListener('click', function () {
         lockInputs(false); fb.hidden = true; retryBtn.hidden = true; checkBtn.hidden = false;
+        offen = true; stFrage.aendern(frageStand);
+      });
+      stFrage.wiederherstellen(function (w) {
+        if (!w || w.f !== frageF || state[id].answered || !(w.p >= 0 && w.p <= pts) || (!w.o && !setAnswer(w.a))) return false;
+        stelleWieder = true;
+        try {
+          if (w.o) {
+            state[id].answered = true; state[id].pts = w.p; letzter = { ok: !!w.ok, a: w.a };
+            offen = true; renderScore();
+            return;
+          }
+          var res = getAnswer();
+          if (!res || res.invalid) return false;
+          state[id].answered = true; state[id].pts = w.p; state[id].tries = 1;
+          show(res);
+        } finally { stelleWieder = false; }
       });
     });
     renderScore();
@@ -564,14 +613,41 @@
   /* ── Konsolen-Echo: Python-Hilfsprogramm (läuft im Worker, Code kommt als _kc_src) ──
      Oberste Ausdrucks-Anweisungen werden im 'single'-Modus kompiliert und geben so ihren repr aus
      (None bleibt still, Zuweisungen geben nichts aus). Eine Exception beendet den Lauf mit Kurz-Traceback. */
+  /* Terminal-Modus (_kc_term): Eingaben kommen als JSON-Liste (_kc_inputs). Ist sie bei einem input() aufgebraucht,
+     endet der Lauf mit dem Signal _KcEingabe (von BaseException abgeleitet, also an "except Exception" vorbei);
+     das Ergebnis ist dann "\x1d" + Aufforderung. Auch ein nacktes "except:" hält das Signal nicht auf: Die erste
+     Zeile im Handler löst es über eine Trace-Funktion erneut aus. random bekommt den Startwert _kc_seed. */
   var CONSOLE_PY = String.raw`
-import ast, sys, builtins, traceback
-_lines = _kc_stdin.split("\n") if _kc_stdin else []
-if _lines and _lines[-1] == "":
-    _lines.pop()
+import ast, sys, builtins, traceback, json
+_term = bool(_kc_term)
+if _term:
+    _lines = [str(x) for x in json.loads(_kc_inputs)]
+else:
+    _lines = _kc_stdin.split("\n") if _kc_stdin else []
+    if _lines and _lines[-1] == "":
+        _lines.pop()
 _pos = 0
+_need = None
+class _KcEingabe(BaseException):
+    pass
+def _kc_stopp(prompt):
+    def _tr(frame, event, arg):
+        if event == "line" and frame.f_code.co_filename == "<code>":
+            raise _KcEingabe(prompt)
+        return _tr
+    f = sys._getframe(1)
+    while f is not None:
+        if f.f_code.co_filename == "<code>":
+            f.f_trace = _tr
+        f = f.f_back
+    sys.settrace(_tr)
+    raise _KcEingabe(prompt)
 def _kc_input(prompt=""):
-    global _pos
+    global _pos, _need
+    if _term and (_need is not None or _pos >= len(_lines)):
+        if _need is None:
+            _need = str(prompt)
+        _kc_stopp(_need)
     sys.stdout.write(str(prompt))
     if _pos >= len(_lines):
         sys.stdout.write("\n")
@@ -582,6 +658,14 @@ def _kc_input(prompt=""):
     return v
 _orig_input = builtins.input
 builtins.input = _kc_input
+if _term and _kc_seed:
+    import random as _rnd
+    _rnd.seed(int(_kc_seed))
+    if "numpy" in sys.modules:
+        try:
+            sys.modules["numpy"].random.seed(int(_kc_seed) % 4294967296)
+        except Exception:
+            pass
 _result = ""
 try:
     try:
@@ -598,9 +682,13 @@ try:
                 else:
                     _co = compile(ast.Module(body=[_node], type_ignores=[]), "<code>", "exec")
                 exec(_co, _g)
+            except _KcEingabe:
+                break
             except SystemExit:
                 break
             except BaseException as e:
+                if _need is not None:
+                    break
                 _fr = [f for f in traceback.extract_tb(e.__traceback__) if f.filename == "<code>"]
                 _ln = _fr[-1].lineno if _fr else _node.lineno
                 _all = _kc_src.split("\n")
@@ -609,7 +697,11 @@ try:
                 _result = "Traceback (most recent call last):\n  Zeile %d: %s\n%s" % (_ln, _txt, _msg)
                 break
 finally:
+    sys.settrace(None)
     builtins.input = _orig_input
+    if _need is not None:
+        _result = "\x1d" + _need
+        sys.stdout.write("\x1d\n")
     sys.stdout.flush()
 _result
 `;
@@ -724,14 +816,172 @@ _result
   };
 
   /* Lauf mit Konsolen-Echo und input()-Eingaben; Ergebnis wie Py.run, Fehler-Kurzform in r.error */
+  /* opts.term: Terminal-Modus mit opts.inputs (Liste) und opts.seed; Ergebnis dann ggf. r.need = Aufforderung */
   Py.console = function (code, stdin, opts) {
     opts = opts || {};
     opts.harness = CONSOLE_PY;
-    opts.vars = { _kc_stdin: stdin || '' };
+    opts.vars = { _kc_stdin: stdin || '', _kc_term: !!opts.term, _kc_inputs: JSON.stringify(opts.inputs || []), _kc_seed: opts.seed || 0 };
     return Py.run(code, opts).then(function (r) {
-      if (!r.error && r.result) r.error = r.result;
+      if (typeof r.result === 'string' && r.result.charAt(0) === '\u001d') { r.need = r.result.slice(1); r.result = ''; }
+      else if (!r.error && r.result) r.error = r.result;
       return r;
     });
+  };
+
+  /* ── Eingaben für input(): im Terminal (Standard) oder vorab eintragen ──
+     Die Wahl gilt je Gerät für alle Laufoberflächen (localStorage, kein Abgleich mit dem Konto). */
+  var MODUS_KEY = 'kurs-eingabemodus', modusMem = null;
+  Py.modus = function () {
+    var v = null;
+    try { v = window.localStorage.getItem(MODUS_KEY); } catch (e) { v = modusMem; }
+    if (v == null) v = modusMem;
+    return v === 'vorab' ? 'vorab' : 'terminal';
+  };
+  Py.setModus = function (m) {
+    m = m === 'vorab' ? 'vorab' : 'terminal';
+    modusMem = m;
+    try { window.localStorage.setItem(MODUS_KEY, m); } catch (e) { /* nur für diese Seite */ }
+    try { document.dispatchEvent(new CustomEvent('kurs:eingabemodus', { detail: { modus: m } })); } catch (e) { /* ältere Browser */ }
+  };
+  /* Umschalter „Eingaben: im Terminal | vorab eintragen“; onChange(modus) bei jeder Änderung (auch auf anderen Runnern) */
+  Py.modusSchalter = function (onChange) {
+    var wrap = el('div', { class: 'k-imodus', role: 'group', 'aria-label': 'Eingaben für input()' });
+    wrap.appendChild(el('span', { class: 'k-imodus__label', 'aria-hidden': 'true', text: 'Eingaben:' }));
+    var btns = [['terminal', 'im Terminal'], ['vorab', 'vorab eintragen']].map(function (d) {
+      var b = el('button', { type: 'button', class: 'k-imodus__btn', 'data-modus': d[0], text: d[1] });
+      b.addEventListener('click', function () { if (Py.modus() !== d[0]) Py.setModus(d[0]); });
+      wrap.appendChild(b);
+      return b;
+    });
+    function sync() {
+      var m = Py.modus();
+      btns.forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-modus') === m ? 'true' : 'false'); });
+      if (onChange) onChange(m);
+    }
+    document.addEventListener('kurs:eingabemodus', sync);
+    sync();
+    return { el: wrap, sync: sync };
+  };
+
+  /* ── Terminal-Dialog (Wiederholungslauf) ──
+     Das Programm läuft mit den bisher getippten Eingaben. Braucht es eine weitere, endet der Lauf mit der Aufforderung;
+     dahinter erscheint ein Eingabefeld in der Ausgabe. Nach Enter läuft das Programm von vorn mit der längeren Liste.
+     Angezeigt wird nur, was über das schon Gezeigte hinausgeht; weicht ein Lauf ab, ersetzt seine Ausgabe die Anzeige.
+     cfg.exec(inputs, seed, sink) -> Promise<r> (r.need: Aufforderung, sonst Ende); sink(text, cls) für jede Ausgabe.
+     cfg.onWait(prompt), cfg.onResume(), cfg.onEnd(r) (r.fail bei Ladefehler), cfg.onAbort(text). */
+  var TERMS = [];
+  function termsPruefen(wechsel) {
+    TERMS = TERMS.filter(function (c) {
+      if (!c.out.isConnected) { c.abort(null); return false; }
+      if (wechsel && c.waiting() && !c.out.getClientRects().length) c.abort('Eingabe beendet, weil du die Aufgabe gewechselt hast.');
+      return true;
+    });
+  }
+  window.addEventListener('hashchange', function () { setTimeout(function () { termsPruefen(true); }, 60); });
+  window.addEventListener('popstate', function () { setTimeout(function () { termsPruefen(true); }, 60); });
+  Py.terminal = function (out, cfg) {
+    var t = { inputs: [], seed: 0, gen: 0, shown: '', spans: [], field: null, waiting: false, complete: false };
+    function put(text, cls) {
+      if (!text) return;
+      var s = el('span', cls ? { class: cls } : null);
+      s.textContent = text;
+      out.appendChild(s); t.spans.push(s);
+      out.scrollTop = out.scrollHeight;
+    }
+    function clearMine() { t.spans.forEach(function (s) { if (s.parentNode) s.parentNode.removeChild(s); }); t.spans = []; }
+    function dropField() {
+      var f = t.field;
+      t.field = null;
+      if (!f) return;
+      var hadFocus = document.activeElement === f;
+      if (hadFocus) { if (!out.hasAttribute('tabindex')) out.setAttribute('tabindex', '-1'); try { out.focus({ preventScroll: true }); } catch (e) { /* egal */ } }
+      if (f.parentNode) f.parentNode.removeChild(f);
+    }
+    function starts(a, b) { return a.length >= b.length && a.slice(0, b.length) === b; }
+    function cycle() {
+      var my = t.gen, cur = '', segs = [], div = false;
+      function diverge() { div = true; clearMine(); segs.forEach(function (s) { put(s[0], s[1]); }); t.shown = cur; }
+      function sink(text, cls) {
+        if (my !== t.gen) return;
+        text = String(text).replace(/\u001d\n?/g, '');
+        if (!text) return;
+        segs.push([text, cls]); cur += text;
+        if (div) { put(text, cls); t.shown = cur; return; }
+        if (cur.length <= t.shown.length) { if (!starts(t.shown, cur)) diverge(); return; }
+        if (!starts(cur, t.shown)) { diverge(); return; }
+        put(cur.slice(Math.max(t.shown.length, cur.length - text.length)), cls);
+        t.shown = cur;
+      }
+      var p;
+      try { p = Promise.resolve(cfg.exec(t.inputs.slice(), t.seed, sink)); } catch (e) { p = Promise.reject(e); }
+      return p.then(function (r) {
+        if (my !== t.gen) return;
+        r = r || {};
+        if (r.timedOut || r.loadError) { t.complete = false; cfg.onEnd(r); return; }
+        if (!div && cur !== t.shown) diverge();   // Lauf endete früher als der vorige: neue Ausgabe zählt
+        if (typeof r.need === 'string') { warte(r.need); return; }
+        t.complete = true;
+        cfg.onEnd(r);
+      }, function (err) {
+        if (my !== t.gen) return;
+        cfg.onEnd({ fail: err || new Error('Fehler') });
+      });
+    }
+    function warte(prompt) {
+      t.waiting = true;
+      put(prompt); t.shown += prompt;
+      var name = prompt.replace(/\s+$/, '').replace(/[:\s]+$/, '') || 'Eingabe für input()';
+      var inp = el('input', { type: 'text', class: 'k-term__in', autocomplete: 'off', autocapitalize: 'off', autocorrect: 'off', spellcheck: 'false', enterkeyhint: 'send', 'aria-label': name + ' (Eingabe: Enter sendet, Escape bricht ab)' });
+      function fit() { inp.style.width = Math.min(60, Math.max(8, inp.value.length + 2)) + 'ch'; }
+      inp.addEventListener('input', fit); fit();
+      inp.addEventListener('keydown', function (e) {
+        if (e.isComposing || e.keyCode === 229) return;
+        if (e.key === 'Enter') { e.preventDefault(); senden(inp.value); }
+        else if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); ctl.abort('abgebrochen'); }
+      });
+      t.field = inp;
+      out.appendChild(inp);
+      out.scrollTop = out.scrollHeight;
+      try { inp.focus({ preventScroll: true }); } catch (e) { inp.focus(); }
+      try { inp.scrollIntoView({ block: 'nearest' }); } catch (e) { /* egal */ }
+      if (cfg.onWait) cfg.onWait(prompt);
+    }
+    function senden(v) {
+      if (!t.waiting) return;
+      t.waiting = false;
+      dropField();
+      put(v + '\n', 'k-term__echo'); t.shown += v + '\n';
+      t.inputs.push(v);
+      if (cfg.onResume) cfg.onResume();
+      cycle();
+    }
+    var ctl = {
+      out: out, put: put,
+      start: function () {
+        t.gen++; dropField(); clearMine();
+        t.inputs = []; t.shown = ''; t.waiting = false; t.complete = false;
+        t.seed = 1 + Math.floor(Math.random() * 2147483646);
+        if (TERMS.indexOf(ctl) < 0) TERMS.push(ctl);
+        termsPruefen(false);
+        return cycle();
+      },
+      /* Dialog beenden (nur während des Wartens). text: Hinweis in der Ausgabe; null = still */
+      abort: function (text) {
+        if (!t.waiting) return false;
+        t.gen++; t.waiting = false; dropField();
+        if (text) put('\n');
+        if (cfg.onAbort) cfg.onAbort(text || null);
+        return true;
+      },
+      /* still beenden, egal in welchem Zustand (Zurücksetzen, neuer Lauf) */
+      stop: function () { t.gen++; t.waiting = false; dropField(); },
+      waiting: function () { return t.waiting; },
+      complete: function () { return t.complete; },
+      inputs: function () { return t.inputs.slice(); },
+      hasOutput: function () { return !!t.shown; },
+      submit: function (v) { senden(String(v == null ? '' : v)); }
+    };
+    return ctl;
   };
 
   /* ── Nachladen von Zusatzdateien (relativ zu kurs.js) ────── */
@@ -904,11 +1154,12 @@ _result
     var stepBtn = el('button', { type: 'button', class: 'k-btn k-btn--small k-btn--ghost' });
     stepBtn.appendChild(window.KIcon('steps')); stepBtn.appendChild(document.createTextNode('Schritt für Schritt'));
     var resetBtn = el('button', { type: 'button', class: 'k-btn k-btn--small k-btn--link', text: 'Zurücksetzen' });
+    var abortBtn = el('button', { type: 'button', class: 'k-btn k-btn--small k-btn--ghost k-term__abbruch', text: 'Abbrechen', hidden: '' });
     var status = el('span', { class: 'k-runner__status', role: 'status', 'aria-live': 'polite' });
-    var bar = el('div', { class: 'k-runner__bar' }, [runBtn, stepBtn, resetBtn, status]);
+    var bar = el('div', { class: 'k-runner__bar' }, [runBtn, stepBtn, abortBtn, resetBtn, status]);
     var out = el('pre', { class: 'k-runner__out', 'aria-live': 'polite', 'aria-label': 'Ausgabe', hidden: '' });
 
-    // Eingabefeld für input()
+    // Eingaben für input(): im Terminal (Dialog in der Ausgabe) oder vorab im Feld „Eingaben“
     var stdinOrig = (box.getAttribute('data-stdin') || ta.getAttribute('data-stdin') || '').replace(/\n$/, '');
     var stdinTa = el('textarea', { class: 'k-runner__stdin', spellcheck: 'false', autocapitalize: 'off', autocomplete: 'off', id: ta.id + '-stdin' });
     stdinTa.value = stdinOrig;
@@ -917,7 +1168,14 @@ _result
     ]);
     function fitStdin() { stdinTa.rows = Math.min(8, Math.max(1, stdinTa.value.split('\n').length)); }
     function curCode() { return window.KursEditor && window.KursEditor.getValue ? window.KursEditor.getValue(ta) : ta.value; }
-    function syncStdinBox() { stdinBox.hidden = !INPUT_RE.test(ta.value); }
+    var schalter = Py.modusSchalter(function () { syncStdinBox(); });
+    bar.insertBefore(schalter.el, status);
+    function syncStdinBox() {
+      if (!schalter) return;
+      var hat = INPUT_RE.test(ta.value);
+      schalter.el.hidden = !hat;
+      stdinBox.hidden = !hat || Py.modus() !== 'vorab';
+    }
     stdinTa.addEventListener('input', fitStdin);
     ta.addEventListener('input', syncStdinBox);
     fitStdin(); syncStdinBox();
@@ -935,7 +1193,7 @@ _result
        Codeblock entstanden ist (MDX-Lektionen schreiben den Code als ```python). */
     var predict = tryBox && $('.k-predict', tryBox);
     if (predict && predict._kRunner && predict._kRunner !== box) predict = null;
-    var predicted = null;
+    var predicted = null, stVorhersage = KEIN_STAND, vorhersageLief = false;
     if (predict) {
       predict._kRunner = box;
       runBtn.disabled = true;
@@ -944,7 +1202,12 @@ _result
       if (expl) expl.hidden = true;
       var result = $('.k-predict__result', predict) || el('div', { class: 'k-predict__result' });
       if (!result.parentNode) predict.appendChild(result);
-      var opts = mische($$('.k-predict__opts button', predict));
+      var optsOrig = $$('.k-predict__opts button', predict);
+      var opts = mische(optsOrig.slice());
+      /* Bearbeitungsstand: tipp:<Kennung des Inhalts> = {v, t (gewählte Antwort), g (Programm lief danach)} */
+      var frage = $('.k-predict__q', predict);
+      stVorhersage = stand('tipp:' + kurzHash((frage ? frage.textContent : '') + '\n' + optsOrig.map(function (b) { return b.textContent + (b.hasAttribute('data-correct') ? '+' : ''); }).join('\n') + '\n' + original));
+      var tippStand = function () { return predicted ? { v: 1, t: predicted.textContent, g: vorhersageLief ? 1 : 0 } : null; };
       opts.forEach(function (b) {
         b.setAttribute('aria-pressed', 'false');
         b.addEventListener('click', function () {
@@ -952,7 +1215,34 @@ _result
           predicted = b;
           runBtn.disabled = false;
           status.textContent = 'Tipp gespeichert. Jetzt ausführen.';
+          stVorhersage.aendern(tippStand);
         });
+      });
+      var zeigeTipp = function () {
+        var good = predicted.hasAttribute('data-correct');
+        var res = $('.k-predict__result', predict);
+        res.innerHTML = '';
+        res.appendChild(el('strong', { text: good ? 'Dein Tipp „' + predicted.textContent + '“ stimmt. ' : 'Dein Tipp war „' + predicted.textContent + '“ – die Ausgabe sieht anders aus. ' }));
+        var ex = $('.k-predict__expl', predict);
+        if (ex) { var c = el('span'); c.innerHTML = ex.innerHTML; res.appendChild(c); }
+      };
+      box._kVorhersage = {
+        zeige: function () { vorhersageLief = true; zeigeTipp(); stVorhersage.aendern(tippStand); },
+        neu: function () {
+          predicted = null; vorhersageLief = false;
+          opts.forEach(function (o) { o.setAttribute('aria-pressed', 'false'); });
+          var r = $('.k-predict__result', predict); if (r) r.innerHTML = '';
+          runBtn.disabled = true;
+        }
+      };
+      stVorhersage.wiederherstellen(function (w) {
+        if (!w || typeof w.t !== 'string') return false;
+        var b = opts.filter(function (o) { return o.textContent === w.t; })[0];
+        if (!b) return false;
+        opts.forEach(function (o) { o.setAttribute('aria-pressed', o === b ? 'true' : 'false'); });
+        predicted = b; runBtn.disabled = false;
+        status.textContent = 'Tipp gespeichert. Jetzt ausführen.';
+        if (w.g) { vorhersageLief = true; zeigeTipp(); }
       });
     }
 
@@ -961,53 +1251,115 @@ _result
     }
 
     var running = false;
-    function run() {
-      if (running || runBtn.disabled) return;
-      running = true; runBtn.disabled = true; out.textContent = ''; out.hidden = false;
-      var first = !Py.worker;
+    function busyStatus(text) {
       status.innerHTML = '';
       status.appendChild(el('span', { class: 'k-spinner', 'aria-hidden': 'true' }));
-      status.appendChild(document.createTextNode(first ? 'Python wird geladen (einmalig, ca. 10 MB) …' : 'läuft …'));
+      status.appendChild(document.createTextNode(text));
+    }
+    function finish(r, gotOutput) {
+      if (r.timedOut) append('\nAbgebrochen nach ' + (timeout / 1000) + ' s. Läuft da eine Endlosschleife?\n', 'err');
+      else if (r.error) append((out.textContent && !/\n$/.test(out.textContent) ? '\n' : '') + r.error.replace(/\s+$/, '') + '\n', 'err');
+      else if (!gotOutput) append('(keine Ausgabe – hast du print() benutzt?)', 'sys');
+      status.textContent = r.timedOut ? 'abgebrochen' : (r.error ? 'Fehler' : 'fertig');
+      if (predict && predicted) box._kVorhersage.zeige();
+    }
+    function loadFail(err) {
+      append('Python konnte nicht gestartet werden. Bist du online? (' + err.message + ')\n', 'err');
+      status.textContent = 'Ladefehler – erneut versuchen';
+    }
+
+    /* Terminal-Dialog: Eingaben direkt in der Ausgabe tippen (Wiederholungslauf, siehe Py.terminal) */
+    var term = null, termCode = '', vizNachLauf = false;
+    function termMode(code) { return Py.modus() === 'terminal' && INPUT_RE.test(code); }
+    function getTerm() {
+      if (term) return term;
+      term = Py.terminal(out, {
+        exec: function (inputs, seed, sink) {
+          var rich = Py.ui(out, { files: dataFiles, upload: uploader ? uploader.get : null, scan: termCode });
+          return Py.console(termCode, '', Py.mix({
+            timeout: timeout, term: true, inputs: inputs, seed: seed,
+            onOut: function (t) { sink(t); },
+            onErr: function (t) { sink(t, 'err'); }
+          }, rich)).then(function (r) { rich.finish(); return r; }, function (e) { rich.finish(); throw e; });
+        },
+        onWait: function () {
+          running = false; runBtn.disabled = false; abortBtn.hidden = false;
+          status.textContent = vizNachLauf ? 'Tippe die Eingaben, danach startet Schritt für Schritt.' : 'wartet auf deine Eingabe';
+        },
+        onResume: function () { running = true; runBtn.disabled = true; abortBtn.hidden = true; busyStatus('läuft …'); },
+        onEnd: function (r) {
+          abortBtn.hidden = true;
+          if (r.fail) loadFail(r.fail); else finish(r, term.hasOutput());
+          running = false; runBtn.disabled = false;
+          var viz = vizNachLauf; vizNachLauf = false;
+          if (viz && !r.fail && !r.timedOut) openViz(termCode, { inputs: term.inputs() });
+        },
+        onAbort: function (text) {
+          abortBtn.hidden = true; vizNachLauf = false;
+          if (text) { append('(' + text + ')\n', 'sys'); status.textContent = text; }
+          running = false; runBtn.disabled = !!(predict && !predicted);
+        }
+      });
+      return term;
+    }
+    abortBtn.addEventListener('click', function () { if (term) term.abort('abgebrochen'); runBtn.focus(); });
+    // Code geändert, während das Programm auf eine Eingabe wartet: Dialog sauber beenden
+    ta.addEventListener('input', function () { if (term && term.waiting() && curCode() !== termCode) term.abort('Code geändert. Starte das Programm neu mit „Ausführen“.'); });
+
+    function run(opt) {
+      if (running || runBtn.disabled) return;
+      if (term) term.stop();
+      vizNachLauf = !!(opt && opt.viz);
+      abortBtn.hidden = true;
+      running = true; runBtn.disabled = true; out.textContent = ''; out.hidden = false;
+      busyStatus(!Py.worker ? 'Python wird geladen (einmalig, ca. 10 MB) …' : 'läuft …');
+      var code = curCode();
+      if (termMode(code)) { termCode = code; getTerm().start(); return; }
       var gotOutput = false;
-      var rich = Py.ui(out, { files: dataFiles, upload: uploader ? uploader.get : null, scan: curCode() });
-      Py.console(curCode(), stdinTa.value, Py.mix({
+      var rich = Py.ui(out, { files: dataFiles, upload: uploader ? uploader.get : null, scan: code });
+      Py.console(code, stdinTa.value, Py.mix({
         timeout: timeout,
         onOut: function (t) { gotOutput = true; append(t); },
         onErr: function (t) { gotOutput = true; append(t, 'err'); }
       }, rich)).then(function (r) {
         rich.finish();
-        if (r.timedOut) append('\nAbgebrochen nach ' + (timeout / 1000) + ' s. Läuft da eine Endlosschleife?\n', 'err');
-        else if (r.error) append((out.textContent && !/\n$/.test(out.textContent) ? '\n' : '') + r.error.replace(/\s+$/, '') + '\n', 'err');
-        else if (!gotOutput) append('(keine Ausgabe – hast du print() benutzt?)', 'sys');
-        status.textContent = r.timedOut ? 'abgebrochen' : (r.error ? 'Fehler' : 'fertig');
-        if (predict && predicted) {
-          var good = predicted.hasAttribute('data-correct');
-          var res = $('.k-predict__result', predict);
-          res.innerHTML = '';
-          res.appendChild(el('strong', { text: good ? 'Dein Tipp „' + predicted.textContent + '“ stimmt. ' : 'Dein Tipp war „' + predicted.textContent + '“ – die Ausgabe sieht anders aus. ' }));
-          var ex = $('.k-predict__expl', predict);
-          if (ex) { var c = el('span'); c.innerHTML = ex.innerHTML; res.appendChild(c); }
-        }
+        finish(r, gotOutput);
       }).catch(function (err) {
         rich.finish();
-        append('Python konnte nicht gestartet werden. Bist du online? (' + err.message + ')\n', 'err');
-        status.textContent = 'Ladefehler – erneut versuchen';
+        loadFail(err);
       }).then(function () { running = false; runBtn.disabled = false; });
     }
-    runBtn.addEventListener('click', run);
-    stepBtn.addEventListener('click', function () {
+    function openViz(code, o) {
       status.textContent = '';
-      window.KursViz.open(curCode(), { stdin: stdinTa.value, opener: stepBtn, timeout: timeout }).catch(function (err) {
+      window.KursViz.open(code, Py.mix({ opener: stepBtn, timeout: timeout }, o)).catch(function (err) {
         status.textContent = 'Visualisierer nicht ladbar: ' + err.message;
       });
+    }
+    runBtn.addEventListener('click', function () { run(); });
+    /* Schritt für Schritt braucht alle Eingaben vorab. Im Terminal-Modus: die Eingaben des letzten vollständigen Laufs
+       desselben Codes; gibt es keinen, läuft erst der Dialog, danach öffnet sich der Visualisierer. */
+    stepBtn.addEventListener('click', function () {
+      var code = curCode();
+      if (!termMode(code)) { openViz(code, { stdin: stdinTa.value }); return; }
+      if (term && term.complete() && termCode === code) { openViz(code, { inputs: term.inputs() }); return; }
+      if (term && term.waiting() && termCode === code) {
+        vizNachLauf = true;
+        status.textContent = 'Tippe die Eingaben, danach startet Schritt für Schritt.';
+        return;
+      }
+      if (running || runBtn.disabled) return;
+      run({ viz: true });
     });
     ta.addEventListener('keydown', function (e) { if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); run(); } });
     resetBtn.addEventListener('click', function () {
+      if (term) term.abort(null);
+      vizNachLauf = false;
       ta.value = original; stdinTa.value = stdinOrig; fitStdin(); syncStdinBox();
       out.textContent = ''; out.hidden = true; status.textContent = 'zurückgesetzt';
       if (out._kRich) out._kRich.textContent = '';
+      if (predict) { box._kVorhersage.neu(); stVorhersage.loeschen(); status.textContent = 'zurückgesetzt. Erst tippen, dann ausführen.'; }
     });
-    box._kRunner = { run: run, ta: ta, stdinTa: stdinTa, out: out };
+    box._kRunner = { run: run, ta: ta, stdinTa: stdinTa, out: out, terminal: function () { return term; } };
   }
 
   /* ── Jeder Python-Codeblock (pre > code) wird ein Runner ──── */
@@ -1106,14 +1458,40 @@ _result
     var btn = $('[data-mirror-check]', m);
     var verdict = $('.k-verdict', m);
     if (!btn) return;
+    /* Bearbeitungsstand: fehler:<Kennung des Inhalts> = {v, s (markierte Zeilen, ab 0), a (aufgelöst)} */
+    var kopf = $('h3', m);
+    var st = stand('fehler:' + kurzHash((kopf ? kopf.textContent : '') + '\n' + lines.map(function (l) { return l.textContent; }).join('\n') + '\n' + lines.map(function (l) { return l.getAttribute('data-bug') || ''; }).join(',')));
+    var aufgeloest = false, stelleWieder = false;
+    var neuBtn = el('button', { type: 'button', class: 'k-btn k-btn--small k-btn--link', text: 'Von vorn beginnen', hidden: '' });
+    btn.insertAdjacentElement('afterend', neuBtn);
+    function gewaehlt() { return lines.map(function (l, i) { return l.getAttribute('aria-pressed') === 'true' || (aufgeloest && (l.classList.contains('is-hit') || l.classList.contains('is-false'))) ? i : -1; }).filter(function (i) { return i >= 0; }); }
+    function mirrorStand() {
+      var g = gewaehlt();
+      neuBtn.hidden = !g.length && !aufgeloest;
+      return g.length || aufgeloest ? { v: 1, s: g, a: aufgeloest ? 1 : 0 } : null;
+    }
+    function speichern() { if (!stelleWieder) st.aendern(mirrorStand); neuBtn.hidden = !gewaehlt().length && !aufgeloest; }
     lines.forEach(function (l) {
       l.setAttribute('aria-pressed', 'false');
       l.addEventListener('click', function () {
         if (l.hasAttribute('data-locked')) return;
         l.setAttribute('aria-pressed', l.getAttribute('aria-pressed') === 'true' ? 'false' : 'true');
+        speichern();
       });
     });
-    btn.addEventListener('click', function () {
+    function vonVorn() {
+      aufgeloest = false;
+      lines.forEach(function (l) {
+        l.classList.remove('is-hit', 'is-miss', 'is-false'); l.removeAttribute('data-locked'); l.removeAttribute('aria-label');
+        l.setAttribute('aria-pressed', 'false');
+      });
+      if (verdict) { verdict.textContent = ''; verdict.hidden = true; }
+      $$('[data-mirror-after]', m).forEach(function (n) { n.hidden = true; });
+      btn.hidden = false; neuBtn.hidden = true;
+    }
+    neuBtn.addEventListener('click', function () { vonVorn(); st.loeschen(); if (lines[0]) lines[0].focus(); });
+    function aufloesen() {
+      aufgeloest = true;
       var bugs = {}, found = {}, falseAlarms = 0;
       lines.forEach(function (l) {
         var b = l.getAttribute('data-bug');
@@ -1132,6 +1510,17 @@ _result
       }
       $$('[data-mirror-after]', m).forEach(function (n) { n.hidden = false; });
       btn.hidden = true;
+    }
+    btn.addEventListener('click', function () { aufloesen(); speichern(); });
+    st.wiederherstellen(function (w) {
+      if (!w || !Array.isArray(w.s) || !w.s.every(function (i) { return i >= 0 && i < lines.length && i === Math.floor(i); })) return false;
+      stelleWieder = true;
+      try {
+        vonVorn();
+        w.s.forEach(function (i) { lines[i].setAttribute('aria-pressed', 'true'); });
+        if (w.a) aufloesen();
+        neuBtn.hidden = !w.s.length && !w.a;
+      } finally { stelleWieder = false; }
     });
   }
 
@@ -1188,7 +1577,9 @@ _result
     } else t = node.textContent;
     return t.replace(/\s+$/, '') + '\n';
   }
-  function copyBar(getText) {
+  function copyBar(getText, sprache) {
+    /* Ein Plan ist kein Python: Überschrift „Plan“ und nichts zum Kopieren */
+    if (sprache === 'plan' || sprache === 'tabelle') return el('div', { class: 'k-copy__bar' }, [el('span', { class: 'k-copy__lang', text: sprache === 'plan' ? 'Plan' : 'Tabelle' })]);
     var btn = el('button', { type: 'button', class: 'k-copy__btn', 'aria-label': 'Code kopieren' });
     btn.innerHTML = COPY_ICON + '<span class="k-copy__label">Kopieren</span>';
     var label = btn.querySelector('.k-copy__label');
@@ -1210,7 +1601,7 @@ _result
     node.setAttribute('data-copy', '1');
     var wrap = el('div', { class: 'k-copy' });
     node.parentNode.insertBefore(wrap, node);
-    wrap.appendChild(copyBar(function () { return blockText(node); }));
+    wrap.appendChild(copyBar(function () { return blockText(node); }, node.getAttribute('data-sprache')));
     wrap.appendChild(node);
   }
   function enhanceEditor(ke) {
@@ -1245,6 +1636,42 @@ _result
     }).observe(document.body, { childList: true, subtree: true });
   }
 
+  /* ── Vorhersage ohne Code ────────────────────────────────────
+     Steht in einem .k-try kein Runner (z. B. nur ein Plan zum Lesen), gibt es nichts auszuführen:
+     Der Klick auf eine Antwort löst sofort auf und speichert den Stand (tipp:<Kennung>, g = 1). */
+  function initVorhersageOhneRunner(predict) {
+    if (predict._kRunner || predict._kOhne) return;
+    var tryBox = predict.closest('.k-try');
+    if (tryBox && $('.k-runner', tryBox)) return;
+    predict._kOhne = true;
+    var expl = $('.k-predict__expl', predict);
+    if (expl) expl.hidden = true;
+    var res = $('.k-predict__result', predict);
+    if (!res) { res = el('div', { class: 'k-predict__result' }); predict.appendChild(res); }
+    res.setAttribute('aria-live', 'polite');
+    var optsOrig = $$('.k-predict__opts button', predict);
+    var opts = mische(optsOrig.slice());
+    var frage = $('.k-predict__q', predict);
+    var st = stand('tipp:' + kurzHash((frage ? frage.textContent : '') + '\n' + optsOrig.map(function (b) { return b.textContent + (b.hasAttribute('data-correct') ? '+' : ''); }).join('\n') + '\n'));
+    function zeige(b) {
+      opts.forEach(function (o) { o.setAttribute('aria-pressed', o === b ? 'true' : 'false'); });
+      var gut = b.hasAttribute('data-correct');
+      res.innerHTML = '';
+      res.appendChild(el('strong', { text: gut ? 'Dein Tipp „' + b.textContent + '“ stimmt. ' : 'Dein Tipp war „' + b.textContent + '“, das stimmt nicht. ' }));
+      if (expl) { var c = el('span'); c.innerHTML = expl.innerHTML; res.appendChild(c); }
+    }
+    opts.forEach(function (b) {
+      b.setAttribute('aria-pressed', 'false');
+      b.addEventListener('click', function () { zeige(b); st.aendern(function () { return { v: 1, t: b.textContent, g: 1 }; }); });
+    });
+    st.wiederherstellen(function (w) {
+      if (!w || typeof w.t !== 'string') return false;
+      var b = opts.filter(function (o) { return o.textContent === w.t; })[0];
+      if (!b) return false;
+      zeige(b);
+    });
+  }
+
   /* ── Start ───────────────────────────────────────────────── */
   function init() {
     initProgress();
@@ -1254,6 +1681,7 @@ _result
     ensureCss('../css/runner.css');
     $$('.k-runner').forEach(initRunner);
     enhanceRunners(document.body);      // vor initCopy: Codeblöcke werden Runner, nicht erst Kopier-Blöcke
+    $$('.k-predict').forEach(initVorhersageOhneRunner);
     $$('.k-mirror').forEach(initMirror);
     initVideo();
     initCopy();

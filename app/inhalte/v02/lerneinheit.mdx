@@ -1,0 +1,605 @@
+---
+titel: "Termin 02 · Wahr oder falsch: Programme, die entscheiden · Lerneinheit · Informatik Maschinenbau"
+beschreibung: "Aussagen sind wahr oder falsch: Vergleiche mit Grenzfall, die Raute im Programmablaufplan, if und else, Geldbeträge mit dem f-String. Mit Getränkeautomat zum Ausprobieren."
+body:
+  data-lesson: V02
+  data-page: lerneinheit
+stile:
+  - ../assets/css/dhbw-base.css
+  - ../assets/css/kurs.css
+  - ../assets/css/aufgaben.css
+  - ../assets/css/editor.css
+  - ../assets/css/v05.css
+  - ../assets/css/v01.css
+  - ../assets/css/v02.css
+skripte:
+  - ../assets/js/speicher.js
+  - ../assets/js/icons.js
+  - src: ../assets/js/editor.js
+    defer: true
+  - ../assets/js/pap-engine.js
+  - ../assets/js/explorables-v02.js
+  - ../assets/js/kurs.js
+  - ../assets/js/aufgaben.js
+---
+
+<Lerneinheit nr="V02" name="Termin 02" labor="v02-labor.html">
+
+<Kopf marke="Termin 02 · 1. Semester · Lerneinheit" titel="Wahr oder falsch: Programme, die entscheiden">
+
+Bisher laufen deine Programme stur von oben nach unten. Heute stellen sie eine Frage und nehmen je nach Antwort einen von zwei Wegen.
+
+- entscheiden, ob eine Aussage wahr oder falsch ist, und Zahlen mit `<`, `>`, `<=`, `>=`, `==` vergleichen, auch im Grenzfall
+- eine Verzweigung mit der Raute in einen Plan zeichnen und den Weg für gegebene Werte verfolgen
+- einen Plan mit Raute in `if` und `else` übertragen und die Ausgabe bestimmen
+- Zahlen mit einem f-String auf zwei Nachkommastellen ausgeben
+
+Geübt wird im [Programmierlabor](v02-labor.html).
+
+</Kopf>
+
+<Abschnitt id="wahr-falsch" nr="1" titel="Wahr oder falsch">
+
+Eine Cola kostet 1,50 Euro. Du hast 2 Euro. Der Satz „Mein Geld reicht“ stimmt. Hast du nur 1 Euro, stimmt er nicht.
+
+So ein Satz heißt <Begriff e="Eine Aussage ist ein Satz, der entweder stimmt oder nicht stimmt. „Mein Geld reicht“ ist eine Aussage, „Wie spät ist es?“ nicht.">Aussage</Begriff>: ein Satz, der stimmt oder nicht stimmt. „Wie spät ist es?“ ist keine Aussage. Ob eine Aussage stimmt, heißt ihr **Wahrheitswert**: wahr oder falsch, dazwischen gibt es nichts. Python schreibt `True` und `False`, mit großem Anfangsbuchstaben und ohne Anführungszeichen.
+
+Ein Vergleich ist eine Aussage über Zahlen. Dafür gibt es fünf Zeichen:
+
+<div class="k-tablewrap">
+<table class="k-types">
+<thead><tr><th scope="col">Zeichen</th><th scope="col">Bedeutung</th><th scope="col">Beispiel</th><th scope="col">Wahrheitswert</th></tr></thead>
+<tbody>
+<tr><td><code>{"<"}</code></td><td>kleiner als</td><td><code>{"1 < 1.5"}</code></td><td>wahr</td></tr>
+<tr><td><code>{">"}</code></td><td>größer als</td><td><code>{"1.5 > 1.5"}</code></td><td>falsch</td></tr>
+<tr><td><code>{"<="}</code></td><td>kleiner oder gleich</td><td><code>{"1.5 <= 1.5"}</code></td><td>wahr</td></tr>
+<tr><td><code>{">="}</code></td><td>größer oder gleich</td><td><code>{"2 >= 1.5"}</code></td><td>wahr</td></tr>
+<tr><td><code>{"=="}</code></td><td>gleich</td><td><code>{"6 == 6"}</code></td><td>wahr</td></tr>
+</tbody>
+</table>
+</div>
+
+In Aufgaben steht der Vergleich meist als Satz. So wird daraus ein Zeichen:
+
+<div class="k-tablewrap">
+<table class="k-types">
+<thead><tr><th scope="col">Im Satz</th><th scope="col">Als Zeichen</th></tr></thead>
+<tbody>
+<tr><td>mindestens 16</td><td><code>{">= 16"}</code></td></tr>
+<tr><td>höchstens 50</td><td><code>{"<= 50"}</code></td></tr>
+<tr><td>unter 10</td><td><code>{"< 10"}</code></td></tr>
+<tr><td>mehr als 30</td><td><code>{"> 30"}</code></td></tr>
+<tr><td>genau 6</td><td><code>{"== 6"}</code></td></tr>
+</tbody>
+</table>
+</div>
+
+<Explorable name="vergleich" titel="Reicht das Geld?">
+
+Stell mit dem Regler ein, wie viel Geld du hast, und wähl ein Vergleichszeichen. Die Cola kostet fest 1,50 Euro. Vermute zuerst: Du hast genau 1,50 Euro. Bei welchen der fünf Zeichen ist die Aussage wahr?
+
+<Ohne>
+
+Für den Baustein wird JavaScript benötigt. Beispiel: Mit 2,00 Euro und dem Zeichen >= lautet die Aussage 2.0 >= 1.5. Sie ist wahr, Python schreibt True. Mit 1,00 Euro ist 1.0 >= 1.5 falsch, also False.
+
+</Ohne>
+
+</Explorable>
+
+<details class="k-deep">
+<summary>Auflösung</summary>
+
+Bei genau 1,50 Euro sind drei Zeichen wahr: `<=`, `>=` und `==`.
+
+</details>
+
+Ein Wert genau auf der Grenze heißt <Begriff e="Der Grenzfall ist der Wert, der genau auf der Grenze einer Bedingung liegt, zum Beispiel genau 1,50 Euro bei einem Preis von 1,50 Euro. Dort unterscheiden sich >= und >.">Grenzfall</Begriff>. Dort unterscheiden sich `>=` und `>`.
+
+Python rechnet Vergleiche aus wie Rechnungen. `print` zeigt das Ergebnis:
+
+```python
+geld = 2
+preis = 1.5
+print(geld >= preis)
+print(geld < preis)
+```
+
+Ausgabe: `True`, dann `False`.
+
+<div class="k-try">
+
+### Vorhersage: der Grenzfall
+
+<Vorhersage>
+
+Was geben die beiden letzten Zeilen aus?
+
+- [x] False, dann True
+- True, dann True
+- False, dann False
+- True, dann False
+
+`False`, dann `True`. 1.5 ist nicht größer als 1.5, aber größer oder gleich.
+
+</Vorhersage>
+
+```python
+geld = 1.5
+preis = 1.5
+print(geld > preis)
+print(geld >= preis)
+```
+
+</div>
+
+<Hinweis art="merke">
+
+Probier eine Grenze immer mit drei Werten aus: einem darunter, einem **genau auf der Grenze** und einem darüber.
+
+</Hinweis>
+
+Zum Schluss noch ein Wort: NICHT. Es dreht eine Aussage um. Aus wahr wird falsch, aus falsch wird wahr. Ist A die Aussage „Das Geld reicht“, dann ist NICHT A die Aussage „Das Geld reicht nicht“. Die kleine Tabelle listet jeden Fall auf. So eine Tabelle heißt <Begriff e="Eine Wahrheitstabelle listet alle Fälle auf, die eine Aussage annehmen kann, und daneben das Ergebnis. Für NICHT A sind es zwei Zeilen.">Wahrheitstabelle</Begriff>:
+
+<div class="k-tablewrap">
+<table class="k-types">
+<thead><tr><th scope="col">A</th><th scope="col">NICHT A</th></tr></thead>
+<tbody>
+<tr><td>wahr</td><td>falsch</td></tr>
+<tr><td>falsch</td><td>wahr</td></tr>
+</tbody>
+</table>
+</div>
+
+Wie man zwei Aussagen mit UND und ODER verknüpft, kommt in Termin 03.
+
+### Erklärvideo (ca. 2 Min)
+
+<Video name="v02-theorie" id="video-theorie" titel="Erklärvideo: Wahr oder falsch: Aussagen und Vergleiche" fehlt="Video folgt. Bis dahin: Der Baustein „Reicht das Geld?“ oben zeigt dasselbe.">
+
+Erklärvideo: Wahr oder falsch: Aussagen und Vergleiche (ca. 2 Min). Untertitel sind eingeschaltet (Deutsch).
+
+</Video>
+
+</Abschnitt>
+
+<Abschnitt id="raute" nr="2" titel="Die Raute: ein Plan mit zwei Wegen">
+
+Der Automat soll zwei verschiedene Dinge tun können: eine Cola herausgeben oder sagen, dass das Geld nicht reicht. Mit Parallelogramm und Rechteck geht es nur geradeaus. Dafür gibt es das vierte Symbol:
+
+<div class="k-tablewrap">
+<table class="k-types">
+<thead><tr><th scope="col">Symbol</th><th scope="col">Name</th><th scope="col">Bedeutung</th></tr></thead>
+<tbody>
+<tr><td>Raute</td><td>Verzweigung</td><td>eine Frage mit zwei Ausgängen, ja und nein</td></tr>
+</tbody>
+</table>
+</div>
+
+In der Raute steht eine <Begriff e="Eine Bedingung ist eine Aussage, die der Ablauf prüft, zum Beispiel geld >= 1.5. Ist sie wahr, geht es den ja-Weg, sonst den nein-Weg.">Bedingung</Begriff> als Frage, zum Beispiel `geld >= 1.5?`. Eine Bedingung ist eine Aussage, die der Ablauf prüft. Die Raute hat einen Eingang und zwei Ausgänge: **ja**, wenn die Aussage wahr ist, und **nein**, wenn sie falsch ist.
+
+<Plan titel="Getränkeautomat">
+
+```text
+Eingabe: geld
+Entscheidung: geld >= 1.5?
+  ja:
+    Ausgabe: "Cola kommt"
+  nein:
+    Ausgabe: "Zu wenig Geld"
+Ausgabe: "Danke"
+```
+
+</Plan>
+
+Mit 2 Euro gibt der Plan „Cola kommt“ und „Danke“ aus. Mit 1 Euro „Zu wenig Geld“ und „Danke“.
+
+<Explorable name="weiche" titel="Der Plan des Getränkeautomaten">
+
+Wähl einen Betrag und schau, welchen Weg der Ablauf nimmt. Vermute zuerst: Findest du einen Betrag, bei dem beide Wege leuchten, oder einen, bei dem keiner leuchtet?
+
+<Ohne>
+
+Für den Baustein wird JavaScript benötigt. Beispiel: Bei 1,00 Euro ist 1.0 >= 1.5 falsch. Der Ablauf nimmt den Weg nein und gibt „Zu wenig Geld“ aus, danach „Danke“.
+
+</Ohne>
+
+</Explorable>
+
+Drei Regeln für die Raute:
+
+- Es wird **genau ein Weg** gegangen: nie beide, nie keiner.
+- Danach treffen sich die Wege wieder. Was darunter steht, passiert **immer**.
+- Es bleibt bei einem Ende.
+
+Einen Plan mit Raute liest du so: Wert einsetzen, Frage beantworten, dem Pfeil folgen. In die Raute schreibst du die Bedingung so, wie sie später in Python steht. Von Hand darfst du auch ≤ und ≥ schreiben.
+
+<div class="k-try">
+
+### Vorhersage: Plan lesen
+
+<Vorhersage>
+
+Was gibt der Plan bei der Eingabe 25 aus?
+
+- [x] 29
+- 25
+- 4
+- 34
+
+29. 25 >= 30 ist falsch, also Weg nein: versand = 4. Danach laufen die Wege zusammen: 25 + 4 = 29.
+
+</Vorhersage>
+
+<Plan titel="Versandkosten">
+
+```text
+Eingabe: bestellwert
+Entscheidung: bestellwert >= 30?
+  ja:
+    versand = 0
+  nein:
+    versand = 4
+gesamt = bestellwert + versand
+Ausgabe: gesamt
+```
+
+</Plan>
+
+</div>
+
+</Abschnitt>
+
+<Abschnitt id="if-else" nr="3" titel="if und else: aus der Raute wird Code">
+
+Jetzt wird aus der Raute Code. Die Übersetzung ist fest:
+
+- Die Raute wird `if Bedingung:`. Der ja-Weg steht eingerückt darunter.
+- Der nein-Weg steht eingerückt unter `else:`. `else` hat keine eigene Bedingung: Es ist der Fall, in dem die Aussage falsch ist.
+- Hinter der Bedingung und hinter `else` steht ein **Doppelpunkt**.
+- Die <Begriff e="Die Einrückung sind die Leerzeichen am Anfang einer Zeile. In Python zeigen sie, welche Zeilen zu einem Weg gehören. Üblich sind vier Leerzeichen.">Einrückung</Begriff> ist vier Leerzeichen breit. Sie zeigt, welche Zeilen zu einem Weg gehören. Nach dem Doppelpunkt rückt der Editor die nächste Zeile selbst ein.
+- `else` steht auf derselben Höhe wie `if`.
+- Was nicht eingerückt ist, läuft immer. Das ist die Stelle, an der die Wege im Plan zusammenlaufen.
+
+Links der Plan aus Abschnitt 2, rechts das Programm. Vergleiche Symbol für Symbol und Zeile für Zeile:
+
+<div class="v01-paar">
+
+<Plan titel="Getränkeautomat">
+
+```text
+Eingabe: geld
+Entscheidung: geld >= 1.5?
+  ja:
+    Ausgabe: "Cola kommt"
+  nein:
+    Ausgabe: "Zu wenig Geld"
+Ausgabe: "Danke"
+```
+
+</Plan>
+
+<div>
+
+```python data-stdin="2"
+geld = float(input("Eingeworfen in Euro: "))
+if geld >= 1.5:
+    print("Cola kommt")
+else:
+    print("Zu wenig Geld")
+print("Danke")
+```
+
+<p class="k-small k-muted">Führ das Programm mit 2, mit 1 und mit dem Grenzfall 1.5 aus. Mit „Schritt für Schritt“ siehst du, welche Zeile übersprungen wird.</p>
+
+</div>
+
+</div>
+
+Bei 2 Euro und bei 1,50 Euro kommen `Cola kommt` und `Danke`, bei 1 Euro `Zu wenig Geld` und `Danke`.
+
+In einer Bedingung steht oft `==`. Das ist nicht dasselbe wie `=`: **`=` legt einen Wert ab, `==` fragt, ob zwei Werte gleich sind.** `wurf = 6` merkt sich die 6, `if wurf == 6:` fragt, ob eine 6 gewürfelt wurde.
+
+<div class="k-try">
+
+### Vorhersage: Was gehört zum Weg?
+
+<Vorhersage>
+
+Was gibt das Programm aus?
+
+- [x] Gewonnen, dann Ende
+- Gewonnen, dann Nochmal würfeln, dann Ende
+- nur Gewonnen
+- Gewonnen, dann Verloren, dann Nochmal würfeln, dann Ende
+
+`Gewonnen`, dann `Ende`. Die zwei eingerückten Zeilen unter `else` gehören zum nein-Weg und werden übersprungen. `print("Ende")` ist nicht eingerückt und läuft immer.
+
+</Vorhersage>
+
+```python
+wurf = 6
+if wurf == 6:
+    print("Gewonnen")
+else:
+    print("Verloren")
+    print("Nochmal würfeln")
+print("Ende")
+```
+
+</div>
+
+<Hinweis art="achtung">
+
+Die zwei häufigsten Fehler bei `if` und `else`, mit der Meldung von Python:
+
+- Doppelpunkt vergessen: `SyntaxError: expected ':'`
+- Einrückung vergessen: `IndentationError: expected an indented block after 'if' statement on line 2`
+
+Die Zeilennummer sagt dir, wo du suchen musst.
+
+</Hinweis>
+
+</Abschnitt>
+
+<Abschnitt id="f-string" nr="4" titel="Ausgabe formatieren: der f-String">
+
+Das Programm „Verdienst im Nebenjob“ aus dem Training von Termin 01 gibt `Verdienst: 162.0` aus. Ein Automat, der 50 Cent zurückgibt, schriebe `Rückgeld: 0.5 Euro`. Geld schreibt man aber mit zwei Stellen hinter dem Komma.
+
+Dafür gibt es den <Begriff e="Ein f-String ist ein Text mit einem f vor dem Anführungszeichen. In geschweiften Klammern stehen Namen, Python setzt dort ihre Werte ein. Mit :.2f erscheint eine Zahl mit zwei Nachkommastellen.">f-String</Begriff>:
+
+- Ein `f` direkt vor dem Anführungszeichen macht aus dem Text einen f-String.
+- In geschweiften Klammern `{}` steht ein Variablenname. Python setzt dort den Wert ein.
+- `{rueckgeld:.2f}`: Doppelpunkt, Punkt, 2, f. Die Zahl erscheint mit genau zwei Nachkommastellen, gerundet oder mit Nullen aufgefüllt. Die Variable selbst ändert sich nicht, nur die Anzeige.
+- Ohne das `f` erscheinen die Klammern wörtlich in der Ausgabe. Python meldet keinen Fehler.
+
+```python
+rueckgeld = 0.5
+print("Rückgeld:", rueckgeld, "Euro")
+print(f"Rückgeld: {rueckgeld} Euro")
+print(f"Rückgeld: {rueckgeld:.2f} Euro")
+```
+
+Ausgabe: `Rückgeld: 0.5 Euro`, `Rückgeld: 0.5 Euro`, `Rückgeld: 0.50 Euro`. Erst `:.2f` macht die zwei Stellen.
+
+Im Plan ändert sich dabei nichts: Das Parallelogramm „Ausgabe: verdienst“ bleibt. Wie die Zahl aussieht, legt der Code fest.
+
+<div class="k-try">
+
+### Jetzt du: Verdienst im Nebenjob
+
+<div class="v01-paar">
+
+<Plan titel="Verdienst im Nebenjob">
+
+```text
+Eingabe: stunden
+Eingabe: lohn
+verdienst = stunden * lohn
+Ausgabe: verdienst
+```
+
+</Plan>
+
+<div>
+
+```python data-stdin="12\n13.5"
+stunden = float(input("Stunden: "))
+lohn = float(input("Stundenlohn in Euro: "))
+verdienst = stunden * lohn
+print("Verdienst:", verdienst)
+```
+
+<p class="k-small k-muted">Mit 12 Stunden und 13.5 Euro erscheint <code>Verdienst: 162.0</code>. Ändere die letzte Zeile so, dass <code>Verdienst: 162.00 Euro</code> erscheint.</p>
+
+</div>
+
+</div>
+
+<details class="k-deep">
+<summary>Lösung zeigen</summary>
+
+```python data-run="no"
+print(f"Verdienst: {verdienst:.2f} Euro")
+```
+
+</details>
+
+</div>
+
+<div class="k-try">
+
+### Vorhersage: zwei Stellen
+
+<Vorhersage>
+
+Was gibt das Programm aus?
+
+- [x] Preis: 2.46 Euro
+- Preis: 2.45 Euro
+- Preis: 2.456 Euro
+- Preis: \{preis:.2f\} Euro
+
+`Preis: 2.46 Euro`. Zwei Stellen, gerundet. Die Klammern erschienen nur, wenn das `f` fehlte.
+
+</Vorhersage>
+
+```python
+preis = 2.456
+print(f"Preis: {preis:.2f} Euro")
+```
+
+</div>
+
+</Abschnitt>
+
+<Abschnitt id="selbstcheck" nr="5" titel="Selbstcheck">
+
+Sechs Fragen in den Formen der Klausur: Vergleiche prüfen, Plan lesen, Ausgabe bestimmen, Fehler finden. Der Selbstcheck gehört zum Training für zu Hause. Die Reihenfolge der Fragen und Antworten ist bei jedem Aufruf anders. Rechne im Kopf oder auf Papier, nicht im Editor.
+
+<Quiz id="v02">
+
+<Frage id="vergleiche" typ="mc" punkte="4" titel="Vergleiche prüfen (mehrere richtig)">
+
+Welche Vergleiche sind wahr? Kreuze alle richtigen an.
+
+- [x] `7 >= 7`
+- `3 > 5`
+- [x] `4 <= 9`
+- `6 == 9`
+- [x] `2 < 2.5`
+
+<Erklaerung>
+
+Bei <code>{">="}</code> und <code>{"<="}</code> zählt der gleiche Wert mit. <code>==</code> ist nur bei gleichen Werten wahr.
+
+</Erklaerung>
+
+</Frage>
+
+<Frage id="satz-zeichen" typ="mc" punkte="2" titel="Vom Satz zum Zeichen">
+
+In einen Aufzug dürfen höchstens 8 Personen. Welcher Vergleich ist genau dann wahr, wenn alles in Ordnung ist?
+
+- [x] `personen <= 8`
+- `personen < 8`
+- `personen >= 8`
+- `personen == 8`
+
+<Erklaerung>
+
+„Höchstens 8“ heißt: 8 ist noch erlaubt. Probier den Grenzfall: Bei 8 ist <code>{"personen <= 8"}</code> wahr, <code>{"personen < 8"}</code> wäre falsch.
+
+</Erklaerung>
+
+</Frage>
+
+<Frage id="plan-lesen" typ="num" punkte="3" antwort="80" tol="0" titel="Plan lesen">
+
+Welche Zahl gibt der Plan bei der Eingabe 10 aus?
+
+<Plan titel="Gruppenpreis">
+
+```text
+Eingabe: personen
+Entscheidung: personen >= 10?
+  ja:
+    preis = 8
+  nein:
+    preis = 10
+gesamt = personen * preis
+Ausgabe: gesamt
+```
+
+</Plan>
+
+<Erklaerung>
+
+10 >= 10 ist wahr, also Weg ja: preis = 8. Danach laufen die Wege zusammen: 10 · 8 = 80.
+
+</Erklaerung>
+
+</Frage>
+
+<Frage id="ausgabe" typ="mc" punkte="3" titel="Ausgabe bestimmen">
+
+Was gibt das Programm aus?
+
+```python class="k-code" data-run="nach-antwort"
+tempo = 62
+if tempo > 50:
+    print("Zu schnell")
+else:
+    print("In Ordnung")
+print("Gute Fahrt")
+```
+
+- [x] Zu schnell, dann Gute Fahrt
+- nur Zu schnell
+- In Ordnung, dann Gute Fahrt
+- Zu schnell, dann In Ordnung, dann Gute Fahrt
+
+<Erklaerung>
+
+62 > 50 ist wahr, also läuft der ja-Weg. Die letzte Zeile ist nicht eingerückt und läuft immer.
+
+</Erklaerung>
+
+</Frage>
+
+<Frage id="fstring" typ="output" punkte="3" antwort="3.50 Euro" titel="Ausgabe mit f-String">
+
+Was gibt das Programm aus?
+
+```python class="k-code" data-run="nach-antwort"
+x = 3.5
+print(f"{x:.2f} Euro")
+```
+
+<Erklaerung>
+
+<code>:.2f</code> zeigt genau zwei Nachkommastellen, aus 3.5 wird 3.50.
+
+</Erklaerung>
+
+</Frage>
+
+<Frage id="fehler" typ="mc" punkte="3" titel="Fehler finden">
+
+In welcher Zeile steckt der Fehler?
+
+```python class="k-code" data-run="nach-antwort"
+punkte = int(input("Punkte: "))
+if punkte >= 50
+    print("Bestanden")
+else:
+    print("Nicht bestanden")
+```
+
+- `punkte = int(input("Punkte: "))`
+- [x] `if punkte >= 50`
+- `else:`
+- In keiner Zeile, das Programm läuft.
+
+<Erklaerung>
+
+Hinter der Bedingung fehlt der Doppelpunkt. Python meldet <code>SyntaxError: expected ':'</code>.
+
+</Erklaerung>
+
+</Frage>
+
+</Quiz>
+
+</Abschnitt>
+
+<Weiter ziel="v02-labor.html">
+
+Jetzt bist du dran. Im Labor verfolgst du einen Plan mit Raute, zeichnest selbst einen und schreibst dein erstes Programm mit zwei Wegen. Zwei weitere Videos findest du dort an der passenden Station: der Python-Werkzeugkasten und das vorgerechnete Beispiel.
+
+</Weiter>
+
+<Dozent titel="Für Dozierende: Ablauf des Termins (135 Minuten) und Training">
+
+<p class="k-small k-muted">Vier Blöcke à 30 Minuten: ein Theorie-Block (T2 Boolesche Logik, Teil 1) und drei Programmier-Blöcke (P2 Verzweigungen, Teil 1, zwei Blöcke; P1 Abschluss mit dem f-String). Jeder Block verplant höchstens 28 Minuten; die Minuten eines Abschnitts enthalten das Zeigen der genannten Karten. Vor der Pause kommt kein neuer Code. Die Videos laufen nicht im Termin.</p>
+
+<div class="k-tablewrap">
+<table class="k-plan">
+<thead><tr><th scope="col">Minuten</th><th scope="col">Wo</th><th scope="col">Was zu tun ist</th></tr></thead>
+<tbody>
+<tr><td>0–10</td><td>Papier, Beamer</td><td><strong>Warm-up.</strong> Training Termin 01, „Verdienst im Nebenjob“: auf Papier in Code übertragen, 5 Minuten allein. Auflösung am Beamer, Probe mit 12 und 13.5: <code>Verdienst: 162.0</code>. Zwei Fragen bleiben offen stehen: „Ab 40 Stunden gibt es einen Zuschlag. Wo im Plan würdet ihr das einbauen?“ (dafür fehlt ein Symbol, es kommt nach dem Theorie-Block) und „162.0 Euro: Schreibt so jemand einen Geldbetrag?“ (Antwort am Ende des Termins).</td></tr>
+<tr><td>10–40</td><td>Lerneinheit 1</td><td><strong>Theorie: wahr oder falsch.</strong> Aussagen aus dem Raum per Handzeichen als wahr oder falsch einordnen, Begriff Aussage, <code>True</code> und <code>False</code> (6). Fünf Zeichen, „vom Satz zum Zeichen“ (7). Baustein „Reicht das Geld?“ mit Vermutung (6). Vorhersage zum Grenzfall, drei Probewerte (4). Zum Schluss NICHT: Tabelle mit zwei Zeilen an die Tafel, zwei Aussagen vom Anfang umdrehen, keine Vergleiche umformen (4). Verplant: 27.</td></tr>
+<tr><td>40–70</td><td>Lerneinheit 2, Labor 2 (Schritte 1 und 2), 3, 4</td><td><strong>Programmieren 1: der Plan zuerst.</strong> Rückgriff auf den Zuschlag: Das fehlende Symbol ist die Raute. Automat, Baustein „Der Plan des Getränkeautomaten“, Vorhersage Versandkosten (10). Bei „Einlass ab 16“ die Frage finden und den Plan an der Tafel entwickeln (3). Alle verfolgen den Quiz-Plan (5) und zeichnen den Freibad-Plan (10). Kein Code vor der Pause. Verplant: 28.</td></tr>
+<tr><td>70–80</td><td>–</td><td><strong>Pause.</strong></td></tr>
+<tr><td>80–110</td><td>Lerneinheit 3, Labor 1 (Karte 1 und 2), 2 (Schritte 3 bis 8), 5, 7</td><td><strong>Programmieren 2: der Code.</strong> Plan und Code des Automaten nebeneinander, „Schritt für Schritt“ mit 2 und 1, <code>=</code> gegen <code>==</code>, Karte 1 und 2 zeigen, Vorhersage (9). Code zu „Einlass ab 16“ mit dem Grenzfall 16 (5). Zeilen ordnen (4), eigene Aufgabe (10). Station 6 ist Hausaufgabe. Rundgang: Doppelpunkt, Einrückung, <code>=</code> statt <code>==</code>. Verplant: 28.</td></tr>
+<tr><td>110–135</td><td>Lerneinheit 4, Labor 1 (Karte 3), 8</td><td><strong>Programmieren 3: Ausgabe formatieren.</strong> f-String am Rückgeld mit Karte 3; alle bauen die letzte Zeile des Warm-up-Programms um, bis <code>162.00 Euro</code> dasteht (10). „Eis kaufen“ gemeinsam am Beamer (7). Auftrag für zu Hause, Pflicht, zusammen 48 Minuten: Station 6, Selbstcheck, Training (3). Termin 03 beginnt mit „Gutschein“. Puffer: 5 Minuten.</td></tr>
+</tbody>
+</table>
+</div>
+
+<p class="k-small k-muted">Wenn die Zeit trotzdem knapp wird: Im Block 40–70 wird Station 3 gemeinsam am Beamer verfolgt statt einzeln; der Plan wird gezeichnet. Im Block 80–110 wird Station 5 gemeinsam am Beamer geordnet; die eigene Aufgabe bleibt. Im letzten Block hat der f-String Vorrang vor Station 8; die Fehlersuche löst sich zu Hause selbst auf.</p>
+
+<p class="k-small k-muted">Zu Hause, ehrlich gerechnet: Station 6 (4 Minuten), Selbstcheck (7) und Training (37), zusammen 48 Minuten. NICHT wird heute nur gezeigt und erst in Termin 03 geprüft. Wie weit die Gruppe im Training ist, zeigt vor dem nächsten Termin die Kursübersicht (Konto, „Kursübersicht für Dozierende“).</p>
+
+</Dozent>
+
+</Lerneinheit>

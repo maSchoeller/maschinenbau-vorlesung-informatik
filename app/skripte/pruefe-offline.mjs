@@ -5,10 +5,12 @@
    KURS_AUSGABE zeigt auf denselben Ausgabeordner wie der Build (Standard dist). Jeder Test bekommt einen eigenen Browser-Kontext.
    Tests:
      t1  Schriften selbst gehostet, keine Anfrage an fremde Hosts
-     t2  Python mit gesperrtem Fremdnetz: print, Jedi, numpy, pandas, matplotlib (V14), requests (V17), sqlite3 (V19)
+     t2  Python mit gesperrtem Fremdnetz: print, Jedi, numpy, pandas, matplotlib, requests, sqlite3
+         (die Pakete braucht Termin 01 noch nicht; sie gehören zur Plattform und werden von der Seite des Labors aus geprüft)
      t3  nach erstem Besuch ohne Netz: Heute, Lernpfad, Lerneinheit, Labor, Bibliothek, Suche, Rückfallseite
      t4  „Python offline bereit machen“, dann ohne Netz alles aus t2
-     t5  Videos offline speichern (gleiche und fremde Herkunft), Range-Anfragen mit 206, Wiedergabe soweit der Browser den Codec hat
+     t5  Videos offline speichern (gleiche und fremde Herkunft), Range-Anfragen mit 206, Wiedergabe soweit der Browser den Codec hat.
+         Seite: die erste Lektionsseite mit Abschnitt id="videos" oder Baustein <Video> und vorhandener Videodatei; fehlt sie, ist das ein Fehler.
      t6  /api und /.auth werden nie aus dem Cache beantwortet
      t7  Update: neuer Build -> Hinweis „Neue Version verfügbar“ -> nach Neuladen neue Version (baut selbst neu, stellt danach wieder her)
      t8  Manifest, Symbole, Meta-Angaben
@@ -72,16 +74,24 @@ async function swBereit(page, ms = 60000) {
   throw new Error('Service Worker nicht bereit (Precache nicht abgeschlossen)');
 }
 
+/* Seiten von Termin 01: an ihnen laufen alle Prüfungen, die eine Lektionsseite brauchen */
+const LERNEINHEIT = 'lektionen/v01-ablauf-und-erste-programme.html';
+const LABOR = 'lektionen/v01-labor.html';
+/* Beispieldatenbank aus dem alten Kurs (site/assets bleibt vorerst). Fehlt sie eines Tages, schlägt die Prüfung fehl (kein Ausweichen auf den Arbeitsspeicher): Der Prüfpunkt ist, dass eine Kursdatei offline ins Pyodide-Dateisystem kommt. */
+const DB = 'assets/data/v19/fz3.db';
+const mitDb = fs.existsSync(path.join(DIST, DB));
+
 /* Python-Läufe über denselben Weg wie die Seiten (KursPy aus kurs.js) */
 const PY_FAELLE = [
   { name: 'print', code: 'print("Hallo", 6 * 7)', erwarte: /Hallo 42/ },
   { name: 'numpy', code: 'import numpy as np\nprint("np", int(np.arange(5).sum()))', erwarte: /np 10/ },
   { name: 'pandas', code: 'import pandas as pd\nprint("pd", int(pd.DataFrame({"a": [1, 2, 3]})["a"].sum()))', erwarte: /pd 6/ },
-  { name: 'matplotlib (V14)', code: 'import matplotlib.pyplot as plt\nzeit = [0, 1, 2, 3, 4, 5]\nv = [0.0, 2.2, 3.6, 4.2, 4.5, 4.6]\nplt.plot(zeit, v)\nplt.xlabel("Zeit t in s")\nplt.grid(True)\nplt.show()\nprint("plot ok")', erwarte: /plot ok/, bild: true },
-  { name: 'requests (V17)', code: 'import requests\nr = requests.get("../assets/data/v17/api/D2.json")\nprint("http", r.status_code, sorted(r.json().keys())[:1])', erwarte: /http 200/ },
-  { name: 'sqlite3 (V19)', code: 'import sqlite3\ndb = sqlite3.connect("fz3.db")\nprint("zeilen", db.execute("SELECT COUNT(*) FROM auftraege").fetchone()[0] > 0)', erwarte: /zeilen True/, dateien: ['../assets/data/v19/fz3.db'] },
+  { name: 'matplotlib', code: 'import matplotlib.pyplot as plt\nzeit = [0, 1, 2, 3, 4, 5]\nv = [0.0, 2.2, 3.6, 4.2, 4.5, 4.6]\nplt.plot(zeit, v)\nplt.xlabel("Zeit t in s")\nplt.grid(True)\nplt.show()\nprint("plot ok")', erwarte: /plot ok/, bild: true },
+  { name: 'requests (Kursdatei unter assets/)', code: 'import requests\nr = requests.get("../assets/data/bibliothek.json")\nprint("http", r.status_code, sorted(r.json().keys())[:1])', erwarte: /http 200/ },
+  { name: 'sqlite3 (Datenbankdatei unter assets/)', code: 'import sqlite3\ndb = sqlite3.connect("fz3.db")\nprint("zeilen", db.execute("SELECT COUNT(*) FROM auftraege").fetchone()[0] > 0)', erwarte: /zeilen True/, dateien: ['../' + DB] },
 ];
 async function pythonFaelle(page, vorsatz) {
+  pruefe(`${vorsatz}Beispieldatenbank ${DB} im Build vorhanden`, mitDb, mitDb ? '' : 'fehlt: Prüfung „Kursdatei offline im Pyodide-Dateisystem“ nicht möglich; neue feste Testdatei ablegen');
   for (const f of PY_FAELLE) {
     const r = await page.evaluate(async (f) => {
       const out = []; let bild = false;
@@ -109,7 +119,7 @@ async function t1() {
   const ctx = await kontext(); const page = await ctx.newPage(); const b = beobachte(page);
   const woff = [];
   page.on('response', (r) => { if (/\.woff2(\?|$)/.test(r.url())) woff.push(r.url().split('/').pop() + ' ' + r.status()); });
-  await page.goto(`${BASIS}/lektionen/v07-funktionen.html`, { waitUntil: 'networkidle' });
+  await page.goto(`${BASIS}/${LERNEINHEIT}`, { waitUntil: 'networkidle' });
   await page.evaluate(() => document.fonts.ready);
   const f = await page.evaluate(() => [...document.fonts].filter((x) => x.status === 'loaded').map((x) => x.family.replace(/"/g, '') + ' ' + x.weight));
   pruefe('Source Sans 3 aus eigener Datei geladen', f.some((x) => /Source Sans 3/.test(x)), `${f.join(', ')}; ${woff.join(', ')}`);
@@ -124,7 +134,7 @@ async function t1() {
 async function t2() {
   console.log('t2 Python mit gesperrtem Fremdnetz');
   const ctx = await kontext(); const page = await ctx.newPage(); const b = beobachte(page);
-  await page.goto(`${BASIS}/lektionen/v17-labor.html`);
+  await page.goto(`${BASIS}/${LABOR}`);
   await pythonFaelle(page, '');
   pruefe('keine Anfrage an fremde Hosts (jsDelivr, PyPI, pythonhosted …)', ctx.fremd.length === 0, ctx.fremd.slice(0, 3).join(', '));
   await ctx.close();
@@ -140,7 +150,7 @@ async function t3() {
   pruefe('Seite steht unter Kontrolle des Service Workers', await page.evaluate(() => !!navigator.serviceWorker.controller));
   await ctx.setOffline(true);
   b.fehlgeschlagen.length = 0; b.konsole.length = 0;
-  const seiten = [['Heute', 'index.html'], ['Lernpfad', 'lernpfad.html'], ['Lerneinheit V07', 'lektionen/v07-funktionen.html'], ['Labor V14', 'lektionen/v14-labor.html'], ['Bibliothek', 'bibliothek.html'], ['Glossar', 'glossar.html']];
+  const seiten = [['Heute', 'index.html'], ['Lernpfad', 'lernpfad.html'], ['Lerneinheit V01', LERNEINHEIT], ['Labor V01', LABOR], ['Bibliothek', 'bibliothek.html'], ['Glossar', 'glossar.html']];
   for (const [name, p] of seiten) {
     await page.goto(`${BASIS}/${p}`, { waitUntil: 'load' });
     const r = await page.evaluate(() => ({ rail: !!document.querySelector('.app-rail'), h1: (document.querySelector('h1') || {}).textContent || document.title, offlineSeite: /offline nicht da/.test(document.body.textContent), onl: navigator.onLine }));
@@ -196,10 +206,10 @@ async function t4() {
   await page.waitForFunction(() => { const m = /Belegt: (\d+) MB/.exec(document.body.textContent); return m && +m[1] >= 60; }, null, { timeout: 15000 }).then(
     () => pruefe('Speicherbelegung wird nach dem Download neu gemessen (>= 60 MB)', true),
     async () => pruefe('Speicherbelegung wird nach dem Download neu gemessen (>= 60 MB)', false, (await page.locator('.pwa-block p.pwa-text').filter({ hasText: 'Belegt' }).first().textContent()).slice(0, 60)));
-  await page.goto(`${BASIS}/lektionen/v17-labor.html`);
+  await page.goto(`${BASIS}/${LABOR}`);
   await swBereit(page);
   await ctx.setOffline(true);
-  await page.goto(`${BASIS}/lektionen/v17-labor.html`);
+  await page.goto(`${BASIS}/${LABOR}`);
   await pythonFaelle(page, 'offline: ');
   pruefe('offline: keine Anfrage an fremde Hosts', ctx.fremd.length === 0, ctx.fremd.slice(0, 3).join(', '));
   await ctx.close();
@@ -208,9 +218,12 @@ async function t4() {
 /* ── t5 ──────────────────────────────────────────────────────── */
 function videoSeite() {
   const dir = path.join(DIST, 'lektionen');
-  for (const f of fs.readdirSync(dir).filter((x) => x.endsWith('.html')).sort()) {
+  /* Seiten von Entwürfen (abgeschaltete Lektionen) sind nicht im Precache: überspringen */
+  const kj = path.join(DIST, 'app', 'daten', 'kurs.json');
+  const entwurf = new Set((fs.existsSync(kj) ? JSON.parse(fs.readFileSync(kj, 'utf8')).entwuerfe || [] : []).flatMap((e) => [e.lerneinheit, e.labor]).filter(Boolean));
+  for (const f of fs.readdirSync(dir).filter((x) => x.endsWith('.html') && !entwurf.has('lektionen/' + x)).sort()) {
     const h = fs.readFileSync(path.join(dir, f), 'utf8');
-    if (!/id="videos"/.test(h)) continue;
+    if (!/id="videos"|<figure class="k-video"/.test(h)) continue;
     const m = [...h.matchAll(/<source src="\.\.\/assets\/video\/([^"]+\.mp4)"/g)].map((x) => x[1]).filter((v) => fs.existsSync(path.join(DIST, 'assets', 'video', v)));
     if (m.length) return { seite: 'lektionen/' + f, videos: m };
   }
@@ -243,7 +256,10 @@ async function videoPruefen(page, urls, vorsatz) {
 async function t5() {
   console.log('t5 Videos offline speichern');
   const info = videoSeite();
-  if (!info) { pruefe('Lektion mit vorhandenem Video gefunden', false, 'keine'); return; }
+  /* pwa.js hängt den Knopf an den Abschnitt id="videos" oder an das erste <Video> der Seite. Gibt es keine Seite mit
+     vorhandenem Video, ist das ein Fehler (die Funktion wäre dann ungeprüft). */
+  pruefe('Lektionsseite mit vorhandenem Video gefunden', !!info, info ? info.seite : 'keine Seite mit <Video> oder id="videos"');
+  if (!info) return;
   /* a) gleiche Herkunft */
   let ctx = await kontext(); let page = await ctx.newPage();
   await page.goto(`${BASIS}/${info.seite}`);
@@ -359,7 +375,7 @@ async function t7() {
     const caches_ = await page.evaluate(async () => (await caches.keys()).filter((k) => k.startsWith('kurs-shell-')));
     pruefe('alter Cache wurde beim Aktivieren entfernt', caches_.length === 1 && caches_[0] === 'kurs-shell-' + neu, caches_.join(', '));
     await ctx.setOffline(true);
-    await page.goto(`${BASIS}/lektionen/v07-funktionen.html`);
+    await page.goto(`${BASIS}/${LERNEINHEIT}`);
     pruefe('neue Version funktioniert offline', await page.evaluate(() => !!document.querySelector('.app-rail') && !/offline nicht da/.test(document.body.textContent)));
   } finally {
     fs.writeFileSync(css, original);

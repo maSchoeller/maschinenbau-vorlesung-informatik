@@ -1,0 +1,1 @@
+Jetzt stehen beide Spalten nebeneinander. Das Und ist streng: Nur eine von vier Zeilen ist wahr. Das Oder ist großzügig: Drei von vier Zeilen sind wahr. Diese beiden Spalten schreibst du in der Klausur aus dem Kopf auf.

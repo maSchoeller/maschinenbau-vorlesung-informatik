@@ -1,1 +1,0 @@
-In Python gibt es einen eigenen Datentyp für Wahrheitswerte: bool. Er hat genau zwei Werte, True und False, beide mit großem Anfangsbuchstaben. Meist entsteht ein bool durch einen Vergleich: druck größer als hundertfünfzig ist bei einem Druck von hundertachtzig wahr. Mit type siehst du: Das Ergebnis ist ein bool, kein Text.

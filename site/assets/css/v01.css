@@ -53,6 +53,10 @@
   .v01-pap, .v01-boxen, .v01-paar { grid-template-columns: minmax(0, 1fr); }
   .v01-pap__seite { position: static; }
 }
+/* Schmaler Inhalt (breites Tutor-Panel): einspaltig wie unter 1100 px */
+html.app-eng .v01-eva, html.app-eng .v01-pap, html.app-eng .v01-boxen, html.app-eng .v01-paar { grid-template-columns: minmax(0, 1fr); }
+html.app-eng .v01-eva__pfeil { justify-self: center; transform: rotate(90deg); }
+html.app-eng .v01-pap__seite { position: static; }
 @media (prefers-reduced-motion: no-preference) {
   .v01-box__wert, .v01-pap__werte td, .v01-pap__werte th { transition: background-color .2s, border-color .2s; }
 }

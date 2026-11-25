@@ -1,0 +1,18 @@
+[
+ {
+  "p": 1,
+  "t": "Zuweisung geheim = 7 und Eingabe mit int(input(…))"
+ },
+ {
+  "p": 1,
+  "t": "if mit == und Doppelpunkt"
+ },
+ {
+  "p": 1,
+  "t": "else: und beide Wege eingerückt"
+ },
+ {
+  "p": 1,
+  "t": "Die Ausgaben stehen im richtigen Weg: Treffer unter if, Daneben unter else"
+ }
+]

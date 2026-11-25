@@ -2,6 +2,7 @@
    app/werkbank.js – Werkbank (Rolle Werkbank, Vertrag Abschnitt 8)
    Programme liegen in KursSpeicher unter inf-mb/werkbank/prog:<id> = {titel, code, erstellt, geaendert, quelle?, eingaben?}.
    Ausführen, Eingaben, Diagramme und Schritt für Schritt kommen vom Bestands-Runner (kurs.js), der Editor von editor.js.
+   „eingaben“ ist das Feld für den Modus „vorab eintragen“; was im Terminal-Dialog getippt wird, landet nicht darin.
    Lokal zuerst: Tippen speichert entprellt in den Speicher; das Konto gleicht im Hintergrund ab (speicher-azure.js).
    ============================================================= */
 (function () {
@@ -57,6 +58,9 @@
   function ausgabeLeeren() {
     var r = runner();
     if (!r) return;
+    /* wartet das vorige Programm im Terminal auf eine Eingabe: Dialog still beenden */
+    var t = r.terminal ? r.terminal() : null;
+    if (t) t.abort(null);
     r.out.textContent = ''; r.out.hidden = true;
     if (r.out._kRich) r.out._kRich.textContent = '';
     var st = box.querySelector('.k-runner__status');

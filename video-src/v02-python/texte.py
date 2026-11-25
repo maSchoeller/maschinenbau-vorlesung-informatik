@@ -1,0 +1,36 @@
+"""Sprechertext Termin 02, Video 2: Python-Werkzeugkasten: vergleichen, if und else, f-String (Quelltext mit Markup)."""
+SRC = [
+ ["Drei Karten liegen heute im Werkzeugkasten. Karte 1: vergleichen.",
+  "Die Variable `punkte` hat den Wert 48. Du gibst den Vergleich aus: Punkte größer gleich 50.",
+  "Python antwortet [[False|Fols]], denn 48 ist kleiner als 50.",
+  "Der zweite Vergleich fragt: Ist `punkte` gleich 48? Die Antwort ist [[True|Truh]].",
+  "Das doppelte Gleichheitszeichen fragt, das einfache legt einen Wert ab."],
+ ["Karte 2: `if` und [[else|els]]. Aus der Raute im Plan wird eine Zeile mit `if`.",
+  "Hinter `if` steht die Bedingung: Punkte größer gleich 50.",
+  "Am Ende der Zeile steht ein Doppelpunkt.",
+  "Die Zeile darunter gibt „Bestanden“ aus. Sie ist um vier Leerzeichen eingerückt.",
+  "Eingerückt heißt: Diese Zeile gehört zum ja-Weg."],
+ ["Für den nein-Weg schreibst du [[else|els]]: wieder ganz links und auch mit Doppelpunkt.",
+  "[[else|Els]] hat keine eigene Bedingung.",
+  "Mit 48 Punkten ist die Bedingung falsch. Die Zeile unter `if` wird übersprungen, und die Ausgabe lautet: Nicht bestanden.",
+  "Mit 60 Punkten ist sie wahr. Jetzt wird die Zeile unter [[else|els]] übersprungen, und die Ausgabe lautet: Bestanden.",
+  "Es läuft immer genau ein Weg."],
+ ["Karte 3: der [[f-String|Eff-String]]. Die Variable `preis` hat den Wert [[9.5|neun Punkt fünf]]. Geld schreibt man aber mit zwei Nachkommastellen.",
+  "Der [[f-String|Eff-String]] beginnt mit einem f direkt vor dem Anführungszeichen.",
+  "In geschweiften Klammern steht der Name der Variable. Python setzt dort den Wert ein.",
+  "Hinter dem Namen folgt: Doppelpunkt, Punkt, zwei, f. Erst diese Angabe sorgt für zwei Nachkommastellen.",
+  "Die Ausgabe lautet: Ticket: [[9.50|neun Punkt fünf null]] Euro."],
+ ["Zwei Fehler passieren am Anfang fast jedem.",
+  "Der erste: Der Doppelpunkt fehlt. Dann meldet Python einen [[SyntaxError|Syntax Error]] und nennt die Zeile.",
+  "Der zweite: Das f vor dem Anführungszeichen fehlt. Dann meldet Python nichts, und die geschweiften Klammern stehen wörtlich in der Ausgabe.",
+  "Diesen Fehler findest nur du.",
+  "Jetzt probier die drei Karten selbst aus."],
+]
+
+SZENEN = [
+ "Karte 1 „Vergleichen: wahr oder falsch“: Code punkte = 48, print(punkte >= 50), print(punkte == 48) tippt sich ein, darunter die Ausgabe False, True; zum Schluss nebeneinander == fragt, = legt ab.",
+ "Karte 2 „if und else: einer von zwei Wegen“: links klein die Raute punkte >= 50?, rechts der Code, Zeile 1 punkte = 48 steht schon da; Zeile 2 if punkte >= 50: tippt sich ein, der Doppelpunkt wird hervorgehoben; Zeile 3 print(\"Bestanden\") rückt um vier markierte Leerzeichen ein, Beschriftung ja-Weg.",
+ "Zeile 4 else: steht ganz links auf Höhe von if, darunter eingerückt Zeile 5 print(\"Nicht bestanden\"), Beschriftung nein-Weg; Lauf mit punkte = 48 (Zeile 1 unverändert): Zeile print(\"Bestanden\") grau, Ausgabe Nicht bestanden; dann wird Zeile 1 zu punkte = 60, zweiter Lauf: Zeile print(\"Nicht bestanden\") grau, Ausgabe Bestanden.",
+ "Karte 3 „f-String: zwei Nachkommastellen“: Code preis = 9.5, print(f\"Ticket: {preis:.2f} Euro\"); nacheinander hervorgehoben: das f vor dem Anführungszeichen, {preis}, dann :.2f; Ausgabe Ticket: 9.50 Euro, die angehängte Null ist markiert.",
+ "Zwei Fehler nebeneinander: links if punkte >= 50 ohne Doppelpunkt mit der Meldung SyntaxError: expected ':', rechts print(\"Ticket: {preis:.2f} Euro\") ohne das f vor dem Anführungszeichen mit der Ausgabe Ticket: {preis:.2f} Euro; dann Ausblick auf die drei Karten.",
+]

@@ -1,12 +1,14 @@
 /* =============================================================
    pruefe-loesungen.mjs – jede Musterlösung der neuen Terminseiten besteht ihre Tests.
    Aufruf:  node skripte/pruefe-loesungen.mjs [http://localhost:4340 | <Ausgabeordner, Standard dist>]
-   Geprüft werden die Seiten der Termine, die eigene Seiten haben (kurs.json: termine[].lektion).
+   Geprüft werden die Seiten der Termine, die eigene Seiten haben (kurs.json: termine[].lektion), und die Seiten
+   der Entwürfe (kurs.json: entwuerfe, abgeschaltete Lektionen; in der Ausgabe als „Entwurf“ gekennzeichnet).
    Für jede Aufgabe mit Tests läuft die Lösung durch dieselbe Prüfung wie bei den Studierenden
    (KursAufgaben.runPython mit dem Python der Seite):
      code, klausur   Lösung aus <script data-role="solution">
      gap             Lückentext, jede Lücke mit ihrer ersten Antwort gefüllt
      pap-zeichnen    Musterplan (JSON, data-role="solution") in Python übersetzt wie im Editor
+   Knobelaufgaben (data-knobel, freiwillig) gehören dazu wie jede Aufgabe; eine Knobelaufgabe ohne Tests ist ein Fehler.
    Außerdem: Die Startvorlage einer Code-Aufgabe darf die Tests NICHT bestehen (sonst wäre nichts zu tun),
    und jede Aufgabe mit Tests hat eine Lösung.
    ============================================================= */
@@ -43,11 +45,15 @@ function pruefe(name, ok, detail) {
 const browser = await chromium.launch();
 try {
   const kurs = await fetch(BASIS + '/app/daten/kurs.json').then((r) => r.json());
-  const lektionen = kurs.termine.filter((t) => t.lektion).map((t) => kurs.lektionen.find((l) => l.nr === t.lektion));
+  const lektionen = [
+    ...kurs.termine.filter((t) => t.lektion).map((t) => kurs.lektionen.find((l) => l.nr === t.lektion)),
+    ...(kurs.entwuerfe || []).map((e) => ({ ...e, entwurf: true })),
+  ];
   if (!lektionen.length) console.log('Noch kein Termin hat eigene Seiten.');
+  console.log(`${lektionen.filter((l) => !l.entwurf).length} Lektionen im Angebot, ${lektionen.filter((l) => l.entwurf).length} Entwürfe`);
   for (const l of lektionen) {
     for (const seite of [l.lerneinheit, l.labor].filter(Boolean)) {
-      console.log(`\n${l.nr} ${seite}`);
+      console.log(`\n${l.nr}${l.entwurf ? ' (Entwurf, nicht freigeschaltet)' : ''} ${seite}`);
       const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, serviceWorkers: 'block' });
       const page = await ctx.newPage();
       const konsole = [];
@@ -62,6 +68,7 @@ try {
         return [...quelle.querySelectorAll('.a-task[data-a]')].map((box) => {
           const art = box.getAttribute('data-a');
           const tests = lies(box, 'tests', 'text/x-python');
+          if (!tests && box.hasAttribute('data-knobel')) return { id: box.getAttribute('data-id'), art, ohneTests: true };
           if (!tests) return null;
           let loesung = lies(box, 'solution', 'text/x-python'), modus = box.getAttribute('data-mode') || 'programm', vorlage = null;
           if (art === 'gap') { const src = box.querySelector('.a-gap__src'); loesung = src ? src.textContent.replace(/@@(.*?)@@/g, (a, x) => x.split('|')[0]) : null; }
@@ -76,6 +83,7 @@ try {
       });
       if (!aufgaben.length) console.log('  (keine Aufgaben mit Tests)');
       for (const a of aufgaben) {
+        if (a.ohneTests) { pruefe(`${a.id} (Knobelaufgabe) hat Tests`, false); continue; }
         if (!a.loesung) { pruefe(`${a.id} (${a.art}) hat eine Musterlösung`, false); continue; }
         const lauf = (code) => page.evaluate(([c, t, m, z]) => window.KursAufgaben.runPython('test', c, [], t, m, z).then((r) => ({
           n: r.results.length, ok: r.results.filter((x) => x.ok).length, erste: (r.results.find((x) => !x.ok) || {}).msg || '', fatal: r.fatal, hinweis: r.loadError || r.jsError || (r.timedOut ? 'Zeitlimit' : ''),

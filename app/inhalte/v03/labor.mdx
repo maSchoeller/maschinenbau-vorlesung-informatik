@@ -1,0 +1,561 @@
+---
+titel: "Termin 03 · Programmierlabor · Informatik Maschinenbau"
+beschreibung: "Programmierlabor zu Termin 03: drei Wege mit elif, Plan mit zwei Rauten zeichnen, zwei Vergleiche mit and und or, Schere-Stein-Papier, Wahrheitstabellen. Mit Training für zu Hause."
+body:
+  data-lesson: V03
+  data-page: labor
+stile:
+  - ../assets/css/dhbw-base.css
+  - ../assets/css/kurs.css
+  - ../assets/css/aufgaben.css
+  - ../assets/css/editor.css
+  - ../assets/css/labor.css
+  - ../assets/css/v05.css
+  - ../assets/css/pap-editor.css
+skripte:
+  - ../assets/js/speicher.js
+  - ../assets/js/icons.js
+  - src: ../assets/js/editor.js
+    defer: true
+  - ../assets/js/pap-engine.js
+  - ../assets/js/kurs.js
+  - ../assets/js/aufgaben.js
+  - ../assets/js/pap-editor.js
+  - ../assets/js/labor.js
+---
+
+<Labor nr="V03" zuhause="45" name="Termin 03" lerneinheit="v03-und-oder-drei-wege.html">
+
+<Station id="a-werkzeugkasten" titel="Werkzeugkasten" teil="A" min="3">
+
+<p class="l-task__intro">Zwei neue Karten. Alles aus Termin 02 gilt weiter: Vergleiche, `if` und `else`, der f-String. Jeder Codeblock läuft: Ändere etwas und führ ihn aus. Den Werkzeugkasten erreichst du von jeder Aufgabe aus in der Befehls-Bibliothek oben rechts.</p>
+
+<Video name="v03-python" titel="Python-Werkzeugkasten: elif, and, or" fehlt="Video folgt. Bis dahin: Lies die beiden Karten und probier jeden Codeblock aus.">
+
+Python-Werkzeugkasten: elif, and, or (ca. 2 Min). Untertitel sind eingeschaltet (Deutsch).
+
+</Video>
+
+<Werkzeugkasten>
+
+<Syntaxkarte id="sk-elif" nr="1" titel="elif: mehr als zwei Wege">
+
+```python
+sekunde = 32
+if sekunde < 30:
+    print("Grün")
+elif sekunde < 35:
+    print("Gelb")
+else:
+    print("Rot")
+```
+
+- Ausgabe: `Gelb`.
+- `elif` hat eine Bedingung und einen Doppelpunkt, `else` hat keine Bedingung.
+- Gefragt wird von oben nach unten. Das erste Ja gewinnt.
+
+</Syntaxkarte>
+
+<Syntaxkarte id="sk-and-or" nr="2" titel="and und or: zwei Vergleiche verbinden">
+
+```python
+groesse = 150
+alter = 9
+print(groesse >= 140 and alter >= 10)
+print(groesse >= 140 or alter >= 10)
+```
+
+- Ausgabe: `False`, dann `True`.
+- `and`: Beide müssen stimmen. `or`: Einer genügt.
+- Links und rechts steht je ein vollständiger Vergleich.
+
+</Syntaxkarte>
+
+</Werkzeugkasten>
+
+</Station>
+
+<Station id="a-vorgemacht" titel="Vorgerechnetes Beispiel: Getränkeautomat mit drei Wegen" teil="A" min="5">
+
+<p class="l-task__intro">Aufgabe: Die Cola kostet 1,50 Euro. Bei zu wenig Geld meldet der Automat „Zu wenig Geld“. Bei mehr Geld gibt er das Rückgeld mit zwei Nachkommastellen aus. Sonst passt es genau. Wieder gilt: **erst der Plan, dann der Code.**</p>
+
+<Video name="v03-beispiel" titel="Vorgerechnet: Getränkeautomat mit drei Wegen" fehlt="Video folgt. Bis dahin: Lies den Plan und den Code Zeile für Zeile und probier das Programm mit 1, 2 und 1.5 aus.">
+
+Vorgerechnet: Getränkeautomat mit drei Wegen (ca. 2 Min). Untertitel sind eingeschaltet (Deutsch).
+
+</Video>
+
+<Plan titel="Getränkeautomat mit drei Wegen">
+
+```text
+Eingabe: geld
+Entscheidung: geld < 1.5?
+  ja:
+    Ausgabe: "Zu wenig Geld"
+  nein:
+    Entscheidung: geld > 1.5?
+      ja:
+        rueckgeld = geld - 1.5
+        Ausgabe: rueckgeld
+      nein:
+        Ausgabe: "Passt genau"
+```
+
+</Plan>
+
+<Aufgabe art="run" id="w-vorgemacht" data-count="0" data-mode="programm" data-inputs="2">
+
+<Editor datei="labor/w-vorgemacht.vorlage.py" aria-label="Python-Code: Getränkeautomat mit drei Wegen" />
+
+</Aufgabe>
+
+<Schritte>
+
+1. **Die Fälle:** zu wenig, zu viel, genau passend. Drei Fälle, also genügen zwei Fragen.
+2. **Zeile 3, erste Raute:** Sie wird `if geld < 1.5:`.
+3. **Zeile 5, die Raute im nein-Weg:** Sie wird `elif geld > 1.5:`.
+4. **Zeile 8, der Rest:** Er wird `else:`. Weder kleiner noch größer heißt: genau 1.5.
+5. **Zeile 7, das Rückgeld:** Im Plan steht nur „Ausgabe: rueckgeld“. Wie die Zahl aussieht, legt der f-String aus Termin 02 fest: `Rückgeld: 0.50 Euro`.
+6. **Probe mit einem Wert je Weg:** 1 ergibt `Zu wenig Geld`, 2 ergibt `Rückgeld: 0.50 Euro`, 1.5 ergibt `Passt genau`.
+7. **Selbsterklärung:** Was passiert bei 1.5, wenn du die zweite Bedingung in `geld >= 1.5` änderst? Probier es aus.
+
+</Schritte>
+
+</Station>
+
+<Station id="a-ablauf" titel="Ablauf verfolgen: drei Wege" teil="A" min="5">
+
+<p class="l-task__intro">Ein Spiel vergibt Stufen: ab 100 Punkten Stufe 3, ab 50 Punkten Stufe 2, sonst Stufe 1. Führ das Programm im Kopf aus, Zeile für Zeile, und trag ein, was sich ändert. In den Zeilen mit `if` und `elif` trägst du in die Spalte Bedingung True oder False ein, ohne Anführungszeichen.</p>
+
+<Aufgabe art="trace" id="w-trace">
+
+<Daten datei="labor/w-trace.daten.json" />
+
+</Aufgabe>
+
+</Station>
+
+<Station id="a-plan" titel="Plan zeichnen: Freibad mit drei Preisen" teil="A" sterne="2" min="10">
+
+<p class="l-task__intro">Drei Preise, also zwei Rauten. Die Eingabe und die Ausgabe stehen schon im Editor, du ergänzt die Entscheidungen. „Prüfen“ führt deinen Plan mit Beispielwerten aus.</p>
+
+<Aufgabe art="pap-zeichnen" id="w-plan" titel="Freibad mit drei Preisen" data-timeout="8000" data-erlaubt="in,out,op,if">
+
+Eingelesen wird das Alter (ganze Zahl). Kinder unter 6 zahlen 0 Euro, alle anderen unter 18 zahlen 3 Euro, Erwachsene 5 Euro. Ausgegeben wird der Preis.
+
+<Python rolle="tests" datei="labor/w-plan.tests.py" />
+
+<Daten datei="labor/w-plan.start.json" rolle="start" />
+
+<Daten datei="labor/w-plan.solution.json" rolle="solution" />
+
+<Tipps>
+
+1. Schreib die drei Fälle auf: unter 6, 6 bis 17, ab 18.
+2. Die zweite Raute kommt in den nein-Weg der ersten, als einziges Symbol dort.
+3. Im nein-Weg weißt du schon: Die Person ist mindestens 6. Es genügt die Frage alter \< 18.
+
+</Tipps>
+
+</Aufgabe>
+
+</Station>
+
+<Station id="a-zeilen" titel="Zeilen ordnen: Automat mit Flaschen" teil="A" min="4">
+
+<p class="l-task__intro">Der Plan ist gegeben, die Zeilen des Programms sind durcheinander, und zwei gehören gar nicht dazu. Bring die passenden Zeilen in die Reihenfolge des Plans, mit der richtigen Einrückung.</p>
+
+<Aufgabe art="parsons" id="w-parsons" titel="Automat mit Flaschen">
+
+Die Cola kommt nur, wenn das Geld reicht und noch eine Flasche im Fach ist. Sonst gibt der Automat das Geld zurück.
+
+<Plan titel="Automat mit Flaschen">
+
+```text
+Eingabe: geld
+Eingabe: flaschen
+Entscheidung: geld >= 1.5 and flaschen > 0?
+  ja:
+    Ausgabe: "Cola kommt"
+  nein:
+    Ausgabe: "Geld zurück"
+```
+
+</Plan>
+
+<Daten datei="labor/w-parsons.daten.json" />
+
+</Aufgabe>
+
+</Station>
+
+<Station id="a-luecken" titel="Lücken füllen: Schere-Stein-Papier" teil="A" min="8">
+
+<p class="l-task__intro">Gespielt wird mit Zahlen: 1 = Schere, 2 = Stein, 3 = Papier. Schere schneidet Papier, Stein schlägt Schere, Papier wickelt Stein ein. Ergänze die fünf Lücken. Der Plan zeigt die ersten beiden Rauten; die weiteren Fälle folgen nach demselben Muster und stehen nur im Programm.</p>
+
+<Aufgabe art="gap" id="w-luecken" data-mode="programm">
+
+<Plan titel="Schere-Stein-Papier">
+
+```text
+Eingabe: ich
+Eingabe: du
+Entscheidung: ich == du?
+  ja:
+    Ausgabe: "Unentschieden"
+  nein:
+    Entscheidung: ich == 1 and du == 3?
+      ja:
+        Ausgabe: "Ich gewinne"
+      nein:
+        Ausgabe: "weitere Fälle"
+```
+
+</Plan>
+
+```text class="a-gap__src" data-run="no"
+# Schere-Stein-Papier: 1 = Schere, 2 = Stein, 3 = Papier
+ich = int(input("Ich wähle (1, 2 oder 3): "))
+du = int(input("Du wählst (1, 2 oder 3): "))
+if ich @@==@@ du:
+    print("Unentschieden")
+@@elif@@ ich == 1 @@and@@ du == 3:
+    # Schere schneidet Papier
+    print("Ich gewinne")
+elif ich == 2 and du == @@1@@:
+    # Stein schlägt Schere
+    print("Ich gewinne")
+elif ich == 3 and du == 2:
+    # Papier wickelt Stein ein
+    print("Ich gewinne")
+@@else@@:
+    print("Du gewinnst")
+```
+
+<Python rolle="tests" datei="labor/w-luecken.tests.py" />
+
+<Tipps>
+
+1. Lies zuerst die erste Zeile und die Kommentare: Welche Zahl steht für welche Hand, und wer schlägt wen?
+2. Lücke 1 fragt, ob beide dasselbe gewählt haben. In Lücke 3 müssen beide Vergleiche stimmen. Lücke 2 und 5 sind die Wörter für weitere Fragen und für den Rest, Karte 1 zeigt sie.
+3. In Lücke 1 steht das Zeichen für „gleich“, nicht `=`. In Lücke 3 steht das Wort für UND. In Lücke 4 steht die Zahl der Schere, denn Stein (2) schlägt Schere.
+
+</Tipps>
+
+</Aufgabe>
+
+<details class="k-deep">
+<summary>Danach zu zweit: Das Programm ist der Schiedsrichter</summary>
+
+Klapp das erst auf, wenn deine Lücken stimmen: Unten steht das fertige Programm. Zählt „Schere, Stein, Papier“ und zeigt die Hand. Dann führt das Programm aus und tippt eure beiden Zahlen im Terminal ein. Eine Runde genügt. Zum Schluss: Was passiert, wenn jemand 7 eintippt, und warum? Probier es aus.
+
+```python data-stdin="2\n1"
+# Schere-Stein-Papier: 1 = Schere, 2 = Stein, 3 = Papier
+ich = int(input("Ich wähle (1, 2 oder 3): "))
+du = int(input("Du wählst (1, 2 oder 3): "))
+if ich == du:
+    print("Unentschieden")
+elif ich == 1 and du == 3:
+    # Schere schneidet Papier
+    print("Ich gewinne")
+elif ich == 2 and du == 1:
+    # Stein schlägt Schere
+    print("Ich gewinne")
+elif ich == 3 and du == 2:
+    # Papier wickelt Stein ein
+    print("Ich gewinne")
+else:
+    print("Du gewinnst")
+```
+
+</details>
+
+</Station>
+
+<Station id="a-eigene" titel="Erste eigene Aufgabe: Pizza-Lieferung" teil="A" sterne="1" min="8">
+
+<p class="l-task__intro">Dein erstes Programm mit zwei Bedingungen in einer Raute. Der Plan steht schon da, du überträgst ihn Symbol für Symbol in Code.</p>
+
+<Aufgabe art="code" id="w-eigene" titel="Pizza-Lieferung" data-mode="programm" data-inputs="25|3">
+
+<div class="a-task__text">
+
+Die Lieferung ist gratis, wenn der Bestellwert mindestens 20 Euro beträgt und die Entfernung höchstens 5 km. Sonst kostet sie 3 Euro. Eingelesen werden zuerst der Bestellwert, dann die Entfernung (beides Kommazahlen). Ausgegeben wird `Lieferung gratis` oder `Lieferung 3 Euro`.
+
+<Plan titel="Pizza-Lieferung">
+
+```text
+Eingabe: wert
+Eingabe: km
+Entscheidung: wert >= 20 and km <= 5?
+  ja:
+    Ausgabe: "Lieferung gratis"
+  nein:
+    Ausgabe: "Lieferung 3 Euro"
+```
+
+</Plan>
+
+</div>
+
+<Editor datei="labor/w-eigene.vorlage.py" aria-label="Python-Code: Pizza-Lieferung" />
+
+<Python rolle="tests" datei="labor/w-eigene.tests.py" />
+
+<Python rolle="solution" datei="labor/w-eigene.solution.py" />
+
+<Tipps>
+
+1. Fünf Symbole, sechs Zeilen.
+2. In der Raute stehen zwei vollständige Vergleiche.
+3. Beide müssen stimmen: Welches Wort verbindet sie?
+
+</Tipps>
+
+</Aufgabe>
+
+<p class="k-small k-muted">Für Schnelle: Ab 40 Euro ist die Lieferung immer gratis, egal wie weit. Bau das als erste Frage davor (`if`, dann `elif`).</p>
+
+</Station>
+
+<Station id="a-fehler" titel="Fehler finden: Freibad-Kasse" teil="A" min="6" data-seen="manual">
+
+<p class="l-task__intro">Lies das Programm Zeile für Zeile und vergleiche es mit der Aufgabe. Ein Fehler meldet Python, den anderen findest nur du, zum Beispiel mit der Wahrheitstabelle.</p>
+
+<Fehlersuche titel="Freibad-Kasse" fehler="2 6">
+
+Kinder unter 6 und alle ab 65 zahlen nichts. Wer sonst unter 18 ist, zahlt 3 Euro, alle anderen 5 Euro. Bei 70 wird „Eintritt frei“ erwartet. In zwei Zeilen steckt ein Fehler.
+
+```text
+alter = int(input("Alter: "))
+if alter < 6 and alter >= 65:
+    print("Eintritt frei")
+elif alter < 18:
+    print("3 Euro")
+else alter >= 18:
+    print("5 Euro")
+```
+
+#### Fehler 1: Bedingung hinter else (Zeile 6)
+
+`else` hat nie eine Bedingung. Python meldet `SyntaxError: expected ':'`, obwohl am Ende der Zeile ein Doppelpunkt steht: Python erwartet ihn direkt hinter `else`.
+
+#### Fehler 2: und statt oder (Zeile 2)
+
+Im Satz steht „und“, gemeint ist ODER. Mit A = „unter 6“ und B = „ab 65“ kommt die Zeile 1 1 der Tabelle nie vor, denn niemand ist beides zugleich. Mit UND ist die Bedingung also nie wahr. Bei 70 ist A falsch und B wahr: UND ergibt falsch, das Programm landet bei „5 Euro“. Diesen Fehler meldet Python nicht.
+
+So ist es richtig:
+
+```python data-stdin="70"
+alter = int(input("Alter: "))
+if alter < 6 or alter >= 65:
+    print("Eintritt frei")
+elif alter < 18:
+    print("3 Euro")
+else:
+    print("5 Euro")
+```
+
+Probe: 70, 65 und 4 ergeben `Eintritt frei`, 6 und 12 ergeben `3 Euro`, 18 und 30 ergeben `5 Euro`.
+
+</Fehlersuche>
+
+</Station>
+
+<Station id="t-1" titel="Wahrheitstabelle ausfüllen" teil="B" sterne="1" min="6">
+
+<p class="l-task__intro">Das Training gehört zum Termin: zusammen mit dem Selbstcheck etwa 45 Minuten, bis zum nächsten Mal. Termin 04 beginnt mit dieser Tabelle. Füll sie für A ODER (NICHT B) zuerst auf Papier aus, dann prüf sie hier. Die Hilfsspalte ist NICHT B. Trag in jedes Feld 0 oder 1 ein, ohne Anführungszeichen.</p>
+
+<Aufgabe art="trace" id="tr-1" titel="A ODER (NICHT B)">
+
+<Daten datei="labor/tr-1.daten.json" />
+
+</Aufgabe>
+
+</Station>
+
+<Station id="t-2" titel="Plan zeichnen: Paketporto mit drei Stufen" teil="B" sterne="2" min="8">
+
+<p class="l-task__intro">Klausurform „Plan zeichnen“. Zeichne zuerst auf Papier, dann im Editor, und vergleiche.</p>
+
+<Aufgabe art="pap-zeichnen" id="tr-2" titel="Paketporto mit drei Stufen" data-timeout="8000" data-erlaubt="in,out,op,if">
+
+Eingelesen wird das Gewicht in Kilogramm (Kommazahl). Bis einschließlich 2 kg kostet das Paket 5 Euro, bis einschließlich 10 kg 8 Euro, darüber 15 Euro. Ausgegeben wird das Porto.
+
+<Python rolle="tests" datei="labor/tr-2.tests.py" />
+
+<Daten datei="labor/tr-2.solution.json" rolle="solution" />
+
+<Tipps>
+
+1. Schreib die drei Fälle auf: bis 2 kg, über 2 bis 10 kg, über 10 kg. Zwei Fragen genügen.
+2. Die zweite Raute kommt in den nein-Weg der ersten, als einziges Symbol dort.
+3. Im nein-Weg weißt du schon: Das Paket ist schwerer als 2 kg. Es genügt die Frage gewicht \<= 10.
+
+</Tipps>
+
+</Aufgabe>
+
+</Station>
+
+<Station id="t-3" titel="Plan in Code übertragen: Würfelglück" teil="B" sterne="2" min="8">
+
+<p class="l-task__intro">Klausurform „Plan in Code übertragen“: Schreib das Programm wie auf Papier, ohne Ausführen und ohne Vorschläge des Editors. Dann abgeben und mit der Lösung vergleichen.</p>
+
+<Aufgabe art="klausur" id="tr-3" titel="Würfelglück" data-mode="programm" data-minutes="8">
+
+<div class="a-task__text">
+
+Übertrage den Plan in ein Python-Programm. Der Wurf ist eine ganze Zahl. Bei einer 1 oder einer 6 darfst du nochmal würfeln.
+
+<Plan titel="Würfelglück">
+
+```text
+Eingabe: wurf
+Entscheidung: wurf == 1 or wurf == 6?
+  ja:
+    Ausgabe: "Nochmal würfeln"
+  nein:
+    Ausgabe: "Der Nächste ist dran"
+```
+
+</Plan>
+
+</div>
+
+<Editor data-assist="off" aria-label="Python-Code von Hand schreiben, ohne Ausführen" />
+
+<Python rolle="tests" datei="labor/tr-3.tests.py" />
+
+<Python rolle="solution" datei="labor/tr-3.solution.py" />
+
+<Daten datei="labor/tr-3.scheme.json" rolle="scheme" />
+
+</Aufgabe>
+
+</Station>
+
+<Station id="t-4" titel="Fehler finden und beheben: Blitzer" teil="B" sterne="2" min="6">
+
+<p class="l-task__intro">In diesem Programm stecken zwei Fehler: einer, den Python meldet, und einer, den du nur mit einer Probe findest. Probier 80.</p>
+
+<Aufgabe art="code" id="tr-4" titel="Blitzer" data-mode="programm" data-inputs="80">
+
+<div class="a-task__text">
+
+Erlaubt sind 50 km/h. Bis 70 km/h gibt es eine Verwarnung, darüber ein Bußgeld. Das Programm gibt `Alles in Ordnung`, `Verwarnung` oder `Bußgeld` aus. Behebe beide Fehler.
+
+</div>
+
+<Editor datei="labor/tr-4.vorlage.py" aria-label="Python-Code: Blitzer" />
+
+<Python rolle="tests" datei="labor/tr-4.tests.py" />
+
+<Python rolle="solution" datei="labor/tr-4.solution.py" />
+
+<Tipps>
+
+1. Führ das Programm aus und lies die Fehlermeldung von unten: In welcher Zeile fehlt ein Zeichen?
+2. Läuft das Programm, probier 80: Laut Aufgabe gibt es über 70 ein Bußgeld. Was gibt dein Programm aus?
+3. Gefragt wird von oben nach unten, das erste Ja gewinnt. Welche Frage muss zuerst kommen: tempo > 50 oder tempo > 70?
+
+</Tipps>
+
+</Aufgabe>
+
+</Station>
+
+<Station id="t-5" titel="Zahlenraten mit Hinweis" teil="B" sterne="3" min="10">
+
+<p class="l-task__intro">Ohne vorgegebenen Plan. Überleg zuerst, wie viele Wege es gibt und welche Fragen sie trennen. Wenn es dir hilft, skizzier den Plan auf Papier. Dann schreib das Programm.</p>
+
+<Aufgabe art="code" id="tr-5" titel="Zahlenraten mit Hinweis" data-mode="programm" data-inputs="3">
+
+<div class="a-task__text">
+
+Die geheime Zahl ist 7. Das Programm liest einen Tipp ein (ganze Zahl) und gibt `Treffer`, `Zu niedrig` oder `Zu hoch` aus. Beispiel: Beim Tipp 3 kommt `Zu niedrig`.
+
+</div>
+
+<Editor datei="labor/tr-5.vorlage.py" aria-label="Python-Code: Zahlenraten mit Hinweis" />
+
+<Python rolle="tests" datei="labor/tr-5.tests.py" />
+
+<Python rolle="solution" datei="labor/tr-5.solution.py" />
+
+<Tipps>
+
+1. Drei Ausgaben, also zwei Fragen. Im Plan steht die zweite Raute im nein-Weg der ersten.
+2. Erste Frage: tipp == 7? Im nein-Weg weißt du schon, dass der Tipp nicht 7 ist. Eine Frage genügt, um „zu niedrig“ und „zu hoch“ zu trennen.
+3. Die Form steht auf Karte 1: if, elif, else. Für „Zu hoch“ brauchst du keine eigene Bedingung.
+
+</Tipps>
+
+</Aufgabe>
+
+</Station>
+
+<Knobel id="kn-1" titel="Drei Stäbe, ein Dreieck?">
+
+<Aufgabe art="code" id="k-1" data-mode="programm" data-inputs="3|4|5">
+
+<div class="a-task__text">
+
+Aus drei Stäben willst du ein Dreieck legen. Das geht nur, wenn je zwei Stäbe zusammen länger sind als der dritte. Das Programm liest die drei Längen in ganzen Zentimetern ein (das steht schon in der Vorlage) und gibt genau eine Zeile aus:
+
+- `Kein Dreieck`, wenn sich aus den Stäben kein Dreieck legen lässt,
+- `Gleichseitig`, wenn alle drei gleich lang sind,
+- `Gleichschenklig`, wenn genau zwei gleich lang sind,
+- `Ungleichseitig`, wenn alle drei verschieden lang sind.
+
+Beispiele: 3, 4 und 5 ergeben `Ungleichseitig`. 5, 8 und 5 ergeben `Gleichschenklig`. 2, 2 und 9 ergeben `Kein Dreieck`, denn die beiden kurzen Stäbe reichen zusammen nicht über den langen.
+
+</div>
+
+<Editor datei="labor/k-1.vorlage.py" aria-label="Python-Code: Drei Stäbe, ein Dreieck?" />
+
+<Python rolle="tests" datei="labor/k-1.tests.py" />
+
+<Python rolle="solution" datei="labor/k-1.solution.py" />
+
+<Tipps>
+
+1. Frag zuerst, wann es kein Dreieck gibt. Welche Stablänge ist dafür entscheidend, und was ist mit drei Stäben, die genau flach aufeinanderliegen?
+2. Ein gleichseitiges Dreieck hat auch zwei gleich lange Seiten. Welche Frage muss deshalb vor welcher kommen?
+
+</Tipps>
+
+</Aufgabe>
+
+</Knobel>
+
+<Knobel id="kn-2" titel="Die mittlere Wertung">
+
+<Aufgabe art="code" id="k-2" data-mode="programm" data-inputs="7|9|3">
+
+<div class="a-task__text">
+
+Beim Turmspringen geben drei Kampfrichter je eine Wertung als ganze Zahl. Damit eine einzelne Wertung, die stark nach oben oder unten abweicht, nicht zählt, wird nur die mittlere gewertet: die Wertung, die in der Mitte steht, wenn du die drei der Größe nach ordnest. Das Programm liest die drei Wertungen ein (das steht schon in der Vorlage) und gibt die mittlere so aus: `Gewertet: 7`.
+
+Beispiele: 7, 9 und 3 ergeben `Gewertet: 7`. Bei 5, 8 und 5 ist die mittlere Wertung 5, also `Gewertet: 5`.
+
+</div>
+
+<Editor datei="labor/k-2.vorlage.py" aria-label="Python-Code: Die mittlere Wertung" />
+
+<Python rolle="tests" datei="labor/k-2.tests.py" />
+
+<Python rolle="solution" datei="labor/k-2.solution.py" />
+
+<Tipps>
+
+1. Wann ist b die mittlere Wertung? Es gibt zwei Reihenfolgen, in denen das so ist.
+2. Wenn weder a noch b in der Mitte liegt, welche Wertung bleibt dann übrig? Denk auch an gleiche Wertungen.
+
+</Tipps>
+
+</Aufgabe>
+
+</Knobel>
+
+</Labor>

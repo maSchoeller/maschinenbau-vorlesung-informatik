@@ -54,7 +54,7 @@ async function main() {
 
       /* Leerer Stand */
       await page.goto(basis + 'index.html'); await page.evaluate(() => localStorage.clear()); await page.reload();
-      pruefe(/V01/.test(await page.locator('main').innerText()), 'Heute ohne Stand: Einstieg mit V01');
+      pruefe(/Termin 01/.test(await page.locator('main').innerText()) && !/\bV\d\d\b/.test(await page.locator('main').innerText()), 'Heute ohne Stand: Einstieg mit Termin 01 (ohne Kennung)');
 
       /* Suche: leere Suche, Python-Themen, Fokus */
       await page.keyboard.press('Control+k');
@@ -65,7 +65,7 @@ async function main() {
       pruefe(opt === nLek && nLek >= 1 && grp.length === 1 && grp[0] === 'Lektionen', 'Leere Suche: genau die ' + nLek + ' Lektionen in einer Gruppe (' + opt + ' Treffer, Gruppen: ' + grp.join(',') + ')');
       await page.waitForTimeout(400);
       pruefe(new RegExp('Alle ' + nLek + ' Lektionen').test(await page.locator('dialog.suche .suche-status').textContent()), 'Statusmeldung „Alle ' + nLek + ' Lektionen“');
-      for (const [q, erwartet] of [['input', 'V01'], ['zuweisung', 'V01'], ['ablauf', null]]) {
+      for (const [q, erwartet] of [['input', 'Termin 01'], ['zuweisung', 'Termin 01'], ['ablauf', null]]) {
         await page.fill('#suche-feld', q);
         const t = await page.locator('dialog.suche a.suche-treffer').allInnerTexts();
         if (erwartet) {
@@ -90,7 +90,7 @@ async function main() {
       pruefe(z > 0, 'Glossar-Filter „ablauf“ findet Begriffe (' + z + ')');
 
       /* Heute nach dem Besuch einer Navigationsseite: „Weiter“ nie auf Glossar */
-      await page.goto(basis + 'lektionen/v01-start.html').catch(() => {});
+      await page.goto(basis + 'lektionen/v01-ablauf-und-erste-programme.html').catch(() => {});
       await page.goto(basis + 'index.html'); await page.evaluate(() => localStorage.clear());
       const kurs = await page.evaluate(() => window.KursApp.kurs());
       const t = kurs.lektionen;
@@ -125,7 +125,7 @@ async function main() {
         pruefe(await page.evaluate(() => document.activeElement && document.activeElement !== document.body), 'Hinweis weggeklickt: Fokus nicht auf body');
       } else console.log('  (kein Hinweis sichtbar, Fokus-Prüfung übersprungen)');
 
-      /* Alles fertig: ein primärer Knopf (Klausurtrainer) */
+      /* Alles fertig: ein primärer Knopf (Lernpfad) */
       await page.evaluate((termine) => {
         const KS = window.KursSpeicher;
         termine.forEach((x) => {
@@ -137,7 +137,7 @@ async function main() {
       }, t);
       await page.reload(); await page.waitForTimeout(700);
       const prim = page.locator('main a.k-btn:not(.k-btn--ghost)');
-      pruefe(await prim.count() === 1 && /Lernpfad|Klausurtrainer/.test(await prim.innerText()), 'Alles fertig: genau ein primärer Knopf (Lernpfad, solange Termine fehlen; sonst Klausurtrainer)');
+      pruefe(await prim.count() === 1 && /Lernpfad/.test(await prim.innerText()), 'Alles fertig: genau ein primärer Knopf (Lernpfad)');
 
       /* Lernpfad */
       await page.goto(basis + 'lernpfad.html'); await page.waitForTimeout(500);

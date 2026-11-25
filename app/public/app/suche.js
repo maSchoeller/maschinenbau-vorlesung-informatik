@@ -35,7 +35,7 @@
     return String(s == null ? '' : s).toLowerCase().replace(/ß/g, 'ss').normalize('NFD').replace(/[̀-ͯ]/g, '');
   }
 
-  /* Die Python-Themen einer Lektion (kurs.json) zählen beim Suchen zum Text des Lektionseintrags („numpy“ findet V13),
+  /* Die Python-Themen einer Lektion (kurs.json) zählen beim Suchen zum Text des Lektionseintrags („input“ findet V01),
      stehen aber in einem eigenen Feld, das nicht angezeigt wird (sonst hingen sie ohne Trennung an der Unterzeile) */
   function lektionenAnreichern(d, k) {
     var py = {};
