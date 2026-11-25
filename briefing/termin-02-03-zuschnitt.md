@@ -56,7 +56,13 @@ Beim Bau abgewichen, vom Dozenten bestätigt (2026-11-24). Wo dieses Papier weit
 - Termin 03, Übung „Tabelle“ in der Lerneinheit: Sie zählt nicht im Fortschritt. Die Plattform zählt nur Aufgaben im Labor.
 - Plan zuerst nur bei neuem Ablauf: Kinoticket (Termin 02) und Zahlenraten (Termin 03) verlangen den Plan nicht mehr vorab.
 
-Noch offen (bleibt wie gebaut, bis der Dozent etwas anderes sagt): Die Knobelaufgaben von Termin 03 brauchen `elif`, `and` und `or` aus demselben Termin. In der Aufgabenliste haben Knobelaufgaben denselben Status-Kreis wie Pflichtaufgaben.
+Am 2026-11-25 vom Dozenten entschieden:
+- Knobelaufgaben dürfen den Stoff des laufenden Termins nutzen (Termin 03: `elif`, `and`, `or`).
+- Termin 02 hat zwei Knobelaufgaben: „Wettlauf mit Vorsprung“ und „Eine große oder mehrere kleine Pizzen“.
+- In der Aufgabenliste zeigen Knobelaufgaben keinen Status, solange sie nicht gelöst sind.
+- Die Fehlersuche „Freibad-Kasse“ bleibt mit dem Alltags-„und“ im Aufgabentext.
+- Sichtbar heißt es überall „Termin 02“ bzw. „T02“; die Kennung V02 bleibt intern (Adressen, Speicher, Daten).
+- Videos: Stempel WAHR/FALSCH in Großbuchstaben (Termin 02 Theorie); im Ausblick von Termin 03 Theorie stehen zwei große Rauten mit Python-Schreibweise untereinander; im Beispiel-Video von Termin 03 steht der Plan neben dem Code, solange vom Plan die Rede ist, danach der Code allein.
 
 ## Hinweise für den Bau
 
