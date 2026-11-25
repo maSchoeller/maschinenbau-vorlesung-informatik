@@ -5,7 +5,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
-import { DIST } from '../../src/lib/pfade.mjs';
+import { DIST, SITE } from '../../src/lib/pfade.mjs';
 import { ladeKurs } from '../../src/lib/kurs.mjs';
 
 const OHNE_DIST = fs.existsSync(path.join(DIST, 'app', 'daten', 'kurs.json')) ? false : 'kein Ausgabeordner: erst bauen (KURS_AUSGABE=… npm run build)';
@@ -50,11 +50,15 @@ test('Entwürfe: jedes Video hat entweder Datei und Spieler oder den Platzhalter
     for (const m of html.matchAll(/<figure class="k-video"[\s\S]*?<\/figure>/g)) {
       anzahl++;
       const name = /data-video="([\w-]+)"/.exec(m[0])[1];
-      const vorhanden = fs.existsSync(path.join(DIST, 'assets', 'video', name + '.mp4'));
+      /* Maßgeblich ist die Quelle site/assets/video (danach entscheidet der Baustein <Video>). Im Ausgabeordner
+         fehlen die .mp4, wenn mit VIDEO_BASIS gebaut wird: Dann kommen die Videos aus dem Storage. */
+      const quelle = path.join(SITE, 'assets', 'video');
+      const vorhanden = fs.existsSync(path.join(quelle, name + '.mp4'));
       if (vorhanden) {
         assert.match(m[0], /<video/, `${d}: ${name}.mp4 liegt vor, also gehört ein Spieler auf die Seite`);
         for (const endung of ['.vtt', '-poster.png']) {
-          assert.ok(fs.existsSync(path.join(DIST, 'assets', 'video', name + endung)), `${name}${endung} fehlt neben ${name}.mp4`);
+          assert.ok(fs.existsSync(path.join(quelle, name + endung)), `${name}${endung} fehlt neben ${name}.mp4`);
+          assert.ok(fs.existsSync(path.join(DIST, 'assets', 'video', name + endung)), `${name}${endung} fehlt im Ausgabeordner`);
         }
       } else {
         assert.ok(!/<video|<source|<track/.test(m[0]), `${d}: ${name} ohne Datei darf kein <video>, <source> oder <track> haben (sonst 404 und Konsolenfehler)`);
