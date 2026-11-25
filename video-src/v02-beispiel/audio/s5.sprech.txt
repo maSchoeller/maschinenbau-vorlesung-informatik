@@ -1,0 +1,1 @@
+Die Probe machen wir mit dem Grenzfall: Wir geben sechzehn ein. sechzehn größer gleich sechzehn ist wahr. Im Plan geht es den ja-Weg, im Code läuft die Zeile unter if. Die Ausgabe: Einlass. Der Nächste bitte. Jetzt du: Probier fünfzehn und siebzehn. Und überleg: Was passiert bei sechzehn, wenn du das Zeichen größer statt größer gleich schreibst?

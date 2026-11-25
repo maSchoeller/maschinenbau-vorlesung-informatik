@@ -2,8 +2,10 @@
 /* Glossar: alle Begriffe A bis Z, statisch gerendert. app/glossar.js macht das Filterfeld. */
 import App from '../layouts/App.astro';
 import { glossarDaten } from '../components/nav/glossar-daten.mjs';
+import { ladeKurs } from '../lib/kurs.mjs';
 const { gesamt, gruppen } = glossarDaten();
-const ziel = (g: any) => (g.lektion ? `Lektion ${g.lektion}` : g.url.replace(/\.html$/, '').replace(/^.*\//, '').replace(/^./, (c: string) => c.toUpperCase()).replace(/-/g, ' '));
+const terminLang = (k: string) => ladeKurs().lektionen.find((l) => l.nr === k)?.terminLang ?? 'Termin';
+const ziel = (g: any) => (g.lektion ? `${terminLang(g.lektion)}` : g.url.replace(/\.html$/, '').replace(/^.*\//, '').replace(/^./, (c: string) => c.toUpperCase()).replace(/-/g, ' '));
 ---
 <App pfad="glossar.html" art="glossar" titel="Glossar" beschreibung="Alle Fachbegriffe des Kurses von A bis Z mit kurzer Erklärung und dem Weg zur Lektion, in der sie eingeführt werden." css={['seiten']}>
   <main id="inhalt" class="app-seite np-seite gl">

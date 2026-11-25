@@ -1,0 +1,1 @@
+Ein kleines Wort dreht eine Aussage um: nicht. A ist die Aussage „Das Geld reicht“. Nicht A ist dann „Das Geld reicht nicht“. Aus wahr wird falsch, und aus falsch wird wahr. Die beiden Fälle stehen in einer kleinen Tabelle. Sie heißt Wahrheitstabelle und listet jeden Fall auf.

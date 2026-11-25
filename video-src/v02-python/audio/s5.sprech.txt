@@ -1,0 +1,1 @@
+Zwei Fehler passieren am Anfang fast jedem. Der erste: Der Doppelpunkt fehlt. Dann meldet Python einen Syntax Error und nennt die Zeile. Der zweite: Das f vor dem Anführungszeichen fehlt. Dann meldet Python nichts, und die geschweiften Klammern stehen wörtlich in der Ausgabe. Diesen Fehler findest nur du. Jetzt probier die drei Karten selbst aus.

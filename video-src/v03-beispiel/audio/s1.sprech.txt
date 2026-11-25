@@ -1,0 +1,1 @@
+Die Aufgabe: Die Cola kostet einen Euro fünfzig. Der Automat aus Termin zwei kannte zwei Fälle: Das Geld reicht, oder es reicht nicht. Jetzt sind es drei. Schreib sie zuerst untereinander auf. Zu wenig Geld. Zu viel Geld, dann gibt es Rückgeld. Oder es passt genau. Drei Fälle, aber zwei Fragen genügen.

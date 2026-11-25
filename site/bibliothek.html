@@ -23,8 +23,8 @@
         <a href="index.html#ampel">Wissens-Ampel</a>
         <a href="index.html#lernpfad">Lernpfad</a>
         <a href="index.html#termin">Ablauf</a>
-        <span>V03 Lerneinheit</span>
-        <span>V03 Labor</span>
+        <span>Termin 03 Lerneinheit</span>
+        <span>Termin 03 Labor</span>
         <a href="bibliothek.html" aria-current="page">Bibliothek</a>
         <a href="pap-editor.html">PAP-Editor</a>
       </nav>
@@ -121,7 +121,7 @@ print(&quot;Hallo, Welle!&quot;)"></textarea>
       // Stand-Auswahl
       var sel = $('bib-stand');
       sel.appendChild(el('option', { value: 'alle', text: 'Alles anzeigen' }));
-      for (var i = 1; i <= 20; i++) sel.appendChild(el('option', { value: String(i), text: 'bis V' + (i < 10 ? '0' : '') + i }));
+      for (var i = 1; i <= 20; i++) sel.appendChild(el('option', { value: String(i), text: 'bis ' + L.lessonName(i) }));
       sel.value = state.stand ? String(Math.min(20, state.stand)) : 'alle';
 
       // Kategorie-Knöpfe
@@ -161,8 +161,8 @@ print(&quot;Hallo, Welle!&quot;)"></textarea>
           var b = el('button', { type: 'button', class: 'bib-card' + (later ? ' is-later' : ''), 'data-id': e.id });
           b.appendChild(el('span', { class: 'bib-card__name', text: e.name }));
           b.appendChild(el('span', { class: 'bib-card__kurz', text: e.kurz }));
-          var meta = el('span', { class: 'bib-card__meta' }, [L.ampelChip(e.ampel), el('span', { class: 'kb-chip', text: e.eingefuehrt })]);
-          if (later) meta.appendChild(el('span', { class: 'kb-chip kb-chip--later', text: 'kommt in ' + e.eingefuehrt }));
+          var meta = el('span', { class: 'bib-card__meta' }, [L.ampelChip(e.ampel), el('span', { class: 'kb-chip', text: L.terminText(e.eingefuehrt, 'kurz') })]);
+          if (later) meta.appendChild(el('span', { class: 'kb-chip kb-chip--later', text: 'kommt in ' + L.terminText(e.eingefuehrt) }));
           b.appendChild(meta);
           b.addEventListener('click', function () { state.open = e.id; history.replaceState(null, '', '#' + e.id); render(); window.scrollTo(0, 0); });
           ul.appendChild(el('li', null, [b]));
@@ -175,11 +175,11 @@ print(&quot;Hallo, Welle!&quot;)"></textarea>
       function renderSheet(items) {
         sheet.innerHTML = '';
         var shown = items.filter(function (e) { return !state.stand || !L.isLater(e, state.stand) || e.stichwort; });
-        var stN = Math.min(22, state.stand || 22); var head = state.stand ? 'Spickzettel Python bis V' + (stN < 10 ? '0' : '') + stN : 'Spickzettel Python – V01 bis V22';
+        var stN = Math.min(20, state.stand || 20); var head = state.stand ? 'Spickzettel Python bis ' + L.lessonName(stN) : 'Spickzettel Python für alle Termine';
         sheet.appendChild(el('p', { class: 'bib-sheet-intro', text: head + ' · Informatik Maschinenbau, DHBW Stuttgart Campus Horb' }));
         var byCat = {};
         shown.forEach(function (e) {
-          if (state.stand && e.stichwort) return;      // Stichworte ab V10 nur im Gesamt-Spickzettel
+          if (state.stand && e.stichwort) return;      // Stichworte nur im Gesamt-Spickzettel
           (byCat[e.kategorie] = byCat[e.kategorie] || []).push(e);
         });
         cats.forEach(function (c) {
@@ -191,7 +191,7 @@ print(&quot;Hallo, Welle!&quot;)"></textarea>
           var tb = el('tbody');
           list.forEach(function (e) {
             var tr = el('tr', state.stand && L.isLater(e, state.stand) ? { class: 'is-later' } : null);
-            var n = el('td', { class: 'n' }, [e.name, el('br'), el('span', { class: 'v', text: e.eingefuehrt })]);
+            var n = el('td', { class: 'n' }, [e.name, el('br'), el('span', { class: 'v', text: L.terminText(e.eingefuehrt, 'kurz') })]);
             var s = el('td'); s.appendChild(el('pre', { text: e.syntax }));
             tr.appendChild(n); tr.appendChild(s); tr.appendChild(el('td', { text: e.kurz }));
             tb.appendChild(tr);

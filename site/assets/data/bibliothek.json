@@ -1682,7 +1682,7 @@
    "ampel": "kopf",
    "kurz": "Läuft über eine Folge von Werten und führt den Block für jeden aus.",
    "syntax": "for variable in folge:\n    anweisungen",
-   "erklaerung": "for nimmt nacheinander jeden Wert der Folge, legt ihn in der Schleifenvariablen ab und führt den Block aus. Die Folge kann ein range(), eine Liste (ab V08) oder ein Text sein. Nimm for, wenn du weißt, wie oft oder worüber du wiederholst.",
+   "erklaerung": "for nimmt nacheinander jeden Wert der Folge, legt ihn in der Schleifenvariablen ab und führt den Block aus. Die Folge kann ein range(), eine Liste (kommt später im Kurs) oder ein Text sein. Nimm for, wenn du weißt, wie oft oder worüber du wiederholst.",
    "beispiel": "summe = 0\nfor i in range(1, 6):\n    summe = summe + i\nprint(summe)\nfor zeichen in \"M10\":\n    print(zeichen)",
    "wann_nutzen": "Für feste Anzahl an Durchläufen und zum Abarbeiten von Folgen.",
    "transfer": [
@@ -4090,7 +4090,7 @@
    "ampel": "lesen",
    "kurz": "Liest JSON aus einer Datei bzw. schreibt Python-Daten als JSON in eine Datei.",
    "syntax": "with open(\"datei.json\", encoding=\"utf-8\") as f:\n    daten = json.load(f)\nwith open(\"datei.json\", \"w\", encoding=\"utf-8\") as f:\n    json.dump(daten, f, indent=2)",
-   "erklaerung": "Ohne s am Ende arbeiten load und dump mit einer geöffneten Datei statt mit Text: json.load(f) liest die ganze Datei und liefert dict oder Liste, json.dump(daten, f) schreibt sie hinein. Öffne die Datei wie in V09 mit with open und encoding=\"utf-8\". Merkhilfe: das s in loads und dumps steht für string.",
+   "erklaerung": "Ohne s am Ende arbeiten load und dump mit einer geöffneten Datei statt mit Text: json.load(f) liest die ganze Datei und liefert dict oder Liste, json.dump(daten, f) schreibt sie hinein. Öffne die Datei so, wie du es vom Lesen von Dateien kennst: mit with open und encoding=\"utf-8\". Merkhilfe: das s in loads und dumps steht für string.",
    "beispiel": "import json\n\nzelle = {\"zelle\": \"FZ-3\", \"netz\": \"192.168.30.0/24\", \"geraete\": [\"D2\", \"F1\", \"R1\"]}\nwith open(\"zelle.json\", \"w\", encoding=\"utf-8\") as f:\n    json.dump(zelle, f, indent=2)\n\nwith open(\"zelle.json\", encoding=\"utf-8\") as f:\n    geladen = json.load(f)\nprint(geladen[\"netz\"], len(geladen[\"geraete\"]))",
    "wann_nutzen": "Für Einstellungen, Zwischenergebnisse und Messdaten, die ein anderes Programm wieder einlesen soll.",
    "transfer": [
@@ -6009,7 +6009,7 @@
    "ampel": "kopf",
    "kurz": "Eine Funktion, die zu einer Klasse gehört: Aufruf mit Klammern am Objekt, z. B. w.volumen().",
    "syntax": "class Welle:\n    def volumen(self):\n        return ...\n\nw.volumen()",
-   "erklaerung": "Eine Methode ist eine def-Funktion im Rumpf der Klasse. Ihr erster Parameter ist self. Aufgerufen wird sie am Objekt: objekt.methode(argumente). Die Klammern sind Pflicht, auch ohne Argumente; ohne Klammern bekommst du nur die Methode selbst (bound method), nicht ihr Ergebnis. Methoden können Standardwerte haben (masse(dichte=7.85)), etwas zurückgeben (return) oder ein Attribut verändern. Du nutzt Methoden seit V01: \"M10\".upper() und liste.append(x) sind Methodenaufrufe, denn str und list sind Klassen.",
+   "erklaerung": "Eine Methode ist eine def-Funktion im Rumpf der Klasse. Ihr erster Parameter ist self. Aufgerufen wird sie am Objekt: objekt.methode(argumente). Die Klammern sind Pflicht, auch ohne Argumente; ohne Klammern bekommst du nur die Methode selbst (bound method), nicht ihr Ergebnis. Methoden können Standardwerte haben (masse(dichte=7.85)), etwas zurückgeben (return) oder ein Attribut verändern. Du nutzt Methoden seit Termin 01: \"M10\".upper() und liste.append(x) sind Methodenaufrufe, denn str und list sind Klassen.",
    "beispiel": "import math\n\n\nclass Rohr:\n    def __init__(self, d_aussen, d_innen, l):\n        self.d_aussen = d_aussen\n        self.d_innen = d_innen\n        self.l = l\n\n    def volumen(self):\n        \"\"\"mm³\"\"\"\n        return math.pi / 4 * (self.d_aussen ** 2 - self.d_innen ** 2) * self.l\n\n    def masse(self, dichte=7.85):\n        \"\"\"kg, Dichte in g/cm³\"\"\"\n        return self.volumen() / 1000 * dichte / 1000\n\n\nr = Rohr(42, 36, 1000)\nprint(round(r.volumen() / 1000, 1), \"cm³\")\nprint(round(r.masse(), 2), \"kg Stahl\")\nprint(round(r.masse(2.70), 2), \"kg Aluminium\")",
    "wann_nutzen": "Für jede Rechnung oder Prüfung, die zu einem Bauteil gehört: Volumen, Masse, ist_gueltig, benutzen.",
    "transfer": [

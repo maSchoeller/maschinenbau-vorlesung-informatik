@@ -55,6 +55,15 @@ body.app { margin: 0; min-height: 100vh; background: var(--surface, #fff); }
 .app-bar__kontext { flex: 1 1 auto; min-width: 0; display: flex; align-items: center; height: 100%; }
 .app-bar__status { flex: none; font-size: var(--fs-sm); color: var(--k-muted); display: flex; align-items: center; gap: var(--sp-2); }
 .app-bar__status:empty { display: none; }
+/* Platz für die Befehls-Bibliothek (editor.js hängt ihren Knopf hier ein, damit er nie über dem Inhalt schwebt) */
+.app-bar__werkzeuge { flex: none; display: flex; align-items: center; }
+.app-bar__werkzeuge:empty { display: none; }
+.app-bar .kb-toggle--bar {
+  position: static; z-index: auto; gap: 8px; min-height: 40px; padding: 0 12px; font-size: var(--fs-sm); font-weight: 600;
+  color: var(--text); background: #fff; border: 1px solid var(--border, #D1D5DB); border-radius: var(--r-base, 6px); box-shadow: none;
+}
+.app-bar .kb-toggle--bar:hover { color: var(--text); background: var(--app-flaeche); border-color: #9CA3AF; }
+.app-bar .kb-toggle--bar svg { color: var(--red-dark, #B50016); flex: none; }
 .app-bar__titel { margin: 0; font-weight: 700; font-size: var(--fs-md); color: var(--text); }
 .app-bar__suche {
   flex: none; display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 10px 0 12px;
@@ -147,8 +156,8 @@ body.app--ziehen .app-panel, body.app--ziehen .app-inhalt { transition: none !im
 .app-panel__inhalt { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: var(--sp-4) var(--sp-5); }
 .app-panel__hinweis { color: var(--k-muted); }
 
-/* Bestands-Knopf der Befehls-Bibliothek nicht unter das Panel legen */
-body.app--panel .kb-toggle:not(.kb-toggle--dock) { right: calc(var(--app-panel-w) + 16px); }
+/* Schwebender Knopf der Befehls-Bibliothek (nur ohne Kopfzeile): nicht unter das Panel legen */
+body.app--panel .kb-toggle:not(.kb-toggle--dock):not(.kb-toggle--bar) { right: calc(var(--app-panel-w) + 16px); }
 
 /* ── Nächster Schritt (wenn der Inhalt ihn nicht selbst hat) ── */
 .app-weiter { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: var(--sp-2) var(--sp-4); padding: var(--sp-5) var(--sp-5) var(--sp-7); border-top: 1px solid var(--app-linie); margin-top: var(--sp-5); }
@@ -220,7 +229,7 @@ body.app--panel .kb-toggle:not(.kb-toggle--dock) { right: calc(var(--app-panel-w
     position: fixed; top: var(--app-bar-h); right: 0; bottom: 0; z-index: 130; height: auto;
     width: min(var(--app-panel-w), calc(100vw - var(--app-rail-w))); box-shadow: -8px 0 28px rgba(0, 0, 0, .16);
   }
-  body.app--panel .kb-toggle { display: none; }
+  body.app--panel .kb-toggle:not(.kb-toggle--bar) { display: none; }
   .app-bar { padding: 0 var(--sp-4); gap: var(--sp-3); }
   .app-bar__suche kbd { display: none; }
   .app-bar__link span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
@@ -231,7 +240,7 @@ body.app--panel .kb-toggle:not(.kb-toggle--dock) { right: calc(var(--app-panel-w
   .app-ansicht { padding: 2px; }
   .app-ansicht a { min-height: 44px; }
   .app-lektion__pfeil { width: 44px; height: 44px; }
-  .app-bar__suche, .app-waehler__knopf, .app-waehler__eintrag { min-height: 44px; }
+  .app-bar__suche, .app-waehler__knopf, .app-waehler__eintrag, .app-bar .kb-toggle--bar { min-height: 44px; }
   .app-bar__link { min-height: 44px; min-width: 44px; justify-content: center; }
   .app-bar__suche { min-width: 44px; justify-content: center; }
   .app-panel__zu, .app-meldung__zu { width: 44px; height: 44px; }

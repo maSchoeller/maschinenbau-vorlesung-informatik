@@ -86,7 +86,7 @@ const GRENZE_LOCKER = 'Kein Aufgabenbezug erkennbar. Ist es eine Konzeptfrage, e
 function kontextBlock(anfrage, { streng = true, mittel = false, erkannt = null } = {}) {
   const teile = ['# Kontext dieser Anfrage (vom Server, vertrauenswürdig)'];
   if (anfrage.lektion) {
-    teile.push(`Lektion: ${anfrage.lektion}${anfrage.seite === 'labor' ? ' (Programmierlabor)' : anfrage.seite === 'lerneinheit' ? ' (Lerneinheit)' : ''}.`);
+    teile.push(`Termin: ${anfrage.terminLang || 'Termin'}${anfrage.seite === 'labor' ? ' (Programmierlabor)' : anfrage.seite === 'lerneinheit' ? ' (Lerneinheit)' : ''}.`);
   } else {
     teile.push('Keine bestimmte Lektion. Beantworte allgemeine Fragen zum Kurs und zu Python-Grundlagen.');
   }

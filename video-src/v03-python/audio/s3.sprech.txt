@@ -1,0 +1,1 @@
+Ein Lauf mit Sekunde zweiunddreißig. Erste Frage: Ist zweiunddreißig kleiner als dreißig? Nein, also nicht Grün. Weiter zur zweiten Frage: Ist zweiunddreißig kleiner als fünfunddreißig? Ja. Das Programm gibt Gelb aus. Die Zeile unter els, Rot, wird übersprungen. Gefragt wird von oben nach unten, und das erste Ja gewinnt.

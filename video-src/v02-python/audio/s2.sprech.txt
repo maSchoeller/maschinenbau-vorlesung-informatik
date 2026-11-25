@@ -1,0 +1,1 @@
+Karte zwei: if und els. Aus der Raute im Plan wird eine Zeile mit if. Hinter if steht die Bedingung: Punkte größer gleich fünfzig. Am Ende der Zeile steht ein Doppelpunkt. Die Zeile darunter gibt „Bestanden“ aus. Sie ist um vier Leerzeichen eingerückt. Eingerückt heißt: Diese Zeile gehört zum ja-Weg.

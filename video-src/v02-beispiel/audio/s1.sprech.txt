@@ -1,0 +1,1 @@
+Die Aufgabe: Das Programm liest das Alter ein, eine ganze Zahl. Ab sechzehn Jahren lautet die Ausgabe: „Einlass“. Sonst lautet sie: „Kein Einlass“. Danach kommt in jedem Fall: „Der Nächste bitte“. Zuerst suchst du die Frage, die entscheidet. Ab sechzehn heißt: mindestens sechzehn. Die sechzehn gehört dazu. Die Bedingung lautet also: Alter größer gleich sechzehn.

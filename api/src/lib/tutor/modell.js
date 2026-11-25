@@ -109,7 +109,7 @@ function doppel(opt = {}) {
       const ausgabe = block(nachricht, 'ausgabe');
       const teile = ['(Modell-Doppel, keine echte KI.)'];
       if (aufgabe) teile.push(`Ich sehe die Aufgabe ${aufgabe[2]} („${aufgabe[1]}“).`);
-      else if (/Lektion: (V\d\d)/.test(system)) teile.push(`Ich sehe Lektion ${/Lektion: (V\d\d)/.exec(system)[1]}, aber keine bestimmte Aufgabe.`);
+      else if (/Termin: (Termin \d\d)/.test(system)) teile.push(`Ich sehe ${/Termin: (Termin \d\d)/.exec(system)[1]}, aber keine bestimmte Aufgabe.`);
       if (code) teile.push(`Dein Code hat ${code.split('\n').length} Zeilen.`);
       if (ausgabe) teile.push('Die letzte Ausgabe ist mitgekommen.');
       teile.push('Ein kleines Beispiel an einem anderen Problem:\n```python\nflaeche = breite * hoehe\nprint(flaeche)\n```\nWas soll in deinem Programm am Ende herauskommen, und welche Werte bekommt es dafür? Schreib die erste Zeile und probier sie mit `print` aus.');

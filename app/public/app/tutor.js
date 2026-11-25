@@ -134,10 +134,10 @@
       }
     }
     if (s.art !== 'labor' || !s.lektion) {
-      return { kontext: k, hatCode: false, beschreibung: s.lektion ? 'Lektion ' + s.lektion + ' wird mitgeschickt.' : 'Nur deine Frage wird mitgeschickt.' };
+      return { kontext: k, hatCode: false, beschreibung: s.lektion ? 'Die Seite zu ' + window.KursApp.termin.lang(s.lektion) + ' wird mitgeschickt.' : 'Nur deine Frage wird mitgeschickt.' };
     }
     var task = sichtbareAufgabe();
-    if (!task) return { kontext: k, hatCode: false, beschreibung: 'Lektion ' + s.lektion + ' wird mitgeschickt.' };
+    if (!task) return { kontext: k, hatCode: false, beschreibung: 'Die Seite zu ' + window.KursApp.termin.lang(s.lektion) + ' wird mitgeschickt.' };
     k.aufgabe = task.id;
     var titel = task.getAttribute('data-title') || '';
     var aTask = (letzteAufgabe && task.contains(letzteAufgabe)) ? letzteAufgabe : null;

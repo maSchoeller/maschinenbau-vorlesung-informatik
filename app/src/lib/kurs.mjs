@@ -21,6 +21,13 @@ let zwischen = null;
 function fehler(t) { throw new Error('kurs.yaml: ' + t); }
 const zwei = (n) => String(n).padStart(2, '0');
 
+/* Kennung intern, Termin sichtbar: Studierende sehen „Termin 01“ (knapp „T01“), nie die Kennung „V01“.
+   Die Anzeige kommt aus der Terminnummer, die kurs.yaml der Lektion zuordnet (termine[].lektion), nicht aus den Ziffern
+   der Kennung. Jede Lektion trägt terminNr, terminLang und terminKurz; Hülle, index-bauen.mjs und die Browserseiten
+   (window.KursTermine, kern.js) benutzen nur diese Felder. */
+export const terminLangVon = (nr) => 'Termin ' + zwei(nr);
+export const terminKurzVon = (nr) => 'T' + zwei(nr);
+
 /* Wohin zeigt „lektion: VNN“ an einem Termin? Aktive Lektion: lektion; abgeschaltete (aktiv: false): Entwurf,
    der Termin hat dann noch keine Seiten im Angebot. Nur diese Zuordnung, ohne Dateien (testbar mit Testdaten). */
 export function terminLektion(nr, lektionen) {
@@ -120,6 +127,13 @@ export function ladeKurs() {
   for (const e of einheiten) {
     const stellen = termine.flatMap((t) => t.teile.filter((x) => x.einheit === e.id));
     stellen.forEach((x, i) => { x.teil = i + 1; x.vonTeilen = stellen.length; });
+  }
+
+  /* Anzeige der Lektionen: aus dem Termin, der auf sie zeigt */
+  for (const l of lektionen) {
+    const t = roh.termine.find((x) => String(x.lektion) === l.nr);
+    if (!t) fehler(`${l.nr}: kein Termin zeigt auf diese Lektion (termine[].lektion)`);
+    l.terminNr = t.nr; l.terminLang = terminLangVon(t.nr); l.terminKurz = terminKurzVon(t.nr);
   }
 
   zwischen = { semester, einheiten, termine, lektionen };

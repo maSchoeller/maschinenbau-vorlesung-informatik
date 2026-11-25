@@ -1,0 +1,1 @@
+Erst der Plan, dann der Code. Start. Parallelogramm: Alter einlesen. Dann die Raute mit der Frage: Alter größer gleich sechzehn? Im ja-Weg steht die Ausgabe „Einlass“, im nein-Weg „Kein Einlass“. Danach laufen die beiden Wege zusammen. Darunter steht die gemeinsame Ausgabe: „Der Nächste bitte“. Ende.

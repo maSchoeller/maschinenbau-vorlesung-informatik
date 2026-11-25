@@ -89,10 +89,20 @@ async function knobelRegeln(page) {
     const KS = window.KursSpeicher, ids = kn.map((s) => s.querySelector('[data-a][data-id]').getAttribute('data-id'));
     const alt = KS.sofort.lesen(KS.pfad(document.body.getAttribute('data-lesson'), 'aufg'));
     const lek = document.body.getAttribute('data-lesson');
+    const eintrag = (s) => document.querySelector('[data-lab-items] a[href="#' + s.id + '"]');
+    const ohneStatus = (s) => { const e = eintrag(s), m = e.querySelector('.lab__mark'); return !m.querySelector('svg, use, .k-ic') && !m.textContent.trim() && e.getAttribute('data-status') === 'frei' && !/offen|begonnen|gelöst/.test(e.querySelector('.k-sr').textContent) && /freiwillig/.test(e.querySelector('.k-sr').textContent); };
+    /* offen und begonnen: kein Status in der Liste (leerer Markenplatz, kein „offen“/„begonnen“ im Vorlesetext) */
+    if (kn.some((s) => !ohneStatus(s))) r.push('Knobel: offene Knobelaufgabe zeigt in der Liste einen Status');
+    const altB = KS.sofort.lesen(KS.pfad(lek, 'begonnen'));
+    const beg = {}; ids.forEach((i) => { beg[i] = 1; });
+    KS.sofort.schreiben(KS.pfad(lek, 'begonnen'), beg);
+    document.dispatchEvent(new CustomEvent('kurs:progress')); await warte(150);
+    if (kn.some((s) => !ohneStatus(s))) r.push('Knobel: begonnene Knobelaufgabe zeigt in der Liste einen Status');
+    if (altB) KS.sofort.schreiben(KS.pfad(lek, 'begonnen'), altB); else KS.sofort.loeschen(KS.pfad(lek, 'begonnen'));
     const neu = {}; ids.forEach((i) => { neu[i] = 1; });
     KS.sofort.schreiben(KS.pfad(lek, 'aufg'), neu);
     document.dispatchEvent(new CustomEvent('kurs:progress')); await warte(150);
-    if (kn.some((s) => document.querySelector('[data-lab-items] a[href="#' + s.id + '"]').getAttribute('data-status') !== 'done')) r.push('Knobel: gelöste Knobelaufgabe wird in der Liste nicht als gelöst gezeigt');
+    if (kn.some((s) => eintrag(s).getAttribute('data-status') !== 'done' || !eintrag(s).querySelector('.lab__mark svg, .lab__mark use, .lab__mark .k-ic') || !/gelöst/.test(eintrag(s).querySelector('.k-sr').textContent))) r.push('Knobel: gelöste Knobelaufgabe wird in der Liste nicht als gelöst (mit Haken) gezeigt');
     if ((document.querySelector('[data-lab-count] [aria-hidden]') || {}).textContent !== '0/' + n || (document.querySelector('.a-progress__text') || {}).textContent !== '0 von ' + n + ' Aufgaben gelöst') r.push('Knobel: gelöste Knobelaufgaben verändern „x von y gelöst“');
     if (alt) KS.sofort.schreiben(KS.pfad(lek, 'aufg'), alt); else KS.sofort.loeschen(KS.pfad(lek, 'aufg'));
     return r;
@@ -160,6 +170,107 @@ async function vorhersageOhneRunner(page) {
     if (danach.t !== gewaehlt.t || !danach.res) fehler.push(`Vorhersage ${i + 1} ohne Code: der Stand kommt nach dem Neuladen nicht zurück`);
   }
   return fehler;
+}
+
+/* Kennung intern, Termin sichtbar: Nirgends darf eine Kennung „V01“ in sichtbarem Text, in aria-label, title, alt oder
+   placeholder stehen (auch nicht in verborgenen Teilen wie dem Lektionswähler; ein Vorleseprogramm liest sie sonst vor).
+   Geprüft wird das DOM der geladenen Seite, danach die Teile, die erst auf Bedienung entstehen: Suche (Strg K) und, wo es sie gibt,
+   die Befehls-Bibliothek (Liste, ein Eintrag, Stand-Auswahl). Die Kennung als Schlüssel (data-Attribute, Adressen, Speicher) bleibt.
+   Keine Ausnahmen: auch die abgeschaltete Kursseite kurs.html, pap-editor.html und die Werkzeugseiten unterliegen der Regel. */
+const KENNUNG_AUSNAHMEN = [];
+const KENNUNG_MUSTER = '\\bV\\d\\d\\b';
+async function kennungSichtbar(page, seite) {
+  if (KENNUNG_AUSNAHMEN.includes(seite)) return [];
+  const scan = (wurzel) => page.evaluate(({ w, re }) => {
+    const rx = new RegExp(re), fund = [];
+    const ort = w ? document.querySelector(w) : document.body;
+    if (!ort) return fund;
+    const walker = document.createTreeWalker(ort, NodeFilter.SHOW_TEXT);
+    for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+      const p = n.parentElement;
+      if (!p || p.closest('script, style, template, noscript') || !rx.test(n.data)) continue;
+      fund.push('Text „' + n.data.trim().slice(0, 50) + '“ in ' + p.tagName.toLowerCase() + '.' + String(p.className).split(' ')[0]);
+    }
+    for (const e of ort.querySelectorAll('[aria-label], [title], [alt], [placeholder], [aria-description], [aria-valuetext]')) {
+      for (const a of ['aria-label', 'title', 'alt', 'placeholder', 'aria-description', 'aria-valuetext']) {
+        const v = e.getAttribute(a);
+        if (v && rx.test(v)) fund.push(a + ' „' + v.slice(0, 50) + '“ an ' + e.tagName.toLowerCase() + '.' + String(e.className).split(' ')[0]);
+      }
+    }
+    if (!w && rx.test(document.title)) fund.push('Seitentitel „' + document.title + '“');
+    return fund;
+  }, { w: wurzel, re: KENNUNG_MUSTER });
+  const r = (await scan(null)).map((x) => 'Kennung sichtbar: ' + x);
+  /* Suche: leere Suche zeigt die Lektionen, danach ein Suchwort, das Aufgaben und Abschnitte findet */
+  try {
+    await page.locator('[data-app-aktion="suche"]').first().click({ timeout: 3000 });
+    await page.waitForSelector('.suche-treffer', { timeout: 6000 });
+    r.push(...(await scan('.suche-gruppe')).map((x) => 'Kennung sichtbar in der Suche: ' + x));
+    await page.keyboard.type('termin');
+    await page.waitForTimeout(300);
+    r.push(...(await scan('.suche-gruppe')).map((x) => 'Kennung sichtbar in der Suche (Suchwort „termin“): ' + x));
+    await page.keyboard.press('Escape');
+  } catch (e) { r.push('Suche ließ sich nicht prüfen: ' + String(e.message || e).split('\n')[0]); }
+  /* Befehls-Bibliothek */
+  if (await page.locator('.kb-toggle').count()) {
+    try {
+      await page.evaluate(() => { const t = document.querySelector('.kb-toggle'); if (t && t.getAttribute('aria-expanded') !== 'true') t.click(); });
+      await page.waitForSelector('#kb-panel .kb-item', { timeout: 6000 });
+      r.push(...(await scan('#kb-panel')).map((x) => 'Kennung sichtbar in der Befehls-Bibliothek: ' + x));
+      await page.evaluate(() => { const l = [...document.querySelectorAll('#kb-panel .kb-item')]; (l.find((b) => b.classList.contains('is-later')) || l[0]).click(); });
+      await page.waitForSelector('#kb-panel .kb-detail', { timeout: 3000 });
+      r.push(...(await scan('#kb-panel')).map((x) => 'Kennung sichtbar im Eintrag der Befehls-Bibliothek: ' + x));
+    } catch (e) { r.push('Befehls-Bibliothek ließ sich nicht prüfen: ' + String(e.message || e).split('\n')[0]); }
+    /* wieder schließen (das Panel läge sonst als Overlay über der Seite und finge die Klicks der nächsten Prüfungen ab) */
+    await page.evaluate(() => { const c = document.querySelector('#kb-panel .kb__close'); const p = document.querySelector('#kb-panel'); if (c && p && !p.hidden) c.click(); });
+  }
+  return r;
+}
+
+/* Der Knopf „Befehls-Bibliothek“ überdeckt weder ein Bedienelement noch Aufgabeninhalt: In der App sitzt er fest in der Kopfzeile
+   (Platz data-app-slot="werkzeuge") oder, solange die Spalte neben dem Labor offen ist, in dieser Spalte; er schwebt nicht mehr über
+   dem Inhalt. Er ist erreichbar (Treffer in seiner Mitte), kollidiert nicht mit den Nachbarn in der Kopfzeile, hat Namen, aria-controls
+   und aria-expanded und ist auf dem Tablet mindestens 44 px hoch. Mit geöffnetem Tutor muss er bedienbar bleiben. Seiten ohne Editor
+   haben den Knopf nicht, dort prüft das Skript nichts. */
+async function bibliothekKnopf(page, tablet) {
+  if (!(await page.locator('.kb-toggle').count())) return [];
+  return page.evaluate(async (tablet) => {
+    const r = [];
+    const warte = (ms) => new Promise((x) => setTimeout(x, ms));
+    const name = (e) => e.tagName.toLowerCase() + '.' + String(e.className).split(' ')[0];
+    const pruefe = (wann) => {
+      const t = document.querySelector('.kb-toggle');
+      const imDock = !!t && !!t.closest('[data-library-dock]');
+      /* In der Spalte des Labors ersetzt das Panel den Knopf (er ist dort eingeklappt unsichtbar): nur prüfen, dass das Panel sichtbar ist */
+      if (imDock && t.offsetParent === null) { const a = document.querySelector('#kb-panel'); if (!a || a.hidden) r.push('Befehls-Bibliothek ' + wann + ': weder Knopf noch Panel sichtbar'); return; }
+      if (!t || t.offsetParent === null) { r.push('Knopf „Befehls-Bibliothek“ ' + wann + ' nicht sichtbar'); return; }
+      const b = t.getBoundingClientRect(), cs = getComputedStyle(t);
+      if (!t.closest('.app-bar') && !imDock) r.push('Knopf „Befehls-Bibliothek“ ' + wann + ' sitzt weder in der Kopfzeile noch in der Spalte (' + cs.position + ')');
+      if (cs.position === 'fixed' || cs.position === 'absolute') r.push('Knopf „Befehls-Bibliothek“ ' + wann + ' schwebt über dem Inhalt (position: ' + cs.position + ')');
+      if (!t.getAttribute('aria-controls') || !t.getAttribute('aria-expanded') || !(t.getAttribute('aria-label') || t.textContent.trim())) r.push('Knopf „Befehls-Bibliothek“ ' + wann + ': Name, aria-controls oder aria-expanded fehlt');
+      if (tablet && b.height < 43.5) r.push('Knopf „Befehls-Bibliothek“ ' + wann + ' nur ' + Math.round(b.height) + ' px hoch');
+      const treffer = document.elementFromPoint(b.left + b.width / 2, b.top + b.height / 2);
+      if (!treffer || !(treffer === t || t.contains(treffer))) r.push('Knopf „Befehls-Bibliothek“ ' + wann + ' ist verdeckt von ' + (treffer ? name(treffer) : 'nichts'));
+      if (t.closest('.app-bar')) {
+        for (const n of document.querySelectorAll('.app-bar button, .app-bar a, .app-bar select')) {
+          if (n === t || t.contains(n) || n.offsetParent === null) continue;
+          const c = n.getBoundingClientRect();
+          if (c.width && c.height && b.left < c.right - 1 && b.right > c.left + 1 && b.top < c.bottom - 1 && b.bottom > c.top + 1) r.push('Knopf „Befehls-Bibliothek“ ' + wann + ' überdeckt ' + name(n));
+        }
+      }
+    };
+    pruefe('oben');
+    window.scrollTo(0, document.documentElement.scrollHeight); await warte(200); pruefe('am Seitenende');
+    window.scrollTo(0, Math.round(document.documentElement.scrollHeight / 2)); await warte(200); pruefe('in der Mitte der Seite');
+    /* Tutor offen: der Knopf bleibt bedienbar */
+    const tutor = document.querySelector('[data-app-aktion="tutor"]');
+    if (tutor) {
+      tutor.click(); await warte(500); pruefe('bei geöffnetem Tutor');
+      const z = document.querySelector('[data-app-aktion="panel-zu"]'); if (z) z.click(); await warte(300);
+    }
+    window.scrollTo(0, 0);
+    return r;
+  }, tablet);
 }
 
 /* kurs.json: Knobel-Stationen ohne prüfbare Teile, ohne Zeiten; ihre Kennungen stehen in keiner prüfbaren Liste */
@@ -238,7 +349,7 @@ async function main() {
               .filter(([, , b]) => b.width > 0 && b.height > 0 && b.height < 43.5)
               .map(([x, , b]) => `${x.tagName.toLowerCase()}.${String(x.className).split(' ')[0]} ${Math.round(b.width)}×${Math.round(b.height)}`);
             if (bedien.length) r.push('Bedienelemente unter 44 px Höhe: ' + [...new Set(bedien)].slice(0, 6).join(', '));
-            const klein = [...document.querySelectorAll('.app-ansicht a, .app-lektion__pfeil, .app-bar__suche, .app-bar__link, .app-waehler__knopf, .app-panel__zu, .app-panel__griff, .lab__fold, .gl-buchstaben a, .k-btn--small')]
+            const klein = [...document.querySelectorAll('.app-ansicht a, .app-lektion__pfeil, .app-bar__suche, .app-bar__link, .app-bar .kb-toggle, .app-waehler__knopf, .app-panel__zu, .app-panel__griff, .lab__fold, .gl-buchstaben a, .k-btn--small')]
               .filter((x) => x.offsetParent !== null).map((x) => [x, x.getBoundingClientRect()]).filter(([, b]) => b.width < 43.5 || b.height < 43.5)
               .map(([x, b]) => `${x.className || x.tagName} ${Math.round(b.width)}×${Math.round(b.height)}`);
             if (klein.length) r.push('Ziele unter 44 px: ' + [...new Set(klein)].slice(0, 4).join(', '));
@@ -321,6 +432,8 @@ async function main() {
         eigene.push(...befund);
         if (!ohneFotos) await page.screenshot({ path: path.join(FOTOS, `${s.replace(/\//g, '_').replace(/\.html$/, '')}-${g.name}.png`) });
         const seitenart = await page.evaluate(() => document.body.getAttribute('data-page') || '');
+        eigene.push(...(await bibliothekKnopf(page, g.name === 'tablet')));
+        eigene.push(...(await kennungSichtbar(page, s)));
         if (/\blabor\b/.test(seitenart)) eigene.push(...(await knobelRegeln(page)));
         if (/\blabor\b/.test(seitenart)) eigene.push(...(await zeilenOrdnenErsterKlick(page)));
         if (seitenart === 'lerneinheit') eigene.push(...(await vorhersageOhneRunner(page)));

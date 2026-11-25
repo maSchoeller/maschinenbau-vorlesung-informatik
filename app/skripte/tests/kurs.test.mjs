@@ -65,3 +65,14 @@ test('Termin mit Entwurf: abgeschaltete Lektion ergibt lektion null und entwurf'
   /* jeder Termin hat höchstens eins von beiden */
   for (const t of termine) assert.ok(!(t.lektion && t.entwurf), `Termin ${t.kennung}`);
 });
+
+test('Kennung intern, Termin sichtbar: jede Lektion trägt „Termin NN“ und „TNN“ aus dem Termin, der auf sie zeigt', () => {
+  for (const l of lektionen) {
+    const t = termine.find((x) => x.lektion === l.nr || x.entwurf === l.nr);
+    assert.ok(t, `${l.nr}: ein Termin zeigt auf die Lektion`);
+    assert.equal(l.terminNr, t.nr, `${l.nr}: terminNr`);
+    assert.equal(l.terminLang, 'Termin ' + t.kennung, `${l.nr}: terminLang`);
+    assert.equal(l.terminKurz, 'T' + t.kennung, `${l.nr}: terminKurz`);
+    assert.doesNotMatch(l.terminLang + l.terminKurz, /\bV\d\d\b/, 'die Anzeige enthält keine Kennung');
+  }
+});

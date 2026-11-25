@@ -807,7 +807,7 @@ E("json-loads", "json.loads() / json.dumps()", NJ, "V17", "kopf",
 E("json-datei", "json.load() / json.dump()", NJ, "V17", "lesen",
   "Liest JSON aus einer Datei bzw. schreibt Python-Daten als JSON in eine Datei.",
   "with open(\"datei.json\", encoding=\"utf-8\") as f:\n    daten = json.load(f)\nwith open(\"datei.json\", \"w\", encoding=\"utf-8\") as f:\n    json.dump(daten, f, indent=2)",
-  "Ohne s am Ende arbeiten load und dump mit einer geöffneten Datei statt mit Text: json.load(f) liest die ganze Datei und liefert dict oder Liste, json.dump(daten, f) schreibt sie hinein. Öffne die Datei wie in V09 mit with open und encoding=\"utf-8\". Merkhilfe: das s in loads und dumps steht für string.",
+  "Ohne s am Ende arbeiten load und dump mit einer geöffneten Datei statt mit Text: json.load(f) liest die ganze Datei und liefert dict oder Liste, json.dump(daten, f) schreibt sie hinein. Öffne die Datei so, wie du es vom Lesen von Dateien kennst: mit with open und encoding=\"utf-8\". Merkhilfe: das s in loads und dumps steht für string.",
   '''
   import json
 

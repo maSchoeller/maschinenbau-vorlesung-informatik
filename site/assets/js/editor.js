@@ -37,7 +37,18 @@
     return n;
   }
   function lessonNum(v) { var m = /(\d+)/.exec(v || ''); return m ? parseInt(m[1], 10) : null; }
-  function lessonName(n) { return n == null ? '' : 'V' + (n < 10 ? '0' : '') + n; }
+  /* Kennung intern, Termin sichtbar: die Einträge nennen die Kennung („V02“) als Schlüssel; angezeigt wird „Termin 02“
+     (lang) oder „T02“ (kurz). Die Zuordnung liefert window.KursTermine (app/kern.js, aus kurs.yaml). Ohne sie
+     (Seite ohne App-Hülle) steht „Termin NN“ aus der Zahl der Kennung. Texte ohne Kennung („einem späteren Termin“) bleiben. */
+  function kennung(n) { return 'V' + (n < 10 ? '0' : '') + n; }
+  function terminText(k, art) {
+    k = String(k == null ? '' : k);
+    if (!/^V[0-9][0-9]$/.test(k)) return (art === 'kurz' && k) ? 'später' : k;
+    var T = window.KursTermine;
+    if (T) return art === 'kurz' ? T.kurz(k) : T.lang(k);
+    return (art === 'kurz' ? 'T' : 'Termin ') + k.slice(1);
+  }
+  function lessonName(n) { return n == null ? '' : terminText(kennung(n)); }
   function norm(s) {
     return String(s || '').toLowerCase().replace(/ä/g, 'a').replace(/ö/g, 'o').replace(/ü/g, 'u').replace(/ß/g, 'ss').replace(/[^a-z0-9_.#*/%=<>!+\- ]/g, ' ');
   }
@@ -292,8 +303,8 @@
     var later = isLater(e, opts.lesson);
     var head = el('div', { class: 'kb-detail__head' });
     head.appendChild(el('h3', { class: 'kb-detail__title', text: e.name }));
-    var chips = el('div', { class: 'kb-chips' }, [ampelChip(e.ampel), el('span', { class: 'kb-chip', text: 'ab ' + e.eingefuehrt }), el('span', { class: 'kb-chip kb-chip--cat', text: e.kategorie })]);
-    if (later) chips.appendChild(el('span', { class: 'kb-chip kb-chip--later', text: 'kommt in ' + e.eingefuehrt }));
+    var chips = el('div', { class: 'kb-chips' }, [ampelChip(e.ampel), el('span', { class: 'kb-chip', text: 'ab ' + terminText(e.eingefuehrt) }), el('span', { class: 'kb-chip kb-chip--cat', text: e.kategorie })]);
+    if (later) chips.appendChild(el('span', { class: 'kb-chip kb-chip--later', text: 'kommt in ' + terminText(e.eingefuehrt) }));
     head.appendChild(chips);
     root.appendChild(head);
     root.appendChild(el('p', { class: 'kb-lead', text: e.kurz }));
@@ -303,9 +314,9 @@
     root.appendChild(synPre);
 
     if (e.stichwort) {
-      root.appendChild(el('p', { class: 'kb-note', text: 'Dieses Konzept kommt erst später im Kurs (' + e.eingefuehrt + '). Hier steht nur das Stichwort, damit du es wiedererkennst.' }));
+      root.appendChild(el('p', { class: 'kb-note', text: 'Dieses Konzept kommt erst später im Kurs (' + terminText(e.eingefuehrt) + '). Hier steht nur das Stichwort, damit du es wiedererkennst.' }));
     } else {
-      if (later) root.appendChild(el('p', { class: 'kb-note', text: 'Achtung: Das lernst du erst in ' + e.eingefuehrt + '. Du kannst vorlesen, musst es aber noch nicht anwenden.' }));
+      if (later) root.appendChild(el('p', { class: 'kb-note', text: 'Achtung: Das lernst du erst in ' + terminText(e.eingefuehrt) + '. Du kannst vorlesen, musst es aber noch nicht anwenden.' }));
       root.appendChild(el('p', { text: e.erklaerung }));
       root.appendChild(el('h4', { class: 'kb-h', text: 'Beispiel' }));
       root.appendChild(runnableBlock(e.beispiel));
@@ -410,7 +421,7 @@
     d.appendChild(el('strong', { class: 'ke-info__t', text: e.name }));
     d.appendChild(el('p', { class: 'ke-info__k', text: e.kurz }));
     d.appendChild(codeBlock(e.syntax, 'ke-info__syn'));
-    if (isLater(e, lesson)) d.appendChild(el('p', { class: 'ke-info__later', text: 'Kommt erst in ' + e.eingefuehrt + '.' }));
+    if (isLater(e, lesson)) d.appendChild(el('p', { class: 'ke-info__later', text: 'Kommt erst in ' + terminText(e.eingefuehrt) + '.' }));
     var more = el('button', { type: 'button', class: 'ke-info__more', text: 'Mehr in der Bibliothek' });
     more.addEventListener('click', function () { openLibrary(e.id); });
     d.appendChild(more);
@@ -435,7 +446,7 @@
       var later = isLater(e, lessonNow());
       return {
         label: label, type: kind, boost: (boost || 0) + (later ? -3 : 2),
-        detail: later ? 'kommt in ' + e.eingefuehrt : (e.kategorie || ''),
+        detail: later ? 'kommt in ' + terminText(e.eingefuehrt) : (e.kategorie || ''),
         info: function () { return infoNode(e, lessonNow()); }
       };
     }
@@ -603,20 +614,28 @@
     // sitzt das Panel dort (Spalte, einklappbar). Sonst bleibt es ein Overlay am Seitenrand.
     var dock = $('[data-library-dock]');
     var mq = window.matchMedia ? window.matchMedia('(min-width: 1100px)') : null;
-    function isDocked() { return !!dock && !!mq && mq.matches; }
+    /* Die Spalte zählt nur, solange sie Platz hat: Neben dem geöffneten Tutor (body.app--panel) blendet die Hülle sie aus */
+    function dockSichtbar() { return !!dock && !document.body.classList.contains('app--panel'); }
+    function isDocked() { return !!dock && !!mq && mq.matches && dockSichtbar(); }
+    /* Der Knopf hängt nie über dem Inhalt: In der App sitzt er fest in der Kopfzeile (Platz [data-app-slot="werkzeuge"]),
+       nur ohne App-Hülle bleibt er der schwebende Knopf unten rechts. */
+    function leiste() { return document.querySelector('.app-bar [data-app-slot="werkzeuge"]'); }
     function place() {
       var docked = isDocked();
       if (docked) {
         if (aside.parentNode !== dock) dock.appendChild(aside);
         if (toggle.parentNode !== dock) dock.appendChild(toggle);
       } else {
+        var bar = leiste();
         if (aside.parentNode !== document.body) document.body.appendChild(aside);
-        if (toggle.parentNode !== document.body) document.body.appendChild(toggle);
+        if (toggle.parentNode !== (bar || document.body)) (bar || document.body).appendChild(toggle);
+        toggle.classList.toggle('kb-toggle--bar', !!bar);
         if (dock) dock.setAttribute('data-state', 'off');
         document.documentElement.classList.remove('kb-dock-closed');
       }
       aside.classList.toggle('kb--docked', docked);
       toggle.classList.toggle('kb-toggle--dock', docked);
+      if (docked) toggle.classList.remove('kb-toggle--bar');
       closeBtn.textContent = docked ? '›' : '×';
       closeBtn.setAttribute('aria-label', docked ? 'Bibliothek einklappen' : 'Bibliothek schließen');
       toggle.setAttribute('aria-label', docked ? 'Befehls-Bibliothek ausklappen' : 'Befehls-Bibliothek');
@@ -648,8 +667,8 @@
         b.appendChild(el('span', { class: 'kb-item__name', text: e.name }));
         b.appendChild(el('span', { class: 'kb-item__kurz', text: e.kurz }));
         var meta = el('span', { class: 'kb-item__meta' }, [ampelChip(e.ampel)]);
-        meta.appendChild(el('span', { class: 'kb-chip', text: e.eingefuehrt }));
-        if (later) meta.appendChild(el('span', { class: 'kb-chip kb-chip--later', text: 'kommt in ' + e.eingefuehrt }));
+        meta.appendChild(el('span', { class: 'kb-chip', text: terminText(e.eingefuehrt, 'kurz') }));
+        if (later) meta.appendChild(el('span', { class: 'kb-chip kb-chip--later', text: 'kommt in ' + terminText(e.eingefuehrt) }));
         b.appendChild(meta);
         b.addEventListener('click', function () { showEntry(e.id); });
         ul.appendChild(el('li', null, [b]));
@@ -700,8 +719,16 @@
     P.follow = function (id) { if (P.open && id && id !== P.current && lib.byId[id]) showEntry(id, true); };
     P.docked = isDocked;
     if (mq && dock) {
-      var onMode = function () { var wasOpen = P.open; place(); if (isDocked()) open(undefined, { keepFocus: true }); else if (wasOpen) close(false); };
+      var zuletztAngedockt = isDocked();
+      var onMode = function () {
+        var jetzt = isDocked();
+        if (jetzt === zuletztAngedockt) return;
+        zuletztAngedockt = jetzt;
+        var wasOpen = P.open; place(); if (isDocked()) open(undefined, { keepFocus: true }); else if (wasOpen) close(false);
+      };
       if (mq.addEventListener) mq.addEventListener('change', onMode); else if (mq.addListener) mq.addListener(onMode);
+      /* Die Hülle blendet die Spalte neben dem Tutor aus (body.app--panel): Dann zieht der Knopf in die Kopfzeile, das Panel wird Overlay */
+      if (window.MutationObserver) new MutationObserver(onMode).observe(document.body, { attributes: true, attributeFilter: ['class'] });
     }
     panel = P;
     if (isDocked()) open(undefined, { keepFocus: true });
@@ -1052,6 +1079,8 @@
       codeBlock: codeBlock,
       ampelChip: ampelChip,
       lessonNum: lessonNum,
+      lessonName: lessonName,
+      terminText: terminText,
       loadBundle: loadCM
     }
   };

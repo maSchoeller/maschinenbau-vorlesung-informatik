@@ -102,7 +102,7 @@ Dateizuständigkeit ist strikt. Wer etwas außerhalb seines Bereichs braucht, ä
 └──────┴───────────────────────────────────────────────────┴───────────┘
 ```
 
-- **Leiste links** (`.app-rail`, 76 px, immer sichtbar, Symbol mit Text darunter): Heute · Kurs · Werkbank · Bibliothek · Klausur. Unten: Tutor · Konto. Das aktive Ziel trägt `aria-current="page"`.
+- **Leiste links** (`.app-rail`, 76 px, immer sichtbar, Symbol mit Text darunter): Heute · Kurs · Werkbank · Bibliothek. Unten: Tutor · Konto. Das aktive Ziel trägt `aria-current="page"`.
 - **Kopfzeile** (`.app-bar`, 56 px, klebt oben): links der Kontext des Bereichs, rechts Statusanzeige (offline, Abgleich) und die Suche (Schaltfläche „Suchen“, Tastenkürzel Strg+K).
 - **Bereiche und ihre Reiter** (eine Quelle: `src/lib/navigation.mjs`):
 
@@ -113,7 +113,7 @@ Dateizuständigkeit ist strikt. Wer etwas außerhalb seines Bereichs braucht, ä
 | Kurs, in einer Lektion | Lektionswähler „V01 · Erst der Ablauf, dann der Code“ (öffnet Liste aller Lektionen mit Fortschritt, nach Semester) · Pfeile vorige/nächste Lektion · Umschalter Verstehen / Labor · „Notebook“ als Link | `lektionen/vXX-*.html` |
 | Werkbank | Programme · PAP-Editor · 3D-Vorschau | `werkbank.html`, `pap-editor.html`, `werkzeuge/3d-vorschau.html` |
 | Bibliothek | keine | `bibliothek.html` |
-| Klausur | Klausurtrainer · Probeklausur | `klausurtrainer.html`, `probeklausur-2026-27.html` |
+| Klausur | entfernt (2026-11-25): Klausurtrainer und Probeklausur des alten Kurses | Stand im Tag `altbestand-alter-kurs` |
 | Konto | keine | `konto.html`, `dozent.html` (Kursübersicht, nur über den Verweis auf der Kontoseite) |
 
 - Pfeile vorige/nächste Lektion bleiben in derselben Ansicht (Labor → Labor der Nachbarlektion; hat die Nachbarlektion kein Labor, dann ihre Lerneinheit). Am Ende jeder Lerneinheit und jedes Labors steht ein klarer nächster Schritt (Lerneinheit → Labor → nächste Lektion); die Hülle ergänzt ihn, falls der Inhalt ihn nicht hat.
@@ -176,8 +176,11 @@ KursApp.panel.oeffnen(id) / schliessen() / istOffen()
 KursApp.fortschritt.lektion('V01')   // Promise<{abschnitte:{fertig,gesamt}, aufgaben:{geloest,gesamt}, status, …}>
                          // eine Zählregel für alle Anzeigen: Pflichtabschnitte (Deep Dive „freiwillig“ zählt nicht),
                          // Aufgaben je prüfbarem Teil; synchron: fortschritt.termin(terminAusKursJson)
+KursApp.termin.lang('V01')  // 'Termin 01' (Anzeige); .kurz('V01') → 'T01'; .text(satz) ersetzt Kennungen in einem Satz
 KursApp.icon(id)         // SVG-Element aus dem Sprite
 ```
+
+**Kennung intern, Termin sichtbar.** Die Kennung einer Lektion (`V01`) ist nur Schlüssel: Adressen (`v01-labor.html`), `data-lesson` und andere data-Attribute, Speicherpfade (`inf-mb/v01/…`), `kurs.yaml`, `kurs.json`, `aufgaben.json`, API-Daten und das Feld `lektion` im Suchindex bleiben unverändert, damit gespeicherter Lernstand gültig bleibt. Studierende sehen und hören sie nirgends: lang „Termin 01“, wo der Platz knapp ist (Marke, Tabellenzelle) „T01“. Die Umrechnung steht an einer Stelle, `src/lib/kurs.mjs`: Jede Lektion trägt `terminNr`, `terminLang` und `terminKurz`, abgeleitet aus dem Termin, auf den `termine[].lektion` zeigt (nicht aus den Ziffern der Kennung). Die Hülle (Kopfzeile, Titel, „Weiter“) und `index-bauen.mjs` (Suche, `kurs.json`, `aufgaben.json` → `termine` für den Tutor) benutzen diese Felder; jede Seite trägt die Zuordnung als `<script id="app-termine" type="application/json">`, `app/kern.js` stellt sie als `KursApp.termin` und `window.KursTermine` bereit (auch für `site/assets/js/editor.js`, labor.js, kurs.js). Der Tutor bekommt „Termin: Termin 07“ statt der Kennung in seinen Kontext (`api/src/lib/tutor/kontext.js`, `terminLang`). Neuer sichtbarer Text, der eine Lektion nennt, geht immer über diese Umrechnung. `npm run pruefen` (pruefe-seiten.mjs) prüft auf jeder gebauten Seite, in der Suche und in der Befehls-Bibliothek, dass in sichtbarem Text, aria-label, title, alt und placeholder kein `V` + zwei Ziffern steht (ohne Ausnahme, auch die abgeschaltete Kursseite kurs.html).
 
 Fortschritt liegt wie bisher in `KursSpeicher`: `inf-mb/<lektion>/done` (Abschnitte), `…/aufg` (gelöste Aufgaben), `…/begonnen`, `…/gesehen`, `…/quiz-<id>`, `…/code:<aufgabe>`.
 
@@ -211,7 +214,7 @@ Je Termin 1 bis 2 freiwillige Aufgaben am Ende des Labors (Schreibweise: `docs/a
 |---|---|---|
 | Markup | `bausteine.mjs` (`<Knobel>`) | Station `data-part="K"` + `data-knobel`, Aufgabe `data-knobel`; Build bricht bei falscher Schreibweise ab |
 | „x von y gelöst“, Balken, Ereignis `kurs:progress` | `aufgaben.js` (`taskNodes`) | Auswahl `:not([data-knobel])`; `badgeNodes` nur für Abzeichen „gelöst“ und `is-solved` |
-| Liste, „x/11“ eingeklappt, Abschluss | `labor.js` (`countable` / `statusNodes`) | Zähler nur über `countable` (ohne Knobel); der Status in der Liste über `statusNodes` (mit) |
+| Liste, „x/11“ eingeklappt, Abschluss | `labor.js` (`countable` / `statusNodes`) | Zähler nur über `countable` (ohne Knobel); der Status in der Liste über `statusNodes` (mit), aber `refreshStatus` zeigt bei Knobel-Einträgen nur „gelöst“ (Haken, `data-status="done"`); offen und begonnen bleiben ohne Symbol (`data-status="frei"`, leerer Markenplatz, Vorlesetext „freiwillig“ statt „offen“/„begonnen“) |
 | „Weiter“ | `labor.js` (`show`) | nach der letzten Pflichtstation „Weiter“ aus, stattdessen Hinweis mit Verweis |
 | Block „Nächster Schritt“ der Hülle | `shell.js` | erscheint auf der letzten Pflichtstation und auf den Knobel-Stationen |
 | kurs.json (Aufgaben je Lektion) | `index-bauen.mjs` (`stationDaten`) | `pruefbar: []`, `sterne`/`minuten: null`, Kennungen in `knobel: [...]`, Teil `K` |
@@ -227,7 +230,7 @@ Die Zeitangaben („Minuten“) von Labor und Training stehen nur an Pflichtstat
 
 - **Heute** (`index.html`): 1. „Weiter, wo du warst“ (ein großer Knopf zur letzten Seite). 2. Die aktuelle Lektion (erste nicht abgeschlossene bzw. nach Freigabedatum) mit ihren zwei Schritten Verstehen und Labor und deren Stand. 3. „Warm-up“: drei offene Aufgaben aus früheren, bereits begonnenen Lektionen (Wiederholung). 4. Dezent: Hinweis auf Installation und Konto, solange nicht geschehen. Kein Dashboard, keine Statistikflut.
 - **Lernpfad** (`lernpfad.html`): die 20 Termine des Plans in zwei Semestern (Abschnitt 16). Je Termin Theorie und Programmieren mit „Teil x von y“, wenn eine Einheit über mehrere Termine läuft. Rechts die eigenen Seiten des Termins mit Stand und den Zielen Verstehen/Labor; solange es sie nicht gibt, das bisherige Material (Lektionen, aus denen der Termin entsteht) mit Stand. Freigabedaten (Feld `freigabe`) erscheinen als „ab TT.MM.“, gesperrt wird nichts.
-- **Über den Kurs** (`kurs.html`): Leitidee, Wissens-Ampel, Ablauf eines Termins, „Startklar“ (Inhalte der bisherigen Startseite `site/index.html`, redaktionell unverändert).
+- **Über den Kurs** (`kurs.html`): Leitidee, Ablauf eines Termins, „Startklar“ (Inhalte der bisherigen Startseite `site/index.html`, redaktionell unverändert).
 - **Glossar** (`glossar.html`): alle Begriffe A bis Z mit Erklärung und Link zur Lektion der ersten Einführung; Filterfeld.
 - **Suche** (Dialog, Strg+K): durchsucht `suche.json`; Gruppen Lektionen, Aufgaben, Bibliothek, Glossar; Pfeiltasten und Enter.
 - **Werkbank**, **Geteilt**, **Konto**, **Offline**: siehe Abschnitte 7 bis 9.

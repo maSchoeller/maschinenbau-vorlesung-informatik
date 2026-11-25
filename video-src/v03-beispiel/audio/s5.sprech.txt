@@ -1,0 +1,1 @@
+Die Probe: Wir werfen zwei Euro ein. Erste Frage: Ist zwei kleiner als eins Komma fünf? Nein. Zweite Frage: Ist zwei größer als eins Komma fünf? Ja. Das Programm antwortet: Rückgeld: null Punkt fünf null Euro. Im Plan ist das der mittlere Weg. Jetzt du: Tipp eins ein. Und dann den Grenzfall: eins Punkt fünf, mit Punkt geschrieben. Ein Wert je Weg, dann ist das Programm geprüft.

@@ -480,7 +480,7 @@ async function main() {
       await lek.waitForSelector('#wb-arbeit:not([hidden])');
       await lek.waitForFunction(() => document.querySelector('#wb-runner .cm-content'));
       const t = await lek.inputValue('#wb-titel');
-      pruefe(/^V01 · .+/.test(t), 'Kopie heißt „' + t + '“');
+      pruefe(/^Termin 01 · .+/.test(t), 'Kopie heißt „' + t + '“');
       pruefe((await codeLesen(lek)).trim() === ersterCode.trim(), 'Kopie enthält den Code des Blocks');
       const anzahlNach = await lek.evaluate(() => document.querySelectorAll('#wb-liste li').length);
       pruefe(anzahlNach === anzahlVor + 1, 'Genau ein Programm mehr (' + anzahlVor + ' → ' + anzahlNach + ')');

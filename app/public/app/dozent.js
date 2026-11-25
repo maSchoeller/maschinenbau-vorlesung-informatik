@@ -77,7 +77,7 @@
     leeren(sel);
     bild.lektionen.forEach(function (l) {
       var t = termin(l.nr);
-      var o = el('option', null, l.nr + ' · ' + (t ? t.kurz : '') + ' (' + l.konten + ' aktiv)');
+      var o = el('option', null, KA.termin.lang(l.nr) + ' · ' + (t ? t.kurz : '') + ' (' + l.konten + ' aktiv)');
       o.value = l.nr;
       sel.appendChild(o);
     });

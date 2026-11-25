@@ -70,7 +70,7 @@
     if (dat) teile.push(dat);
     wer.appendChild(document.createTextNode(teile.join(' · ')));
     if (d.lektion) {
-      wer.appendChild(document.createTextNode(' · aus Lektion ' + d.lektion));
+      wer.appendChild(document.createTextNode(' · aus ' + window.KursApp.termin.lang(d.lektion)));
     }
 
     var ziel = $('#gt-runner');

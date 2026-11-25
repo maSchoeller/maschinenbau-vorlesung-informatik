@@ -14,11 +14,11 @@ const lek = (datei: string) => `${basis}lektionen/${datei}`;
     {L ? (
       <div class="app-lektion">
         {L.vor
-          ? <a class="app-lektion__pfeil" href={lek(L.vor.datei)} rel="prev" aria-label={`Vorige Lektion: ${L.vor.termin.nr} ${L.vor.termin.kurz}`} title={`${L.vor.termin.nr} · ${L.vor.termin.kurz}`}><Icon id="chevron-left" basis={basis} /></a>
+          ? <a class="app-lektion__pfeil" href={lek(L.vor.datei)} rel="prev" aria-label={`Voriger Termin: ${L.vor.termin.terminLang} · ${L.vor.termin.kurz}`} title={`${L.vor.termin.terminLang} · ${L.vor.termin.kurz}`}><Icon id="chevron-left" basis={basis} /></a>
           : <span class="app-lektion__pfeil" aria-hidden="true" data-aus><Icon id="chevron-left" basis={basis} /></span>}
         <div class="app-waehler">
           <button type="button" class="app-waehler__knopf" data-app-waehler aria-expanded="false" aria-controls="app-waehler-liste" aria-haspopup="true">
-            <span class="app-waehler__nr">{L.termin.nr}</span>
+            <span class="app-waehler__nr"><span aria-hidden="true">{L.termin.terminKurz}</span><span class="app-sr">{L.termin.terminLang}: </span></span>
             <span class="app-waehler__titel">{L.termin.kurz}</span>
             <Icon id="chevron-down" basis={basis} klasse="app-waehler__pfeil" />
           </button>
@@ -29,7 +29,7 @@ const lek = (datei: string) => `${basis}lektionen/${datei}`;
                 <ol>
                   {L.termine.filter((t: any) => t.semester === s.nr).map((t: any) => (
                     <li><a class="app-waehler__eintrag" href={lek(L.art === 'labor' && t.labor ? t.labor : t.lerneinheit)} data-lektion={t.nr} aria-current={t.nr === L.termin.nr ? 'page' : undefined}>
-                      <span class="app-waehler__enr">{t.nr}</span>
+                      <span class="app-waehler__enr"><span aria-hidden="true">{t.terminKurz}</span><span class="app-sr">{t.terminLang}: </span></span>
                       <span class="app-waehler__etitel">{t.kurz}</span>
                       <span class="app-waehler__stand" data-app-stand={t.nr}></span>
                     </a></li>
@@ -40,7 +40,7 @@ const lek = (datei: string) => `${basis}lektionen/${datei}`;
           </div>
         </div>
         {L.nach
-          ? <a class="app-lektion__pfeil" href={lek(L.nach.datei)} rel="next" aria-label={`Nächste Lektion: ${L.nach.termin.nr} ${L.nach.termin.kurz}`} title={`${L.nach.termin.nr} · ${L.nach.termin.kurz}`}><Icon id="chevron-right" basis={basis} /></a>
+          ? <a class="app-lektion__pfeil" href={lek(L.nach.datei)} rel="next" aria-label={`Nächster Termin: ${L.nach.termin.terminLang} · ${L.nach.termin.kurz}`} title={`${L.nach.termin.terminLang} · ${L.nach.termin.kurz}`}><Icon id="chevron-right" basis={basis} /></a>
           : <span class="app-lektion__pfeil" aria-hidden="true" data-aus><Icon id="chevron-right" basis={basis} /></span>}
         {L.termin.labor && (
           <nav class="app-ansicht" aria-label="Ansicht">
@@ -61,5 +61,6 @@ const lek = (datei: string) => `${basis}lektionen/${datei}`;
     )}
   </div>
   <div class="app-bar__status" data-app-slot="status" aria-live="polite"></div>
+  <div class="app-bar__werkzeuge" data-app-slot="werkzeuge"></div>
   <button type="button" class="app-bar__suche" data-app-aktion="suche" aria-keyshortcuts="Control+K"><Icon id="search" basis={basis} /><span>Suchen</span><kbd>Strg K</kbd></button>
 </header>

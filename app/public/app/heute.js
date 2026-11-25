@@ -1,7 +1,8 @@
 /* =============================================================
    app/heute.js – Seite „Heute“ (Rolle Navigation)
    Rangfolge: 1 Weiter, wo du warst · 2 aktuelle Lektion · 3 Warm-up · 4 ein dezenter Hinweis.
-   Ohne Stand bleibt der statisch gerenderte Einstieg („Starte mit V01“) stehen.
+   Ohne Stand bleibt der statisch gerenderte Einstieg („Starte mit Termin 01“) stehen. Kennungen („V01“) bleiben Schlüssel;
+   angezeigt wird immer KursApp.termin.lang/kurz (kern.js).
    Liest den Stand über KursStand (stand.js), die letzte Seite aus inf-mb/app/zuletzt.
    ============================================================= */
 (function () {
@@ -69,7 +70,7 @@
   /* ── Bausteine ──────────────────────────────────────────── */
   function weiterBlock(z, primaer) {
     var titel = String(z.titel || 'Zuletzt geöffnete Seite').replace(/\s*·\s*Informatik Maschinenbau\s*$/, '');
-    var meta = [z.lektion ? 'Lektion ' + z.lektion : '', zeitText(z.zeit)].filter(Boolean).join(' · ');
+    var meta = [z.lektion ? window.KursApp.termin.lang(z.lektion) : '', zeitText(z.zeit)].filter(Boolean).join(' · ');
     return el('section', { class: 'np-block', 'aria-labelledby': 'h-weiter' }, [
       el('h2', { id: 'h-weiter', text: 'Weiter, wo du warst' }),
       el('a', { class: 'k-btn np-gross' + (primaer ? '' : ' k-btn--ghost'), href: A.url(z.url) }, [el('span', { class: 'np-gross__text', text: titel }), ic('chevron-right')]),
@@ -111,7 +112,7 @@
     ];
     return el('section', { class: 'np-block', 'aria-labelledby': 'h-lektion' }, [
       el('p', { class: 'np-kicker', text: wartet ? 'Als Nächstes' : 'Jetzt dran' }),
-      el('h2', { id: 'h-lektion', text: t.nr + ' · ' + t.kurz }),
+      el('h2', { id: 'h-lektion', text: window.KursApp.termin.lang(t.nr) + ' · ' + t.kurz }),
       el('p', { class: 'np-hook', text: t.hook }),
       wartet ? el('p', { class: 'k-small k-muted', text: 'Diese Lektion ist erst ' + window.KursStand.freigabeText(t.freigabe).replace(/^ab /, 'ab dem ') + ' freigegeben. Du kannst schon hineinschauen.' }) : null,
       el('ol', { class: 'np-schritte' }, li)
@@ -134,7 +135,7 @@
     return el('section', { class: 'np-block', 'aria-labelledby': 'h-lektion' }, [
       el('h2', { id: 'h-lektion', text: 'Alle Lektionen sind abgeschlossen' }),
       el('p', { text: 'Stark. Jetzt lohnt sich die Wiederholung vor der Klausur.' }),
-      el('a', { class: 'k-btn', href: A.url('klausurtrainer.html') }, [el('span', { text: 'Zum Klausurtrainer' }), ic('chevron-right')])
+      el('a', { class: 'k-btn', href: A.url('lernpfad.html') }, [el('span', { text: 'Zum Lernpfad' }), ic('chevron-right')])
     ]);
   }
 
@@ -163,7 +164,7 @@
         var meta = [w.a.teil === 'B' ? 'Training' : 'Labor', w.a.minuten ? 'ca. ' + w.a.minuten + ' Min' : '', w.a.sterne ? 'Stufe ' + w.a.sterne + ' von 4' : ''].filter(Boolean).join(' · ');
         return el('li', {}, [
           el('a', { class: 'np-aufgabe', href: A.url(w.t.labor + '#' + w.a.id) }, [
-            el('span', { class: 'np-aufgabe__lektion', text: w.t.nr }),
+            el('span', { class: 'np-aufgabe__lektion', text: window.KursApp.termin.kurz(w.t.nr) }),
             el('span', { class: 'np-aufgabe__text' }, [el('strong', { text: w.a.titel }), el('span', { class: 'k-small k-muted', text: meta })]),
             ic('chevron-right')
           ])

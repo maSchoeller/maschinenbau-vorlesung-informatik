@@ -208,7 +208,8 @@ describe('Anfrage an das Modell', () => {
     const s = c.tutorAufrufe().map((a) => a.params.system[1].text);
     assert.match(s[0], /Aktuelle Aufgabe/);
     assert.doesNotMatch(s[1], /Aktuelle Aufgabe/);
-    assert.match(s[1], /Lektion: V07/);
+    assert.match(s[1], /Termin: Termin 07/);
+    assert.doesNotMatch(s[1], /\bV\d\d\b/, 'Studierenden gegenüber nur „Termin 07“, nie die Kennung');
     assert.doesNotMatch(s[2], /Aktuelle Aufgabe/);
   });
   it('Lerneinheit ohne Aufgabe: nur die Lektion und ihre erlaubten Konstrukte', async () => {
@@ -216,7 +217,7 @@ describe('Anfrage an das Modell', () => {
     modell._setzeClient(c);
     await post(frage('Was ist return?', { lektion: 'V07', seite: 'lerneinheit' }));
     const s = c.tutorAufrufe()[0].params.system[1].text;
-    assert.match(s, /Lektion: V07 \(Lerneinheit\)/);
+    assert.match(s, /Termin: Termin 07 \(Lerneinheit\)/);
     assert.match(s, /math-Modul/);
     assert.doesNotMatch(s, /Aktuelle Aufgabe/);
   });

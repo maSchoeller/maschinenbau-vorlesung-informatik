@@ -539,8 +539,30 @@
   window.addEventListener('online', function () { sende('netz', { online: true }); });
   window.addEventListener('offline', function () { sende('netz', { online: false }); });
 
+  /* ── Kennung intern, Termin sichtbar ─────────────────────
+     Die Kennung einer Lektion („V01“) bleibt Schlüssel (Speicher, Adressen, data-Attribute, API). Angezeigt wird
+     „Termin 01“ (lang) oder „T01“ (kurz, wo der Platz knapp ist). Die Zuordnung liefert der Build in jede Seite
+     (<script id="app-termine" type="application/json">, aus kurs.yaml). Ohne Eintrag, etwa auf einer Seite ohne Hülle,
+     ersetzt die Funktion die Kennung „VNN“ durch „Termin NN“; die Kennung selbst zeigt sie nie. */
+  var termineKarte = {};
+  try { var tn = document.getElementById('app-termine'); if (tn) termineKarte = JSON.parse(tn.textContent) || {}; } catch (e) { termineKarte = {}; }
+  function terminEintrag(k) {
+    k = String(k == null ? '' : k);
+    if (termineKarte[k]) return termineKarte[k];
+    var m = /^V(\d\d)$/.exec(k);
+    return m ? { lang: 'Termin ' + m[1], kurz: 'T' + m[1] } : { lang: k, kurz: k };
+  }
+  var termin = {
+    lang: function (k) { return terminEintrag(k).lang; },
+    kurz: function (k) { return terminEintrag(k).kurz; },
+    /* Text mit Kennungen („V01 · Entscheiden“, „bis V02“) für die Anzeige umschreiben; art 'kurz' für „T01“ */
+    text: function (t, art) { return String(t == null ? '' : t).replace(/\bV\d\d\b/g, function (k) { return art === 'kurz' ? termin.kurz(k) : termin.lang(k); }); }
+  };
+  window.KursTermine = termin;
+
   window.KursApp = {
     seite: seite,
+    termin: termin,
     url: url,
     wurzel: WURZEL,
     kurs: kurs,

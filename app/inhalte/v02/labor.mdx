@@ -28,7 +28,7 @@ skripte:
 
 <Station id="a-werkzeugkasten" titel="Werkzeugkasten" teil="A" min="5">
 
-<p class="l-task__intro">Drei Karten: Karte 1 und 2 brauchst du für die Verzweigung, Karte 3 für die Ausgabe. Jeder Codeblock läuft: Ändere etwas und führ ihn aus. Den Werkzeugkasten erreichst du von jeder Aufgabe aus über den Knopf oben rechts.</p>
+<p class="l-task__intro">Drei Karten: Karte 1 und 2 brauchst du für die Verzweigung, Karte 3 für die Ausgabe. Jeder Codeblock läuft: Ändere etwas und führ ihn aus. Den Werkzeugkasten erreichst du von jeder Aufgabe aus in der Befehls-Bibliothek oben rechts.</p>
 
 <Video name="v02-python" titel="Python-Werkzeugkasten: vergleichen, if und else, f-String" fehlt="Video folgt. Bis dahin: Lies die drei Karten und probier jeden Codeblock aus.">
 
@@ -520,6 +520,41 @@ Gewinnt Anna, heißt die Zeile entsprechend `Anna gewinnt, … Sekunden vor Ben`
 
 1. Rechne von Hand, bevor du programmierst: 30 Meter Vorsprung, Anna läuft 4 m/s, Ben 5 m/s. Wer ist zuerst im Ziel? Der Schnellere ist es nicht immer.
 2. Anna und Ben laufen verschieden weit. Welche Größe kannst du für beide ausrechnen und direkt vergleichen?
+
+</Tipps>
+
+</Aufgabe>
+
+</Knobel>
+
+<Knobel id="kn-2" titel="Eine große oder mehrere kleine Pizzen">
+
+<Aufgabe art="code" id="k-2" data-mode="programm" data-inputs="40|25|2">
+
+<div class="a-task__text">
+
+Die Pizzeria bietet zum selben Preis eine große Pizza oder mehrere kleine an. Alle Pizzen sind rund und gleich dick. Das Programm liest den Durchmesser der großen Pizza in cm ein, dann den Durchmesser einer kleinen Pizza in cm (zwei Kommazahlen) und die Zahl der kleinen Pizzen (ganze Zahl, mindestens 2). Die Zeilen dafür stehen schon da. Es gibt aus, welches Angebot mehr Pizza ist und wievielmal so viel. Sind beide gleich viel, gilt die große Pizza.
+
+Beispiel: eine große Pizza mit 40 cm oder 2 kleine mit je 25 cm. Die Ausgabe soll genau so aussehen:
+
+```text data-run="no"
+Die große Pizza ist 1.28-mal so viel wie die 2 kleinen
+```
+
+Sind die kleinen mehr, heißt die Zeile entsprechend `Die 2 kleinen sind …-mal so viel wie die große Pizza`, immer mit zwei Nachkommastellen.
+
+</div>
+
+<Editor datei="labor/k-2.vorlage.py" aria-label="Python-Code: Eine große oder mehrere kleine Pizzen" />
+
+<Python rolle="tests" datei="labor/k-2.tests.py" />
+
+<Python rolle="solution" datei="labor/k-2.solution.py" />
+
+<Tipps>
+
+1. Leg in Gedanken zwei kleine Pizzen neben eine große. Ist „doppelt so breit“ auch „doppelt so viel“? Rechne das Beispiel von Hand nach, bevor du programmierst.
+2. Was bekommst du eigentlich, Breite oder Fläche? Und brauchst du Pi wirklich, wenn du am Ende nur durcheinander teilst?
 
 </Tipps>
 

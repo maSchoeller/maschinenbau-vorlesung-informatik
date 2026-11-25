@@ -43,17 +43,24 @@ test('Entwürfe: nicht im Precache des Service Workers', { skip: OHNE_DIST }, ()
   for (const d of dateien) assert.ok(!sw.includes('lektionen/' + d), `Precache enthält lektionen/${d}`);
 });
 
-test('Entwürfe: Videos ohne Datei zeigen den Platzhalter statt eines Spielers', { skip: OHNE_DIST }, () => {
+test('Entwürfe: jedes Video hat entweder Datei und Spieler oder den Platzhalter, nie beides', { skip: OHNE_DIST }, () => {
   let anzahl = 0;
   for (const d of dateien) {
     const html = lies('lektionen/' + d);
     for (const m of html.matchAll(/<figure class="k-video"[\s\S]*?<\/figure>/g)) {
       anzahl++;
       const name = /data-video="([\w-]+)"/.exec(m[0])[1];
-      assert.ok(!/<video|<source|<track/.test(m[0]), `${d}: ${name} ohne Datei darf kein <video>, <source> oder <track> haben (sonst 404 und Konsolenfehler)`);
-      assert.ok(!fs.existsSync(path.join(DIST, 'assets', 'video', name + '.mp4')), `${name}.mp4 sollte es noch nicht geben (Vertonung folgt)`);
-      assert.match(m[0], /<div class="k-video__missing"(?![^>]*hidden)[^>]*>Video folgt\./, `${d}: Platzhalter „Video folgt.“ für ${name}`);
+      const vorhanden = fs.existsSync(path.join(DIST, 'assets', 'video', name + '.mp4'));
+      if (vorhanden) {
+        assert.match(m[0], /<video/, `${d}: ${name}.mp4 liegt vor, also gehört ein Spieler auf die Seite`);
+        for (const endung of ['.vtt', '-poster.png']) {
+          assert.ok(fs.existsSync(path.join(DIST, 'assets', 'video', name + endung)), `${name}${endung} fehlt neben ${name}.mp4`);
+        }
+      } else {
+        assert.ok(!/<video|<source|<track/.test(m[0]), `${d}: ${name} ohne Datei darf kein <video>, <source> oder <track> haben (sonst 404 und Konsolenfehler)`);
+        assert.match(m[0], /<div class="k-video__missing"(?![^>]*hidden)[^>]*>Video folgt\./, `${d}: Platzhalter „Video folgt.“ für ${name}`);
+      }
     }
   }
-  assert.ok(anzahl >= 6, 'die Gerüste enthalten alle sechs Videoplätze: ' + anzahl);
+  assert.ok(anzahl >= 6, 'die Entwürfe enthalten alle sechs Videoplätze: ' + anzahl);
 });

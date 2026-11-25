@@ -15,7 +15,7 @@ const erste = ladeKurs().lektionen.find((l) => l.aktiv);
         <h2 id="h-start">Willkommen im Kurs</h2>
         <p>Jede Lektion hat zwei Schritte: erst <strong>Verstehen</strong>, dann im <strong>Labor</strong> selbst programmieren. Du musst nichts einrichten. Fang vorne an.</p>
         <a class="k-btn np-gross" href={`lektionen/${erste.lerneinheit}`}>
-          <span class="np-gross__text">Starte mit {erste.nr} · {erste.kurz}</span>
+          <span class="np-gross__text">Starte mit {erste.terminLang} · {erste.kurz}</span>
           <Icon id="chevron-right" basis="" />
         </a>
         <p class="k-small"><a href="lernpfad.html">Alle 20 Termine im Lernpfad</a></p>

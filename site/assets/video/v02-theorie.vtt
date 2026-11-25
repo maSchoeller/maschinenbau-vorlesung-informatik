@@ -1,0 +1,105 @@
+WEBVTT
+
+1
+00:00:00.400 --> 00:00:05.327
+Ein Getränkeautomat. Die Cola kostet 1,50 Euro.
+
+2
+00:00:05.460 --> 00:00:10.153
+Du hast 2 Euro. Der Satz „Das Geld reicht“ stimmt: Er ist wahr.
+
+3
+00:00:10.165 --> 00:00:13.264
+Mit 1 Euro stimmt er nicht: Er ist falsch.
+
+4
+00:00:13.345 --> 00:00:18.526
+Ein Satz, der stimmt oder nicht stimmt, heißt Aussage.
+
+5
+00:00:18.692 --> 00:00:23.650
+Eine Aussage ist entweder wahr oder falsch. Dazwischen gibt es nichts.
+
+6
+00:00:24.550 --> 00:00:27.945
+Ein Rechner braucht die Aussage mit Zahlen.
+
+7
+00:00:27.795 --> 00:00:33.228
+Das Geld reicht, wenn du mindestens so viel hast, wie die Cola kostet.
+
+8
+00:00:33.078 --> 00:00:39.190
+Mit 2 Euro heißt das als Vergleich: 2 >= 1.5.
+
+9
+00:00:39.040 --> 00:00:46.662
+Für Vergleiche gibt es fünf Zeichen: kleiner, größer, kleiner gleich, größer gleich und ist gleich.
+
+10
+00:00:46.512 --> 00:00:52.549
+Das fünfte Zeichen, ==, besteht in Python aus zwei Gleichheitszeichen.
+
+11
+00:00:52.399 --> 00:00:58.360
+Auch ein Vergleich ist wahr oder falsch: Python schreibt dafür True und False.
+
+12
+00:00:59.260 --> 00:01:03.061
+Aufpassen musst du genau auf der Grenze: Das ist der Grenzfall.
+
+13
+00:01:03.263 --> 00:01:05.664
+Du hast genau 1,50 Euro.
+
+14
+00:01:05.798 --> 00:01:10.036
+Der Vergleich mit dem Zeichen >= ist wahr: Gleich viel reicht.
+
+15
+00:01:10.486 --> 00:01:16.956
+Der Vergleich mit dem Zeichen > ist falsch: 1.5 ist nicht größer als 1.5.
+
+16
+00:01:17.240 --> 00:01:20.622
+Richtig ist hier also das Zeichen >=.
+
+17
+00:01:20.767 --> 00:01:27.230
+Deshalb probierst du immer drei Werte: einen darunter, einen genau auf der Grenze und einen darüber.
+
+18
+00:01:28.130 --> 00:01:31.768
+Ein kleines Wort dreht eine Aussage um: NICHT.
+
+19
+00:01:31.618 --> 00:01:37.682
+A ist die Aussage „Das Geld reicht“. NICHT A ist dann „Das Geld reicht nicht“.
+
+20
+00:01:37.532 --> 00:01:41.246
+Aus wahr wird falsch, und aus falsch wird wahr.
+
+21
+00:01:41.096 --> 00:01:44.961
+Die beiden Fälle stehen in einer kleinen Tabelle.
+
+22
+00:01:44.811 --> 00:01:48.980
+Sie heißt Wahrheitstabelle und listet jeden Fall auf.
+
+23
+00:01:49.880 --> 00:01:53.671
+Merke dir: Eine Aussage ist wahr oder falsch.
+
+24
+00:01:53.870 --> 00:01:57.283
+Ein Vergleich ist eine Aussage über Zahlen.
+
+25
+00:01:57.573 --> 00:02:00.853
+Und den Grenzfall prüfst du immer mit.
+
+26
+00:02:02.013 --> 00:02:06.330
+Im Plan bekommt so eine Aussage als Nächstes ein eigenes Symbol.

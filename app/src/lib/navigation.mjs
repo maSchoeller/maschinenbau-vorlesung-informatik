@@ -24,8 +24,10 @@ export const BEREICHE = [
   { id: 'bibliothek', name: 'Bibliothek', icon: 'book', ziel: 'bibliothek.html', reiter: [] },
 ];
 
-/* Abgeschaltet, bis sie zum neuen Kurs passen (2026-11-23): der Reiter „Über den Kurs“ (kurs.html) und der Bereich
-   „Klausur“ (klausurtrainer.html, probeklausur-2026-27.html). Die Seiten werden noch gebaut, aber nicht angeboten. */
+/* Abgeschaltet, bis er zum neuen Kurs passt (2026-11-23): der Reiter „Über den Kurs“ (kurs.html); die Seite wird noch gebaut,
+   aber nicht angeboten.
+   Der Klausurtrainer (klausurtrainer.html) und die Probeklausur (probeklausur-2026-27.html) sind entfernt (2026-11-25): Von seinen Aufgaben ließ sich keine mit dem Stoff
+   von Termin 01 lösen und zugleich im neuen Kurs belassen. Der alte Stand liegt im Tag altbestand-alter-kurs. */
 
 /* Unten in der Leiste */
 export const UNTEN = [
@@ -45,8 +47,6 @@ export const SEITEN = {
   'pap-editor.html': { bereich: 'werkbank', reiter: 'pap-editor', titel: 'PAP-Editor' },
   'werkzeuge/3d-vorschau.html': { bereich: 'werkbank', reiter: '3d-vorschau', titel: '3D-Vorschau' },
   'bibliothek.html': { bereich: 'bibliothek', reiter: null, titel: 'Bibliothek' },
-  'klausurtrainer.html': { bereich: null, reiter: null, titel: 'Klausurtrainer' },
-  'probeklausur-2026-27.html': { bereich: null, reiter: null, titel: 'Probeklausur' },
   'konto.html': { bereich: 'konto', reiter: null, titel: 'Konto' },
   'dozent.html': { bereich: 'konto', reiter: null, titel: 'Kursübersicht' },
   'offline.html': { bereich: null, reiter: null, titel: 'Offline' },

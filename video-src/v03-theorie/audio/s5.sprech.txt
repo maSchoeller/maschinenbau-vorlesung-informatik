@@ -1,0 +1,1 @@
+Merke dir: Aus zwei Aussagen wird eine neue. Die Wahrheitstabelle zeigt für jede der vier Kombinationen, ob sie wahr ist. Später in diesem Termin steht das Und in der Raute, und genauso das Oder. Dann entscheidet ein Programm nach zwei Dingen zugleich.

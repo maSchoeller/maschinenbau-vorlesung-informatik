@@ -11,7 +11,7 @@
   if (!lab) return;
 
   var LESSON = document.body.getAttribute('data-lesson') || 'V03';
-  var BASE_TITLE = 'Programmierlabor ' + LESSON + ' · Informatik Maschinenbau';
+  var BASE_TITLE = 'Programmierlabor ' + (window.KursTermine ? window.KursTermine.lang(LESSON) : LESSON) + ' · Informatik Maschinenbau';   // sichtbar „Termin 01“, die Kennung bleibt Schlüssel
   var MARK = { open: 'circle', part: 'half', done: 'done' };  // Icon-IDs im Sprite
   var MARK_TXT = { open: 'offen', part: 'begonnen', done: 'gelöst' };
 
@@ -99,8 +99,8 @@
       }
       // Eintrag in der Liste
       var mark = el('span', { class: 'lab__mark', 'aria-hidden': 'true' });
-      setMark(mark, 'open');
-      var sr = el('span', { class: 'k-sr', text: ' (offen)' });
+      if (kn) mark.setAttribute('data-frei', ''); else setMark(mark, 'open');
+      var sr = el('span', { class: 'k-sr', text: kn ? ' (freiwillig)' : ' (offen)' });
       var name = el('span', { class: 'lab__name' }, [el('span', { class: 'lab__nm', text: title })]);
       if (meta) {
         var metaEl = el('span', { class: 'lab__meta' });
@@ -122,9 +122,16 @@
     tasks.forEach(function (t) {
       var s = statusOf(t), it = items[t.id];
       if (!it) return;
-      setMark(it.mark, s);
-      it.a.setAttribute('data-status', s);
-      it.sr.textContent = ' (' + (statusNodes(t).length ? MARK_TXT[s] : (s === 'done' ? 'angesehen' : 'offen')) + ')';
+      if (istKnobel(t) && s !== 'done') {
+        /* Freiwillige Knobelaufgabe, noch nicht gelöst: kein Status in der Liste (nichts soll nach offener Pflicht aussehen) */
+        it.mark.textContent = '';
+        it.a.setAttribute('data-status', 'frei');
+        it.sr.textContent = ' (freiwillig)';
+      } else {
+        setMark(it.mark, s);
+        it.a.setAttribute('data-status', s);
+        it.sr.textContent = ' (' + (istKnobel(t) ? 'freiwillig, ' : '') + (statusNodes(t).length ? MARK_TXT[s] : (s === 'done' ? 'angesehen' : 'offen')) + ')';
+      }
       if (t._stat) {
         t._stat.textContent = '';
         if (s === 'done' && statusNodes(t).length) { t._stat.appendChild(document.createTextNode(' · gelöst')); t._stat.appendChild(window.KIcon('check')); }

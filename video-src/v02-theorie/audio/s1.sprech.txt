@@ -1,0 +1,1 @@
+Ein Getränkeautomat. Die Cola kostet einen Euro fünfzig. Du hast zwei Euro. Der Satz „Das Geld reicht“ stimmt: Er ist wahr. Mit einem Euro stimmt er nicht: Er ist falsch. Ein Satz, der stimmt oder nicht stimmt, heißt Aussage. Eine Aussage ist entweder wahr oder falsch. Dazwischen gibt es nichts.

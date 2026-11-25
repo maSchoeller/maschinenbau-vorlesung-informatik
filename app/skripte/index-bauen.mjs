@@ -129,8 +129,8 @@ export default function indexBauen() {
       return { id: s.getAttribute('data-section'), anker: s.getAttribute('id') || null, titel };
     });
     const leUrl = `lektionen/${t.lerneinheit}`;
-    if (t.aktiv) suche.push({ typ: 'lektion', titel: `${t.nr} · ${t.kurz}`, text: t.hook, url: leUrl, lektion: t.nr });
-    abschnitte.forEach((a) => { if (a.anker && t.aktiv) suche.push({ typ: 'abschnitt', titel: a.titel, text: `${t.nr} · ${t.kurz}`, url: `${leUrl}#${a.anker}`, lektion: t.nr }); });
+    if (t.aktiv) suche.push({ typ: 'lektion', titel: `${t.terminLang} · ${t.kurz}`, text: t.hook, url: leUrl, lektion: t.nr });
+    abschnitte.forEach((a) => { if (a.anker && t.aktiv) suche.push({ typ: 'abschnitt', titel: a.titel, text: `${t.terminLang} · ${t.kurz}`, url: `${leUrl}#${a.anker}`, lektion: t.nr }); });
     if (t.aktiv) begriffe(le, leUrl, t.nr);
 
     /* Aufgaben der Lerneinheit mit Musterlösung (z. B. Code im Selbstcheck) nur für den Tutor */
@@ -148,7 +148,7 @@ export default function indexBauen() {
       aufgaben = lab.querySelectorAll('section.l-task').map((s) => {
         const { a, ids, knobel } = stationDaten(s);
         const pruefbar = a.pruefbar;
-        if (t.aktiv) suche.push({ typ: 'aufgabe', titel: a.titel, text: `${t.nr} Labor${a.teil === 'B' ? ' · Training' : knobel ? ' · Knobelaufgabe (freiwillig)' : ''}`, url: `${labUrl}#${a.id}`, lektion: t.nr });
+        if (t.aktiv) suche.push({ typ: 'aufgabe', titel: a.titel, text: `${t.terminLang} Labor${a.teil === 'B' ? ' · Training' : knobel ? ' · Knobelaufgabe (freiwillig)' : ''}`, url: `${labUrl}#${a.id}`, lektion: t.nr });
         const sol = s.querySelectorAll('script[data-role="solution"]').map((x) => x.textContent.replace(/^\n+|\s+$/g, ''));
         if (sol.length) {
           const text = [klartext(s.querySelector('.l-task__intro')), ...s.querySelectorAll('.a-task__text').map(klartext)].filter(Boolean).join('\n\n');
@@ -161,7 +161,7 @@ export default function indexBauen() {
     const quiz = le.querySelector('[data-quiz]');
     if (t.aktiv) kursApi.push({ nr: t.nr, quiz: quiz ? quiz.getAttribute('data-quiz') : null, abschnitte: abschnitte.map((a) => a.id), stationen: aufgaben.map((a) => ({ id: a.id, teil: a.teil, pruefbar: a.pruefbar, ...(a.knobel ? { knobel: true } : {}) })) });
     return {
-      nr: t.nr, aktiv: t.aktiv, titel: t.titel, kurz: t.kurz, hook: t.hook, python: t.python, semester: t.semester, freigabe: t.freigabe,
+      nr: t.nr, terminNr: t.terminNr, terminLang: t.terminLang, terminKurz: t.terminKurz, aktiv: t.aktiv, titel: t.titel, kurz: t.kurz, hook: t.hook, python: t.python, semester: t.semester, freigabe: t.freigabe,
       lerneinheit: leUrl, labor: t.labor ? `lektionen/${t.labor}` : null, notebook: t.notebook ? `notebooks/${t.notebook}` : null,
       abschnitte, aufgaben,
     };
@@ -189,7 +189,7 @@ export default function indexBauen() {
   schreibe(path.join(daten, 'kurs.json'), { semester, einheiten, termine: plan.map(({ entwurf, ...t }) => t), lektionen: aktive.map(({ aktiv, ...t }) => t), entwuerfe });
   schreibe(path.join(daten, 'suche.json'), { eintraege: suche });
   schreibe(path.join(daten, 'glossar.json'), { begriffe: glossarListe });
-  schreibe(path.join(API_DATEN, 'aufgaben.json'), { erstellt: new Date().toISOString(), aufgaben: aufgabenApi, kurs: kursApi });
+  schreibe(path.join(API_DATEN, 'aufgaben.json'), { erstellt: new Date().toISOString(), aufgaben: aufgabenApi, kurs: kursApi, termine: Object.fromEntries(ladeKurs().lektionen.map((l) => [l.nr, l.terminLang])) });
   const nA = aktive.reduce((s, t) => s + t.aufgaben.length, 0);
   console.log(`index-bauen: ${plan.length} Termine, ${aktive.length} aktive Lektionen (${kursTermine.length - aktive.length} abgeschaltet), ${nA} Labor-Aufgaben, ${suche.length} Sucheinträge, ${glossarListe.length} Begriffe, ${aufgabenApi.length} Aufgaben mit Lösung für den Tutor`);
 }

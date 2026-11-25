@@ -29,13 +29,15 @@ const distDa = fs.existsSync(path.join(DIST, 'lektionen'));
 
 test('es gibt die erwarteten Seiten', () => {
   /* die Werkzeug- und Klausurseiten aus site/ und alle Lektionsseiten aus kurs.yaml (Quelle: MDX) */
-  for (const s of ['bibliothek.html', 'pap-editor.html', 'klausurtrainer.html', 'probeklausur-2026-27.html']) assert.ok(seiten.includes(s), `${s} fehlt`);
+  for (const s of ['bibliothek.html', 'pap-editor.html']) assert.ok(seiten.includes(s), `${s} fehlt`);
   const lektionsseiten = ladeKurs().lektionen.flatMap((l) => [l.lerneinheit, l.labor]).filter(Boolean).map((d) => 'lektionen/' + d);
   assert.ok(lektionsseiten.length >= 2, 'kurs.yaml nennt keine Lektionsseiten');
   for (const s of lektionsseiten) assert.ok(seiten.includes(s), `${s} fehlt`);
   assert.deepEqual(seiten.filter((s) => s.startsWith('lektionen/')).sort(), lektionsseiten.sort(), 'unter lektionen/ steht nur, was kurs.yaml nennt');
   assert.deepEqual(mdxSeiten().sort(), lektionsseiten.sort(), 'jede Lektionsseite hat eine MDX-Quelle');
   assert.ok(!seiten.includes('werkzeuge/labor-test.html'));
+  assert.ok(!seiten.includes('klausurtrainer.html'), 'der Klausurtrainer des alten Kurses ist entfernt');
+  assert.ok(!seiten.includes('probeklausur-2026-27.html'), 'die Probeklausur des alten Kurses ist entfernt');
 });
 
 for (const s of seiten) {

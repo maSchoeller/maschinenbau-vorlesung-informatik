@@ -38,10 +38,10 @@ export function lektionsKontext(termin, art) {
   const vor = nachbar(termin.nr, -1, art);
   const nach = nachbar(termin.nr, 1, art);
   let weiter = null;
-  if (art === 'lerneinheit' && termin.labor) weiter = { datei: termin.labor, text: `Weiter ins Programmierlabor ${termin.nr}` };
+  if (art === 'lerneinheit' && termin.labor) weiter = { datei: termin.labor, text: `Weiter ins Programmierlabor ${termin.terminLang}` };
   else {
     const n = nachbar(termin.nr, 1, 'lerneinheit');
-    if (n) weiter = { datei: n.termin.lerneinheit, text: `Weiter mit ${n.termin.nr} · ${n.termin.kurz}` };
+    if (n) weiter = { datei: n.termin.lerneinheit, text: `Weiter mit ${n.termin.terminLang} · ${n.termin.kurz}` };
   }
   return { termin, art, vor, nach, weiter, semester, termine: lektionen.filter((l) => l.aktiv) };
 }

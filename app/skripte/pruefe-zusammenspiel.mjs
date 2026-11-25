@@ -247,7 +247,7 @@ async function gast() {
   await p.waitForURL(/werkbank\.html#p[a-z0-9]{6}/, { timeout: 10000 });
   programmId = new URL(p.url()).hash.slice(1);
   await p.waitForSelector('#wb-liste a');
-  pruefe(/^V01 · /.test(await p.inputValue('#wb-titel')), 'Werkbank: Programm aus der Lerneinheit angelegt', await p.inputValue('#wb-titel'));
+  pruefe(/^Termin 01 · /.test(await p.inputValue('#wb-titel')), 'Werkbank: Programm aus der Lerneinheit angelegt', await p.inputValue('#wb-titel'));
   sauber(A, 'Lerneinheit, Werkbank');
 
   /* Automatisch erzeugte Runner (aus Codeblöcken) in einer Lerneinheit: dort trat der Fehler „erster Klick geht verloren“ auf.
@@ -361,7 +361,7 @@ async function konto() {
   pruefe(/1 von 5 Abschnitten/.test(await B.page.locator('.np-schritte').innerText()), 'Gerät B: Heute zeigt den Fortschritt aus Gerät A');
   await B.page.goto(BASIS + '/werkbank.html#' + programmId);
   await B.page.waitForSelector('#wb-liste a');
-  pruefe(/^V01 · /.test(await B.page.inputValue('#wb-titel')), 'Gerät B: Werkbank-Programm aus Gerät A ist da');
+  pruefe(/^Termin 01 · /.test(await B.page.inputValue('#wb-titel')), 'Gerät B: Werkbank-Programm aus Gerät A ist da');
   /* Programm auf B ändern */
   await B.page.locator('#wb-runner .cm-content').first().click();
   await B.page.keyboard.press('Control+End');

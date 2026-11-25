@@ -1,0 +1,1 @@
+Merke dir: Eine Aussage ist wahr oder falsch. Ein Vergleich ist eine Aussage über Zahlen. Und den Grenzfall prüfst du immer mit. Im Plan bekommt so eine Aussage als Nächstes ein eigenes Symbol.

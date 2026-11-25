@@ -259,7 +259,7 @@ export function bausteine({ ordner = null, datei = 'MDX' } = {}) {
           h('div', { class: 'lab__listhead' },
             h('button', { type: 'button', class: 'lab__fold', 'data-lab-fold': true, 'aria-expanded': 'true', 'aria-label': 'Aufgabenliste einklappen' },
               h('svg', { class: 'k-ic', 'aria-hidden': 'true', focusable: 'false' }, h('use', { href: '../assets/img/icons.svg#i-chevron-left' }))),
-            h('p', { class: 'lab__title' }, 'Programmierlabor ' + name), h('a', { class: 'lab__back', href: lerneinheit }, '← Lerneinheit')),
+            h('p', { class: 'lab__title' }, 'Programmierlabor ' + String(name).replace(/^Termin (?=\d)/, 'Termin ')), h('a', { class: 'lab__back', href: lerneinheit }, '← Lerneinheit')),
           h('p', { class: 'lab__count', 'data-lab-count': true }),
           h('div', { class: 'a-progress', 'data-a-progress': true },
             h('span', { class: 'a-progress__bar' }, h('span', { class: 'a-progress__fill' })),

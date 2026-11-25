@@ -68,7 +68,7 @@
       var bar = $('.k-progress__bar', p);
       if (fill) fill.style.width = pct + '%';
       if (txt) txt.textContent = n + ' von ' + sections.length + ' Abschnitten';
-      if (bar) { bar.setAttribute('role', 'progressbar'); bar.setAttribute('aria-valuemin', '0'); bar.setAttribute('aria-valuemax', '100'); bar.setAttribute('aria-valuenow', String(pct)); bar.setAttribute('aria-label', 'Fortschritt ' + lesson.toUpperCase()); }
+      if (bar) { bar.setAttribute('role', 'progressbar'); bar.setAttribute('aria-valuemin', '0'); bar.setAttribute('aria-valuemax', '100'); bar.setAttribute('aria-valuenow', String(pct)); bar.setAttribute('aria-label', 'Fortschritt ' + (window.KursTermine ? window.KursTermine.lang(lesson.toUpperCase()) : lesson.toUpperCase())); }
     });
   }
 
