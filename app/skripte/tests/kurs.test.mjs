@@ -42,15 +42,23 @@ test('Lektionen: nur Seiten fertiger Termine (Kennung V + Terminnummer); der alt
     assert.equal(l.nr, 'V' + zu[0].kennung, `${l.nr} steht bei Termin ${zu[0].kennung}`);
     assert.ok(l.lerneinheit && l.labor, `${l.nr}: Lerneinheit und Labor`);
   }
-  /* Termin 02 und 03: Gerüste als Entwürfe (aktiv: false), bis der Dozent sie freischaltet */
-  assert.deepEqual(lektionen.filter((l) => !l.aktiv).map((l) => l.nr), ['V02', 'V03'], 'abgeschaltet sind genau die Entwürfe V02 und V03');
-  for (const [i, nr] of [[1, 'V02'], [2, 'V03']]) {
-    assert.equal(termine[i].lektion, null, `Termin ${termine[i].kennung}: kein Verweis im Lernpfad`);
-    assert.equal(termine[i].entwurf, nr, `Termin ${termine[i].kennung} zeigt auf den Entwurf ${nr}`);
+  /* Entwürfe (aktiv: false) sind gebaut, aber nicht angeboten, bis der Dozent sie freischaltet (aktiv: false streichen).
+     Die Regeln gelten für jeden Stand, damit eine Freischaltung keinen Test ändern muss. */
+  for (const l of lektionen) {
+    const t = termine.find((x) => x.lektion === l.nr || x.entwurf === l.nr);
+    if (l.aktiv) {
+      assert.equal(t.lektion, l.nr, `Termin ${t.kennung} zeigt auf die freigeschaltete Lektion ${l.nr}`);
+      assert.equal(t.entwurf, null, `Termin ${t.kennung} ist kein Entwurf mehr`);
+    } else {
+      assert.equal(t.lektion, null, `Termin ${t.kennung}: kein Verweis im Lernpfad, solange ${l.nr} abgeschaltet ist`);
+      assert.equal(t.entwurf, l.nr, `Termin ${t.kennung} zeigt auf den Entwurf ${l.nr}`);
+    }
   }
+  /* freigeschaltet wird in Kursreihenfolge: nach dem ersten Entwurf kommt kein aktiver Termin mehr */
+  const ersterEntwurf = termine.findIndex((t) => t.entwurf);
+  if (ersterEntwurf >= 0) for (const t of termine.slice(ersterEntwurf)) assert.equal(t.lektion, null, `Termin ${t.kennung} ist freigeschaltet, obwohl ein früherer Termin noch Entwurf ist`);
   assert.ok(lektionen.find((l) => l.nr === 'V01').aktiv, 'V01 ist aktiv');
   assert.ok(lektionen.some((l) => l.aktiv), 'mindestens eine aktive Lektion (app/src/pages/index.astro setzt sie voraus)');
-  assert.deepEqual(lektionen.filter((l) => !l.aktiv).map((l) => [l.lerneinheit, l.labor]), [['v02-entscheiden.html', 'v02-labor.html'], ['v03-und-oder-drei-wege.html', 'v03-labor.html']]);
   /* bisheriges Material (stoff) gibt es nicht mehr: keine Einheit nennt alte Lektionen, kein Termin zeigt welche */
   for (const e of einheiten) assert.deepEqual(e.stoff, [], `${e.id} nennt kein altes Material`);
   for (const t of termine) assert.deepEqual(t.stoff, [], `Termin ${t.kennung} zeigt kein bisheriges Material`);

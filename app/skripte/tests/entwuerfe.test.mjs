@@ -1,4 +1,4 @@
-/* Selbsttest Entwürfe (npm run selbsttest nach npm run build): Lektionen mit aktiv: false (zurzeit V02 und V03) werden gebaut,
+/* Selbsttest Entwürfe (npm run selbsttest nach npm run build): Lektionen mit aktiv: false (zurzeit V03) werden gebaut,
    tauchen aber nirgends im Angebot auf: nicht im Lernpfad, nicht in kurs.json unter lektionen, nicht in der Suche, nicht im
    Precache des Service Workers (docs/app/ARCHITEKTUR.md, Abschnitt 16). */
 import { test } from 'node:test';
@@ -66,5 +66,5 @@ test('Entwürfe: jedes Video hat entweder Datei und Spieler oder den Platzhalter
       }
     }
   }
-  assert.ok(anzahl >= 6, 'die Entwürfe enthalten alle sechs Videoplätze: ' + anzahl);
+  assert.ok(anzahl >= 3 * entwuerfe.length, `je Entwurf drei Videoplätze (Theorie, Python, Beispiel): ${anzahl} bei ${entwuerfe.length} Entwürfen`);
 });
