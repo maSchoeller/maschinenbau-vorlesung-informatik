@@ -12,14 +12,14 @@
 #                      Termin ohne Seiten (Lernpfad: "Seiten folgen.", kein Verweis), die Seiten bleiben unter
 #                      ihrer Adresse aufrufbar (Durchsicht durch den Dozenten). Freischalten = aktiv: false streichen.
 #            freigabe: Datum (JJJJ-MM-TT) oder weglassen.
-# lektionen  Seiten, die es gibt: die fertigen Termine (bisher V01 = Termin 01). Termin NN bekommt die Kennung VNN.
+# lektionen  Seiten, die es gibt: die fertigen Termine (bisher V01 und V02 = Termin 01 und 02). Termin NN bekommt die Kennung VNN.
 #            Dateinamen sind die Adressen unter lektionen/; die Quelle liegt in app/inhalte/vNN/ (MDX).
 #            Fehlt eine genannte Datei, bricht der Build ab (src/lib/kurs.mjs).
 #            aktiv: false schaltet eine Lektion ab: Ihre Seiten werden noch gebaut, aber nirgends angeboten
 #            (nicht im Lernpfad, nicht im Lektionswähler, nicht in Heute, Suche, Glossar und Kursübersicht).
 #            Abgeschaltete Lektionen stehen in dist/app/daten/kurs.json nur unter entwuerfe und sind nicht im
 #            Precache des Service Workers; pruefe-loesungen.mjs prüft sie trotzdem.
-#            Zurzeit sind V02 und V03 abgeschaltet (Entwürfe, Gerüste der Termine 02 und 03).
+#            Zurzeit ist V03 abgeschaltet (Entwurf von Termin 03). V02 ist seit 2026-11-25 freigeschaltet.
 
 semester:
   - nr: 1
@@ -98,7 +98,6 @@ lektionen:
     labor: v02-labor.html
     notebook: null
     freigabe: null
-    aktiv: false
   - nr: V03
     titel: "Und, oder: mehr als zwei Wege"
     kurz: "Und, oder, drei Wege"
