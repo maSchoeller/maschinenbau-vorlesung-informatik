@@ -2,7 +2,7 @@ def _pruefe(alter, soll):
     z = zeilen(run_program([str(alter)]))
     letzte = z[-1] if z else ""
     w = zahlen(letzte)
-    assert w and abs(w[-1] - soll) < 0.01, "Bei Alter %s soll der Preis %s ausgegeben werden. Dein Plan gibt zuletzt aus: %r" % (alter, soll, letzte)
+    assert w and abs(w[-1] - soll) < 0.01, "Bei Alter %s soll der Preis %s ausgegeben werden. Dein Plan gibt zuletzt aus:\n%s" % (alter, soll, ausgabe_text(letzte))
 
 def test_kind():
     """Alter 4: Preis 0"""

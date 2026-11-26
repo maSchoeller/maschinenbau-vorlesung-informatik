@@ -2,7 +2,7 @@ def _pruefe(gewicht, soll):
     z = zeilen(run_program([str(gewicht)]))
     letzte = z[-1] if z else ""
     w = zahlen(letzte)
-    assert w and abs(w[-1] - soll) < 0.01, "Bei %s kg soll das Porto %s ausgegeben werden. Dein Plan gibt zuletzt aus: %r" % (gewicht, soll, letzte)
+    assert w and abs(w[-1] - soll) < 0.01, "Bei %s kg soll das Porto %s ausgegeben werden. Dein Plan gibt zuletzt aus:\n%s" % (gewicht, soll, ausgabe_text(letzte))
 
 def test_leicht():
     """1 kg: Porto 5"""

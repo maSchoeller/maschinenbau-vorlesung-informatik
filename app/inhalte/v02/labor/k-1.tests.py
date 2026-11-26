@@ -1,7 +1,7 @@
 def _pruefe(vorsprung, anna, ben, soll):
     z = zeilen(run_program([str(vorsprung), str(anna), str(ben)]))
     ist = " ".join(z[-1].lower().split()) if z else ""
-    assert ist == soll.lower(), "Bei %s m Vorsprung, Anna mit %s m/s und Ben mit %s m/s soll zuletzt '%s' erscheinen. Dein Programm gibt aus: %r" % (vorsprung, anna, ben, soll, z)
+    assert ist == soll.lower(), "Bei %s m Vorsprung, Anna mit %s m/s und Ben mit %s m/s soll zuletzt '%s' erscheinen. Dein Programm gibt aus:\n%s" % (vorsprung, anna, ben, soll, ausgabe_text(z))
 
 def test_beispiel():
     """10 m Vorsprung, Anna 4 m/s, Ben 5 m/s: Ben gewinnt, 2.50 Sekunden vor Anna"""

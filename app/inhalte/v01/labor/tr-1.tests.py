@@ -11,4 +11,4 @@ def test_gesamt():
 
 def test_ausgabe():
     """Ausgabe: Gesamt: 28.5"""
-    assert "Gesamt: 28.5" in zeilen(AUSGABE), "Erwartet wird die Zeile 'Gesamt: 28.5'. Dein Programm gibt aus: %r" % zeilen(AUSGABE)
+    assert "Gesamt: 28.5" in zeilen(AUSGABE), "Erwartet wird die Zeile 'Gesamt: 28.5'. Dein Programm gibt aus:\n%s" % ausgabe_text(zeilen(AUSGABE))

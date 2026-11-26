@@ -1,6 +1,6 @@
 ---
 titel: "Termin 03 · Und, oder: mehr als zwei Wege · Lerneinheit · Informatik Maschinenbau"
-beschreibung: "Aussagen mit UND und ODER verknüpfen, Wahrheitstabellen mit Hilfsspalte ausfüllen, Pläne mit zwei Rauten und elif, zwei Vergleiche mit and und or. Mit Schaltern und Ampel zum Ausprobieren."
+beschreibung: "Aussagen mit UND und ODER verknüpfen, einen Ausdruck mit drei Variablen per Wahrheitstabelle auflösen, Pläne mit zwei Rauten und elif, zwei Vergleiche mit and und or. Mit Schaltern und Ampel zum Ausprobieren."
 body:
   data-lesson: V03
   data-page: lerneinheit
@@ -31,7 +31,7 @@ skripte:
 Zwei Wege reichen oft nicht: Eine Ampel hat drei Farben, und bei Schere-Stein-Papier hängt das Ergebnis von zwei Dingen zugleich ab. Heute verknüpfst du Aussagen und baust Pläne mit mehr als einer Raute.
 
 - zwei Aussagen mit UND und ODER verknüpfen und die Wahrheitstabelle dazu aus dem Kopf aufschreiben
-- eine Wahrheitstabelle für eine Verknüpfung mit Klammer ausfüllen, zum Beispiel A UND (NICHT B), mit Hilfsspalte
+- einen Ausdruck mit drei Variablen per Wahrheitstabelle auflösen: acht Zeilen, je Klammer eine Hilfsspalte
 - einen Plan mit zwei Rauten zeichnen und in `if`, `elif`, `else` übertragen
 - zwei Vergleiche mit `and` oder `or` in einer Bedingung verbinden und die Ausgabe bestimmen
 
@@ -265,39 +265,56 @@ else:
 
 </Abschnitt>
 
-<Abschnitt id="tabelle" nr="4" titel="Wahrheitstabelle ausfüllen">
+<Abschnitt id="tabelle" nr="4" titel="Einen Ausdruck auflösen">
 
-Ein <Begriff e="Ein Ausdruck ist eine Verknüpfung von Aussagen mit UND, ODER und NICHT, die du zu wahr oder falsch ausrechnest. Beispiel: A UND (NICHT B).">Ausdruck</Begriff> verknüpft Aussagen mit UND, ODER und NICHT. Du rechnest ihn zu wahr oder falsch aus, zum Beispiel A UND (NICHT B). In der Klausur ist ein Ausdruck gegeben, und du füllst die Tabelle mit vier Zeilen aus. Das geht in drei Schritten:
+Ein <Begriff e="Ein Ausdruck ist eine Verknüpfung von Aussagen mit UND, ODER und NICHT, die du zu wahr oder falsch ausrechnest. Beispiel: (A UND B) ODER (NICHT C).">Ausdruck</Begriff> verknüpft Aussagen mit UND, ODER und NICHT. Du rechnest ihn für jede Belegung zu 1 oder 0 aus. In der Klausur ist ein Ausdruck gegeben, und du füllst die Tabelle dazu aus. Das geht in vier Schritten:
 
-1. Die vier Zeilen für A und B hinschreiben: 00, 01, 10, 11.
-2. Für die Klammer eine Hilfsspalte anlegen und ausfüllen.
-3. Das Ergebnis aus der Hilfsspalte bestimmen, Zeile für Zeile.
+1. **Variablen zählen.** Jede Variable verdoppelt die Zeilen: Zwei Variablen ergeben 4 Zeilen, drei Variablen ergeben 8 Zeilen.
+2. **Belegungen systematisch hinschreiben,** von 000 bis 111. Die letzte Spalte (C) wechselt in jeder Zeile, B alle 2 Zeilen, A alle 4 Zeilen. So vergisst du keine.
+3. **Von innen nach außen rechnen:** Für jede Klammer legst du eine Hilfsspalte an.
+4. **Ergebnisspalte füllen,** Zeile für Zeile, aus den Hilfsspalten.
 
 Wir schreiben immer Klammern. Dann ist klar, was zuerst gerechnet wird.
 
-Ein Beispiel: „Ich gehe joggen, wenn ich Zeit habe UND es NICHT regnet.“ A ist „Ich habe Zeit“, B ist „Es regnet“. Der Ausdruck heißt A UND (NICHT B). Die Hilfsspalte ist NICHT B:
+Ein Beispiel mit drei Variablen: Y = (A UND B) ODER (NICHT C). Es gibt zwei Klammern, also zwei Hilfsspalten:
 
 <div class="k-tablewrap">
 <table class="k-types">
-<thead><tr><th scope="col">A</th><th scope="col">B</th><th scope="col">NICHT B</th><th scope="col">A UND (NICHT B)</th></tr></thead>
+<thead><tr><th scope="col">A</th><th scope="col">B</th><th scope="col">C</th><th scope="col">A UND B</th><th scope="col">NICHT C</th><th scope="col">Y</th></tr></thead>
 <tbody>
-<tr><td>0</td><td>0</td><td>1</td><td>0</td></tr>
-<tr><td>0</td><td>1</td><td>0</td><td>0</td></tr>
-<tr><td>1</td><td>0</td><td>1</td><td>1</td></tr>
-<tr><td>1</td><td>1</td><td>0</td><td>0</td></tr>
+<tr><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td></tr>
+<tr><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>1</td></tr>
+<tr><td>0</td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>1</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td></tr>
+<tr><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>1</td><td>1</td><td>0</td><td>1</td><td>1</td><td>1</td></tr>
+<tr><td>1</td><td>1</td><td>1</td><td>1</td><td>0</td><td>1</td></tr>
 </tbody>
 </table>
 </div>
 
-Gejoggt wird nur in einer Zeile: Zeit ja, Regen nein.
+So liest du Y in einer Zeile ab: Nimm die beiden Hilfsspalten und verknüpfe sie mit dem Zeichen zwischen den Klammern. In der Zeile 1 0 0 ist A UND B gleich 0 und NICHT C gleich 1. Also ist Y gleich 0 ODER 1, das ergibt 1.
+
+<Explorable name="drei-schalter" titel="Drei Schalter">
+
+Wähl einen Ausdruck und leg die drei Schalter um. Die Lampe zeigt Y, in der Tabelle ist die Zeile der aktuellen Stellung markiert. Vermute zuerst: In wie vielen der acht Zeilen leuchtet die Lampe bei Y = A UND (B ODER C)?
+
+<Ohne>
+
+Für die Schalter wird JavaScript benötigt. Beispiel für Y = (A UND B) ODER (NICHT C): A ist an (1), B ist aus (0), C ist an (1). A UND B ergibt 0, NICHT C ergibt 0. Also ist Y gleich 0 ODER 0, die Lampe bleibt aus.
+
+</Ohne>
+
+</Explorable>
 
 <div class="k-try">
 
 ### Übung: Tabelle ausfüllen
 
-Füll die Tabelle für NICHT (A ODER B) zuerst auf Papier aus, dann prüf sie hier Zeile für Zeile. Die Hilfsspalte ist A ODER B. Trag in jedes Feld 0 oder 1 ein, ohne Anführungszeichen.
+Füll die Tabelle für Y = A UND (B ODER C) zuerst auf Papier aus, dann prüf sie hier Zeile für Zeile. Die Hilfsspalte ist B ODER C. Trag in jedes Feld 0 oder 1 ein, ohne Anführungszeichen.
 
-<Aufgabe art="trace" id="tabelle" titel="NICHT (A ODER B)">
+<Aufgabe art="trace" id="tabelle" titel="Y = A UND (B ODER C)">
 
 <Daten datei="lerneinheit/tabelle.daten.json" />
 
@@ -307,18 +324,18 @@ Füll die Tabelle für NICHT (A ODER B) zuerst auf Papier aus, dann prüf sie hi
 
 <div class="k-try">
 
-### Vorhersage: Ergebnisspalte
+### Vorhersage: Mehr Variablen
 
 <Vorhersage>
 
-Welche Ergebnisspalte gehört zu (NICHT A) ODER B? Die Zeilen stehen in der Reihenfolge 00, 01, 10, 11.
+Wie viele Zeilen braucht die Tabelle bei 4 Variablen?
 
-- [x] 1, 1, 0, 1
-- 1, 0, 0, 0
-- 0, 1, 0, 0
-- 1, 1, 1, 0
+- 8
+- [x] 16
+- 12
+- 4
 
-1, 1, 0, 1. Die Hilfsspalte NICHT A ist 1, 1, 0, 0. Falsch ist der Ausdruck nur bei A = 1 und B = 0.
+16. Jede neue Variable verdoppelt die Zeilen: 2, 4, 8, 16. Das rechnen wir in Termin 04.
 
 </Vorhersage>
 
@@ -355,13 +372,13 @@ ODER ist nur falsch, wenn beide Aussagen falsch sind.
 
 </Frage>
 
-<Frage id="spalte" typ="output" punkte="4" antwort="0 1 0 0|0100|0, 1, 0, 0|0,1,0,0" titel="Ergebnisspalte bestimmen">
+<Frage id="spalte" typ="output" punkte="4" antwort="1 1 1 1 1 1 0 1|11111101|1, 1, 1, 1, 1, 1, 0, 1|1,1,1,1,1,1,0,1" titel="Ergebnisspalte bestimmen">
 
-Füll auf Papier die Tabelle für (NICHT A) UND B aus (Zeilen 00, 01, 10, 11). Gib die Ergebnisspalte von oben nach unten an: vier Ziffern mit Leerzeichen dazwischen, in der Form 1 0 0 1 (das ist nur ein Muster für die Schreibweise, nicht die Lösung).
+Füll auf Papier die Tabelle für (NICHT (A UND B)) ODER C aus (Zeilen 000 bis 111). Gib die Ergebnisspalte von oben nach unten an: acht Ziffern mit Leerzeichen dazwischen, in der Form 0 1 0 1 0 1 0 1 (das ist nur ein Muster für die Schreibweise, nicht die Lösung).
 
 <Erklaerung>
 
-Hilfsspalte NICHT A: 1, 1, 0, 0. Beide zugleich 1 nur in der Zeile 0 1. Die Ergebnisspalte ist 0 1 0 0.
+Hilfsspalte A UND B: 0 0 0 0 0 0 1 1. Davon NICHT: 1 1 1 1 1 1 0 0. Dann ODER C: Nur in der Zeile 1 1 0 sind beide Teile 0. Die Ergebnisspalte ist 1 1 1 1 1 1 0 1.
 
 </Erklaerung>
 
@@ -478,13 +495,13 @@ else punkte < 50:
 
 <Weiter ziel="v03-labor.html">
 
-Jetzt bist du dran. Im Labor zeichnest du einen Plan mit zwei Rauten, ordnest Zeilen mit `and`, spielst Schere-Stein-Papier und schreibst dein eigenes Programm mit zwei Bedingungen. Zwei weitere Videos findest du dort an der passenden Station: der Python-Werkzeugkasten und das vorgerechnete Beispiel.
+Jetzt bist du dran. Im Labor zeichnest du einen Plan mit zwei Rauten, ordnest Zeilen mit `and`, spielst Schere-Stein-Papier und schreibst dein eigenes Programm mit zwei Bedingungen. Ausdrücke mit drei Variablen hast du hier schon aufgelöst. Zwei weitere Videos findest du dort an der passenden Station: der Python-Werkzeugkasten und das vorgerechnete Beispiel.
 
 </Weiter>
 
 <Dozent titel="Für Dozierende: Ablauf des Termins (135 Minuten) und Training">
 
-<p class="k-small k-muted">Vier Blöcke à 30 Minuten: zwei Theorie (T2 Boolesche Logik, Teil 2 von 2), zwei Programmieren (P2 Verzweigungen, Teil 2 von 2). Jeder Block verplant höchstens 28 Minuten; die Minuten eines Abschnitts enthalten das Zeigen der genannten Karte. Die Lerneinheit ist zum Zeigen und Nachlesen, geübt wird im <a href="v03-labor.html">Programmierlabor</a>. Die Videos laufen nicht im Termin.</p>
+<p class="k-small k-muted">Vier Blöcke à 30 Minuten: zwei Theorie (T2 Boolesche Logik, Teil 2 und 3 von 5), zwei Programmieren (P2 Verzweigungen, Teil 2 von 2). Jeder Block verplant höchstens 28 Minuten; die Minuten eines Abschnitts enthalten das Zeigen der genannten Karte. Die Lerneinheit ist zum Zeigen und Nachlesen, geübt wird im <a href="v03-labor.html">Programmierlabor</a>. Die Videos laufen nicht im Termin.</p>
 
 <div class="k-tablewrap">
 <table class="k-plan">
@@ -495,12 +512,12 @@ Jetzt bist du dran. Im Labor zeichnest du einen Plan mit zwei Rauten, ordnest Ze
 <tr><td>40–70</td><td>Lerneinheit 2, Labor 1 (Karte 1), 2, 4</td><td><strong>Programmieren 1: drei Wege, Plan zuerst.</strong> Ampel-Plan mit zwei Rauten, Baustein „Welche Fragen werden gestellt?“, daneben <code>elif</code> mit Karte 1, Vorhersage (13). Automat mit drei Wegen am Beamer: Plan und Code nebeneinander, je Weg ein Wert (5). Alle zeichnen „Freibad mit drei Preisen“ (10). Verplant: 28. Station 3 läuft nicht einzeln: gemeinsam per Zuruf, wenn die Reserve übrig ist (2 bis 3 Minuten, nur die Schritte in Zeile 4 und 6), sonst zu Hause.</td></tr>
 <tr><td>70–80</td><td>–</td><td><strong>Pause.</strong></td></tr>
 <tr><td>80–110</td><td>Lerneinheit 3, Labor 1 (Karte 2), 5, 6, 7</td><td><strong>Programmieren 2: and und or.</strong> Achterbahn mit Rückgriff auf die Tabellen aus dem Theorie-Block, Karte 2, Vorhersage „Ein Wort anders“ (8). Zeilen ordnen (4). Schere-Stein-Papier als Lückentext (8; die Runde zu zweit nur, wenn Zeit bleibt, sie ist nicht eingerechnet). Eigene Aufgabe (8). Rundgang: unvollständiger Vergleich hinter <code>and</code>, <code>and</code> und <code>or</code> verwechselt. Verplant: 28.</td></tr>
-<tr><td>110–135</td><td>Lerneinheit 4, Labor 8</td><td><strong>Theorie 2: Wahrheitstabelle ausfüllen.</strong> Drei Schritte, Joggen-Tabelle an der Tafel vorrechnen (7). Alle füllen NICHT (A ODER B) auf Papier aus und prüfen in der Übung (7). „Freibad-Kasse“ gemeinsam, den Fehler mit der Tabelle begründen (6). Auftrag für zu Hause, Pflicht, zusammen 45 Minuten: Selbstcheck (7) und Training (38). Termin 04 beginnt mit der Tabelle aus dem Training.</td></tr>
+<tr><td>110–135</td><td>Lerneinheit 4, Labor 8</td><td><strong>Theorie 2: Einen Ausdruck auflösen.</strong> Vier Schritte, Tabelle für Y = (A UND B) ODER (NICHT C) an der Tafel vorrechnen (6). Baustein „Drei Schalter“ mit Vermutung, alle drei Ausdrücke einmal (4). Alle füllen Y = A UND (B ODER C) auf Papier aus und prüfen in der Übung (7). Vorhersage „Mehr Variablen“, Ausblick auf Termin 04 (1). „Freibad-Kasse“ gemeinsam, den Fehler mit der Tabelle begründen (6). Auftrag für zu Hause, Pflicht, zusammen 47 Minuten: Selbstcheck (7) und Training (40). Termin 04 beginnt mit der Tabelle aus dem Training.</td></tr>
 </tbody>
 </table>
 </div>
 
-<p class="k-small k-muted">Wenn die Zeit trotzdem knapp wird: Im Block 40–70 wird Station 2 nur gezeigt (Plan und Code auf der Seite, ein Lauf mit 2); der Plan wird gezeichnet. Im Block 80–110 gibt es das Spiel zu zweit nur mit Restzeit; ist die knapp, wird Station 7 die erste Trainingsaufgabe. Im letzten Block hat die Tabelle Vorrang vor Station 8. Wurde Station 3 nicht gemeinsam verfolgt, kommt sie zu Hause dazu (5 Minuten, zusammen dann 50).</p>
+<p class="k-small k-muted">Wenn die Zeit trotzdem knapp wird: Im Block 40–70 wird Station 2 nur gezeigt (Plan und Code auf der Seite, ein Lauf mit 2); der Plan wird gezeichnet. Im Block 80–110 gibt es das Spiel zu zweit nur mit Restzeit; ist die knapp, wird Station 7 die erste Trainingsaufgabe. Im letzten Block hat die Tabelle Vorrang vor Station 8. Wurde Station 3 nicht gemeinsam verfolgt, kommt sie zu Hause dazu (5 Minuten, zusammen dann 52).</p>
 
 <p class="k-small k-muted">Wie weit die Gruppe im Training ist und an welcher Aufgabe sie hängt, zeigt vor dem nächsten Termin die Kursübersicht (Konto, „Kursübersicht für Dozierende“). Gezählt wird dort nur, wer mit Konto lernt. Die Knobelaufgaben am Ende des Labors sind freiwillig und zählen dort nicht mit.</p>
 

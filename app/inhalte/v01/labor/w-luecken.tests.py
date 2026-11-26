@@ -1,6 +1,6 @@
 def _pruefe(betrag, prozent, soll):
     z = zahlen(run_program([str(betrag), str(prozent)]))
-    assert z and abs(z[-1] - soll) < 0.01, "Bei %s Euro und %s Prozent soll zuletzt %s ausgegeben werden. Dein Programm gibt aus: %r" % (betrag, prozent, soll, z)
+    assert z and abs(z[-1] - soll) < 0.01, "Bei %s Euro und %s Prozent soll zuletzt %s ausgegeben werden. Dein Programm gibt aus:\n%s" % (betrag, prozent, soll, ausgabe_text(z))
 
 def test_beispiel():
     """40 Euro und 10 Prozent: zu zahlen 44.0"""

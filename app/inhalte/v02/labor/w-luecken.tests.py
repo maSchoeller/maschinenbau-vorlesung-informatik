@@ -1,6 +1,6 @@
 def _pruefe(geld, soll):
     z = [l.lower() for l in zeilen(run_program([str(geld)]))[-2:]]
-    assert z == soll, "Bei %s Euro sollen zuletzt die Zeilen %r erscheinen (Groß und Klein egal). Dein Programm gibt aus: %r" % (geld, soll, z)
+    assert z == soll, "Bei %s Euro sollen zuletzt diese Zeilen erscheinen (Groß und Klein egal):\n%s\nDein Programm gibt aus:\n%s" % (geld, ausgabe_text(soll), ausgabe_text(z))
 
 def test_genug():
     """2 Euro: Cola kommt, dann Danke"""

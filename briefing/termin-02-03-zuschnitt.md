@@ -64,6 +64,14 @@ Am 2026-11-25 vom Dozenten entschieden:
 - Sichtbar heißt es überall „Termin 02“ bzw. „T02“; die Kennung V02 bleibt intern (Adressen, Speicher, Daten).
 - Videos: Stempel WAHR/FALSCH in Großbuchstaben (Termin 02 Theorie); im Ausblick von Termin 03 Theorie stehen zwei große Rauten mit Python-Schreibweise untereinander; im Beispiel-Video von Termin 03 steht der Plan neben dem Code, solange vom Plan die Rede ist, danach der Code allein.
 
+Am 2026-11-26 vom Dozenten entschieden (ändert den Zuschnitt von T2 und T3 im ganzen Kurs):
+- Boolesche Logik (T2) hat 5 statt 3 Blöcke: Termin 02 (1 Block, unverändert), Termin 03 (2 Blöcke), Termin 04 (2 Blöcke, neu). Zahlensysteme (T3) schrumpfen von 4 auf 2 Blöcke: je 1 Block in Termin 05 und Termin 06. Was bei den Zahlensystemen wegfällt, wird erst bei Termin 05 entschieden. Termin 06 behält T4 Bitoperationen (1 Block); dort kommt XOR (ENTWEDER-ODER) hin.
+- Termin 03 ist die Methode: Theorie-Block 1 (UND/ODER mit 2 Variablen) bleibt wie gebaut, das Video v03-theorie bleibt unverändert. Theorie-Block 2 heißt jetzt „Einen Ausdruck auflösen“: 3 Variablen (8 Zeilen), rein mit A, B, C ohne Alltagsgeschichte; Baustein „Drei Schalter“, Trace `A UND (B ODER C)`, Vorhersage mit 16 Zeilen.
+- Das Joggen-Beispiel und NICHT (A ODER B) entfallen in Termin 03. NICHT (A ODER B) kommt in Termin 04 zu De Morgan.
+- Labor t-1 in Termin 03 ist jetzt `(A ODER B) UND (NICHT C)`. Der Selbstcheck „spalte“ ist jetzt `(NICHT (A UND B)) ODER C`.
+- Termin 04 ist das Anwenden: 4 Variablen (16 Zeilen), Gleichwertigkeit zweier Ausdrücke per Tabelle (so wird De Morgan entdeckt), Vorrang UND vor ODER, eine Bedingung aus einem Text in eine Formel übersetzen.
+- Gar nicht: Umformen mit Rechenregeln, Gatter, KV-Diagramme. In Python weiterhin kein `not`, kein `!=`, kein gemischtes `and`/`or`.
+
 ## Hinweise für den Bau
 
 - **Kennung und Dateien (vor dem Bau festgelegt).** Es gilt die Regel aus `docs/app/ARCHITEKTUR.md`, Abschnitt 16: Ein fertiger Termin bekommt die Kennung `V` plus Terminnummer; die alte Lektion gleicher Kennung und das Material, das der Termin ersetzt, werden gelöscht. `app/src/lib/kurs.mjs` leitet den Ordner aus der Kennung ab (`app/inhalte/<kennung klein>/`).
@@ -1098,10 +1106,10 @@ Wenn die Zeit trotzdem knapp wird: Im Block 40–70 wird Station 2 nur gezeigt (
 # Bewusst weggelassen
 
 **Logik**
-- De Morgan, XOR, NAND, Gleichwertigkeit von Ausdrücken: für die Klausurform „Tabelle ausfüllen“ nicht nötig.
+- ~~De Morgan, XOR, NAND, Gleichwertigkeit von Ausdrücken: für die Klausurform „Tabelle ausfüllen“ nicht nötig.~~ Überholt am 2026-11-26: Gleichwertigkeit und De Morgan kommen in Termin 04, XOR in Termin 06 (T4). NAND bleibt weg.
 - Das Umformen von Vergleichen mit NICHT (das Gegenteil von `>=` ist `<`) und die Selbstcheck-Frage „Das Gegenteil finden“: eine eigene, fehleranfällige Fertigkeit; sie machte den Theorie-Block von Termin 02 zu voll. NICHT gibt es dort nur als Tabelle mit zwei Zeilen an einem Alltagssatz.
-- Vorrangregeln (NICHT vor UND vor ODER): Stattdessen stehen immer Klammern.
-- Tabellen mit drei Aussagen (acht Zeilen): zwei Aussagen sicher zu können ist das Ziel; mehr passt nicht in 25 Minuten.
+- ~~Vorrangregeln (NICHT vor UND vor ODER): Stattdessen stehen immer Klammern.~~ Überholt am 2026-11-26: Der Vorrang UND vor ODER kommt in Termin 04. In Termin 02 und 03 stehen weiter immer Klammern.
+- ~~Tabellen mit drei Aussagen (acht Zeilen): zwei Aussagen sicher zu können ist das Ziel; mehr passt nicht in 25 Minuten.~~ Überholt am 2026-11-26: Tabellen mit drei Aussagen (8 Zeilen) kommen im zweiten Theorie-Block von Termin 03, vier Aussagen (16 Zeilen) in Termin 04.
 - Kurzschluss-Auswertung, Schaltungen, Gatter, Kontaktplan, Bezug zu Bits.
 
 **Python**

@@ -1,6 +1,6 @@
 def _pruefe(stunden, lohn, soll):
     z = zahlen(run_program([str(stunden), str(lohn)]))
-    assert z and abs(z[-1] - soll) < 0.01, "Bei %s Stunden zu %s Euro soll %s ausgegeben werden. Dein Programm gibt aus: %r" % (stunden, lohn, soll, z)
+    assert z and abs(z[-1] - soll) < 0.01, "Bei %s Stunden zu %s Euro soll %s ausgegeben werden. Dein Programm gibt aus:\n%s" % (stunden, lohn, soll, ausgabe_text(z))
 
 def test_beispiel():
     """12 Stunden zu 13.5 Euro: Verdienst 162.0"""

@@ -1,6 +1,6 @@
 def _pruefe(gewicht, soll):
     z = zahlen(run_program([str(gewicht)]))
-    assert z and abs(z[-1] - soll) < 0.01, "Bei %s kg soll das Porto %s ausgegeben werden. Dein Plan gibt aus: %r" % (gewicht, soll, z)
+    assert z and abs(z[-1] - soll) < 0.01, "Bei %s kg soll das Porto %s ausgegeben werden. Dein Plan gibt aus:\n%s" % (gewicht, soll, ausgabe_text(z))
 
 def test_leicht():
     """0.5 kg: Porto 5"""
