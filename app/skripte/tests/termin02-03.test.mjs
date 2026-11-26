@@ -132,7 +132,7 @@ test('Termin 02, Training 3: Tests prüfen Grenze und beide Seiten (ein `>=` sta
 test('Labor: die Minuten von Teil B stehen nicht fest im Skript, sondern kommen aus <Labor zuhause>', () => {
   const js = fs.readFileSync(path.join(SITE, 'assets', 'js', 'labor.js'), 'utf8');
   assert.ok(!/\(45 Min, Pflicht\)/.test(js), 'labor.js enthält „(45 Min, Pflicht)“ fest');
-  for (const [v, min] of [['v01', '45'], ['v02', '48'], ['v03', '47']]) {
+  for (const [v, min] of [['v01', '45'], ['v02', '48'], ['v03', '47'], ['v04', '57']]) {
     const mdx = fs.readFileSync(path.join(WURZEL, 'app', 'inhalte', v, 'labor.mdx'), 'utf8');
     assert.match(mdx, new RegExp(`<Labor [^>]*zuhause="${min}"`), `${v}: zuhause="${min}" fehlt`);
     const intro = /Das Training gehört zum Termin:[^<]*?(\d+) Minuten/.exec(mdx);

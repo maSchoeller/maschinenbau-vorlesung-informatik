@@ -1,0 +1,15 @@
+{
+ "solution": [
+  "zaehler = 3",
+  "while zaehler > 0:",
+  "    print(zaehler)",
+  "    zaehler = zaehler - 1",
+  "print(\"Start\")"
+ ],
+ "distractors": [
+  "while zaehler < 0:",
+  "    zaehler = zaehler + 1"
+ ],
+ "alts": [],
+ "ok": "Der Zähler sinkt im Rumpf, bis zaehler > 0 falsch wird. Das print mit „Start“ steht nicht eingerückt und läuft einmal danach."
+}

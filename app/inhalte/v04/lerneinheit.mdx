@@ -1,0 +1,531 @@
+---
+titel: "Termin 04 · Solange es stimmt: Formeln und Schleifen · Lerneinheit · Informatik Maschinenbau"
+beschreibung: "Eine Bedingung aus einem Text in eine Formel übersetzen, Tabellen mit vier Variablen, gleichwertige Ausdrücke und die Regel von De Morgan, while-Schleifen und eine Eingabe wiederholen, bis sie gültig ist. Mit Schaltern und einem Plan mit Rücksprung zum Ausprobieren."
+body:
+  data-lesson: V04
+  data-page: lerneinheit
+stile:
+  - ../assets/css/dhbw-base.css
+  - ../assets/css/kurs.css
+  - ../assets/css/aufgaben.css
+  - ../assets/css/editor.css
+  - ../assets/css/v05.css
+  - ../assets/css/v04.css
+skripte:
+  - ../assets/js/speicher.js
+  - ../assets/js/icons.js
+  - src: ../assets/js/editor.js
+    defer: true
+  - ../assets/js/pap-engine.js
+  - ../assets/js/explorables-v04.js
+  - ../assets/js/kurs.js
+  - ../assets/js/aufgaben.js
+---
+
+<Lerneinheit nr="V04" name="Termin 04" labor="v04-labor.html">
+
+<Kopf marke="Termin 04 · 1. Semester · Lerneinheit" titel="Solange es stimmt: Formeln und Schleifen">
+
+Eine Presse fährt nur, wenn mehrere Bedingungen zugleich stimmen. Ein Programm wiederholt etwas, solange eine Bedingung stimmt. Heute übersetzt du Texte in Formeln, vergleichst Formeln mit Tabellen und lässt ein Programm zum ersten Mal im Kreis laufen.
+
+- eine Bedingung aus einem Text in eine Formel mit UND, ODER, NICHT übersetzen (Variablen festlegen, Klammern setzen) und die Tabelle mit vier Variablen (16 Zeilen) ausfüllen
+- an zwei Tabellen erkennen, ob zwei Ausdrücke gleichwertig sind, und wissen: NICHT bindet vor UND, UND vor ODER
+- eine `while`-Schleife als Plan mit Rücksprung zeichnen, in Python übertragen und die Ausgabe bestimmen
+- eine Eingabe so lange wiederholen, bis sie gültig ist, und die Schleifenbedingung dafür formulieren
+
+Alles aus Termin 02 und 03 gilt weiter: Wahrheitstabellen mit drei Variablen, `if`, `elif`, `and` und `or`. Geübt wird im [Programmierlabor](v04-labor.html).
+
+</Kopf>
+
+<Abschnitt id="text-formel" nr="1" titel="Vom Text zur Formel">
+
+Eine Presse fährt nur, wenn der Bediener beide Hände an den Tastern hat. Ein Text beschreibt, wann der Hub freigegeben wird: „Der Hub wird freigegeben, wenn beide Taster gedrückt sind, die Schutztür geschlossen ist und der Druck im zulässigen Bereich liegt.“ Daraus wird in drei Schritten eine Formel.
+
+1. **Variablen festlegen.** Jede Variable ist ein Satz, der wahr oder falsch sein kann. Du schreibst ihn hin: A = „Taster links gedrückt“, B = „Taster rechts gedrückt“, C = „Schutztür geschlossen“, D = „Druck im Bereich“.
+2. **Wörter übersetzen.** „und“ und „beide“ ergeben UND. „oder“ und „mindestens einer“ ergeben ODER. „nicht“, „kein“ und „offen“ ergeben NICHT vor der Variablen. „Offen“ gilt hier, weil die Variable „geschlossen“ heißt.
+3. **Klammern setzen.** Was zusammengehört, kommt in eine Klammer.
+
+Die Freigabe ist F = (A UND B) UND (C UND D). Sie ist wahr, wenn alle vier Sätze stimmen.
+
+Zwei weitere Texte, gleiche Variablen:
+
+- „Die Störlampe leuchtet, wenn die Schutztür offen ist oder der Druck nicht im Bereich liegt.“ „Offen“ ist NICHT C, „nicht im Bereich“ ist NICHT D, dazwischen steht „oder“: (NICHT C) ODER (NICHT D).
+- „Die Anzeige ‚bedienbar‘ leuchtet, wenn die Schutztür zu ist und mindestens ein Taster gedrückt ist.“ „Zu“ ist C, „mindestens ein Taster“ ist A ODER B: C UND (A ODER B). Ohne Klammer wäre C UND A ODER B zweideutig.
+
+<div class="k-try">
+
+### Übung: Satz übersetzen
+
+Wähl die Formel, die zum Satz passt. Variablen wie oben: A Taster links gedrückt, B Taster rechts gedrückt, C Schutztür geschlossen, D Druck im Bereich.
+
+<Vorhersage>
+
+„Die Meldung ‚Hand frei‘ leuchtet, wenn mindestens ein Taster nicht gedrückt ist.“
+
+- [x] (NICHT A) ODER (NICHT B)
+- (NICHT A) UND (NICHT B)
+- A ODER B
+- A UND B
+
+„Mindestens ein Taster nicht gedrückt“ heißt: Der linke ist nicht gedrückt ODER der rechte ist nicht gedrückt. Das ist (NICHT A) ODER (NICHT B).
+
+</Vorhersage>
+
+<Vorhersage>
+
+„Die Alarmhupe ertönt, wenn die Schutztür offen ist und der Druck nicht im Bereich liegt.“
+
+- [x] (NICHT C) UND (NICHT D)
+- (NICHT C) ODER (NICHT D)
+- C UND D
+- C ODER D
+
+Beides muss zugleich stimmen: Die Tür ist offen (NICHT C) UND der Druck liegt nicht im Bereich (NICHT D).
+
+</Vorhersage>
+
+</div>
+
+Mit vier Variablen hat die Tabelle 16 Zeilen. Jede Variable verdoppelt die Zeilen: 2, 4, 8, 16. Die Reihenfolge ist 0000 bis 1111. So vergisst du keine Zeile. Die letzte Spalte (D) wechselt in jeder Zeile, C alle 2 Zeilen, B alle 4, A alle 8.
+
+Wie in Termin 03 bekommt jede Klammer eine Hilfsspalte. Hier sind es zwei: A UND B und C UND D. Die Freigabe F = (A UND B) UND (C UND D):
+
+<div class="k-tablewrap">
+<table class="k-types">
+<thead><tr><th scope="col">A</th><th scope="col">B</th><th scope="col">C</th><th scope="col">D</th><th scope="col">A UND B</th><th scope="col">C UND D</th><th scope="col">F</th></tr></thead>
+<tbody>
+<tr><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>0</td><td>0</td><td>1</td><td>1</td><td>0</td><td>1</td><td>0</td></tr>
+<tr><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>0</td><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>0</td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>0</td><td>1</td><td>1</td><td>1</td><td>0</td><td>1</td><td>0</td></tr>
+<tr><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>1</td><td>0</td><td>1</td><td>1</td><td>0</td><td>1</td><td>0</td></tr>
+<tr><td>1</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td></tr>
+<tr><td>1</td><td>1</td><td>0</td><td>1</td><td>1</td><td>0</td><td>0</td></tr>
+<tr><td>1</td><td>1</td><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td></tr>
+<tr><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td></tr>
+</tbody>
+</table>
+</div>
+
+<Explorable name="vier-schalter" titel="Vier Schalter, eine Presse">
+
+Wähl einen Ausdruck und leg die vier Schalter um. Die Lampe zeigt das Ergebnis, in der Tabelle ist die Zeile der aktuellen Stellung markiert. Vermute zuerst: In wie vielen der 16 Stellungen leuchtet die Störlampe (NICHT C) ODER (NICHT D)?
+
+<Ohne>
+
+Für die Schalter wird JavaScript benötigt. Beispiel für F: Sind alle vier Schalter an (1), ist A UND B gleich 1 und C UND D gleich 1, also ist F gleich 1 und der Hub frei. Ist nur ein Schalter aus, ist F gleich 0. Bei der Störlampe (NICHT C) ODER (NICHT D) ist es umgekehrt: Sie ist nur aus, wenn C und D beide 1 sind, das sind 4 der 16 Stellungen, sie leuchtet also in 12.
+
+</Ohne>
+
+</Explorable>
+
+<Hinweis art="merke">
+
+UND ist bei vier Aussagen noch strenger: F ist in 1 von 16 Zeilen wahr. ODER bleibt großzügig.
+
+</Hinweis>
+
+<div class="k-try">
+
+### Vorhersage: Wie viele Einsen
+
+<Vorhersage>
+
+Y = (A UND B) ODER (C UND D). In wie vielen der 16 Zeilen ist Y gleich 1?
+
+- 1
+- 4
+- [x] 7
+- 8
+
+A UND B ist in 4 Zeilen wahr (1100 bis 1111). C UND D ist in 4 Zeilen wahr (0011, 0111, 1011, 1111). Die Zeile 1111 steht in beiden Gruppen. Also 4 + 4 − 1 = 7.
+
+</Vorhersage>
+
+</div>
+
+<div class="k-try">
+
+### Übung: Tabelle ausfüllen
+
+Füll die Tabelle für Y = (A UND B) ODER (C UND D) zuerst auf Papier aus, dann prüf sie hier Zeile für Zeile. Erst die beiden Hilfsspalten, dann Y. Trag in jedes Feld 0 oder 1 ein, ohne Anführungszeichen.
+
+<Aufgabe art="trace" id="tabelle" titel="Y = (A UND B) ODER (C UND D)">
+
+<Daten datei="lerneinheit/tabelle.daten.json" />
+
+</Aufgabe>
+
+</div>
+
+</Abschnitt>
+
+<Abschnitt id="gleichwertig" nr="2" titel="Gleichwertig: zwei Ausdrücke, eine Spalte">
+
+Zwei Techniker schreiben die Sperre der Presse auf. Der Hub ist gesperrt, wenn nicht gilt „Tür zu UND Druck im Bereich“. Der erste schreibt S1 = NICHT (C UND D). Die zweite schreibt: gesperrt, wenn die Tür offen ist ODER der Druck nicht stimmt, also S2 = (NICHT C) ODER (NICHT D). Meinen beide dasselbe? Das entscheidet nur die Tabelle. Hier steht sie für C und D mit allen Hilfsspalten:
+
+<div class="k-tablewrap">
+<table class="k-types">
+<thead><tr><th scope="col">C</th><th scope="col">D</th><th scope="col">C UND D</th><th scope="col">S1</th><th scope="col">NICHT C</th><th scope="col">NICHT D</th><th scope="col">S2</th></tr></thead>
+<tbody>
+<tr><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td>1</td><td>1</td></tr>
+<tr><td>0</td><td>1</td><td>0</td><td>1</td><td>1</td><td>0</td><td>1</td></tr>
+<tr><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td>1</td><td>1</td></tr>
+<tr><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+</tbody>
+</table>
+</div>
+
+S1 und S2 haben dieselbe Spalte 1 1 1 0. Sie sind <Begriff e="Zwei Ausdrücke sind gleichwertig, wenn ihre Ergebnisspalten in jeder Zeile übereinstimmen. Sie liefern dann bei jeder Belegung dasselbe Ergebnis.">gleichwertig</Begriff>: Die Ergebnisspalten stimmen in jeder Zeile überein.
+
+Eine dritte Schreibweise sieht ähnlich aus: S3 = (NICHT C) UND (NICHT D). Ihre Spalte ist 1 0 0 0, also nicht gleichwertig. Bei offener Tür und gutem Druck (C = 0, D = 1) bliebe die Presse frei. Dieser Fehler ist gefährlich, und nur die Tabelle zeigt ihn.
+
+<Explorable name="gleichwertig" titel="Gleichwertig oder nicht?">
+
+Wähl ein Paar. Beide Ausdrücke stehen mit ihren Ergebnisspalten nebeneinander, Zeilen mit Unterschied sind markiert, darunter steht das Urteil. Vermute zuerst: NICHT (C UND D) gegen (NICHT C) UND (NICHT D). In wie vielen der 4 Zeilen unterscheiden sich die Spalten?
+
+<Ohne>
+
+Für den Vergleich wird JavaScript benötigt. Beispiel: NICHT (C UND D) hat die Spalte 1 1 1 0, (NICHT C) UND (NICHT D) hat die Spalte 1 0 0 0. Sie unterscheiden sich in den Zeilen 01 und 10, also nicht gleichwertig.
+
+</Ohne>
+
+</Explorable>
+
+### Erklärvideo (ca. 2 Min)
+
+<Video name="v04-theorie" id="video-theorie" titel="Erklärvideo: Gleichwertig: zwei Tabellen, eine Spalte" fehlt="Video folgt. Bis dahin: Die Tabellen oben und der Baustein zeigen dasselbe.">
+
+Erklärvideo: Gleichwertig: zwei Tabellen, eine Spalte (ca. 2 Min). Untertitel sind eingeschaltet (Deutsch).
+
+</Video>
+
+Ein zweites Beispiel, der Ruhezustand „kein Taster gedrückt“, mit A und B als Taster: NICHT (A ODER B) und (NICHT A) UND (NICHT B) haben beide die Spalte 1 0 0 0. Prüf es selbst: Wähl im Baustein oben das Paar „Ruhezustand“. Auch sie sind gleichwertig.
+
+Den ersten Fall hast du auf Papier gerechnet, den zweiten im Baustein. Daraus folgt die **Regel von De Morgan**: Steht NICHT vor einer Klammer, darfst du die Klammer auflösen. Jede Variable bekommt ihr eigenes NICHT, aus UND wird ODER und aus ODER wird UND.
+
+<Hinweis art="merke">
+
+NICHT (A UND B) ist gleichwertig mit (NICHT A) ODER (NICHT B). NICHT (A ODER B) ist gleichwertig mit (NICHT A) UND (NICHT B). Umformen mit Rechenregeln üben wir nicht. Im Zweifel baust du die Tabelle.
+
+</Hinweis>
+
+**Vorrang.** Ohne Klammern gilt: NICHT vor UND vor ODER. Das ist wie Punkt vor Strich: UND ist das Mal, ODER das Plus. A ODER B UND C heißt also A ODER (B UND C). Das lernst du nur zum Lesen, denn fremde Ausdrücke haben manchmal keine Klammern. Eigene Ausdrücke bekommen immer Klammern.
+
+Wie wichtig die Klammern sind, siehst du an einem Beispiel: dieselben Buchstaben, zwei Klammerungen, zwei Tabellen.
+
+<div class="k-try">
+
+### Übung: Zwei Klammerungen
+
+Füll beide Spalten auf Papier aus, dann prüf sie hier Zeile für Zeile: (A ODER B) UND C und A ODER (B UND C). Erst die Klammer, dann die Verknüpfung außerhalb. Trag in beide Felder 0 oder 1 ein, ohne Anführungszeichen.
+
+<Aufgabe art="trace" id="vorrang" titel="Zwei Klammerungen, zwei Spalten">
+
+<Daten datei="lerneinheit/vorrang.daten.json" />
+
+</Aufgabe>
+
+</div>
+
+Die beiden Spalten unterscheiden sich in den Zeilen 100 und 110. Dieselben Buchstaben, andere Klammern, anderes Ergebnis.
+
+<div class="k-try">
+
+### Vorhersage: Ohne Klammern
+
+<Vorhersage>
+
+A = 1, B = 0, C = 0. Ist A ODER B UND C wahr?
+
+- [x] Ja: B UND C ist 0, dann ergibt 1 ODER 0 den Wert 1.
+- Nein: A ODER B ist 1, aber C ist 0, das Ergebnis ist 0.
+- Das lässt sich ohne Klammern nicht sagen.
+
+UND bindet stärker, also wird zuerst B UND C gerechnet. Wer (A ODER B) UND C gelesen hat, kommt auf 0. Deshalb setzen wir eigene Klammern.
+
+</Vorhersage>
+
+</div>
+
+<Hinweis art="merke">
+
+Wir schreiben immer Klammern. Nur beim Lesen fremder Ausdrücke brauchst du den Vorrang: NICHT vor UND vor ODER.
+
+</Hinweis>
+
+</Abschnitt>
+
+<Abschnitt id="while" nr="3" titel="Wiederholen, solange: while">
+
+`if` fragt einmal. Wie bringst du einen Raketenstart dazu, 5, 4, 3, 2, 1 zu zählen? Der Ablauf muss zurückspringen. Im Plan führt dazu ein Pfeil hinter dem Rumpf zurück vor die Raute.
+
+So sieht der Plan aus: `zaehler = 5`, dann die Raute `zaehler > 0?`. Bei ja folgt der <Begriff e="Der Rumpf einer Schleife ist alles, was unter while eingerückt steht. Er wird bei jedem Durchlauf einmal ausgeführt.">Rumpf</Begriff>: Ausgabe von `zaehler` und `zaehler = zaehler - 1`, dann der Pfeil zurück zur Raute. Bei nein geht es weiter mit der Ausgabe `Start!`.
+
+Die Raute fragt vor jedem Durchlauf, auch vor dem ersten. Ist sie gleich zu Beginn falsch, läuft der Rumpf nie.
+
+<Explorable name="schleife" titel="Die Schleife von Hand drehen">
+
+Stell Startwert, Vergleich und den Schalter „Zähler im Rumpf verringern“ ein. Mit „Ein Schritt“ gehst du durch den Plan, das aktive Symbol leuchtet. Mit „Bis zum Ende“ läuft er durch. Vermute zuerst: Startwert 0 mit `>`. Wie oft läuft der Rumpf?
+
+<Ohne>
+
+Für den Plan zum Ausprobieren wird JavaScript benötigt. Beispiel: Startwert 3 mit `>`. Die Raute fragt 3 > 0: ja, Ausgabe 3, der Zähler wird 2. Dann 2 > 0: ja, Ausgabe 2, Zähler 1. Dann 1 > 0: ja, Ausgabe 1, Zähler 0. Dann 0 > 0: nein, Ausgabe Start!. Der Rumpf lief dreimal. Ohne das Verringern bliebe die Bedingung für immer wahr: eine Endlosschleife.
+
+</Ohne>
+
+</Explorable>
+
+In Python heißt das `while`, auf Deutsch „solange“. Die Zeile endet mit einem Doppelpunkt. Was eingerückt darunter steht, ist der Rumpf und wiederholt sich. `print("Start!")` ohne Einrückung läuft danach einmal.
+
+```python
+zaehler = 5
+while zaehler > 0:
+    print(zaehler)
+    zaehler = zaehler - 1
+print("Start!")
+```
+
+<p class="k-small k-muted">Führ das Programm aus. Mit „Schritt für Schritt“ siehst du, wie die Zeile mit `while` mehrmals drankommt.</p>
+
+Ausgabe: `5`, `4`, `3`, `2`, `1`, `Start!`. Die Zeile mit `while` wird sechsmal geprüft, fünfmal mit dem Ergebnis `True`, beim sechsten Mal mit `False`.
+
+Eine Regel hilft dir beim Schreiben: **Was in der Bedingung vorkommt, muss sich im Rumpf ändern.** Sonst bleibt die Bedingung für immer wahr. Das nennt man <Begriff e="Eine Endlosschleife endet nie, weil sich in ihrem Rumpf nichts ändert, was die Bedingung falsch machen könnte. Die Seite bricht solche Programme nach 8 Sekunden ab.">Endlosschleife</Begriff>. Die Seite bricht sie nach 8 Sekunden ab.
+
+Zweite Art, eine Schleife zu steuern: Die Eingabe selbst entscheidet. Das siehst du im Labor beim Einkauf, der Summe bis 0.
+
+<div class="k-try">
+
+### Vorhersage: Ein Zeichen anders
+
+<Vorhersage>
+
+Im Programm steht versehentlich `>=` statt `>`. Was gibt es aus?
+
+- 5, 4, 3, 2, 1, Start!
+- [x] 5, 4, 3, 2, 1, 0, Start!
+- 5, 4, 3, 2, 1, 0, −1, Start!
+- Eine Endlosschleife
+
+Bei `zaehler = 0` ist `0 >= 0` wahr, der Rumpf läuft noch einmal. Das ist der Grenzfall. Danach ist `zaehler = -1`, und `-1 >= 0` ist falsch.
+
+</Vorhersage>
+
+```python
+zaehler = 5
+while zaehler >= 0:
+    print(zaehler)
+    zaehler = zaehler - 1
+print("Start!")
+```
+
+<p class="k-small k-muted">Wähl erst deinen Tipp, dann führ das Programm aus.</p>
+
+</div>
+
+</Abschnitt>
+
+<Abschnitt id="eingabe" nr="4" titel="Eingabe wiederholen, bis sie gültig ist">
+
+Ein Würfel zeigt 1 bis 6. Eine Eingabe ist gültig, wenn beides stimmt: A = „mindestens 1“ (`wurf >= 1`) UND B = „höchstens 6“ (`wurf <= 6`). Die Schleife soll wiederholen, wenn das nicht gilt: NICHT (A UND B).
+
+Hier hilft Abschnitt 2. Nach De Morgan ist NICHT (A UND B) gleichwertig mit (NICHT A) ODER (NICHT B). NICHT A heißt: nicht mindestens 1, also `wurf < 1`. NICHT B heißt: nicht höchstens 6, also `wurf > 6`. Zusammen: `wurf < 1 or wurf > 6`, also zu klein oder zu groß. Die Schleifenbedingung beschreibt den Fehlerfall.
+
+Die Eingabe steht zweimal: vor der Schleife, damit die Raute etwas zu prüfen hat, und am Ende des Rumpfs, damit sich `wurf` ändert. Das ist dasselbe Muster wie bei der Summe bis 0.
+
+```python data-stdin="1"
+wurf = int(input("Gewürfelt (1 bis 6): "))
+while wurf < 1 or wurf > 6:
+    print("Das gibt es nicht.")
+    wurf = int(input("Gewürfelt (1 bis 6): "))
+print(f"Du hast eine {wurf} gewürfelt")
+```
+
+<p class="k-small k-muted">Das Programm fragt im Terminal nach der Zahl. Probier zuerst die Grenzfälle 1 und 6: Sie laufen ohne Meldung durch. Dann probier eine Zahl, die nicht geht.</p>
+
+Dieselbe Bedingung geht auch mit `not`: `while not (wurf >= 1 and wurf <= 6):`. Das Verhalten ist gleich, die Tabelle aus Abschnitt 2 ist der Beweis. Du liest es als „solange nicht gültig“. `not` dreht wahr und falsch um, die Klammer sagt, was umgedreht wird.
+
+<Hinweis art="achtung">
+
+Zwei Fallen. Erstens `and` statt `or`: `wurf < 1 and wurf > 6` ist nie wahr, denn keine Zahl ist zugleich kleiner als 1 und größer als 6. Die 7 käme durch. Zweitens die Eingabe im Rumpf vergessen: Dann ändert sich `wurf` nie, und die Schleife endet nie.
+
+</Hinweis>
+
+<div class="k-try">
+
+### Vorhersage: Wie oft meckert es?
+
+<Vorhersage>
+
+Die Eingaben sind 0, 7, 3. Wie oft erscheint „Das gibt es nicht.“?
+
+- 0
+- 1
+- [x] 2
+- 3
+
+0 ist zu klein, 7 ist zu groß, 3 ist gültig. Der Rumpf läuft zweimal.
+
+</Vorhersage>
+
+```python data-stdin="0\n7\n3"
+wurf = int(input("Gewürfelt (1 bis 6): "))
+while wurf < 1 or wurf > 6:
+    print("Das gibt es nicht.")
+    wurf = int(input("Gewürfelt (1 bis 6): "))
+print(f"Du hast eine {wurf} gewürfelt")
+```
+
+<p class="k-small k-muted">Wähl erst deinen Tipp, dann führ das Programm aus und tipp 0, 7 und 3 ein.</p>
+
+</div>
+
+<Hinweis art="warum">
+
+Fast jede Eingabe im Alltag wird geprüft: Passwort, Menge, Monat. Dafür brauchst du genau diese Form: Eingabe lesen, solange ungültig melden und neu lesen. Und die Bedingung dafür schreibst du richtig, wenn du die Tabelle kannst.
+
+</Hinweis>
+
+</Abschnitt>
+
+<Abschnitt id="selbstcheck" nr="5" titel="Selbstcheck">
+
+Sechs Fragen in den Formen der Klausur: Text in Formel, Tabelle, gleichwertig, Vorrang, Ausgabe bestimmen, Eingabe prüfen. Die Reihenfolge der Fragen und Antworten ist bei jedem Aufruf anders. Rechne im Kopf oder auf Papier, nicht im Editor.
+
+<Quiz id="v04">
+
+<Frage id="text-formel" typ="mc" punkte="4" titel="Text in Formel">
+
+„Die Lampe ‚Ruhe‘ leuchtet, wenn kein Taster gedrückt ist und die Schutztür geschlossen ist.“ Mit A = „Taster links gedrückt“, B = „Taster rechts gedrückt“ und C = „Schutztür geschlossen“: Welche Formel passt?
+
+- [x] ((NICHT A) UND (NICHT B)) UND C
+- ((NICHT A) ODER (NICHT B)) UND C
+- (NICHT A) UND (NICHT B) UND (NICHT C)
+- (NICHT (A UND B)) ODER C
+
+<Erklaerung>
+
+„Kein Taster gedrückt“ heißt: A ist nicht gedrückt UND B ist nicht gedrückt. Dazu kommt „und die Schutztür ist geschlossen“: UND C. Die Falle ist (NICHT A) ODER (NICHT B), denn das heißt nur „mindestens ein Taster nicht gedrückt“.
+
+</Erklaerung>
+
+</Frage>
+
+<Frage id="vier-variablen" typ="num" punkte="3" antwort="3" tol="0" titel="Tabelle mit vier Variablen">
+
+Y = (A UND B) UND (C ODER D). In wie vielen der 16 Zeilen ist Y gleich 1?
+
+<Erklaerung>
+
+A UND B gilt nur bei A = 1 und B = 1. Das sind 4 Zeilen, denn C und D laufen durch 00, 01, 10, 11. Davon ist C ODER D in 3 Zeilen wahr, nur bei 00 nicht.
+
+</Erklaerung>
+
+</Frage>
+
+<Frage id="gleichwertig" typ="mc" punkte="3" titel="Gleichwertig (mehrere richtig)">
+
+Welche Paare sind gleichwertig? Kreuze alle richtigen an.
+
+- [x] NICHT (A UND B) und (NICHT A) ODER (NICHT B)
+- [x] NICHT (A ODER B) und (NICHT A) UND (NICHT B)
+- NICHT (A UND B) und (NICHT A) UND (NICHT B)
+- A ODER B und A UND B
+
+<Erklaerung>
+
+Beim ersten Paar sind beide Spalten 1 1 1 0, beim zweiten beide 1 0 0 0. Das dritte Paar hat 1 1 1 0 gegen 1 0 0 0, das vierte 0 1 1 1 gegen 0 0 0 1.
+
+</Erklaerung>
+
+</Frage>
+
+<Frage id="vorrang" typ="num" punkte="3" antwort="1" tol="0" titel="Vorrang">
+
+Ohne Klammern gilt NICHT vor UND vor ODER. Es ist A = 0, B = 0, C = 1. Welchen Wert hat A UND B ODER C?
+
+<Erklaerung>
+
+UND bindet stärker: A UND B ist 0. Dann ergibt 0 ODER 1 den Wert 1. Mit der Klammer A UND (B ODER C) käme 0 heraus.
+
+</Erklaerung>
+
+</Frage>
+
+<Frage id="schleife" typ="output" punkte="4" antwort="9" titel="Ausgabe bestimmen: Schleife">
+
+Was gibt das Programm aus?
+
+```python class="k-code" data-run="nach-antwort"
+stock = 0
+while stock < 7:
+    stock = stock + 3
+print(stock)
+```
+
+<Erklaerung>
+
+0, 3 und 6 sind kleiner als 7, der Rumpf läuft dreimal. Dann ist `stock` gleich 9, und `9 < 7` ist falsch. Die Schleife endet, ausgegeben wird 9.
+
+</Erklaerung>
+
+</Frage>
+
+<Frage id="eingabe-pruefen" typ="mc" punkte="3" titel="Eingabe prüfen (mehrere richtig)">
+
+Die Eingabe `wurf` soll wiederholt werden, solange sie nicht zwischen 1 und 6 liegt. Welche Bedingungen leisten das? Kreuze alle richtigen an.
+
+- [x] `wurf < 1 or wurf > 6`
+- [x] `not (wurf >= 1 and wurf <= 6)`
+- `wurf < 1 and wurf > 6`
+- `wurf >= 1 or wurf <= 6`
+
+<Erklaerung>
+
+Die ersten zwei sind gleichwertig, das ist De Morgan. `wurf < 1 and wurf > 6` ist nie wahr, die Schleife liefe nie. `wurf >= 1 or wurf <= 6` ist immer wahr, das ist eine Endlosschleife.
+
+</Erklaerung>
+
+</Frage>
+
+</Quiz>
+
+</Abschnitt>
+
+<Weiter ziel="v04-labor.html">
+
+Jetzt bist du dran. Im Labor zeichnest du einen Plan mit Rücksprung, ordnest Zeilen, füllst Lücken, wiederholst eine Eingabe, bis sie gültig ist, und schreibst deine eigene Schleife. Tabellen mit vier Variablen hast du hier schon ausgefüllt. Zwei weitere Videos findest du dort an der passenden Station: der Python-Werkzeugkasten und das vorgerechnete Beispiel.
+
+</Weiter>
+
+<Dozent titel="Für Dozierende: Ablauf des Termins (125 Minuten) und Training">
+
+<p class="k-small k-muted">Vier Blöcke: zwei Theorie (T2 Boolesche Logik, Teil 4 und 5 von 5), zwei Programmieren (P3 Schleifen, Teil 1 und 2 von 7). Jeder Block à 30 Minuten verplant höchstens 28 Minuten; die Minuten eines Abschnitts enthalten das Zeigen der genannten Karte. Die Lerneinheit ist zum Zeigen und Nachlesen, geübt wird im <a href="v04-labor.html">Programmierlabor</a>. Die Videos laufen nicht im Termin. Der Termin hat zwei Theorie-Blöcke nacheinander, dann zwei Programmier-Blöcke: Die Eingabeprüfung in Block 4 braucht De Morgan aus Block 2 frisch.</p>
+
+<div class="k-tablewrap">
+<table class="k-plan">
+<thead><tr><th scope="col">Minuten</th><th scope="col">Wo</th><th scope="col">Was zu tun ist</th></tr></thead>
+<tbody>
+<tr><td>0–10</td><td>Papier, Beamer</td><td><strong>Warm-up.</strong> Training Termin 03, „Wahrheitstabelle ausfüllen“: Y = (A ODER B) UND (NICHT C) auf Papier (5). Auflösung: Hilfsspalte A ODER B <code>0 0 1 1 1 1 1 1</code>, NICHT C <code>1 0 1 0 1 0 1 0</code>, Ergebnis <code>0 0 1 0 1 0 1 0</code> (2). Rückblick auf die vier Schritte. Frage in die Runde: Wie viele Zeilen hat die Tabelle bei vier Aussagen? (3)</td></tr>
+<tr><td>10–40</td><td>Lerneinheit 1</td><td><strong>Theorie 1: vom Text zur Formel.</strong> Presse, Text, Variablen festlegen (3). Wörter und Klammern an zwei Sätzen, „Satz übersetzen“ per Zuruf (5). 16 Zeilen: Zeilen zählen, Reihenfolge, F an der Tafel vorrechnen (6). Baustein „Vier Schalter, eine Presse“ mit Vermutung (4). Vorhersage „Wie viele Einsen“ (2). Die Tabelle auf Papier: Jede Tischhälfte rechnet 8 Zeilen, 0000 bis 0111 oder 1000 bis 1111, die Hilfsspalten zuerst (6). An der Tafel zusammensetzen: 2 und 5 Einsen, zusammen 7 (2). Die Übung „Tabelle ausfüllen“ mit dem Prüfen ist Hausaufgabe. Verplant: 28.</td></tr>
+<tr><td>40–70</td><td>Lerneinheit 2</td><td><strong>Theorie 2: gleichwertig.</strong> Zwei Schreibweisen der Sperre, beide Spalten auf Papier, vergleichen (7). Die gefährliche dritte Schreibweise (2). Baustein „Gleichwertig oder nicht?“ mit Vermutung (5). Regel von De Morgan, Ruhezustand als zweites Beispiel (3). Vorrang: zwei Klammerungen, die Tischhälften rechnen je eine Tabelle, vergleichen, Vorhersage (8). „Wir schreiben immer Klammern“ als Abschluss (3). Verplant: 28.</td></tr>
+<tr><td>70–100</td><td>Lerneinheit 3, Labor 1 (Karte 1), 2, 4</td><td><strong>Programmieren 1: wiederholen, solange.</strong> Rückgriff: <code>if</code> fragt einmal (2). Countdown: Plan mit Rücksprung an der Tafel, Code mit Karte 1 (5). Baustein „Die Schleife von Hand drehen“ mit Vermutung (4). Vorhersage „Ein Zeichen anders“ (2). Einkauf zusammenrechnen am Beamer, Plan und Code nebeneinander, <code>!=</code> genannt (5). Alle zeichnen „Sparziel“ (10). Verplant: 28. Station 3 und 5 laufen nicht einzeln.</td></tr>
+<tr><td>100–125</td><td>Lerneinheit 4, Labor 1 (Karte 2), 6, 8</td><td><strong>Programmieren 2: Eingabe wiederholen.</strong> Würfel: Plan, gültig und ungültig, De Morgan als Brücke, <code>not</code> mit Karte 2, Vorhersage (10). „Monat eintragen“ als Lückentext (8). „Becken füllen“ gemeinsam am Beamer, die Endlosschleife läuft nur dort (5). Auftrag für zu Hause, Pflicht, zusammen 57 Minuten: Stationen 3, 5 und 7 (17), Selbstcheck (7) und Training (33) (2). Termin 05 beginnt mit der Tabelle aus dem Training. Verplant: 25.</td></tr>
+</tbody>
+</table>
+</div>
+
+<p class="k-small k-muted">Wenn die Zeit trotzdem knapp wird: Im Block 10–40 rechnet nur die Hälfte der Gruppe, die andere Hälfte liest an der Tafel mit. Im Block 40–70 gibt es nur eine Tabelle zum Vorrang (an der Tafel), die zweite zu Hause. Im Block 70–100 wird „Sparziel“ gemeinsam an der Tafel gezeichnet statt einzeln; der Einkauf wird nur gezeigt (Plan und Code auf der Seite, ein Lauf). Im letzten Block entfällt zuerst „Becken füllen“ (Hausaufgabe), dann hat der Lückentext Vorrang vor der Vorhersage.</p>
+
+<p class="k-small k-muted">Wie weit die Gruppe im Training ist und an welcher Aufgabe sie hängt, zeigt vor dem nächsten Termin die Kursübersicht (Konto, „Kursübersicht für Dozierende“). Gezählt wird dort nur, wer mit Konto lernt. Die Knobelaufgaben am Ende des Labors sind freiwillig und zählen dort nicht mit.</p>
+
+</Dozent>
+
+</Lerneinheit>

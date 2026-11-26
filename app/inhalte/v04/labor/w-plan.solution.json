@@ -1,0 +1,1 @@
+{"baum": [{"k": "in", "v": "ziel", "typ": "int"}, {"k": "op", "v": "geld = 0"}, {"k": "op", "v": "wochen = 0"}, {"k": "while", "v": "geld < ziel", "body": [{"k": "op", "v": "geld = geld + 5"}, {"k": "op", "v": "wochen = wochen + 1"}]}, {"k": "out", "v": "wochen"}]}
