@@ -1,0 +1,29 @@
+{
+ "sprache": "tabelle",
+ "code": [
+  "Stellenwert = 128",
+  "Stellenwert = 64",
+  "Stellenwert = 32",
+  "Stellenwert = 16",
+  "Stellenwert = 8",
+  "Stellenwert = 4",
+  "Stellenwert = 2",
+  "Stellenwert = 1"
+ ],
+ "vars": [
+  "Bit",
+  "Rest"
+ ],
+ "ausgabe": false,
+ "typhinweis": false,
+ "steps": [
+  { "line": 1, "set": { "Bit": "1", "Rest": "72" }, "frage": "Stellenwert 128: Passt er in den Rest 200? Trag das Bit und den Rest danach ein, ohne Anführungszeichen.", "hint": "Passt der Stellenwert in den Rest, ist das Bit 1 und du ziehst ihn ab. Sonst ist das Bit 0 und der Rest bleibt gleich." },
+  { "line": 2, "set": { "Bit": "1", "Rest": "8" }, "frage": "Stellenwert 64: Passt er in den Rest? Trag das Bit und den Rest danach ein, ohne Anführungszeichen.", "hint": "Passt der Stellenwert in den Rest, ist das Bit 1 und du ziehst ihn ab. Sonst ist das Bit 0 und der Rest bleibt gleich." },
+  { "line": 3, "set": { "Bit": "0", "Rest": "8" }, "frage": "Stellenwert 32: Passt er in den Rest? Trag das Bit und den Rest danach ein, ohne Anführungszeichen.", "hint": "Passt der Stellenwert in den Rest, ist das Bit 1 und du ziehst ihn ab. Sonst ist das Bit 0 und der Rest bleibt gleich." },
+  { "line": 4, "set": { "Bit": "0", "Rest": "8" }, "frage": "Stellenwert 16: Passt er in den Rest? Trag das Bit und den Rest danach ein, ohne Anführungszeichen.", "hint": "Passt der Stellenwert in den Rest, ist das Bit 1 und du ziehst ihn ab. Sonst ist das Bit 0 und der Rest bleibt gleich." },
+  { "line": 5, "set": { "Bit": "1", "Rest": "0" }, "frage": "Stellenwert 8: Passt er in den Rest? Trag das Bit und den Rest danach ein, ohne Anführungszeichen.", "hint": "Passt der Stellenwert in den Rest, ist das Bit 1 und du ziehst ihn ab. Sonst ist das Bit 0 und der Rest bleibt gleich." },
+  { "line": 6, "set": { "Bit": "0", "Rest": "0" }, "frage": "Stellenwert 4: Passt er in den Rest? Trag das Bit und den Rest danach ein, ohne Anführungszeichen.", "hint": "Passt der Stellenwert in den Rest, ist das Bit 1 und du ziehst ihn ab. Sonst ist das Bit 0 und der Rest bleibt gleich." },
+  { "line": 7, "set": { "Bit": "0", "Rest": "0" }, "frage": "Stellenwert 2: Passt er in den Rest? Trag das Bit und den Rest danach ein, ohne Anführungszeichen.", "hint": "Passt der Stellenwert in den Rest, ist das Bit 1 und du ziehst ihn ab. Sonst ist das Bit 0 und der Rest bleibt gleich." },
+  { "line": 8, "set": { "Bit": "0", "Rest": "0" }, "frage": "Stellenwert 1: Passt er in den Rest? Trag das Bit und den Rest danach ein, ohne Anführungszeichen.", "hint": "Passt der Stellenwert in den Rest, ist das Bit 1 und du ziehst ihn ab. Sonst ist das Bit 0 und der Rest bleibt gleich." }
+ ]
+}

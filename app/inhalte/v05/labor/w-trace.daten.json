@@ -1,0 +1,84 @@
+{
+ "typhinweis": false,
+ "code": [
+  "summe = 0",
+  "for i in range(1, 4):",
+  "    summe = summe + i",
+  "print(summe)"
+ ],
+ "vars": [
+  "i",
+  "summe",
+  "Weg"
+ ],
+ "steps": [
+  {
+   "line": 1,
+   "set": {
+    "summe": "0"
+   },
+   "hint": "Der Startwert: summe beginnt bei 0."
+  },
+  {
+   "line": 2,
+   "set": {
+    "i": "1",
+    "Weg": "ja"
+   },
+   "frage": "Zeile 2 steht vor dem ersten Durchlauf. Trag den Wert von i ein und in Weg ja oder nein (ja, wenn der Rumpf läuft), ohne Anführungszeichen.",
+   "hint": "range(1, 4) liefert 1, 2 und 3. Beim ersten Durchlauf ist i gleich 1, und der Rumpf läuft: ja. Schreib die Wörter ohne Anführungszeichen."
+  },
+  {
+   "line": 3,
+   "set": {
+    "summe": "1"
+   },
+   "hint": "summe war 0, jetzt kommt i dazu, also 1."
+  },
+  {
+   "line": 2,
+   "set": {
+    "i": "2",
+    "Weg": "ja"
+   },
+   "frage": "Zeile 2 steht vor dem zweiten Durchlauf. Trag i und den Weg ein (ja oder nein, ohne Anführungszeichen).",
+   "hint": "Die nächste Zahl aus range(1, 4) ist 2, und der Rumpf läuft wieder: ja."
+  },
+  {
+   "line": 3,
+   "set": {
+    "summe": "3"
+   },
+   "hint": "summe war 1, jetzt kommt i gleich 2 dazu."
+  },
+  {
+   "line": 2,
+   "set": {
+    "i": "3",
+    "Weg": "ja"
+   },
+   "frage": "Zeile 2 steht vor dem dritten Durchlauf. Trag i und den Weg ein (ja oder nein, ohne Anführungszeichen).",
+   "hint": "Die letzte Zahl aus range(1, 4) ist 3, und der Rumpf läuft noch einmal: ja."
+  },
+  {
+   "line": 3,
+   "set": {
+    "summe": "6"
+   },
+   "hint": "summe war 3, jetzt kommt i gleich 3 dazu."
+  },
+  {
+   "line": 2,
+   "set": {
+    "Weg": "nein"
+   },
+   "frage": "Zeile 2 steht noch einmal da, weil for nach der 3 nachfragt. Trag den Weg ein (ja oder nein, ohne Anführungszeichen). i ändert sich nicht.",
+   "hint": "range(1, 4) liefert 1, 2 und 3. Die 3 war schon dran, also ist Schluss: nein. i bleibt 3."
+  },
+  {
+   "line": 4,
+   "out": "6",
+   "hint": "print schreibt den Wert von summe: 6."
+  }
+ ]
+}

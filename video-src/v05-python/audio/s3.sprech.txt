@@ -1,1 +1,0 @@
-Steckt im nein-Zweig eine weitere Verzweigung, steckt im Code ein if im else. Hier prüft die erste Raute die Eingabe, und erst im nein-Zweig kommt die zweite Frage. Jede Ebene im Plan ergibt eine Einrückebene mehr. Das else steht genau unter seinem if, sonst gehört es zu einem anderen Block. Zähle die Ebenen im Plan, dann stimmt auch die Einrückung.

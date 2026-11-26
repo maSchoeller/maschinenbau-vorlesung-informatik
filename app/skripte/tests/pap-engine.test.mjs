@@ -43,3 +43,23 @@ test('Plan-Anzeige: ein getipptes Fragezeichen in der Raute wird nicht verdoppel
   assert.ok(texte.includes('x < 3?'), JSON.stringify(texte));
   assert.ok(!texte.some((t) => /\?\?/.test(t)), JSON.stringify(texte));
 });
+
+test('Zählschleife: die Raute zeigt „i von a bis b − 1“ statt range', () => {
+  assert.equal(P.forText('i in range(1, 11)'), 'i von 1 bis 10');
+  assert.equal(P.forText('i in range(1, 11)?'), 'i von 1 bis 10');
+  assert.equal(P.forText('zahl in range(0, 8)'), 'zahl von 0 bis 7');
+  assert.equal(P.forText('k in range(8)'), 'k von 0 bis 7');
+  assert.equal(P.forText('i in range(1, n + 1)'), 'i von 1 bis n');
+  assert.equal(P.forText('i in range(n)'), 'i von 0 bis n − 1');
+  assert.equal(P.forText('i in range(n + 1)'), 'i von 0 bis n');
+  assert.equal(P.forText('i in range(a, 2 * n)'), 'i von a bis (2 * n) − 1');
+  assert.equal(P.forText('i in range(0, 10, 2)'), 'i in range(0, 10, 2)');
+  assert.equal(P.forText('x in werte'), 'x in werte');
+});
+
+test('Zählschleife im Plan: Raute mit „von … bis …?“, der erzeugte Code bleibt range', () => {
+  const baum = [P.nFor('i in range(1, 11)', [P.nOp('summe = summe + i')])];
+  const alle = []; (function lauf(a) { for (const n of a) { alle.push(n.text || ''); for (const k of ['yes', 'no', 'body']) if (n[k]) lauf(n[k]); } })(P.toPap(baum));
+  assert.ok(alle.includes('i von 1 bis 10?'), JSON.stringify(alle));
+  assert.match(P.toText(baum), /^for i in range\(1, 11\):$/m);
+});

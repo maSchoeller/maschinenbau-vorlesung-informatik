@@ -1,1 +1,0 @@
-Jetzt der Code: Die Zeilen eins bis drei sind Kommentare, Python ignoriert sie. Die Zeilen fünf und sechs sind die zwei Parallelogramme: input liest Text, float macht eine Kommazahl daraus.

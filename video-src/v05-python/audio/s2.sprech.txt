@@ -1,1 +1,0 @@
-Die Raute wird zu if und else. Die Bedingung aus der Raute steht hinter if, gefolgt von einem Doppelpunkt. Der ja-Zweig steht eingerückt darunter, der nein-Zweig eingerückt unter else. Einrückung heißt: vier Leerzeichen weiter rechts. Sie bestimmt, was zu welchem Zweig gehört. Fehlt der Doppelpunkt, meldet Python einen Fehler.

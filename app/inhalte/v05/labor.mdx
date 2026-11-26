@@ -1,0 +1,477 @@
+---
+titel: "Termin 05 · Programmierlabor · Informatik Maschinenbau"
+beschreibung: "Programmierlabor zu Termin 05: Zählschleifen mit for und range, Summe und Mittelwert, zählen mit if ohne else im Rumpf, einen Plan mit Zählschleife zeichnen. Mit Training zum Umrechnen von Binärzahlen für zu Hause."
+body:
+  data-lesson: V05
+  data-page: labor
+stile:
+  - ../assets/css/dhbw-base.css
+  - ../assets/css/kurs.css
+  - ../assets/css/aufgaben.css
+  - ../assets/css/editor.css
+  - ../assets/css/labor.css
+  - ../assets/css/v05.css
+  - ../assets/css/pap-editor.css
+skripte:
+  - ../assets/js/speicher.js
+  - ../assets/js/icons.js
+  - src: ../assets/js/editor.js
+    defer: true
+  - ../assets/js/pap-engine.js
+  - ../assets/js/kurs.js
+  - ../assets/js/aufgaben.js
+  - ../assets/js/pap-editor.js
+  - ../assets/js/labor.js
+---
+
+<Labor nr="V05" zuhause="48" name="Termin 05" lerneinheit="v05-zweiersystem-und-zaehlschleifen.html">
+
+<Station id="a-werkzeugkasten" titel="Werkzeugkasten" teil="A" min="3">
+
+<p class="l-task__intro">Zwei neue Karten. Alles aus Termin 02 bis 04 gilt weiter: Vergleiche, `if`, `and` und `or`, `while`. Jeder Codeblock läuft: Ändere etwas und führ ihn aus. Den Werkzeugkasten erreichst du von jeder Aufgabe aus in der Befehls-Bibliothek oben rechts.</p>
+
+<Video name="v05-python" titel="Python-Werkzeugkasten: for, range, if ohne else" fehlt="Video folgt. Bis dahin: Lies die beiden Karten und probier jeden Codeblock aus.">
+
+Python-Werkzeugkasten: for, range, if ohne else (ca. 2 Min). Untertitel sind eingeschaltet (Deutsch).
+
+</Video>
+
+<Werkzeugkasten>
+
+<Syntaxkarte id="sk-for-range" nr="1" titel="for i in range: genau so oft">
+
+```python
+for i in range(1, 4):
+    print(i)
+print("fertig")
+```
+
+- Ausgabe: `1`, `2`, `3`, `fertig`.
+- `range(1, 4)` ergibt 1, 2, 3. Der Stoppwert gehört nicht dazu. Für 1 bis n schreibst du `range(1, n + 1)`.
+- `range(4)` mit nur einer Zahl beginnt bei 0: 0, 1, 2, 3.
+- Im Rumpf steht kein `i = i + 1`, das macht `for` selbst.
+
+</Syntaxkarte>
+
+<Syntaxkarte id="sk-if-ohne-else" nr="2" titel="if ohne else: nur wenn">
+
+```python
+punkte = 9
+if punkte >= 8:
+    print("gut")
+print("weiter")
+```
+
+- Ausgabe: `gut`, `weiter`. Mit `punkte = 5` erscheint nur `weiter`.
+- Ohne `else` passiert bei „falsch“ nichts. Es geht unter dem `if` weiter.
+
+</Syntaxkarte>
+
+</Werkzeugkasten>
+
+</Station>
+
+<Station id="a-vorgemacht" titel="Vorgerechnetes Beispiel: Pendelzeit" teil="A" min="5">
+
+<p class="l-task__intro">Aufgabe: Eingelesen wird, an wie vielen Tagen du die Zeit zur Hochschule gemessen hast (mindestens 1), dann die Minuten jedes Tages (ganze Zahlen). Ausgegeben wird der Durchschnitt. Wieder gilt: **erst der Plan, dann der Code.** Neu ist die Raute „i von 1 bis n?“, die selbst zählt.</p>
+
+<Video name="v05-beispiel" titel="Vorgerechnet: Pendelzeit" fehlt="Video folgt. Bis dahin: Lies den Plan und den Code Zeile für Zeile und probier das Programm mit 3, 25, 31, 22 und mit 1, 17 aus.">
+
+Vorgerechnet: Pendelzeit (ca. 2 Min). Untertitel sind eingeschaltet (Deutsch).
+
+</Video>
+
+<Plan titel="Pendelzeit">
+
+```text
+Eingabe: n
+summe = 0
+Schleife: i von 1 bis n?
+  Eingabe: minuten
+  summe = summe + minuten
+mittel = summe / n
+Ausgabe: mittel
+```
+
+</Plan>
+
+<Aufgabe art="run" id="w-vorgemacht" data-count="0" data-mode="programm" data-inputs="3|25|31|22">
+
+<Editor datei="labor/w-vorgemacht.vorlage.py" aria-label="Python-Code: Pendelzeit" />
+
+</Aufgabe>
+
+<Schritte>
+
+1. **Der Ablauf in Worten:** n einlesen, dann n Zeiten einlesen und addieren, am Ende durch n teilen.
+2. **Wie oft?** Das steht nach der ersten Eingabe fest: n-mal. Also passt `for`.
+3. **Wo steht was?** Der Startwert `summe = 0` steht vor der Schleife. Einlesen und Addieren stehen im Rumpf. Teilen und Ausgeben stehen nach der Schleife.
+4. **Der Plan:** Raute „i von 1 bis n?“, darunter der Rumpf, dann der Pfeil zurück zur Raute. Bei „nein“ geht es weiter zum Teilen.
+5. **Der Code:** `range(1, n + 1)`, weil der Stoppwert nicht dazugehört. Das `i` steht in der Eingabeaufforderung, so siehst du, welcher Tag dran ist.
+6. **Probe:** Mit 3, 25, 31, 22 erscheint `Im Schnitt 26.0 Minuten`, denn 78 durch 3 ist 26. Mit 1, 17 erscheint `Im Schnitt 17.0 Minuten`: Bei n = 1 läuft der Rumpf genau einmal.
+7. **Selbsterklärung:** Was passiert bei 0 Tagen? Erst ausprobieren, dann lesen: Python meldet `ZeroDivisionError: division by zero`: Die Schleife läuft nie, `summe` bleibt 0, und durch 0 teilen geht nicht. Deshalb steht in der Aufgabe „mindestens 1“.
+
+</Schritte>
+
+</Station>
+
+<Station id="a-ablauf" titel="Ablauf verfolgen: Zählschleife" teil="A" min="5">
+
+<p class="l-task__intro">Führ das Programm im Kopf aus, Zeile für Zeile, und trag ein, was sich ändert. Die Zeile mit `for` kommt vor jedem Durchlauf dran und noch einmal am Ende, wenn `range` keine Zahl mehr hat. In dieser Zeile trägst du den Wert von `i` ein und in die Spalte Weg ja, wenn der Rumpf noch einmal läuft, sonst nein, ohne Anführungszeichen.</p>
+
+<Aufgabe art="trace" id="w-trace">
+
+<Daten datei="labor/w-trace.daten.json" />
+
+</Aufgabe>
+
+</Station>
+
+<Station id="a-plan" titel="Plan zeichnen: Einmaleins" teil="A" sterne="2" min="10">
+
+<p class="l-task__intro">Eine Zählschleife ist im Plan eine Raute mit einem Pfeil zurück. Im Editor heißt das Symbol „Zählschleife“. Du trägst dort `i in range(1, 11)` ein, die Raute zeigt dann „i von 1 bis 10?“. Die Symbole des Rumpfs setzt du mit „In die Schleife einfügen“. Die Eingabe steht schon im Editor, du ergänzt die Zählschleife und die Ausgabe. „Prüfen“ führt deinen Plan mit Beispielwerten aus.</p>
+
+<Aufgabe art="pap-zeichnen" id="w-plan" titel="Einmaleins" data-timeout="8000" data-erlaubt="in,out,op,for">
+
+Eingelesen wird eine ganze Zahl. Ausgegeben wird ihre Einmaleins-Reihe von 1 mal bis 10 mal, jede Zahl in einer eigenen Zeile. Bei 3 erscheinen 3, 6, 9 und so weiter bis 30.
+
+<Python rolle="tests" datei="labor/w-plan.tests.py" />
+
+<Daten datei="labor/w-plan.start.json" rolle="start" />
+
+<Daten datei="labor/w-plan.solution.json" rolle="solution" />
+
+<Tipps>
+
+1. Wie oft läuft die Ausgabe? Zehnmal, und das steht vorher fest. Welches Symbol zählt selbst?
+2. Im Editor heißt es „Zählschleife“. Du trägst `i in range(1, 11)` ein: von 1 bis 10, die 11 gehört nicht dazu.
+3. In den Rumpf kommt nur eine Ausgabe: `zahl * i`.
+
+</Tipps>
+
+</Aufgabe>
+
+</Station>
+
+<Station id="a-zeilen" titel="Zeilen ordnen: Treppe" teil="A" min="4">
+
+<p class="l-task__intro">Der Plan ist gegeben, die Zeilen des Programms sind durcheinander, und zwei gehören gar nicht dazu. Bring die passenden Zeilen in die Reihenfolge des Plans, mit der richtigen Einrückung.</p>
+
+<Aufgabe art="parsons" id="w-parsons" titel="Treppe">
+
+Eingelesen wird die Zahl der Stufen. Ausgegeben wird jede Stufe mit ihrer Nummer, danach „Oben“.
+
+<Plan titel="Treppe">
+
+```text
+Eingabe: stufen
+Schleife: i von 1 bis stufen?
+  Ausgabe: "Stufe", i
+Ausgabe: "Oben"
+```
+
+</Plan>
+
+<Daten datei="labor/w-parsons.daten.json" />
+
+</Aufgabe>
+
+</Station>
+
+<Station id="a-luecken" titel="Lücken füllen: Wochenschritte" teil="A" min="8">
+
+<p class="l-task__intro">Eingelesen werden die Schritte an 7 Tagen. Ausgegeben werden die Summe und der Durchschnitt am Tag. Der Plan steht vollständig da. Ergänze die vier Lücken.</p>
+
+<Aufgabe art="gap" id="w-luecken" data-mode="programm">
+
+<Plan titel="Wochenschritte">
+
+```text
+summe = 0
+Schleife: i von 1 bis 7?
+  Eingabe: schritte
+  summe = summe + schritte
+mittel = summe / 7
+Ausgabe: summe, mittel
+```
+
+</Plan>
+
+```text class="a-gap__src" data-run="no"
+summe = @@0@@
+@@for@@ i in range(1, @@8@@):
+    schritte = int(input(f"Schritte an Tag {i}: "))
+    summe = @@summe@@ + schritte
+mittel = summe / 7
+print(f"Woche: {summe} Schritte, im Schnitt {mittel:.1f} am Tag")
+```
+
+<Python rolle="tests" datei="labor/w-luecken.tests.py" />
+
+<Tipps>
+
+1. Lücke 1: Womit fängt eine Summe an, bevor der erste Wert dazukommt?
+2. Lücke 2 und 3: Karte 1 zeigt die Zählschleife. Von 1 bis 7, und der Stoppwert gehört nicht dazu.
+3. Lücke 4: Zur bisherigen Summe kommen die Schritte des Tages dazu.
+
+</Tipps>
+
+</Aufgabe>
+
+</Station>
+
+<Station id="a-eigene" titel="Erste eigene Aufgabe: Sechsen zählen" teil="A" sterne="1" min="8">
+
+<p class="l-task__intro">Deine erste eigene Zählschleife mit `if` im Rumpf. Der Plan steht schon da, du überträgst ihn Symbol für Symbol in Code.</p>
+
+<Aufgabe art="code" id="w-eigene" titel="Sechsen zählen" data-mode="programm" data-inputs="5|6|1|6|3|4">
+
+<div class="a-task__text">
+
+Eingelesen wird, wie oft gewürfelt wird, dann jeder Wurf (ganze Zahl). Ausgegeben wird, wie viele Sechsen dabei waren, als `Sechsen: 2`.
+
+<Plan titel="Sechsen zählen">
+
+```text
+Eingabe: n
+sechsen = 0
+Schleife: i von 1 bis n?
+  Eingabe: wurf
+  Entscheidung: wurf == 6?
+    ja:
+      sechsen = sechsen + 1
+Ausgabe: sechsen
+```
+
+</Plan>
+
+</div>
+
+<Editor datei="labor/w-eigene.vorlage.py" aria-label="Python-Code: Sechsen zählen" />
+
+<Python rolle="tests" datei="labor/w-eigene.tests.py" />
+
+<Python rolle="solution" datei="labor/w-eigene.solution.py" />
+
+<Tipps>
+
+1. Sieben Symbole, sieben Zeilen.
+2. Die Raute in der Schleife ist ein `if` ohne `else`, Karte 2. Achte auf die zweite Einrückung.
+3. `print` steht nach der Schleife, ganz links.
+
+</Tipps>
+
+</Aufgabe>
+
+<p class="k-small k-muted">Für Schnelle: Zähl zusätzlich die Einsen und gib sie in einer eigenen Zeile vor den Sechsen aus, zum Beispiel Einsen: 1.</p>
+
+</Station>
+
+<Station id="a-fehler" titel="Fehler finden: Sommertage" teil="A" min="6" data-seen="manual">
+
+<p class="l-task__intro">Lies das Programm Zeile für Zeile und vergleiche es mit der Aufgabe. Ein Fehler meldet Python, den anderen findest nur du, zum Beispiel mit einer Probe.</p>
+
+<Fehlersuche titel="Sommertage" fehler="1 3">
+
+Eingelesen werden die Höchsttemperaturen einer Woche (ganze Zahlen). Gezählt wird, an wie vielen Tagen es mindestens 25 Grad warm war, das sind Sommertage. Bei 22, 25, 28, 19, 30, 24, 26 wird 4 erwartet. In zwei Zeilen steckt ein Fehler.
+
+```text
+for i in range(1 8):
+    temp = int(input(f"Höchstwert Tag {i}: "))
+    anzahl = 0
+    if temp >= 25:
+        anzahl = anzahl + 1
+print(f"Sommertage: {anzahl}")
+```
+
+#### Fehler 1: Komma fehlt (Zeile 1)
+
+Zwischen 1 und 8 fehlt das Komma. Python meldet `SyntaxError: invalid syntax. Perhaps you forgot a comma?`.
+
+#### Fehler 2: Startwert im Rumpf (Zeile 3)
+
+`anzahl = 0` steht im Rumpf, also beginnt `anzahl` jeden Tag wieder bei 0. Mit den Beispielwerten kommt 1 heraus, nur der letzte Tag (26) zählt. Python meldet dazu nichts. Der Startwert gehört vor die Schleife.
+
+So ist es richtig:
+
+```python data-stdin="22\n25\n28\n19\n30\n24\n26"
+anzahl = 0
+for i in range(1, 8):
+    temp = int(input(f"Höchstwert Tag {i}: "))
+    if temp >= 25:
+        anzahl = anzahl + 1
+print(f"Sommertage: {anzahl}")
+```
+
+Probe: Es erscheint `Sommertage: 4`. Die 25 zählt mit, denn die Grenze ist erlaubt. Mit `>` statt `>=` wären es nur 3.
+
+</Fehlersuche>
+
+</Station>
+
+<Station id="t-1" titel="Umrechnen" teil="B" sterne="1" min="8">
+
+<p class="l-task__intro">Das Training gehört zum Termin: Mit dem Selbstcheck und den Stationen 3 und 5 sind es etwa 48 Minuten bis zum nächsten Mal. Termin 06 beginnt mit dieser Aufgabe. Rechne zuerst auf Papier, dann prüf hier. Binärzahlen schreibst du mit 8 Stellen, mit oder ohne Leerzeichen in der Mitte, ohne Anführungszeichen. In jeder Zeile ist ein Feld gefragt.</p>
+
+<Aufgabe art="trace" id="tr-1" titel="Umrechnen">
+
+<Daten datei="labor/tr-1.daten.json" />
+
+</Aufgabe>
+
+</Station>
+
+<Station id="t-2" titel="Plan in Code übertragen: Sparplan" teil="B" sterne="2" min="8">
+
+<p class="l-task__intro">Klausurform „Plan in Code übertragen“: Schreib das Programm wie auf Papier, ohne Ausführen und ohne Vorschläge des Editors. Dann abgeben und mit der Lösung vergleichen. Hier steht die Ausgabe absichtlich im Rumpf: Gefragt ist jeder Zwischenstand, nicht nur das Ergebnis.</p>
+
+<Aufgabe art="klausur" id="tr-2" titel="Sparplan" data-mode="programm" data-minutes="8">
+
+<div class="a-task__text">
+
+Übertrage den Plan in ein Python-Programm. Eingelesen werden der Betrag, den du jeden Monat zurücklegst, und die Zahl der Monate (ganze Zahlen). Ausgegeben wird nach jedem Monat der Stand, zum Beispiel `Monat 2: 100 Euro`.
+
+<Plan titel="Sparplan">
+
+```text
+Eingabe: betrag (ganze Zahl)
+Eingabe: monate (ganze Zahl)
+geld = 0
+Schleife: i von 1 bis monate?
+  geld = geld + betrag
+  Ausgabe: "Monat", i, geld, "Euro"
+```
+
+</Plan>
+
+</div>
+
+<Editor data-assist="off" aria-label="Python-Code von Hand schreiben, ohne Ausführen" />
+
+<Python rolle="tests" datei="labor/tr-2.tests.py" />
+
+<Python rolle="solution" datei="labor/tr-2.solution.py" />
+
+<Daten datei="labor/tr-2.scheme.json" rolle="scheme" />
+
+</Aufgabe>
+
+</Station>
+
+<Station id="t-3" titel="Fehler finden und beheben: Laufzeiten" teil="B" sterne="2" min="6">
+
+<p class="l-task__intro">In diesem Programm stecken zwei Fehler: einer, den Python meldet, und einer, den du nur mit einer Probe findest. Probier 3 Läufe.</p>
+
+<Aufgabe art="code" id="tr-3" titel="Laufzeiten" data-mode="programm" data-inputs="3|62|58|60">
+
+<div class="a-task__text">
+
+Das Programm liest ein, wie viele Läufe es gab (mindestens 1), dann die Laufzeit jedes Laufs in ganzen Sekunden. Es gibt den Durchschnitt aus. Bei 3 Läufen mit 62, 58 und 60 Sekunden soll `Durchschnitt: 60.0 s` erscheinen. Behebe beide Fehler.
+
+</div>
+
+<Editor datei="labor/tr-3.vorlage.py" aria-label="Python-Code: Laufzeiten" />
+
+<Python rolle="tests" datei="labor/tr-3.tests.py" />
+
+<Python rolle="solution" datei="labor/tr-3.solution.py" />
+
+<Tipps>
+
+1. Führ das Programm aus und lies die Meldung von unten: Welcher Name ist unbekannt, und wo müsste er einen Wert bekommen?
+2. Läuft es, probier 3 Läufe: Wie oft fragt das Programm nach einer Zeit?
+3. Für 1 bis n gehört der Stoppwert nicht dazu. Karte 1 zeigt, wie das geht.
+
+</Tipps>
+
+</Aufgabe>
+
+</Station>
+
+<Station id="t-4" titel="Bolzen einer Charge prüfen" teil="B" sterne="3" min="10">
+
+<p class="l-task__intro">Ohne vorgegebenen Plan. Zeichne zuerst auf Papier: Eingabe, Zähler, Zählschleife, im Rumpf einlesen und prüfen, danach die Ausgabe. Dann schreib das Programm.</p>
+
+<Aufgabe art="code" id="tr-4" titel="Bolzen prüfen" data-mode="programm" data-inputs="5|100|97|102|103|98">
+
+<div class="a-task__text">
+
+Bolzen sollen 100 mm lang sein, erlaubt sind 98 bis 102 mm, die Grenzen sind gut. Eingelesen werden die Zahl der Bolzen und dann jede Länge in mm (ganze Zahlen). Ausgegeben wird, wie viele außerhalb liegen, als `Ausschuss: 2 von 5`. Beispiel: Die Eingaben 5, 100, 97, 102, 103, 98 ergeben `Ausschuss: 2 von 5`.
+
+</div>
+
+<Editor datei="labor/tr-4.vorlage.py" aria-label="Python-Code: Bolzen prüfen" />
+
+<Python rolle="tests" datei="labor/tr-4.tests.py" />
+
+<Python rolle="solution" datei="labor/tr-4.solution.py" />
+
+<Tipps>
+
+1. Zeichne zuerst den Plan: Eingabe n, Zähler auf 0, Zählschleife, im Rumpf einlesen und prüfen, danach die Ausgabe.
+2. Ausschuss heißt zu kurz ODER zu lang. 98 und 102 selbst sind gut. Die Bedingung kennst du von „Druck prüfen“ aus Termin 04.
+3. Die Form kennst du von „Sechsen zählen“: Zähler vor der Schleife, `if` ohne `else` im Rumpf.
+
+</Tipps>
+
+</Aufgabe>
+
+</Station>
+
+<Knobel id="kn-1" titel="Bits einlesen">
+
+<Aufgabe art="code" id="k-1" data-mode="programm" data-inputs="0|0|1|0|1|1|0|1">
+
+<div class="a-task__text">
+
+Eingelesen werden die 8 Bits eines Bytes, jedes als 0 oder 1, das linke zuerst. Ausgegeben wird die Dezimalzahl, zum Beispiel `Dezimal: 45` für 0, 0, 1, 0, 1, 1, 0, 1. Es geht ohne die Stellenwerte 128, 64, 32 und so weiter im Programm. Findest du den Weg?
+
+</div>
+
+<Editor datei="labor/k-1.vorlage.py" aria-label="Python-Code: Bits einlesen" />
+
+<Python rolle="tests" datei="labor/k-1.tests.py" />
+
+<Python rolle="solution" datei="labor/k-1.solution.py" />
+
+<Tipps>
+
+1. Rechne auf Papier mit den Bits 1, 0, 1, 1 und schreib nach jedem Bit die Zahl auf, die bisher dasteht: 1, dann 10, dann 101, dann 1011. Welche Dezimalzahlen sind das?
+2. Kommt rechts ein Bit dazu, rücken alle bisherigen Bits eine Stelle nach links, ihr Wert verdoppelt sich. Dazu kommt das neue Bit.
+3. Vor der Schleife `zahl = 0`. Im Rumpf: Bit einlesen, dann aus der alten Zahl und dem Bit die neue machen.
+
+</Tipps>
+
+</Aufgabe>
+
+</Knobel>
+
+<Knobel id="kn-2" titel="Reiskörner auf dem Schachbrett">
+
+<Aufgabe art="code" id="k-2" data-mode="programm" data-inputs="100">
+
+<div class="a-task__text">
+
+Auf dem ersten Feld eines Schachbretts liegt 1 Reiskorn, auf jedem weiteren doppelt so viele wie auf dem davor. Eingelesen wird eine Grenze (ganze Zahl). Gesucht ist das erste Feld, auf dem mehr Körner liegen als die Grenze, wie viele dort liegen und wie viele auf allen Feldern bis dahin zusammen. Beispiel: Grenze 100 ergibt `Feld 8: 128 Körner, zusammen 255`.
+
+</div>
+
+<Editor datei="labor/k-2.vorlage.py" aria-label="Python-Code: Reiskörner auf dem Schachbrett" />
+
+<Python rolle="tests" datei="labor/k-2.tests.py" />
+
+<Python rolle="solution" datei="labor/k-2.solution.py" />
+
+<Tipps>
+
+1. Drei Werte ändern sich: das Feld, die Körner auf dem Feld und die Summe. Schreib die ersten vier Felder als Tabelle auf.
+2. Wie viele Felder es werden, steht vorher nicht fest: Die Faustregel sagt `while`. Wiederholt wird, solange die Körner die Grenze noch nicht übersteigen.
+3. Start: Feld 1, 1 Korn, Summe 1. Im Rumpf zuerst das nächste Feld, dann die Körner verdoppeln, dann zur Summe addieren.
+
+</Tipps>
+
+</Aufgabe>
+
+</Knobel>
+
+</Labor>

@@ -8,7 +8,7 @@ Dateien:
 | `site/assets/js/pap-editor.js` | `window.KursPAPEditor`: Editor-Baustein, Seite `pap-editor.html`, Aufgabentyp |
 | `site/assets/css/pap-editor.css` | Stile (enthält die PAP-Grundregeln, braucht kein `v05.css`) |
 | `site/pap-editor.html` | Editor-Seite mit Demo-Aufgabe |
-| `site/assets/js/explorables-v05.js` | nutzt die Engine (V05-Beispieldaten `wSpec`, `wRun`, `fehlerSpec` hängen weiter an `KursPAP`) |
+| `site/assets/js/explorables-v05.js` | Bausteine von Termin 05 (`byte`, `range`, `summe`), nutzt die Engine nicht; der alte PAP-Baukasten der früheren V05 ist entfernt, die Beispieldaten `wSpec`, `wRun`, `fehlerSpec` gibt es nicht mehr |
 
 `explorables-v06.js` hat eine eigene, fest verdrahtete PAP-Zeichnung (`papKopf`, `papFuss`, `papZaehl`) und nutzt die Engine nicht. Sie bleibt unverändert, damit die V06-Bilder gleich bleiben.
 
@@ -48,7 +48,7 @@ host.innerHTML = KursPAP.figure([
 | Unterprogramm | Funktionsaufruf, z. B. `abs(-3)` |
 | Verzweigung | `if`; Raute direkt im Nein-Zweig → `elif`; sonst `else:` |
 | Schleife kopfgesteuert | `while bedingung:` |
-| Zählschleife | `for i in range(1, 6):` (im PAP eine Raute mit Rückführung) |
+| Zählschleife | `for i in range(1, 6):` (im PAP eine Raute mit Rückführung; sie zeigt „i von 1 bis 5?“: `range(a, b)` wird zu „von a bis b − 1“ mit ausgerechneter Zahl, `range(a, n + 1)` zu „von a bis n“, `range(b)` zu „von 0 bis b − 1“, alles andere bleibt wie getippt) |
 | Schleife fußgesteuert | `while True:` … `if not bedingung: break` (die Bedingung ist die Wiederholungsbedingung: `ja` = zurück) |
 
 `parseCode(src)` ohne Option verhält sich wie der V05-Baukasten (nur Zuweisung, `print`, `float(input())`, `if`/`elif`/`else`). Mit `{erweitert:true}` kommen `while`, `for … in …`, `int(input())`, `input()` und Aufrufe dazu. Blockköpfe wie `def`, `try`, `with` werden mit Zeilennummer abgelehnt.

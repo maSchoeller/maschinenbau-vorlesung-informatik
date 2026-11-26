@@ -1,0 +1,1 @@
+{"baum": [{"k": "in", "v": "zahl", "typ": "int"}, {"k": "for", "v": "i in range(1, 11)", "body": [{"k": "out", "v": "zahl * i"}]}]}

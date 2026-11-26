@@ -1,1 +1,0 @@
-Bevor du zeichnest, analysierst du das Problem in drei Schritten: Eingabe, Verarbeitung, Ausgabe. Eingabe: Spannung und Temperatur. Verarbeitung: Entscheidung nach festen Regeln. Ausgabe: Werkstoffname oder Meldung. Dann suchst du Randfälle: eine negative Spannung, minus fünfhundert Grad Celsius oder ein Wert genau auf der Grenze.

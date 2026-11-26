@@ -1,1 +1,0 @@
-Zeile dreiundzwanzig ist das letzte Parallelogramm: Dort laufen alle Zweige zusammen, und der Werkstoff wird ausgegeben.

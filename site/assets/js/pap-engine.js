@@ -375,6 +375,24 @@
     return String(s).replace(/<=/g, '≤').replace(/>=/g, '≥').replace(/!=/g, '≠').replace(/==/g, '=')
       .replace(/\band\b/g, 'und').replace(/\bor\b/g, 'oder').replace(/\bnot\b/g, 'nicht');
   }
+  /* Raute einer Zählschleife: „i in range(1, 11)“ -> „i von 1 bis 10“. Alles, was nicht so aussieht, bleibt wie es ist (nice). */
+  function forText(v) {
+    var s = toPy(String(v).trim().replace(/\s*\?+$/, '')), m = /^(\w+)\s+in\s+range\((.*)\)$/.exec(s);
+    if (!m) return nice(s || '…');
+    var args = [], depth = 0, cur = '', i, ch;
+    for (i = 0; i < m[2].length; i++) {
+      ch = m[2][i];
+      if (ch === '(' || ch === '[') depth++; else if (ch === ')' || ch === ']') depth--;
+      if (ch === ',' && depth === 0) { args.push(cur.trim()); cur = ''; } else cur += ch;
+    }
+    args.push(cur.trim());
+    if (args.length > 2 || args.some(function (a) { return !a; })) return nice(s);
+    var a = args.length === 2 ? args[0] : '0', b = args[args.length - 1], bis, pl = /^(.+?)\s*\+\s*1$/.exec(b);
+    if (/^-?\d+$/.test(b)) bis = String(parseInt(b, 10) - 1);
+    else if (pl) bis = pl[1];
+    else bis = (/[+\-*\/ ]/.test(b.replace(/^-/, '')) ? '(' + b + ')' : b) + ' − 1';
+    return m[1] + ' von ' + nice(a) + ' bis ' + nice(bis);
+  }
   function outText(v) {
     var s = String(v).trim();
     if (!s) return 'Ausgabe: …';
@@ -391,7 +409,8 @@
         if (n.k === 'call') return P.sub(String(n.v).trim() || '…', n.id, c);
         /* Die Anzeige hängt das Fragezeichen selbst an; wer es schon getippt hat, sieht keines doppelt (wie condOf im Code) */
         var f = t.replace(/\s*\?+$/, '') + '?';
-        if (n.k === 'while' || n.k === 'for') return P.whil(f, conv(n.body), n.id, c);
+        if (n.k === 'for') return P.whil(forText(n.v) + '?', conv(n.body), n.id, c);
+        if (n.k === 'while') return P.whil(f, conv(n.body), n.id, c);
         if (n.k === 'repeat') return P.repeat(f, conv(n.body), n.id, c);
         return P.iff(f, conv(n.yes), conv(n.no), n.id, c);
       });
@@ -609,7 +628,7 @@
     P: P, layout: layout, svg: svg, figure: figure, describe: describe, exportSvg: exportSvg,
     toLines: toLines, toText: toText, toPap: toPap, parseCode: parseCode, numberTree: numberTree, countBlocks: countBlocks,
     nIn: nIn, nOut: nOut, nOp: nOp, nCall: nCall, nIf: nIf, nWhile: nWhile, nFor: nFor, nRepeat: nRepeat,
-    nice: nice, toPy: toPy, kids: kids, isLoop: isLoop, find: find, flat: flat, clone: clone, toJson: toJson, fromJson: fromJson, marks: marks,
+    forText: forText, nice: nice, toPy: toPy, kids: kids, isLoop: isLoop, find: find, flat: flat, clone: clone, toJson: toJson, fromJson: fromJson, marks: marks,
     esc: esc, version: 2
   };
   if (typeof module !== 'undefined' && module.exports) { module.exports = api; }

@@ -1,0 +1,542 @@
+---
+titel: "Termin 05 · Genau so oft: Zweiersystem und Zählschleifen · Lerneinheit · Informatik Maschinenbau"
+beschreibung: "Das Zweiersystem mit der Stellenwerttabelle in beide Richtungen, Bit und Byte, die Zählschleife for mit range, Aufsummieren mit Mittelwert und if ohne else im Rumpf. Mit Schaltern, range von Hand und einer Summe Schritt für Schritt zum Ausprobieren."
+body:
+  data-lesson: V05
+  data-page: lerneinheit
+stile:
+  - ../assets/css/dhbw-base.css
+  - ../assets/css/kurs.css
+  - ../assets/css/aufgaben.css
+  - ../assets/css/editor.css
+  - ../assets/css/v05.css
+skripte:
+  - ../assets/js/speicher.js
+  - ../assets/js/icons.js
+  - src: ../assets/js/editor.js
+    defer: true
+  - ../assets/js/pap-engine.js
+  - ../assets/js/explorables-v05.js
+  - ../assets/js/kurs.js
+  - ../assets/js/aufgaben.js
+---
+
+<Lerneinheit nr="V05" name="Termin 05" labor="v05-labor.html">
+
+<Kopf marke="Termin 05 · 1. Semester · Lerneinheit" titel="Genau so oft: Zweiersystem und Zählschleifen">
+
+Eine Wahrheitstabelle mit vier Variablen hat 16 Zeilen, von 0000 bis 1111. Das ist schon Zählen, nur mit zwei Ziffern. Heute rechnest du zwischen Zweiersystem und Dezimalsystem um. Und du lässt eine Schleife genau so oft laufen, wie du willst: mit `for`.
+
+- eine Binärzahl mit bis zu 8 Stellen in eine Dezimalzahl umrechnen und eine Zahl von 0 bis 255 mit der Stellenwerttabelle ins Zweiersystem
+- sagen, was Bit und Byte sind, und warum n Bit 2ⁿ Werte ergeben (8 Bit: 256 Werte, 0 bis 255)
+- eine Zählschleife mit `for i in range(…)` schreiben, als Plan mit der Raute „i von 1 bis n?“ zeichnen und angeben, welche Werte `i` annimmt
+- Werte in einer Schleife aufsummieren, den Mittelwert bilden und mit `if` im Rumpf zählen, wie viele Werte eine Grenze erreichen
+
+Alles aus Termin 02 bis 04 gilt weiter: Wahrheitstabellen, `if`, `and` und `or`, `while` und der Plan mit Rücksprung. Geübt wird im [Programmierlabor](v05-labor.html).
+
+</Kopf>
+
+<Abschnitt id="zweiersystem" nr="1" titel="Das Zweiersystem">
+
+Die Zeile 0000 einer Wahrheitstabelle ist die erste, 1111 die letzte. Wenn die Zeilen zählen, ist 0000 die Zahl 0. Wie das Zählen mit nur zwei Ziffern geht, siehst du jetzt.
+
+Im Dezimalsystem hat jede Stelle einen Stellenwert: 345 ist 3 · 100 + 4 · 10 + 5 · 1. Jede Stelle ist zehnmal so viel wert wie die rechts daneben, und es gibt zehn Ziffern, 0 bis 9.
+
+Im <Begriff e="Ein Zahlensystem mit nur zwei Ziffern, 0 und 1. Jede Stelle ist doppelt so viel wert wie die rechts daneben.">Zweiersystem</Begriff> (auch Binärsystem) gibt es nur die Ziffern 0 und 1. Jede Stelle ist doppelt so viel wert wie die rechts daneben: 1, 2, 4, 8, 16, 32, 64, 128. Das hat einen Grund: Ein Rechner speichert alles mit Schaltern, die an oder aus sind.
+
+Eine Stelle heißt <Begriff e="Eine Stelle im Zweiersystem: 0 oder 1, wie ein Schalter aus oder an.">Bit</Begriff>. Acht Bit sind ein <Begriff e="8 Bit. Damit lassen sich 256 verschiedene Werte darstellen, 0 bis 255.">Byte</Begriff>. Ein Byte steht in zwei Vierergruppen: `0010 1101`. Die Lücke ist nur zum Lesen da.
+
+**Binär in dezimal.** Schreib die Stellenwerte über die Ziffern und addier die, unter denen eine 1 steht. Zuerst eine kurze Zahl: 1011 = 8 + 2 + 1 = 11. Jetzt ein ganzes Byte:
+
+<div class="k-tablewrap">
+<table class="k-types">
+<thead><tr><th scope="col">Stellenwert</th><th scope="col">128</th><th scope="col">64</th><th scope="col">32</th><th scope="col">16</th><th scope="col">8</th><th scope="col">4</th><th scope="col">2</th><th scope="col">1</th></tr></thead>
+<tbody>
+<tr><th scope="row">0010 1101</th><td>0</td><td>0</td><td>1</td><td>0</td><td>1</td><td>1</td><td>0</td><td>1</td></tr>
+</tbody>
+</table>
+</div>
+
+32 + 8 + 4 + 1 = **45**. Versuch es selbst mit 1010 0110, die Lösung steht nach dem Baustein. Führende Nullen ändern den Wert nicht, wie bei 045 und 45.
+
+<Explorable name="byte" titel="Acht Schalter, ein Byte">
+
+Leg die acht Schalter um und sieh, welche Zahl entsteht. In der zweiten Betriebsart tippst du eine Zahl ein und gehst die Stellenwerttabelle von links durch. Vermute zuerst: Alle acht Schalter an, welche Zahl ist das?
+
+<Ohne>
+
+Für die Schalter wird JavaScript benötigt. Beispiel: Sind alle acht Schalter an, ist die Zahl 128 + 64 + 32 + 16 + 8 + 4 + 2 + 1 = 255. Ist nur der linke Schalter an, ist sie 128, eins mehr als alle sieben anderen zusammen (127).
+
+</Ohne>
+
+</Explorable>
+
+Die Lösung zu 1010 0110: 128 + 32 + 4 + 2 = **166**.
+
+**Dezimal in binär.** Dieselbe Tabelle, von links nach rechts. An jeder Stelle fragst du: Passt der Stellenwert in den Rest? Ja: Das Bit ist 1, und du ziehst den Stellenwert vom Rest ab. Nein: Das Bit ist 0, und der Rest bleibt. So geht es für 45:
+
+<div class="k-tablewrap">
+<table class="k-types">
+<thead><tr><th scope="col">Stellenwert</th><th scope="col">128</th><th scope="col">64</th><th scope="col">32</th><th scope="col">16</th><th scope="col">8</th><th scope="col">4</th><th scope="col">2</th><th scope="col">1</th></tr></thead>
+<tbody>
+<tr><th scope="row">passt in den Rest?</th><td>nein</td><td>nein</td><td>ja</td><td>nein</td><td>ja</td><td>ja</td><td>nein</td><td>ja</td></tr>
+<tr><th scope="row">Bit</th><td>0</td><td>0</td><td>1</td><td>0</td><td>1</td><td>1</td><td>0</td><td>1</td></tr>
+<tr><th scope="row">Rest danach</th><td>45</td><td>45</td><td>13</td><td>13</td><td>5</td><td>1</td><td>1</td><td>0</td></tr>
+</tbody>
+</table>
+</div>
+
+Das Ergebnis ist `0010 1101`. Die Probe geht rückwärts: 32 + 8 + 4 + 1 = 45. Ist der Rest einmal 0, sind alle übrigen Bits 0.
+
+<div class="k-try">
+
+### Übung: Stellenwerttabelle
+
+Rechne 200 ins Zweiersystem um. Zu Beginn ist der Rest 200. Trag in jeder Zeile das Bit (1 oder 0) und den Rest danach ein, ohne Anführungszeichen. Erst auf Papier, dann hier prüfen.
+
+<Aufgabe art="trace" id="stellenwert" titel="Stellenwerttabelle: 200">
+
+<Daten datei="lerneinheit/stellenwert.daten.json" />
+
+</Aufgabe>
+
+</div>
+
+Wie viele Werte lassen sich mit n Bit schreiben? Mit 1 Bit zwei (0 und 1), mit 2 Bit vier (00 bis 11). Jedes Bit verdoppelt, wie die Zeilen der Wahrheitstabelle.
+
+<div class="k-try">
+
+### Vorhersage: Größte Zahl mit 4 Bit
+
+<Vorhersage>
+
+Welche Zahl ist die größte, die du mit 4 Bit schreiben kannst?
+
+- 4
+- 8
+- [x] 15
+- 16
+
+1111 = 8 + 4 + 2 + 1 = 15. Es gibt 16 Werte, weil die 0 mitzählt: 0 bis 15. Die Zeilen einer Tabelle mit vier Variablen sind genau diese Zahlen, die Zeile 1011 ist die Zahl 11. Ein Byte hat 8 Bit und damit 2⁸ = **256** Werte, von 0 bis **255**.
+
+</Vorhersage>
+
+</div>
+
+<Hinweis art="merke">
+
+Zweiersystem: nur 0 und 1, jede Stelle doppelt so viel wert wie die rechts daneben. Umrechnen geht immer mit der Stellenwerttabelle 128, 64, 32, 16, 8, 4, 2, 1. n Bit ergeben 2ⁿ Werte.
+
+</Hinweis>
+
+### Erklärvideo (ca. 2 Min)
+
+<Video name="v05-theorie" id="video-theorie" titel="Erklärvideo: Die Stellenwerttabelle: binär und dezimal" fehlt="Video folgt. Bis dahin: Die Tabellen oben und der Baustein zeigen dasselbe.">
+
+Erklärvideo: Die Stellenwerttabelle: binär und dezimal (ca. 2 Min). Untertitel sind eingeschaltet (Deutsch).
+
+</Video>
+
+</Abschnitt>
+
+<Abschnitt id="for-range" nr="2" titel="Genau so oft: for und range">
+
+Steht vorher fest, wie oft etwas laufen soll, nimmst du eine <Begriff e="Eine Schleife, bei der vorher feststeht, wie oft sie läuft. In Python: for.">Zählschleife</Begriff>. `for i in range(start, stopp)` zählt `i` von `start` bis `stopp − 1`. Der Stoppwert gehört nicht dazu.
+
+Du kennst fünf Runden auf dem Sportplatz aus Termin 04, mit `while` und einem eigenen Zähler. Drei Teile gehören dazu: der Startwert (`i = 1`), die Bedingung (`i <= 5`) und das Weiterzählen (`i = i + 1`). Vergisst du das Weiterzählen, läuft die Schleife ewig.
+
+```python
+i = 1
+while i <= 5:
+    print(f"Runde {i}")
+    i = i + 1
+print("Geschafft")
+```
+
+Dieselbe Schleife mit `for`. Sie packt die drei Teile in eine Zeile und zählt selbst weiter:
+
+```python
+for i in range(1, 6):
+    print(f"Runde {i}")
+print("Geschafft")
+```
+
+<p class="k-small k-muted">Führ beide Programme aus. Mit „Schritt für Schritt“ siehst du beim zweiten, wie `i` jedes Mal einen neuen Wert bekommt.</p>
+
+Beide geben aus: `Runde 1`, `Runde 2`, `Runde 3`, `Runde 4`, `Runde 5`, `Geschafft`. Im Plan sehen die beiden Schleifen so aus, links mit eigenem Zähler, rechts mit der Zählschleife:
+
+<div class="v05-planpaar">
+
+<Plan titel="Mit while">
+
+```text
+i = 1
+Schleife: i <= 5?
+  Ausgabe: "Runde", i
+  i = i + 1
+Ausgabe: "Geschafft"
+```
+
+</Plan>
+
+<Plan titel="Mit for">
+
+```text
+Schleife: i von 1 bis 5?
+  Ausgabe: "Runde", i
+Ausgabe: "Geschafft"
+```
+
+</Plan>
+
+</div>
+
+Die Raute „i von 1 bis 5?“ heißt: Gibt es noch ein `i` bis 5? Dann ja, durch den Rumpf und zurück. Startwert und Weiterzählen stecken in der Raute.
+
+<Explorable name="range" titel="range von Hand">
+
+Stell Start und Stopp ein und sieh, welche Zahlen `range` liefert. Mit „Ein Durchlauf“ gehst du Zahl für Zahl. Vermute zuerst: Wie viele Durchläufe hat `range(3, 8)`?
+
+<Ohne>
+
+Für den Baustein wird JavaScript benötigt. Beispiel: `range(3, 8)` ergibt 3, 4, 5, 6, 7. Der Stoppwert 8 gehört nicht dazu. Die Durchläufe: 8 − 3 = 5. Ist der Start nicht kleiner als der Stopp, gibt es keine Zahl, und der Rumpf läuft nie.
+
+</Ohne>
+
+</Explorable>
+
+So liest du `range`: `range(1, 6)` ergibt 1, 2, 3, 4, 5. Die Zahl der Durchläufe ist Stopp minus Start: 6 − 1 = 5. Für „1 bis n“ schreibst du deshalb `range(1, n + 1)`. Ist der Start nicht kleiner als der Stopp (`range(5, 5)`, `range(1, 1)`), gibt es keine Zahl. Der Rumpf läuft dann nie.
+
+<Hinweis art="achtung">
+
+Im Rumpf einer `for`-Schleife steht kein `i = i + 1`. Das Weiterzählen erledigt `for`. Die Zeile hilft nicht: Beim nächsten Durchlauf bekommt `i` ohnehin den nächsten Wert aus `range`. Steht sie vor `print`, verfälscht sie sogar die Ausgabe (2 bis 6 statt 1 bis 5).
+
+</Hinweis>
+
+**Faustregel:** Steht vorher fest, wie oft, nimm `for`. Sonst nimm `while`. Zwei Paare zeigen es. Beim Sparziel aus Termin 04 weißt du vorher nicht, wie viele Wochen es dauert: `while`. Bei einem Sparplan über 12 Monate steht die 12 fest: `for`. Der Einkauf bis zur 0 ist `while`, die Punkte von vier Übungsblättern sind `for`.
+
+<div class="k-try">
+
+### Vorhersage: Wo fängt range an?
+
+<Vorhersage>
+
+Was gibt das Programm aus?
+
+- 1, 2, 3, 4
+- [x] 0, 1, 2, 3
+- 0, 1, 2, 3, 4
+- 1, 2, 3
+
+Mit einer Zahl beginnt `range` bei 0. Die 4 ist der Stoppwert und gehört nicht dazu. Es sind trotzdem 4 Durchläufe.
+
+</Vorhersage>
+
+```python
+for i in range(4):
+    print(i)
+```
+
+<p class="k-small k-muted">Wähl erst deinen Tipp, dann führ das Programm aus.</p>
+
+</div>
+
+</Abschnitt>
+
+<Abschnitt id="aufsummieren" nr="3" titel="Aufsummieren und Mittelwert">
+
+Jede Zeile eines Schleifenprogramms hat ihren Platz. Vor der Schleife steht, was einmal am Anfang gilt: der Startwert. Im Rumpf steht, was mit jedem Wert passiert. Nach der Schleife steht, was einmal mit dem Ergebnis passiert.
+
+Du kennst `summe = summe + preis` vom Einkauf aus Termin 04. Dort kam das Ende von der Eingabe, die 0. Jetzt steht vorher fest, wie viele Werte kommen, also nimmst du `for`. Beispiel: die Punkte von vier Übungsblättern zusammenzählen und den Durchschnitt bilden.
+
+<Plan titel="Punkte von vier Blättern">
+
+```text
+summe = 0
+Schleife: i von 1 bis 4?
+  Eingabe: punkte
+  summe = summe + punkte
+mittel = summe / 4
+Ausgabe: summe, mittel
+```
+
+</Plan>
+
+```python data-stdin="8\n10\n4\n8"
+summe = 0
+for i in range(1, 5):
+    punkte = int(input(f"Punkte Blatt {i}: "))
+    summe = summe + punkte
+mittel = summe / 4
+print(f"Summe: {summe}, Durchschnitt: {mittel:.1f}")
+```
+
+<p class="k-small k-muted">Das Programm fragt im Terminal nach den Punkten. Tipp 8, 10, 4 und 8 ein. Die Eingabeaufforderung zeigt „Punkte Blatt 1:“ bis „Punkte Blatt 4:“, dafür ist `i` da.</p>
+
+Mit den Eingaben 8, 10, 4, 8 erscheint `Summe: 30, Durchschnitt: 7.5`. Die drei Stellen kannst du an diesem Programm zeigen: `summe = 0` steht **vor** der Schleife, Einlesen und Addieren stehen **im Rumpf**, `mittel` und `print` stehen **nach** der Schleife (nicht eingerückt).
+
+Der <Begriff e="Die Summe aller Werte geteilt durch ihre Anzahl, auch Durchschnitt genannt.">Mittelwert</Begriff> wird einmal gebildet, nach der Schleife: Summe geteilt durch die Zahl der Werte. `/` ergibt eine Kommazahl, deshalb steht `:.1f` aus Termin 02 in der Ausgabe.
+
+<div class="k-try">
+
+### Vorhersage: Startwert im Rumpf
+
+<Vorhersage>
+
+Jemand hat `summe = 0` als erste Zeile in den Rumpf gerückt. Die Eingaben sind 8, 10, 4, 8. Was steht hinter „Summe:“?
+
+- 30
+- [x] 8
+- 0
+- Eine Fehlermeldung
+
+In jedem Durchlauf wird `summe` erst auf 0 gesetzt, dann kommt der eine Wert dazu. Nach dem letzten Durchlauf steht dort nur der letzte Wert, 8. Der Startwert gehört vor die Schleife.
+
+</Vorhersage>
+
+```python data-run="nach-antwort" data-stdin="8\n10\n4\n8"
+for i in range(1, 5):
+    summe = 0
+    punkte = int(input(f"Punkte Blatt {i}: "))
+    summe = summe + punkte
+mittel = summe / 4
+print(f"Summe: {summe}, Durchschnitt: {mittel:.1f}")
+```
+
+<p class="k-small k-muted">Wähl erst deinen Tipp, dann führ das Programm aus und tipp 8, 10, 4 und 8 ein.</p>
+
+</div>
+
+<Explorable name="summe" titel="Summe Schritt für Schritt">
+
+Stell vier Punktwerte ein und wähl eine Fassung des Programms. Mit „Ein Schritt“ siehst du, welche Zeile dran ist und was in der Tabelle steht. Vermute zuerst: Bei „Ausgabe im Rumpf“, wie viele Zeilen erscheinen?
+
+<Ohne>
+
+Für den Baustein wird JavaScript benötigt. Beispiel mit den Punkten 8, 10, 4, 8: Die Summe wächst auf 8, 18, 22, 30. Steht `summe = 0` im Rumpf, beginnt sie in jedem Durchlauf von vorn, und am Ende steht nur der letzte Wert, 8. Fehlt der Startwert ganz, meldet Python `NameError: name 'summe' is not defined`.
+
+</Ohne>
+
+</Explorable>
+
+Drei typische Fehler, jeder an einer falschen Stelle. Du findest alle drei im Baustein. Der Startwert fehlt: `NameError: name 'summe' is not defined`, schon beim ersten Durchlauf. Der Startwert steht im Rumpf: Die Summe beginnt jedes Mal von vorn, am Ende steht nur der letzte Wert (`Summe: 8, Durchschnitt: 2.0`). Die Ausgabe steht im Rumpf: Es erscheinen vier Zeilen statt einer, mit den Summen 8, 18, 22, 30.
+
+</Abschnitt>
+
+<Abschnitt id="auswaehlen" nr="4" titel="Auswählen im Rumpf: if ohne else">
+
+Ein `if` im Rumpf prüft jeden Wert einzeln. Ohne `else` passiert bei „nein“ nichts, und die Schleife geht weiter. So zählst du, wie viele Werte eine Grenze erreichen.
+
+Dasselbe Beispiel: Wie viele der vier Blätter haben mindestens 8 Punkte? Ein zweiter Zähler, `anzahl`, startet bei 0 und wächst nur, wenn die Bedingung stimmt.
+
+<Plan titel="Blätter mit mindestens 8 Punkten">
+
+```text
+anzahl = 0
+Schleife: i von 1 bis 4?
+  Eingabe: punkte
+  Entscheidung: punkte >= 8?
+    ja:
+      anzahl = anzahl + 1
+Ausgabe: anzahl
+```
+
+</Plan>
+
+Im Plan hat die Raute nur einen ja-Zweig. Der nein-Weg läuft ohne Symbol am Rechteck vorbei und zurück zur Raute der Schleife. In Python ist das ein `if` ohne `else`. Die Einrückung hat zwei Stufen: `if` steht im Rumpf (4 Leerzeichen), `anzahl = anzahl + 1` steht im `if` (8 Leerzeichen).
+
+```python data-stdin="8\n10\n4\n8"
+anzahl = 0
+for i in range(1, 5):
+    punkte = int(input(f"Punkte Blatt {i}: "))
+    if punkte >= 8:
+        anzahl = anzahl + 1
+print(f"Blätter mit mindestens 8 Punkten: {anzahl}")
+```
+
+<p class="k-small k-muted">Tipp 8, 10, 4 und 8 ein. Dann erscheint `Blätter mit mindestens 8 Punkten: 3`.</p>
+
+Der Grenzfall: „mindestens 8“ ist `>=`. Die beiden Achten zählen mit.
+
+<div class="k-try">
+
+### Vorhersage: Ein Zeichen anders
+
+<Vorhersage>
+
+Im Programm steht `punkte > 8` statt `>=`. Die Eingaben sind 8, 10, 4, 8. Welche Zahl erscheint hinter dem Doppelpunkt?
+
+- 0
+- [x] 1
+- 2
+- 3
+
+`8 > 8` ist falsch, beide Achten fallen heraus. Nur die 10 zählt. Mit `>=` sind es 3.
+
+</Vorhersage>
+
+```python data-stdin="8\n10\n4\n8"
+anzahl = 0
+for i in range(1, 5):
+    punkte = int(input(f"Punkte Blatt {i}: "))
+    if punkte > 8:
+        anzahl = anzahl + 1
+print(f"Blätter mit mindestens 8 Punkten: {anzahl}")
+```
+
+<p class="k-small k-muted">Wähl erst deinen Tipp, dann führ das Programm aus und tipp 8, 10, 4 und 8 ein.</p>
+
+</div>
+
+<Explorable name="summe" titel="Summe Schritt für Schritt, mit Zählen">
+
+Schalte „mitzählen, wie viele mindestens 8 haben“ ein und wechsel zwischen `>=` und `>`. Du siehst, wann `anzahl` wächst. Vermute zuerst: Welche Punkte musst du einstellen, damit `>=` und `>` gleich viele zählen?
+
+<Ohne>
+
+Für den Baustein wird JavaScript benötigt. Beispiel mit den Punkten 8, 10, 4, 8: Mit `>=` zählen drei Blätter (8, 10, 8), mit `>` nur eines, die 10. Denn 8 > 8 ist falsch. Beide Zeichen zählen gleich viele, wenn kein Blatt genau 8 Punkte hat.
+
+</Ohne>
+
+</Explorable>
+
+<Hinweis art="merke">
+
+Der Aufbau eines Schleifenprogramms: vor der Schleife die Startwerte, im Rumpf einlesen und prüfen, nach der Schleife ausgeben. Ein `if` ohne `else` ändert nur dann etwas, wenn die Bedingung stimmt.
+
+</Hinweis>
+
+</Abschnitt>
+
+<Abschnitt id="selbstcheck" nr="5" titel="Selbstcheck">
+
+Sechs Fragen in den Formen der Klausur: umrechnen, Werte zählen, Durchläufe zählen, Ausgabe bestimmen, `for` oder `while`. Die Reihenfolge der Fragen und Antworten ist bei jedem Aufruf anders. Rechne im Kopf oder auf Papier, nicht im Editor.
+
+<Quiz id="v05">
+
+<Frage id="binaer-dezimal" typ="num" punkte="3" antwort="101" tol="0" titel="Binär in dezimal">
+
+Welche Dezimalzahl ist `0110 0101`?
+
+<Erklaerung>
+
+Die Einsen stehen unter 64, 32, 4 und 1: 64 + 32 + 4 + 1 = 101.
+
+</Erklaerung>
+
+</Frage>
+
+<Frage id="dezimal-binaer" typ="mc" punkte="3" titel="Dezimal in binär">
+
+Welches Byte ist die Zahl 77?
+
+- [x] `0100 1101`
+- `0100 1011`
+- `1011 0010`
+- `0111 0111`
+
+<Erklaerung>
+
+64 passt (Rest 13), 32 und 16 passen nicht, 8 passt (Rest 5), 4 passt (Rest 1), 2 passt nicht, 1 passt. Das ergibt `0100 1101`. Zum Vergleich: `0100 1011` ist 75, `1011 0010` ist 178 (die Bits in umgekehrter Reihenfolge) und `0111 0111` ist 119.
+
+</Erklaerung>
+
+</Frage>
+
+<Frage id="wie-viele-werte" typ="num" punkte="3" antwort="1024" tol="0" titel="Wie viele Werte?">
+
+Ein Sensor liefert seinen Messwert mit 10 Bit. Wie viele verschiedene Werte kann er liefern?
+
+<Erklaerung>
+
+Jedes Bit verdoppelt die Zahl der Werte: 2¹⁰ = 1024. Sie reichen von 0 bis 1023.
+
+</Erklaerung>
+
+</Frage>
+
+<Frage id="durchlaeufe" typ="num" punkte="3" antwort="7" tol="0" titel="Durchläufe zählen">
+
+Wie oft läuft der Rumpf von `for i in range(2, 9):`?
+
+<Erklaerung>
+
+`i` ist 2, 3, 4, 5, 6, 7, 8. Der Stoppwert 9 gehört nicht dazu: 9 − 2 = 7.
+
+</Erklaerung>
+
+</Frage>
+
+<Frage id="schleife" typ="output" punkte="4" antwort="9" titel="Ausgabe bestimmen: Zählschleife">
+
+Was gibt das Programm aus?
+
+```python class="k-code" data-run="nach-antwort"
+summe = 0
+for i in range(1, 6):
+    if i >= 4:
+        summe = summe + i
+print(summe)
+```
+
+<Erklaerung>
+
+`i` läuft von 1 bis 5. Nur bei 4 und 5 stimmt `i >= 4`: 4 + 5 = 9. `print` steht nach der Schleife und läuft einmal.
+
+</Erklaerung>
+
+</Frage>
+
+<Frage id="for-oder-while" typ="mc" punkte="4" titel="for oder while (mehrere richtig)">
+
+Für welche Aufgaben passt eine Zählschleife mit `for`? Kreuze alle richtigen an.
+
+- [x] Die Höchsttemperaturen einer Woche einlesen.
+- [x] Erst eine Zahl n einlesen, dann n Messwerte.
+- Preise einlesen, bis 0 kommt.
+- Einen Code abfragen, bis er stimmt.
+
+<Erklaerung>
+
+Bei der Woche (7 Tage) und bei n Messwerten steht vor der Schleife fest, wie oft sie läuft. Bei den Preisen und beim Code entscheidet erst die Eingabe, wann Schluss ist: `while`.
+
+</Erklaerung>
+
+</Frage>
+
+</Quiz>
+
+</Abschnitt>
+
+<Weiter ziel="v05-labor.html">
+
+Jetzt bist du dran. Im Labor zeichnest du die Einmaleins-Reihe als Plan mit Zählschleife, ordnest Zeilen, füllst Lücken, zählst Sechsen und suchst Fehler. Zwei weitere Videos findest du dort an der passenden Station: der Python-Werkzeugkasten und das vorgerechnete Beispiel. Das Umrechnen übst du im Training.
+
+</Weiter>
+
+<Dozent titel="Für Dozierende: Ablauf des Termins (125 Minuten) und Training">
+
+<p class="k-small k-muted">Vier Blöcke: einer Theorie (T3 Zahlensysteme, Teil 1 von 2), drei Programmieren (P3 Schleifen, Teil 3, 4 und 5 von 7). Jeder Block à 30 Minuten verplant höchstens 28 Minuten; die Minuten eines Abschnitts enthalten das Zeigen der genannten Karte. Die Lerneinheit ist zum Zeigen und Nachlesen, geübt wird im <a href="v05-labor.html">Programmierlabor</a>. Die Videos laufen nicht im Termin. Block 3 und 4 bauen dasselbe Beispiel weiter, die Punkte der Übungsblätter.</p>
+
+<div class="k-tablewrap">
+<table class="k-plan">
+<thead><tr><th scope="col">Minuten</th><th scope="col">Wo</th><th scope="col">Was zu tun ist</th></tr></thead>
+<tbody>
+<tr><td>0–10</td><td>Papier, Beamer</td><td><strong>Warm-up.</strong> Training Termin 04, „Wahrheitstabelle ausfüllen“: Y = (A ODER B) UND (C ODER D) auf Papier (5). Auflösung mit beiden Hilfsspalten: A ODER B <code>0 0 0 0 1 1 1 1 1 1 1 1 1 1 1 1</code>, C ODER D <code>0 1 1 1 0 1 1 1 0 1 1 1 0 1 1 1</code>, Ergebnis <code>0 0 0 0 0 1 1 1 0 1 1 1 0 1 1 1</code>, neun Einsen (2). Brücke in die Runde: Die erste Zeile ist 0000, die letzte 1111. Wenn die Zeilen zählen, welche Zahl ist 1111? (3)</td></tr>
+<tr><td>10–40</td><td>Lerneinheit 1</td><td><strong>Theorie: das Zweiersystem.</strong> Brücke aus dem Warm-up: Die Zeilen zählen (2). Stellenwert bei 345, dann Zweiersystem, Bit und Byte (5). Binär in dezimal: 1011 und 0010 1101 an der Tafel, 1010 0110 per Zuruf (5). Baustein „Acht Schalter, ein Byte“ mit Vermutung (4). Dezimal in binär: die Stellenwerttabelle für 45 an der Tafel (5). Alle rechnen 200 auf Papier, Prüfen in der Übung (5). 2ⁿ Werte, Vorhersage „Größte Zahl mit 4 Bit“ (2). Verplant: 28.</td></tr>
+<tr><td>40–70</td><td>Lerneinheit 2, Labor 1 (Karte 1), 4</td><td><strong>Programmieren 1: genau so oft.</strong> Fünf Runden mit <code>while</code>, die drei Teile markieren (3). Dieselbe Schleife mit <code>for</code>, Karte 1, beide Pläne nebeneinander (5). <code>range</code> lesen, <code>range(1, n + 1)</code>, Vorhersage „Wo fängt range an?“ (4). Baustein „range von Hand“ mit Vermutung (4). Faustregel an zwei Paaren (2). Alle zeichnen „Einmaleins“ (10). Verplant: 28.</td></tr>
+<tr><td>70–100</td><td>Lerneinheit 3, Labor 2, 6</td><td><strong>Programmieren 2: aufsummieren.</strong> Rückgriff Einkauf: Jetzt steht die Zahl fest (1). Punkte von vier Blättern: Plan, Code, die drei Stellen, Mittelwert (6). Baustein „Summe Schritt für Schritt“ mit Vermutung (5). Vorhersage „Startwert im Rumpf“ (2). Pendelzeit am Beamer, Plan und Code, Probe, Versuch mit 0 Tagen (5). „Wochenschritte“ als Lückentext (8). Verplant: 27. Station 3 läuft nicht einzeln.</td></tr>
+<tr><td>100–125</td><td>Lerneinheit 4, Labor 1 (Karte 2), 7, 8</td><td><strong>Programmieren 3: auswählen im Rumpf.</strong> Plan mit Raute im Rumpf, <code>if</code> ohne <code>else</code>, Karte 2 (4). <code>anzahl</code> im Code, Vorhersage „Ein Zeichen anders“ (3). Baustein „Summe Schritt für Schritt“ mit dem Schalter „mitzählen“ (2). Alle übertragen „Sechsen zählen“ (8). „Sommertage“ gemeinsam am Beamer (5). Auftrag für zu Hause, Pflicht, zusammen 48 Minuten: Stationen 3 und 5 (9), Selbstcheck (7), Training (32) (2). Termin 06 beginnt mit dem Umrechnen aus dem Training. Verplant: 24.</td></tr>
+</tbody>
+</table>
+</div>
+
+<p class="k-small k-muted">Wenn die Zeit knapp wird: Im Block 10–40 entfällt zuerst das Prüfen in der Übung (Hausaufgabe), die 200 wird nur auf Papier gerechnet und an der Tafel aufgelöst. Im Block 40–70 wird „Einmaleins“ gemeinsam am Beamer gezeichnet statt einzeln. Im Block 70–100 wird die Pendelzeit nur gezeigt (ein Lauf), der Versuch mit 0 Tagen bleibt Selbsterklärung zu Hause. Im letzten Block entfällt zuerst „Sommertage“ (Hausaufgabe), dann der Baustein; „Sechsen zählen“ hat Vorrang, weil es die Klausurform „Plan in Code übertragen“ im Termin ist.</p>
+
+<p class="k-small k-muted">Die drei Klausurformen im Termin: Plan zeichnen (Station 4, Block 2), Plan in Code übertragen (Station 7, Block 4), Code lesen (Vorhersagen in jedem Block, Station 8). Zu Hause kommen dazu: Ablauf verfolgen (Station 3), Plan in Code im Klausurmodus (Training 2) und Fehler finden (Training 3).</p>
+
+<p class="k-small k-muted">Wie weit die Gruppe im Training ist und an welcher Aufgabe sie hängt, zeigt vor dem nächsten Termin die Kursübersicht (Konto, „Kursübersicht für Dozierende“). Gezählt wird dort nur, wer mit Konto lernt. Die Knobelaufgaben am Ende des Labors sind freiwillig und zählen dort nicht mit.</p>
+
+</Dozent>
+
+</Lerneinheit>

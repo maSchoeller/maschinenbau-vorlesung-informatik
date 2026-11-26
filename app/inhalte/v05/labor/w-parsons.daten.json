@@ -1,0 +1,14 @@
+{
+ "solution": [
+  "stufen = int(input(\"Wie viele Stufen? \"))",
+  "for i in range(1, stufen + 1):",
+  "    print(f\"Stufe {i}\")",
+  "print(\"Oben\")"
+ ],
+ "distractors": [
+  "for i in range(1, stufen):",
+  "    i = i + 1"
+ ],
+ "alts": [],
+ "ok": "for zählt i selbst von 1 bis stufen. Die Ausgabe Oben steht nicht eingerückt und läuft einmal danach."
+}

@@ -1,1 +1,0 @@
-Fünf Regeln helfen beim Zeichnen: ein Start, beschriftete Ausgänge, zusammenlaufende Zweige, keine Kreuzungen und immer Pfeile. Merke: erst analysieren, dann den Plan zeichnen, dann der Code, von dir oder von der K I. Der P A P wird zum Prompt.
