@@ -1,0 +1,18 @@
+[
+ {
+  "p": 1,
+  "t": "n wird mit int(input(…)) als ganze Zahl eingelesen, beide Startwerte summe = 0 und zahl = 1 stehen vor der Schleife"
+ },
+ {
+  "p": 1,
+  "t": "while zahl <= n: mit Doppelpunkt am Ende der Zeile"
+ },
+ {
+  "p": 1,
+  "t": "Der Rumpf ist eingerückt und enthält beide Änderungen: summe = summe + zahl und zahl = zahl + 1"
+ },
+ {
+  "p": 1,
+  "t": "print(summe) steht nach der Schleife, nicht eingerückt"
+ }
+]

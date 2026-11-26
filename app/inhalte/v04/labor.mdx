@@ -1,0 +1,480 @@
+---
+titel: "Termin 04 · Programmierlabor · Informatik Maschinenbau"
+beschreibung: "Programmierlabor zu Termin 04: while-Schleifen mit Zähler und mit Eingabe als Ende, Plan mit Rücksprung zeichnen, eine Eingabe wiederholen, bis sie gültig ist, mit != und not. Mit Training für zu Hause."
+body:
+  data-lesson: V04
+  data-page: labor
+stile:
+  - ../assets/css/dhbw-base.css
+  - ../assets/css/kurs.css
+  - ../assets/css/aufgaben.css
+  - ../assets/css/editor.css
+  - ../assets/css/labor.css
+  - ../assets/css/v05.css
+  - ../assets/css/pap-editor.css
+skripte:
+  - ../assets/js/speicher.js
+  - ../assets/js/icons.js
+  - src: ../assets/js/editor.js
+    defer: true
+  - ../assets/js/pap-engine.js
+  - ../assets/js/kurs.js
+  - ../assets/js/aufgaben.js
+  - ../assets/js/pap-editor.js
+  - ../assets/js/labor.js
+---
+
+<Labor nr="V04" zuhause="57" name="Termin 04" lerneinheit="v04-formeln-und-schleifen.html">
+
+<Station id="a-werkzeugkasten" titel="Werkzeugkasten" teil="A" min="3">
+
+<p class="l-task__intro">Zwei neue Karten. Alles aus Termin 02 und 03 gilt weiter: Vergleiche, `if`, `elif`, `and` und `or`. Jeder Codeblock läuft: Ändere etwas und führ ihn aus. Den Werkzeugkasten erreichst du von jeder Aufgabe aus in der Befehls-Bibliothek oben rechts.</p>
+
+<Video name="v04-python" titel="Python-Werkzeugkasten: while, !=, not" fehlt="Video folgt. Bis dahin: Lies die beiden Karten und probier jeden Codeblock aus.">
+
+Python-Werkzeugkasten: while, !=, not (ca. 2 Min). Untertitel sind eingeschaltet (Deutsch).
+
+</Video>
+
+<Werkzeugkasten>
+
+<Syntaxkarte id="sk-while" nr="1" titel="while: wiederholen, solange">
+
+```python
+zaehler = 3
+while zaehler > 0:
+    print(zaehler)
+    zaehler = zaehler - 1
+print("Start")
+```
+
+- Ausgabe: `3`, `2`, `1`, `Start`.
+- `while` fragt vor jedem Durchlauf. Der Rumpf ist alles, was unter `while` eingerückt steht.
+- Was in der Bedingung steht, muss sich im Rumpf ändern. Sonst läuft die Schleife ewig.
+
+</Syntaxkarte>
+
+<Syntaxkarte id="sk-ungleich-not" nr="2" titel="!= und not: das Gegenteil">
+
+```python
+preis = 0
+print(preis != 0)
+print(not (preis >= 1 and preis <= 6))
+```
+
+- Ausgabe: `False`, dann `True`.
+- `!=` heißt ungleich.
+- `not` dreht wahr und falsch um. Die Klammer sagt, was umgedreht wird.
+
+</Syntaxkarte>
+
+</Werkzeugkasten>
+
+</Station>
+
+<Station id="a-vorgemacht" titel="Vorgerechnetes Beispiel: Einkauf zusammenrechnen" teil="A" min="5">
+
+<p class="l-task__intro">Aufgabe: Eingelesen werden Preise in ganzen Euro, so lange, bis die Eingabe 0 kommt. Ausgegeben wird die Summe. Wieder gilt: **erst der Plan, dann der Code.** Neu ist der Pfeil, der hinter dem Rumpf zurück zur Raute führt.</p>
+
+<Video name="v04-beispiel" titel="Vorgerechnet: Einkauf zusammenrechnen" fehlt="Video folgt. Bis dahin: Lies den Plan und den Code Zeile für Zeile und probier das Programm mit 12, 8, 5, 0 und mit nur 0 aus.">
+
+Vorgerechnet: Einkauf zusammenrechnen (ca. 2 Min). Untertitel sind eingeschaltet (Deutsch).
+
+</Video>
+
+<Plan titel="Einkauf zusammenrechnen">
+
+```text
+Eingabe: preis
+summe = 0
+Schleife: preis != 0?
+  summe = summe + preis
+  Eingabe: preis
+Ausgabe: summe
+```
+
+</Plan>
+
+<Aufgabe art="run" id="w-vorgemacht" data-count="0" data-mode="programm" data-inputs="12|8|5|0">
+
+<Editor datei="labor/w-vorgemacht.vorlage.py" aria-label="Python-Code: Einkauf zusammenrechnen" />
+
+</Aufgabe>
+
+<Schritte>
+
+1. **Der Ablauf in Worten:** Preise nacheinander einlesen und addieren, bis 0 kommt.
+2. **Wann ist Schluss?** Die Eingabe entscheidet: Die Schleife läuft, solange `preis` nicht 0 ist.
+3. **Die Eingabe steht zweimal:** vor der Schleife, sonst hat die Raute nichts zu prüfen, und am Ende des Rumpfs, sonst ändert sich `preis` nie.
+4. **Der Plan:** Raute `preis != 0?`, darunter der Rumpf, dann der Pfeil zurück zur Raute. Bei „nein“ geht es zur Ausgabe.
+5. **Der Code:** `!=` heißt ungleich. Die Zeile mit `while` endet mit einem Doppelpunkt, der Rumpf ist eingerückt.
+6. **Probe:** Mit 12, 8, 5, 0 erscheint `Summe: 25 Euro`. Mit nur 0 erscheint `Summe: 0 Euro`, denn der Rumpf läuft nie.
+7. **Selbsterklärung:** Was passiert, wenn die letzte Zeile im Rumpf fehlt? Überleg es dir, bevor du es ausprobierst. Die Seite bricht nach 8 Sekunden ab.
+
+</Schritte>
+
+</Station>
+
+<Station id="a-ablauf" titel="Ablauf verfolgen: eine Schleife" teil="A" min="5">
+
+<p class="l-task__intro">Führ das Programm im Kopf aus, Zeile für Zeile, und trag ein, was sich ändert. Die Zeile mit `while` kommt mehrmals dran, nämlich jedes Mal, wenn Python die Bedingung prüft, auch beim letzten Mal. In dieser Zeile trägst du in die Spalte Bedingung True oder False ein, ohne Anführungszeichen.</p>
+
+<Aufgabe art="trace" id="w-trace">
+
+<Daten datei="labor/w-trace.daten.json" />
+
+</Aufgabe>
+
+</Station>
+
+<Station id="a-plan" titel="Plan zeichnen: Sparziel" teil="A" sterne="2" min="10">
+
+<p class="l-task__intro">Eine Schleife ist im Plan eine Raute mit einem Pfeil zurück. Im Editor heißt das Symbol „Schleife, kopfgesteuert“: Die Raute steht vor dem Rumpf. Die Symbole des Rumpfs setzt du mit „In die Schleife einfügen“. Die Eingabe und die Ausgabe stehen schon im Editor, du ergänzt die Schleife. „Prüfen“ führt deinen Plan mit Beispielwerten aus.</p>
+
+<Aufgabe art="pap-zeichnen" id="w-plan" titel="Sparziel" data-timeout="8000" data-erlaubt="in,out,op,if,while">
+
+Du sparst jede Woche 5 Euro. Eingelesen wird das Sparziel in Euro (ganze Zahl). Ausgegeben wird die Zahl der Wochen, bis das Ziel erreicht oder überschritten ist.
+
+<Python rolle="tests" datei="labor/w-plan.tests.py" />
+
+<Daten datei="labor/w-plan.start.json" rolle="start" />
+
+<Daten datei="labor/w-plan.solution.json" rolle="solution" />
+
+<Tipps>
+
+1. Zwei Werte ändern sich: `geld` und `wochen`. Beide starten bei 0.
+2. Die Schleife fragt, ob das Geld noch nicht reicht: `geld < ziel`. Das Fragezeichen setzt der Editor selbst.
+3. Im Rumpf stehen zwei Operationen, vom letzten führt der Pfeil zurück zur Raute. Die Ausgabe steht hinter dem nein-Ausgang.
+
+</Tipps>
+
+</Aufgabe>
+
+</Station>
+
+<Station id="a-zeilen" titel="Zeilen ordnen: Countdown" teil="A" min="4">
+
+<p class="l-task__intro">Der Plan ist gegeben, die Zeilen des Programms sind durcheinander, und zwei gehören gar nicht dazu. Bring die passenden Zeilen in die Reihenfolge des Plans, mit der richtigen Einrückung.</p>
+
+<Aufgabe art="parsons" id="w-parsons" titel="Countdown">
+
+Der Zähler startet bei 3 und zählt bis 1 herunter. Danach erscheint „Start“.
+
+<Plan titel="Countdown">
+
+```text
+zaehler = 3
+Schleife: zaehler > 0?
+  Ausgabe: zaehler
+  zaehler = zaehler - 1
+Ausgabe: "Start"
+```
+
+</Plan>
+
+<Daten datei="labor/w-parsons.daten.json" />
+
+</Aufgabe>
+
+</Station>
+
+<Station id="a-luecken" titel="Lücken füllen: Monat eintragen" teil="A" min="8">
+
+<p class="l-task__intro">Die Eingabe wird wiederholt, bis ein Monat zwischen 1 und 12 kommt. Der Plan steht vollständig da. Ergänze die vier Lücken.</p>
+
+<Aufgabe art="gap" id="w-luecken" data-mode="programm">
+
+<Plan titel="Monat eintragen">
+
+```text
+Eingabe: monat
+Schleife: not (monat >= 1 and monat <= 12)?
+  Ausgabe: "Das gibt es nicht."
+  Eingabe: monat
+Ausgabe: "Monat … eingetragen"
+```
+
+</Plan>
+
+```text class="a-gap__src" data-run="no"
+monat = int(input("Monat (1 bis 12): "))
+@@while@@ @@not@@ (monat >= 1 @@and@@ monat <= 12):
+    print("Das gibt es nicht.")
+    monat = @@int@@(input("Monat (1 bis 12): "))
+print(f"Monat {monat} eingetragen")
+```
+
+<Python rolle="tests" datei="labor/w-luecken.tests.py" />
+
+<Tipps>
+
+1. Lücke 1: Welches Wort lässt einen Block so lange laufen, wie eine Bedingung stimmt? Karte 1 zeigt es.
+2. Lücke 2 und 3: Gültig heißt mindestens 1 UND höchstens 12. Wiederholt wird bei „nicht gültig“. Karte 2 zeigt das Wort für „nicht“.
+3. Lücke 4: Im Rumpf wird die Eingabe noch einmal gelesen und in eine Zahl umgewandelt, wie in der ersten Zeile.
+
+</Tipps>
+
+</Aufgabe>
+
+</Station>
+
+<Station id="a-eigene" titel="Erste eigene Aufgabe: Türcode" teil="A" sterne="1" min="8">
+
+<p class="l-task__intro">Deine erste eigene Schleife. Der Plan steht schon da, du überträgst ihn Symbol für Symbol in Code.</p>
+
+<Aufgabe art="code" id="w-eigene" titel="Türcode" data-mode="programm" data-inputs="1|2|4711">
+
+<div class="a-task__text">
+
+Die Tür öffnet bei dem Code 4711. Eingelesen wird ein Code (ganze Zahl). Bei jedem falschen Code erscheint `Falsch` und der Code wird erneut abgefragt. Zum Schluss erscheint `Tür offen`.
+
+<Plan titel="Türcode">
+
+```text
+Eingabe: code
+Schleife: code != 4711?
+  Ausgabe: "Falsch"
+  Eingabe: code
+Ausgabe: "Tür offen"
+```
+
+</Plan>
+
+</div>
+
+<Editor datei="labor/w-eigene.vorlage.py" aria-label="Python-Code: Türcode" />
+
+<Python rolle="tests" datei="labor/w-eigene.tests.py" />
+
+<Python rolle="solution" datei="labor/w-eigene.solution.py" />
+
+<Tipps>
+
+1. Fünf Symbole, fünf Zeilen.
+2. Die Eingabe steht zweimal: einmal vor der Schleife, einmal im Rumpf.
+3. Wiederholt wird, solange der Code nicht stimmt. Welcher Vergleich heißt „ungleich“? Karte 2 zeigt ihn.
+
+</Tipps>
+
+</Aufgabe>
+
+<p class="k-small k-muted">Für Schnelle: Nach drei falschen Codes erscheint `Gesperrt` statt weiterer Abfrage. Dafür braucht es einen Zähler. Probier, wie weit du ohne Hilfe kommst.</p>
+
+</Station>
+
+<Station id="a-fehler" titel="Fehler finden: Becken füllen" teil="A" min="6" data-seen="manual">
+
+<p class="l-task__intro">Lies das Programm Zeile für Zeile und vergleiche es mit der Aufgabe. Ein Fehler meldet Python, den anderen findest nur du, zum Beispiel mit einer Probe.</p>
+
+<Fehlersuche titel="Becken füllen" fehler="3 4">
+
+Ein Becken fasst 100 Liter. Jede Minute laufen 20 Liter ein. Das Programm soll ausgeben, nach wie vielen Minuten es voll ist. Erwartet wird 5. In zwei Zeilen steckt ein Fehler.
+
+```text
+liter = 0
+minuten = 0
+while liter < 100
+    minuten = minuten + 1
+print(f"Voll nach {minuten} Minuten")
+```
+
+#### Fehler 1: Doppelpunkt fehlt (Zeile 3)
+
+Die Zeile mit `while` endet mit einem Doppelpunkt. Python meldet `SyntaxError: expected ':'`.
+
+#### Fehler 2: Die Bedingung ändert sich nie (Zeile 4)
+
+`liter` wächst im Rumpf nie, also bleibt `liter < 100` für immer wahr. Das ist eine Endlosschleife. Python meldet dazu nichts. Die Seite bricht nach 8 Sekunden ab: „Abgebrochen nach 8 s. Läuft da eine Endlosschleife?“ Was in der Bedingung steht, muss sich im Rumpf ändern: Es fehlt `liter = liter + 20`.
+
+So ist es richtig:
+
+```python
+liter = 0
+minuten = 0
+while liter < 100:
+    minuten = minuten + 1
+    liter = liter + 20
+print(f"Voll nach {minuten} Minuten")
+```
+
+Probe: Es erscheint `Voll nach 5 Minuten`.
+
+</Fehlersuche>
+
+</Station>
+
+<Station id="t-1" titel="Wahrheitstabelle ausfüllen" teil="B" sterne="1" min="9">
+
+<p class="l-task__intro">Das Training gehört zum Termin: Mit dem Selbstcheck und den Stationen 3, 5 und 7 sind es etwa 57 Minuten, bis zum nächsten Mal. Termin 05 beginnt mit dieser Tabelle. Füll sie für Y = (A ODER B) UND (C ODER D) zuerst auf Papier aus, dann prüf sie hier. Die Tabelle hat 16 Zeilen, von 0000 bis 1111. Die Hilfsspalten sind A ODER B und C ODER D. Trag in jedes Feld 0 oder 1 ein, ohne Anführungszeichen.</p>
+
+<Aufgabe art="trace" id="tr-1" titel="(A ODER B) UND (C ODER D)">
+
+<Daten datei="labor/tr-1.daten.json" />
+
+</Aufgabe>
+
+</Station>
+
+<Station id="t-2" titel="Plan in Code übertragen: Summe bis n" teil="B" sterne="2" min="8">
+
+<p class="l-task__intro">Klausurform „Plan in Code übertragen“: Schreib das Programm wie auf Papier, ohne Ausführen und ohne Vorschläge des Editors. Dann abgeben und mit der Lösung vergleichen.</p>
+
+<Aufgabe art="klausur" id="tr-2" titel="Summe bis n" data-mode="programm" data-minutes="8">
+
+<div class="a-task__text">
+
+Übertrage den Plan in ein Python-Programm. Eingelesen wird eine ganze Zahl n. Ausgegeben wird die Summe 1 + 2 + … + n. Bei n = 4 ist das 10.
+
+<Plan titel="Summe bis n">
+
+```text
+Eingabe: n (ganze Zahl)
+summe = 0
+zahl = 1
+Schleife: zahl <= n?
+  summe = summe + zahl
+  zahl = zahl + 1
+Ausgabe: summe
+```
+
+</Plan>
+
+</div>
+
+<Editor data-assist="off" aria-label="Python-Code von Hand schreiben, ohne Ausführen" />
+
+<Python rolle="tests" datei="labor/tr-2.tests.py" />
+
+<Python rolle="solution" datei="labor/tr-2.solution.py" />
+
+<Daten datei="labor/tr-2.scheme.json" rolle="scheme" />
+
+</Aufgabe>
+
+</Station>
+
+<Station id="t-3" titel="Fehler finden und beheben: Zahlen von 1 bis n" teil="B" sterne="2" min="6">
+
+<p class="l-task__intro">In diesem Programm stecken zwei Fehler: einer, den Python meldet, und einer, den du nur mit einer Probe findest. Probier 3.</p>
+
+<Aufgabe art="code" id="tr-3" titel="Zahlen von 1 bis n" data-mode="programm" data-inputs="3">
+
+<div class="a-task__text">
+
+Das Programm liest eine ganze Zahl n ein und gibt die Zahlen von 1 bis n aus, jede in einer eigenen Zeile. Bei n = 3 erscheinen 1, 2 und 3. Behebe beide Fehler.
+
+</div>
+
+<Editor datei="labor/tr-3.vorlage.py" aria-label="Python-Code: Zahlen von 1 bis n" />
+
+<Python rolle="tests" datei="labor/tr-3.tests.py" />
+
+<Python rolle="solution" datei="labor/tr-3.solution.py" />
+
+<Tipps>
+
+1. Führ das Programm aus und lies die Meldung von unten: Nach welcher Zeile fehlt etwas?
+2. Läuft es, probier 3: Welche Zahlen soll es ausgeben, welche gibt es aus?
+3. Die letzte Zahl ist n selbst. Welcher Vergleich lässt zahl == n noch durch?
+
+</Tipps>
+
+</Aufgabe>
+
+</Station>
+
+<Station id="t-4" titel="Druck prüfen" teil="B" sterne="3" min="10">
+
+<p class="l-task__intro">Ohne vorgegebenen Plan. Zeichne zuerst auf Papier: Eingabe, Zähler, Schleife, im Rumpf zählen und neu einlesen. Dann schreib das Programm.</p>
+
+<Aufgabe art="code" id="tr-4" titel="Druck prüfen" data-mode="programm" data-inputs="180">
+
+<div class="a-task__text">
+
+Die Presse braucht einen Hydraulikdruck von 150 bis 210 bar, die Grenzen sind erlaubt. Das Programm liest den Druck als ganze Zahl ein und fragt neu, solange er außerhalb liegt. Es zählt die Fehlversuche und gibt am Ende die Zeile `Druck ok: 180 bar, Fehlversuche: 0` aus, mit dem eingegebenen Druck und der Zahl der Fehlversuche. Beispiel: Die Eingaben 100, 250, 150 ergeben `Druck ok: 150 bar, Fehlversuche: 2`.
+
+</div>
+
+<Editor datei="labor/tr-4.vorlage.py" aria-label="Python-Code: Druck prüfen" />
+
+<Python rolle="tests" datei="labor/tr-4.tests.py" />
+
+<Python rolle="solution" datei="labor/tr-4.solution.py" />
+
+<Tipps>
+
+1. Zeichne zuerst den Plan: Eingabe, Zähler auf 0, Schleife, im Rumpf zählen und neu einlesen.
+2. Ungültig heißt zu klein ODER zu groß. 150 und 210 selbst sind gültig.
+3. Die Eingabeschleife kennst du von „Monat eintragen“, den Zähler von „Sparziel“: `fehler = 0` vor der Schleife, `fehler = fehler + 1` im Rumpf.
+
+</Tipps>
+
+</Aufgabe>
+
+</Station>
+
+<Knobel id="kn-1" titel="Streichholzspiel für zwei">
+
+<Aufgabe art="code" id="k-1" data-mode="programm" data-inputs="3|3|3|2|1">
+
+<div class="a-task__text">
+
+Zwölf Hölzer liegen auf dem Tisch. Spieler 1 und Spieler 2 nehmen abwechselnd 1, 2 oder 3 Hölzer, Spieler 1 beginnt. Wer das letzte Holz nimmt, verliert.
+
+Das Programm fragt den jeweiligen Spieler mit `int(input(…))`. Eine Zahl ist ungültig, wenn sie kleiner als 1 ist, größer als 3 oder größer als die Zahl der Hölzer, die noch da sind. Bei einer ungültigen Zahl wird derselbe Spieler noch einmal gefragt, so lange, bis sie gültig ist. Am Ende erscheint als letzte Zeile zum Beispiel `Spieler 1 nimmt das letzte Holz und verliert`.
+
+Beispiel: Die Eingaben 3, 3, 3, 2, 1 ergeben `Spieler 1 nimmt das letzte Holz und verliert`.
+
+</div>
+
+<Editor datei="labor/k-1.vorlage.py" aria-label="Python-Code: Streichholzspiel für zwei" />
+
+<Python rolle="tests" datei="labor/k-1.tests.py" />
+
+<Python rolle="solution" datei="labor/k-1.solution.py" />
+
+<Tipps>
+
+1. Du brauchst zwei Schleifen: Die äußere läuft, solange noch Hölzer da sind, die innere fragt so lange neu, bis die Zahl gültig ist.
+2. Die Bedingung der inneren Schleife hat drei Teile mit `or`: zu klein, zu groß, mehr als noch da sind.
+3. Wechsle nach jedem Zug den Spieler: `spieler = 3 - spieler` macht aus 1 eine 2 und aus 2 eine 1. Nach der Schleife ist der Verlierer der andere.
+
+</Tipps>
+
+</Aufgabe>
+
+</Knobel>
+
+<Knobel id="kn-2" titel="Genau zwei von drei Tastern">
+
+<Aufgabe art="code" id="k-2" data-mode="programm" data-inputs="1|1|0">
+
+<div class="a-task__text">
+
+An einer Maschine sitzen drei Taster. Jeder wird als 0 (nicht gedrückt) oder 1 (gedrückt) eingelesen, das steht schon in der Vorlage. Das Programm gibt `Ja` aus, wenn genau zwei Taster gedrückt sind, sonst `Nein`.
+
+Beispiele: 1, 1, 0 ergibt `Ja`. 1, 1, 1 ergibt `Nein`, denn drei sind zu viel.
+
+</div>
+
+<Editor datei="labor/k-2.vorlage.py" aria-label="Python-Code: Genau zwei von drei Tastern" />
+
+<Python rolle="tests" datei="labor/k-2.tests.py" />
+
+<Python rolle="solution" datei="labor/k-2.solution.py" />
+
+<Tipps>
+
+1. Zeichne die Tabelle mit 8 Zeilen. In wie vielen Zeilen steht Ja?
+2. Du kannst jede Ja-Zeile als UND-Verbindung schreiben und die drei Verbindungen mit ODER zusammensetzen. Es geht aber auch kürzer: Was ergibt a + b + c, wenn genau zwei Taster gedrückt sind?
+3. Prüf die Grenzfälle 0, 0, 0 und 1, 1, 1.
+
+</Tipps>
+
+</Aufgabe>
+
+</Knobel>
+
+
+</Labor>

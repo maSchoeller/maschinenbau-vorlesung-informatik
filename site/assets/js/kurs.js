@@ -1096,6 +1096,25 @@ _result
       finish: function () { status(''); }
     };
   };
+  /* Ausgabekappung: emit(text, cls) bekommt höchstens max Zeilen (und 100000 Zeichen); danach der Hinweis, dann nichts mehr.
+     Eine Kappe gilt für einen Lauf. Schützt die Seite vor print() in einer Endlosschleife. */
+  Py.kappe = function (emit, max) {
+    max = max || 500;
+    var zeilen = 0, zeichen = 0, voll = false, MAXZ = 100000;
+    return function (text, cls) {
+      if (voll) return;
+      text = String(text);
+      if (!text) return;
+      var ende = text.length, pos = -1, n = 0, rest = max - zeilen;
+      while (n < rest) { pos = text.indexOf('\n', pos + 1); if (pos < 0) break; n++; }
+      if (n === rest && pos + 1 < text.length) { ende = pos + 1; voll = true; }
+      else zeilen += n;
+      if (zeichen + ende > MAXZ) { ende = Math.max(0, MAXZ - zeichen); voll = true; }
+      zeichen += ende;
+      if (ende) emit(text.slice(0, ende), cls);
+      if (voll) emit((ende && text.charAt(ende - 1) !== '\n' ? '\n' : '') + '… weitere Ausgabe abgeschnitten\n', 'sys');
+    };
+  };
   Py.mix = function (a, b) { Object.keys(b || {}).forEach(function (k) { a[k] = b[k]; }); return a; };
   /* Knopf „Eigene CSV laden“: gibt {el, get()} zurück; get() liefert [{name, data}] für opts.upload */
   Py.uploadUI = function (idBase) {
@@ -1222,7 +1241,7 @@ _result
         var good = predicted.hasAttribute('data-correct');
         var res = $('.k-predict__result', predict);
         res.innerHTML = '';
-        res.appendChild(el('strong', { text: good ? 'Dein Tipp „' + predicted.textContent + '“ stimmt. ' : 'Dein Tipp war „' + predicted.textContent + '“ – die Ausgabe sieht anders aus. ' }));
+        res.appendChild(el('strong', { text: good ? 'Dein Tipp „' + predicted.textContent + '“ stimmt. ' : 'Dein Tipp war „' + predicted.textContent + '“. Die Ausgabe sieht anders aus. ' }));
         var ex = $('.k-predict__expl', predict);
         if (ex) { var c = el('span'); c.innerHTML = ex.innerHTML; res.appendChild(c); }
       };
@@ -1259,13 +1278,13 @@ _result
     function finish(r, gotOutput) {
       if (r.timedOut) append('\nAbgebrochen nach ' + (timeout / 1000) + ' s. Läuft da eine Endlosschleife?\n', 'err');
       else if (r.error) append((out.textContent && !/\n$/.test(out.textContent) ? '\n' : '') + r.error.replace(/\s+$/, '') + '\n', 'err');
-      else if (!gotOutput) append('(keine Ausgabe – hast du print() benutzt?)', 'sys');
+      else if (!gotOutput) append('(keine Ausgabe. Hast du print() benutzt?)', 'sys');
       status.textContent = r.timedOut ? 'abgebrochen' : (r.error ? 'Fehler' : 'fertig');
       if (predict && predicted) box._kVorhersage.zeige();
     }
     function loadFail(err) {
       append('Python konnte nicht gestartet werden. Bist du online? (' + err.message + ')\n', 'err');
-      status.textContent = 'Ladefehler – erneut versuchen';
+      status.textContent = 'Ladefehler, bitte erneut versuchen';
     }
 
     /* Terminal-Dialog: Eingaben direkt in der Ausgabe tippen (Wiederholungslauf, siehe Py.terminal) */
@@ -1276,10 +1295,11 @@ _result
       term = Py.terminal(out, {
         exec: function (inputs, seed, sink) {
           var rich = Py.ui(out, { files: dataFiles, upload: uploader ? uploader.get : null, scan: termCode });
+          var cap = Py.kappe(sink);
           return Py.console(termCode, '', Py.mix({
             timeout: timeout, term: true, inputs: inputs, seed: seed,
-            onOut: function (t) { sink(t); },
-            onErr: function (t) { sink(t, 'err'); }
+            onOut: function (t) { cap(t); },
+            onErr: function (t) { cap(t, 'err'); }
           }, rich)).then(function (r) { rich.finish(); return r; }, function (e) { rich.finish(); throw e; });
         },
         onWait: function () {
@@ -1315,12 +1335,12 @@ _result
       busyStatus(!Py.worker ? 'Python wird geladen (einmalig, ca. 10 MB) …' : 'läuft …');
       var code = curCode();
       if (termMode(code)) { termCode = code; getTerm().start(); return; }
-      var gotOutput = false;
+      var gotOutput = false, cap = Py.kappe(append);
       var rich = Py.ui(out, { files: dataFiles, upload: uploader ? uploader.get : null, scan: code });
       Py.console(code, stdinTa.value, Py.mix({
         timeout: timeout,
-        onOut: function (t) { gotOutput = true; append(t); },
-        onErr: function (t) { gotOutput = true; append(t, 'err'); }
+        onOut: function (t) { gotOutput = true; cap(t); },
+        onErr: function (t) { gotOutput = true; cap(t, 'err'); }
       }, rich)).then(function (r) {
         rich.finish();
         finish(r, gotOutput);

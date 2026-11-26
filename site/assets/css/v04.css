@@ -1,0 +1,80 @@
+/* v04.css – Termin 04: Formeln und Schleifen. Stile der Bausteine in explorables-v04.js (vier-schalter, gleichwertig, schleife).
+   Ruhiger DHBW-Stil wie v03.css. Zustand steht immer auch als Wort, Zeichen oder Linienstärke da, nie nur als Farbe.
+   Nur Desktop und Tablet (ab 768 px). */
+
+.v04-bau { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--sp-4) var(--sp-5); align-items: start; }
+.v04-schalterreihe { display: flex; flex-wrap: wrap; gap: var(--sp-3); margin-bottom: var(--sp-4); }
+.v04-schalter {
+  display: grid; justify-items: center; gap: var(--sp-2); min-width: 104px; min-height: 44px; padding: var(--sp-3) var(--sp-4);
+  font: inherit; font-weight: 600; color: var(--text); background: #fff; cursor: pointer;
+  border: 2px solid var(--text); border-radius: var(--r-base);
+}
+.v04-schalter__hebel { position: relative; width: 56px; height: 28px; border-radius: 14px; background: #E5E7EB; border: 2px solid var(--text); }
+.v04-schalter__hebel::after { content: ""; position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; border-radius: 50%; background: var(--text); }
+.v04-schalter.is-an { border-color: var(--red-dark); background: var(--red-tint); }
+.v04-schalter.is-an .v04-schalter__hebel { background: var(--red-dark); border-color: var(--red-dark); }
+.v04-schalter.is-an .v04-schalter__hebel::after { left: 30px; background: #fff; }
+.v04-schalter__zustand { font-variant-numeric: tabular-nums; }
+.v04-schalter__name { font-size: var(--fs-sm); }
+
+.v04-lampen { display: flex; flex-wrap: wrap; gap: var(--sp-4); }
+.v04-lampe { display: grid; justify-items: center; gap: var(--sp-1); min-width: 128px; padding: var(--sp-3); border-top: 3px solid var(--k-line); background: var(--canvas); }
+.v04-lampe__licht { width: 44px; height: 44px; border-radius: 50%; border: 3px solid #6B7280; background: #fff; }
+.v04-lampe.is-an { border-top-color: var(--red); }
+.v04-lampe.is-an .v04-lampe__licht { background: #FFD43B; border-color: #B45309; box-shadow: 0 0 0 4px #FFF3BF; }
+.v04-lampe__name { font-size: var(--fs-sm); font-weight: 600; }
+.v04-lampe__zustand { font-variant-numeric: tabular-nums; }
+
+.v04-tabelle { margin: 0; max-width: 560px; }
+.v04-tabelle th, .v04-tabelle td { text-align: center; font-variant-numeric: tabular-nums; }
+.v04-tabelle td { color: var(--text); }
+.v04-tabelle tbody th { border-bottom: 1px solid var(--border); font-weight: 600; }
+.v04-tabelle td.v04-ergebnis { font-weight: 700; }
+.v04-tabelle tbody tr.is-jetzt th, .v04-tabelle tbody tr.is-jetzt td { background: var(--red-tint); font-weight: 700; box-shadow: inset 0 -2px 0 var(--red); }
+.v04-tabelle-host { overflow-x: auto; }
+
+.v04-auswahlzeile { display: grid; gap: var(--sp-1); margin-bottom: var(--sp-4); }
+.v04-auswahlzeile label { font-size: var(--fs-sm); font-weight: 600; }
+.v04-auswahl { font: inherit; min-height: 44px; padding: var(--sp-2) var(--sp-3); color: var(--text); background: #fff; border: 2px solid var(--text); border-radius: var(--r-base); max-width: 100%; }
+
+/* Gleichwertig: Unterschiedszeilen mit Text und Zeichen in der letzten Spalte, dazu fette Schrift und dicke Linie */
+.v04-gleich { display: grid; gap: var(--sp-3); }
+.v04-vergleich { white-space: nowrap; }
+.v04-tabelle tbody tr.is-anders th, .v04-tabelle tbody tr.is-anders td { background: var(--red-tint); font-weight: 700; box-shadow: inset 0 -2px 0 var(--red-dark); }
+.v04-urteil { margin: 0; padding: var(--sp-3) var(--sp-4); font-weight: 700; border-left: 6px solid var(--text); background: var(--canvas); }
+.v04-urteil.is-gleich { border-left-color: var(--k-ok); color: var(--k-ok); }
+.v04-urteil.is-ungleich { border-left-color: var(--k-bad); color: var(--k-bad); }
+
+/* Schleife: Plan, Knöpfe, Anzeigen */
+.v04-schleife { display: grid; grid-template-columns: minmax(300px, 1.1fr) minmax(0, 1fr); gap: var(--sp-5); align-items: start; }
+.v04-titel { margin: 0 0 var(--sp-1); font-size: var(--fs-sm); font-weight: 600; color: var(--k-muted); }
+.v04-knoepfe { display: flex; flex-wrap: wrap; gap: var(--sp-2); margin-bottom: var(--sp-3); }
+.v04-knopf, .v04-aktion {
+  min-height: 44px; min-width: 44px; padding: var(--sp-2) var(--sp-4); font: inherit; font-weight: 600; color: var(--text); background: #fff; cursor: pointer;
+  border: 2px solid var(--text); border-radius: var(--r-base);
+}
+.v04-knopf.is-code { font-family: var(--font-mono, ui-monospace, Consolas, monospace); }
+.v04-knopf[aria-pressed="true"] { background: var(--red-tint); border-color: var(--red-dark); box-shadow: inset 0 -4px 0 var(--red-dark); }
+.v04-aktion { background: var(--text); color: #fff; }
+.v04-aktion--leise { background: #fff; color: var(--text); }
+.v04-aktion.is-aus { opacity: .5; cursor: default; text-decoration: line-through; }
+.v04-aktionen { display: flex; flex-wrap: wrap; gap: var(--sp-3); margin-bottom: var(--sp-3); }
+.v04-jetzt { margin: 0 0 var(--sp-3); font-weight: 600; }
+.v04-zaehler { margin: 0 0 var(--sp-3); }
+.v04-wert { font-size: 1.4em; font-variant-numeric: tabular-nums; }
+.v04-ausgabe { margin: 0 0 var(--sp-3); padding: var(--sp-2) var(--sp-3); min-height: 3em; font-family: var(--font-mono, ui-monospace, Consolas, monospace); background: var(--canvas); border-left: 4px solid var(--k-line); }
+.v04-rumpf { margin: 0 0 var(--sp-3); font-weight: 700; font-variant-numeric: tabular-nums; }
+.v04-meldung { margin: 0 0 var(--sp-3); padding: var(--sp-3) var(--sp-4); font-weight: 700; color: var(--k-bad); border-left: 6px solid var(--k-bad); background: var(--red-tint); }
+.v04-meldung[hidden] { display: none; }
+/* Aktives Symbol: dicke rote Linie und fette Schrift, die anderen blasser und gestrichelt */
+.v04-pap .pap-n .pap-shape, .v04-pap .pap-line, .v04-pap .pap-ah, .v04-pap .pap-t { transition: none; }
+.v04-pap .pap-n.is-ruhe .pap-shape { stroke-dasharray: 5 4; stroke: #6B7280; }
+.v04-pap .pap-n.is-aktiv .pap-shape { fill: var(--red-tint); stroke: #E2001A; stroke-width: 4; }
+.v04-pap .pap-n.is-aktiv .pap-t { font-weight: 700; }
+
+@media (max-width: 1099px) { .v04-bau, .v04-schleife { grid-template-columns: minmax(0, 1fr); } }
+/* Schmaler Inhalt (breites Tutor-Panel): einspaltig wie unter 1100 px */
+html.app-eng .v04-bau, html.app-eng .v04-schleife { grid-template-columns: minmax(0, 1fr); }
+@media (prefers-reduced-motion: no-preference) {
+  .v04-schalter__hebel, .v04-schalter__hebel::after, .v04-lampe__licht { transition: background-color .15s, left .15s, border-color .15s; }
+}

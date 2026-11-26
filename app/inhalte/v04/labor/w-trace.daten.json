@@ -1,0 +1,109 @@
+{
+ "typhinweis": false,
+ "code": [
+  "n = 1",
+  "schritte = 0",
+  "while n < 6:",
+  "    n = n * 2",
+  "    schritte = schritte + 1",
+  "print(n, schritte)"
+ ],
+ "vars": [
+  "n",
+  "schritte",
+  "Bedingung"
+ ],
+ "steps": [
+  {
+   "line": 1,
+   "set": {
+    "n": "1"
+   }
+  },
+  {
+   "line": 2,
+   "set": {
+    "schritte": "0"
+   }
+  },
+  {
+   "line": 3,
+   "set": {
+    "Bedingung": "True"
+   },
+   "frage": "Zeile 3 prüft die Bedingung zum ersten Mal. Trag True oder False ein, wie Python es schreibt: großer Anfangsbuchstabe, ohne Anführungszeichen.",
+   "hint": "n ist 1, und 1 < 6 ist wahr. Schreib True, ohne Anführungszeichen."
+  },
+  {
+   "line": 4,
+   "set": {
+    "n": "2"
+   },
+   "hint": "Rechts ausrechnen: 1 * 2. Das Ergebnis kommt in n, der alte Wert ist weg."
+  },
+  {
+   "line": 5,
+   "set": {
+    "schritte": "1"
+   },
+   "hint": "schritte war 0, jetzt kommt 1 dazu."
+  },
+  {
+   "line": 3,
+   "set": {
+    "Bedingung": "True"
+   },
+   "frage": "Zeile 3 prüft die Bedingung zum zweiten Mal. Trag True oder False ein, ohne Anführungszeichen.",
+   "hint": "n ist jetzt 2, und 2 < 6 ist wahr. Schreib True, ohne Anführungszeichen."
+  },
+  {
+   "line": 4,
+   "set": {
+    "n": "4"
+   },
+   "hint": "Rechts ausrechnen: 2 * 2."
+  },
+  {
+   "line": 5,
+   "set": {
+    "schritte": "2"
+   },
+   "hint": "schritte war 1, jetzt kommt 1 dazu."
+  },
+  {
+   "line": 3,
+   "set": {
+    "Bedingung": "True"
+   },
+   "frage": "Zeile 3 prüft die Bedingung zum dritten Mal. Trag True oder False ein, ohne Anführungszeichen.",
+   "hint": "n ist jetzt 4, und 4 < 6 ist wahr. Schreib True, ohne Anführungszeichen."
+  },
+  {
+   "line": 4,
+   "set": {
+    "n": "8"
+   },
+   "hint": "Rechts ausrechnen: 4 * 2."
+  },
+  {
+   "line": 5,
+   "set": {
+    "schritte": "3"
+   },
+   "hint": "schritte war 2, jetzt kommt 1 dazu."
+  },
+  {
+   "line": 3,
+   "set": {
+    "Bedingung": "False"
+   },
+   "frage": "Zeile 3 prüft die Bedingung zum vierten Mal. Trag True oder False ein, ohne Anführungszeichen.",
+   "hint": "n ist jetzt 8, und 8 < 6 ist falsch. Die Schleife ist zu Ende, die Zeilen 4 und 5 laufen nicht noch einmal. Schreib False, ohne Anführungszeichen."
+  },
+  {
+   "line": 6,
+   "out": "8 3",
+   "hint": "print schreibt beide Werte mit einem Leerzeichen dazwischen: erst n, dann schritte."
+  }
+ ]
+}

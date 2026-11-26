@@ -19,7 +19,7 @@
 #            (nicht im Lernpfad, nicht im Lektionswähler, nicht in Heute, Suche, Glossar und Kursübersicht).
 #            Abgeschaltete Lektionen stehen in dist/app/daten/kurs.json nur unter entwuerfe und sind nicht im
 #            Precache des Service Workers; pruefe-loesungen.mjs prüft sie trotzdem.
-#            Zurzeit ist V03 abgeschaltet (Entwurf von Termin 03). V02 ist seit 2026-11-25 freigeschaltet.
+#            Zurzeit sind V03 und V04 abgeschaltet (Entwürfe von Termin 03 und 04). V02 ist seit 2026-11-25 freigeschaltet.
 
 semester:
   - nr: 1
@@ -59,7 +59,7 @@ termine:
   - { nr: 1,  theorie: { T1: 2 },        programmieren: { P1: 2 }, lektion: V01 }
   - { nr: 2,  theorie: { T2: 1 },        programmieren: { P1: 1, P2: 2 }, lektion: V02 }
   - { nr: 3,  theorie: { T2: 2 },        programmieren: { P2: 2 }, lektion: V03 }
-  - { nr: 4,  theorie: { T2: 2 },        programmieren: { P3: 2 } }
+  - { nr: 4,  theorie: { T2: 2 },        programmieren: { P3: 2 }, lektion: V04 }
   - { nr: 5,  theorie: { T3: 1 },        programmieren: { P3: 3 } }
   - { nr: 6,  theorie: { T3: 1, T4: 1 }, programmieren: { P3: 2 } }
   - { nr: 7,  theorie: { T5: 2 },        programmieren: { P4: 2 } }
@@ -106,6 +106,17 @@ lektionen:
     semester: 1
     lerneinheit: v03-und-oder-drei-wege.html
     labor: v03-labor.html
+    notebook: null
+    freigabe: null
+    aktiv: false
+  - nr: V04
+    titel: "Solange es stimmt: Formeln und Schleifen"
+    kurz: "Formeln, Schleifen"
+    hook: "Die Presse fährt, solange alles stimmt"
+    python: ["while …:", "Zähler in der Schleife", "!= (ungleich)", "not"]
+    semester: 1
+    lerneinheit: v04-formeln-und-schleifen.html
+    labor: v04-labor.html
     notebook: null
     freigabe: null
     aktiv: false

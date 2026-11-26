@@ -1,0 +1,35 @@
+"""Sprechertext Termin 04, Video 1: Gleichwertig: zwei Tabellen, eine Spalte (Quelltext mit Markup)."""
+SRC = [
+ ["Zwei Techniker sollen die Sperre einer Presse aufschreiben. Die Presse fährt nur, wenn die Schutztür geschlossen ist und der Druck im Bereich liegt.",
+  "Die Variablen: C heißt, die Schutztür ist geschlossen. D heißt, der Druck liegt im Bereich.",
+  "Der erste Techniker schreibt: Der Hub ist gesperrt, wenn nicht gilt: C [[UND|und]] D. Also [[NICHT|nicht]], Klammer auf, C [[UND|und]] D, Klammer zu.",
+  "Die zweite schreibt: Gesperrt ist, wenn die Tür offen ist [[ODER|oder]] der Druck nicht stimmt. Also [[NICHT|nicht]] C, [[ODER|oder]], [[NICHT|nicht]] D.",
+  "Meinen beide dasselbe? Das entscheidet nur die Tabelle."],
+ ["Zwei Variablen, vier Zeilen: [[00, 01, 10, 11|null null, null eins, eins null, eins eins]].",
+  "Erst die Spalte C [[UND|und]] D. Sie hat nur in der letzten Zeile eine 1.",
+  "Die Sperre des ersten Technikers dreht diese Spalte um: [[1 1 1 0|eins eins eins null]].",
+  "Für die zweite brauchst du zwei Hilfsspalten: [[NICHT|nicht]] C und [[NICHT|nicht]] D. Dann verbindest du sie mit [[ODER|oder]].",
+  "Auch hier steht in jeder Zeile eine 1, nur in der letzten nicht. Die Spalte ist [[1 1 1 0|eins eins eins null]]."],
+ ["Beide Spalten sind in jeder Zeile gleich. Das ist der Test für gleichwertig.",
+  "Zwei Ausdrücke sind gleichwertig, wenn ihre Ergebnisspalten in jeder Zeile übereinstimmen.",
+  "Jetzt ein dritter Vorschlag: [[NICHT|nicht]] C, [[UND|und]], [[NICHT|nicht]] D. Seine Spalte ist [[1 0 0 0|eins null null null]].",
+  "Das ist nicht gleichwertig. Bei offener Tür und gutem Druck bliebe die Presse frei.",
+  "Dieser Fehler ist gefährlich. Nur die Tabelle zeigt ihn zuverlässig."],
+ ["Dasselbe gilt für den Ruhezustand: Kein Taster ist gedrückt. A und B sind die beiden Taster.",
+  "[[NICHT|Nicht]], Klammer auf, A [[ODER|oder]] B, Klammer zu, hat die Spalte [[1 0 0 0|eins null null null]].",
+  "[[NICHT|Nicht]] A, [[UND|und]], [[NICHT|nicht]] B, hat genau dieselbe Spalte. Gleichwertig.",
+  "Beide Fälle folgen einer Regel. Sie heißt Regel von De Morgan.",
+  "Steht [[NICHT|nicht]] vor einer Klammer, darfst du die Klammer auflösen. Jede Variable bekommt ihr eigenes [[NICHT|nicht]], aus [[UND|und]] wird [[ODER|oder]], und aus [[ODER|oder]] wird [[UND|und]]."],
+ ["Ein letzter Hinweis zu Klammern. Ohne Klammern gilt: [[NICHT|nicht]] vor [[UND|und]] vor [[ODER|oder]]. Wie Punkt vor Strich.",
+  "A [[ODER|oder]] B [[UND|und]] C heißt also A [[ODER|oder]], Klammer auf, B [[UND|und]] C, Klammer zu.",
+  "Du liest das nur. Eigene Ausdrücke bekommen immer Klammern.",
+  "Und wenn du unsicher bist, ob zwei Ausdrücke dasselbe meinen: Baue die Tabelle."],
+]
+
+SZENEN = [
+ "Presse mit Schutztür und Manometer; daneben zwei Zettel von zwei Technikern: S1 = NICHT (C UND D) und S2 = (NICHT C) ODER (NICHT D); davor zwei Karten: C = Schutztür geschlossen, D = Druck im Bereich; in der Mitte ein Fragezeichen: Dasselbe?",
+ "Tabelle mit den Spalten C, D, C UND D, S1: die vier Zeilen 00, 01, 10, 11 erscheinen; C UND D füllt sich mit 0, 0, 0, 1, S1 mit 1, 1, 1, 0; rechts kommen die Hilfsspalten NICHT C, NICHT D und S2 dazu, S2 füllt sich mit 1, 1, 1, 0.",
+ "Die Spalten S1 und S2 stehen nebeneinander, in jeder Zeile gleich, Haken: gleichwertig; darunter S3 = (NICHT C) UND (NICHT D) mit der Spalte 1, 0, 0, 0; die Zeilen 0 1 und 1 0 leuchten rot, daneben die Presse mit offener Tür und Warnzeichen: nicht gleichwertig.",
+ "Zweite Tabelle mit A, B: NICHT (A ODER B) und (NICHT A) UND (NICHT B) haben beide 1, 0, 0, 0; Merkkasten: Regel von De Morgan: NICHT vor der Klammer auflösen: jedes NICHT einzeln, UND wird ODER, ODER wird UND; zwei Pfeile zeigen beide Richtungen.",
+ "Der Ausdruck A ODER B UND C; die Klammer um B UND C erscheint als Umrandung; daneben Punkt vor Strich mit UND als Mal und ODER als Plus; Schluss: Wir schreiben immer Klammern, darunter: Im Zweifel: Tabelle bauen.",
+]

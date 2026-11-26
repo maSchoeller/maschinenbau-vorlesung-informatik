@@ -39,6 +39,10 @@ function papEngine() {
 /* Ablauf eines <Plan> (Text, eine Zeile je Symbol) -> Beschreibung für die Zeichenroutine.
      Eingabe: …  /  Ausgabe: …      Parallelogramm
      Entscheidung: bedingung?        Raute; darunter eingerückt „ja:“ und „nein:“ mit ihren Schritten
+     Schleife: bedingung?            kopfgesteuerte Schleife (Raute mit Rücksprung); der Rumpf steht darunter eingerückt,
+                                     bei „nein“ geht es unter der Schleife weiter. Die Bedingung wird wie im PAP-Editor
+                                     geschrieben (!= ≠, <= ≤, >= ≥, and und, or oder, not nicht, == =); der Rumpf darf
+                                     wieder Entscheidungen und Schleifen enthalten
      alles andere                    Rechteck
    Einrückung: zwei Leerzeichen je Ebene. Ein Zweig darf leer sein (dann nur „ja:“ oder nur „nein:“)
    und selbst wieder eine Entscheidung enthalten. Start und Ende kommen von selbst.
@@ -49,6 +53,12 @@ function papEngine() {
          Ausgabe: "bestanden"
        nein:
          Ausgabe: "nicht bestanden"
+
+     Eingabe: preis
+     Schleife: preis != 0?
+       summe = summe + preis
+       Eingabe: preis
+     Ausgabe: summe
 */
 export function planSpec(K, text) {
   const zeilen = text.replace(/\t/g, '  ').split('\n').filter((z) => z.trim()).map((z) => {
@@ -67,7 +77,11 @@ export function planSpec(K, text) {
       if (/^(ja|nein):/i.test(z.text)) throw new Error(`<Plan>: „${z.text}“ steht ohne Entscheidung darüber`);
       i++;
       const m = /^Entscheidung:\s*(.+)$/i.exec(z.text);
-      if (m) {
+      const sl = /^Schleife:\s*(.+)$/i.exec(z.text);
+      if (sl) {
+        const rumpf = i < zeilen.length && zeilen[i].ebene > ebene ? folge(ebene + 1) : [];
+        knoten.push(K.P.whil(K.nice(sl[1]), rumpf, id(), { wrapAt: 24 }));
+      } else if (m) {
         const zweige = { ja: [], nein: [] };
         while (i < zeilen.length && zeilen[i].ebene === ebene + 1 && /^(ja|nein):\s*$/i.test(zeilen[i].text)) {
           const welcher = zeilen[i].text.toLowerCase().startsWith('ja') ? 'ja' : 'nein';

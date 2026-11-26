@@ -151,6 +151,35 @@ class _KcEingabe(BaseException):
 
 _NEED = [None]
 
+# Endlosschleifenschutz im Testlauf: Schrittzähler über sys.settrace. Gezählt werden nur Zeilen des Studierendencodes
+# (_FILE); Bibliotheks- und Testcode bekommt keinen Zeilen-Tracer. Nach _MAX_ZEILEN Zeilen bricht der einzelne Lauf ab.
+_MAX_ZEILEN = 200000
+_MAX_AUSGABE = 1000000
+_ENDLOS = "Dein Programm läuft nicht zu Ende. Ändert sich in der Schleife etwas an der Bedingung?"
+
+class _KcZuLang(BaseException):
+    pass
+
+_STEP = [0]
+
+def _zaehl_zeile(frame, event, arg):
+    if event == "line":
+        _STEP[0] += 1
+        if _STEP[0] > _MAX_ZEILEN:
+            raise _KcZuLang(_ENDLOS)
+    return _zaehl_zeile
+
+def _zaehl(frame, event, arg):
+    if frame.f_code.co_filename == _FILE:
+        return _zaehl_zeile
+    return None
+
+class _Puffer(io.StringIO):
+    def write(self, s):
+        if self.tell() > _MAX_AUSGABE:
+            raise _KcZuLang(_ENDLOS)
+        return super().write(s)
+
 def _kc_stopp(prompt):
     def _tr(frame, event, arg):
         if event == "line" and frame.f_code.co_filename == _FILE:
@@ -165,7 +194,7 @@ def _kc_stopp(prompt):
     raise _KcEingabe(prompt)
 
 def _run_user(src, inputs, capture, echo, term=None):
-    buf = io.StringIO()
+    buf = _Puffer() if capture else io.StringIO()
     ns = {"__name__": "__main__"}
     queue = list(inputs or [])
     real_input = builtins.input
@@ -186,6 +215,7 @@ def _run_user(src, inputs, capture, echo, term=None):
             o.write("\n")
         return v
     err = None
+    vorher, schritte = sys.gettrace(), _STEP[0]
     builtins.input = fake_input
     if term:
         import random
@@ -203,12 +233,16 @@ def _run_user(src, inputs, capture, echo, term=None):
         else:
             try:
                 if capture:
+                    _STEP[0] = 0
+                    sys.settrace(_zaehl)
                     with contextlib.redirect_stdout(buf):
                         exec(code, ns)
                 else:
                     exec(code, ns)
             except _KcEingabe:
                 pass
+            except _KcZuLang:
+                err = (_ENDLOS, "", None)
             except SystemExit:
                 pass
             except BaseException as e:
@@ -217,6 +251,9 @@ def _run_user(src, inputs, capture, echo, term=None):
     finally:
         if term is not None:
             sys.settrace(None)
+        if capture:
+            sys.settrace(vorher)
+            _STEP[0] = schritte
         builtins.input = real_input
     return ns, buf.getvalue(), err
 
@@ -260,6 +297,8 @@ def _main(kind, src, inputs, tests_src, mode, term=None):
         ns["AUSGABE"] = text
     def run_program(eingaben=()):
         n2, out, err = _run_user(src, list(eingaben), True, False)
+        if err and err[0] == _ENDLOS:
+            raise AssertionError(_ENDLOS)
         if err:
             raise AssertionError("Dein Programm bricht bei den Eingaben %s ab:\n%s%s" % (list(eingaben), err[0], ("\nHinweis: " + err[1]) if err[1] else ""))
         return out
@@ -279,10 +318,17 @@ def _main(kind, src, inputs, tests_src, mode, term=None):
             n += 1
             doc = (f.__doc__ or name).strip().split("\n")[0]
             try:
-                f()
+                _STEP[0] = 0
+                sys.settrace(_zaehl)
+                try:
+                    f()
+                finally:
+                    sys.settrace(None)
                 _emit({"t": doc, "ok": True})
             except AssertionError as e:
                 _emit({"t": doc, "ok": False, "m": str(e) or "Die Prüfung ist fehlgeschlagen."})
+            except _KcZuLang:
+                _emit({"t": doc, "ok": False, "m": _ENDLOS})
             except BaseException as e:
                 h = _hint(e)
                 _emit({"t": doc, "ok": False, "m": "%s: %s" % (type(e).__name__, e) + (("\nHinweis: " + h) if h else "")})
@@ -543,7 +589,8 @@ def _main(kind, src, inputs, tests_src, mode, term=None):
       term = KP.terminal(ui.out, {
         exec: function (inputs, seed, sink) {
           var rich = KP.ui ? KP.ui(ui.out, { files: dataFiles, upload: uploader ? uploader.get : null, scan: termCode }) : null;
-          return runPython('run', termCode, inputs, '', mode, timeout, { py: rich, files: dataFiles, term: seed, onLine: function (t) { sink(t); }, onErr: function (t) { sink(t, 'err'); } });
+          var cap = KP.kappe ? KP.kappe(sink) : sink;
+          return runPython('run', termCode, inputs, '', mode, timeout, { py: rich, files: dataFiles, term: seed, onLine: function (t) { cap(t); }, onErr: function (t) { cap(t, 'err'); } });
         },
         onWait: function () {
           busy(false); abortBtn.hidden = false;
@@ -556,9 +603,9 @@ def _main(kind, src, inputs, tests_src, mode, term=None):
           if (r.loadError) app('Python konnte nicht gestartet werden. Bist du online? (' + r.loadError + ')\n', 'err');
           else if (r.timedOut) app('\nAbgebrochen nach ' + (timeout / 1000) + ' s. Läuft da eine Endlosschleife?\n', 'err');
           else if (r.jsError) app(r.jsError + '\n', 'err');
-          else if (!term.hasOutput()) app('(keine Ausgabe – hast du print() benutzt?)', 'sys');
+          else if (!term.hasOutput()) app('(keine Ausgabe. Hast du print() benutzt?)', 'sys');
           busy(false);
-          ui.status.textContent = r.timedOut ? 'abgebrochen' : (r.loadError ? 'Ladefehler – erneut versuchen' : 'fertig');
+          ui.status.textContent = r.timedOut ? 'abgebrochen' : (r.loadError ? 'Ladefehler, bitte erneut versuchen' : 'fertig');
           var viz = vizNachLauf; vizNachLauf = false;
           if (viz && !r.loadError && !r.timedOut && !r.jsError) openViz({ inputs: term.inputs() });
         },
@@ -588,14 +635,15 @@ def _main(kind, src, inputs, tests_src, mode, term=None):
       busy(true, loadingText());
       ui.out.hidden = false; ui.out.textContent = '';
       var got = false;
+      var cap = window.KursPy && window.KursPy.kappe ? window.KursPy.kappe(app) : app;
       var rich = window.KursPy && window.KursPy.ui ? window.KursPy.ui(ui.out, { files: dataFiles, upload: uploader ? uploader.get : null, scan: ta.value }) : null;
-      runPython('run', ta.value, currentInputs(), '', mode, timeout, { py: rich, files: dataFiles, onLine: function (t) { got = true; app(t); }, onErr: function (t) { got = true; app(t, 'err'); } }).then(function (r) {
+      runPython('run', ta.value, currentInputs(), '', mode, timeout, { py: rich, files: dataFiles, onLine: function (t) { got = true; cap(t); }, onErr: function (t) { got = true; cap(t, 'err'); } }).then(function (r) {
         if (r.loadError) app('Python konnte nicht gestartet werden. Bist du online? (' + r.loadError + ')\n', 'err');
         else if (r.timedOut) app('\nAbgebrochen nach ' + (timeout / 1000) + ' s. Läuft da eine Endlosschleife?\n', 'err');
         else if (r.jsError) app(r.jsError + '\n', 'err');
-        else if (!got) app('(keine Ausgabe – hast du print() benutzt?)', 'sys');
+        else if (!got) app('(keine Ausgabe. Hast du print() benutzt?)', 'sys');
         busy(false);
-        ui.status.textContent = r.timedOut ? 'abgebrochen' : (r.loadError ? 'Ladefehler – erneut versuchen' : 'fertig');
+        ui.status.textContent = r.timedOut ? 'abgebrochen' : (r.loadError ? 'Ladefehler, bitte erneut versuchen' : 'fertig');
       });
     }
 
@@ -1215,7 +1263,7 @@ def _main(kind, src, inputs, tests_src, mode, term=None):
       lis.forEach(function (li, i) { li.classList.remove('is-right', 'is-wrong'); li.classList.add(best[i] === user[i] ? 'is-right' : 'is-wrong'); });
       if (exact) {
         fb.className = 'a-p-fb is-ok';
-        fb.textContent = 'Richtig. Reihenfolge und Einrückung stimmen' + (cfg.ok ? ' – ' + cfg.ok : '.');
+        fb.textContent = 'Richtig. Reihenfolge und Einrückung stimmen.' + (cfg.ok ? ' ' + cfg.ok : '');
         markSolved(root); addBadge(root); return;
       }
       var msgs = [];

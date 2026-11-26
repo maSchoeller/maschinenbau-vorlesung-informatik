@@ -162,7 +162,7 @@ Ausgabe: woche
 <Knobel id="kn-1" titel="…">   freiwillige Knobelaufgabe, ganz am Ende des Labors (siehe „Knobelaufgaben (freiwillig)“ unten)
 ```
 
-Eine Zeile je Symbol im `<Plan>`: „Eingabe: …“ und „Ausgabe: …“ werden Parallelogramme, alles andere ein Rechteck; Start und Ende kommen von selbst. Eine Verzweigung schreibst du als `Entscheidung: bedingung?` und darunter eingerückt (zwei Leerzeichen je Ebene) die Zweige `ja:` und `nein:` mit ihren Schritten; ein Zweig darf fehlen, und in einem Zweig darf wieder eine Entscheidung stehen:
+Eine Zeile je Symbol im `<Plan>`: „Eingabe: …“ und „Ausgabe: …“ werden Parallelogramme, alles andere ein Rechteck; Start und Ende kommen von selbst. Eine Verzweigung schreibst du als `Entscheidung: bedingung?` und darunter eingerückt (zwei Leerzeichen je Ebene) die Zweige `ja:` und `nein:` mit ihren Schritten; ein Zweig darf fehlen, und in einem Zweig darf wieder eine Entscheidung stehen. Eine kopfgesteuerte Schleife schreibst du als `Schleife: bedingung?` (zum Beispiel `Schleife: preis != 0?`); der Rumpf steht darunter eingerückt, danach geht es auf der Ebene der Schleife weiter. Rücksprung und „nein“ zeichnet die Engine. Die Bedingung darf in Python-Schreibweise stehen und erscheint wie im PAP-Editor als ≠, ≤, ≥, „und“, „oder“, „nicht“. Beispiel Entscheidung:
 
 ````mdx
 <Plan titel="Bestanden?">
