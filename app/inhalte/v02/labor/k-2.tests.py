@@ -1,7 +1,7 @@
 def _pruefe(gross, klein, anzahl, soll):
     z = zeilen(run_program([str(gross), str(klein), str(anzahl)]))
     ist = " ".join(z[-1].lower().split()) if z else ""
-    assert ist == soll.lower(), "Bei einer großen Pizza mit %s cm und %s kleinen mit je %s cm soll zuletzt '%s' erscheinen. Dein Programm gibt aus: %r" % (gross, anzahl, klein, soll, z)
+    assert ist == soll.lower(), "Bei einer großen Pizza mit %s cm und %s kleinen mit je %s cm soll zuletzt '%s' erscheinen. Dein Programm gibt aus:\n%s" % (gross, anzahl, klein, soll, ausgabe_text(z))
 
 def test_beispiel():
     """40 cm gegen 2 mal 25 cm: Die große Pizza ist 1.28-mal so viel wie die 2 kleinen"""

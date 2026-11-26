@@ -1,7 +1,7 @@
 def _pruefe(temperatur, soll):
     z = zeilen(run_program([str(temperatur)]))
     ist = z[-1].lower() if z else ""
-    assert ist == soll.lower(), "Bei %s Grad soll zuletzt '%s' erscheinen. Dein Programm gibt aus: %r" % (temperatur, soll, z)
+    assert ist == soll.lower(), "Bei %s Grad soll zuletzt '%s' erscheinen. Dein Programm gibt aus:\n%s" % (temperatur, soll, ausgabe_text(z))
 
 def test_kalt():
     """8 Grad: Jacke anziehen"""

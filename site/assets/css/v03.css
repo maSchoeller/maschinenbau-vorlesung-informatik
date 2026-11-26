@@ -1,4 +1,4 @@
-/* v03.css – Termin 03: Und, oder. Stile des Bausteins in explorables-v03.js (schalter).
+/* v03.css – Termin 03: Und, oder. Stile des Bausteins in explorables-v03.js (schalter, drei-schalter).
    Ruhiger DHBW-Stil wie v01.css. „an“ und „aus“ stehen immer auch als Wort und als 1 oder 0 da, nie nur als Farbe. */
 
 .v03-schalter-bau { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--sp-4) var(--sp-5); align-items: start; }
@@ -29,6 +29,13 @@
 .v03-tabelle td { color: var(--text); }
 .v03-tabelle tbody th { border-bottom: 1px solid var(--border); font-weight: 600; }
 .v03-tabelle tbody tr.is-jetzt th, .v03-tabelle tbody tr.is-jetzt td { background: var(--red-tint); font-weight: 700; box-shadow: inset 0 -2px 0 var(--red); }
+
+.v03-auswahlzeile { display: grid; gap: var(--sp-1); margin-bottom: var(--sp-4); }
+.v03-auswahlzeile label { font-size: var(--fs-sm); font-weight: 600; }
+.v03-auswahl { font: inherit; min-height: 44px; padding: var(--sp-2) var(--sp-3); color: var(--text); background: #fff; border: 2px solid var(--text); border-radius: var(--r-base); max-width: 100%; }
+.v03-drei-tabelle { overflow-x: auto; }
+.v03-tabelle td.v03-ergebnis { font-weight: 700; }
+.v03-drei-bau .v03-schalter { min-width: 104px; }
 
 @media (max-width: 1099px) { .v03-schalter-bau { grid-template-columns: minmax(0, 1fr); } }
 /* Schmaler Inhalt (breites Tutor-Panel): einspaltig wie unter 1100 px */

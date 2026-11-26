@@ -1,6 +1,6 @@
 def _pruefe(abstand, lea, mia, minuten, km):
     z = zahlen(run_program([str(abstand), str(lea), str(mia)]))
-    assert len(z) >= 2 and abs(z[-2] - minuten) < 0.01 and abs(z[-1] - km) < 0.01, "Bei %s km Abstand, Lea mit %s km/h und Mia mit %s km/h sollen zuerst %s Minuten und dann %s km ausgegeben werden. Dein Programm gibt zuletzt aus: %r" % (abstand, lea, mia, minuten, km, z[-2:])
+    assert len(z) >= 2 and abs(z[-2] - minuten) < 0.01 and abs(z[-1] - km) < 0.01, "Bei %s km Abstand, Lea mit %s km/h und Mia mit %s km/h sollen zuerst %s Minuten und dann %s km ausgegeben werden. Dein Programm gibt zuletzt aus:\n%s" % (abstand, lea, mia, minuten, km, ausgabe_text(z[-2:]))
 
 def test_beispiel():
     """20 km, Lea 15 km/h, Mia 25 km/h: 30.0 Minuten, 7.5 km"""

@@ -1,6 +1,6 @@
 def _pruefe(kmh, soll):
     z = zahlen(run_program([str(kmh)]))
-    assert z and abs(z[-1] - soll) < 0.01, "Bei %s km/h sollen %s m/s herauskommen. Dein Programm gibt aus: %r" % (kmh, soll, z)
+    assert z and abs(z[-1] - soll) < 0.01, "Bei %s km/h sollen %s m/s herauskommen. Dein Programm gibt aus:\n%s" % (kmh, soll, ausgabe_text(z))
 
 def test_beispiel():
     """90 km/h sind 25.0 m/s"""

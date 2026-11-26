@@ -1,7 +1,7 @@
 def _pruefe(a, b, c, soll):
     z = zeilen(run_program([str(a), str(b), str(c)]))
     ergebnis = z[3:]
-    assert len(ergebnis) == 1, "Bei den Stäben %s, %s und %s soll genau eine Ergebniszeile erscheinen ('%s'). Dein Programm gibt nach den Eingaben aus: %r" % (a, b, c, soll, ergebnis)
+    assert len(ergebnis) == 1, "Bei den Stäben %s, %s und %s soll genau eine Ergebniszeile erscheinen ('%s'). Dein Programm gibt nach den Eingaben aus:\n%s" % (a, b, c, soll, ausgabe_text(ergebnis))
     assert ergebnis[-1].lower() == soll.lower(), "Bei den Stäben %s, %s und %s soll '%s' herauskommen. Dein Programm gibt aus: '%s'" % (a, b, c, soll, ergebnis[-1])
 
 def test_beispiel():

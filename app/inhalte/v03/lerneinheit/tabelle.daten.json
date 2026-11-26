@@ -1,52 +1,92 @@
 {
  "sprache": "tabelle",
  "code": [
-  "A = 0, B = 0",
-  "A = 0, B = 1",
-  "A = 1, B = 0",
-  "A = 1, B = 1"
+  "A = 0, B = 0, C = 0",
+  "A = 0, B = 0, C = 1",
+  "A = 0, B = 1, C = 0",
+  "A = 0, B = 1, C = 1",
+  "A = 1, B = 0, C = 0",
+  "A = 1, B = 0, C = 1",
+  "A = 1, B = 1, C = 0",
+  "A = 1, B = 1, C = 1"
  ],
  "vars": [
-  "A ODER B",
-  "NICHT (A ODER B)"
+  "B ODER C",
+  "Y"
  ],
  "ausgabe": false,
  "steps": [
   {
    "line": 1,
    "set": {
-    "A ODER B": "0",
-    "NICHT (A ODER B)": "1"
+    "B ODER C": "0",
+    "Y": "0"
    },
-   "frage": "Zeile A = 0, B = 0: Trag in beide Felder 0 oder 1 ein, ohne Anführungszeichen.",
-   "hint": "Erst die Klammer: Ist A ODER B wahr? Dann umdrehen. Schreib 0 oder 1, ohne Anführungszeichen."
+   "frage": "Zeile A = 0, B = 0, C = 0: Trag in beide Felder 0 oder 1 ein, ohne Anführungszeichen.",
+   "hint": "Erst die Klammer: Ist B ODER C wahr? Das trägst du in die Hilfsspalte ein. Dann rechnest du A UND (Hilfsspalte). Schreib 0 oder 1, ohne Anführungszeichen."
   },
   {
    "line": 2,
    "set": {
-    "A ODER B": "1",
-    "NICHT (A ODER B)": "0"
+    "B ODER C": "1",
+    "Y": "0"
    },
-   "frage": "Zeile A = 0, B = 1: Trag in beide Felder 0 oder 1 ein, ohne Anführungszeichen.",
-   "hint": "Erst die Klammer: Ist A ODER B wahr? Dann umdrehen. Schreib 0 oder 1, ohne Anführungszeichen."
+   "frage": "Zeile A = 0, B = 0, C = 1: Trag in beide Felder 0 oder 1 ein, ohne Anführungszeichen.",
+   "hint": "Erst die Klammer: Ist B ODER C wahr? Das trägst du in die Hilfsspalte ein. Dann rechnest du A UND (Hilfsspalte). Schreib 0 oder 1, ohne Anführungszeichen."
   },
   {
    "line": 3,
    "set": {
-    "A ODER B": "1",
-    "NICHT (A ODER B)": "0"
+    "B ODER C": "1",
+    "Y": "0"
    },
-   "frage": "Zeile A = 1, B = 0: Trag in beide Felder 0 oder 1 ein, ohne Anführungszeichen.",
-   "hint": "Erst die Klammer: Ist A ODER B wahr? Dann umdrehen. Schreib 0 oder 1, ohne Anführungszeichen."
+   "frage": "Zeile A = 0, B = 1, C = 0: Trag in beide Felder 0 oder 1 ein, ohne Anführungszeichen.",
+   "hint": "Erst die Klammer: Ist B ODER C wahr? Das trägst du in die Hilfsspalte ein. Dann rechnest du A UND (Hilfsspalte). Schreib 0 oder 1, ohne Anführungszeichen."
   },
   {
    "line": 4,
    "set": {
-    "A ODER B": "1",
-    "NICHT (A ODER B)": "0"
+    "B ODER C": "1",
+    "Y": "0"
    },
-   "frage": "Zeile A = 1, B = 1: Trag in beide Felder 0 oder 1 ein, ohne Anführungszeichen.",
-   "hint": "Erst die Klammer: Ist A ODER B wahr? Dann umdrehen. Schreib 0 oder 1, ohne Anführungszeichen."
+   "frage": "Zeile A = 0, B = 1, C = 1: Trag in beide Felder 0 oder 1 ein, ohne Anführungszeichen.",
+   "hint": "Erst die Klammer: Ist B ODER C wahr? Das trägst du in die Hilfsspalte ein. Dann rechnest du A UND (Hilfsspalte). Schreib 0 oder 1, ohne Anführungszeichen."
+  },
+  {
+   "line": 5,
+   "set": {
+    "B ODER C": "0",
+    "Y": "0"
+   },
+   "frage": "Zeile A = 1, B = 0, C = 0: Trag in beide Felder 0 oder 1 ein, ohne Anführungszeichen.",
+   "hint": "Erst die Klammer: Ist B ODER C wahr? Das trägst du in die Hilfsspalte ein. Dann rechnest du A UND (Hilfsspalte). Schreib 0 oder 1, ohne Anführungszeichen."
+  },
+  {
+   "line": 6,
+   "set": {
+    "B ODER C": "1",
+    "Y": "1"
+   },
+   "frage": "Zeile A = 1, B = 0, C = 1: Trag in beide Felder 0 oder 1 ein, ohne Anführungszeichen.",
+   "hint": "Erst die Klammer: Ist B ODER C wahr? Das trägst du in die Hilfsspalte ein. Dann rechnest du A UND (Hilfsspalte). Schreib 0 oder 1, ohne Anführungszeichen."
+  },
+  {
+   "line": 7,
+   "set": {
+    "B ODER C": "1",
+    "Y": "1"
+   },
+   "frage": "Zeile A = 1, B = 1, C = 0: Trag in beide Felder 0 oder 1 ein, ohne Anführungszeichen.",
+   "hint": "Erst die Klammer: Ist B ODER C wahr? Das trägst du in die Hilfsspalte ein. Dann rechnest du A UND (Hilfsspalte). Schreib 0 oder 1, ohne Anführungszeichen."
+  },
+  {
+   "line": 8,
+   "set": {
+    "B ODER C": "1",
+    "Y": "1"
+   },
+   "frage": "Zeile A = 1, B = 1, C = 1: Trag in beide Felder 0 oder 1 ein, ohne Anführungszeichen.",
+   "hint": "Erst die Klammer: Ist B ODER C wahr? Das trägst du in die Hilfsspalte ein. Dann rechnest du A UND (Hilfsspalte). Schreib 0 oder 1, ohne Anführungszeichen."
   }
  ]
 }

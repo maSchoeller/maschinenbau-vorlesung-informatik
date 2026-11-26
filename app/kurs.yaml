@@ -44,9 +44,9 @@ einheiten:
   P10: { name: Schiffe versenken gegen den Computer, kurz: Schiffe versenken, bloecke: 9 }
   P11: { name: Klausurtraining Programmierteil, kurz: Klausurtraining Programmieren, bloecke: 2 }
   T1: { name: "Problemanalyse, Algorithmus, PAP-Symbole", kurz: Problemanalyse und PAP, bloecke: 2 }
-  T2: { name: "Boolesche Logik: und, oder, nicht, Wahrheitstabelle", kurz: Boolesche Logik, bloecke: 3 }
-  T3: { name: "Zahlensysteme: dezimal, binär, hexadezimal", kurz: Zahlensysteme, bloecke: 4 }
-  T4: { name: Bitoperationen, kurz: Bitoperationen, bloecke: 1 }
+  T2: { name: "Boolesche Logik: und, oder, nicht, Wahrheitstabelle, Gleichwertigkeit", kurz: Boolesche Logik, bloecke: 5 }
+  T3: { name: "Zahlensysteme: dezimal, binär, hexadezimal", kurz: Zahlensysteme, bloecke: 2 }
+  T4: { name: "Bitoperationen und XOR", kurz: Bitoperationen, bloecke: 1 }
   T5: { name: "Datentypen, Kommazahlen und ihre Genauigkeit", kurz: Datentypen, bloecke: 3 }
   T6: { name: Aufbau und Funktion eines Rechners, kurz: Rechneraufbau, bloecke: 3 }
   T7: { name: Auffrischer Pflichttheorie, kurz: Auffrischer Theorie, bloecke: 1 }
@@ -59,7 +59,7 @@ termine:
   - { nr: 1,  theorie: { T1: 2 },        programmieren: { P1: 2 }, lektion: V01 }
   - { nr: 2,  theorie: { T2: 1 },        programmieren: { P1: 1, P2: 2 }, lektion: V02 }
   - { nr: 3,  theorie: { T2: 2 },        programmieren: { P2: 2 }, lektion: V03 }
-  - { nr: 4,  theorie: { T3: 2 },        programmieren: { P3: 2 } }
+  - { nr: 4,  theorie: { T2: 2 },        programmieren: { P3: 2 } }
   - { nr: 5,  theorie: { T3: 1 },        programmieren: { P3: 3 } }
   - { nr: 6,  theorie: { T3: 1, T4: 1 }, programmieren: { P3: 2 } }
   - { nr: 7,  theorie: { T5: 2 },        programmieren: { P4: 2 } }

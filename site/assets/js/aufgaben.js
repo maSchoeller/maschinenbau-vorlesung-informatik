@@ -226,6 +226,10 @@ def _emit(obj):
 def zeilen(text):
     return [l.strip() for l in str(text).split("\n") if l.strip()]
 
+def ausgabe_text(ausgabe):
+    teile = ([ausgabe] if ausgabe else []) if isinstance(ausgabe, str) else [str(x) for x in ausgabe]
+    return "\n".join(teile) if teile else "(keine Ausgabe)"
+
 def zahlen(text):
     return [float(x) for x in re.findall(r"-?\d+(?:\.\d+)?(?:[eE][-+]?\d+)?", str(text))]
 
@@ -261,10 +265,11 @@ def _main(kind, src, inputs, tests_src, mode, term=None):
         return out
     # Hilfsfunktionen für Tests: immer unter _zeilen/_zahlen/_run_program; die kurzen Namen nur,
     # wenn der Studierendencode sie nicht selbst belegt (sonst würde z. B. eine Liste "zahlen" überschrieben)
-    ns.update(_run_program=run_program, _zeilen=zeilen, _zahlen=zahlen)
+    ns.update(_run_program=run_program, _zeilen=zeilen, _zahlen=zahlen, _ausgabe_text=ausgabe_text)
     ns.setdefault("run_program", run_program)
     ns.setdefault("zeilen", zeilen)
     ns.setdefault("zahlen", zahlen)
+    ns.setdefault("ausgabe_text", ausgabe_text)
     ns.setdefault("math", math)
     before = set(ns)
     exec(compile(tests_src, "<tests>", "exec"), ns)

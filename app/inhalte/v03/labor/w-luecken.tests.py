@@ -1,7 +1,7 @@
 def _pruefe(ich, du, soll):
     z = zeilen(run_program([str(ich), str(du)]))
     ergebnis = z[2:]
-    assert len(ergebnis) == 1, "Bei ich = %s und du = %s soll genau eine Ergebniszeile erscheinen ('%s'). Dein Programm gibt nach den beiden Eingaben aus: %r" % (ich, du, soll, ergebnis)
+    assert len(ergebnis) == 1, "Bei ich = %s und du = %s soll genau eine Ergebniszeile erscheinen ('%s'). Dein Programm gibt nach den beiden Eingaben aus:\n%s" % (ich, du, soll, ausgabe_text(ergebnis))
     assert ergebnis[-1].lower() == soll.lower(), "Bei ich = %s und du = %s soll '%s' herauskommen. Dein Programm gibt aus: '%s'" % (ich, du, soll, ergebnis[-1])
 
 def test_schere_papier():

@@ -79,6 +79,23 @@
   A.an('panel', function (e) {
     if (tutorKnopf) tutorKnopf.setAttribute('aria-expanded', e.offen && e.id === 'tutor' ? 'true' : 'false');
   });
+  /* Unter 1100 px liegen Panel und Befehls-Bibliothek beide über dem Inhalt und würden sich überdecken:
+     Wer zuletzt geöffnet wird, bleibt, der andere schließt sich (einfacher und robuster als zwei Spalten, die nicht passen). */
+  function bibliothekOffen() { return document.documentElement.classList.contains('kb-open'); }
+  function nurEines() { return window.innerWidth < 1100; }
+  A.an('panel', function (e) {
+    if (!e.offen || !nurEines() || !bibliothekOffen()) return;
+    var zu = document.querySelector('#kb-panel .kb__close');
+    if (zu) zu.click();
+  });
+  if (window.MutationObserver) {
+    var bibliothekWarOffen = bibliothekOffen();
+    new MutationObserver(function () {
+      var jetzt = bibliothekOffen();
+      if (jetzt && !bibliothekWarOffen && nurEines() && A.panel.istOffen()) A.panel.schliessen();
+      bibliothekWarOffen = jetzt;
+    }).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+  }
   function panelHinweisFallsLeer(id) {
     /* Platzhalter, solange keine Rolle den Inhalt liefert (tutor.js fehlt noch) */
     var inhalt = A.panel.element();

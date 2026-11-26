@@ -78,9 +78,9 @@ Schiffe versenken (P10): Jede und jeder baut das Spiel einzeln. Die Führung nim
 | Nr | Einheit | Blöcke | Semester | Tiefe |
 |---|---|---|---|---|
 | T1 | Problemanalyse, Algorithmus, PAP-Symbole | 2 | 1 | anwenden |
-| T2 | Boolesche Logik: und, oder, nicht, Wahrheitstabelle | 3 | 1 | rechnen |
-| T3 | Zahlensysteme: dezimal, binär, hexadezimal | 4 | 1 | rechnen |
-| T4 | Bitoperationen | 1 | 1 | rechnen, einfach |
+| T2 | Boolesche Logik: und, oder, nicht, Wahrheitstabelle, Gleichwertigkeit | 5 | 1 | rechnen |
+| T3 | Zahlensysteme: dezimal, binär, hexadezimal | 2 | 1 | rechnen |
+| T4 | Bitoperationen und XOR | 1 | 1 | rechnen, einfach |
 | T5 | Datentypen, Kommazahlen und ihre Genauigkeit | 3 | 1 | rechnen, einfach |
 | T6 | Aufbau und Funktion eines Rechners | 3 | 1 | verstehen |
 | T7 | Auffrischer Pflichttheorie | 1 | 2 | rechnen |
@@ -101,9 +101,9 @@ In Klammern die Zahl der Blöcke.
 | 01 | T1 Problemanalyse, PAP-Symbole (2) | P1 Variablen, Ein- und Ausgabe (2) |
 | 02 | T2 Boolesche Logik (1) | P1 Abschluss (1), P2 Verzweigungen (2) |
 | 03 | T2 Boolesche Logik (2) | P2 Verzweigungen (2) |
-| 04 | T3 Zahlensysteme (2) | P3 Schleifen (2) |
+| 04 | T2 Boolesche Logik (2) | P3 Schleifen (2) |
 | 05 | T3 Zahlensysteme (1) | P3 Schleifen (3) |
-| 06 | T3 Zahlensysteme (1), T4 Bitoperationen (1) | P3 Schleifen (2) |
+| 06 | T3 Zahlensysteme (1), T4 Bitoperationen und XOR (1) | P3 Schleifen (2) |
 | 07 | T5 Datentypen (2) | P4 Funktionen (2) |
 | 08 | T5 Datentypen (1) | P4 Funktionen (3) |
 | 09 | T6 Rechneraufbau (2) | P4 Funktionen (1), P5 Zahlenraten (1) |
@@ -120,7 +120,7 @@ In Klammern die Zahl der Blöcke.
 | 19 | Puffer (2) | P10 Schiffe versenken (2) |
 | 20 | T11 Klausurtraining (2) | P11 Klausurtraining (2) |
 
-Das 1. Semester hat keinen Puffer. Wird die Zeit knapp, rückt zuerst T6 Rechneraufbau in den Puffer des 2. Semesters, danach schrumpft T4 Bitoperationen auf einen halben Block.
+Das 1. Semester hat keinen Puffer. Wird die Zeit knapp, rückt zuerst T6 Rechneraufbau in den Puffer des 2. Semesters, danach schrumpft T4 Bitoperationen auf einen halben Block. Bei den Zahlensystemen (T3, nur noch 2 Blöcke) ist offen, was wegfällt; das wird bei Termin 05 entschieden.
 
 ## Ablauf eines Termins (135 Minuten)
 

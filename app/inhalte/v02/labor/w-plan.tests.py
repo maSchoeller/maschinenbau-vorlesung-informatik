@@ -1,6 +1,6 @@
 def _pruefe(alter, soll):
     z = zahlen(run_program([str(alter)]))
-    assert z and abs(z[-1] - soll) < 0.01, "Bei einem Alter von %s soll der Preis %s ausgegeben werden. Dein Plan gibt aus: %r" % (alter, soll, z)
+    assert z and abs(z[-1] - soll) < 0.01, "Bei einem Alter von %s soll der Preis %s ausgegeben werden. Dein Plan gibt aus:\n%s" % (alter, soll, ausgabe_text(z))
 
 def test_kind():
     """12 Jahre: Preis 3"""

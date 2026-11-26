@@ -2,7 +2,7 @@ def _pruefe(geld, betrag, wort):
     z = zeilen(run_program([str(geld)]))
     letzte = z[-1].lower() if z else ""
     teile = letzte.replace(":", " ").split()
-    assert betrag in teile and wort in letzte, "Bei %s Euro soll in der letzten Zeile %s und das Wort '%s' stehen, die Zahl mit zwei Nachkommastellen. Dein Programm gibt aus: %r" % (geld, betrag, wort, z)
+    assert betrag in teile and wort in letzte, "Bei %s Euro soll in der letzten Zeile %s und das Wort '%s' stehen, die Zahl mit zwei Nachkommastellen. Dein Programm gibt aus:\n%s" % (geld, betrag, wort, ausgabe_text(z))
 
 def test_reicht():
     """20 Euro: Übrig: 10.50 Euro"""

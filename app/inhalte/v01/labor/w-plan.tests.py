@@ -1,6 +1,6 @@
 def _pruefe(anzahl, preis, soll):
     z = zahlen(run_program([str(anzahl), str(preis)]))
-    assert z and abs(z[-1] - soll) < 0.01, "Bei %s Flaschen zu %s Euro soll %s ausgegeben werden. Dein Plan gibt aus: %r" % (anzahl, preis, soll, z)
+    assert z and abs(z[-1] - soll) < 0.01, "Bei %s Flaschen zu %s Euro soll %s ausgegeben werden. Dein Plan gibt aus:\n%s" % (anzahl, preis, soll, ausgabe_text(z))
 
 def test_beispiel():
     """6 Flaschen zu 1.5 Euro: Gesamtpreis 9.0"""

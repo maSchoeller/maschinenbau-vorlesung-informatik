@@ -1,6 +1,6 @@
 def _pruefe(liter, preis, soll):
     z = zahlen(run_program([str(liter), str(preis)]))
-    assert z and abs(z[-1] - soll) < 0.01, "Bei %s Litern zu %s Euro sollen %s Euro herauskommen. Dein Programm gibt aus: %r" % (liter, preis, soll, z)
+    assert z and abs(z[-1] - soll) < 0.01, "Bei %s Litern zu %s Euro sollen %s Euro herauskommen. Dein Programm gibt aus:\n%s" % (liter, preis, soll, ausgabe_text(z))
 
 def test_beispiel():
     """40 Liter zu 1.8 Euro: Kosten 72.0"""

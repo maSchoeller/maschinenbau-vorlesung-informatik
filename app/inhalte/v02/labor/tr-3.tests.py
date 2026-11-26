@@ -1,7 +1,7 @@
 def _pruefe(tipp, soll):
     z = zeilen(run_program([str(tipp)]))
     ist = z[-1].lower() if z else ""
-    assert ist == soll.lower(), "Beim Tipp %s soll zuletzt '%s' erscheinen. Dein Programm gibt aus: %r" % (tipp, soll, z)
+    assert ist == soll.lower(), "Beim Tipp %s soll zuletzt '%s' erscheinen. Dein Programm gibt aus:\n%s" % (tipp, soll, ausgabe_text(z))
 
 def test_treffer():
     """Grenzfall Tipp 7: Treffer"""
