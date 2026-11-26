@@ -107,3 +107,26 @@ test('Plan: Folge, Entscheidung mit ja und nein, verschachtelt; Fehler bei falsc
   assert.throws(() => plan('ja:\n  y = 1'), /ohne Entscheidung/);
   assert.throws(() => plan('Eingabe: x\n    y = 1'), /zu weit eingerückt/);
 });
+
+test('Plan: Schleife mit Rumpf, Rücksprung, Schreibweise der Bedingung, verschachtelt, Fehler', () => {
+  const plan = (text) => mdxZuHtml('<Plan titel="Test">\n\n```text\n' + text + '\n```\n\n</Plan>\n');
+  const h = plan('Eingabe: preis\nsumme = 0\nSchleife: preis != 0?\n  summe = summe + preis\n  Eingabe: preis\nAusgabe: summe');
+  assert.equal((h.match(/pap-n--while/g) || []).length, 1, 'eine Schleifenraute');
+  assert.equal((h.match(/pap-n--io/g) || []).length, 3, 'Eingabe, Eingabe im Rumpf, Ausgabe');
+  assert.equal((h.match(/pap-n--op/g) || []).length, 2, 'summe = 0 und im Rumpf');
+  assert.match(h, /preis ≠ 0\?/, 'wie im Editor: != wird ≠');
+  assert.match(h, />ja</);
+  assert.match(h, />nein</);
+  assert.match(h, /<path class="pap-line" d="M[\d.]+ [\d.]+L[\d.]+ [\d.]+L-[\d.]+ [\d.]+L-[\d.]+ [\d.]+L[\d.]+ [\d.]+"\/>/, 'Rücksprung links herum gezeichnet');
+  const logik = plan('Schleife: not (m >= 1 and m <= 12)?\n  Eingabe: m');
+  assert.match(logik, /nicht/);
+  assert.match(logik, /≥/);
+  assert.match(logik, /≤/);
+  assert.match(logik, /und/);
+  const innen = plan('Schleife: a > 0?\n  Entscheidung: a > 5?\n    ja:\n      b = 1\n    nein:\n      b = 2\n  Schleife: b > 0?\n    b = b - 1\n  a = a - 1\nAusgabe: a');
+  assert.equal((innen.match(/pap-n--while/g) || []).length, 2, 'Schleife in der Schleife');
+  assert.equal((innen.match(/pap-n--if/g) || []).length, 1);
+  assert.equal((plan('Schleife: x < 3?\n  Eingabe: x').match(/pap-n--while/g) || []).length, 1, 'Schleife am Ende');
+  assert.throws(() => plan('Schleife: x < 3?\n    y = 1'), /zu weit eingerückt/);
+  assert.throws(() => plan('Schleife: x < 3?\n  ja:\n    y = 1'), /ohne Entscheidung/);
+});

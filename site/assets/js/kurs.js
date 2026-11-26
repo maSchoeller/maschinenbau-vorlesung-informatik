@@ -1241,7 +1241,7 @@ _result
         var good = predicted.hasAttribute('data-correct');
         var res = $('.k-predict__result', predict);
         res.innerHTML = '';
-        res.appendChild(el('strong', { text: good ? 'Dein Tipp „' + predicted.textContent + '“ stimmt. ' : 'Dein Tipp war „' + predicted.textContent + '“ – die Ausgabe sieht anders aus. ' }));
+        res.appendChild(el('strong', { text: good ? 'Dein Tipp „' + predicted.textContent + '“ stimmt. ' : 'Dein Tipp war „' + predicted.textContent + '“. Die Ausgabe sieht anders aus. ' }));
         var ex = $('.k-predict__expl', predict);
         if (ex) { var c = el('span'); c.innerHTML = ex.innerHTML; res.appendChild(c); }
       };
@@ -1278,13 +1278,13 @@ _result
     function finish(r, gotOutput) {
       if (r.timedOut) append('\nAbgebrochen nach ' + (timeout / 1000) + ' s. Läuft da eine Endlosschleife?\n', 'err');
       else if (r.error) append((out.textContent && !/\n$/.test(out.textContent) ? '\n' : '') + r.error.replace(/\s+$/, '') + '\n', 'err');
-      else if (!gotOutput) append('(keine Ausgabe – hast du print() benutzt?)', 'sys');
+      else if (!gotOutput) append('(keine Ausgabe. Hast du print() benutzt?)', 'sys');
       status.textContent = r.timedOut ? 'abgebrochen' : (r.error ? 'Fehler' : 'fertig');
       if (predict && predicted) box._kVorhersage.zeige();
     }
     function loadFail(err) {
       append('Python konnte nicht gestartet werden. Bist du online? (' + err.message + ')\n', 'err');
-      status.textContent = 'Ladefehler – erneut versuchen';
+      status.textContent = 'Ladefehler, bitte erneut versuchen';
     }
 
     /* Terminal-Dialog: Eingaben direkt in der Ausgabe tippen (Wiederholungslauf, siehe Py.terminal) */

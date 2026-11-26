@@ -603,9 +603,9 @@ def _main(kind, src, inputs, tests_src, mode, term=None):
           if (r.loadError) app('Python konnte nicht gestartet werden. Bist du online? (' + r.loadError + ')\n', 'err');
           else if (r.timedOut) app('\nAbgebrochen nach ' + (timeout / 1000) + ' s. Läuft da eine Endlosschleife?\n', 'err');
           else if (r.jsError) app(r.jsError + '\n', 'err');
-          else if (!term.hasOutput()) app('(keine Ausgabe – hast du print() benutzt?)', 'sys');
+          else if (!term.hasOutput()) app('(keine Ausgabe. Hast du print() benutzt?)', 'sys');
           busy(false);
-          ui.status.textContent = r.timedOut ? 'abgebrochen' : (r.loadError ? 'Ladefehler – erneut versuchen' : 'fertig');
+          ui.status.textContent = r.timedOut ? 'abgebrochen' : (r.loadError ? 'Ladefehler, bitte erneut versuchen' : 'fertig');
           var viz = vizNachLauf; vizNachLauf = false;
           if (viz && !r.loadError && !r.timedOut && !r.jsError) openViz({ inputs: term.inputs() });
         },
@@ -641,9 +641,9 @@ def _main(kind, src, inputs, tests_src, mode, term=None):
         if (r.loadError) app('Python konnte nicht gestartet werden. Bist du online? (' + r.loadError + ')\n', 'err');
         else if (r.timedOut) app('\nAbgebrochen nach ' + (timeout / 1000) + ' s. Läuft da eine Endlosschleife?\n', 'err');
         else if (r.jsError) app(r.jsError + '\n', 'err');
-        else if (!got) app('(keine Ausgabe – hast du print() benutzt?)', 'sys');
+        else if (!got) app('(keine Ausgabe. Hast du print() benutzt?)', 'sys');
         busy(false);
-        ui.status.textContent = r.timedOut ? 'abgebrochen' : (r.loadError ? 'Ladefehler – erneut versuchen' : 'fertig');
+        ui.status.textContent = r.timedOut ? 'abgebrochen' : (r.loadError ? 'Ladefehler, bitte erneut versuchen' : 'fertig');
       });
     }
 
@@ -1263,7 +1263,7 @@ def _main(kind, src, inputs, tests_src, mode, term=None):
       lis.forEach(function (li, i) { li.classList.remove('is-right', 'is-wrong'); li.classList.add(best[i] === user[i] ? 'is-right' : 'is-wrong'); });
       if (exact) {
         fb.className = 'a-p-fb is-ok';
-        fb.textContent = 'Richtig. Reihenfolge und Einrückung stimmen' + (cfg.ok ? ' – ' + cfg.ok : '.');
+        fb.textContent = 'Richtig. Reihenfolge und Einrückung stimmen.' + (cfg.ok ? ' ' + cfg.ok : '');
         markSolved(root); addBadge(root); return;
       }
       var msgs = [];
