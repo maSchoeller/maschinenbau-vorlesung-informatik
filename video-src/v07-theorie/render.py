@@ -162,14 +162,6 @@ def sc3(f, t, ct):
             feld(d, x, wy + dy, wcw, 64, txt, 24, RED if neg else DARK, LIGHTR if neg else WHITE, RED if neg else LINE, 3 if neg else 2, mono=False, what="Gewicht")
     E(f, t, t_sig, gewichte, tout=t_tab)
     E(f, t, a(1, pos(3, 1, "Der oberste")), lambda d, dy: tag(d, wx0, wy + 90 + dy, 586, 52, "oberster Schalter: minus 128 statt plus 128", LIGHTR, RED, 24, 700, outl=RED), tout=t_tab)
-    # Rechnung
-    def rechnung(d, dy):
-        for j, (bs, txt, col) in enumerate((("1111 1111", f"{zahl(-128)} + 127 = {zahl(-1)}", RED), ("1000 0000", f"nur {zahl(-128)}", RED))):
-            y = 330 + j * 90
-            feld(d, wx0, y + dy, 280, 64, bs, 38, DARK, WHITE, LINE, 2, what="Byte")
-            pfeil(d, wx0 + 296, y + 32 + dy, wx0 + 346, y + 32 + dy, GREY, 5, 15)
-            TB(d, wx0 + 362, y + 32 + dy, txt, F(36, 700), col, 330, "lm", "Rechnung")
-    E(f, t, a(2, pos(3, 2, "Ich rechne")), rechnung, tout=t_tab)
     # Tabelle und Bereich
     def tab(d, dy):
         wges = sum(w for _, w in TABW); y = TY + dy
