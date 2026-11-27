@@ -251,3 +251,31 @@ test('Termin 10, Nachbesserung: Wortlaut der App, Trace-Code nicht ausführbar, 
   }
   assert.match(fs.readFileSync(path.join(l, 'w-stufe4.tests.py'), 'utf8'), /def test_gliederung/);
 });
+
+test('Termin 10, gemeinsame Werkzeuge: freiwilliges Training, Musterlösung ohne Code, Lösung nach allen Tipps', () => {
+  const lese = (p) => fs.readFileSync(path.join(WURZEL, p), 'utf8');
+  const labor = fs.readFileSync(path.join(ordner, 'labor.mdx'), 'utf8');
+  assert.match(labor, /<Labor [^>]*training="freiwillig"/, 'Termin 10 kennzeichnet das Training als freiwillig');
+  assert.match(labor, /id="w-stufe4"[^>]*data-loesung-nach-tipps/, 'Stufe 4: Musterlösung erst nach allen Tipps');
+  const laborJs = lese('site/assets/js/labor.js');
+  assert.match(laborJs, /data-training'\) === 'freiwillig' \? 'freiwillig'/, 'Überschrift Teil B: freiwillig statt Pflicht');
+  const bausteine = lese('app/src/lib/mdx/bausteine.mjs');
+  assert.match(bausteine, /training === 'freiwillig'/, 'Baustein Labor wertet training aus');
+  const pap = lese('site/assets/js/pap-editor.js');
+  assert.match(pap, /if \(!box\.hasAttribute\('data-ohne-code'\)\) solBox\.appendChild/, 'data-ohne-code gilt auch für die Musterlösung');
+  const auf = lese('site/assets/js/aufgaben.js');
+  assert.match(auf, /data-loesung-nach-tipps/);
+  assert.match(auf, /ui\.alleTipps = true/);
+  const andere = fs.readdirSync(path.join(WURZEL, 'app/inhalte')).filter((d) => /^v\d\d$/.test(d) && d !== 'v10');
+  for (const d of andere) {
+    const f = path.join(WURZEL, 'app/inhalte', d, 'labor.mdx');
+    if (fs.existsSync(f)) assert.ok(!/training=/.test(fs.readFileSync(f, 'utf8')), d + ': Training bleibt Pflicht');
+  }
+});
+
+test('Termin 10, freiwilliges Training: Aufgaben in Teil B zählen nicht im Fortschritt', () => {
+  const lese = (p) => fs.readFileSync(path.join(WURZEL, p), 'utf8');
+  assert.match(lese('site/assets/js/aufgaben.js'), /function taskNodes\(\) \{[^}]*:not\(\[data-freiwillig\]\)/);
+  assert.match(lese('site/assets/js/labor.js'), /function countable\(sec\) \{[^}]*:not\(\[data-freiwillig\]\)/);
+  assert.match(lese('app/src/lib/mdx/bausteine.mjs'), /a\.attrs\['data-freiwillig'\] = true/);
+});

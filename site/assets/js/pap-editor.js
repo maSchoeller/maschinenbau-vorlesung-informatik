@@ -697,7 +697,8 @@
       solBox = el('div', { class: 'a-solution', hidden: true }, [el('strong', { text: 'Musterlösung' })]);
       var fig = el('div'); fig.innerHTML = '<div class="pap-wrap">' + K.svgAll(solTree, { label: 'Musterlösung: ' + K.describeAll(solTree), minw: 1 }) + '</div>';
       solBox.appendChild(fig);
-      solBox.appendChild(el('pre', { class: 'k-code', 'data-run': 'no', text: K.toText(solTree) }));
+      /* data-ohne-code gilt auch für die Musterlösung: kein erzeugter Python-Code */
+      if (!box.hasAttribute('data-ohne-code')) solBox.appendChild(el('pre', { class: 'k-code', 'data-run': 'no', text: K.toText(solTree) }));
       bSol = el('button', { type: 'button', class: 'k-btn k-btn--small k-btn--link', text: 'Musterlösung ansehen', 'aria-disabled': 'true', title: 'Erst einen Versuch prüfen, dann kannst du die Musterlösung aufdecken.' });
       bSol.addEventListener('click', function () {
         if (!attempted) { status.textContent = 'Erst einen eigenen Versuch prüfen, dann die Musterlösung.'; return; }

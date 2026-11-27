@@ -50,13 +50,13 @@
   /* ── Fortschritt „x von y gelöst“ ────────────────────────── */
   /* Knobelaufgaben (data-knobel, freiwillig) haben Status und Abzeichen wie jede Aufgabe, zählen aber nicht mit:
      taskNodes() ist die Menge, die zählt; badgeNodes() die, die „gelöst“ gezeigt bekommt. */
-  function taskNodes() { return $$('[data-a][data-id]:not([data-count="0"]):not([data-knobel])'); }
+  function taskNodes() { return $$('[data-a][data-id]:not([data-count="0"]):not([data-knobel]):not([data-freiwillig])'); }
   function badgeNodes() { return $$('[data-a][data-id]:not([data-count="0"])'); }
   function updateProgress() {
     var lesson = lessonId(), sv = Store.solved(lesson);
     var nodes = taskNodes(), n = 0;
     nodes.forEach(function (t) { var ok = !!sv[t.getAttribute('data-id')]; if (ok) n++; t.classList.toggle('is-solved', ok); });
-    $$('[data-a][data-knobel][data-id]').forEach(function (t) { t.classList.toggle('is-solved', !!sv[t.getAttribute('data-id')]); });
+    $$('[data-a][data-id][data-knobel],[data-a][data-id][data-freiwillig]').forEach(function (t) { t.classList.toggle('is-solved', !!sv[t.getAttribute('data-id')]); });
     $$('[data-a-progress]').forEach(function (p) {
       var pct = nodes.length ? Math.round(100 * n / nodes.length) : 0;
       var fill = $('.a-progress__fill', p), txt = $('.a-progress__text', p), bar = $('.a-progress__bar', p);
@@ -442,6 +442,8 @@ def _main(kind, src, inputs, tests_src, mode, term=None):
     // Hinweise (gestuft)
     var hintsList = $('.a-hints', root);
     ui.hintBtn = null;
+    /* data-loesung-nach-tipps: die Musterlösung wird erst frei, wenn alle Tipps gezeigt sind (und ein Versuch geprüft ist) */
+    ui.alleTipps = !(root.hasAttribute('data-loesung-nach-tipps') && hintsList && $$('li', hintsList).length);
     if (hintsList) {
       var items = $$('li', hintsList);
       hintsList.hidden = true;
@@ -455,7 +457,7 @@ def _main(kind, src, inputs, tests_src, mode, term=None):
         hintBox.appendChild(box);
         shown++;
         ui.hintBtn.textContent = shown >= items.length ? 'Keine weiteren Tipps' : 'Tipp ' + (shown + 1) + ' von ' + items.length;
-        if (shown >= items.length) ui.hintBtn.disabled = true;
+        if (shown >= items.length) { ui.hintBtn.disabled = true; ui.alleTipps = true; if (ui.refreshSolution) ui.refreshSolution(); }
       });
       ui.hintBox = hintBox;
       ui.hintsEl = hintsList;
@@ -468,15 +470,22 @@ def _main(kind, src, inputs, tests_src, mode, term=None):
       ui.solBox = el('div', { class: 'a-solution', hidden: '' }, [el('strong', { text: 'Musterlösung' }), el('pre', { class: 'k-code', text: sol })]);
       ui.solBtn = el('button', { type: 'button', class: 'k-btn k-btn--small k-btn--link', text: 'Musterlösung ansehen', 'aria-disabled': 'true', title: 'Erst einen Versuch prüfen, dann kannst du die Musterlösung aufdecken.' });
       ui.solBtn.addEventListener('click', function () {
+        if (!ui.alleTipps) { ui.status.textContent = 'Erst alle Tipps ansehen, dann die Musterlösung.'; return; }
         if (!ui.attempted) { ui.status.textContent = 'Erst einen eigenen Versuch prüfen, dann die Musterlösung.'; return; }
         var open = ui.solBox.hidden;
         ui.solBox.hidden = !open;
         ui.solBtn.textContent = open ? 'Musterlösung verbergen' : 'Musterlösung ansehen';
       });
     }
+    ui.refreshSolution = function () {
+      if (!ui.solBtn) return;
+      var frei = ui.attempted && ui.alleTipps;
+      ui.solBtn.setAttribute('aria-disabled', frei ? 'false' : 'true');
+      ui.solBtn.title = frei ? '' : (ui.alleTipps ? 'Erst einen Versuch prüfen, dann kannst du die Musterlösung aufdecken.' : 'Erst alle Tipps ansehen und einen Versuch prüfen, dann kannst du die Musterlösung aufdecken.');
+    };
     ui.unlockSolution = function () {
       ui.attempted = true;
-      if (ui.solBtn) { ui.solBtn.setAttribute('aria-disabled', 'false'); ui.solBtn.title = ''; }
+      ui.refreshSolution();
     };
     return ui;
   }

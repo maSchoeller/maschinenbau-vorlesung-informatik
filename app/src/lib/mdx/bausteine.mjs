@@ -12,7 +12,7 @@
      <Icon n="head" />                            Symbol aus dem Sprite
      <Hinweis art="merke|achtung|warum">          die drei Hinweis-Typen
      <Abschnitt id nr titel [zusatz] [kopf]>      Abschnitt einer Lerneinheit
-     <Labor nr name lerneinheit [zuhause]>        [zuhause] = Minuten Training zu Hause für die Überschrift von Teil B
+     <Labor nr name lerneinheit [zuhause] [training]>  [zuhause] = Minuten Training zu Hause für die Überschrift von Teil B; training="freiwillig" macht Teil B freiwillig (Überschrift, zählt nicht im Fortschritt)
      <Station id titel teil [sterne] [min] [extra]>  Station im Labor
      <Knobel id titel>                            freiwillige Knobelaufgabe, ganz am Ende des Labors (Regeln: INHALTE.md)
      <Vorhersage>  Frage, Liste der Antworten ([x] = richtig), Auflösung
@@ -269,7 +269,8 @@ export function bausteine({ ordner = null, datei = 'MDX' } = {}) {
     },
 
     /* Labor: Aufgabenliste, Kopfzeile mit Auswahl und Werkzeugkasten-Knopf, Stationen, Blättern */
-    Labor({ nr, name, lerneinheit, zuhause, kinder }) {
+    Labor({ nr, name, lerneinheit, zuhause, training, kinder }) {
+      if (training !== undefined && training !== 'freiwillig') throw new Error(`<Labor>: training ist "freiwillig" oder fehlt, nicht "${training}"`);
       const k = ohneLeerraum(kinder);
       const stationen = k.filter((x) => hatKlasse(x, 'l-task'));
       const knobel = stationen.filter((x) => x.attrs['data-knobel']);
@@ -280,8 +281,10 @@ export function bausteine({ ordner = null, datei = 'MDX' } = {}) {
       const doppelt = knobel.map((x) => x.attrs.id).filter((id, i, l) => l.indexOf(id) !== i);
       if (doppelt.length) throw new Error(`<Labor>: <Knobel id="${doppelt[0]}"> kommt doppelt vor`);
       if (stationen[0].attrs['data-knobel'] || !stationen[0].kinder.some((x) => hatKlasse(x, 'lab__toolbox'))) throw new Error('<Labor>: die erste <Station> muss den <Werkzeugkasten> enthalten');
+      /* training="freiwillig": die Aufgaben in Teil B zählen nirgends mit (data-freiwillig an der Aufgabe) */
+      if (training === 'freiwillig') stationen.filter((x) => x.attrs['data-part'] === 'B').forEach((x) => aufgabenIn(x.kinder).forEach((a) => { a.attrs['data-freiwillig'] = true; }));
       const zeichen = (n, text) => h('span', null, h('svg', { class: 'k-ic', 'aria-hidden': 'true', focusable: 'false' }, h('use', { href: `../assets/img/icons.svg#i-${n}` })), ' ' + text);
-      return h('div', { class: 'lab', 'data-lab': true, 'data-zuhause': zuhause },
+      return h('div', { class: 'lab', 'data-lab': true, 'data-zuhause': zuhause, 'data-training': training },
         h('nav', { class: 'lab__list', 'aria-label': 'Aufgabenliste' },
           h('div', { class: 'lab__listhead' },
             h('button', { type: 'button', class: 'lab__fold', 'data-lab-fold': true, 'aria-expanded': 'true', 'aria-label': 'Aufgabenliste einklappen' },

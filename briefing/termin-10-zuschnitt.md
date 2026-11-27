@@ -595,7 +595,7 @@ Zu Hause **Pflicht 15 Minuten**: Werkzeugkasten (5), Selbstcheck (7), Spiel sich
 
 **Theorie (Lerneinheit, Abschnitt 1): „Schnell, groß, Zahlen“.** Die Speicher-Treppe in Zeitlupe (der Arbeitsspeicher dauert eine Sekunde, die SSD rund 17 Minuten, die Festplatte rund 28 Stunden, also mehr als ein Tag; dieselben Zahlen wie im Baustein); dann KB, MB und GB an Beispielen (Textseite, Foto, Film); zum Schluss das `A` als 65 mit den Bits und das kleine `a` als 97.
 
-**Python-Werkzeugkasten (Labor, Station 1): „Mehr als einen Grund zum Aufhören“.** Karte 1 zeigt die Schleife mit `and`, Karte 2 die Text-Eingabe, Karte 3 die Mitte mit `int`. Karte 4 (ord und chr, nur lesen) kommt im Video nicht vor.
+**Python-Werkzeugkasten (Labor, Station 1): „Mehr als ein Grund zum Aufhören“.** Karte 1 zeigt die Schleife mit `and`, Karte 2 die Text-Eingabe, Karte 3 die Mitte mit `int`. Karte 4 (ord und chr, nur lesen) kommt im Video nicht vor.
 
 **Beispiel (Labor, Stufe 3 und 4): „Dein Spiel Schritt für Schritt“.** Aus dem Tipp mit Hinweis wird die Schleife, dazu der Zähler, dann die Funktion `spiel()`. Die Falle: Die Zufallszahl in der Schleife. Ein Lauf des fertigen Spiels mit Versuche-Zahl am Ende.
 
