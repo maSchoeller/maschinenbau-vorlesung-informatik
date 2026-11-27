@@ -1,1 +1,0 @@
-Zuerst die Eingangsdaten in den Zeilen vier bis sieben. temperatur startet bei achthundertfünfzig Grad, umgebung ist zwanzig Grad. ka ist die Abkühlkonstante: null Komma null acht pro Minute, also acht Prozent. ziel ist sechzig Grad: Ab hier darf das Teil weiterbearbeitet werden. Die Kommentare nach dem Doppelkreuz nennen die Einheiten.

@@ -1,0 +1,408 @@
+---
+titel: "Termin 06 · Programmierlabor · Informatik Maschinenbau"
+beschreibung: "Programmierlabor zu Termin 06: range mit Schrittweite und rückwärts zählen, Schleife in Schleife, Bytes mit UND, ODER und XOR verknüpfen, eine Säulenreihe in 3D. Mit Training zum Umrechnen von Hexzahlen für zu Hause."
+body:
+  data-lesson: V06
+  data-page: labor
+stile:
+  - ../assets/css/dhbw-base.css
+  - ../assets/css/kurs.css
+  - ../assets/css/aufgaben.css
+  - ../assets/css/editor.css
+  - ../assets/css/labor.css
+  - ../assets/css/v05.css
+  - ../assets/css/pap-editor.css
+skripte:
+  - ../assets/js/speicher.js
+  - ../assets/js/icons.js
+  - src: ../assets/js/editor.js
+    defer: true
+  - ../assets/js/pap-engine.js
+  - ../assets/js/kurs.js
+  - ../assets/js/aufgaben.js
+  - ../assets/js/pap-editor.js
+  - ../assets/js/labor.js
+---
+
+<Labor nr="V06" zuhause="47" name="Termin 06" lerneinheit="v06-hexadezimal-xor-und-schleifen.html">
+
+<Station id="a-werkzeugkasten" titel="Werkzeugkasten" teil="A" min="4">
+
+<p class="l-task__intro">Drei neue Karten. Alles aus Termin 02 bis 05 gilt weiter: `if`, `while`, `for` und `range`. Jeder Codeblock läuft: Ändere etwas und führ ihn aus. Den Werkzeugkasten erreichst du von jeder Aufgabe aus in der Befehls-Bibliothek oben rechts.</p>
+
+<Video name="v06-python" titel="Python-Werkzeugkasten: range mit Schritt, Schleife in Schleife, nachprüfen" fehlt="Video folgt. Bis dahin: Lies die drei Karten und probier jeden Codeblock aus.">
+
+Python-Werkzeugkasten: range mit Schritt, Schleife in Schleife, nachprüfen (ca. 2 Min). Untertitel sind eingeschaltet (Deutsch).
+
+</Video>
+
+<Werkzeugkasten>
+
+<Syntaxkarte id="sk-range-schritt" nr="1" titel="range mit Schrittweite">
+
+```python
+for i in range(0, 11, 5):
+    print(i)
+print("fertig")
+```
+
+- Ausgabe: `0`, `5`, `10`, `fertig`.
+- Drei Zahlen: Start, Stopp, Schritt. Der Stoppwert gehört nie dazu. `range(0, 101, 25)` ergibt 0, 25, 50, 75, 100.
+- Rückwärts braucht den Schritt `-1`: `range(5, 0, -1)` ergibt 5, 4, 3, 2, 1. Die 0 fehlt, der Stoppwert gehört auch hier nicht dazu.
+- Andere negative Schritte musst du nur lesen können, selbst schreiben musst du sie nicht: `range(10, 0, -3)` ergibt 10, 7, 4, 1.
+- Ohne Schritt zählt `range` vorwärts. Gegen den Schritt gibt es keine Zahl: `range(5, 0)` läuft nie, und Python meldet nichts.
+- Ein Schritt von 0 meldet `ValueError: range() arg 3 must not be zero`.
+
+</Syntaxkarte>
+
+<Syntaxkarte id="sk-schleife-in-schleife" nr="2" titel="Schleife in Schleife">
+
+```python
+for i in range(1, 3):
+    for j in range(1, 4):
+        print(f"{i} und {j}")
+print("fertig")
+```
+
+- Ausgabe: `1 und 1`, `1 und 2`, `1 und 3`, `2 und 1`, `2 und 2`, `2 und 3`, `fertig`.
+- Die innere Schleife läuft bei jedem `i` ganz durch und beginnt wieder bei ihrem Startwert.
+- Der innere Rumpf läuft so oft, wie außen mal innen: hier 2 · 3 = 6.
+- Einrückung in Stufen: `for j` steht 4 Leerzeichen tief, das `print` im inneren Rumpf 8. Das letzte `print` steht ganz links, nach beiden Schleifen.
+- Zähler und Startwerte gehören vor die äußere Schleife.
+
+</Syntaxkarte>
+
+<Syntaxkarte id="sk-nachpruefen" nr="3" titel="Zum Nachprüfen: Hex und Bits in Python">
+
+Nur zum Kontrollieren deiner Rechnung auf Papier, nicht in Aufgaben.
+
+```python
+print(0xE2)               # 226, die Hexzahl E2
+print(0b11100010)         # 226, dasselbe Byte in binär
+print(hex(226))           # 0xe2, Python schreibt klein
+print(bin(37))            # 0b100101, ohne führende Nullen
+print(int("E2", 16))      # 226, den Text E2 als Hexzahl lesen
+a = 0b1100
+b = 0b1010
+print(a & b)              # 8, UND bitweise
+print(a | b)              # 14, ODER bitweise
+print(a ^ b)              # 6, XOR bitweise
+print(bin(a ^ b))         # 0b110
+```
+
+- `0x` heißt „Hexzahl“, `0b` heißt „Binärzahl“. Python schreibt Hex klein, du schreibst es groß.
+- `&` ist UND, `|` ist ODER und `^` ist XOR, jeweils Bit für Bit. Das `^` ist hier nicht „hoch“ wie im Taschenrechner.
+
+</Syntaxkarte>
+
+</Werkzeugkasten>
+
+</Station>
+
+<Station id="a-vorgemacht" titel="Vorgerechnetes Beispiel: Kino" teil="A" min="5">
+
+<p class="l-task__intro">Aufgabe: Eingelesen werden die Zahl der Reihen und die Zahl der Plätze je Reihe (beide mindestens 1), dann für jeden Platz, Reihe für Reihe, eine 1 (belegt) oder eine 0 (frei). Ausgegeben wird, wie viele Plätze belegt sind, als `Belegt: 4 von 6`. Wieder gilt: **erst der Plan, dann der Code.** Neu ist die Raute in der Raute.</p>
+
+<Video name="v06-beispiel" titel="Vorgerechnet: Kino" fehlt="Video folgt. Bis dahin: Lies den Plan und den Code Zeile für Zeile und probier das Programm mit 2, 3, 1, 0, 1, 1, 1, 0 und mit 1, 1, 1 aus.">
+
+Vorgerechnet: Kino (ca. 2 Min). Untertitel sind eingeschaltet (Deutsch).
+
+</Video>
+
+<Plan titel="Kino">
+
+```text
+Eingabe: reihen
+Eingabe: plaetze
+belegt = 0
+Schleife: i von 1 bis reihen?
+  Schleife: j von 1 bis plaetze?
+    Eingabe: platz
+    Entscheidung: platz == 1?
+      ja:
+        belegt = belegt + 1
+gesamt = reihen * plaetze
+Ausgabe: "Belegt:", belegt, "von", gesamt
+```
+
+</Plan>
+
+<Aufgabe art="run" id="w-vorgemacht" data-count="0" data-mode="programm" data-inputs="2|3|1|0|1|1|1|0">
+
+<Editor datei="labor/w-vorgemacht.vorlage.py" aria-label="Python-Code: Kino" />
+
+</Aufgabe>
+
+<Schritte>
+
+1. **Der Ablauf in Worten:** Reihen und Plätze einlesen, jeden Platz abfragen, die belegten zählen, am Ende ausgeben.
+2. **Wie oft?** Außen `reihen`-mal, innen `plaetze`-mal. Das sind zwei Schleifen ineinander. Der innere Rumpf läuft `reihen * plaetze`-mal.
+3. **Wo steht was?** Der Zähler `belegt = 0` steht vor beiden Schleifen. Einlesen und `if` stehen im inneren Rumpf. Die Ausgabe steht nach beiden Schleifen.
+4. **Der Plan:** Raute in der Raute. Die innere Schleife sitzt ganz im Rumpf der äußeren.
+5. **Der Code:** Zweimal `range(1, … + 1)`, weil der Stoppwert nicht dazugehört. `i` und `j` stehen in der Eingabeaufforderung, so siehst du, welcher Platz dran ist.
+6. **Probe:** Mit 2, 3, 1, 0, 1, 1, 1, 0 erscheint `Belegt: 4 von 6`, denn es sind vier Einsen. Mit 1, 1, 1 erscheint `Belegt: 1 von 1`: Beide Schleifen laufen genau einmal.
+7. **Selbsterklärung:** Was passiert, wenn `belegt = 0` in den Rumpf der äußeren Schleife rutscht? Erst ausprobieren, dann lesen: Der Zähler beginnt in jeder Reihe von vorn, und es zählt nur die letzte Reihe. Mit 2, 3, 1, 0, 1, 1, 1, 0 erscheint `Belegt: 2 von 6`.
+
+</Schritte>
+
+</Station>
+
+<Station id="a-ablauf" titel="Ablauf verfolgen: Schleife in Schleife" teil="A" min="7">
+
+<p class="l-task__intro">Führ das Programm im Kopf aus, Zeile für Zeile, und trag ein, was sich ändert. In jeder Zeile mit `for` trägst du `i` oder `j` ein. In die Spalte Weg schreibst du ja, wenn der Rumpf noch einmal läuft, sonst nein, ohne Anführungszeichen. Die innere `for`-Zeile kommt bei jedem `i` einmal öfter dran, als sie Werte hat. Hier hat `j` zwei Werte, die Zeile kommt also bei jedem `i` dreimal dran: zweimal ja, einmal nein. Beachte, wo `j` wieder bei 1 beginnt.</p>
+
+<Aufgabe art="trace" id="w-trace">
+
+<Daten datei="labor/w-trace.daten.json" />
+
+</Aufgabe>
+
+</Station>
+
+<Station id="a-plan" titel="Plan zeichnen: Einmaleins-Tafel" teil="A" sterne="2" min="10">
+
+<p class="l-task__intro">Eine Schleife in der Schleife ist im Plan eine Raute in der Raute. Du trägst die erste Zählschleife als `i in range(1, n + 1)` ein, die Raute zeigt dann „i von 1 bis n?“. Die zweite fügst du mit „In die Schleife einfügen“ in ihren Rumpf ein. Die zwei Eingaben stehen schon im Editor. „Prüfen“ führt deinen Plan mit Beispielwerten aus.</p>
+
+<Aufgabe art="pap-zeichnen" id="w-plan" titel="Einmaleins-Tafel" data-timeout="8000" data-erlaubt="in,out,op,for">
+
+Eingelesen werden zwei ganze Zahlen n und m. Ausgegeben wird jedes Produkt `i * j` mit `i` von 1 bis n und `j` von 1 bis m, jedes in einer eigenen Zeile, zuerst alle für `i = 1`. Bei n = 2 und m = 3 erscheinen 1, 2, 3, 2, 4, 6.
+
+<Python rolle="tests" datei="labor/w-plan.tests.py" />
+
+<Daten datei="labor/w-plan.start.json" rolle="start" />
+
+<Daten datei="labor/w-plan.solution.json" rolle="solution" />
+
+<Tipps>
+
+1. Wie oft läuft die Ausgabe? n-mal m-mal. Wie viele Zählschleifen brauchst du, und wo steht die zweite?
+2. Die erste Zählschleife trägst du als `i in range(1, n + 1)` ein. Die zweite fügst du mit „In die Schleife einfügen“ in ihren Rumpf ein: `j in range(1, m + 1)`.
+3. In den Rumpf der inneren Schleife kommt nur eine Ausgabe: `i * j`.
+
+</Tipps>
+
+</Aufgabe>
+
+</Station>
+
+<Station id="a-saeulen" titel="Plan in Code: Säulenreihe in 3D" teil="A" sterne="2" min="10">
+
+<p class="l-task__intro">Auf einer Leiste stehen 5 Säulen (Durchmesser 10 mm, Höhe 30 mm) im Abstand von 25 mm, die erste bei x = 0, die letzte bei x = 100. Die erste steht schon im Programm. Übertrage den Plan: Die weiteren Säulen kommen mit einer Schleife dazu. Mit „Ausführen“ erscheint die Reihe in der 3D-Vorschau, die du mit der Maus drehen kannst. Es erscheint kein Text, die Vorschau ist die Ausgabe.</p>
+
+<Aufgabe art="code" id="w-3d" titel="Säulenreihe" data-mode="code" data-files="../assets/py/bauteil3d.py" data-timeout="10000">
+
+<div class="a-task__text">
+
+Die Zeile `from bauteil3d import *` holt die Werkzeuge und steht schon da. Der Plan:
+
+<Plan titel="Säulenreihe">
+
+```text
+reihe = Säule bei x = 0
+Schleife: x von 25 bis 100, Schritt 25?
+  reihe = reihe plus Säule bei x
+Ausgabe: reihe zeigen
+```
+
+</Plan>
+
+</div>
+
+<Editor datei="labor/w-3d.vorlage.py" aria-label="Python-Code: Säulenreihe in 3D" />
+
+<Python rolle="tests" datei="labor/w-3d.tests.py" />
+
+<Python rolle="solution" datei="labor/w-3d.solution.py" />
+
+<Tipps>
+
+1. Eine Säule steht schon bei 0. Wie viele kommen dazu, und bei welchen x?
+2. Karte 1: von 25 in Schritten von 25. Die 100 muss dabei sein, also ist der Stoppwert 101.
+3. Im Rumpf wächst `reihe`, so wie `summe = summe + …`: `reihe = vereinige(reihe, …)` mit der verschobenen Säule `verschiebe(zylinder(10, 30), x)`.
+
+</Tipps>
+
+</Aufgabe>
+
+</Station>
+
+<Station id="a-bits" titel="Bits verknüpfen" teil="A" min="5">
+
+<p class="l-task__intro">Verknüpfe die beiden Bytes Spalte für Spalte. Rechne zuerst auf Papier, dann prüf hier. In Zeile 4 ist das erste Byte das Ergebnis aus Zeile 3.</p>
+
+<Aufgabe art="trace" id="w-bits">
+
+<Daten datei="labor/w-bits.daten.json" />
+
+</Aufgabe>
+
+</Station>
+
+<Station id="t-1" titel="Umrechnen" teil="B" sterne="1" min="5">
+
+<p class="l-task__intro">Das Training gehört zum Termin: Mit dem Selbstcheck und den Stationen 2 und 3 sind es etwa 47 Minuten bis zum nächsten Mal. Termin 07 beginnt mit dieser Aufgabe. Rechne zuerst auf Papier, dann prüf hier. Hexzahlen schreibst du mit zwei Ziffern, Binärzahlen mit 8 Stellen, mit oder ohne Leerzeichen in der Mitte, ohne Anführungszeichen. Ob du groß oder klein schreibst, ist hier egal. In der Klausur schreibst du Hexzahlen groß. In jeder Zeile ist ein Feld gefragt.</p>
+
+<Aufgabe art="trace" id="tr-1" titel="Umrechnen">
+
+<Daten datei="labor/tr-1.daten.json" />
+
+</Aufgabe>
+
+</Station>
+
+<Station id="t-2" titel="Plan in Code übertragen: Würfelpaare mit gewünschter Summe" teil="B" sterne="2" min="8">
+
+<p class="l-task__intro">Klausurform „Plan in Code übertragen“: Schreib das Programm wie auf Papier, ohne Ausführen und ohne Vorschläge des Editors. Dann abgeben und mit der Lösung vergleichen. Der Zähler steht hier vor beiden Schleifen.</p>
+
+<Aufgabe art="klausur" id="tr-2" titel="Würfelpaare" data-mode="programm" data-minutes="8">
+
+<div class="a-task__text">
+
+Übertrage den Plan in ein Python-Programm. Eingelesen wird die gewünschte Augensumme (ganze Zahl). Gezählt wird, bei wie vielen der 36 Würfelpaare (beide Würfel von 1 bis 6) die Summe so groß ist. Ausgegeben wird zum Beispiel `Paare: 6` für die Summe 7.
+
+<Plan titel="Würfelpaare">
+
+```text
+Eingabe: summe (ganze Zahl)
+anzahl = 0
+Schleife: i von 1 bis 6?
+  Schleife: j von 1 bis 6?
+    Entscheidung: i + j == summe?
+      ja:
+        anzahl = anzahl + 1
+Ausgabe: "Paare:", anzahl
+```
+
+</Plan>
+
+</div>
+
+<Editor data-assist="off" aria-label="Python-Code von Hand schreiben, ohne Ausführen" />
+
+<Python rolle="tests" datei="labor/tr-2.tests.py" />
+
+<Python rolle="solution" datei="labor/tr-2.solution.py" />
+
+<Daten datei="labor/tr-2.scheme.json" rolle="scheme" />
+
+</Aufgabe>
+
+</Station>
+
+<Station id="t-3" titel="Fehler finden und beheben: Countdown" teil="B" sterne="2" min="5">
+
+<p class="l-task__intro">In diesem Programm stecken zwei Fehler: einer, den Python meldet, und einer, den du nur mit einer Probe findest. Probier 3 als Start.</p>
+
+<Aufgabe art="code" id="tr-3" titel="Countdown" data-mode="programm" data-inputs="3">
+
+<div class="a-task__text">
+
+Das Programm liest eine Startzahl ein, zählt von dort rückwärts bis 1 und gibt dann `Los` aus. Beim Start 3 sollen 3, 2, 1 und Los erscheinen. Behebe beide Fehler.
+
+</div>
+
+<Editor datei="labor/tr-3.vorlage.py" aria-label="Python-Code: Countdown" />
+
+<Python rolle="tests" datei="labor/tr-3.tests.py" />
+
+<Python rolle="solution" datei="labor/tr-3.solution.py" />
+
+<Tipps>
+
+1. Führ das Programm aus und lies die Meldung: Welche Zeile, was fehlt am Ende?
+2. Läuft es, probier 3: Was erscheint?
+3. Rückwärts braucht einen dritten Wert in `range`. Karte 1.
+
+</Tipps>
+
+</Aufgabe>
+
+</Station>
+
+<Station id="t-4" titel="Lochraster einer Platte" teil="B" sterne="3" min="10">
+
+<p class="l-task__intro">Ohne vorgegebenen Plan. Zeichne zuerst auf Papier, wo die Löcher sitzen. Dann schreib das Programm.</p>
+
+<Aufgabe art="code" id="tr-4" titel="Lochraster" data-mode="programm" data-inputs="50|25|25">
+
+<div class="a-task__text">
+
+Eine Platte ist so breit und so hoch wie eingelesen (in mm). Löcher sitzen im eingelesenen Abstand: das erste in der Ecke bei x = 0 und y = 0, dann Reihe für Reihe nach oben, in jeder Reihe von links nach rechts. Eingelesen werden Breite, Höhe und Abstand in mm (ganze Zahlen, Abstand mindestens 1). Ausgegeben wird jedes Loch als `Loch bei x = 25, y = 0` und zuletzt `Löcher: 6`. Beispiel: Die Eingaben 50, 25, 25 ergeben sechs Löcher (x = 0, 25, 50 und y = 0, 25).
+
+</div>
+
+<Editor datei="labor/tr-4.vorlage.py" aria-label="Python-Code: Lochraster" />
+
+<Python rolle="tests" datei="labor/tr-4.tests.py" />
+
+<Python rolle="solution" datei="labor/tr-4.solution.py" />
+
+<Tipps>
+
+1. Zeichne zuerst den Plan: drei Eingaben, Zähler auf 0, Zählschleife für die Reihen, darin die Zählschleife für die Löcher einer Reihe, im inneren Rumpf Ausgabe und Zählen, danach die Anzahl.
+2. Von 0 in Schritten von `abstand` bis `breite`. Der Stoppwert gehört nicht dazu: Was muss deshalb hinter `breite` stehen?
+3. Die Form kennst du von „Würfelpaare“ und von Karte 2: Zähler vor beiden Schleifen, innen `anzahl = anzahl + 1`.
+
+</Tipps>
+
+</Aufgabe>
+
+</Station>
+
+<Knobel id="kn-1" titel="Händedruck-Runde">
+
+<Aufgabe art="code" id="k-1" data-mode="programm" data-inputs="4">
+
+<div class="a-task__text">
+
+Auf einer Feier sind n Personen, die von 1 bis n durchnummeriert sind. Jede gibt jeder anderen genau einmal die Hand. Eingelesen wird n (ganze Zahl). Ausgegeben wird jedes Paar einmal als `1 und 2` und zuletzt die Anzahl, zum Beispiel `Händedrücke: 6` für n = 4. Das Paar `2 und 1` ist dasselbe wie `1 und 2` und kommt nicht noch einmal vor.
+
+</div>
+
+<Editor datei="labor/k-1.vorlage.py" aria-label="Python-Code: Händedruck-Runde" />
+
+<Python rolle="tests" datei="labor/k-1.tests.py" />
+
+<Python rolle="solution" datei="labor/k-1.solution.py" />
+
+<Tipps>
+
+1. Schreib für n = 4 alle Paare auf und streich die doppelten. Ist die erste Zahl 1, mit welcher Zahl beginnt die zweite? Und wenn die erste Zahl 3 ist?
+2. Die innere Schleife fängt nicht immer bei 1 an. Ihr Startwert hängt von `i` ab.
+3. Die innere Schleife beginnt bei `i + 1` und endet wie die äußere bei n.
+
+</Tipps>
+
+</Aufgabe>
+
+</Knobel>
+
+<Knobel id="kn-2" titel="Pythagoras-Tripel">
+
+<Aufgabe art="code" id="k-2" data-mode="programm" data-inputs="20">
+
+<div class="a-task__text">
+
+Ein Tripel aus drei ganzen Zahlen `a < b < c` mit a · a + b · b gleich c · c passt in ein rechtwinkliges Dreieck, zum Beispiel 3, 4, 5. Eingelesen wird eine Grenze (ganze Zahl). Gesucht sind alle Tripel, in denen alle drei Zahlen höchstens so groß wie die Grenze sind. Ausgegeben wird jedes Tripel als `3 4 5` und zuletzt `Tripel: 6` (für g = 20).
+
+</div>
+
+<Editor datei="labor/k-2.vorlage.py" aria-label="Python-Code: Pythagoras-Tripel" />
+
+<Python rolle="tests" datei="labor/k-2.tests.py" />
+
+<Python rolle="solution" datei="labor/k-2.solution.py" />
+
+<Tipps>
+
+1. Du suchst drei Zahlen, also braucht der Vergleich drei Schleifen ineinander.
+2. Du musst keine Wurzel ziehen: Probier jedes c aus und prüf, ob a · a + b · b genau c · c ergibt.
+3. Wenn die Schleifen von `a + 1` und `b + 1` beginnen, kommt jedes Tripel nur einmal vor, und `a < b < c` ist von selbst erfüllt.
+
+</Tipps>
+
+</Aufgabe>
+
+</Knobel>
+
+</Labor>

@@ -250,7 +250,7 @@ E("for", "for", SC, "V06", "kopf",
 E("range", "range()", SC, "V06", "kopf",
   "Erzeugt eine Zahlenfolge für Schleifen.",
   "range(stop)    range(start, stop)    range(start, stop, schritt)",
-  "range(5) liefert 0, 1, 2, 3, 4: Der Startwert 0 ist dabei, der Endwert 5 nicht. range(1, 6) liefert 1 bis 5, range(0, 100, 25) liefert 0, 25, 50, 75. Mit negativem Schritt zählst du rückwärts.",
+  "range(5) liefert 0, 1, 2, 3, 4: Der Startwert 0 ist dabei, der Endwert 5 nicht. range(1, 6) liefert 1 bis 5, range(0, 100, 25) liefert 0, 25, 50, 75. Die dritte Zahl ist die Schrittweite; sie kommt ab Termin 06 dran. Mit negativem Schritt zählst du rückwärts.",
   '''
   for winkel in range(0, 91, 30):
       print(winkel, "Grad")

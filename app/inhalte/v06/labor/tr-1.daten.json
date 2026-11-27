@@ -1,0 +1,86 @@
+{
+ "sprache": "tabelle",
+ "leerzeichen": false,
+ "gross": false,
+ "ausgabe": false,
+ "typhinweis": false,
+ "code": [
+  "Zahl = 1011 0111, System = binär, gesucht = hex",
+  "Zahl = 0101 1010, System = binär, gesucht = hex",
+  "Zahl = 0000 1010, System = binär, gesucht = hex",
+  "Zahl = 4F, System = hex, gesucht = binär",
+  "Zahl = D9, System = hex, gesucht = binär",
+  "Zahl = 7F, System = hex, gesucht = dezimal",
+  "Zahl = A0, System = hex, gesucht = dezimal",
+  "Zahl = 180, System = dezimal, gesucht = hex"
+ ],
+ "vars": [
+  "Ergebnis"
+ ],
+ "steps": [
+  {
+   "line": 1,
+   "set": {
+    "Ergebnis": "B7"
+   },
+   "frage": "Zeile 1: Rechne 1011 0111 in eine Hexzahl um. Trag zwei Ziffern ein, ohne Anführungszeichen.",
+   "hint": "Zwei Vierergruppen, jede schlägst du in der Tabelle der Lerneinheit (Abschnitt 1) nach: 1011 ist B, 0111 ist 7. Jedes Byte hat zwei Hex-Ziffern."
+  },
+  {
+   "line": 2,
+   "set": {
+    "Ergebnis": "5A"
+   },
+   "frage": "Zeile 2: Rechne 0101 1010 in eine Hexzahl um. Trag zwei Ziffern ein, ohne Anführungszeichen.",
+   "hint": "Zwei Vierergruppen, jede schlägst du in der Tabelle der Lerneinheit (Abschnitt 1) nach: 0101 ist 5, 1010 ist A. Jedes Byte hat zwei Hex-Ziffern."
+  },
+  {
+   "line": 3,
+   "set": {
+    "Ergebnis": "0A"
+   },
+   "frage": "Zeile 3: Rechne 0000 1010 in eine Hexzahl um. Trag zwei Ziffern ein, ohne Anführungszeichen.",
+   "hint": "Zwei Vierergruppen, jede schlägst du in der Tabelle der Lerneinheit (Abschnitt 1) nach: 0000 ist 0, 1010 ist A. Auch die führende 0 schreibst du hin: Jedes Byte hat zwei Hex-Ziffern."
+  },
+  {
+   "line": 4,
+   "set": {
+    "Ergebnis": "0100 1111"
+   },
+   "frage": "Zeile 4: Rechne 4F ins Zweiersystem um. Trag 8 Stellen ein, mit oder ohne Leerzeichen in der Mitte, ohne Anführungszeichen.",
+   "hint": "Jede Ziffer wird eine Vierergruppe: 4 ist 0100, F ist 1111."
+  },
+  {
+   "line": 5,
+   "set": {
+    "Ergebnis": "1101 1001"
+   },
+   "frage": "Zeile 5: Rechne D9 ins Zweiersystem um. Trag 8 Stellen ein, mit oder ohne Leerzeichen in der Mitte, ohne Anführungszeichen.",
+   "hint": "Jede Ziffer wird eine Vierergruppe: D ist 1101, 9 ist 1001."
+  },
+  {
+   "line": 6,
+   "set": {
+    "Ergebnis": "127"
+   },
+   "frage": "Zeile 6: Rechne 7F in eine Dezimalzahl um. Trag die Zahl ein, ohne Anführungszeichen.",
+   "hint": "7 ist 7, F ist 15. Rechne 7 · 16 + 15."
+  },
+  {
+   "line": 7,
+   "set": {
+    "Ergebnis": "160"
+   },
+   "frage": "Zeile 7: Rechne A0 in eine Dezimalzahl um. Trag die Zahl ein, ohne Anführungszeichen.",
+   "hint": "A ist 10, die zweite Ziffer ist 0. Rechne 10 · 16 + 0."
+  },
+  {
+   "line": 8,
+   "set": {
+    "Ergebnis": "B4"
+   },
+   "frage": "Zeile 8: Rechne 180 in eine Hexzahl um. Trag zwei Ziffern ein, ohne Anführungszeichen.",
+   "hint": "Erst binär mit der Stellenwerttabelle (1011 0100), dann die zwei Vierergruppen: B und 4."
+  }
+ ]
+}

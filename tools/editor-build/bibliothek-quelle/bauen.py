@@ -69,6 +69,8 @@ NEUE_TERMINE = {
     "V01": ["int", "float", "typumwandlung", "rechenoperatoren"],
     "V02": ["bool", "vergleiche", "if", "else", "einrueckung", "fstring"],
     "V03": ["elif", "and-or"],
+    "V04": ["while"],
+    "V05": ["for", "range"],
 }
 for _v, _ids in NEUE_TERMINE.items():
     for _e in helfer.EINTRAEGE:

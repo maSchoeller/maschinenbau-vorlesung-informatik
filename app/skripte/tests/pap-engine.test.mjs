@@ -53,7 +53,13 @@ test('Zählschleife: die Raute zeigt „i von a bis b − 1“ statt range', () 
   assert.equal(P.forText('i in range(n)'), 'i von 0 bis n − 1');
   assert.equal(P.forText('i in range(n + 1)'), 'i von 0 bis n');
   assert.equal(P.forText('i in range(a, 2 * n)'), 'i von a bis (2 * n) − 1');
-  assert.equal(P.forText('i in range(0, 10, 2)'), 'i in range(0, 10, 2)');
+  assert.equal(P.forText('i in range(5, 0, -1)'), 'i von 5 bis 1, Schritt −1');
+  assert.equal(P.forText('i in range(2, 20, 3)?'), 'i von 2 bis 19, Schritt 3');
+  assert.equal(P.forText('i in range(0, 11, 2)'), 'i von 0 bis 10, Schritt 2');
+  assert.equal(P.forText('i in range(10, 0, -k)'), 'i in range(10, 0, -k)');
+  assert.equal(P.forText('y in range(0, hoehe + 1, abstand)'), 'y von 0 bis hoehe, Schritt abstand');
+  assert.equal(P.forText('x in range(0, breite, abstand)'), 'x von 0 bis breite − 1, Schritt abstand');
+  assert.equal(P.forText('i in range(a, b, -2)'), 'i in range(a, b, -2)');
   assert.equal(P.forText('x in werte'), 'x in werte');
 });
 

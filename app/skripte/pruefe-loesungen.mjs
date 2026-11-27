@@ -78,16 +78,16 @@ try {
             modus = 'programm';
           }
           if (art === 'code') { const ta = box.querySelector('textarea'); vorlage = ta ? (ta.defaultValue || ta.value || '') : ''; }
-          return { id: box.getAttribute('data-id'), art, tests, loesung, modus, vorlage, zeit: Number(box.getAttribute('data-timeout')) || 8000 };
+          return { id: box.getAttribute('data-id'), art, tests, loesung, modus, vorlage, zeit: Number(box.getAttribute('data-timeout')) || 8000, dateien: box.getAttribute('data-files') || '' };
         }).filter(Boolean);
       });
       if (!aufgaben.length) console.log('  (keine Aufgaben mit Tests)');
       for (const a of aufgaben) {
         if (a.ohneTests) { pruefe(`${a.id} (Knobelaufgabe) hat Tests`, false); continue; }
         if (!a.loesung) { pruefe(`${a.id} (${a.art}) hat eine Musterlösung`, false); continue; }
-        const lauf = (code) => page.evaluate(([c, t, m, z]) => window.KursAufgaben.runPython('test', c, [], t, m, z).then((r) => ({
+        const lauf = (code) => page.evaluate(([c, t, m, z, f]) => window.KursAufgaben.runPython('test', c, [], t, m, z, f ? { files: window.KursPy.parseFiles(f) } : undefined).then((r) => ({
           n: r.results.length, ok: r.results.filter((x) => x.ok).length, erste: (r.results.find((x) => !x.ok) || {}).msg || '', fatal: r.fatal, hinweis: r.loadError || r.jsError || (r.timedOut ? 'Zeitlimit' : ''),
-        })), [code, a.tests, a.modus, a.zeit]);
+        })), [code, a.tests, a.modus, a.zeit, a.dateien]);
         const r = await lauf(a.loesung);
         pruefe(`${a.id} (${a.art}): Lösung besteht ${r.ok} von ${r.n} Tests`, r.n > 0 && r.ok === r.n && !r.fatal && !r.hinweis, r.fatal || r.hinweis || r.erste);
         if (a.art === 'code') {

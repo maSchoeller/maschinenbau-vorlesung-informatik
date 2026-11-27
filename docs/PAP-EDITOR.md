@@ -10,7 +10,7 @@ Dateien:
 | `site/pap-editor.html` | Editor-Seite mit Demo-Aufgabe |
 | `site/assets/js/explorables-v05.js` | Bausteine von Termin 05 (`byte`, `range`, `summe`), nutzt die Engine nicht; der alte PAP-Baukasten der früheren V05 ist entfernt, die Beispieldaten `wSpec`, `wRun`, `fehlerSpec` gibt es nicht mehr |
 
-`explorables-v06.js` hat eine eigene, fest verdrahtete PAP-Zeichnung (`papKopf`, `papFuss`, `papZaehl`) und nutzt die Engine nicht. Sie bleibt unverändert, damit die V06-Bilder gleich bleiben.
+`explorables-v06.js` (Bausteine von Termin 06: `hexfarbe`, `doppelschleife`, `xorschrift`) nutzt die Engine nicht; die alte Fassung mit eigener PAP-Zeichnung (`papKopf`, `papFuss`, `papZaehl`) ist ersetzt. Die Plan-Regeln kommen aus `v05.css`, `v06.css` enthält nur `.v06-…`-Regeln.
 
 ## 1. Engine in drei Zeilen
 
@@ -48,7 +48,7 @@ host.innerHTML = KursPAP.figure([
 | Unterprogramm | Funktionsaufruf, z. B. `abs(-3)` |
 | Verzweigung | `if`; Raute direkt im Nein-Zweig → `elif`; sonst `else:` |
 | Schleife kopfgesteuert | `while bedingung:` |
-| Zählschleife | `for i in range(1, 6):` (im PAP eine Raute mit Rückführung; sie zeigt „i von 1 bis 5?“: `range(a, b)` wird zu „von a bis b − 1“ mit ausgerechneter Zahl, `range(a, n + 1)` zu „von a bis n“, `range(b)` zu „von 0 bis b − 1“, alles andere bleibt wie getippt) |
+| Zählschleife | `for i in range(1, 6):` (im PAP eine Raute mit Rückführung; sie zeigt „i von 1 bis 5?“: `range(a, b)` wird zu „von a bis b − 1“ mit ausgerechneter Zahl, `range(a, n + 1)` zu „von a bis n“, `range(b)` zu „von 0 bis b − 1“; mit Schrittweite (ab Termin 06) wird `range(2, 20, 3)` zu „i von 2 bis 19, Schritt 3“, `range(0, hoehe + 1, abstand)` zu „y von 0 bis hoehe, Schritt abstand“ und `range(5, 0, -1)` zu „i von 5 bis 1, Schritt −1“ („bis“ heißt „nicht weiter als“; bei negativem Schritt nur mit Zahlen), alles andere bleibt wie getippt) |
 | Schleife fußgesteuert | `while True:` … `if not bedingung: break` (die Bedingung ist die Wiederholungsbedingung: `ja` = zurück) |
 
 `parseCode(src)` ohne Option verhält sich wie der V05-Baukasten (nur Zuweisung, `print`, `float(input())`, `if`/`elif`/`else`). Mit `{erweitert:true}` kommen `while`, `for … in …`, `int(input())`, `input()` und Aufrufe dazu. Blockköpfe wie `def`, `try`, `with` werden mit Zeilennummer abgelehnt.
@@ -75,7 +75,7 @@ Einbinden (Reihenfolge wie in den Laboren, `pap-engine.js` vor `pap-editor.js`):
 Kopierfertiges Beispiel (in einem `.l-task` eines Labors oder frei auf einer Seite):
 
 ```html
-<div class="a-task k-pap-aufgabe" data-a="pap-zeichnen" data-id="v06-gerade-summe" data-timeout="8000"
+<div class="a-task k-pap-aufgabe" data-a="pap-zeichnen" data-id="summe-gerade" data-timeout="8000"
      data-erlaubt="in,out,op,if,while,repeat,for,call">
   <div class="a-task__head"><h3 class="a-task__title">Summe der geraden Zahlen</h3></div>
   <p>Zeichne einen PAP, der n einliest und die Summe der geraden Zahlen von 1 bis n ausgibt.</p>

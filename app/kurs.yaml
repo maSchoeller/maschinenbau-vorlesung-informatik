@@ -19,7 +19,7 @@
 #            (nicht im Lernpfad, nicht im Lektionswähler, nicht in Heute, Suche, Glossar und Kursübersicht).
 #            Abgeschaltete Lektionen stehen in dist/app/daten/kurs.json nur unter entwuerfe und sind nicht im
 #            Precache des Service Workers; pruefe-loesungen.mjs prüft sie trotzdem.
-#            Zurzeit ist keine Lektion abgeschaltet. V02 ist seit 2026-11-25 freigeschaltet, V03 bis V05 seit 2026-11-27.
+#            V06 ist seit 2026-11-27 als Entwurf angelegt (aktiv: false). V02 ist seit 2026-11-25 freigeschaltet, V03 bis V05 seit 2026-11-27.
 
 semester:
   - nr: 1
@@ -61,7 +61,7 @@ termine:
   - { nr: 3,  theorie: { T2: 2 },        programmieren: { P2: 2 }, lektion: V03 }
   - { nr: 4,  theorie: { T2: 2 },        programmieren: { P3: 2 }, lektion: V04 }
   - { nr: 5,  theorie: { T3: 1 },        programmieren: { P3: 3 }, lektion: V05 }
-  - { nr: 6,  theorie: { T3: 1, T4: 1 }, programmieren: { P3: 2 } }
+  - { nr: 6,  theorie: { T3: 1, T4: 1 }, programmieren: { P3: 2 }, lektion: V06 }
   - { nr: 7,  theorie: { T5: 2 },        programmieren: { P4: 2 } }
   - { nr: 8,  theorie: { T5: 1 },        programmieren: { P4: 3 } }
   - { nr: 9,  theorie: { T6: 2 },        programmieren: { P4: 1, P5: 1 } }
@@ -128,3 +128,14 @@ lektionen:
     labor: v05-labor.html
     notebook: null
     freigabe: null
+  - nr: V06
+    titel: "Vier Bits, eine Ziffer: Hexadezimal, XOR und Schleifen in Schleifen"
+    kurz: "Hex, XOR, Schleifen in Schleifen"
+    hook: "Zwei Ziffern für acht Bits"
+    python: ["range(start, stopp, schritt)", "Schleife in Schleife"]
+    semester: 1
+    lerneinheit: v06-hexadezimal-xor-und-schleifen.html
+    labor: v06-labor.html
+    notebook: null
+    freigabe: null
+    aktiv: false

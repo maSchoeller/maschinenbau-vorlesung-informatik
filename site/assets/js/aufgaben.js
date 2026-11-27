@@ -641,7 +641,7 @@ def _main(kind, src, inputs, tests_src, mode, term=None):
         if (r.loadError) app('Python konnte nicht gestartet werden. Bist du online? (' + r.loadError + ')\n', 'err');
         else if (r.timedOut) app('\nAbgebrochen nach ' + (timeout / 1000) + ' s. Läuft da eine Endlosschleife?\n', 'err');
         else if (r.jsError) app(r.jsError + '\n', 'err');
-        else if (!got) app('(keine Ausgabe. Hast du print() benutzt?)', 'sys');
+        else if (!got && !(ui.out && ui.out.querySelector && ui.out.querySelector('canvas, img, svg, table'))) app('(keine Ausgabe. Hast du print() benutzt?)', 'sys');
         busy(false);
         ui.status.textContent = r.timedOut ? 'abgebrochen' : (r.loadError ? 'Ladefehler, bitte erneut versuchen' : 'fertig');
       });
@@ -908,8 +908,11 @@ def _main(kind, src, inputs, tests_src, mode, term=None):
     var ohneLeer = cfg.leerzeichen === false;
     /* Der Schalter gilt für die ganze Aufgabe. Anführungszeichen und Zeilenenden werden weiter normalisiert (normVal, normOut). */
     function gleichOhneLeer(a, b) { return String(a).replace(/\s+/g, '') === String(b).replace(/\s+/g, ''); }
-    function gleichWert(a, b) { return ohneLeer ? gleichOhneLeer(normVal(a), normVal(b)) : normVal(a) === normVal(b); }
-    function gleichAus(a, b) { return ohneLeer ? gleichOhneLeer(normOut(a), normOut(b)) : normOut(a) === normOut(b); }
+    /* gross: false: Groß- und Kleinschreibung zählt beim Vergleich nicht (E2 und e2 sind gleich, z. B. bei Hexzahlen). Gilt für Werte und Ausgabe. */
+    var ohneGross = cfg.gross === false;
+    function fall(s) { return ohneGross ? String(s).toUpperCase() : String(s); }
+    function gleichWert(a, b) { a = fall(normVal(a)); b = fall(normVal(b)); return ohneLeer ? gleichOhneLeer(a, b) : a === b; }
+    function gleichAus(a, b) { a = fall(normOut(a)); b = fall(normOut(b)); return ohneLeer ? gleichOhneLeer(a, b) : a === b; }
     /* sprache: "plan" oder "tabelle": Die Zeilen sind ein Plan oder eine Tabelle, kein Python. Der Block heißt dann „Plan“ bzw. „Tabelle“
        statt „Python“ und hat keinen Kopieren-Knopf. typhinweis: false lässt den festen Satz „Typen beachten: Text steht in Anführungszeichen.“
        weg (bei Plan und Tabelle immer weggelassen). */
@@ -955,7 +958,7 @@ def _main(kind, src, inputs, tests_src, mode, term=None):
     var tries = 0, inputs = [], outInput = null, rowEl = null, revList = [];
     /* Bearbeitungsstand: ablauf:<kennung> = {v, f, n (erreichter Schritt), r (aufgedeckte Schritte), e (Eintrag im offenen Schritt)} */
     var traceId = root.getAttribute('data-id');
-    var st = traceId ? stand('ablauf:' + traceId) : KEIN_STAND, traceF = kurzHash(JSON.stringify((mitAusgabe ? [code, vars, steps] : [code, vars, steps, 'ohne-ausgabe']).concat(ohneLeer ? ['ohne-leerzeichen'] : []))), stelleWieder = false;
+    var st = traceId ? stand('ablauf:' + traceId) : KEIN_STAND, traceF = kurzHash(JSON.stringify((mitAusgabe ? [code, vars, steps] : [code, vars, steps, 'ohne-ausgabe']).concat(ohneLeer ? ['ohne-leerzeichen'] : [], ohneGross ? ['ohne-gross'] : []))), stelleWieder = false;
     function traceStand() {
       var e = {}, n = 0;
       inputs.forEach(function (inp) { if (inp.value) { e[inp.getAttribute('data-var')] = inp.value; n++; } });

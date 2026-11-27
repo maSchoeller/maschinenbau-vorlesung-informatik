@@ -1733,7 +1733,7 @@
    "ampel": "kopf",
    "kurz": "Erzeugt eine Zahlenfolge für Schleifen.",
    "syntax": "range(stop)    range(start, stop)    range(start, stop, schritt)",
-   "erklaerung": "range(5) liefert 0, 1, 2, 3, 4: Der Startwert 0 ist dabei, der Endwert 5 nicht. range(1, 6) liefert 1 bis 5, range(0, 100, 25) liefert 0, 25, 50, 75. Mit negativem Schritt zählst du rückwärts.",
+   "erklaerung": "range(5) liefert 0, 1, 2, 3, 4: Der Startwert 0 ist dabei, der Endwert 5 nicht. range(1, 6) liefert 1 bis 5, range(0, 100, 25) liefert 0, 25, 50, 75. Die dritte Zahl ist die Schrittweite; sie kommt ab Termin 06 dran. Mit negativem Schritt zählst du rückwärts.",
    "beispiel": "for winkel in range(0, 91, 30):\n    print(winkel, \"Grad\")\nprint(list(range(5)))",
    "wann_nutzen": "Wenn du n-mal etwas tun oder eine Zahlenreihe durchlaufen willst.",
    "transfer": [

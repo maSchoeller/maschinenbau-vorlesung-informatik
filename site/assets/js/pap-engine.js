@@ -386,7 +386,19 @@
       if (ch === ',' && depth === 0) { args.push(cur.trim()); cur = ''; } else cur += ch;
     }
     args.push(cur.trim());
-    if (args.length > 2 || args.some(function (a) { return !a; })) return nice(s);
+    if (args.length > 3 || args.some(function (a) { return !a; })) return nice(s);
+    if (args.length === 3) {
+      /* range(a, b, schritt): „i von a bis b − 1, Schritt s“. „bis“ heißt „nicht weiter als“. Bei negativem Schritt (nur Zahlen) ist der Endwert b + 1. */
+      var st = args[2], neg = /^-\s*\d+$/.test(st), stop = args[1], plus = /^(.+?)\s*\+\s*1$/.exec(stop), ende;
+      if (/^-/.test(st) && !neg) return nice(s);
+      if (neg) {
+        if (!/^-?\d+$/.test(stop)) return nice(s);
+        ende = String(parseInt(stop, 10) + 1);
+      } else if (/^-?\d+$/.test(stop)) ende = String(parseInt(stop, 10) - 1);
+      else if (plus) ende = plus[1];
+      else ende = (/[+\-*\/ ]/.test(stop.replace(/^-/, '')) ? '(' + stop + ')' : stop) + ' − 1';
+      return m[1] + ' von ' + nice(args[0]) + ' bis ' + nice(ende) + ', Schritt ' + (neg ? '−' + st.replace(/^-\s*/, '') : nice(st));
+    }
     var a = args.length === 2 ? args[0] : '0', b = args[args.length - 1], bis, pl = /^(.+?)\s*\+\s*1$/.exec(b);
     if (/^-?\d+$/.test(b)) bis = String(parseInt(b, 10) - 1);
     else if (pl) bis = pl[1];
