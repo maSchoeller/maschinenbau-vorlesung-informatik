@@ -1,0 +1,1 @@
+Erinnerst du dich an die Wahrheitstabelle mit vier Variablen? Ihre Zeilen laufen von null null null null bis eins eins eins eins. Diese Zeilen sind Zahlen. Sie zählen: null null null null, null null null eins, null null eins null, und so weiter. Das ist das Zweiersystem. Es kennt nur zwei Ziffern, null und eins. Jede Stelle heißt Bit, und acht Bit sind ein Byte.

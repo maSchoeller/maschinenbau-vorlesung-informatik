@@ -1,0 +1,1 @@
+Karte zwei: if ohne els. Die Punkte sind neun. Die Zeile if punkte größer gleich acht Doppelpunkt fragt, ob die Punkte mindestens acht sind. Ist das wahr, läuft der eingerückte Teil und gibt gut aus. Darunter steht eine Zeile ohne Einrückung: weiter. Sie läuft immer.

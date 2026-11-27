@@ -1,0 +1,1 @@
+Jetzt du: Gib null Tage ein. Was erwartest du? Die Schleife läuft nie, die Summe bleibt null, und dann teilt das Programm durch null. Python meldet einen ZeroDivisionError: division by zero. Durch null teilen geht nicht. Deshalb steht in der Aufgabe: mindestens ein Tag.

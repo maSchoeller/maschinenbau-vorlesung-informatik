@@ -430,7 +430,7 @@ Seit 2026-11-23 gilt der Plan aus `KONZEPT.md` (Herleitung und Zuordnung des alt
 | `semester` | die zwei Semester (Name, Bereich, Leitsatz) |
 | `einheiten` | P1–P11 und T1–T11 mit Name, Kurzname, Zahl der Blöcke und `stoff`: ursprünglich den Lektionen des alten Kurses, aus denen die Einheit entstehen sollte (diese Lektionen sind entfernt, die Einheit wird neu gebaut) |
 | `termine` | die 20 Termine in Reihenfolge: Blöcke je Einheit unter `theorie` und `programmieren`, `puffer`, optional `freigabe` und `lektion` (Kennung der eigenen Seiten, sobald es sie gibt) |
-| `lektionen` | Seiten, die es gibt (Kennung, Titel, Dateien, Notebook). Derzeit V01 und V02 (Termin 01 und 02, aktiv; V02 freigeschaltet am 2026-11-25) sowie V03 als Entwurf (`aktiv: false`, Seiten unter `app/inhalte/v02/` und `v03/`) |
+| `lektionen` | Seiten, die es gibt (Kennung, Titel, Dateien, Notebook). Derzeit V01 bis V05 (Termin 01 bis 05, alle aktiv; V02 freigeschaltet am 2026-11-25, V03 bis V05 am 2026-11-27), Seiten unter `app/inhalte/v01/` bis `v05/`; zurzeit kein Entwurf |
 
 Der Build (`src/lib/kurs.mjs`) prüft den Plan: genau 20 Termine, je Termin 4 Blöcke, die Blöcke jeder Einheit in den Terminen ergeben ihre Gesamtzahl, jede genannte Einheit und Lektion gibt es. Er berechnet „Teil x von y“ und je Termin das bisherige Material (Vereinigung des `stoff` seiner Einheiten).
 

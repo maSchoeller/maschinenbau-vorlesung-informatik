@@ -1,0 +1,1 @@
+Zwei neue Karten für deinen Werkzeugkasten. Karte eins heißt fohr und rehndsch. Damit wiederholst du etwas, wenn vorher feststeht, wie oft. Karte zwei ist if ohne els. Damit tust du etwas nur dann, wenn eine Bedingung stimmt, und sonst nichts.

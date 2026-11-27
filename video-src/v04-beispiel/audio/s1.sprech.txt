@@ -1,0 +1,1 @@
+Die Aufgabe: Du liest Preise in ganzen Euro ein, so lange, bis die Eingabe null kommt. Am Ende gibst du die Summe aus. Wie oft das passiert, weißt du vorher nicht. Deshalb entscheidet die Eingabe: Die Schleife läuft, solange der Preis nicht null ist. Das schreibst du zuerst in Worten auf, dann zeichnest du den Plan.

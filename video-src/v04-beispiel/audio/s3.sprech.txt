@@ -1,0 +1,1 @@
+Jetzt der Code, Raute für Raute. Die Eingabe wird eine Zeile mit input, darum int, denn die Preise sind ganze Zahlen. Die Raute wird weil preis ungleich null, mit Doppelpunkt. Der Rumpf ist eingerückt: die Summe, dann dieselbe Eingabe noch einmal. Die Ausgabe steht ohne Einrückung unter der Schleife. Sie läuft einmal, am Ende.

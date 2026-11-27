@@ -1,0 +1,1 @@
+Karte zwei: das Gegenteil. Der Preis ist null. Das Zeichen ungleich besteht aus Ausrufezeichen und Gleichheitszeichen. Es fragt: Ist der Preis ungleich null? Der Preis ist null, also ist die Antwort falsch. Python gibt Fols aus. Du brauchst es gleich bei Schleifen, die enden, wenn eine Eingabe null ist.

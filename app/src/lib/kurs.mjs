@@ -4,7 +4,7 @@
                 zu den Terminen der Einheit gehören (seit dem Entfernen des alten Kurses nennt keine Einheit welche)
      termine    die 20 Termine des Plans, je 4 Blöcke
      lektionen  Seiten, die es gibt (Lerneinheit, Labor, Notebook): je fertigem Termin NN die Lektion VNN.
-                aktiv: false = gebaut, aber nirgends angeboten (zurzeit bei V03: Entwurf von Termin 03); ein Termin darf
+                aktiv: false = gebaut, aber nirgends angeboten (zurzeit bei keiner Lektion); ein Termin darf
                 trotzdem darauf zeigen: Er hat dann lektion: null und entwurf: 'VNN' (Entwurf, siehe terminLektion)
    In der Hülle heißt eine Lektion mit Seiten an vielen Stellen noch „termin“ (terminZuDatei, App.astro):
    gemeint ist dort immer ein Eintrag aus lektionen. */

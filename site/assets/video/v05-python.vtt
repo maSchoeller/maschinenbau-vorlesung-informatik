@@ -1,0 +1,73 @@
+WEBVTT
+
+1
+00:00:00.400 --> 00:00:02.834
+Zwei neue Karten für deinen Werkzeugkasten.
+
+2
+00:00:03.481 --> 00:00:10.198
+Karte 1 heißt for und range. Damit wiederholst du etwas, wenn vorher feststeht, wie oft.
+
+3
+00:00:10.629 --> 00:00:17.970
+Karte 2 ist if ohne else. Damit tust du etwas nur dann, wenn eine Bedingung stimmt, und sonst nichts.
+
+4
+00:00:18.870 --> 00:00:27.624
+Karte 1 zeigt for i in range(1, 4) mit einem Doppelpunkt am Ende. Darunter, eingerückt, steht der Rumpf mit print(i).
+
+5
+00:00:27.996 --> 00:00:32.563
+Die Variable i nimmt nacheinander die Werte 1, 2 und 3 an. Bei jedem Wert läuft der Rumpf einmal.
+
+6
+00:00:32.869 --> 00:00:42.062
+Der Stoppwert 4 fehlt. Er gehört nicht dazu: Der Zähler hört vor dem Stoppwert auf.
+
+7
+00:00:42.389 --> 00:00:50.040
+Die Ausgabe ist also 1, 2, 3. Es sind drei Durchläufe, nämlich 4 minus 1.
+
+8
+00:00:50.940 --> 00:00:58.151
+Gibst du nur einen Wert an, zählt range ab 0. range(4) liefert 0, 1, 2 und 3.
+
+9
+00:00:58.001 --> 00:01:02.156
+Das sind vier Durchläufe, und die 4 selbst fehlt wieder.
+
+10
+00:01:02.006 --> 00:01:08.198
+Mit zwei Werten legst du den Start selbst fest. Mit einem Wert beginnt es immer bei 0.
+
+11
+00:01:08.048 --> 00:01:18.110
+Die Faustregel: Steht die Zahl der Durchläufe vorher fest, nimmst du for. Hängt sie von etwas ab, das sich erst unterwegs ändert, nimmst du while.
+
+12
+00:01:19.010 --> 00:01:21.624
+Karte 2: if ohne else. Die Punkte sind 9.
+
+13
+00:01:22.296 --> 00:01:34.864
+Die Zeile if punkte >= 8: fragt, ob die Punkte mindestens 8 sind. Ist das wahr, läuft der eingerückte Teil und gibt gut aus.
+
+14
+00:01:35.184 --> 00:01:40.180
+Darunter steht eine Zeile ohne Einrückung: weiter. Sie läuft immer.
+
+15
+00:01:41.080 --> 00:01:44.079
+Mit 9 Punkten erscheinen gut und weiter.
+
+16
+00:01:43.929 --> 00:01:51.366
+Setze die Punkte auf 5. Die Bedingung ist falsch, der Rumpf wird übersprungen, und es erscheint nur weiter.
+
+17
+00:01:51.216 --> 00:01:58.323
+Es gibt keinen else-Zweig, also passiert bei falsch nichts. Das Programm geht unter dem if einfach weiter.
+
+18
+00:01:58.173 --> 00:02:01.370
+Probier beide Karten aus und ändere die Werte.

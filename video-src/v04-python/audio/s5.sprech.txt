@@ -1,0 +1,1 @@
+Das Wort not dreht wahr und falsch um. Die Klammer sagt, was umgedreht wird. In der Klammer steht: Der Preis ist mindestens eins und höchstens sechs. Bei Preis null ist das falsch. not macht daraus wahr. Python gibt Truh aus. Nach De Morgan ist das dasselbe wie: Der Preis ist kleiner als eins oder größer als sechs. Probier beide Karten aus und ändere die Werte.

@@ -1,0 +1,1 @@
+Die Aufgabe: Du hast an einigen Tagen gemessen, wie lange du zur Hochschule brauchst. Das Programm liest zuerst ein, an wie vielen Tagen du gemessen hast, mindestens eins. Dann liest es die Minuten jedes Tages ein, als ganze Zahlen. Am Ende gibt es den Durchschnitt aus. Wie oft das passiert, steht nach der ersten Eingabe fest: n Mal. Deshalb nimmst du fohr.
