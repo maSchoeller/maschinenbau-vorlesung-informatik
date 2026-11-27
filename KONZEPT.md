@@ -120,7 +120,7 @@ In Klammern die Zahl der Blöcke.
 | 19 | Puffer (2) | P10 Schiffe versenken (2) |
 | 20 | T11 Klausurtraining (2) | P11 Klausurtraining (2) |
 
-Das 1. Semester hat keinen Puffer. Wird die Zeit knapp, rückt zuerst T6 Rechneraufbau in den Puffer des 2. Semesters, danach schrumpft T4 Bitoperationen auf einen halben Block. Bei den Zahlensystemen (T3, nur noch 2 Blöcke) ist offen, was wegfällt; das wird bei Termin 05 entschieden.
+Das 1. Semester hat keinen Puffer. Wird die Zeit knapp, rückt zuerst T6 Rechneraufbau in den Puffer des 2. Semesters, danach schrumpft T4 Bitoperationen auf einen halben Block. Bei den Zahlensystemen (T3, nur noch 2 Blöcke) ist am 2026-11-26 entschieden: Termin 05 bringt das Zweiersystem (Stellenwert, Umrechnen in beide Richtungen mit der Stellenwerttabelle, Bit, Byte, 2ⁿ Werte), Termin 06 das Hexadezimalsystem. Zweierkomplement, binäres Rechnen und Oktal entfallen; Wertebereich und Überlauf kommen mit T5 Datentypen (Termin 07).
 
 ## Ablauf eines Termins (135 Minuten)
 

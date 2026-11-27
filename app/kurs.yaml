@@ -19,7 +19,7 @@
 #            (nicht im Lernpfad, nicht im Lektionswähler, nicht in Heute, Suche, Glossar und Kursübersicht).
 #            Abgeschaltete Lektionen stehen in dist/app/daten/kurs.json nur unter entwuerfe und sind nicht im
 #            Precache des Service Workers; pruefe-loesungen.mjs prüft sie trotzdem.
-#            Zurzeit sind V03 und V04 abgeschaltet (Entwürfe von Termin 03 und 04). V02 ist seit 2026-11-25 freigeschaltet.
+#            Zurzeit sind V03, V04 und V05 abgeschaltet (Entwürfe von Termin 03 bis 05). V02 ist seit 2026-11-25 freigeschaltet.
 
 semester:
   - nr: 1
@@ -60,7 +60,7 @@ termine:
   - { nr: 2,  theorie: { T2: 1 },        programmieren: { P1: 1, P2: 2 }, lektion: V02 }
   - { nr: 3,  theorie: { T2: 2 },        programmieren: { P2: 2 }, lektion: V03 }
   - { nr: 4,  theorie: { T2: 2 },        programmieren: { P3: 2 }, lektion: V04 }
-  - { nr: 5,  theorie: { T3: 1 },        programmieren: { P3: 3 } }
+  - { nr: 5,  theorie: { T3: 1 },        programmieren: { P3: 3 }, lektion: V05 }
   - { nr: 6,  theorie: { T3: 1, T4: 1 }, programmieren: { P3: 2 } }
   - { nr: 7,  theorie: { T5: 2 },        programmieren: { P4: 2 } }
   - { nr: 8,  theorie: { T5: 1 },        programmieren: { P4: 3 } }
@@ -117,6 +117,17 @@ lektionen:
     semester: 1
     lerneinheit: v04-formeln-und-schleifen.html
     labor: v04-labor.html
+    notebook: null
+    freigabe: null
+    aktiv: false
+  - nr: V05
+    titel: "Genau so oft: Zweiersystem und Zählschleifen"
+    kurz: "Zweiersystem, for"
+    hook: "Acht Schalter, 256 Zahlen"
+    python: ["for i in range(…):", "range(start, stopp)", "if ohne else"]
+    semester: 1
+    lerneinheit: v05-zweiersystem-und-zaehlschleifen.html
+    labor: v05-labor.html
     notebook: null
     freigabe: null
     aktiv: false

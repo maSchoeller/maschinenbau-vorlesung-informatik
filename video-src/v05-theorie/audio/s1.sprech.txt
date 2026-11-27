@@ -1,1 +1,0 @@
-Du bittest eine K I: Schreib ein Programm, das einen Werkstoff für eine Welle auswählt. Heraus kommt ein Programm, das nichts fragt und immer Stahl empfiehlt. Gibst du ihr dagegen deinen Plan als Diagramm, einen Programmablaufplan, entsteht Code mit genau deinen Fragen und Fällen. Der Programmablaufplan, kurz P A P, beschreibt das Programm genau: Der P A P wird zum Prompt.

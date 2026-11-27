@@ -374,6 +374,13 @@ async function ablauf(k) {
 /* ─────────────────────────────────────────────────────────── ablauf mit Schaltern */
 /* Die Schalter von trace (frage je Schritt, ausgabe: false) sind für Termin 02 und 03 gebaut; solange keine echte Aufgabe sie benutzt,
    wird eine Probeaufgabe mit denselben Daten in die Laborseite eingeschoben, bevor die Skripte laufen. */
+const PROBE_LEER = {
+  code: ['zahl = 45'],
+  vars: ['Binär'],
+  ausgabe: false,
+  leerzeichen: false,
+  steps: [{ line: 1, set: { 'Binär': '0010 1101' }, frage: 'Trag zahl als Binärzahl ein.' }]
+};
 const PROBE = {
   code: ['geld = 2.0', 'if geld >= 1.5:', '    print("Cola")'],
   vars: ['geld', 'Bedingung', 'Weg'],
@@ -387,7 +394,7 @@ const PROBE = {
 async function ablaufSchalter(k) {
   console.log('\n== Ablauf verfolgen mit Schaltern (frage, ausgabe: false)');
   const p = k.page;
-  const einschub = `<div id="probe-schalter"><div class="a-task" data-a="trace" data-id="probe-schalter"><script type="application/json">${JSON.stringify(PROBE)}</script></div></div>`;
+  const einschub = `<div id="probe-schalter"><div class="a-task" data-a="trace" data-id="probe-schalter"><script type="application/json">${JSON.stringify(PROBE)}</script></div><div class="a-task" data-a="trace" data-id="probe-leer"><script type="application/json">${JSON.stringify(PROBE_LEER)}</script></div></div>`;
   await p.route('**/lektionen/v01-labor.html*', async (route) => {
     const r = await route.fetch();
     const text = await r.text();
@@ -442,6 +449,18 @@ async function ablaufSchalter(k) {
   pruefe((await ablaufZustand(p, 'probe-schalter')).fertigeZeilen === 0, 'Stand mit fremdem Fingerabdruck wird verworfen');
   await t.locator('button', { hasText: 'Von vorn' }).click();
   pruefe(await warteWeg(p, 'ablauf:probe-schalter'), '„Von vorn“ löscht den Stand');
+  /* leerzeichen: false: Leerraum zählt beim Vergleich nicht */
+  const tl = p.locator('.a-task[data-id="probe-leer"]');
+  for (const eingabe of ['00101101', '0010  1101', ' 0010 1101 ', '0 0 1 0 1 1 0 1']) {
+    await tl.locator('tr.is-active input[data-var="Binär"]').fill(eingabe);
+    await tl.locator('button', { hasText: 'Zeile prüfen' }).click();
+    const fertig = /Geschafft/.test(await tl.locator('.a-trace__msg').innerText());
+    pruefe(fertig, `leerzeichen: false: „${eingabe}“ wird angenommen`);
+    if (fertig) await tl.locator('button', { hasText: 'Von vorn' }).click();
+  }
+  await tl.locator('tr.is-active input[data-var="Binär"]').fill('0010 1100');
+  await tl.locator('button', { hasText: 'Zeile prüfen' }).click();
+  pruefe(/^Noch nicht richtig/.test(await tl.locator('.a-trace__msg').innerText()), 'leerzeichen: false: andere Ziffern bleiben falsch');
   /* bestehende Aufgabe ohne Schalter: unverändert */
   await p.unroute('**/lektionen/v01-labor.html*');
   await laborOeffnen(p, 'a-ablauf', 'w-trace');

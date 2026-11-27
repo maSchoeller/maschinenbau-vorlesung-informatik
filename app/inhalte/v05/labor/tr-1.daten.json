@@ -1,0 +1,69 @@
+{
+ "sprache": "tabelle",
+ "leerzeichen": false,
+ "ausgabe": false,
+ "code": [
+  "Zahl = 0001 1010",
+  "Zahl = 0101 0101",
+  "Zahl = 1000 0001",
+  "Zahl = 1111 1110",
+  "Zahl = 37",
+  "Zahl = 100",
+  "Zahl = 128",
+  "Zahl = 255"
+ ],
+ "vars": [
+  "dezimal",
+  "binär"
+ ],
+ "steps": [
+  {
+   "line": 1,
+   "set": {"dezimal": "26"},
+   "frage": "Zeile 1: Rechne 0001 1010 in eine Dezimalzahl um. Trag die Zahl ein, ohne Anführungszeichen.",
+   "hint": "Die Einsen stehen unter 16, 8 und 2. Addiere diese Stellenwerte: 16 + 8 + 2."
+  },
+  {
+   "line": 2,
+   "set": {"dezimal": "85"},
+   "frage": "Zeile 2: Rechne 0101 0101 in eine Dezimalzahl um. Trag die Zahl ein, ohne Anführungszeichen.",
+   "hint": "Die Einsen stehen unter 64, 16, 4 und 1. Addiere diese Stellenwerte."
+  },
+  {
+   "line": 3,
+   "set": {"dezimal": "129"},
+   "frage": "Zeile 3: Rechne 1000 0001 in eine Dezimalzahl um. Trag die Zahl ein, ohne Anführungszeichen.",
+   "hint": "Die Einsen stehen ganz links (128) und ganz rechts (1). Addiere diese beiden Stellenwerte."
+  },
+  {
+   "line": 4,
+   "set": {"dezimal": "254"},
+   "frage": "Zeile 4: Rechne 1111 1110 in eine Dezimalzahl um. Trag die Zahl ein, ohne Anführungszeichen.",
+   "hint": "Alle Stellenwerte außer dem letzten haben eine 1: 128 + 64 + 32 + 16 + 8 + 4 + 2. Oder: 255 minus 1."
+  },
+  {
+   "line": 5,
+   "set": {"binär": "0010 0101"},
+   "frage": "Zeile 5: Rechne 37 in ein Byte um. Trag 8 Stellen ein, mit oder ohne Leerzeichen in der Mitte, ohne Anführungszeichen.",
+   "hint": "Fang links bei 128 an. Passt der Stellenwert in den Rest, ist das Bit 1. Vorne aufgefüllte Nullen gehören dazu: 8 Stellen."
+  },
+  {
+   "line": 6,
+   "set": {"binär": "0110 0100"},
+   "frage": "Zeile 6: Rechne 100 in ein Byte um. Trag 8 Stellen ein, mit oder ohne Leerzeichen in der Mitte, ohne Anführungszeichen.",
+   "hint": "Fang links bei 128 an. Passt der Stellenwert in den Rest, ist das Bit 1. Vorne aufgefüllte Nullen gehören dazu: 8 Stellen."
+  },
+  {
+   "line": 7,
+   "set": {"binär": "1000 0000"},
+   "frage": "Zeile 7: Rechne 128 in ein Byte um. Trag 8 Stellen ein, mit oder ohne Leerzeichen in der Mitte, ohne Anführungszeichen.",
+   "hint": "Fang links bei 128 an. Passt der Stellenwert in den Rest, ist das Bit 1. Vorne aufgefüllte Nullen gehören dazu: 8 Stellen."
+  },
+  {
+   "line": 8,
+   "set": {"binär": "1111 1111"},
+   "frage": "Zeile 8: Rechne 255 in ein Byte um. Trag 8 Stellen ein, mit oder ohne Leerzeichen in der Mitte, ohne Anführungszeichen.",
+   "hint": "Fang links bei 128 an. Passt der Stellenwert in den Rest, ist das Bit 1. Vorne aufgefüllte Nullen gehören dazu: 8 Stellen."
+  }
+ ]
+}

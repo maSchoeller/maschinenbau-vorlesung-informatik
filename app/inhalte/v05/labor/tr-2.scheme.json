@@ -1,0 +1,18 @@
+[
+ {
+  "p": 1,
+  "t": "betrag und monate werden mit int(input(…)) als ganze Zahlen eingelesen, und geld = 0 steht vor der Schleife"
+ },
+ {
+  "p": 1,
+  "t": "for i in range(1, monate + 1): mit Doppelpunkt am Ende der Zeile"
+ },
+ {
+  "p": 1,
+  "t": "geld = geld + betrag steht eingerückt im Rumpf"
+ },
+ {
+  "p": 1,
+  "t": "print steht ebenfalls eingerückt im Rumpf, weil jeder Monat eine Zeile bekommt"
+ }
+]

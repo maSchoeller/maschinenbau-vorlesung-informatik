@@ -904,6 +904,12 @@ def _main(kind, src, inputs, tests_src, mode, term=None):
     var code = cfg.code, vars = cfg.vars, steps = cfg.steps;
     /* Schalter der Aufgabe: ausgabe: false blendet die Ausgabe-Spalte aus; frage an einem Schritt ersetzt dessen Starttext. */
     var mitAusgabe = cfg.ausgabe !== false;
+    /* leerzeichen: false entfernt vor dem Vergleich allen Leerraum (0010 1101 und 00101101 sind gleich). Ohne den Schalter bleibt der Vergleich wie bisher. */
+    var ohneLeer = cfg.leerzeichen === false;
+    /* Der Schalter gilt für die ganze Aufgabe. Anführungszeichen und Zeilenenden werden weiter normalisiert (normVal, normOut). */
+    function gleichOhneLeer(a, b) { return String(a).replace(/\s+/g, '') === String(b).replace(/\s+/g, ''); }
+    function gleichWert(a, b) { return ohneLeer ? gleichOhneLeer(normVal(a), normVal(b)) : normVal(a) === normVal(b); }
+    function gleichAus(a, b) { return ohneLeer ? gleichOhneLeer(normOut(a), normOut(b)) : normOut(a) === normOut(b); }
     /* sprache: "plan" oder "tabelle": Die Zeilen sind ein Plan oder eine Tabelle, kein Python. Der Block heißt dann „Plan“ bzw. „Tabelle“
        statt „Python“ und hat keinen Kopieren-Knopf. typhinweis: false lässt den festen Satz „Typen beachten: Text steht in Anführungszeichen.“
        weg (bei Plan und Tabelle immer weggelassen). */
@@ -915,7 +921,7 @@ def _main(kind, src, inputs, tests_src, mode, term=None):
     /* Tabelle: Statt „Schritt“ und „Zeile“ stehen die Eingaben der Zeile (A, B) als Spalten, wie in der Wahrheitstabelle der Klausur. */
     var tabellenSpalten = null;
     if (cfg.sprache === 'tabelle') {
-      var gelesen = code.map(function (l) { var m = [], re = /(\w+)\s*=\s*([^,\s]+)/g, x; while ((x = re.exec(l))) m.push([x[1], x[2]]); return m; });
+      var gelesen = code.map(function (l) { var m = [], re = /(\w+)\s*=\s*([^,]+)/g, x; while ((x = re.exec(l))) m.push([x[1], x[2].trim()]); return m; });
       if (gelesen.length && gelesen[0].length && gelesen.every(function (g) { return g.length === gelesen[0].length && g.every(function (c, i) { return c[0] === gelesen[0][i][0]; }); })) tabellenSpalten = { namen: gelesen[0].map(function (c) { return c[0]; }), werte: gelesen.map(function (g) { return g.map(function (c) { return c[1]; }); }) };
     }
     var codeOl = el('ol', { class: 'a-trace__code', 'aria-label': istPlan ? (cfg.sprache === 'tabelle' ? 'Zeilen der Tabelle' : 'Zeilen des Plans') : 'Programmzeilen' });
@@ -949,7 +955,7 @@ def _main(kind, src, inputs, tests_src, mode, term=None):
     var tries = 0, inputs = [], outInput = null, rowEl = null, revList = [];
     /* Bearbeitungsstand: ablauf:<kennung> = {v, f, n (erreichter Schritt), r (aufgedeckte Schritte), e (Eintrag im offenen Schritt)} */
     var traceId = root.getAttribute('data-id');
-    var st = traceId ? stand('ablauf:' + traceId) : KEIN_STAND, traceF = kurzHash(JSON.stringify(mitAusgabe ? [code, vars, steps] : [code, vars, steps, 'ohne-ausgabe'])), stelleWieder = false;
+    var st = traceId ? stand('ablauf:' + traceId) : KEIN_STAND, traceF = kurzHash(JSON.stringify((mitAusgabe ? [code, vars, steps] : [code, vars, steps, 'ohne-ausgabe']).concat(ohneLeer ? ['ohne-leerzeichen'] : []))), stelleWieder = false;
     function traceStand() {
       var e = {}, n = 0;
       inputs.forEach(function (inp) { if (inp.value) { e[inp.getAttribute('data-var')] = inp.value; n++; } });
@@ -986,7 +992,9 @@ def _main(kind, src, inputs, tests_src, mode, term=None):
           inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); checkBtn.click(); } });
           inputs.push(inp); td.appendChild(inp);
         } else {
-          td.appendChild(el('span', { class: state[v] !== undefined ? 'a-trace__val' : 'a-trace__undef', text: state[v] !== undefined ? state[v] : '–' }));
+          /* Tabelle: Die Zeilen sind unabhängig, nicht gefragte Zellen bleiben leer („–“) und tragen nie den Wert der Vorzeile. */
+          var zeigeWert = cfg.sprache !== 'tabelle' && state[v] !== undefined;
+          td.appendChild(el('span', { class: zeigeWert ? 'a-trace__val' : 'a-trace__undef', text: zeigeWert ? state[v] : '–' }));
         }
         tr.appendChild(td);
       });
@@ -1042,7 +1050,7 @@ def _main(kind, src, inputs, tests_src, mode, term=None):
       inputs.forEach(function (inp) {
         var v = inp.getAttribute('data-var');
         if (!inp.value.trim()) { empty = true; inp.classList.add('is-bad'); return; }
-        var good = normVal(inp.value) === normVal(s.set[v]);
+        var good = gleichWert(inp.value, s.set[v]);
         inp.classList.toggle('is-bad', !good); inp.classList.toggle('is-good', good);
         inp.setAttribute('aria-invalid', good ? 'false' : 'true');
         if (!good) ok = false;
@@ -1050,7 +1058,7 @@ def _main(kind, src, inputs, tests_src, mode, term=None):
       if (outInput) {
         if (!outInput.value.trim()) { empty = true; outInput.classList.add('is-bad'); }
         else {
-          var goodO = normOut(outInput.value) === normOut(s.out);
+          var goodO = gleichAus(outInput.value, s.out);
           outInput.classList.toggle('is-bad', !goodO); outInput.classList.toggle('is-good', goodO);
           if (!goodO) ok = false;
         }

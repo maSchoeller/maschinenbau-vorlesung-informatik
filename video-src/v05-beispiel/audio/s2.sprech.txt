@@ -1,1 +1,0 @@
-Der Plan: zwei Eingaben, dann die Frage, ob die Eingabe unplausibel ist. Bei ja folgen die Meldung und das Ende. Bei nein trennt die Temperatur: Über dreihundert Grad Celsius entscheidet die Spannung zwischen sechzehn M O drei und Sonderwerkstoff, sonst wählt eine Kette von Fragen. Alle Zweige laufen zusammen, dann folgt die Ausgabe.
