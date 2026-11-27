@@ -391,10 +391,12 @@
         el('thead', {}, [el('tr', {}, sp.map(function (t) { return el('th', { scope: 'col', text: t }); }))]),
         el('tbody', {}, tz.length ? tz : [el('tr', {}, [el('td', { colspan: String(sp.length), text: 'Noch kein Durchlauf.' })])])
       ]));
-      rechnungEl.textContent = rechnungInnen(c.a, c.b) + '.';
+      /* Erst nach dem letzten Durchlauf, sonst steht die Antwort auf die Vermutung schon da */
+      rechnungEl.textContent = fertig ? rechnungInnen(c.a, c.b) + '.' : '';
+      rechnungEl.hidden = !fertig;
       zaehlerEl.hidden = !c.wuerfel;
       zaehlerEl.textContent = c.wuerfel ? 'Treffer bisher: ' + (cur ? cur.trefferBisher : 0) + ' (Würfelpaare mit Summe 7)' : '';
-      jetzt.textContent = p === 0 ? 'Noch kein Durchlauf.' : (fertig ? 'Fertig: Beide Schleifen sind zu Ende.' : 'Zuletzt: Durchlauf ' + p + ' von ' + d.length + '.');
+      jetzt.textContent = p === 0 ? 'Noch kein Durchlauf.' : (fertig ? 'Fertig: Beide Schleifen sind zu Ende nach ' + d.length + ' Durchläufen.' : 'Zuletzt: Durchlauf ' + p + '.');
       setzeSchalter(sw, wuerfel);
       sI.sperre(wuerfel); sJ.sperre(wuerfel);
       sperre(einer, fertig); sperre(ende, fertig); sperre(zurueck, p === 0);

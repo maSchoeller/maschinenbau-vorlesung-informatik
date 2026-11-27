@@ -1,0 +1,18 @@
+[
+ {
+  "p": 1,
+  "t": "def zeige(nr, wert): mit Doppelpunkt am Ende der Zeile, die Funktion steht vor dem Hauptprogramm"
+ },
+ {
+  "p": 1,
+  "t": "print steht eingerückt im Rumpf der Funktion (4 Leerzeichen) und gibt Blatt, nr, wert und Punkte aus"
+ },
+ {
+  "p": 1,
+  "t": "n wird mit int(input(…)) eingelesen und for i in range(1, n + 1): mit Doppelpunkt am Ende der Zeile"
+ },
+ {
+  "p": 1,
+  "t": "punkte wird im Rumpf der Schleife eingelesen und zeige(i, punkte) steht ebenfalls eingerückt im Rumpf der Schleife"
+ }
+]

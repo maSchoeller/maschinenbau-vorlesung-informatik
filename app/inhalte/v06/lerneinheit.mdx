@@ -39,9 +39,30 @@ Alles aus Termin 02 bis 05 gilt weiter: Wahrheitstabellen, `if`, `and` und `or`,
 
 <Abschnitt id="hexadezimal" nr="1" titel="Das Hexadezimalsystem">
 
-Vier Bit haben 2⁴ = 16 Werte, von 0000 bis 1111. Das sind die Zeilen einer Wahrheitstabelle mit vier Variablen. Dezimal gibt es nur zehn Ziffern, 0 bis 9. Für die Werte 10 bis 15 nimmt man Buchstaben: A = 10, B = 11, C = 12, D = 13, E = 14, F = 15.
+Dezimal gibt es nur zehn Ziffern, 0 bis 9. Für die Werte 10 bis 15 nimmt man Buchstaben: A = 10, B = 11, C = 12, D = 13, E = 14, F = 15. Zusammen sind das 16 Ziffern.
 
-So entsteht das <Begriff e="Ein Zahlensystem mit 16 Ziffern: 0 bis 9 und A bis F. Jede Ziffer steht für genau vier Bit.">Hexadezimalsystem</Begriff> (auch Sechzehnersystem). Jede <Begriff e="Eine der Ziffern 0 bis 9 und A bis F. A ist 10, F ist 15.">Hex-Ziffer</Begriff> steht für eine Vierergruppe, und ein Byte wird zu zwei Ziffern. Die Tabelle zum Nachschlagen:
+So entsteht das <Begriff e="Ein Zahlensystem mit 16 Ziffern: 0 bis 9 und A bis F.">Hexadezimalsystem</Begriff> (auch Sechzehnersystem). Eine <Begriff e="Eine der Ziffern 0 bis 9 und A bis F. A ist 10, F ist 15.">Hex-Ziffer</Begriff> kann also 16 verschiedene Werte haben.
+
+<div class="k-try">
+
+### Vorhersage: Wie viele Bit hat eine Hex-Ziffer?
+
+<Vorhersage>
+
+Eine Hex-Ziffer hat 16 mögliche Werte. Wie viele Bit braucht sie, um jeden davon darzustellen?
+
+- 2
+- [x] 4
+- 8
+- 16
+
+Vier Bit haben 2⁴ = 16 Werte, von 0000 bis 1111. Das sind die Zeilen einer Wahrheitstabelle mit vier Variablen. Darum ist jede Vierergruppe eine Ziffer und jedes Byte zwei.
+
+</Vorhersage>
+
+</div>
+
+Jede Hex-Ziffer steht also für eine Vierergruppe, und ein Byte wird zu zwei Ziffern. Die Tabelle zum Nachschlagen:
 
 <div class="k-tablewrap">
 <table class="k-types">
@@ -71,7 +92,7 @@ Hexzahlen schreibst du mit Großbuchstaben und mit genau zwei Ziffern je Byte: `
 
 **Dezimal in hex, über binär.** Erst mit der Stellenwerttabelle aus Termin 05, dann Gruppe für Gruppe. 200 ist `1100 1000`, und 1100 ist C, 1000 ist 8. Also **C8**. Die Probe: 12 · 16 + 8 = 200.
 
-**Wozu das Ganze?** Hex ist kürzer und weniger fehleranfällig als acht Nullen und Einsen, und trotzdem direkt als Bits lesbar. Du siehst es jeden Tag bei Farben im Web. Jede Farbe hat drei Bytes, je eines für Rot, Grün und Blau. `#E2001A` ist das Rot der DHBW: E2 = 226 Rot, 00 = 0 Grün, 1A = 26 Blau. `#FFFFFF` ist Weiß (alles voll an), `#000000` ist Schwarz.
+**Wozu das Ganze?** Hex ist kürzer und weniger fehleranfällig als acht Nullen und Einsen, und trotzdem direkt als Bits lesbar. Du siehst es jeden Tag bei Farben im Web. Jede Farbe hat drei Bytes, je eines für Rot, Grün und Blau. `#E2001A` ist das Rot der DHBW: E2 = 226 Rot, 00 = 0 Grün, 1A = 26 Blau.
 
 <Explorable name="hexfarbe" titel="Hex-Farbmischer">
 
@@ -79,11 +100,13 @@ Stell Rot, Grün und Blau ein und sieh, wie aus jedem Byte zwei Hex-Ziffern werd
 
 <Ohne>
 
-Für den Farbmischer wird JavaScript benötigt. Beispiel: Rot 226, Grün 0, Blau 26 ergibt `#E2001A`, denn 226 ist `1110 0010` und damit E2, 0 ist 00, und 26 ist `0001 1010` und damit 1A. Sind alle drei Regler auf 255, steht dort `#FFFFFF`: Alle acht Bit jedes Bytes sind an, und die Farbe ist Weiß.
+Für den Farbmischer wird JavaScript benötigt. Beispiel: Rot 226, Grün 0, Blau 26 ergibt `#E2001A`, denn 226 ist `1110 0010` und damit E2, 0 ist 00, und 26 ist `0001 1010` und damit 1A. Mit den Reglern probierst du aus, was `#FFFFFF`, `#000000` und `#00FF00` ergeben.
 
 </Ohne>
 
 </Explorable>
+
+Die Auflösung: `#FFFFFF` ist Weiß, denn alle drei Bytes sind FF und alle Bits sind an. `#000000` ist Schwarz, alle Bits sind aus. `#00FF00` ist reines Grün: nur das Grün-Byte ist voll.
 
 <div class="k-try">
 
@@ -96,25 +119,6 @@ Rechne um. Hexzahlen schreibst du mit zwei Ziffern, Binärzahlen mit 8 Stellen, 
 <Daten datei="lerneinheit/hex-uebung.daten.json" />
 
 </Aufgabe>
-
-</div>
-
-<div class="k-try">
-
-### Vorhersage: Wie viele Bit hat eine Hex-Ziffer?
-
-<Vorhersage>
-
-Wie viele Bit stecken in einer Hex-Ziffer?
-
-- 2
-- [x] 4
-- 8
-- 16
-
-Es gibt 16 Hex-Ziffern, und 16 = 2⁴. Vier Bit haben genau 16 Werte. Darum ist jede Vierergruppe eine Ziffer und jedes Byte zwei.
-
-</Vorhersage>
 
 </div>
 
@@ -179,12 +183,6 @@ Bei `range(0, 101, 25)` steht der Stoppwert 101, damit die 100 noch dazugehört.
 
 Der Stoppwert muss nicht getroffen werden. `range(2, 20, 3)` ergibt 2, 5, 8, 11, 14, 17, also 6 Durchläufe. Die nächste Zahl wäre 20 und gehört nicht mehr dazu. Im Plan steht dafür „i von 2 bis 19, Schritt 3“. Das „bis“ heißt „nicht weiter als“: `i` darf nicht über 19 hinaus, auch wenn die Werte schon bei 17 enden.
 
-<Hinweis art="achtung">
-
-Zählst du gegen den Schritt, läuft der Rumpf nie, und Python meldet nichts. `range(5, 0)` und `range(1, 6, -1)` geben keine Zahl. Rückwärts braucht den Schritt `-1`. Andere negative Schritte wie `range(10, 0, -3)` (10, 7, 4, 1) musst du nur lesen können, selbst schreiben musst du sie nicht.
-
-</Hinweis>
-
 Die Faustregel aus Termin 05 bleibt: Steht vorher fest, wie oft, nimm `for`. Neu: Für Sprünge und Rückwärtszählen nimmst du den dritten Wert.
 
 <div class="k-try">
@@ -195,17 +193,17 @@ Die Faustregel aus Termin 05 bleibt: Steht vorher fest, wie oft, nimm `for`. Neu
 
 Was gibt das Programm aus?
 
-- 5, 4, 3, 2, 1, 0
-- [x] 5, 4, 3, 2, 1
-- 4, 3, 2, 1
-- 1, 2, 3, 4, 5
+- 6, 5, 4, 3, 2, 1
+- [x] 6, 5, 4, 3, 2
+- 5, 4, 3, 2
+- 2, 3, 4, 5, 6
 
-Der Stoppwert 0 gehört nicht dazu, auch nicht beim Rückwärtszählen. Es sind 5 Durchläufe.
+Der Stoppwert 1 gehört nicht dazu, auch nicht beim Rückwärtszählen. Es sind 5 Durchläufe.
 
 </Vorhersage>
 
 ```python
-for i in range(5, 0, -1):
+for i in range(6, 1, -1):
     print(i)
 ```
 
@@ -235,15 +233,21 @@ for i in range(5, 0):
     print(i)
 ```
 
-<p class="k-small k-muted">Wähl erst deinen Tipp, dann führ das Programm aus. Wenn nichts erscheint, ist das die Antwort.</p>
+<p class="k-small k-muted">Wähl erst deinen Tipp, dann führ das Programm aus.</p>
 
 </div>
+
+<Hinweis art="achtung">
+
+Zählst du gegen den Schritt, läuft der Rumpf nie, und Python meldet nichts. `range(5, 0)` und `range(1, 6, -1)` geben keine Zahl. Rückwärts braucht den Schritt `-1`. Andere negative Schritte wie `range(10, 0, -3)` (10, 7, 4, 1) musst du nur lesen können, selbst schreiben musst du sie nicht.
+
+</Hinweis>
 
 </Abschnitt>
 
 <Abschnitt id="schleife-in-schleife" nr="3" titel="Schleife in Schleife">
 
-Steckt eine Schleife im Rumpf einer anderen, läuft die <Begriff e="Die Schleife im Rumpf einer anderen Schleife. Sie läuft bei jedem Durchlauf der äußeren einmal ganz durch.">innere Schleife</Begriff> bei jedem Durchlauf der äußeren einmal ganz durch. Der innere Rumpf läuft so oft, wie außen mal innen.
+Steckt eine Schleife im Rumpf einer anderen, läuft die <Begriff e="Die Schleife im Rumpf einer anderen Schleife. Sie läuft bei jedem Durchlauf der äußeren einmal ganz durch.">innere Schleife</Begriff> bei jedem Durchlauf der äußeren einmal ganz durch.
 
 Ein Sitzplan zeigt die Idee: 2 Reihen mit je 3 Plätzen. Für jede Reihe `i` kommen alle Plätze `j`. Im Plan sitzt eine Raute in der anderen:
 
@@ -265,21 +269,23 @@ for i in range(1, 3):
 
 <p class="k-small k-muted">Führ das Programm aus und geh es mit „Schritt für Schritt“ durch.</p>
 
-Die Ausgabe: `Reihe 1, Platz 1`, `Reihe 1, Platz 2`, `Reihe 1, Platz 3`, `Reihe 2, Platz 1`, `Reihe 2, Platz 2`, `Reihe 2, Platz 3`. Das sind sechs Zeilen, 2 · 3. Zuerst läuft `j` ganz durch, dann erst springt `i` weiter, und `j` beginnt wieder bei 1. Wie bei einem Kilometerzähler: Die rechte Ziffer läuft schnell, die linke langsam.
+Die Ausgabe: `Reihe 1, Platz 1`, `Reihe 1, Platz 2`, `Reihe 1, Platz 3`, `Reihe 2, Platz 1`, `Reihe 2, Platz 2`, `Reihe 2, Platz 3`. Das sind sechs Zeilen. Zuerst läuft `j` ganz durch, dann erst springt `i` weiter, und `j` beginnt wieder bei 1. Wie bei einem Kilometerzähler: Die rechte Ziffer läuft schnell, die linke langsam.
 
 Die Einrückung hat zwei Stufen: `for j` steht im Rumpf von `for i` (4 Leerzeichen), `print` steht im Rumpf von `for j` (8 Leerzeichen).
 
 <Explorable name="doppelschleife" titel="Schleife in Schleife">
 
-Stell die Grenzen für `i` und `j` ein und lass das Raster Zelle für Zelle laufen. Mit dem Schalter siehst du alle Würfelpaare. Vermute zuerst: Wie oft läuft der innere Rumpf bei 3 und 4? Und im Würfelmodus: Lass das Raster bis zum Ende laufen: Wie viele Zellen sind hervorgehoben?
+Stell die Grenzen für `i` und `j` ein und lass das Raster Zelle für Zelle laufen. Mit dem Schalter siehst du alle Würfelpaare. Vermute zuerst: Wie oft läuft der innere Rumpf bei 3 und 4? Und im Würfelmodus: Wie viele Zellen sind am Ende hervorgehoben?
 
 <Ohne>
 
-Für den Baustein wird JavaScript benötigt. Beispiel mit `i` von 1 bis 3 und `j` von 1 bis 4: Der innere Rumpf läuft 3 · 4 = 12-mal. Bei jedem neuen `i` beginnt `j` wieder bei 1. Bei zwei Würfeln gibt es 6 · 6 = 36 Paare, und die Summe 7 kommt in 6 davon vor.
+Für den Baustein wird JavaScript benötigt. Du stellst die Grenzen für `i` und `j` ein. Das Raster zeigt Zelle für Zelle, wie oft der innere Rumpf läuft. Bei jedem neuen `i` beginnt `j` wieder bei 1. Im Würfelmodus siehst du alle Paare zweier Würfel.
 
 </Ohne>
 
 </Explorable>
+
+Die Auflösung: Bei 3 und 4 läuft der innere Rumpf 3 · 4 = 12-mal, so oft, wie die Raster-Zellen es zeigen. Das gilt immer: Der innere Rumpf läuft so oft, wie außen mal innen. Im Würfelmodus sind am Ende 6 Zellen hervorgehoben, die sechs Paare mit Summe 7.
 
 <div class="k-try">
 
@@ -379,23 +385,7 @@ Schleife in Schleife: Die innere Schleife läuft bei jedem Durchlauf der äußer
 
 <Abschnitt id="xor" nr="4" titel="Bitoperationen und XOR">
 
-UND und ODER kennst du aus Termin 03 und 04. Dabei heißt 1 wahr und 0 falsch. Dazu kommt <Begriff e="Entweder … oder: Das Ergebnis ist wahr, wenn genau eine der beiden Seiten wahr ist.">XOR</Begriff>, „entweder … oder“. Es ist wahr, wenn genau eine der beiden Seiten wahr ist. Die Wahrheitstabelle neben UND und ODER:
-
-<div class="k-tablewrap">
-<table class="k-types">
-<thead><tr><th scope="col">A</th><th scope="col">B</th><th scope="col">A UND B</th><th scope="col">A ODER B</th><th scope="col">A XOR B</th></tr></thead>
-<tbody>
-<tr><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>0</td><td>1</td><td>0</td><td>1</td><td>1</td></tr>
-<tr><td>1</td><td>0</td><td>0</td><td>1</td><td>1</td></tr>
-<tr><td>1</td><td>1</td><td>1</td><td>1</td><td>0</td></tr>
-</tbody>
-</table>
-</div>
-
-Der Unterschied zu ODER liegt nur in der letzten Zeile: Bei ODER darf auch beides sein, bei XOR nicht.
-
-Ein Beispiel aus dem Alltag ist das Treppenhauslicht mit zwei Schaltern, einer unten, einer oben. Das Licht ist an, wenn die Schalter verschieden stehen, und jeder Schalter schaltet um. Das ist XOR: Bei 0 und 1 ist es an, bei 1 und 0 auch, bei gleicher Stellung aus. Wer oben umlegt, kippt das Ergebnis, egal wie der untere steht.
+UND und ODER kennst du aus Termin 03 und 04. Dabei heißt 1 wahr und 0 falsch. Dazu kommt <Begriff e="Entweder … oder: Eine dritte Verknüpfung neben UND und ODER.">XOR</Begriff>, „entweder … oder“.
 
 <div class="k-try">
 
@@ -416,6 +406,24 @@ Wann ist XOR wahr?
 
 </div>
 
+XOR ist wahr, wenn genau eine der beiden Seiten wahr ist. Die Wahrheitstabelle neben UND und ODER:
+
+<div class="k-tablewrap">
+<table class="k-types">
+<thead><tr><th scope="col">A</th><th scope="col">B</th><th scope="col">A UND B</th><th scope="col">A ODER B</th><th scope="col">A XOR B</th></tr></thead>
+<tbody>
+<tr><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>0</td><td>1</td><td>0</td><td>1</td><td>1</td></tr>
+<tr><td>1</td><td>0</td><td>0</td><td>1</td><td>1</td></tr>
+<tr><td>1</td><td>1</td><td>1</td><td>1</td><td>0</td></tr>
+</tbody>
+</table>
+</div>
+
+Der Unterschied zu ODER liegt nur in der letzten Zeile: Bei ODER darf auch beides sein, bei XOR nicht.
+
+Ein Beispiel aus dem Alltag ist das Treppenhauslicht mit zwei Schaltern, einer unten, einer oben. Das Licht ist an, wenn die Schalter verschieden stehen, und jeder Schalter schaltet um. Das ist XOR: Bei 0 und 1 ist es an, bei 1 und 0 auch, bei gleicher Stellung aus. Wer oben umlegt, kippt das Ergebnis, egal wie der untere steht.
+
 **Bitweise.** Zwei Bytes untereinander, und in jeder Spalte gilt die Tabelle. <Begriff e="Spalte für Spalte: Jedes Bit wird nur mit dem Bit darüber oder darunter verknüpft.">Bitweise</Begriff> mit 4 Bit: `1100` und `1010` ergeben bei UND `1000`, bei ODER `1110` und bei XOR `0110`. Jetzt mit einem Byte:
 
 <div class="k-tablewrap">
@@ -431,7 +439,7 @@ Wann ist XOR wahr?
 </table>
 </div>
 
-**Verschlüsseln.** Verknüpfst du das Byte A mit einem <Begriff e="Ein Wert, mit dem man ein Byte verknüpft, um es zu verschlüsseln. Wer den Schlüssel kennt, kann es wieder entschlüsseln.">Schlüssel</Begriff> B per XOR, entsteht `1100 0101`. Verknüpfst du dieses Ergebnis noch einmal mit demselben Schlüssel, steht wieder `0110 1001` da, also A. Der Grund: Jede Spalte wird zweimal gekippt oder gar nicht, und zweimal kippen heißt zurück. Das ist die einfachste Verschlüsselung und steckt als Teil in echten Verfahren.
+**Verschlüsseln.** Verknüpfst du das Byte A mit einem <Begriff e="Ein Wert, mit dem man ein Byte verknüpft, um es zu verschlüsseln. Wer den Schlüssel kennt, kann es wieder entschlüsseln.">Schlüssel</Begriff> B per XOR, entsteht `1100 0101`.
 
 Als Geheimschrift nimmst du Buchstaben als Zahlen, A = 1 bis Z = 26, mit je 5 Bit. Das reicht, denn 2⁵ = 32 Werte decken die 26 Buchstaben ab. Auch der Schlüssel hat 5 Bit, also 0 bis 31. Beispiel: `HALLO` mit dem Schlüssel `01101` (13) ergibt `ELAAB`. Das H ist 8 = `01000`, und `01000` XOR `01101` ergibt `00101` = 5, also E.
 
@@ -441,11 +449,13 @@ Gib ein Wort aus bis zu sechs Großbuchstaben und einen Schlüssel von 0 bis 31 
 
 <Ohne>
 
-Für den Baustein wird JavaScript benötigt. Beispiel: `HALLO` mit dem Schlüssel 13 ergibt `ELAAB`. Verknüpfst du `ELAAB` noch einmal mit 13, steht wieder `HALLO` da. Ergibt das XOR 0 oder eine Zahl von 27 bis 31, gibt es dafür keinen Buchstaben, und die Zahl bleibt stehen.
+Für den Baustein wird JavaScript benötigt. Du gibst ein Wort und einen Schlüssel ein und siehst Spalte für Spalte das XOR. Mit dem Knopf verknüpfst du das Ergebnis noch einmal mit dem Schlüssel. Ergibt das XOR 0 oder eine Zahl von 27 bis 31, gibt es dafür keinen Buchstaben, und die Zahl bleibt stehen.
 
 </Ohne>
 
 </Explorable>
+
+Die Auflösung: Verknüpfst du das Ergebnis noch einmal mit demselben Schlüssel, steht wieder das Original da. Beim Byte: `1100 0101` XOR `1010 1100` ergibt wieder `0110 1001`, also A. Der Grund: Jede Spalte wird zweimal gekippt oder gar nicht, und zweimal kippen heißt zurück. Das ist die einfachste Verschlüsselung und steckt als Teil in echten Verfahren.
 
 <Hinweis art="merke">
 

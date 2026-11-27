@@ -43,6 +43,9 @@ function papEngine() {
                                      bei „nein“ geht es unter der Schleife weiter. Die Bedingung wird wie im PAP-Editor
                                      geschrieben (!= ≠, <= ≤, >= ≥, and und, or oder, not nicht, == =); der Rumpf darf
                                      wieder Entscheidungen und Schleifen enthalten
+     Unterprogramm: aufruf           Rechteck mit doppelten Seitenlinien (Aufruf einer eigenen Funktion)
+     Funktion: name(parameter)       nur als erste Zeile: Start-Symbol trägt den Namen statt „Start“ (Plan einer Funktion)
+     Rückgabe: wert                  nur als letzte Zeile: Ende-Symbol „Rückgabe wert“ statt „Ende“
      alles andere                    Rechteck
    Einrückung: zwei Leerzeichen je Ebene. Ein Zweig darf leer sein (dann nur „ja:“ oder nur „nein:“)
    und selbst wieder eine Entscheidung enthalten. Start und Ende kommen von selbst.
@@ -66,6 +69,14 @@ export function planSpec(K, text) {
     if (leer % 2) throw new Error(`<Plan>: Einrückung mit ${leer} Leerzeichen (erlaubt sind 2 je Ebene): „${z.trim()}“`);
     return { ebene: leer / 2, text: z.trim() };
   });
+  /* Plan einer Funktion: erste Zeile „Funktion: …“, letzte Zeile „Rückgabe: …“ (jeweils auf oberster Ebene) */
+  let kopf = null;
+  let rueck = null;
+  const ersteZeile = zeilen[0] && /^Funktion:\s*(.+)$/i.exec(zeilen[0].text);
+  if (ersteZeile && zeilen[0].ebene === 0) { kopf = ersteZeile[1].trim(); zeilen.shift(); }
+  const letzte = zeilen[zeilen.length - 1];
+  const letzteRueck = letzte && letzte.ebene === 0 && /^Rückgabe:\s*(.*)$/i.exec(letzte.text);
+  if (letzteRueck) { rueck = letzteRueck[1].trim(); zeilen.pop(); }
   let nr = 0;
   const id = () => 'n' + (++nr);
   let i = 0;
@@ -75,6 +86,7 @@ export function planSpec(K, text) {
       const z = zeilen[i];
       if (z.ebene > ebene) throw new Error(`<Plan>: Zeile „${z.text}“ ist zu weit eingerückt`);
       if (/^(ja|nein):/i.test(z.text)) throw new Error(`<Plan>: „${z.text}“ steht ohne Entscheidung darüber`);
+      if (/^(Rückgabe|Funktion):/i.test(z.text)) throw new Error(`<Plan>: „${z.text}“ steht nur als ${/^Funktion/i.test(z.text) ? 'erste' : 'letzte'} Zeile des Plans`);
       i++;
       const m = /^Entscheidung:\s*(.+)$/i.exec(z.text);
       const sl = /^Schleife:\s*(.+)$/i.exec(z.text);
@@ -89,15 +101,16 @@ export function planSpec(K, text) {
           zweige[welcher] = folge(ebene + 2);
         }
         knoten.push(K.P.iff(m[1], zweige.ja, zweige.nein, id(), { wrapAt: 28 }));
-      } else if (/^(Eingabe|Ausgabe)\b/.test(z.text)) knoten.push(K.P.io(z.text, id(), { wrapAt: 40 }));
+      } else if (/^Unterprogramm:\s*\S/i.test(z.text)) knoten.push(K.P.sub(z.text.replace(/^Unterprogramm:\s*/i, ''), id(), { wrapAt: 40 }));
+      else if (/^(Eingabe|Ausgabe)\b/.test(z.text)) knoten.push(K.P.io(z.text, id(), { wrapAt: 40 }));
       else knoten.push(K.P.op(z.text, id(), { wrapAt: 40 }));
     }
     return knoten;
   }
   const mitte = folge(0);
   if (i < zeilen.length) throw new Error(`<Plan>: Zeile „${zeilen[i].text}“ passt nicht in den Ablauf`);
-  if (!mitte.length) throw new Error('<Plan>: der Ablauf ist leer');
-  return [K.P.start('n0'), ...mitte, K.P.end('n' + (nr + 1))];
+  if (!mitte.length && !kopf && !rueck) throw new Error('<Plan>: der Ablauf ist leer');
+  return [K.P.start('n0', kopf || undefined), ...mitte, K.P.end('n' + (nr + 1), rueck ? 'Rückgabe ' + rueck : undefined)];
 }
 
 const HINWEIS_TITEL = { merke: 'Merke', achtung: 'Achtung', warum: 'Warum muss ich das wissen?' };

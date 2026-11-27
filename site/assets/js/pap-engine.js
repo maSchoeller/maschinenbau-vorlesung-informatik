@@ -10,8 +10,10 @@
        repeat fußgesteuerte Schleife: erst body, dann Raute; ja -> Rückführung links vor den body, nein -> weiter.
        API: P.*, layout(spec), svg(spec, opts), figure(spec, opts), exportSvg(spec, opts), describe(spec)
    (2) BAUM  – Bearbeitungsmodell (Editor, Baukasten). Knoten {id, k, v, ...}
-       k: in | out | op | call | if | while | for | repeat   (if: yes/no, Schleifen: body)
-       API: nIn/nOut/nOp/nCall/nIf/nWhile/nFor/nRepeat, toPap(baum) -> SPEC, toText(baum) -> Python,
+       k: in | out | op | call | if | while | for | repeat | def   (if: yes/no, Schleifen und def: body)
+       def: eigene Funktion, nur auf oberster Ebene. v = Kopf „name(parameter)“, body = Rumpf, ret = Rückgabewert (leer: kein return).
+            Im Code stehen alle def vor dem Hauptprogramm; gezeichnet wird je Funktion ein eigener kleiner Plan (toPapAll, svgAll, marksAll).
+       API: nIn/nOut/nOp/nCall/nIf/nWhile/nFor/nRepeat/nDef, toPap(baum) -> SPEC, toText(baum) -> Python,
             parseCode(python, {erweitert:true}) -> {nodes}, marks(baum) -> Einfügestellen für den Editor,
             toJson/fromJson, clone, kids, find, numberTree, countBlocks
    Ohne Option {erweitert:true} verhält sich parseCode wie im V05-Baukasten (nur if/elif/else).
@@ -24,7 +26,7 @@
   function autoId() { uidN += 1; return 'p' + uidN; }
   function mk(t, text, extra) { var n = { id: autoId(), t: t, text: text }; if (extra) Object.keys(extra).forEach(function (k) { n[k] = extra[k]; }); return n; }
   var P = {
-    start: function (id) { return mk('start', 'Start', { id: id || 'start' }); },
+    start: function (id, text, extra) { var n = mk('start', text || 'Start', extra); n.id = id || 'start'; return n; },
     end: function (id, text, extra) { var n = mk('end', text || 'Ende', extra); if (id) n.id = id; return n; },
     io: function (text, id, extra) { var n = mk('io', text, extra); if (id) n.id = id; return n; },
     op: function (text, id, extra) { var n = mk('op', text, extra); if (id) n.id = id; return n; },
@@ -305,11 +307,13 @@
   function nWhile(v, body) { return { id: nid(), k: 'while', v: v, body: body || [] }; }
   function nFor(v, body) { return { id: nid(), k: 'for', v: v, body: body || [] }; }
   function nRepeat(v, body) { return { id: nid(), k: 'repeat', v: v, body: body || [] }; }
+  function nDef(v, body, ret) { return { id: nid(), k: 'def', v: v, body: body || [], ret: ret === undefined ? '' : String(ret) }; }
+  function isDef(n) { return n.k === 'def'; }
   function isLoop(n) { return n.k === 'while' || n.k === 'for' || n.k === 'repeat'; }
   /* Unterfolgen eines Knotens als [{slot, arr}] */
   function kids(n) {
     if (n.k === 'if') return [{ slot: 'yes', arr: n.yes }, { slot: 'no', arr: n.no }];
-    if (isLoop(n)) return [{ slot: 'body', arr: n.body }];
+    if (isLoop(n) || n.k === 'def') return [{ slot: 'body', arr: n.body }];
     return [];
   }
 
@@ -339,11 +343,22 @@
     if (n.no.length === 1 && n.no[0].k === 'if') ifLines(n.no[0], level, out, 'elif');
     else if (n.no.length) { out.push({ ind: level, text: 'else:', id: n.id, role: 'else' }); toLines(n.no, level + 1, out); }
   }
+  function defLines(n, level, out) {
+    /* Anfängereingaben abfangen: „def f(x):“ statt „f(x)“; ein Kopf ohne name(...) ist eine Lücke */
+    var head = toPy(String(n.v).trim()).replace(/^def\s+/, '').replace(/\s*:$/, '').trim();
+    if (!/^[A-Za-z_]\w*\s*\(.*\)$/.test(head)) head = '';
+    if (!head) { out.push({ ind: level, text: 'pass  # Lücke: Funktionskopf eintragen', id: n.id, role: 'def' }); return; }
+    out.push({ ind: level, text: 'def ' + head + ':', id: n.id, role: 'def' });
+    var ret = toPy(String(n.ret === undefined ? '' : n.ret).trim()).replace(/^return(?![A-Za-z0-9_])\s*/, '');
+    if (n.body.length) toLines(n.body, level + 1, out); else if (!ret) out.push({ ind: level + 1, text: 'pass', id: n.id, role: 'pass' });
+    if (ret) out.push({ ind: level + 1, text: 'return ' + ret, id: n.id, role: 'return' });
+  }
   function negate(c) { return /\b(and|or)\b|\bif\b|\belse\b/.test(c) ? 'not (' + c + ')' : 'not ' + c; }
   function toLines(nodes, level, out) {
     out = out || [];
     nodes.forEach(function (n) {
       if (n.k === 'if') ifLines(n, level, out, 'if');
+      else if (n.k === 'def') defLines(n, level, out);
       else if (n.k === 'while') {
         out.push({ ind: level, text: 'while ' + condOf(n, 'False') + ':', id: n.id, role: 'while' });
         if (n.body.length) toLines(n.body, level + 1, out); else out.push({ ind: level + 1, text: 'pass', id: n.id, role: 'pass' });
@@ -359,9 +374,22 @@
     });
     return out;
   }
-  function toText(nodes) { return toLines(nodes, 0, []).map(function (l) { return new Array(l.ind * 4 + 1).join(' ') + l.text; }).join('\n'); }
+  function linesText(lines) { return lines.map(function (l) { return new Array(l.ind * 4 + 1).join(' ') + l.text; }).join('\n'); }
+  /* Funktionen stehen im Code immer vor dem Hauptprogramm, jede durch eine Leerzeile getrennt */
+  function toText(nodes) {
+    var defs = nodes.filter(isDef), rest = nodes.filter(function (n) { return !isDef(n); }), parts = [];
+    defs.forEach(function (d) { parts.push(linesText(toLines([d], 0, []))); });
+    if (rest.length) parts.push(linesText(toLines(rest, 0, [])));
+    return parts.join('\n\n');
+  }
   function numberTree(nodes, c) {
-    c = c || { n: 0 };
+    if (!c) {
+      /* oberste Ebene: erst der Hauptplan, dann die Funktionen (Reihenfolge wie in der Zeichnung) */
+      c = { n: 0 };
+      numberTree(nodes.filter(function (n) { return !isDef(n); }), c);
+      numberTree(nodes.filter(isDef), c);
+      return c.n;
+    }
     nodes.forEach(function (n) {
       if (n.k === 'repeat') { numberTree(n.body, c); c.n += 1; n.num = c.n; return; }
       c.n += 1; n.num = c.n;
@@ -411,9 +439,9 @@
     var m = /^"([^"]*)"$|^'([^']*)'$/.exec(s);
     return 'Ausgabe: ' + (m ? (m[1] !== undefined ? m[1] : m[2]) : s);
   }
-  function toPap(tree) {
-    function conv(arr) {
-      return arr.map(function (n) {
+  function convSeq(arr) {
+    var conv = convSeq;
+    return arr.map(function (n) {
         var c = { num: n.num, cls: n.cls }, t = nice(String(n.v).trim() || '…');
         if (n.k === 'in') return P.io((String(n.v).trim() || '…') + ' einlesen', n.id, c);
         if (n.k === 'out') return P.io(outText(n.v), n.id, c);
@@ -425,9 +453,21 @@
         if (n.k === 'while') return P.whil(f, conv(n.body), n.id, c);
         if (n.k === 'repeat') return P.repeat(f, conv(n.body), n.id, c);
         return P.iff(f, conv(n.yes), conv(n.no), n.id, c);
-      });
-    }
-    return [P.start('start')].concat(conv(tree), [P.end('end')]);
+    });
+  }
+  function toPap(tree) {
+    return [P.start('start')].concat(convSeq(tree.filter(function (n) { return !isDef(n); })), [P.end('end')]);
+  }
+  /* Plan einer Funktion: Start mit „name(parameter)“, Rumpf, am Ende „Rückgabe wert“ (ohne return: normales Ende) */
+  function toPapDef(d) {
+    var ret = String(d.ret === undefined ? '' : d.ret).trim(), c = { num: d.num, cls: d.cls };
+    return [P.start(d.id, String(d.v).trim() || '…', c)].concat(convSeq(d.body), [P.end('end-' + d.id, ret ? 'Rückgabe ' + nice(ret) : 'Ende')]);
+  }
+  /* Alle Pläne: Hauptplan zuerst, dann je Funktion einer. [{def: Knoten|null, spec}] */
+  function toPapAll(tree) {
+    var out = [{ def: null, spec: toPap(tree) }];
+    tree.filter(isDef).forEach(function (d) { out.push({ def: d, spec: toPapDef(d) }); });
+    return out;
   }
 
   /* Python-Text -> Baum. Ohne o.erweitert wie im V05-Baukasten (nur Zuweisung/Aufruf, if, elif, else). */
@@ -441,7 +481,7 @@
       if (!/["']/.test(tx)) tx = tx.replace(/\s+#.*$/, '');
       lines.push({ no: k + 1, ind: l.match(/^ */)[0].length, text: tx });
     });
-    var pos = 0;
+    var pos = 0, defInd = null, defNames = {}, hauptGesehen = false;
     function fail(l, msg) { var e = new Error('Zeile ' + l.no + ': ' + msg); e.line = l.no; throw e; }
     function litStr(a) {
       a = String(a).trim();
@@ -465,22 +505,27 @@
       }
       m = /^print\((.*)\)$/.exec(text);
       if (m) return nOut(m[1]);
+      m = /^(?:[A-Za-z_]\w*\s*=\s*)?([A-Za-z_]\w*)\(.*\)$/.exec(text);
+      if (ext && m && defNames[m[1]]) return nCall(text);
       if (ext && /^[A-Za-z_][\w.]*\(.*\)$/.test(text) && !/^input\(/.test(text)) return nCall(text);
       return nOp(text);
     }
     var HEAD_ERR = ext
-      ? 'Dieser Editor kennt nur if, elif, else, while und for mit Doppelpunkt. Andere Blockköpfe (def, try, with …) kommen später im Kurs.'
+      ? 'Dieser Editor kennt nur if, elif, else, while, for und def mit Doppelpunkt. Andere Blockköpfe (try, with …) kommen später im Kurs.'
       : 'Dieser Baukasten kennt nur if, elif und else mit Doppelpunkt. Andere Blockköpfe (while, for, def …) kommen später im Kurs.';
     function parseBlock(ind) {
       var out = [];
       while (pos < lines.length) {
         var l = lines[pos];
         if (l.ind < ind) break;
+        if (ind === 0 && !(ext && /^def(?![A-Za-z0-9_])/.test(l.text))) hauptGesehen = true;
         if (l.ind > ind) fail(l, 'Diese Zeile ist weiter eingerückt als die Zeile davor. Eine Einrückung ist nur nach einem Doppelpunkt erlaubt.');
         if (/^(elif\b|else\b)/.test(l.text)) fail(l, l.text.split(/[\s:]/)[0] + ' steht ohne passendes if auf derselben Einrückungsstufe.');
         if (/^if\b/.test(l.text)) out.push(parseIf(l, ind, 'if'));
         else if (ext && /^while\b/.test(l.text)) out.push(parseWhile(l, ind));
         else if (ext && /^for\b/.test(l.text)) out.push(parseFor(l, ind));
+        else if (ext && /^def\b/.test(l.text)) out.push(parseDef(l, ind));
+        else if (ext && /^return\b/.test(l.text)) out.push(parseReturn(l, ind));
         else {
           if (/:$/.test(l.text)) fail(l, HEAD_ERR);
           out.push(simple(l.text)); pos += 1;
@@ -531,6 +576,37 @@
       }
       return nWhile(m[1], body);
     }
+    function parseDef(l, ind) {
+      if (ind !== 0 || defInd !== null) fail(l, 'Eine Funktion mit def steht ganz links, nicht in einer Schleife, Verzweigung oder anderen Funktion.');
+      if (hauptGesehen) fail(l, 'Funktionen stehen mit def vor dem Hauptprogramm.');
+      var m = /^def\s+([A-Za-z_]\w*)\s*\((.*)\)\s*:$/.exec(l.text);
+      if (!m) {
+        if (!/:$/.test(l.text)) fail(l, 'Nach dem Funktionskopf fehlt der Doppelpunkt.');
+        fail(l, 'Der Funktionskopf sieht so aus: def name(parameter):');
+      }
+      var params = m[2].trim() ? m[2].split(',').map(function (p) { return p.trim(); }) : [];
+      params.forEach(function (p) {
+        if (/[=:*]/.test(p)) fail(l, 'Parameter stehen ohne Standardwert und ohne Typ in der Klammer, z. B. def name(x, y):');
+        if (!/^[A-Za-z_]\w*$/.test(p)) fail(l, 'Ein Parameter ist ein Name, z. B. def name(x, y):');
+      });
+      if (params.length > 2) fail(l, 'Eine Funktion hat hier höchstens zwei Parameter.');
+      pos += 1;
+      defInd = lines[pos] ? lines[pos].ind : null;
+      var body = parseBody(ind, l);
+      defInd = null;
+      var ret = '', last = body[body.length - 1];
+      if (last && last.k === '__return') { ret = last.v; body.pop(); }
+      if (body.length === 1 && body[0].k === 'op' && body[0].v === 'pass') body = [];
+      defNames[m[1]] = true;
+      return nDef(m[1] + '(' + params.join(', ') + ')', body, ret);
+    }
+    function parseReturn(l, ind) {
+      if (defInd === null) fail(l, 'return gehört in eine Funktion mit def.');
+      var nx = lines[pos + 1];
+      if (ind !== defInd || (nx && nx.ind >= ind)) fail(l, 'return steht nur am Ende der Funktion.');
+      pos += 1;
+      return { id: nid(), k: '__return', v: l.text.replace(/^return\s*/, '') };
+    }
     function parseFor(l, ind) {
       var m = /^for\s+(.*?)\s*:$/.exec(l.text);
       if (!m) { if (!/:$/.test(l.text)) fail(l, 'Nach der Schleifenvorgabe fehlt der Doppelpunkt.'); fail(l, 'Hinter for fehlt die Vorgabe, z. B. for i in range(1, 6):'); }
@@ -553,6 +629,7 @@
         var o = { k: n.k, v: n.v };
         if (n.typ) o.typ = n.typ;
         if (n.prompt !== undefined) o.prompt = n.prompt;
+        if (n.k === 'def') o.ret = n.ret === undefined ? '' : n.ret;
         kids(n).forEach(function (kd) { o[kd.slot] = strip(kd.arr); });
         return o;
       });
@@ -569,6 +646,7 @@
         if (j.prompt !== undefined) n.prompt = j.prompt;
         if (j.k === 'if') { n.yes = build(j.yes); n.no = build(j.no); }
         else if (j.k === 'while' || j.k === 'for' || j.k === 'repeat') n.body = build(j.body);
+        else if (j.k === 'def') { n.body = build(j.body); n.ret = j.ret === undefined ? '' : String(j.ret); }
         return n;
       });
     }
@@ -588,12 +666,14 @@
   /* alle Knoten in Lese-/Codereihenfolge (Vorreihenfolge, bei repeat: Rumpf zuerst) */
   function flat(tree) {
     var out = [];
-    (function walk(arr) {
+    function walk(arr) {
       arr.forEach(function (n) {
         if (n.k === 'repeat') { walk(n.body); out.push(n); return; }
         out.push(n); kids(n).forEach(function (kd) { walk(kd.arr); });
       });
-    })(tree);
+    }
+    walk(tree.filter(function (n) { return !isDef(n); }));
+    walk(tree.filter(isDef));
     return out;
   }
 
@@ -602,11 +682,12 @@
      Gibt das SPEC samt Layout und die Stellen zurück, an denen ein neues Symbol eingefügt werden kann.
      marks[k] = { x, y, targets: [{ parent: id|null, slot: 'root'|'yes'|'no'|'body', idx, label }] }
      ══════════════════════════════════════════════════════════ */
-  function marks(tree) {
-    var spec = toPap(tree), lay = layout(spec), byId = {}, out = [], seen = {};
+  function marksOf(spec, seq, parent, slot, startId, mapIdx) {
+    var lay = layout(spec), byId = {}, out = [], seen = {};
     lay.nodes.forEach(function (n) { byId[n.id] = n; });
     function firstTop(n) { var b = byId[n.id]; return n.k === 'repeat' && n.body.length ? firstTop(n.body[0]) : b._y; }
     function add(x, y, target) {
+      if (mapIdx && target.parent === null && target.slot === 'root') target.idx = mapIdx(target.idx);
       var key = Math.round(x) + ',' + Math.round(y), m = seen[key];
       if (m) { m.targets.push(target); return; }
       m = { x: x, y: y, targets: [target] }; seen[key] = m; out.push(m);
@@ -632,16 +713,68 @@
         else if (n.k === 'repeat') seqMarks(n.body, n.id, 'body', b2._retX, (b2._ey + b2._yc) / 2);
       });
     }
-    seqMarks(tree, null, 'root', 0, byId.start._y + byId.start._s.h + 14);
+    seqMarks(seq, parent, slot, 0, byId[startId]._y + byId[startId]._s.h + 14);
     return { spec: spec, lay: lay, marks: out };
+  }
+  /* Einfügestellen des Hauptplans (Funktionen stehen nicht darin). Die idx der obersten Ebene zählen im ganzen Baum. */
+  function marks(tree) {
+    var main = tree.filter(function (n) { return !isDef(n); });
+    return marksOf(toPap(tree), main, null, 'root', 'start', function (i) {
+      if (i < main.length) return tree.indexOf(main[i]);
+      return main.length ? tree.indexOf(main[main.length - 1]) + 1 : tree.length;
+    });
+  }
+  /* Alle Pläne mit Einfügestellen: [{def: Knoten|null, spec, lay, marks}], Hauptplan zuerst. Im Plan einer Funktion
+     sind die Stellen { parent: def.id, slot: 'body' }. */
+  function marksAll(tree) {
+    var out = [Object.assign({ def: null }, marks(tree))];
+    tree.filter(isDef).forEach(function (d) {
+      out.push(Object.assign({ def: d }, marksOf(toPapDef(d), d.body, d.id, 'body', d.id, null)));
+    });
+    return out;
+  }
+
+  /* Beschreibung aller Pläne (für Screenreader) */
+  function describeAll(tree) {
+    var plans = toPapAll(tree);
+    return plans.map(function (p) { return p.def ? 'Funktion ' + (String(p.def.v).trim() || 'ohne Namen') + ': ' + describeSeq(p.spec) + '.' : describe(p.spec); }).join(' ');
+  }
+  /* Alle Pläne als SVG-Text untereinander (Hauptplan, dann je Funktion), jeder mit eigener Überschrift */
+  function svgAll(tree, o) {
+    o = o || {};
+    var plans = toPapAll(tree);
+    if (plans.length === 1) return svg(plans[0].spec, o);
+    return plans.map(function (p) {
+      var head = p.def ? '<p class="pap-plan__title">Funktion ' + esc(String(p.def.v).trim() || '…') + '</p>' : '<p class="pap-plan__title">Hauptprogramm</p>';
+      return '<div class="pap-plan">' + head + svg(p.spec, p.def ? Object.assign({}, o, { label: 'Funktion ' + String(p.def.v).trim() + ': ' + describeSeq(p.spec) }) : o) + '</div>';
+    }).join('');
+  }
+  /* Eigenständiges SVG aller Pläne untereinander (Export/PNG) */
+  function exportSvgAll(tree, o) {
+    o = o || {};
+    var plans = toPapAll(tree);
+    if (plans.length === 1) return exportSvg(plans[0].spec, o);
+    var sc = o.scale || 1, GAP = 10, lays = plans.map(function (p) { return layout(p.spec); }), W = 0, H = 0, out = '', y = 0;
+    lays.forEach(function (l) { W = Math.max(W, Math.round(l.w)); H += Math.round(l.h) + GAP; });
+    H -= GAP;
+    lays.forEach(function (lay, k) {
+      var e = '', dx = (W - Math.round(lay.w)) / 2 - lay.x0, dy = y - lay.y0;
+      lay.edges.forEach(function (ed) { e += edgeSvg(ed); });
+      lay.nodes.forEach(function (n) { var c = n.num; n.num = 0; e += nodeSvg(n, { badges: false }); n.num = c; });
+      out += '<g transform="translate(' + f1(dx) + ' ' + f1(dy) + ')">' + e + '</g>';
+      y += Math.round(lay.h) + GAP;
+    });
+    return '<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" width="' + Math.round(W * sc) + '" height="' + Math.round(H * sc) + '" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + esc(o.label || describeAll(tree)) + '"><title>' + esc(o.title || 'Programmablaufplan') + '</title><style>' + EXPORT_CSS + '</style>' +
+      '<rect x="0" y="0" width="' + W + '" height="' + H + '" fill="#fff"/>' + out + '</svg>';
   }
 
   var api = {
     P: P, layout: layout, svg: svg, figure: figure, describe: describe, exportSvg: exportSvg,
     toLines: toLines, toText: toText, toPap: toPap, parseCode: parseCode, numberTree: numberTree, countBlocks: countBlocks,
-    nIn: nIn, nOut: nOut, nOp: nOp, nCall: nCall, nIf: nIf, nWhile: nWhile, nFor: nFor, nRepeat: nRepeat,
+    nIn: nIn, nOut: nOut, nOp: nOp, nCall: nCall, nIf: nIf, nWhile: nWhile, nFor: nFor, nRepeat: nRepeat, nDef: nDef, isDef: isDef,
     forText: forText, nice: nice, toPy: toPy, kids: kids, isLoop: isLoop, find: find, flat: flat, clone: clone, toJson: toJson, fromJson: fromJson, marks: marks,
-    esc: esc, version: 2
+    toPapAll: toPapAll, marksAll: marksAll, describeAll: describeAll, svgAll: svgAll, exportSvgAll: exportSvgAll,
+    esc: esc, version: 3
   };
   if (typeof module !== 'undefined' && module.exports) { module.exports = api; }
   if (typeof document === 'undefined') return;

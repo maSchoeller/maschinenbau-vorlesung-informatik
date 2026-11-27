@@ -195,22 +195,19 @@ E("modulo", "Rest (Modulo) %", RE, "V02", "kopf",
   ["floordiv", "rechenoperatoren", "if"],
   bez=["%"])
 
-E("potenz", "Potenz **", RE, "V02", "kopf",
-  "Potenzieren und Wurzelziehen.",
+E("potenz", "** (hoch, nur lesen)", RE, "V02", "kopf",
+  "Zeigt, wie oft eine Zahl mit sich selbst malgenommen wird. In Termin 07 liest du es nur.",
   "a ** b",
-  "a ** b ist a hoch b. Mit gebrochenen Exponenten ziehst du Wurzeln: x ** 0.5 ist die Quadratwurzel. Das Zeichen ^, das du vom Taschenrechner kennst, ist in Python etwas ganz anderes (bitweises XOR).",
+  "a ** b ist a hoch b. In Termin 07 liest du ** nur, zum Beispiel ist 2 ** 8 gleich 256. Selbst schreiben musst du es nicht. Das Zeichen ^, das du vom Taschenrechner kennst, ist in Python etwas ganz anderes (bitweises XOR).",
   '''
-  d = 20
-  print(d**2)
-  print(2**10)
-  print(9**0.5)
+  print(2 ** 8)
+  print(2 ** 16)
+  print(2 ** 64 + 1)
   ''',
-  "Für Quadrate, Kubikzahlen, Zweierpotenzen (Bits!) und Wurzeln ohne math-Modul.",
-  [("Anzahl Werte bei n Bit", 'bits = 8\nprint(2**bits)'),
-   ("Kreisfläche aus dem Durchmesser", 'd = 40\nprint(3.14159 * d**2 / 4)'),
-   ("Kubikwurzel als Exponent 1/3", 'print(27 ** (1/3))')],
-  [("^ statt ** benutzt", 'print(2 ^ 3)', "(keine Fehlermeldung) Ausgabe: 1 – ^ ist bitweises XOR, nicht Potenz."),
-   ("Null hoch negative Zahl", 'print(0 ** -1)')],
+  "Zum Lesen, wenn die Zahl der Werte bei n Bit gemeint ist: 2 ** 8 ist 256.",
+  [("Anzahl Werte bei n Bit", 'bits = 8\nprint(2 ** bits)'),
+   ("Werte bei 16 Bit", 'print(2 ** 16)')],
+  [("^ statt ** benutzt", 'print(2 ^ 3)', "(keine Fehlermeldung) Ausgabe: 1 – ^ ist bitweises XOR, nicht Potenz.")],
   ["rangfolge", "sqrt", "rechenoperatoren"],
   bez=["**"])
 
@@ -276,7 +273,7 @@ E("float", "float (Fließkommazahl)", VD, "V03", "kopf",
 E("type", "type()", VD, "V03", "lesen",
   "Zeigt, welchen Datentyp ein Wert hat.",
   "type(wert)",
-  "type() verrät, ob ein Wert int, float, str oder bool ist. Das ist die schnellste Hilfe, wenn eine Rechnung merkwürdige Ergebnisse oder einen TypeError liefert, zum Beispiel weil input() Text geliefert hat.",
+  "type() verrät, ob ein Wert int, float, str oder bool ist. Ab Termin 07 liest du die Ausgabe, zum Beispiel <class 'int'>. Das ist die schnellste Hilfe, wenn eine Rechnung merkwürdige Ergebnisse oder einen TypeError liefert, zum Beispiel weil input() Text geliefert hat.",
   '''
   print(type(42))
   print(type(3.14))
@@ -334,19 +331,16 @@ E("fstring", "f-String & Formatierung", TX, "V03", "kopf",
 
 E("round", "round()", RE, "V03", "kopf",
   "Rundet auf eine bestimmte Stellenzahl.",
-  "round(x)    round(x, stellen)",
-  "round(x, 2) rundet auf zwei Nachkommastellen, round(x) auf eine ganze Zahl. Bei genau .5 rundet Python zur nächsten geraden Zahl (round(2.5) ist 2) und wegen der Fließkomma-Darstellung kann auch round(2.675, 2) überraschen. Für reine Anzeige reicht oft die Formatierung mit :.2f im f-String.",
+  "round(x, stellen)",
+  "round(x, 2) rundet auf zwei Nachkommastellen. Ab Termin 07 vergleichst du Kommazahlen mit round(x, 2), weil 0.1 + 0.2 nicht genau 0.3 ist. Für reine Anzeige reicht oft die Formatierung mit :.2f im f-String.",
   '''
   print(round(3.14159, 2))
-  print(round(2.5), round(3.5))
-  print(round(1234.5678, -2))
+  print(round(0.1 + 0.2, 2) == 0.3)
   ''',
-  "Wenn du den gerundeten Wert weiterverwenden willst; zum reinen Anzeigen nimm :.2f.",
+  "Wenn du den gerundeten Wert weiterverwenden oder vergleichen willst; zum reinen Anzeigen nimm :.2f.",
   [("Auf eine Nachkommastelle", 'print(round(20.46, 1))'),
-   ("Auf Hunderter runden", 'print(round(8765, -2))'),
    ("Anzeige ohne den Wert zu verändern", 'x = 2.0 / 3\nprint(f"{x:.3f}", x)')],
-  [("Text statt Zahl", 'round("3.5")'),
-   ("Dezimal-Rundung überrascht", 'print(round(2.675, 2))', "(keine Fehlermeldung) Ausgabe: 2.67 – 2.675 ist intern etwas kleiner als 2,675.")],
+  [("Text statt Zahl", 'round("3.5")')],
   ["fstring", "float", "abs"],
   bez=["round"])
 

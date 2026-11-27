@@ -1,0 +1,546 @@
+---
+titel: "Termin 07 · Programmierlabor · Informatik Maschinenbau"
+beschreibung: "Programmierlabor zu Termin 07: eigene Funktionen mit def und return, ein Funktionsplan im Editor, Kommazahlen vor dem Vergleich runden, Wertebereich und Überlauf. Mit Training zu Zählern, Blättern, Preisen und einem Zylinder für zu Hause."
+body:
+  data-lesson: V07
+  data-page: labor
+stile:
+  - ../assets/css/dhbw-base.css
+  - ../assets/css/kurs.css
+  - ../assets/css/aufgaben.css
+  - ../assets/css/editor.css
+  - ../assets/css/labor.css
+  - ../assets/css/v05.css
+  - ../assets/css/pap-editor.css
+skripte:
+  - ../assets/js/speicher.js
+  - ../assets/js/icons.js
+  - src: ../assets/js/editor.js
+    defer: true
+  - ../assets/js/pap-engine.js
+  - ../assets/js/kurs.js
+  - ../assets/js/aufgaben.js
+  - ../assets/js/pap-editor.js
+  - ../assets/js/labor.js
+---
+
+<Labor nr="V07" zuhause="47" name="Termin 07" lerneinheit="v07-datentypen-und-funktionen.html">
+
+<Station id="a-werkzeugkasten" titel="Werkzeugkasten" teil="A" min="5">
+
+<p class="l-task__intro">Vier neue Karten. Alles aus Termin 02 bis 06 gilt weiter. Jeder Codeblock läuft: Ändere etwas und führ ihn aus. Den Werkzeugkasten erreichst du von jeder Aufgabe aus in der Befehls-Bibliothek oben rechts.</p>
+
+<Video name="v07-python" titel="Python-Werkzeugkasten: hoch lesen, def, return, type und round" fehlt="Video folgt. Bis dahin: Lies die vier Karten und probier jeden Codeblock aus.">
+
+Python-Werkzeugkasten: hoch lesen, def, return, type und round (ca. 3 Min). Untertitel sind eingeschaltet (Deutsch).
+
+</Video>
+
+<Werkzeugkasten>
+
+<Syntaxkarte id="sk-hoch" nr="1" titel="**: hoch (nur lesen)">
+
+```python
+print(2 ** 8)
+print(2 ** 16)
+print(2 ** 64 + 1)
+```
+
+- Ausgabe: `256`, `65536`, `18446744073709551617`.
+- `**` heißt „hoch“. `2 ** 8` ist die Zahl der Werte eines Bytes.
+- Du liest es nur, selbst schreiben musst du es nicht.
+
+</Syntaxkarte>
+
+<Syntaxkarte id="sk-def" nr="2" titel="def: eigene Funktion">
+
+```python
+def begruessen(name):
+    print(f"Hallo {name}!")
+
+begruessen("Lea")
+begruessen("Tom")
+```
+
+- Ausgabe: `Hallo Lea!`, `Hallo Tom!`.
+- Zuerst definieren, dann aufrufen. Der Rumpf steht eingerückt (4 Leerzeichen) unter der Zeile mit `def` und dem Doppelpunkt.
+- Parameter stehen in der Klammer, mehrere mit Komma. Beim Aufruf gibst du die Werte in derselben Reihenfolge an.
+- Ohne Klammern beim Aufruf passiert nichts.
+
+</Syntaxkarte>
+
+<Syntaxkarte id="sk-return" nr="3" titel="return: einen Wert zurückgeben">
+
+```python
+def quadrat(x):
+    return x * x
+
+ergebnis = quadrat(4)
+print(ergebnis)
+```
+
+- Ausgabe: `16`.
+- `print` zeigt an, `return` gibt den Wert an die Stelle zurück, die aufgerufen hat.
+
+</Syntaxkarte>
+
+<Syntaxkarte id="sk-type-round" nr="4" titel="type und round">
+
+```python
+print(type(42))
+print(type(7 / 2))
+print(round(0.1 + 0.2, 2) == 0.3)
+```
+
+- Ausgabe: `<class 'int'>`, `<class 'float'>`, `True`.
+- `type(…)` nennt den Datentyp.
+- `round(x, 2)` rundet auf 2 Nachkommastellen. Nützlich vor einem Vergleich von Kommazahlen.
+
+</Syntaxkarte>
+
+</Werkzeugkasten>
+
+</Station>
+
+<Station id="a-vorgemacht" titel="Vorgerechnetes Beispiel: Fahrenheit" teil="A" min="5">
+
+<p class="l-task__intro">Aufgabe: Eingelesen wird eine Temperatur in Grad Celsius. Ausgegeben wird sie in Grad Fahrenheit. Die Umrechnung steht in einer Funktion. Wieder gilt: **erst der Plan, dann der Code.** Neu ist das Rechteck mit Doppellinien für den Aufruf und ein eigener kleiner Plan für die Funktion.</p>
+
+<Video name="v07-beispiel" titel="Vorgerechnet: Fahrenheit" fehlt="Video folgt. Bis dahin: Lies die Pläne und den Code Zeile für Zeile und probier das Programm mit 20, 37, 0 und -10 aus.">
+
+Vorgerechnet: Fahrenheit (ca. 3 Min). Untertitel sind eingeschaltet (Deutsch).
+
+</Video>
+
+<Plan titel="Fahrenheit, Hauptprogramm">
+
+```text
+Eingabe: celsius
+Unterprogramm: fahr = fahrenheit(celsius)
+Ausgabe: celsius, fahr
+```
+
+</Plan>
+
+<Plan titel="Fahrenheit, Funktion">
+
+```text
+Funktion: fahrenheit(c)
+grad = c * 9 / 5 + 32
+Rückgabe: grad
+```
+
+</Plan>
+
+<Aufgabe art="run" id="w-vorgemacht" data-count="0" data-mode="programm" data-inputs="20">
+
+<Editor datei="labor/w-vorgemacht.vorlage.py" aria-label="Python-Code: Fahrenheit" />
+
+</Aufgabe>
+
+<Schritte>
+
+1. **Der Ablauf in Worten:** Wert einlesen, umrechnen, ausgeben.
+2. **Was gehört in die Funktion?** Die Umrechnung, weil man sie öfter braucht. Eingabe und Ausgabe bleiben im Hauptprogramm.
+3. **Der Plan:** Im Hauptplan steht der Aufruf als Rechteck mit Doppellinien. Die Funktion hat ihren eigenen kleinen Plan: Start mit dem Namen, die Rechnung, am Ende die Rückgabe.
+4. **Der Code:** Erst `def`, dann das Hauptprogramm. Die Funktion steht vor dem Aufruf.
+5. **Probe:** Mit 20 erscheint `20.0 Grad Celsius sind 68.0 Grad Fahrenheit`, denn 20 mal 9 durch 5 ist 36, plus 32 ergibt 68. Mit 0 erscheinen 32.0 Grad, mit -10 erscheinen 14.0 Grad.
+6. **Selbsterklärung:** Was passiert, wenn du `return grad` durch `print(grad)` ersetzt? Vermute, probier es mit 20 aus und lies dann Schritt 7.
+7. **Auflösung:** Es erscheint `68.0`, danach bricht das Programm mit `TypeError: unsupported format string passed to NoneType.__format__` ab. `fahr` ist jetzt `None`, und `{fahr:.1f}` kann damit nichts anfangen. Hier fehlt ein `return`. Wer das `None` selbst sehen will, schreibt zusätzlich `print(fahr)`.
+
+</Schritte>
+
+</Station>
+
+<Station id="a-ablauf" titel="Ablauf verfolgen: Funktionsaufruf" teil="A" min="5">
+
+<p class="l-task__intro">Du verfolgst, wie eine Funktion aufgerufen wird. Trag in jeder Zeile ein, was sich ändert. Die Funktion läuft in Zeile 2, der Rückgabewert steht in der Spalte Rückgabe. Beachte, dass Zeile 5 zweimal dran kommt.</p>
+
+<Aufgabe art="trace" id="w-trace">
+
+<Daten datei="labor/w-trace.daten.json" />
+
+</Aufgabe>
+
+</Station>
+
+<Station id="a-plan" titel="Plan zeichnen: Summe prüfen" teil="A" sterne="2" min="8">
+
+<p class="l-task__intro">Die zwei Eingaben stehen schon im Editor. Das Runden ist ein normales Rechteck. Das Symbol mit Doppellinien gilt nur für eigene Funktionen. „Prüfen“ führt deinen Plan mit Beispielwerten aus.</p>
+
+<Aufgabe art="pap-zeichnen" id="w-plan" titel="Summe prüfen" data-timeout="8000" data-erlaubt="in,out,op,if,call">
+
+Eingelesen werden zwei Kommazahlen. Ausgegeben wird `ja`, wenn ihre Summe, auf 2 Nachkommastellen gerundet, 0.3 ist, sonst `nein`. Bei 0.1 und 0.2 erscheint `ja`.
+
+<Python rolle="tests" datei="labor/w-plan.tests.py" />
+
+<Daten datei="labor/w-plan.start.json" rolle="start" />
+
+<Daten datei="labor/w-plan.solution.json" rolle="solution" />
+
+<Tipps>
+
+1. Zuerst addieren, dann runden, dann vergleichen. Drei Schritte, ein Symbol je Schritt.
+2. Das Runden ist ein Aufruf einer fertigen Funktion: `gerundet = round(summe, 2)`.
+3. Die Raute vergleicht `gerundet == 0.3`. Beide Ausgaben stehen in den Zweigen.
+
+</Tipps>
+
+</Aufgabe>
+
+</Station>
+
+<Station id="a-funktionsplan" titel="Funktionsplan zeichnen: km/h in m/s" teil="A" sterne="2" min="7">
+
+<p class="l-task__intro">Der Hauptplan steht schon im Editor, gezeichnet wird nur die Funktion. „Prüfen“ führt deinen Plan mit Beispielwerten aus.</p>
+
+<Aufgabe art="pap-zeichnen" id="w-funktionsplan" titel="km/h in m/s" data-timeout="8000" data-erlaubt="def,op,out">
+
+Ein Programm liest eine Geschwindigkeit in km/h ein und gibt sie in m/s aus. Der Hauptplan ruft die Funktion `kmh_in_ms(v)` auf. Zeichne den Plan dieser Funktion: Sie rechnet km/h in m/s um (durch 3.6) und gibt das Ergebnis zurück.
+
+<Plan titel="Hauptplan (vorgegeben)">
+
+```text
+Eingabe: kmh
+Unterprogramm: ms = kmh_in_ms(kmh)
+Ausgabe: f"{ms:.1f} m/s"
+```
+
+</Plan>
+
+<Python rolle="tests" datei="labor/w-funktionsplan.tests.py" />
+
+<Daten datei="labor/w-funktionsplan.start.json" rolle="start" />
+
+<Daten datei="labor/w-funktionsplan.solution.json" rolle="solution" />
+
+<Tipps>
+
+1. Was kommt in die Funktion hinein, was kommt heraus? Hinein kommt `v`, heraus kommt der umgerechnete Wert.
+2. Füge oben das Symbol „Funktion“ ein, trag den Kopf `kmh_in_ms(v)` ein, setz in den Rumpf eine Operation und trag die Rückgabe ein.
+3. Die Umrechnung ist `wert = v / 3.6`, zurückgegeben wird `wert`. Meldet Python etwas mit `NoneType`, ist das Feld Rückgabe leer: Hier fehlt die Rückgabe.
+
+</Tipps>
+
+</Aufgabe>
+
+<p class="k-small k-muted">Für Schnelle: Zeichne einen zweiten Funktionsblock `ms_in_kmh(w)`, der zurückrechnet (mal 3.6).</p>
+
+</Station>
+
+<Station id="a-zeilen" titel="Zeilen ordnen: Fläche" teil="A" min="4">
+
+<p class="l-task__intro">Der Plan ist gegeben, die Zeilen des Programms sind durcheinander, und zwei gehören gar nicht dazu. Bring die passenden Zeilen in die Reihenfolge des Plans, mit der richtigen Einrückung.</p>
+
+<Aufgabe art="parsons" id="w-parsons" titel="Fläche">
+
+Eingelesen werden die Länge und die Breite in Metern (ganze Zahlen). Eine Funktion `flaeche` gibt die Fläche zurück. Ausgegeben wird die Fläche.
+
+<Plan titel="Fläche, Hauptprogramm">
+
+```text
+Eingabe: lang
+Eingabe: breit
+Unterprogramm: f = flaeche(lang, breit)
+Ausgabe: "Fläche:", f, "m²"
+```
+
+</Plan>
+
+<Plan titel="Fläche, Funktion">
+
+```text
+Funktion: flaeche(laenge, breite)
+Rückgabe: laenge * breite
+```
+
+</Plan>
+
+<Daten datei="labor/w-parsons.daten.json" />
+
+</Aufgabe>
+
+</Station>
+
+<Station id="a-luecken" titel="Lücken füllen: Spielstand" teil="A" min="8">
+
+<p class="l-task__intro">Eingelesen werden die Punkte dreier Runden. Nach jeder Runde zeigt eine Funktion den Stand. Der Plan steht vollständig da. Ergänze die vier Lücken.</p>
+
+<Aufgabe art="gap" id="w-luecken" data-mode="programm">
+
+<Plan titel="Spielstand, Hauptprogramm">
+
+```text
+Schleife: i von 1 bis 3?
+  Eingabe: p
+  Unterprogramm: zeige_stand(i, p)
+```
+
+</Plan>
+
+<Plan titel="Spielstand, Funktion">
+
+```text
+Funktion: zeige_stand(runde, punkte)
+Ausgabe: "Runde", runde, ":", punkte, "Punkte"
+```
+
+</Plan>
+
+```text class="a-gap__src" data-run="no"
+@@def@@ zeige_stand(runde, punkte)@@:@@
+    print(f"Runde {runde}: {punkte} Punkte")
+
+for i in range(1, 4):
+    p = int(input(f"Punkte in Runde {i}: "))
+    zeige_stand(@@i@@, @@p@@)
+```
+
+<Python rolle="tests" datei="labor/w-luecken.tests.py" />
+
+<Tipps>
+
+1. Lücke 1 und 2: Welches Wort legt eine Funktion an, und was steht am Ende der Zeile?
+2. Lücke 3 und 4: Die Funktion bekommt zwei Werte. Welche sind es in diesem Durchlauf?
+3. Karte 2 zeigt `def` und den Aufruf.
+
+</Tipps>
+
+</Aufgabe>
+
+</Station>
+
+<Station id="a-eigene" titel="Erste eigene Aufgabe: Rabatt" teil="A" sterne="1" min="8">
+
+<p class="l-task__intro">Deine erste eigene Funktion mit `return`. Die Pläne stehen schon da, du überträgst sie Symbol für Symbol in Code.</p>
+
+<Aufgabe art="code" id="w-eigene" titel="Rabatt" data-mode="programm" data-inputs="80|15">
+
+<div class="a-task__text">
+
+Eingelesen werden ein Preis und ein Rabatt in Prozent (Kommazahlen). Eine Funktion `endpreis(betrag, satz)` gibt den Preis nach Abzug des Rabatts zurück. Ausgegeben wird zum Beispiel `Endpreis: 68.00 Euro`.
+
+<Plan titel="Rabatt, Hauptprogramm">
+
+```text
+Eingabe: preis
+Eingabe: prozent
+Unterprogramm: ergebnis = endpreis(preis, prozent)
+Ausgabe: f"Endpreis: {ergebnis:.2f} Euro"
+```
+
+</Plan>
+
+<Plan titel="Rabatt, Funktion">
+
+```text
+Funktion: endpreis(betrag, satz)
+rabatt = betrag * satz / 100
+Rückgabe: betrag - rabatt
+```
+
+</Plan>
+
+</div>
+
+<Editor datei="labor/w-eigene.vorlage.py" aria-label="Python-Code: Rabatt" />
+
+<Python rolle="tests" datei="labor/w-eigene.tests.py" />
+
+<Python rolle="solution" datei="labor/w-eigene.solution.py" />
+
+<Tipps>
+
+1. Lies zuerst den Plan der Funktion: Was kommt hinein, was kommt heraus?
+2. Die Funktion steht zuerst im Code. Sie rechnet und gibt mit `return` zurück, sie zeigt nichts an.
+3. Meldet Python etwas mit `None`, fehlt in der Funktion das `return`.
+
+</Tipps>
+
+</Aufgabe>
+
+<p class="k-small k-muted">Für Schnelle: Ruf `endpreis` ein zweites Mal auf, mit dem Endpreis und 10 Prozent, und gib vor der Endpreis-Zeile eine Zeile `Sonderpreis: …` aus. Die Tests lesen nur die Zeile, die mit `Endpreis` beginnt.</p>
+
+</Station>
+
+<Station id="t-1" titel="Wertebereich und Überlauf" teil="B" sterne="1" min="6">
+
+<p class="l-task__intro">Das Training gehört zum Termin: Mit dem Selbstcheck und den Stationen 3 und 6 sind es etwa 47 Minuten bis zum nächsten Mal. Termin 08 beginnt mit dieser Aufgabe. Rechne zuerst auf Papier, dann prüf hier. Trag die Zahl ein, ohne Leerzeichen und ohne Anführungszeichen. Negative Zahlen schreibst du mit einem Minuszeichen. Zeichne dir bei den Zählern den Zahlenkreis auf.</p>
+
+<Aufgabe art="trace" id="tr-1" titel="Wertebereich und Überlauf">
+
+<Daten datei="labor/tr-1.daten.json" />
+
+</Aufgabe>
+
+</Station>
+
+<Station id="t-2" titel="Plan in Code übertragen: Blätter anzeigen" teil="B" sterne="2" min="8">
+
+<p class="l-task__intro">Klausurform „Plan in Code übertragen“: Schreib das Programm wie auf Papier, ohne Ausführen und ohne Vorschläge des Editors. Dann abgeben und mit der Lösung vergleichen. Die Funktion hat hier kein `return`, sie zeigt nur an.</p>
+
+<Aufgabe art="klausur" id="tr-2" titel="Blätter anzeigen" data-mode="programm" data-minutes="8">
+
+<div class="a-task__text">
+
+Übertrage die Pläne in ein Python-Programm. Eingelesen werden die Zahl der Übungsblätter und dann die Punkte jedes Blatts (ganze Zahlen). Für jedes Blatt zeigt eine Funktion `zeige(nr, wert)` eine Zeile, zum Beispiel `Blatt 2: 10 Punkte`.
+
+<Plan titel="Blätter, Hauptprogramm">
+
+```text
+Eingabe: n
+Schleife: i von 1 bis n?
+  Eingabe: punkte
+  Unterprogramm: zeige(i, punkte)
+```
+
+</Plan>
+
+<Plan titel="Blätter, Funktion">
+
+```text
+Funktion: zeige(nr, wert)
+Ausgabe: "Blatt", nr, ":", wert, "Punkte"
+```
+
+</Plan>
+
+</div>
+
+<Editor data-assist="off" aria-label="Python-Code von Hand schreiben, ohne Ausführen" />
+
+<Python rolle="tests" datei="labor/tr-2.tests.py" />
+
+<Python rolle="solution" datei="labor/tr-2.solution.py" />
+
+<Daten datei="labor/tr-2.scheme.json" rolle="scheme" />
+
+<Tipps>
+
+1. Zeichne zuerst den Hauptplan: Eingabe, Schleife, im Rumpf einlesen und das Unterprogramm aufrufen.
+2. Die Funktion steht im Code zuerst, vor der Schleife.
+3. Die Funktion zeigt etwas an, sie braucht kein `return`.
+
+</Tipps>
+
+</Aufgabe>
+
+</Station>
+
+<Station id="t-3" titel="Fehler finden und beheben: Passt die Summe" teil="B" sterne="2" min="6">
+
+<p class="l-task__intro">In diesem Programm stecken zwei Fehler: einer, den Python meldet, und einer, den du nur mit einer Probe findest. Probier 0.1 und 0.2.</p>
+
+<Aufgabe art="code" id="tr-3" titel="Passt die Summe" data-mode="programm" data-inputs="0.1|0.2">
+
+<div class="a-task__text">
+
+Das Programm liest zwei Preise ein und prüft, ob sie zusammen genau 0.30 Euro kosten. Bei 0.1 und 0.2 soll `Passt` erscheinen. Behebe beide Fehler.
+
+</div>
+
+<Editor datei="labor/tr-3.vorlage.py" aria-label="Python-Code: Passt die Summe" />
+
+<Python rolle="tests" datei="labor/tr-3.tests.py" />
+
+<Python rolle="solution" datei="labor/tr-3.solution.py" />
+
+<Tipps>
+
+1. Führ das Programm aus und lies die Meldung von unten: Welcher Name ist unbekannt, und wo müsste er schon bekannt sein?
+2. Läuft es, probier 0.1 und 0.2: Was erwartest du, was kommt heraus?
+3. Karte 4 und Abschnitt 4 der Lerneinheit: Runde vor dem Vergleich.
+
+</Tipps>
+
+</Aufgabe>
+
+</Station>
+
+<Station id="t-4" titel="Zylinder berechnen" teil="B" sterne="3" min="10">
+
+<p class="l-task__intro">Ohne vorgegebenen Plan. Zeichne zuerst auf Papier: was in die Funktion hineingeht, was herauskommt, wie das Hauptprogramm sie aufruft. Dann schreib das Programm.</p>
+
+<Aufgabe art="code" id="tr-4" titel="Zylinder" data-mode="programm" data-inputs="6|5">
+
+<div class="a-task__text">
+
+Das Volumen eines Zylinders ist 3.14 mal Radius mal Radius mal Höhe. Eingelesen werden der Radius und die Höhe in cm (Kommazahlen). Eine Funktion `volumen(r, h)` berechnet es und gibt es zurück. Ausgegeben wird das Volumen mit einer Nachkommastelle, zum Beispiel `Volumen: 565.2 cm³`. Beispiel: Die Eingaben 6 und 5 ergeben `Volumen: 565.2 cm³`.
+
+</div>
+
+<Editor datei="labor/tr-4.vorlage.py" aria-label="Python-Code: Zylinder" />
+
+<Python rolle="tests" datei="labor/tr-4.tests.py" />
+
+<Python rolle="solution" datei="labor/tr-4.solution.py" />
+
+<Tipps>
+
+1. Was geht in die Funktion hinein, was kommt heraus? Das sind die Parameter und der Rückgabewert.
+2. Die Rechnung steht in der Funktion, Eingabe und Ausgabe im Hauptprogramm.
+3. Die Form kennst du von „Rabatt“: Funktion zuerst, `return`, der Aufruf in einer eigenen Zeile, dann ausgeben.
+
+</Tipps>
+
+</Aufgabe>
+
+</Station>
+
+<Knobel id="kn-1" titel="Primzahlen ohne Rest">
+
+<Aufgabe art="code" id="k-1" data-mode="programm" data-inputs="30">
+
+<div class="a-task__text">
+
+Eine Primzahl lässt sich nicht als Produkt zweier kleinerer ganzer Zahlen (ab 2) schreiben. Eingelesen wird eine Grenze (höchstens 50, mindestens 1). Ausgegeben werden alle Primzahlen bis zur Grenze, je eine in einer Zeile. Dafür schreibst du eine Funktion `zerlegungen(n)`, die zählt, wie viele Paare `a * b == n` es gibt (a und b ab 2, kleiner als n). Eine Zahl ab 2 ist prim, wenn es 0 Paare gibt. Beispiel: Die Grenze 10 ergibt 2, 3, 5, 7.
+
+</div>
+
+<Editor datei="labor/k-1.vorlage.py" aria-label="Python-Code: Primzahlen ohne Rest" />
+
+<Python rolle="tests" datei="labor/k-1.tests.py" />
+
+<Python rolle="solution" datei="labor/k-1.solution.py" />
+
+<Tipps>
+
+1. Teste zuerst von Hand: 6 hat die Paare 2 mal 3 und 3 mal 2, 7 hat keines.
+2. Für jedes `a` probierst du alle `b` durch. Zwei Schleifen, eine in der anderen.
+3. Die Funktion zählt nur, die Hauptschleife fragt `== 0`. Beide Schleifen laufen von 2 bis n minus 1.
+
+</Tipps>
+
+</Aufgabe>
+
+</Knobel>
+
+<Knobel id="kn-2" titel="Wann läuft der Zähler über?">
+
+<Aufgabe art="code" id="k-2" data-mode="programm" data-inputs="16">
+
+<div class="a-task__text">
+
+Ein Zähler in einer Anlage zählt jede Sekunde ein Werkstück, ohne Vorzeichen, mit einer festen Zahl von Bit. Eingelesen wird die Zahl der Bit (ganze Zahl). Gesucht ist, nach wie vielen Stunden er überläuft und auf 0 springt. Eine Funktion `stunden_bis_ueberlauf(n)` gibt die Stunden zurück. Ausgegeben wird zum Beispiel `Der Zähler springt auf 0 nach 18.2 Stunden` (das ist die Ausgabe für 16 Bit). Die Stundenzahl steht als letzte Zahl der Zeile.
+
+</div>
+
+<Editor datei="labor/k-2.vorlage.py" aria-label="Python-Code: Wann läuft der Zähler über?" />
+
+<Python rolle="tests" datei="labor/k-2.tests.py" />
+
+<Python rolle="solution" datei="labor/k-2.solution.py" />
+
+<Tipps>
+
+1. Wie viele Werte hat der Zähler? Das ist 2 hoch bit. Fang mit 1 an und verdopple so oft, wie der Zähler Bit hat (Tabelle in Abschnitt 1 der Lerneinheit).
+2. Ein Wert pro Sekunde, also so viele Sekunden. Eine Stunde hat 3600 Sekunden.
+3. Die Funktion rechnet und gibt zurück, `print` steht im Hauptprogramm.
+
+</Tipps>
+
+</Aufgabe>
+
+</Knobel>
+
+</Labor>

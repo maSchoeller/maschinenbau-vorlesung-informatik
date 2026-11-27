@@ -130,3 +130,21 @@ test('Plan: Schleife mit Rumpf, Rücksprung, Schreibweise der Bedingung, verscha
   assert.throws(() => plan('Schleife: x < 3?\n    y = 1'), /zu weit eingerückt/);
   assert.throws(() => plan('Schleife: x < 3?\n  ja:\n    y = 1'), /ohne Entscheidung/);
 });
+
+test('Plan: Unterprogramm mit Doppellinien, Plan einer Funktion mit Namen im Start und Rückgabe am Ende', () => {
+  const plan = (text) => mdxZuHtml('<Plan titel="Test">\n\n```text\n' + text + '\n```\n\n</Plan>\n');
+  const haupt = plan('Eingabe: celsius\nUnterprogramm: fahr = fahrenheit(celsius)\nAusgabe: fahr');
+  assert.equal((haupt.match(/pap-n--sub/g) || []).length, 1, 'ein Unterprogramm-Symbol');
+  assert.match(haupt, /pap-line--in/, 'mit doppelten Seitenlinien');
+  assert.match(haupt, />fahr = fahrenheit\(celsius\)</);
+  assert.ok(!haupt.includes('Unterprogramm:'), 'das Stichwort steht nicht im Symbol');
+  const fkt = plan('Funktion: fahrenheit(c)\ngrad = c * 9 / 5 + 32\nRückgabe: grad');
+  assert.match(fkt, /pap-n--start[^>]*>.*?>fahrenheit\(c\)</s);
+  assert.match(fkt, />Rückgabe grad</);
+  assert.ok(!fkt.includes('>Start<') && !fkt.includes('>Ende<'));
+  assert.equal((fkt.match(/pap-n--op/g) || []).length, 1);
+  const ohne = plan('Funktion: trennlinie()\nAusgabe: "-----"');
+  assert.match(ohne, />trennlinie\(\)</); assert.match(ohne, />Ende</);
+  assert.throws(() => plan('Eingabe: x\nRückgabe: x\nAusgabe: x'), /letzte Zeile/);
+  assert.throws(() => plan('Eingabe: x\nFunktion: f(x)'), /erste Zeile/);
+});

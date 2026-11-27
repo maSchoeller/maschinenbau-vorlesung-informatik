@@ -196,3 +196,39 @@ test('Termin 06, Labor: die Minuten von Teil B (47) stehen in labor.mdx, sobald 
   const mdx = fs.readFileSync(f, 'utf8');
   assert.match(mdx, /<Labor [^>]*zuhause="47"/);
 });
+
+test('Termin 06, Vermutungen: die Antwort steht nicht schon im Text davor', () => {
+  const vor = (marke) => lerneinheit.slice(0, lerneinheit.indexOf(marke));
+  const farbe = lerneinheit.slice(lerneinheit.indexOf('## ') >= 0 ? 0 : 0, lerneinheit.indexOf('<Explorable name="hexfarbe"'));
+  assert.ok(!/#FFFFFF[^`]*(Weiß|weiß)|#000000[^`]*Schwarz/.test(farbe.slice(farbe.indexOf('Wozu das Ganze'))), 'Weiß und Schwarz erst nach dem Farbmischer');
+  const xor = vor('<Explorable name="xorschrift"');
+  assert.ok(!/zweimal kippen|noch einmal mit demselben Schlüssel, steht wieder/.test(xor), 'XOR zweimal erst nach dem Baustein');
+  const xorBegriff = vor('<div class="k-try">\n\n### Vorhersage: Wann ist XOR wahr?');
+  assert.ok(!/genau eine der beiden Seiten wahr/.test(xorBegriff), 'XOR-Regel erst nach der Vorhersage');
+  const bit = vor('### Vorhersage: Wie viele Bit hat eine Hex-Ziffer?');
+  assert.ok(!/Vierergruppe|Vier Bit/.test(bit.slice(bit.indexOf('id="hexadezimal"'))), 'Vier Bit erst nach der Vorhersage');
+  const cd = vor('### Vorhersage: Wo endet der Countdown?');
+  assert.ok(!/range\(6, 1, -1\)/.test(cd));
+  const schritt = vor('### Vorhersage: Den Schritt vergessen');
+  assert.ok(!/range\(5, 0\)/.test(schritt), 'range(5, 0) erst nach der Vorhersage erklärt');
+  assert.ok(lerneinheit.indexOf('Zählst du gegen den Schritt') > lerneinheit.indexOf('### Vorhersage: Den Schritt vergessen'));
+});
+
+test('Termin 06, Station Würfel und Zähler: die Auflösung ist ein eigener Schritt nach der Frage', () => {
+  const labor = fs.readFileSync(path.join(ordner, 'labor.mdx'), 'utf8');
+  assert.match(labor, /Selbsterklärung:\*\*[^\n]*lies dann Schritt 8\.\n8\. \*\*Auflösung:\*\*/);
+});
+
+test('aufgaben.js: „keine Ausgabe“ erscheint nicht, wenn der Lauf 3D, Bild oder Tabelle erzeugt hat', () => {
+  const src = fs.readFileSync(path.join(WURZEL, 'site', 'assets', 'js', 'aufgaben.js'), 'utf8');
+  const m = src.match(/function reicheAusgabe\(out\) \{[\s\S]*?\n    \}\n/);
+  assert.ok(m, 'Funktion reicheAusgabe fehlt');
+  const reich = new Function(m[0] + '; return reicheAusgabe;')();
+  const knoten = (treffer) => ({ querySelector: (sel) => (treffer.some((t) => sel.includes(t)) ? {} : null) });
+  assert.equal(reich(null), false);
+  assert.equal(reich(knoten([])), false, 'ohne alles: Hinweis zeigen');
+  assert.equal(reich(knoten(['canvas'])), true, 'Bild in der Textausgabe');
+  const aussen = knoten([]); aussen._kRich = knoten(['k-rich__3d']);
+  assert.equal(reich(aussen), true, '3D-Vorschau im eigenen Bereich hinter der Textausgabe');
+  assert.equal((src.match(/reicheAusgabe\(ui\.out\)/g) || []).length, 2, 'beide Läufe (Terminal und normal) prüfen die reiche Ausgabe');
+});

@@ -28,7 +28,7 @@ test('Bibliothek: Zuordnungen zu entfernten Lektionen sind neutral und die alte 
 });
 
 test('Bibliothek: Sprachmittel der gebauten Termine gelten ab ihrem Termin, nicht „später“', () => {
-  const soll = { V01: ['int', 'float', 'typumwandlung', 'rechenoperatoren'], V02: ['bool', 'vergleiche', 'if', 'else', 'einrueckung', 'fstring'], V03: ['elif', 'and-or'] };
+  const soll = { V01: ['int', 'float', 'typumwandlung', 'rechenoperatoren'], V02: ['bool', 'vergleiche', 'if', 'else', 'einrueckung', 'fstring'], V03: ['elif', 'and-or'], V07: ['def', 'return', 'parameter', 'type', 'round', 'potenz'] };
   for (const [v, ids] of Object.entries(soll)) {
     for (const id of ids) {
       const e = bib.eintraege.find((x) => x.id === id);

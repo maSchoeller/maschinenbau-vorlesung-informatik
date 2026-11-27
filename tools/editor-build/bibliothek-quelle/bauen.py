@@ -71,6 +71,7 @@ NEUE_TERMINE = {
     "V03": ["elif", "and-or"],
     "V04": ["while"],
     "V05": ["for", "range"],
+    "V07": ["def", "return", "parameter", "type", "round", "potenz"],
 }
 for _v, _ids in NEUE_TERMINE.items():
     for _e in helfer.EINTRAEGE:

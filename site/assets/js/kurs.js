@@ -1052,6 +1052,14 @@ _result
       li.appendChild(head); ul.appendChild(li);
     });
   }
+  /* Gibt es schon eine 3D-Vorschau, ein Bild oder eine Tabelle als Ausgabe? Dann ist „keine Ausgabe“ falsch. */
+  function hatReicheAusgabe(out) {
+    if (!out) return false;
+    var sel = 'canvas, img, svg, table, .k-rich__3d, .k-rich__fig';
+    if (out.querySelector && out.querySelector(sel)) return true;
+    var h = out._kRich;
+    return !!(h && h.querySelector && h.querySelector(sel));
+  }
   function renderRich(holder, art, daten) {
     var d;
     try { d = typeof daten === 'string' ? JSON.parse(daten) : daten; } catch (e) { return; }
@@ -1278,7 +1286,7 @@ _result
     function finish(r, gotOutput) {
       if (r.timedOut) append('\nAbgebrochen nach ' + (timeout / 1000) + ' s. Läuft da eine Endlosschleife?\n', 'err');
       else if (r.error) append((out.textContent && !/\n$/.test(out.textContent) ? '\n' : '') + r.error.replace(/\s+$/, '') + '\n', 'err');
-      else if (!gotOutput) append('(keine Ausgabe. Hast du print() benutzt?)', 'sys');
+      else if (!gotOutput && !hatReicheAusgabe(out)) append('(keine Ausgabe. Hast du print() benutzt?)', 'sys');
       status.textContent = r.timedOut ? 'abgebrochen' : (r.error ? 'Fehler' : 'fertig');
       if (predict && predicted) box._kVorhersage.zeige();
     }

@@ -68,13 +68,14 @@ try {
   console.log('\n== doppelschleife');
   const ds = p.locator('[data-explorable="doppelschleife"]');
   pruefe(/for i in range\(1, 4\):/.test(await ds.innerText()) && /for j in range\(1, 5\):/.test(await ds.innerText()), 'vorbelegt: range(1, 4) und range(1, 5)');
-  pruefe(/3 mal 4 = 12/.test(await ds.innerText()), '3 mal 4 = 12 Durchläufe');
+  pruefe(!/12 Durchl/.test(await ds.innerText()), 'am Anfang steht die Zahl der Durchläufe noch nicht da (Vermutung)');
   const schritt = ds.getByRole('button', { name: 'Ein Schritt' });
   for (let i = 0; i < 4; i++) await schritt.click();
   await schritt.click();
   pruefe(/j beginnt wieder bei 1/.test(await ds.locator('[role="status"]').innerText()), 'beim fünften Schritt beginnt j wieder bei 1', await ds.locator('[role="status"]').innerText());
   pruefe(await ds.locator('.v06-zelle.is-jetzt').count() === 1, 'genau eine Zelle ist die aktive');
   await ds.getByRole('button', { name: 'Bis zum Ende' }).click();
+  pruefe(/3 mal 4 = 12/.test(await ds.innerText()), 'am Ende steht 3 mal 4 = 12 Durchläufe');
   pruefe(/Fertig/.test(await ds.innerText()) && await schritt.getAttribute('aria-disabled') === 'true', '„Bis zum Ende“ beendet beide Schleifen, „Ein Schritt“ ist gesperrt');
   const plusI = ds.getByRole('button', { name: 'Grenze für i vergrößern' });
   for (let i = 0; i < 5; i++) await plusI.click({ force: true });

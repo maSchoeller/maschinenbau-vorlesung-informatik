@@ -1,0 +1,566 @@
+---
+titel: "Termin 07 · Was im Speicher steht: Datentypen und eigene Funktionen · Lerneinheit · Informatik Maschinenbau"
+beschreibung: "Datentyp und Wertebereich, Überlauf und Vorzeichen, eigene Funktionen mit def und return, und warum 0.1 + 0.2 nicht genau 0.3 ist. Mit Zahlenkreis, Funktionsmaschine und Kommazahl-Lupe zum Ausprobieren."
+body:
+  data-lesson: V07
+  data-page: lerneinheit
+stile:
+  - ../assets/css/dhbw-base.css
+  - ../assets/css/kurs.css
+  - ../assets/css/aufgaben.css
+  - ../assets/css/editor.css
+  - ../assets/css/v05.css
+  - ../assets/css/v07.css
+skripte:
+  - ../assets/js/speicher.js
+  - ../assets/js/icons.js
+  - src: ../assets/js/editor.js
+    defer: true
+  - ../assets/js/pap-engine.js
+  - ../assets/js/explorables-v07.js
+  - ../assets/js/kurs.js
+  - ../assets/js/aufgaben.js
+---
+
+<Lerneinheit nr="V07" name="Termin 07" labor="v07-labor.html">
+
+<Kopf marke="Termin 07 · 1. Semester · Lerneinheit" titel="Was im Speicher steht: Datentypen und eigene Funktionen">
+
+Ein Byte kann genau 256 verschiedene Zahlen zeigen. Was passiert, wenn man darüber hinaus zählt? Heute siehst du, warum ein Zähler an seine Grenze stößt, warum ein Rechner bei Kommazahlen nicht immer genau rechnet und wie du eigene Befehle baust, die du immer wieder aufrufst: mit `def` und `return`.
+
+- sagen, was ein Datentyp ist, den Wertebereich eines Zählers aus der Zahl der Bit bestimmen (`2 ** 8` lesen können) und erklären, was bei einem Überlauf passiert, auch bei einem Byte mit Vorzeichen
+- eine eigene Funktion mit `def` schreiben, mit und ohne Parameter aufrufen, im Plan als Unterprogramm lesen und den Plan einer Funktion zeichnen
+- mit `return` einen Wert zurückgeben und den Unterschied zu `print` erklären
+- erklären, warum ein Vergleich mit Kommazahlen schiefgehen kann, und Kommazahlen mit `round(x, 2)` vergleichen
+
+Alles aus Termin 02 bis 06 gilt weiter: `if`, Schleifen mit `while` und `for`, das Zweiersystem und Hexzahlen. Geübt wird im [Programmierlabor](v07-labor.html).
+
+</Kopf>
+
+<Abschnitt id="ganze-zahlen" nr="1" titel="Ganze Zahlen im Speicher">
+
+Im Speicher stehen nur Nullen und Einsen. Ob acht Bit eine Zahl, einen Buchstaben oder eine Farbe bedeuten, sagt erst der <Begriff e="Sagt, wie die Bits eines Werts gelesen werden, zum Beispiel als ganze Zahl (int) oder als Kommazahl (float).">Datentyp</Begriff>. Eine ganze Zahl heißt in Python `int`.
+
+Aus Termin 05 weißt du: n Bit haben 2ⁿ Werte. In Python schreibt man 2ⁿ als `2 ** n`, gesprochen „2 hoch n“. Das liest du nur, selbst schreiben musst du es nicht: `2 ** 8` ist `256`. Der <Begriff e="Alle Werte, die ein Datentyp zeigen kann, von der kleinsten bis zur größten Zahl.">Wertebereich</Begriff> ohne Vorzeichen reicht von 0 bis zum letzten Wert:
+
+<div class="k-tablewrap">
+<table class="k-types">
+<thead><tr><th scope="col">Bit</th><th scope="col">Werte</th><th scope="col">in Python</th><th scope="col">kleinste bis größte Zahl</th></tr></thead>
+<tbody>
+<tr><td>8</td><td>256</td><td><code>2 ** 8</code></td><td>0 bis 255</td></tr>
+<tr><td>16</td><td>65 536</td><td><code>2 ** 16</code></td><td>0 bis 65 535</td></tr>
+<tr><td>32</td><td>4 294 967 296</td><td><code>2 ** 32</code></td><td>0 bis 4 294 967 295</td></tr>
+</tbody>
+</table>
+</div>
+
+<Explorable name="kreis" titel="Zahlenkreis">
+
+Der Zahlenkreis ist ein Zähler mit 4 oder 8 Bit. Zähl mit „+1“ und „−1“ weiter und sieh dir die Bits an. Lass den Schalter „Mit Vorzeichen lesen“ vorerst aus. Vermute zuerst: Was zeigt der 8-Bit-Zähler, wenn er auf 255 steht und um 1 weiterzählt?
+
+<Ohne>
+
+Für den Zahlenkreis wird JavaScript benötigt. Der Baustein ist ein Zähler mit 4 oder 8 Bit. Du zählst in Einserschritten weiter, siehst die Zahl und die Bits in Vierergruppen und bekommst eine Meldung, sobald der Platz nicht mehr reicht. Ein Schalter liest dieselben Bits mit Vorzeichen.
+
+</Ohne>
+
+</Explorable>
+
+**Überlauf.** Ein Kilometerzähler mit fünf Rädern zeigt nach 99 999 wieder 00 000. Ein 8-Bit-Zähler verhält sich genauso: Nach 255 kommt 0. Zu `1111 1111` plus 1 gehört eine neunte Stelle, und die gibt es nicht. Das nennt man <Begriff e="Der Zähler ist beim größten Wert und zählt weiter: Er springt zum kleinsten Wert zurück.">Überlauf</Begriff>. Der Rechner meldet dabei keinen Fehler, er zählt einfach weiter.
+
+Ein Beispiel aus der Technik: Eine Anlage zählt Werkstücke mit einem 8-Bit-Zähler. Nach 255 Stück springt die Anzeige auf 0, und niemand sieht eine Meldung. Wer das nicht weiß, liest eine falsche Stückzahl ab.
+
+**Vorzeichen.** Bisher war jede Zahl null oder größer. Soll ein Byte auch negative Zahlen zeigen, bleiben die Bits, wie sie sind. Es ändert sich nur, wie man sie liest: Das oberste Bit zählt dann −128 statt +128, die anderen zählen wie bisher.
+
+<div class="k-try">
+
+### Vorhersage: Ein Byte mit Vorzeichen zählt weiter
+
+<Vorhersage>
+
+Ein Byte mit Vorzeichen zeigt 127, das sind `0111 1111`. Es zählt um 1 weiter. Was zeigt es danach?
+
+- 128
+- [x] −128
+- 0
+- −127
+
+Aus `0111 1111` wird `1000 0000`. Nur das oberste Bit ist gesetzt, und es zählt −128. Die Bits sind dieselben wie bei 128 ohne Vorzeichen, nur die Lesart ist anders.
+
+</Vorhersage>
+
+<p class="k-small k-muted">Prüf es danach im Zahlenkreis oben: Schalte „Mit Vorzeichen lesen“ ein, setz den Start auf 127 und zähl weiter.</p>
+
+</div>
+
+Mit Vorzeichen reicht ein Byte also von −128 bis 127. Du musst solche Bytes nicht umrechnen, du liest sie ab:
+
+<div class="k-tablewrap">
+<table class="k-types">
+<thead><tr><th scope="col">Byte</th><th scope="col">ohne Vorzeichen</th><th scope="col">mit Vorzeichen</th></tr></thead>
+<tbody>
+<tr><td>0000 0000</td><td>0</td><td>0</td></tr>
+<tr><td>0111 1111</td><td>127</td><td>127</td></tr>
+<tr><td>1000 0000</td><td>128</td><td>−128</td></tr>
+<tr><td>1111 1110</td><td>254</td><td>−2</td></tr>
+<tr><td>1111 1111</td><td>255</td><td>−1</td></tr>
+</tbody>
+</table>
+</div>
+
+Im Zahlenkreis siehst du es: Die linke Hälfte ist negativ. Von 127 nach −128 ist es ein Schritt, genauso wie von 255 nach 0. Ist das oberste Bit 1, ist die Zahl negativ.
+
+**Und Python?** Ein Zähler mit festem Platz läuft über. Wie verhält sich Python?
+
+<div class="k-try">
+
+### Vorhersage: Python zählt weiter
+
+<Vorhersage>
+
+Was gibt das Programm aus?
+
+- 0
+- [x] 256
+- −1
+- Eine Fehlermeldung
+
+In Python läuft `int` nicht über. 255 + 1 ist 256, die Zahl wächst einfach mit. Ein 8-Bit-Zähler in einer Steuerung dagegen springt auf 0.
+
+</Vorhersage>
+
+```python data-run="nach-antwort"
+zaehler = 255
+zaehler = zaehler + 1
+print(zaehler)
+```
+
+<p class="k-small k-muted">Wähl erst deinen Tipp, dann führ das Programm aus.</p>
+
+</div>
+
+Auch `4294967295 + 1` ergibt in Python `4294967296`. Der stärkste Beleg ist `2 ** 64 + 1`: Es ergibt `18446744073709551617`. Die größte Zahl mit 64 Bit ist `18446744073709551615`. Diese Zahl hier ist um 2 größer und passt in kein 64-Bit-Feld mehr. Python rechnet trotzdem richtig. Überlauf gibt es in Steuerungen, in Sensoren und in anderen Programmiersprachen, nicht bei `int` in Python.
+
+<Hinweis art="merke">
+
+Ein Datentyp sagt, wie die Bits gelesen werden. n Bit haben 2ⁿ Werte. Ist der größte Wert erreicht, springt der Zähler zum kleinsten zurück: Das ist der Überlauf. Mit Vorzeichen zählt das oberste Bit −128, und nach 127 kommt −128. Python-Ganzzahlen laufen nicht über.
+
+</Hinweis>
+
+### Erklärvideo (ca. 3 Min)
+
+<Video name="v07-theorie" id="video-theorie" titel="Erklärvideo: Ein Byte, zwei Lesarten" fehlt="Video folgt. Bis dahin: Der Zahlenkreis oben zeigt dasselbe.">
+
+Erklärvideo: Ein Byte, zwei Lesarten (ca. 3 Min). Untertitel sind eingeschaltet (Deutsch).
+
+</Video>
+
+</Abschnitt>
+
+<Abschnitt id="funktionen" nr="2" titel="Eigene Befehle: def und Aufruf">
+
+Du kennst Befehle wie `print` und `input`. Jetzt baust du eigene. Ein Spiel soll nach jeder Runde dieselbe Trennlinie zeigen. Dieselbe Zeile dreimal zu kopieren ist mühsam, und bei einer Änderung vergisst man eine Stelle. Besser: Du gibst dem Ablauf einen Namen und rufst ihn auf.
+
+```python
+def trennlinie():
+    print("--------------------")
+
+print("Runde 1")
+trennlinie()
+print("Runde 2")
+trennlinie()
+print("Ende")
+```
+
+<p class="k-small k-muted">Führ das Programm aus und geh es mit „Schritt für Schritt“ durch.</p>
+
+Die Ausgabe ist `Runde 1`, die Linie, `Runde 2`, die Linie, `Ende`. Die erste Zeile legt die <Begriff e="Ein benannter Ablauf, den du mit def anlegst und mit dem Namen aufrufst.">Funktion</Begriff> nur an: In dieser Zeile passiert noch nichts. Der Doppelpunkt am Ende und die vier Leerzeichen im <Begriff e="Die eingerückten Zeilen unter der Kopfzeile. Sie laufen bei jedem Aufruf.">Rumpf</Begriff> kennst du von `if` und `for`. Erst der Aufruf `trennlinie()` führt den Rumpf aus. Aufgerufen wird mit Klammern. `trennlinie` ohne Klammern ruft nichts auf, und Python meldet dazu nichts.
+
+Funktionsnamen schreibst du klein, ohne Umlaute, mit Unterstrich bei mehreren Wörtern: `kmh_in_ms`.
+
+<div class="k-try">
+
+### Vorhersage: Aufruf vor der Definition
+
+<Vorhersage>
+
+Hier steht der Aufruf vor der Zeile mit `def`. Was passiert?
+
+- Die Linie erscheint.
+- [x] `NameError: name 'trennlinie' is not defined`
+- `SyntaxError: expected ':'`
+- Nichts, ohne Meldung
+
+Python liest von oben nach unten. Beim Aufruf kennt es `trennlinie` noch nicht. Merk dir die Reihenfolge: Erst definieren, dann aufrufen.
+
+</Vorhersage>
+
+```python data-run="nach-antwort"
+trennlinie()
+
+def trennlinie():
+    print("--------------------")
+```
+
+<p class="k-small k-muted">Wähl erst deinen Tipp, dann führ das Programm aus.</p>
+
+</div>
+
+**Mit Parameter.** Oft soll sich bei jedem Aufruf etwas ändern, zum Beispiel der Name. Dafür gibt es den <Begriff e="Ein Platz für einen Wert, den du beim Aufruf mitgibst.">Parameter</Begriff>. Er steht in der Klammer hinter dem Funktionsnamen.
+
+```python
+def begruessen(name):
+    print(f"Hallo {name}, viel Spaß!")
+
+begruessen("Lea")
+begruessen("Tom")
+```
+
+<p class="k-small k-muted">Führ das Programm aus. Mit „Schritt für Schritt“ siehst du, was in `name` steht, während die Funktion läuft.</p>
+
+Der Parameter ist ein Platz. Beim Aufruf legst du den Wert hinein, den du in die Klammer schreibst. Hat eine Funktion mehr als einen Parameter, trennst du sie mit Komma: `def zeige_stand(runde, punkte):`.
+
+<Explorable name="maschine" titel="Funktionsmaschine" id="funktionsmaschine">
+
+Die Funktionsmaschine führt einen Aufruf Schritt für Schritt aus. Wähl `begruessen(name)` und klick auf „Ein Schritt“. Den Namen für den zweiten Aufruf kannst du ändern. Die anderen beiden Funktionen brauchst du erst im nächsten Abschnitt. Vermute zuerst: Der erste Aufruf steht in Zeile 4. Welche Zeile ist danach als Nächstes dran?
+
+<Ohne>
+
+Für die Funktionsmaschine wird JavaScript benötigt. Der Baustein führt ein kleines Programm Schritt für Schritt aus. Du siehst, welche Zeile gerade dran ist, was in `name` steht und was ausgegeben wird.
+
+</Ohne>
+
+</Explorable>
+
+**Im Plan.** Der Aufruf einer eigenen Funktion ist ein Rechteck mit doppelten Seitenlinien. In der Norm DIN 66001 heißt es <Begriff e="Das Plan-Symbol für den Aufruf einer Funktion: ein Rechteck mit doppelten Seitenlinien.">Unterprogramm</Begriff>:
+
+<Plan titel="Runden mit Trennlinie">
+
+```text
+Ausgabe: "Runde 1"
+Unterprogramm: trennlinie()
+Ausgabe: "Runde 2"
+Unterprogramm: trennlinie()
+Ausgabe: "Ende"
+```
+
+</Plan>
+
+Fertige Funktionen, etwa `round`, das du in Abschnitt 4 kennenlernst, zeichnest du in einem normalen Rechteck, und `print` und `input` bleiben Ausgabe und Eingabe. Das Rechteck mit den doppelten Seitenlinien ist nur für Funktionen, die du selbst mit `def` angelegt hast. Die Funktion bekommt ihren eigenen kleinen Plan, den du im nächsten Abschnitt siehst.
+
+<Hinweis art="merke">
+
+Mit `def name(parameter):` gibst du einem Ablauf einen Namen. `def` legt die Funktion nur an, erst der Aufruf mit Klammern führt den Rumpf aus. Erst definieren, dann aufrufen. Ein Parameter ist ein Platz für den Wert, den du beim Aufruf übergibst.
+
+</Hinweis>
+
+</Abschnitt>
+
+<Abschnitt id="return" nr="3" titel="Etwas zurückgeben: return">
+
+`input` gibt dir einen Wert zurück, den du in eine Variable speicherst. Das kann jetzt auch deine Funktion. Dafür gibt es `return`:
+
+```python
+def quadrat(x):
+    return x * x
+
+ergebnis = quadrat(4)
+print(ergebnis)
+print(quadrat(5) + 1)
+```
+
+<p class="k-small k-muted">Führ das Programm aus und geh es mit „Schritt für Schritt“ durch: Aufruf, `x` bekommt den Wert, `return`, der Wert landet in `ergebnis`.</p>
+
+Die Ausgabe ist `16` und `26`. Der Aufruf `quadrat(4)` wird durch das Ergebnis ersetzt, dann geht die Zeile weiter. Der <Begriff e="Der Wert, den eine Funktion mit return an die aufrufende Stelle zurückgibt.">Rückgabewert</Begriff> landet dort, wo der Aufruf stand. Du kannst ihn speichern, ausgeben oder weiterrechnen.
+
+**Im Plan.** Ein Umrechner von Celsius in Fahrenheit hat zwei Pläne. Im Hauptplan steht der Aufruf als Rechteck mit doppelten Seitenlinien. Die Funktion hat einen eigenen Plan: Das Start-Symbol trägt ihren Namen, und das Ende heißt „Rückgabe“ mit dem Wert.
+
+<Plan titel="Hauptprogramm des Umrechners">
+
+```text
+Eingabe: celsius
+Unterprogramm: fahr = fahrenheit(celsius)
+Ausgabe: celsius, fahr
+```
+
+</Plan>
+
+<Plan titel="Funktion fahrenheit">
+
+```text
+Funktion: fahrenheit(c)
+grad = c * 9 / 5 + 32
+Rückgabe: grad
+```
+
+</Plan>
+
+**print oder return?** Eine Funktion kann ihr Ergebnis auch nur anzeigen, statt es zurückzugeben.
+
+<div class="k-try">
+
+### Vorhersage: print statt return
+
+<Vorhersage>
+
+Die Funktion `quadrat` endet mit `print(x * x)` und hat kein `return`. Was steht in `ergebnis`, nachdem `ergebnis = quadrat(4)` gelaufen ist?
+
+- 16
+- [x] None
+- 0
+- Eine Fehlermeldung
+
+Die Funktion zeigt die 16 an, gibt aber nichts zurück. `None` heißt „nichts“. Eine Funktion ohne `return` gibt `None` zurück.
+
+</Vorhersage>
+
+```python data-run="nach-antwort"
+def quadrat(x):
+    print(x * x)
+
+ergebnis = quadrat(4)
+print(ergebnis)
+```
+
+<p class="k-small k-muted">Wähl erst deinen Tipp, dann führ das Programm aus. Danach kannst du es in der [Funktionsmaschine](#funktionsmaschine) mit dem Schalter „print statt return“ nachstellen.</p>
+
+</div>
+
+Das ist der häufigste Fehler am Anfang. Zeigt eine Funktion ihr Ergebnis nur an, kannst du damit nicht weiterrechnen: In `ergebnis` steht dann `None`.
+
+<Hinweis art="merke">
+
+**Anzeigen mit `print`, Weitergeben mit `return`.** Eine Funktion kann beides tun, aber nur `return` liefert einen Wert, den du speichern und weiterverwenden kannst. Ohne `return` ist der Rückgabewert `None`.
+
+</Hinweis>
+
+Auch im Plan-Editor kannst du Funktionen zeichnen: Es gibt dort das Symbol „Funktion“. Du trägst den Kopf ein, zum Beispiel `kmh_in_ms(v)`, zeichnest den Rumpf aus den bekannten Symbolen und schreibst unter „Rückgabe“, was die Funktion zurückgibt. Der Editor macht daraus `def` und `return`. Im Labor probierst du das aus.
+
+</Abschnitt>
+
+<Abschnitt id="kommazahlen" nr="4" titel="Kommazahlen und ihre Genauigkeit">
+
+Bisher kennst du Kommazahlen nur als „Zahl mit Komma“. Ihr Datentyp heißt <Begriff e="Eine Zahl mit Komma. Der Rechner speichert sie nur mit begrenzt vielen Stellen.">float</Begriff>, im Unterschied zu `int` für ganze Zahlen. Der Schrägstrich `/` ergibt immer einen `float`, auch wenn die Division aufgeht:
+
+```python
+print(7 / 2)
+print(6 / 2)
+print(type(42))
+print(type(7 / 2))
+```
+
+<p class="k-small k-muted">Führ das Programm aus. `type(…)` nennt den Datentyp.</p>
+
+Die Ausgabe ist `3.5`, `3.0`, `<class 'int'>` und `<class 'float'>`. Du liest die Klasse einfach als Namen des Datentyps. Dass `6 / 2` die Zahl `3.0` ergibt und nicht `3`, ist wichtig: Die Zahl ist ein `float`.
+
+<div class="k-try">
+
+### Vorhersage: Welcher Vergleich stimmt?
+
+<Vorhersage>
+
+Welche dieser Zeilen ergibt `True`?
+
+- `0.1 + 0.2 == 0.3`
+- [x] `0.5 + 0.25 == 0.75`
+- `0.1 * 3 == 0.3`
+- `0.1 + 0.2 == 0.30`
+
+Halbe und Viertel gehen im Zweiersystem genau auf, Zehntel nicht. Bei den anderen Zeilen steckt ein winziger Rest dazwischen: `0.1 + 0.2` und `0.1 * 3` ergeben beide `0.30000000000000004`. `0.30` ist dieselbe Zahl wie `0.3`.
+
+</Vorhersage>
+
+</div>
+
+<Explorable name="lupe" titel="Kommazahl unter der Lupe">
+
+Die Lupe addiert zwei Zehntel und zeigt das Ergebnis einmal so, wie Python es ausgibt, und einmal mit 20 Nachkommastellen. Eine Ampel sagt, ob das Ergebnis genau ist. Vermute zuerst: Welche Summen aus zwei Zehnteln sind nicht genau? Alle, keine oder nur manche?
+
+<Ohne>
+
+Für die Lupe wird JavaScript benötigt. Der Baustein addiert zwei Zahlen, die du wählst. Er zeigt die Summe so, wie Python sie ausgibt, und mit 20 Nachkommastellen, dazu eine Ampel und zwei Vergleiche. Teil 2 addiert zehnmal 0.1 und zeigt jede Zwischensumme.
+
+</Ohne>
+
+</Explorable>
+
+**Nur manche.** Nicht jede Summe aus zwei Zehnteln hat einen Rest. `0.1 + 0.2` und `0.1 + 0.7` sind nicht genau, `0.1 + 0.1` und `0.4 + 0.5` schon. Ob der Rest sichtbar wird, kannst du nicht vorhersehen. Deshalb rundest du immer vor dem Vergleich.
+
+**Der Grund.** Der Bruch 1/3 ist im Zehnersystem 0,333 und hört nie auf. Genauso ist 0,1 im Zweiersystem unendlich lang. Der Rechner schneidet nach einer festen Zahl von Stellen ab, bei `float` nach 52 Bit. Es bleibt ein winziger Rest. `0.1` ist in Wahrheit `0.10000000000000000555`. In der Lupe siehst du den Rest an der Summe, zum Beispiel `0.30000000000000004441`.
+
+Deshalb ergibt `print(0.1 + 0.2)` die Zahl `0.30000000000000004`, und `print(0.1 + 0.2 == 0.3)` ergibt `False`. Halbe, Viertel und Achtel haben im Zweiersystem genau Platz, Zehntel nicht.
+
+**Die Folge: Runde vor dem Vergleich.** Vergleiche Kommazahlen nie direkt mit `==` oder `!=`. Runde vorher mit `round(x, 2)` auf 2 Nachkommastellen. `round(0.1 + 0.2, 2) == 0.3` ergibt `True`.
+
+```python
+a = 0.1
+b = 0.2
+summe = a + b
+if round(summe, 2) == 0.3:
+    print("Summe stimmt")
+else:
+    print("Summe stimmt nicht")
+```
+
+<p class="k-small k-muted">Führ das Programm aus. Es erscheint `Summe stimmt`. Ohne `round` käme `Summe stimmt nicht`.</p>
+
+Die Zahl der Stellen wählst du selbst: `round(x, 2)` für Euro und Cent, `round(x, 1)` für Zehntel.
+
+**Schleifen mit Kommazahlen.** Auch eine Schleife kann am Rest scheitern. Diese Schleife endet nie:
+
+```python data-run="no"
+x = 0.0
+while x != 1.0:
+    x = x + 0.1
+```
+
+Nach zehn Schritten steht in `x` nicht `1.0`, sondern `0.9999999999999999`, dann `1.0999999999999999`. Die Bedingung `x != 1.0` bleibt immer wahr. Die Kommazahl-Lupe zeigt diese Schritte, die Seite führt die Schleife nicht aus. Die Regel: Zähle mit ganzen Zahlen, zum Beispiel mit `for i in range(1, 11)`, nie mit Kommazahlen.
+
+<Hinweis art="merke">
+
+`int` ist eine ganze Zahl, `float` eine Kommazahl, und `/` ergibt immer einen `float`. Kommazahlen sind nur auf endlich viele Stellen genau, darum vergleichst du sie nie direkt mit `==`. Runde vorher mit `round(x, 2)`.
+
+</Hinweis>
+
+</Abschnitt>
+
+<Abschnitt id="selbstcheck" nr="5" titel="Selbstcheck">
+
+Sechs Fragen in den Formen der Klausur: Zahl bestimmen, Überlauf verstehen, Ausgabe bestimmen, Funktionen und Kommazahlen. Die Reihenfolge der Fragen und Antworten ist bei jedem Aufruf anders. Rechne im Kopf oder auf Papier, nicht im Editor.
+
+<Quiz id="v07">
+
+<Frage id="groesste-zahl" typ="num" punkte="3" antwort="4095" tol="0" titel="Größte Zahl">
+
+Ein Sensor liefert seinen Messwert mit 12 Bit, ohne Vorzeichen. Wie groß ist die größte Zahl, die er liefern kann?
+
+<Erklaerung>
+
+2¹² = 4096 Werte, von 0 bis 4095.
+
+</Erklaerung>
+
+</Frage>
+
+<Frage id="zaehler-ueberlauf" typ="mc" punkte="3" titel="Zähler läuft über">
+
+Ein 8-Bit-Zähler ohne Vorzeichen steht auf 255 und zählt um 1 weiter. Was zeigt er?
+
+- [x] 0
+- 256
+- −1
+- 255
+
+<Erklaerung>
+
+Nach dem größten Wert geht es beim kleinsten weiter, wie beim Kilometerzähler: 255 plus 1 ergibt 0. Die 256 gibt es nur in Python, weil dort `int` mitwächst.
+
+</Erklaerung>
+
+</Frage>
+
+<Frage id="byte-vorzeichen" typ="mc" punkte="3" titel="Byte mit Vorzeichen">
+
+Welche Aussage über ein Byte mit Vorzeichen stimmt?
+
+- [x] Es reicht von −128 bis 127, und nach 127 kommt −128.
+- Es reicht von −127 bis 128.
+- Das oberste Bit zählt +128 wie ohne Vorzeichen.
+- Nach 127 kommt 128.
+
+<Erklaerung>
+
+Das oberste Bit zählt −128. Bei `1000 0000` ist es das einzige gesetzte Bit, also ist die Zahl −128.
+
+</Erklaerung>
+
+</Frage>
+
+<Frage id="datentyp-bestimmen" typ="output" punkte="4" antwort="3.0" titel="Datentyp bestimmen">
+
+Was gibt das Programm aus?
+
+```python class="k-code" data-run="nach-antwort"
+print(6 / 2)
+```
+
+<Erklaerung>
+
+`/` ergibt immer eine Kommazahl (`float`), auch wenn die Division aufgeht. Die Ausgabe ist `3.0`, nicht `3`. Damit ist auch die Frage beantwortet, welchen Typ `6 / 2` hat: `float`.
+
+</Erklaerung>
+
+</Frage>
+
+<Frage id="print-oder-return" typ="mc" punkte="3" titel="print oder return">
+
+Die Funktion `doppelt` endet mit `print(x * 2)` und hat kein `return`. Was steht in `b`, nachdem `b = doppelt(3)` gelaufen ist?
+
+- [x] `None`
+- 6
+- 3
+- `x * 2`
+
+<Erklaerung>
+
+Die Funktion zeigt die 6 an, gibt aber nichts zurück. Ohne `return` ist das Ergebnis `None`.
+
+</Erklaerung>
+
+</Frage>
+
+<Frage id="vergleiche" typ="mc" punkte="4" titel="Welche Vergleiche stimmen (mehrere richtig)">
+
+Welche Zeilen ergeben `True`? Kreuze alle richtigen an.
+
+- [x] `0.25 + 0.5 == 0.75`
+- `0.1 + 0.7 == 0.8`
+- [x] `round(0.1 * 3, 2) == 0.3`
+- `0.1 * 3 == 0.3`
+
+<Erklaerung>
+
+Halbe und Viertel gehen im Zweiersystem genau auf, Zehntel nicht. `0.1 + 0.7` ergibt `0.7999999999999999` und `0.1 * 3` ergibt `0.30000000000000004`, dort bleibt der winzige Rest. Nach `round(…, 2)` ist es genau `0.3`.
+
+</Erklaerung>
+
+</Frage>
+
+</Quiz>
+
+</Abschnitt>
+
+<Weiter ziel="v07-labor.html">
+
+Jetzt bist du dran. Im Labor schreibst du eigene Funktionen, zeichnest den Plan einer Funktion im Editor und prüfst Kommazahlen mit `round`. Zwei weitere Videos findest du dort an der passenden Station: der Python-Werkzeugkasten und das vorgerechnete Beispiel mit dem Umrechner.
+
+</Weiter>
+
+<Dozent titel="Für Dozierende: Ablauf des Termins (125 Minuten) und Training">
+
+<p class="k-small k-muted">Vier Blöcke: zwei Theorie (T5 Datentypen, Teil 1 und 2 von 3) und zwei Programmieren (P4 Funktionen, Teil 1 und 2 von 6). Jeder Block à 30 Minuten verplant höchstens 28 Minuten, der letzte (25 Minuten) höchstens 24; die Minuten eines Abschnitts enthalten das Zeigen der genannten Karte. Die Lerneinheit ist zum Zeigen und Nachlesen, geübt wird im <a href="v07-labor.html">Programmierlabor</a>. Die Videos laufen nicht im Termin. Der Operator <code>**</code> wird nur gelesen, nie selbst geschrieben.</p>
+
+<div class="k-tablewrap">
+<table class="k-plan">
+<thead><tr><th scope="col">Minuten</th><th scope="col">Wo</th><th scope="col">Was zu tun ist</th></tr></thead>
+<tbody>
+<tr><td>0–10</td><td>Papier, Beamer</td><td><strong>Warm-up.</strong> Training Termin 06, „Umrechnen“: acht Zeilen auf Papier (5). Auflösung: B7, 5A, 0A, 0100 1111, 1101 1001, 127, 160 und B4 (2). Brücke in die Runde: Zeile 6 war <code>7F</code>, also <code>0111 1111</code>, 127. Setzt man das oberste Bit dazu, steht <code>FF</code> da, 255, die größte Zahl eines Bytes. Was passiert, wenn ein Zähler aus einem Byte um 1 weiterzählen soll? Die Auflösung kommt in der Theorie (3).</td></tr>
+<tr><td>10–40</td><td>Lerneinheit 1</td><td><strong>Theorie: ganze Zahlen im Speicher.</strong> Wertebereich als Rückgriff auf Termin 05, nur 8 Bit, dazu Karte 1 mit <code>2 ** 8</code> zum Lesen (2). Baustein „Zahlenkreis“ ohne Vorzeichen mit Vermutung, Kilometerzähler, Beispiel Zähler einer Anlage (8). Vorzeichen als Idee: Vorhersage 127 plus 1, Tabelle und Baustein mit Schalter (9). Python läuft nicht über, <code>2 ** 64 + 1</code>, Vorhersage (4). Verplant: 23.</td></tr>
+<tr><td>40–70</td><td>Lerneinheit 2, Labor 1 (Karte 2), 7</td><td><strong>Programmieren 1: def und Aufruf.</strong> Trennlinie, <code>def</code> und Aufruf (5). Vorhersage „Aufruf vor der Definition“ (2). <code>begruessen(name)</code>, Karte 2, „Schritt für Schritt“ (5). Baustein „Funktionsmaschine“ mit Vermutung (4). Unterprogramm im Plan (3). „Spielstand“ als Lückentext (8). Verplant: 27. Station 6 läuft nicht einzeln.</td></tr>
+<tr><td>70–100</td><td>Lerneinheit 3, Labor 1 (Karte 3), 2, 5, 8</td><td><strong>Programmieren 2: return.</strong> Rückgriff <code>input</code> (1). <code>quadrat</code> mit <code>return</code>, Karte 3 und „Schritt für Schritt“ (4). <code>print</code> gegen <code>return</code>, Vorhersage und Baustein mit Schalter (5). Fahrenheit am Beamer: Plan der Funktion nur ansehen, Code, Probe (3). Alle zeichnen den Funktionsplan „km/h in m/s“ (7). „Rabatt“ übertragen (8). Verplant: 28.</td></tr>
+<tr><td>100–125</td><td>Lerneinheit 4, Labor 1 (Karte 4), 4</td><td><strong>Theorie: Kommazahlen.</strong> <code>int</code> gegen <code>float</code>, <code>type</code> mit einer ganzen Zahl und mit <code>7 / 2</code>, Karte 4 (3). Vorhersage „Welcher Vergleich stimmt?“, Baustein „Kommazahl unter der Lupe“ mit Vermutung, Grund mit 1/3 und 0,1 im Zweiersystem und 52 Bit (7). <code>round(x, 2)</code> vor dem Vergleich (3). Endlosschleife nur als Satz mit der Regel „mit ganzen Zahlen zählen“ (1). Alle zeichnen „Summe prüfen“ (8). Auftrag für zu Hause, Pflicht, zusammen 47 Minuten: Stationen 3 und 6 (9), Fahrenheit Schritte 6 und 7 (1), Selbstcheck (7), Training (30) (2). Termin 08 beginnt mit dem Wertebereich aus dem Training. Verplant: 24.</td></tr>
+</tbody>
+</table>
+</div>
+
+<p class="k-small k-muted">Zum Vorzeichen, mündlich und nur hier: Der Fachbegriff ist Zweierkomplement. Der Dozent begründet einmal mündlich an <code>1111 1111</code> und <code>1000 0000</code>, warum das oberste Bit −128 zählt. Tabelle und Baustein zeigen nur die Ergebnisse. Es gibt keine Regel zum Umrechnen, keine Rechenaufgabe und im Selbstcheck keine Rechenfrage. Erlaubt ist nur der eine Schritt am Zahlenkreis: 127 plus 1 wird −128.</p>
+
+<p class="k-small k-muted">Wenn die Zeit knapp wird: Im Block 10–40 entfällt zuerst die Vorhersage „Python zählt weiter“ (sie steht in der Lerneinheit). Im Block 40–70 wird der Lückentext gemeinsam am Beamer gefüllt statt einzeln. Der Block 70–100 ist mit 28 Minuten voll. Wird es eng, wird zuerst „Fahrenheit“ am Beamer gekürzt (nur Code und ein Lauf, 2 statt 3 Minuten). Danach geht „Funktionsplan zeichnen“ (7) nach Hause, das wird ausdrücklich gesagt, die Hausaufgabe wächst dann auf 54 Minuten. „Rabatt“ hat Vorrang, weil es die Klausurform „Plan in Code übertragen“ ist. Im letzten Block entfällt zuerst die Endlosschleife (Lupe Teil 2), dann wird die Vorhersage zusammen mit der <code>round</code>-Erklärung verkürzt. „Summe prüfen“ (Klausurform „Plan zeichnen“) geht erst zuletzt nach Hause, und das wird dann ausdrücklich gesagt.</p>
+
+<p class="k-small k-muted">Die drei Klausurformen im Termin: Plan zeichnen (Station 5 mit Funktionsblock in Block 3, Station 4 in Block 4), Plan in Code übertragen (Station 8, Block 3), Code lesen (Vorhersagen in jedem Block, Station 7). Zu Hause kommen dazu: Ablauf verfolgen (Station 3), Plan in Code im Klausurmodus (Training 2) und Fehler finden (Training 3).</p>
+
+<p class="k-small k-muted">Wie weit die Gruppe im Training ist und an welcher Aufgabe sie hängt, zeigt vor dem nächsten Termin die Kursübersicht (Konto, „Kursübersicht für Dozierende“). Gezählt wird dort nur, wer mit Konto lernt. Die Knobelaufgaben am Ende des Labors sind freiwillig und zählen dort nicht mit.</p>
+
+</Dozent>
+
+</Lerneinheit>

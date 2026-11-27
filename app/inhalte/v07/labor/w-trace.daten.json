@@ -1,0 +1,61 @@
+{
+ "typhinweis": false,
+ "code": [
+  "def doppelt(x):",
+  "    return x * 2",
+  "",
+  "zahl = 3",
+  "b = doppelt(zahl)",
+  "print(b)"
+ ],
+ "vars": [
+  "zahl",
+  "x",
+  "b",
+  "Rückgabe"
+ ],
+ "steps": [
+  {
+   "line": 1,
+   "frage": "Zeile 1 legt die Funktion nur an. Es läuft noch nichts darin, also ändert sich keine Zelle. Klick auf Prüfen, um zur nächsten Zeile zu gehen.",
+   "hint": "Gleich weiter."
+  },
+  {
+   "line": 4,
+   "set": {
+    "zahl": "3"
+   },
+   "hint": "zahl bekommt den Wert 3."
+  },
+  {
+   "line": 5,
+   "set": {
+    "x": "3"
+   },
+   "frage": "Zeile 5 ruft die Funktion auf. Die Funktion läuft jetzt los. Trag ein, welchen Wert x dabei bekommt.",
+   "hint": "Der Aufruf gibt x den Wert von zahl."
+  },
+  {
+   "line": 2,
+   "set": {
+    "Rückgabe": "6"
+   },
+   "frage": "Zeile 2 läuft in der Funktion. Trag in die Spalte Rückgabe ein, was die Funktion zurückgibt.",
+   "hint": "return gibt x * 2 zurück. x ist 3."
+  },
+  {
+   "line": 5,
+   "set": {
+    "b": "6"
+   },
+   "frage": "Zeile 5 ist noch einmal dran, weil die Zuweisung erst jetzt fertig wird. Die Funktion ist zu Ende. Was steht danach in b?",
+   "hint": "Der Wert, den die Funktion zurückgibt, steht jetzt in b."
+  },
+  {
+   "line": 6,
+   "out": "6",
+   "frage": "Zeile 6 gibt b aus. Trag die Ausgabe ein. Die Tabelle zeigt x weiter an, obwohl die Funktion fertig ist. Sie merkt sich den letzten Wert, das ist kein Fehler.",
+   "hint": "print schreibt den Wert von b."
+  }
+ ]
+}
