@@ -657,7 +657,16 @@ Belegt heißt: im Code gelesen oder gerechnet. Nicht ausprobiert ist ausdrückli
 
 ---
 
-# Offene Fragen an den Dozenten
+# Entscheidungen des Dozenten (2026-11-27)
+
+1. Gerechnet wird mit 1000 (1 GB = 1000 MB), ein Satz nennt 1024 als Wert „in vielen Programmen“. Die Speicher-Treppe bleibt mit gerundeten Werten und Zeitlupe, beschriftet „ungefähr“ (Empfehlung).
+2. **Abweichend: `ord()` und `chr()` auf einer Karte nur zum Lesen** (`ord("A")` ist 65, `chr(66)` ist `B`), ohne Aufgabe und ohne Klausurstoff, wie `**` in Termin 07.
+3. **Abweichend: Training 10 ist freiwillig.** Hinweis für die Praxisphase: „Spiel sichern (Code kopieren)“, ein freiwilliger Plan „dreimal 20 Minuten“, Zusage: Termin 11 beginnt mit Auffrischern. Der Auffrischer in Termin 11 übernimmt, was fehlt. Kein Knopf „Meinen Stand sichern“.
+4. Training 3 verfolgt das eigene Spiel (Stufe 3 mit festen Eingaben, Spalten `geraten` und `versuche`, dazu die Ausgabe); das Halbieren bleibt in Baustein und Knobelaufgabe (Empfehlung).
+5. Knopf „Meinen Code laden“ wird gebaut: Jede Stufe kann mit dem eigenen Code der Vorstufe beginnen (Empfehlung, ca. 0,5 Tag).
+6. Aus Termin 08: `%` ist eingeführt und darf benutzt werden; `//` nicht. Aus Termin 09: Hinweistexte `Zu klein`, `Zu groß`, `Richtig!`, Rechenplatz statt Akku, gleiche Namen erlaubt, `random` ist Klausurstoff.
+
+# Offene Fragen an den Dozenten (beantwortet, siehe oben)
 
 Höchstens 6. Jede Frage nennt die Empfehlung und die Alternative.
 

@@ -591,7 +591,17 @@ Belegt heißt: im Code gelesen oder gerechnet. Nicht ausprobiert ist ausdrückli
 
 ---
 
-# Offene Fragen an den Dozenten
+# Entscheidungen des Dozenten (2026-11-27)
+
+1. `return` in einem Zweig: Pläne schreiben das Ergebnis in eine Variable (`text`) und haben ein Ende; im Code darf `return` im Zweig stehen (Empfehlung).
+2. Reihenfolge: Theorie Teil 1 am Anfang, Programm zerlegen und Zahlenraten Stufe 1 in der Mitte, Spielzeug-Rechner im letzten Block (Empfehlung).
+3. Gleiche Namen für Parameter und Variablen im Hauptprogramm sind ab Termin 09 erlaubt (Empfehlung).
+4. Spielzeug-Rechner: „Rechenplatz“ statt „Akku“ (Begriffs-Hinweis „Der Platz im Prozessor, an dem gerechnet wird“), zwei vorgegebene Programme, keine eigenen Programme im Baustein (Empfehlung).
+5. Hinweistexte fest: `Zu klein`, `Zu groß`, `Richtig!` (Empfehlung).
+6. `import random` und `random.randint(a, b)` (beide Grenzen gehören dazu) sind Klausurstoff im Kopf (Empfehlung).
+7. Aus Termin 08: `%` ist ab Termin 08 eingeführt (Rest beim Teilen) und darf benutzt werden; `//` nicht.
+
+# Offene Fragen an den Dozenten (beantwortet, siehe oben)
 
 Höchstens 6. Jede Frage nennt die Empfehlung und die Alternative.
 
