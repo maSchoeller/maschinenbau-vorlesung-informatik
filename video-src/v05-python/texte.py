@@ -10,7 +10,7 @@ SRC = [
  ["Gibst du nur einen Wert an, zählt [[range|rehndsch]] ab 0. [[range(4)|rehndsch von vier]] liefert 0, 1, 2 und 3.",
   "Das sind vier Durchläufe, und die 4 selbst fehlt wieder.",
   "Mit zwei Werten legst du den Start selbst fest. Mit einem Wert beginnt es immer bei 0.",
-  "Die Faustregel: Steht die Zahl der Durchläufe vorher fest, nimmst du [[for|fohr]]. Hängt sie von etwas ab, das sich erst unterwegs ändert, nimmst du `while`."],
+  "Die Faustregel: Steht die Zahl der Durchläufe vorher fest, nimmst du [[for|fohr]]. Hängt sie von etwas ab, das sich erst unterwegs ändert, nimmst du [[while|weil]]."],
  ["Karte 2: `if` ohne [[else|els]]. Die Punkte sind 9.",
   "Die Zeile `if punkte >= 8:` fragt, ob die Punkte mindestens 8 sind. Ist das wahr, läuft der eingerückte Teil und gibt gut aus.",
   "Darunter steht eine Zeile ohne Einrückung: weiter. Sie läuft immer."],

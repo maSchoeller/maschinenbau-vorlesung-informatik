@@ -85,7 +85,7 @@ test('Termin 05, Einbindung: alle drei Bausteine, Pläne und Codeblöcke mit Ein
   assert.match(yaml, /lektion: V05/);
   assert.match(yaml, /lerneinheit: v05-zweiersystem-und-zaehlschleifen\.html/);
   assert.match(yaml, /labor: v05-labor\.html/);
-  assert.match(yaml, /nr: V05[\s\S]*?aktiv: false/);
+  assert.doesNotMatch(yaml.split("nr: V05")[1].split("  - nr:")[0], /aktiv: false/, "V05 ist freigeschaltet");
 });
 
 test('Termin 05, Labor: die Minuten von Teil B (48) stehen in labor.mdx, sobald es da ist', (t) => {

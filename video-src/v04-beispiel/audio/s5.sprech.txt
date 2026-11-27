@@ -1,0 +1,1 @@
+Jetzt du: Gib nur die null ein. Was erwartest du? Die Raute ist gleich beim ersten Mal falsch, der Rumpf läuft nie, und die Summe bleibt null. Das ist der Grenzfall dieser Aufgabe. Und was passiert, wenn die letzte Zeile im Rumpf fehlt? Der Preis ändert sich nie, und die Schleife hört nie auf.

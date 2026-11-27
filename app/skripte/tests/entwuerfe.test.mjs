@@ -1,4 +1,4 @@
-/* Selbsttest Entwürfe (npm run selbsttest nach npm run build): Lektionen mit aktiv: false (zurzeit V03) werden gebaut,
+/* Selbsttest Entwürfe (npm run selbsttest nach npm run build): Lektionen mit aktiv: false (zurzeit keine) werden gebaut,
    tauchen aber nirgends im Angebot auf: nicht im Lernpfad, nicht in kurs.json unter lektionen, nicht in der Suche, nicht im
    Precache des Service Workers (docs/app/ARCHITEKTUR.md, Abschnitt 16). */
 import { test } from 'node:test';
@@ -11,14 +11,15 @@ import { ladeKurs } from '../../src/lib/kurs.mjs';
 const OHNE_DIST = fs.existsSync(path.join(DIST, 'app', 'daten', 'kurs.json')) ? false : 'kein Ausgabeordner: erst bauen (KURS_AUSGABE=… npm run build)';
 const lies = (rel) => fs.readFileSync(path.join(DIST, rel), 'utf8');
 const entwuerfe = ladeKurs().lektionen.filter((l) => !l.aktiv);
+const OHNE = OHNE_DIST || (entwuerfe.length ? false : "zurzeit gibt es keinen Entwurf");
 const dateien = entwuerfe.flatMap((l) => [l.lerneinheit, l.labor]);
 
-test('Entwürfe: die Seiten werden gebaut und bleiben unter ihrer Adresse aufrufbar', { skip: OHNE_DIST }, () => {
+test('Entwürfe: die Seiten werden gebaut und bleiben unter ihrer Adresse aufrufbar', { skip: OHNE }, () => {
   assert.ok(entwuerfe.length >= 1);
   for (const d of dateien) assert.ok(fs.existsSync(path.join(DIST, 'lektionen', d)), `lektionen/${d} fehlt im Ausgabeordner`);
 });
 
-test('Entwürfe: kurs.json nennt sie nur unter entwuerfe', { skip: OHNE_DIST }, () => {
+test('Entwürfe: kurs.json nennt sie nur unter entwuerfe', { skip: OHNE }, () => {
   const k = JSON.parse(lies('app/daten/kurs.json'));
   for (const l of entwuerfe) {
     assert.ok(!k.lektionen.some((x) => x.nr === l.nr), `${l.nr} steht unter lektionen`);
@@ -27,7 +28,7 @@ test('Entwürfe: kurs.json nennt sie nur unter entwuerfe', { skip: OHNE_DIST }, 
   for (const t of k.termine) assert.ok(!entwuerfe.some((l) => l.nr === t.lektion), `Termin ${t.nr} verweist auf einen Entwurf`);
 });
 
-test('Entwürfe: nicht in Suche, Glossar und Lernpfad', { skip: OHNE_DIST }, () => {
+test('Entwürfe: nicht in Suche, Glossar und Lernpfad', { skip: OHNE }, () => {
   const nummern = entwuerfe.map((l) => l.nr);
   const suche = JSON.parse(lies('app/daten/suche.json')).eintraege;
   for (const e of suche) {
@@ -38,12 +39,12 @@ test('Entwürfe: nicht in Suche, Glossar und Lernpfad', { skip: OHNE_DIST }, () 
   for (const d of dateien) assert.ok(!lies('lernpfad.html').includes(d), `lernpfad.html verweist auf ${d}`);
 });
 
-test('Entwürfe: nicht im Precache des Service Workers', { skip: OHNE_DIST }, () => {
+test('Entwürfe: nicht im Precache des Service Workers', { skip: OHNE }, () => {
   const sw = lies('sw.js');
   for (const d of dateien) assert.ok(!sw.includes('lektionen/' + d), `Precache enthält lektionen/${d}`);
 });
 
-test('Entwürfe: jedes Video hat entweder Datei und Spieler oder den Platzhalter, nie beides', { skip: OHNE_DIST }, () => {
+test('Entwürfe: jedes Video hat entweder Datei und Spieler oder den Platzhalter, nie beides', { skip: OHNE }, () => {
   let anzahl = 0;
   for (const d of dateien) {
     const html = lies('lektionen/' + d);

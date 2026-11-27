@@ -1,0 +1,69 @@
+WEBVTT
+
+1
+00:00:00.400 --> 00:00:11.806
+Die Aufgabe: Du hast an einigen Tagen gemessen, wie lange du zur Hochschule brauchst. Das Programm liest zuerst ein, an wie vielen Tagen du gemessen hast, mindestens 1.
+
+2
+00:00:11.656 --> 00:00:18.257
+Dann liest es die Minuten jedes Tages ein, als ganze Zahlen. Am Ende gibt es den Durchschnitt aus.
+
+3
+00:00:18.107 --> 00:00:24.050
+Wie oft das passiert, steht nach der ersten Eingabe fest: n Mal. Deshalb nimmst du for.
+
+4
+00:00:24.950 --> 00:00:29.695
+Zeichne zuerst den Plan. Eingabe: n. Die Summe startet bei 0.
+
+5
+00:00:29.545 --> 00:00:35.008
+Dann kommt die Raute. Sie fragt: i von 1 bis n, gibt es noch einen Tag?
+
+6
+00:00:34.858 --> 00:00:49.080
+Bei ja läuft der Rumpf: Eingabe der Minuten, die Summe wird größer, und der Pfeil führt zurück zur Raute. Bei nein geht es weiter: Der Durchschnitt ist die Summe geteilt durch n, dann die Ausgabe.
+
+7
+00:00:49.980 --> 00:00:55.254
+Jetzt der Code, Symbol für Symbol. Die Eingabe von n wird int(input(...)).
+
+8
+00:00:55.104 --> 00:01:04.007
+Aus der Raute wird for i in range(1, n + 1). Das Plus eins steht dort, weil der Stoppwert nicht dazugehört.
+
+9
+00:01:03.857 --> 00:01:12.048
+Im Rumpf stehen die Eingabe der Minuten und die Summe. Das i steckt in der Eingabeaufforderung: Minuten an Tag i.
+
+10
+00:01:11.898 --> 00:01:23.150
+Merke dir drei Stellen. Vor der Schleife steht der Startwert der Summe. Im Rumpf wird eingelesen und addiert. Nach der Schleife wird geteilt und ausgegeben.
+
+11
+00:01:24.050 --> 00:01:31.410
+Die Probe mit 3, 25, 31 und 22. Die erste Eingabe ist 3: drei Tage.
+
+12
+00:01:31.925 --> 00:01:45.821
+Tag 1: 25 Minuten, die Summe ist 25. Tag 2: 31 Minuten, die Summe ist 56. Tag 3: 22 Minuten, die Summe ist 78.
+
+13
+00:01:46.551 --> 00:01:56.820
+Die Schleife ist zu Ende. 78 geteilt durch 3 ergibt 26. Das Programm gibt aus: Im Schnitt 26.0 Minuten.
+
+14
+00:01:57.720 --> 00:02:01.230
+Jetzt du: Gib 0 Tage ein. Was erwartest du?
+
+15
+00:02:01.080 --> 00:02:07.510
+Die Schleife läuft nie, die Summe bleibt 0, und dann teilt das Programm durch 0.
+
+16
+00:02:07.360 --> 00:02:13.791
+Python meldet einen ZeroDivisionError: division by zero. Durch 0 teilen geht nicht.
+
+17
+00:02:13.641 --> 00:02:17.370
+Deshalb steht in der Aufgabe: mindestens 1 Tag.

@@ -1,0 +1,1 @@
+Ein Lauf. Weil fragt vor jedem Durchlauf: Ist der Zähler größer als null? drei ist größer als null: Ja. Das Programm gibt drei aus. Der Zähler ist jetzt zwei. Dann zwei und eins. Beim Zähler null lautet die Antwort: Nein. Die Schleife ist zu Ende, und das Programm gibt Start aus. Merke: Was in der Bedingung steht, muss sich im Rumpf ändern. Sonst endet die Schleife nie.

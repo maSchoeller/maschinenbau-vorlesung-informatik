@@ -1,0 +1,1 @@
+Mit neun Punkten erscheinen gut und weiter. Setze die Punkte auf fünf. Die Bedingung ist falsch, der Rumpf wird übersprungen, und es erscheint nur weiter. Es gibt keinen els-Zweig, also passiert bei falsch nichts. Das Programm geht unter dem if einfach weiter. Probier beide Karten aus und ändere die Werte.

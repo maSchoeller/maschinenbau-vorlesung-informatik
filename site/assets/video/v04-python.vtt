@@ -1,0 +1,85 @@
+WEBVTT
+
+1
+00:00:00.400 --> 00:00:03.371
+Heute kommen zwei Karten in deinen Werkzeugkasten.
+
+2
+00:00:03.766 --> 00:00:09.563
+Alles aus Termin 02 und Termin 03 gilt weiter: if, elif, and und or.
+
+3
+00:00:10.188 --> 00:00:13.972
+Neu ist while. Damit wiederholst du etwas.
+
+4
+00:00:14.028 --> 00:00:20.290
+Dazu kommen zwei Wörter, mit denen du das Gegenteil bildest: != und not.
+
+5
+00:00:21.190 --> 00:00:26.571
+Karte 1: Der Raketenstart zählt rückwärts. Der Zähler beginnt bei 3.
+
+6
+00:00:26.421 --> 00:00:34.277
+Die Zeile mit while hat eine Bedingung und einen Doppelpunkt. Solange die Bedingung wahr ist, läuft der Rumpf.
+
+7
+00:00:34.127 --> 00:00:41.841
+Der Rumpf ist alles, was darunter eingerückt steht. Hier gibt er den Zähler aus und zählt um eins herunter.
+
+8
+00:00:41.691 --> 00:00:48.840
+Die Zeile print("Start") ist nicht eingerückt. Sie läuft erst, wenn die Schleife zu Ende ist.
+
+9
+00:00:49.740 --> 00:00:55.377
+Ein Lauf. while fragt vor jedem Durchlauf: Ist der Zähler größer als 0?
+
+10
+00:00:55.227 --> 00:01:01.691
+3 ist größer als 0: Ja. Das Programm gibt 3 aus. Der Zähler ist jetzt 2.
+
+11
+00:01:01.541 --> 00:01:06.351
+Dann 2 und 1. Beim Zähler 0 lautet die Antwort: Nein.
+
+12
+00:01:06.201 --> 00:01:10.710
+Die Schleife ist zu Ende, und das Programm gibt Start aus.
+
+13
+00:01:10.560 --> 00:01:17.550
+Merke: Was in der Bedingung steht, muss sich im Rumpf ändern. Sonst endet die Schleife nie.
+
+14
+00:01:18.450 --> 00:01:22.069
+Karte 2: das Gegenteil. Der Preis ist 0.
+
+15
+00:01:21.919 --> 00:01:30.365
+Das Zeichen != besteht aus Ausrufezeichen und Gleichheitszeichen. Es fragt: Ist der Preis ungleich 0?
+
+16
+00:01:30.215 --> 00:01:35.644
+Der Preis ist 0, also ist die Antwort falsch. Python gibt False aus.
+
+17
+00:01:35.494 --> 00:01:41.300
+Du brauchst es gleich bei Schleifen, die enden, wenn eine Eingabe 0 ist.
+
+18
+00:01:42.200 --> 00:01:45.303
+Das Wort not dreht wahr und falsch um.
+
+19
+00:01:45.153 --> 00:01:53.853
+Die Klammer sagt, was umgedreht wird. In der Klammer steht: Der Preis ist mindestens 1 and höchstens 6.
+
+20
+00:01:53.703 --> 00:01:59.682
+Bei Preis 0 ist das falsch. not macht daraus wahr. Python gibt True aus.
+
+21
+00:01:59.532 --> 00:02:10.330
+Nach De Morgan ist das dasselbe wie: Der Preis ist kleiner als 1 oder größer als 6. Probier beide Karten aus und ändere die Werte.

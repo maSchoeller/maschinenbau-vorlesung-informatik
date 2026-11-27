@@ -1,0 +1,1 @@
+Wie viele Werte passen in ein Byte? Mit jedem Bit verdoppelt sich die Zahl der Möglichkeiten: zwei, vier, acht, sechzehn, und mit acht Bit sind es zweihundertsechsundfünfzig. Sie laufen von null bis zweihundertfünfundfünfzig. Der größte Wert ist eins eins eins eins, eins eins eins eins. Probier es gleich mit den acht Schaltern aus.

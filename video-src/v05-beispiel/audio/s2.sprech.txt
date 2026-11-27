@@ -1,0 +1,1 @@
+Zeichne zuerst den Plan. Eingabe: n. Die Summe startet bei null. Dann kommt die Raute. Sie fragt: i von eins bis n, gibt es noch einen Tag? Bei ja läuft der Rumpf: Eingabe der Minuten, die Summe wird größer, und der Pfeil führt zurück zur Raute. Bei nein geht es weiter: Der Durchschnitt ist die Summe geteilt durch n, dann die Ausgabe.
