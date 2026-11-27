@@ -1,1 +1,0 @@
-Beim Training wird gezählt: Welches Token folgte auf welchen Kontext? Kam nach dem Wort „die“ fünfmal ein Wort, viermal Welle und einmal Schraube, dann sind das achtzig Prozent für Welle und zwanzig Prozent für Schraube. Das ist ein Bigramm-Modell, der einfachste Fall. Große Modelle speichern ihre Wahrscheinlichkeiten in einem neuronalen Netz, aber gelernt wird dasselbe.

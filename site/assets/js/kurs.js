@@ -1089,6 +1089,7 @@ _result
     var holder = out._kRich;
     if (!holder) { holder = el('div', { class: 'k-rich' }); out.insertAdjacentElement('afterend', holder); out._kRich = holder; }
     holder.textContent = ''; holder._kFiles = null;
+    out.classList.remove('k-runner__out--rich');
     var load = null;
     function status(t) {
       if (!t) { if (load && load.parentNode) load.parentNode.removeChild(load); load = null; return; }
@@ -1099,7 +1100,7 @@ _result
       files: o.files || null, scan: o.scan || null,
       upload: typeof o.upload === 'function' ? o.upload() : (o.upload || null),
       onStatus: status,
-      onRich: function (art, daten) { renderRich(holder, art, daten); },
+      onRich: function (art, daten) { out.classList.add('k-runner__out--rich'); renderRich(holder, art, daten); },
       onFiles: function (list) { renderFiles(holder, list); },
       finish: function () { status(''); }
     };
@@ -1606,8 +1607,8 @@ _result
     return t.replace(/\s+$/, '') + '\n';
   }
   function copyBar(getText, sprache) {
-    /* Ein Plan ist kein Python: Überschrift „Plan“ und nichts zum Kopieren */
-    if (sprache === 'plan' || sprache === 'tabelle') return el('div', { class: 'k-copy__bar' }, [el('span', { class: 'k-copy__lang', text: sprache === 'plan' ? 'Plan' : 'Tabelle' })]);
+    /* Ein Plan ist kein Python: Überschrift „Plan“ (Tabelle, Programm) und nichts zum Kopieren */
+    if (sprache === 'plan' || sprache === 'tabelle' || sprache === 'befehle') return el('div', { class: 'k-copy__bar' }, [el('span', { class: 'k-copy__lang', text: sprache === 'plan' ? 'Plan' : sprache === 'befehle' ? 'Programm' : 'Tabelle' })]);
     var btn = el('button', { type: 'button', class: 'k-copy__btn', 'aria-label': 'Code kopieren' });
     btn.innerHTML = COPY_ICON + '<span class="k-copy__label">Kopieren</span>';
     var label = btn.querySelector('.k-copy__label');

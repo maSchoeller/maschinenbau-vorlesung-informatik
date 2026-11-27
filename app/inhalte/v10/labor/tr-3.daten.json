@@ -1,0 +1,56 @@
+{
+ "sprache": "tabelle",
+ "typhinweis": false,
+ "code": [
+  "Runde = 1",
+  "Runde = 2",
+  "Runde = 3",
+  "Runde = 4"
+ ],
+ "vars": [
+  "geraten",
+  "versuche"
+ ],
+ "steps": [
+  {
+   "line": 1,
+   "set": {
+    "geraten": "80",
+    "versuche": "1"
+   },
+   "out": "Zu groß",
+   "frage": "Runde 1 mit dem Tipp 80: Trag geraten und versuche nach dieser Runde ein, dazu die Ausgabe dieser Runde.",
+   "hint": "80 ist größer als 64: hinweis gibt Zu groß zurück, versuche wächst von 0 auf 1."
+  },
+  {
+   "line": 2,
+   "set": {
+    "geraten": "50",
+    "versuche": "2"
+   },
+   "out": "Zu klein",
+   "frage": "Runde 2 mit dem Tipp 50: Trag geraten und versuche nach dieser Runde ein, dazu die Ausgabe dieser Runde.",
+   "hint": "50 ist kleiner als 64: hinweis gibt Zu klein zurück, versuche wächst von 1 auf 2."
+  },
+  {
+   "line": 3,
+   "set": {
+    "geraten": "70",
+    "versuche": "3"
+   },
+   "out": "Zu groß",
+   "frage": "Runde 3 mit dem Tipp 70: Trag geraten und versuche nach dieser Runde ein, dazu die Ausgabe dieser Runde.",
+   "hint": "70 ist größer als 64: hinweis gibt Zu groß zurück, versuche wächst von 2 auf 3."
+  },
+  {
+   "line": 4,
+   "set": {
+    "geraten": "64",
+    "versuche": "4"
+   },
+   "out": "Richtig!",
+   "frage": "Runde 4 mit dem Tipp 64: Trag geraten und versuche nach dieser Runde ein, dazu die Ausgabe dieser Runde.",
+   "hint": "Der Tipp stimmt, hinweis gibt Richtig! zurück. Danach ist die Bedingung der Schleife falsch, und die letzte Zeile zeigt Versuche: 4."
+  }
+ ]
+}

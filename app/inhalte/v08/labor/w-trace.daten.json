@@ -1,0 +1,78 @@
+{
+ "typhinweis": false,
+ "code": [
+  "def aufschlag(preis):",
+  "    preis = preis + 5",
+  "    return preis",
+  "",
+  "preis = 20",
+  "neu = aufschlag(preis)",
+  "print(preis)",
+  "print(neu)"
+ ],
+ "vars": [
+  "preis draußen",
+  "preis innen",
+  "neu",
+  "Rückgabe"
+ ],
+ "steps": [
+  {
+   "line": 1,
+   "frage": "Zeile 1 legt die Funktion nur an. Es läuft noch nichts darin, also ändert sich keine Zelle. Klick auf Zeile prüfen, um zur nächsten Zeile zu gehen.",
+   "hint": "def legt die Funktion nur an."
+  },
+  {
+   "line": 5,
+   "set": {
+    "preis draußen": "20"
+   },
+   "hint": "preis draußen bekommt den Wert 20."
+  },
+  {
+   "line": 6,
+   "set": {
+    "preis innen": "20"
+   },
+   "frage": "Zeile 6 ruft die Funktion auf. Die Funktion läuft jetzt los. Trag ein, welchen Wert ihr preis dabei bekommt.",
+   "hint": "Die Funktion bekommt den Wert von preis. Ihr preis ist ein eigener Platz."
+  },
+  {
+   "line": 2,
+   "set": {
+    "preis innen": "25"
+   },
+   "frage": "Zeile 2 läuft in der Funktion. Was steht danach in preis innen?",
+   "hint": "Hier ändert sich nur der preis in der Funktion: 20 plus 5."
+  },
+  {
+   "line": 3,
+   "set": {
+    "Rückgabe": "25"
+   },
+   "frage": "Zeile 3 gibt den Wert zurück. Trag in die Spalte Rückgabe ein, was die Funktion zurückgibt.",
+   "hint": "return gibt den preis der Funktion zurück."
+  },
+  {
+   "line": 6,
+   "set": {
+    "neu": "25",
+    "preis innen": "weg"
+   },
+   "frage": "Zeile 6 ist noch einmal dran, weil die Zuweisung erst jetzt fertig wird. Die Funktion ist zu Ende. Was steht danach in neu? Und was ist mit preis innen? Einen Namen, den es nicht mehr gibt, trägst du als weg ein.",
+   "hint": "Der Wert, den die Funktion zurückgibt, steht jetzt in neu. Die Funktion ist fertig, ihr preis gibt es nicht mehr."
+  },
+  {
+   "line": 7,
+   "out": "20",
+   "frage": "Zeile 7 gibt preis aus. Trag die Ausgabe ein.",
+   "hint": "Der preis draußen hat sich nicht geändert."
+  },
+  {
+   "line": 8,
+   "out": "25",
+   "frage": "Zeile 8 gibt neu aus. Trag die Ausgabe ein.",
+   "hint": "print schreibt den Wert von neu."
+  }
+ ]
+}

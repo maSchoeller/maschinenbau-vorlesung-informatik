@@ -1,0 +1,26 @@
+[
+ {
+  "p": 1,
+  "t": "def hinweis(geraten, geheim): mit Doppelpunkt am Ende der Zeile, mit return in den Zweigen oder am Ende"
+ },
+ {
+  "p": 1,
+  "t": "def spiel(): zieht die Zufallszahl in der Funktion, vor der Schleife"
+ },
+ {
+  "p": 1,
+  "t": "spiel() gibt versuche mit return zurück und zeigt die Zahl nicht selbst an"
+ },
+ {
+  "p": 1,
+  "t": "das Hauptprogramm ruft spiel() auf und zeigt die Zahl der Versuche"
+ },
+ {
+  "p": 1,
+  "t": "beide Funktionen stehen vor dem Hauptprogramm"
+ },
+ {
+  "p": 1,
+  "t": "der Text in input(...) enthält nicht „Zu klein“, „Zu groß“ oder „Richtig!“ (sonst verwechselt die Prüfung ihn mit einem Hinweis)"
+ }
+]

@@ -12,14 +12,14 @@
 #                      Termin ohne Seiten (Lernpfad: "Seiten folgen.", kein Verweis), die Seiten bleiben unter
 #                      ihrer Adresse aufrufbar (Durchsicht durch den Dozenten). Freischalten = aktiv: false streichen.
 #            freigabe: Datum (JJJJ-MM-TT) oder weglassen.
-# lektionen  Seiten, die es gibt: die fertigen Termine (bisher V01 bis V05 = Termin 01 bis 05, dazu die Entwürfe V06 und V07). Termin NN bekommt die Kennung VNN.
+# lektionen  Seiten, die es gibt: die fertigen Termine (bisher V01 bis V05 = Termin 01 bis 05, dazu die Entwürfe V06 bis V10). Termin NN bekommt die Kennung VNN.
 #            Dateinamen sind die Adressen unter lektionen/; die Quelle liegt in app/inhalte/vNN/ (MDX).
 #            Fehlt eine genannte Datei, bricht der Build ab (src/lib/kurs.mjs).
 #            aktiv: false schaltet eine Lektion ab: Ihre Seiten werden noch gebaut, aber nirgends angeboten
 #            (nicht im Lernpfad, nicht im Lektionswähler, nicht in Heute, Suche, Glossar und Kursübersicht).
 #            Abgeschaltete Lektionen stehen in dist/app/daten/kurs.json nur unter entwuerfe und sind nicht im
 #            Precache des Service Workers; pruefe-loesungen.mjs prüft sie trotzdem.
-#            V06 und V07 sind seit 2026-11-27 als Entwurf angelegt (aktiv: false). V02 ist seit 2026-11-25 freigeschaltet, V03 bis V05 seit 2026-11-27.
+#            V06 bis V10 sind seit 2026-11-27 als Entwurf angelegt (aktiv: false). V02 ist seit 2026-11-25 freigeschaltet, V03 bis V05 seit 2026-11-27.
 
 semester:
   - nr: 1
@@ -63,9 +63,9 @@ termine:
   - { nr: 5,  theorie: { T3: 1 },        programmieren: { P3: 3 }, lektion: V05 }
   - { nr: 6,  theorie: { T3: 1, T4: 1 }, programmieren: { P3: 2 }, lektion: V06 }
   - { nr: 7,  theorie: { T5: 2 },        programmieren: { P4: 2 }, lektion: V07 }
-  - { nr: 8,  theorie: { T5: 1 },        programmieren: { P4: 3 } }
-  - { nr: 9,  theorie: { T6: 2 },        programmieren: { P4: 1, P5: 1 } }
-  - { nr: 10, theorie: { T6: 1 },        programmieren: { P5: 3 } }
+  - { nr: 8,  theorie: { T5: 1 },        programmieren: { P4: 3 }, lektion: V08 }
+  - { nr: 9,  theorie: { T6: 2 },        programmieren: { P4: 1, P5: 1 }, lektion: V09 }
+  - { nr: 10, theorie: { T6: 1 },        programmieren: { P5: 3 }, lektion: V10 }
   - { nr: 11, theorie: { T7: 1 },        programmieren: { P6: 2, P7: 1 } }
   - { nr: 12, theorie: { T8: 2 },        programmieren: { P7: 2 } }
   - { nr: 13, theorie: { T8: 1 },        programmieren: { P7: 3 } }
@@ -147,6 +147,39 @@ lektionen:
     semester: 1
     lerneinheit: v07-datentypen-und-funktionen.html
     labor: v07-labor.html
+    notebook: null
+    freigabe: null
+    aktiv: false
+  - nr: V08
+    titel: "Zahl oder Text: Datentypen, lokale Namen und Funktionen mit Antwort"
+    kurz: "str, bool, lokale Namen"
+    hook: "5 + 3 ist nicht immer 8"
+    python: ["str, bool", "int(), float(), str()", "Text mit + und ==", "lokale Namen", "Rest mit %", "Funktion ruft Funktion", "return in if"]
+    semester: 1
+    lerneinheit: v08-text-namen-und-funktionen.html
+    labor: v08-labor.html
+    notebook: null
+    freigabe: null
+    aktiv: false
+  - nr: V09
+    titel: "Was im Rechner läuft: Bauteile, Befehle und dein erstes Spiel"
+    kurz: "Rechneraufbau, Zufall"
+    hook: "Dein Rechner zählt im Takt"
+    python: ["import random", "random.randint(a, b)", "Programm in Funktionen zerlegen"]
+    semester: 1
+    lerneinheit: v09-rechneraufbau-und-zufall.html
+    labor: v09-labor.html
+    notebook: null
+    freigabe: null
+    aktiv: false
+  - nr: V10
+    titel: "Schnell, groß, Zahlen: Speicher und dein fertiges Spiel"
+    kurz: "Speicher, Zahlenraten"
+    hook: "Dein erstes Spiel läuft"
+    python: ["Zahlenraten zusammensetzen: random, while, def, return", "ord und chr (nur lesen)"]
+    semester: 1
+    lerneinheit: v10-speicher-und-zahlenraten.html
+    labor: v10-labor.html
     notebook: null
     freigabe: null
     aktiv: false

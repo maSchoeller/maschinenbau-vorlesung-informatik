@@ -1,0 +1,54 @@
+{
+ "sprache": "tabelle",
+ "ausgabe": false,
+ "typhinweis": false,
+ "code": [
+  "Frage = print(int(7.9))",
+  "Frage = print(\"4\" + \"5\")",
+  "Frage = print(int(\"4\") + 5)",
+  "Frage = Welchen Datentyp liefert input()? (int oder float oder str oder bool)",
+  "Frage = print(\"Punkte: \" + str(15))",
+  "Frage = Was meldet Python bei print(\"3\" + 4)? Nur die Art der Meldung."
+ ],
+ "vars": [
+  "Antwort"
+ ],
+ "steps": [
+  {
+   "line": 1,
+   "set": {"Antwort": "7"},
+   "frage": "Zeile 1: Was gibt Python aus? Trag die Ausgabe ein, ohne Anführungszeichen.",
+   "hint": "int schneidet ab."
+  },
+  {
+   "line": 2,
+   "set": {"Antwort": "45"},
+   "frage": "Zeile 2: Was gibt Python aus? Trag die Ausgabe ein, ohne Anführungszeichen.",
+   "hint": "In Anführungszeichen ist es Text. Text plus Text wird aneinandergehängt."
+  },
+  {
+   "line": 3,
+   "set": {"Antwort": "9"},
+   "frage": "Zeile 3: Was gibt Python aus? Trag die Ausgabe ein, ohne Anführungszeichen.",
+   "hint": "Erst umwandeln, dann rechnen."
+  },
+  {
+   "line": 4,
+   "set": {"Antwort": "str"},
+   "frage": "Zeile 4: Welchen Datentyp liefert input()? Trag int, float, str oder bool ein, ohne Anführungszeichen.",
+   "hint": "Was du eintippst, kommt bei Python als Text an."
+  },
+  {
+   "line": 5,
+   "set": {"Antwort": "Punkte: 15"},
+   "frage": "Zeile 5: Was gibt Python aus? Trag die Ausgabe ein, ohne Anführungszeichen.",
+   "hint": "str macht aus der Zahl Text. Dann hängt das Plus beide Teile aneinander."
+  },
+  {
+   "line": 6,
+   "set": {"Antwort": "TypeError"},
+   "frage": "Zeile 6: Was meldet Python? Trag nur die Art der Meldung ein, ohne Anführungszeichen.",
+   "hint": "Text plus Zahl passt nicht zusammen."
+  }
+ ]
+}

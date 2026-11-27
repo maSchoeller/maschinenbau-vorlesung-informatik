@@ -673,7 +673,9 @@
     var codeHost = el('div'); codeDet.appendChild(codeHost);
     var attempted = false, running = false, cp = null;
 
-    box.appendChild(edHost); box.appendChild(bar); box.appendChild(results); box.appendChild(hintBox); box.appendChild(codeDet);
+    box.appendChild(edHost); box.appendChild(bar); box.appendChild(results); box.appendChild(hintBox);
+    /* data-ohne-code: der erzeugte Code bleibt verborgen (die Aufgabe liefert ihn nicht vorab, z. B. wenn er die nächste Station löst) */
+    if (!box.hasAttribute('data-ohne-code')) box.appendChild(codeDet);
     var ctl = create(edHost, { allowed: erlaubt.length ? erlaubt : ORDER, json: startJson || [] });
     bar.appendChild(status);
 

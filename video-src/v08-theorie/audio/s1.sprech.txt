@@ -1,1 +1,0 @@
-Am Koordinatenmessgerät werden acht Bohrungen derselben Serie gemessen, Soll zwölf Millimeter, Toleranzklasse H sieben. Gefragt sind der Mittelwert, die Spannweite und die Zahl der Werte außerhalb der Toleranz. Acht Variablen anzulegen wäre mühsam, bei achtzig Werten unbrauchbar. Ein Programm braucht einen Weg, viele Werte unter einem Namen abzulegen. Das leisten Datenstrukturen.

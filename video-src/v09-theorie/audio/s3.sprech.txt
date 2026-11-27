@@ -1,1 +1,0 @@
-Eine Datei besteht nur aus Bytes. Wie daraus Buchstaben werden, legt die Textkodierung fest. Heute gilt U T F acht: Umlaute brauchen dort zwei Bytes. Liest dein Programm mit der falschen Tabelle, wird aus einem ä ein A mit Tilde, gefolgt von einem Währungszeichen. Darum schreibst du immer encoding gleich U T F acht in Anführungszeichen.

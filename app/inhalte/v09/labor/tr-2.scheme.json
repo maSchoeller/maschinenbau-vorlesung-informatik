@@ -1,0 +1,18 @@
+[
+ {
+  "p": 1,
+  "t": "def medaille(punkte): mit Doppelpunkt am Ende der Zeile, die Funktion steht vor dem Hauptprogramm"
+ },
+ {
+  "p": 1,
+  "t": "die Funktion gibt den Namen mit return zurück (name oder ein Text je Zweig) und zeigt nichts an"
+ },
+ {
+  "p": 1,
+  "t": "die Zweige mit if, elif, else beginnen bei der größten Grenze, 90, und enden mit else für keine"
+ },
+ {
+  "p": 1,
+  "t": "im Hauptprogramm wird punkte mit int(input(…)) eingelesen, medaille(punkte) aufgerufen und das Ergebnis ausgegeben"
+ }
+]

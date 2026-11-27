@@ -1,0 +1,601 @@
+---
+titel: "Termin 08 · Programmierlabor · Informatik Maschinenbau"
+beschreibung: "Programmierlabor zu Termin 08: Text und Zahl, Umwandlung, lokale Namen, der Rest beim Teilen, Funktionen mit True und False und eine Schraube in 3D. Mit Training zu Typen, geraden Zahlen, Bonuspunkten und Schaltjahren für zu Hause."
+body:
+  data-lesson: V08
+  data-page: labor
+stile:
+  - ../assets/css/dhbw-base.css
+  - ../assets/css/kurs.css
+  - ../assets/css/aufgaben.css
+  - ../assets/css/editor.css
+  - ../assets/css/labor.css
+  - ../assets/css/v05.css
+  - ../assets/css/pap-editor.css
+skripte:
+  - ../assets/js/speicher.js
+  - ../assets/js/icons.js
+  - src: ../assets/js/editor.js
+    defer: true
+  - ../assets/js/pap-engine.js
+  - ../assets/js/kurs.js
+  - ../assets/js/aufgaben.js
+  - ../assets/js/pap-editor.js
+  - ../assets/js/labor.js
+---
+
+<Labor nr="V08" zuhause="47" name="Termin 08" lerneinheit="v08-text-namen-und-funktionen.html">
+
+<Station id="a-werkzeugkasten" titel="Werkzeugkasten" teil="A" min="5">
+
+<p class="l-task__intro">Vier neue Karten. Alles aus Termin 02 bis 07 gilt weiter. Jeder Codeblock läuft: Ändere etwas und führ ihn aus. Den Werkzeugkasten erreichst du von jeder Aufgabe aus in der Befehls-Bibliothek oben rechts.</p>
+
+<Video name="v08-python" titel="Python-Werkzeugkasten: Text, umwandeln, lokal, True und False" fehlt="Video folgt. Bis dahin: Lies die vier Karten und probier jeden Codeblock aus.">
+
+Python-Werkzeugkasten: Text, umwandeln, lokal, True und False (ca. 2,5 Min). Untertitel sind eingeschaltet (Deutsch).
+
+</Video>
+
+<Werkzeugkasten>
+
+<Syntaxkarte id="sk-text" nr="1" titel="str, bool und Text zusammensetzen">
+
+```python
+name = "Lea"
+print("Hallo " + name)
+print(type(name))
+print(type(5 > 3))
+print(name == "Lea")
+```
+
+- Ausgabe: `Hallo Lea`, `<class 'str'>`, `<class 'bool'>`, `True`.
+- Text steht in Anführungszeichen. `+` hängt Text aneinander, das Leerzeichen gehört in den Text.
+- `==` vergleicht Text mit Text.
+- Ein Vergleich ergibt `True` oder `False`. Das ist ein `bool`.
+
+</Syntaxkarte>
+
+<Syntaxkarte id="sk-umwandeln" nr="2" titel="Umwandeln: int, float, str">
+
+```python
+zahl = int("5")
+print(zahl + 3)
+print(float("2.5") * 2)
+print("Punkte: " + str(12))
+print(int(3.7))
+```
+
+- Ausgabe: `8`, `5.0`, `Punkte: 12`, `3`.
+- `input()` liefert Text: Wandle um, bevor du rechnest.
+- `int` schneidet ab, es rundet nicht.
+- Text plus Zahl ist ein `TypeError`.
+
+</Syntaxkarte>
+
+<Syntaxkarte id="sk-lokal" nr="3" titel="Namen in der Funktion">
+
+```python
+def quadrat(x):
+    ergebnis = x * x
+    return ergebnis
+
+zahl = quadrat(4)
+print(zahl)
+print(ergebnis)
+```
+
+- Ausgabe: `16`, dann die Meldung `NameError: name 'ergebnis' is not defined`.
+- `x` und `ergebnis` gibt es nur in der Funktion.
+- Hinein per Parameter, heraus per `return`.
+
+</Syntaxkarte>
+
+<Syntaxkarte id="sk-rest" nr="4" titel="Rest und True und False zurückgeben">
+
+```python
+print(7 % 2)
+print(8 % 2)
+
+def ist_gerade(n):
+    if n % 2 == 0:
+        return True
+    else:
+        return False
+
+print(ist_gerade(8))
+print(ist_gerade(7))
+if ist_gerade(10):
+    print("gerade")
+```
+
+- Ausgabe: `1`, `0`, `True`, `False`, `gerade`.
+- `%` ist der Rest beim Teilen. Gerade heißt: Rest 0 beim Teilen durch 2.
+- In jedem Zweig steht ein `return`.
+- Der Aufruf darf direkt in der Bedingung stehen.
+
+</Syntaxkarte>
+
+</Werkzeugkasten>
+
+</Station>
+
+<Station id="a-vorgemacht" titel="Vorgerechnetes Beispiel: Fingerspiel" teil="A" min="5">
+
+<p class="l-task__intro">Aufgabe: Anna und Ben zeigen je 1 bis 5 Finger. Ist die Summe gerade, gewinnt Anna, sonst Ben. Wieder gilt: **erst der Plan, dann der Code.** Neu ist eine Funktion, die mit True oder False antwortet, und eine Funktion, die sie aufruft. Den Plan der zweiten Funktion zeichnest du gleich selbst.</p>
+
+<Video name="v08-beispiel" titel="Vorgerechnet: Fingerspiel" fehlt="Video folgt. Bis dahin: Lies die Pläne und den Code Zeile für Zeile und probier das Programm mit diesen Paaren aus: 3 und 5, 2 und 3, 1 und 1, 5 und 4.">
+
+Vorgerechnet: Fingerspiel (ca. 2,5 Min). Untertitel sind eingeschaltet (Deutsch).
+
+</Video>
+
+<Plan titel="Fingerspiel, Hauptprogramm">
+
+```text
+Eingabe: anna
+Eingabe: ben
+Unterprogramm: wer = sieger(anna + ben)
+Ausgabe: "Sieger:", wer
+```
+
+</Plan>
+
+<Plan titel="Fingerspiel, ist_gerade">
+
+```text
+Funktion: ist_gerade(n)
+Entscheidung: n % 2 == 0?
+  ja:
+    antwort = True
+  nein:
+    antwort = False
+Rückgabe: antwort
+```
+
+</Plan>
+
+<p class="k-small k-muted">Der Plan von <code>sieger(summe)</code> fehlt mit Absicht. Den Plan dazu zeichnest du gleich selbst.</p>
+
+<Aufgabe art="run" id="w-vorgemacht" data-count="0" data-mode="programm" data-inputs="3|5">
+
+<Editor datei="labor/w-vorgemacht.vorlage.py" aria-label="Python-Code: Fingerspiel" />
+
+</Aufgabe>
+
+<Schritte>
+
+1. **Der Ablauf in Worten:** zwei Zahlen einlesen, die Summe bilden, den Sieger fragen, ausgeben.
+2. **Was gehört in welche Funktion?** `ist_gerade` beantwortet nur „gerade oder nicht“. `sieger` macht daraus einen Namen. Eingabe und Ausgabe bleiben im Hauptprogramm.
+3. **Der Plan:** Im Hauptplan steht der Aufruf von `sieger` als Rechteck mit Doppellinien. `ist_gerade` hat einen kleinen eigenen Plan mit einer Raute und am Ende der Rückgabe. Für `sieger` gibt es hier noch keinen Plan: Den zeichnest du gleich selbst.
+4. **Der Code:** Erst `ist_gerade`, dann `sieger`, dann das Hauptprogramm. Jede Funktion steht vor ihrem Aufruf.
+5. **Probe:** Mit 3 und 5 ist die Summe 8. `8 % 2` ist 0. Der Vergleich `0 == 0` ist wahr, also gibt `ist_gerade` True zurück, Anna gewinnt und es erscheint `Sieger: Anna`. Mit 2 und 3 erscheint `Sieger: Ben`.
+6. **Selbsterklärung:** Was passiert, wenn du in `sieger` das `return "Ben"` durch `print("Ben")` ersetzt? Vermute, was erscheint, und probier es dann mit 2 und 3 aus. Die Auflösung steht im nächsten Schritt.
+7. **Auflösung:** <details class="k-deep"><summary>Auflösung zeigen</summary>Es erscheint `Ben`, danach `Sieger: None`. Die Funktion zeigt etwas an, gibt aber nichts zurück. Darum steht in `wer` das Wort `None`.</details>
+
+</Schritte>
+
+</Station>
+
+<Station id="a-ablauf" titel="Ablauf verfolgen: Zwei Plätze für einen Namen" teil="A" min="5">
+
+<p class="l-task__intro">Du verfolgst, wie der Name <code>preis</code> zweimal vorkommt. Trag in jeder Zeile ein, was sich ändert. Ist die Funktion fertig und das Hauptprogramm wieder dran, gibt es ihren Namen nicht mehr: Trag dann <code>weg</code> ein.</p>
+
+<Aufgabe art="trace" id="w-trace">
+
+<Daten datei="labor/w-trace.daten.json" />
+
+</Aufgabe>
+
+</Station>
+
+<Station id="a-funktionsplan" titel="Plan zeichnen: Sieger" teil="A" sterne="2" min="8">
+
+<p class="l-task__intro">Im Editor steht schon das Hauptprogramm und die Funktion <code>ist_gerade(n)</code>. Gezeichnet wird nur die Funktion <code>sieger(summe)</code>. „Prüfen“ führt deinen Plan mit Beispielwerten aus.</p>
+
+<Aufgabe art="pap-zeichnen" id="w-funktionsplan" titel="Sieger" data-timeout="8000" data-erlaubt="def,op,if">
+
+Anna und Ben zeigen je 1 bis 5 Finger. Ist die Summe gerade, gewinnt Anna, sonst Ben. Der Hauptplan ruft `sieger(summe)` auf. `ist_gerade(n)` ist fertig und steht im Editor. Zeichne den Plan von `sieger(summe)`: Er fragt `ist_gerade(summe)` und gibt `"Anna"` oder `"Ben"` zurück.
+
+Im Editor hat eine Funktion nur eine Rückgabe am Ende. Merk dir den Namen erst in einer Variablen.
+
+<Python rolle="tests" datei="labor/w-funktionsplan.tests.py" />
+
+<Daten datei="labor/w-funktionsplan.start.json" rolle="start" />
+
+<Daten datei="labor/w-funktionsplan.solution.json" rolle="solution" />
+
+<Tipps>
+
+1. Was kommt in die Funktion hinein, was kommt heraus? Hinein kommt `summe`, heraus kommt ein Name.
+2. Füge das Symbol „Funktion“ ein, trag den Kopf `sieger(summe)` ein, setz in den Rumpf eine Verzweigung mit der Bedingung `ist_gerade(summe)` und in jeden Zweig eine Operation, die `name` setzt.
+3. Die Rückgabe ist `name`. Meldet Python `UnboundLocalError: cannot access local variable 'name' …`, bekommt `name` in einem Zweig keinen Wert.
+
+</Tipps>
+
+</Aufgabe>
+
+<p class="k-small k-muted">Für Schnelle: Zeichne einen zweiten Funktionsblock <code>ist_ungerade(n)</code>, der <code>ist_gerade(n)</code> aufruft und das Gegenteil zurückgibt.</p>
+
+</Station>
+
+<Station id="a-zeilen" titel="Zeilen ordnen: Anrede" teil="A" min="4">
+
+<p class="l-task__intro">Der Plan ist gegeben, die Zeilen des Programms sind durcheinander, und zwei gehören gar nicht dazu. Bring die passenden Zeilen in die Reihenfolge des Plans, mit der richtigen Einrückung.</p>
+
+<Aufgabe art="parsons" id="w-parsons" titel="Anrede">
+
+Eingelesen werden ein Vorname und ein Alter (ganze Zahl). Eine Funktion `anrede` gibt den Text zurück, zum Beispiel `Hallo Lea, du wirst 18.` bei Lea und 17. Ausgegeben wird der Text.
+
+<Plan titel="Anrede, Hauptprogramm">
+
+```text
+Eingabe: vorname
+Eingabe: jahre
+Unterprogramm: text = anrede(vorname, jahre)
+Ausgabe: text
+```
+
+</Plan>
+
+<Plan titel="Anrede, Funktion">
+
+```text
+Funktion: anrede(name, alter)
+Rückgabe: Anrede-Text
+```
+
+</Plan>
+
+<Daten datei="labor/w-parsons.daten.json" />
+
+</Aufgabe>
+
+</Station>
+
+<Station id="a-schraube" titel="Erste eigene Aufgabe: Schraube" teil="A" sterne="2" min="10">
+
+<p class="l-task__intro">Deine erste eigene Funktion, die einen Körper zurückgibt. Der Plan der Funktion steht da, das Hauptprogramm steht schon in der Vorlage. Mit „Ausführen“ erscheint die Vorschau, die du mit der Maus drehen kannst. Es erscheint kein Text, die Vorschau ist die Ausgabe.</p>
+
+<Aufgabe art="code" id="w-3d" titel="Schraube" data-mode="code" data-files="../assets/py/bauteil3d.py" data-timeout="10000">
+
+<div class="a-task__text">
+
+Eine Schraube besteht aus einem Kopf und einem Schaft. Der Kopf ist doppelt so breit wie der Schaft und so hoch, wie der Schaft breit ist. Der Schaft steht auf dem Kopf. Schreibe die Funktion `schraube(d, l)`, die eine Schraube mit Schaftdurchmesser `d` und Schaftlänge `l` zurückgibt (alles in mm). Das Hauptprogramm steht schon da.
+
+Die Werkzeuge:
+
+- `zylinder(durchmesser, laenge)` ist ein Zylinder mit diesem Durchmesser und dieser Länge.
+- `verschiebe(körper, dx, dy, dz)` setzt einen Körper um `dx` nach rechts, `dy` nach hinten und `dz` nach oben (alles in mm, immer mit allen drei Zahlen). `verschiebe(körper, 40, 0, 0)` ist nach rechts, `verschiebe(körper, 0, 0, 10)` nach oben.
+- `vereinige(a, b)` hängt zwei Körper zusammen.
+- `zeige(körper)` zeigt einen Körper in der Vorschau.
+
+Der Plan der Funktion steht in Worten da, geschrieben wird der Code:
+
+<Plan titel="Schraube, Funktion">
+
+```text
+Funktion: schraube(d, l)
+kopf = Zylinder, Durchmesser 2 · d, Länge d
+schaft = Zylinder, Durchmesser d, Länge l, um d nach oben gesetzt
+Rückgabe: Kopf und Schaft vereinigt
+```
+
+</Plan>
+
+<Plan titel="Schraube, Hauptprogramm">
+
+```text
+Unterprogramm: gross = schraube(10, 40)
+Unterprogramm: klein = verschiebe(schraube(6, 25), 40, 0, 0)
+Ausgabe: zeige(vereinige(gross, klein))
+```
+
+</Plan>
+
+</div>
+
+<Editor datei="labor/w-3d.vorlage.py" aria-label="Python-Code: Schraube" />
+
+<Python rolle="tests" datei="labor/w-3d.tests.py" />
+
+<Python rolle="solution" datei="labor/w-3d.solution.py" />
+
+<Tipps>
+
+1. Jede Zeile des Plans wird eine Zeile in der Funktion, eingerückt. Zwei Zylinder: ein dicker flacher für den Kopf, ein dünner langer für den Schaft. Wie breit und wie hoch ist der Kopf, ausgedrückt in `d`?
+2. Der Schaft würde im Kopf stecken. Setz ihn mit `verschiebe(…, 0, 0, d)` um die Kopfhöhe nach oben.
+3. Die Funktion endet mit `return vereinige(kopf, schaft)`. Nicht `zeige` in der Funktion: Das Hauptprogramm zeigt.
+
+</Tipps>
+
+</Aufgabe>
+
+<p class="k-small k-muted">Für Schnelle: Ändere im Hauptprogramm die Zahlen und sieh, wie sich die Schraube ändert. Stell eine dritte Schraube dazu.</p>
+
+<details class="k-deep">
+<summary>Läuft die 3D-Vorschau nicht? Dieselbe Übung ohne 3D</summary>
+
+<Aufgabe art="code" id="w-bezeichnung" titel="Schraubenbezeichnung" data-count="0" data-mode="programm" data-inputs="10|40">
+
+<div class="a-task__text">
+
+Eingelesen werden Durchmesser und Länge einer Schraube in mm (ganze Zahlen). Eine Funktion `bezeichnung(d, l)` gibt die Bezeichnung zurück, zum Beispiel `M10 x 40`. Ausgegeben wird sie. Die Pläne stehen da, geschrieben wird der Code.
+
+<Plan titel="Bezeichnung, Hauptprogramm">
+
+```text
+Eingabe: durchmesser
+Eingabe: laenge
+Ausgabe: bezeichnung(durchmesser, laenge)
+```
+
+</Plan>
+
+<Plan titel="Bezeichnung, Funktion">
+
+```text
+Funktion: bezeichnung(d, l)
+Rückgabe: "M" + str(d) + " x " + str(l)
+```
+
+</Plan>
+
+</div>
+
+<Editor datei="labor/w-bezeichnung.vorlage.py" aria-label="Python-Code: Schraubenbezeichnung" />
+
+<Python rolle="tests" datei="labor/w-bezeichnung.tests.py" />
+
+<Python rolle="solution" datei="labor/w-bezeichnung.solution.py" />
+
+<Tipps>
+
+1. Was geht in die Funktion hinein, was kommt heraus? Das sind die Parameter und der Rückgabewert.
+2. Die Bezeichnung ist Text mit `+` zusammengesetzt. Die Zahlen müssen zuerst Text werden.
+3. Die Funktion gibt mit `return` zurück, `print` steht im Hauptprogramm. Meldet Python `TypeError`, hängt ein `+` Text und Zahl zusammen.
+
+</Tipps>
+
+</Aufgabe>
+
+</details>
+
+</Station>
+
+<Station id="a-fehler" titel="Fehler finden: Preis mit Steuer" teil="A" min="7" data-seen="manual">
+
+<p class="l-task__intro">Lies das Programm Zeile für Zeile und vergleiche es mit der Aufgabe. Ein Fehler meldet Python, den anderen findest nur du, zum Beispiel mit einer Probe.</p>
+
+<Fehlersuche titel="Preis mit Steuer" fehler="5 9">
+
+Das Programm rechnet einen Nettopreis in den Preis mit 19 Prozent Steuer um. Bei 100 Euro wird `Brutto: 119.00 Euro` erwartet. In zwei Zeilen steckt ein Fehler.
+
+```text
+# Rechnet einen Nettopreis in den Preis mit 19 Prozent Steuer um.
+def brutto(netto):
+    steuer = netto * 0.19
+    endpreis = netto + steuer
+    return steuer
+
+n = float(input("Netto in Euro: "))
+b = brutto(n)
+print(f"Brutto: {endpreis:.2f} Euro")
+```
+
+#### Fehler 1: Name draußen unbekannt (Zeile 9)
+
+Python meldet `NameError: name 'endpreis' is not defined`. `endpreis` gibt es nur in der Funktion. Draußen steht das Ergebnis in `b`.
+
+#### Fehler 2: falscher Wert zurückgegeben (Zeile 5)
+
+Die Funktion gibt nur die Steuer zurück, nicht den Preis mit Steuer. Python meldet dazu nichts. Mit Fehler 1 behoben steht bei 100 Euro `Brutto: 19.00 Euro` da. Zurückgegeben werden muss `endpreis`.
+
+So ist es richtig:
+
+```python data-stdin="100"
+# Rechnet einen Nettopreis in den Preis mit 19 Prozent Steuer um.
+def brutto(netto):
+    steuer = netto * 0.19
+    endpreis = netto + steuer
+    return endpreis
+
+n = float(input("Netto in Euro: "))
+b = brutto(n)
+print(f"Brutto: {b:.2f} Euro")
+```
+
+Probe: Es erscheint `Brutto: 119.00 Euro`. Mit 50 erscheint `Brutto: 59.50 Euro`, mit 0 erscheint `Brutto: 0.00 Euro`.
+
+</Fehlersuche>
+
+</Station>
+
+<Station id="t-1" titel="Typen und Umwandlung" teil="B" sterne="1" min="6">
+
+<p class="l-task__intro">Das Training gehört zum Termin: Mit dem Selbstcheck und den Stationen 3 und 5 sind es etwa 47 Minuten bis zum nächsten Mal. Termin 09 beginnt mit dieser Aufgabe. Rechne zuerst auf Papier, dann prüf hier. Trag ein, was Python ausgibt, ohne Anführungszeichen. Bei Zeile 4 steht nur der Typ, bei Zeile 6 nur die Art der Meldung.</p>
+
+<Aufgabe art="trace" id="tr-1" titel="Typen und Umwandlung">
+
+<Daten datei="labor/tr-1.daten.json" />
+
+</Aufgabe>
+
+</Station>
+
+<Station id="t-2" titel="Plan in Code übertragen: Gerade Zahlen zählen" teil="B" sterne="2" min="8">
+
+<p class="l-task__intro">Klausurform „Plan in Code übertragen“: Schreib das Programm wie auf Papier, ohne Ausführen und ohne Vorschläge des Editors. Dann abgeben und mit der Lösung vergleichen. Die Funktion antwortet hier mit True oder False.</p>
+
+<Aufgabe art="klausur" id="tr-2" titel="Gerade Zahlen zählen" data-mode="programm" data-minutes="8">
+
+<div class="a-task__text">
+
+Übertrage die Pläne in ein Python-Programm. Eingelesen wird eine Zahl `n`. Ausgegeben wird, wie viele gerade Zahlen es von 1 bis `n` gibt, zum Beispiel `Gerade Zahlen: 5` bei 10. Eine Funktion `ist_gerade(zahl)` antwortet mit True oder False.
+
+<Plan titel="Gerade Zahlen, Hauptprogramm">
+
+```text
+Eingabe: n
+anzahl = 0
+Schleife: i von 1 bis n?
+  Entscheidung: ist_gerade(i)?
+    ja:
+      anzahl = anzahl + 1
+Ausgabe: "Gerade Zahlen:", anzahl
+```
+
+</Plan>
+
+<Plan titel="Gerade Zahlen, Funktion">
+
+```text
+Funktion: ist_gerade(zahl)
+Entscheidung: zahl % 2 == 0?
+  ja:
+    antwort = True
+  nein:
+    antwort = False
+Rückgabe: antwort
+```
+
+</Plan>
+
+</div>
+
+<Editor data-assist="off" aria-label="Python-Code von Hand schreiben, ohne Ausführen" />
+
+<Python rolle="tests" datei="labor/tr-2.tests.py" />
+
+<Python rolle="solution" datei="labor/tr-2.solution.py" />
+
+<Daten datei="labor/tr-2.scheme.json" rolle="scheme" />
+
+<Tipps>
+
+1. Geh den Hauptplan Zeile für Zeile durch: Zähler, Schleife, in der Schleife die Raute mit dem Aufruf. Jede Zeile des Plans wird eine Zeile Code.
+2. Die Funktion steht im Code zuerst, vor dem Hauptprogramm.
+3. Der Aufruf `ist_gerade(i)` steht gleich nach `if`. Du brauchst kein `== True`.
+
+</Tipps>
+
+</Aufgabe>
+
+</Station>
+
+<Station id="t-3" titel="Fehler finden und beheben: Bonus zu den Punkten" teil="B" sterne="2" min="6">
+
+<p class="l-task__intro">In diesem Programm stecken zwei Fehler. Python meldet beide, aber nacheinander. Probier 25.</p>
+
+<Aufgabe art="code" id="tr-3" titel="Bonus zu den Punkten" data-mode="programm" data-inputs="25">
+
+<div class="a-task__text">
+
+Das Programm liest die Punkte einer Runde ein und zählt 10 Bonuspunkte dazu. Bei 25 Punkten soll `Gesamt: 35` erscheinen. Behebe beide Fehler.
+
+</div>
+
+<Editor datei="labor/tr-3.vorlage.py" aria-label="Python-Code: Bonus zu den Punkten" />
+
+<Python rolle="tests" datei="labor/tr-3.tests.py" />
+
+<Python rolle="solution" datei="labor/tr-3.solution.py" />
+
+<Tipps>
+
+1. Führ das Programm aus und lies die Meldung von unten: Welche zwei Typen passen nicht zusammen?
+2. Nach dem ersten Fix läuft Zeile 4. Meldet Zeile 5 dasselbe, gehört in die Zeile eine Umwandlung.
+3. Karte 2 und Abschnitt 1 der Lerneinheit.
+
+</Tipps>
+
+</Aufgabe>
+
+</Station>
+
+<Station id="t-4" titel="Schaltjahr" teil="B" sterne="3" min="10">
+
+<p class="l-task__intro">Ohne vorgegebenen Plan. Zeichne zuerst auf Papier: Welche Frage kommt zuerst, welche danach, und was antwortet jede Funktion? Dann schreib das Programm.</p>
+
+<Aufgabe art="code" id="tr-4" titel="Schaltjahr" data-mode="programm" data-inputs="2024">
+
+<div class="a-task__text">
+
+Ein Jahr ist ein Schaltjahr, wenn es durch 4 teilbar ist, außer es ist durch 100 teilbar. Es sei denn, es ist durch 400 teilbar: Dann ist es doch eins. Eingelesen wird ein Jahr. Eine Funktion `ist_teilbar(zahl, teiler)` antwortet, ob die Zahl ohne Rest durch den Teiler geht. Eine zweite Funktion `ist_schaltjahr(jahr)` benutzt sie. Ausgegeben wird `2024 ist ein Schaltjahr` oder `2023 ist kein Schaltjahr`.
+
+</div>
+
+<Editor datei="labor/tr-4.vorlage.py" aria-label="Python-Code: Schaltjahr" />
+
+<Python rolle="tests" datei="labor/tr-4.tests.py" />
+
+<Python rolle="solution" datei="labor/tr-4.solution.py" />
+
+<Tipps>
+
+1. `ist_gerade` aus der Lerneinheit ist `ist_teilbar` mit dem Teiler 2: Der Rest beim Teilen durch den Teiler muss 0 sein.
+2. Die Regel in dieser Reihenfolge: durch 400, dann durch 100, dann durch 4.
+3. Zeichne drei Rauten untereinander: durch 400? durch 100? durch 4? Jeder Ausgang setzt `antwort` auf `True` oder `False`, am Ende steht die Rückgabe `antwort`. Im Code darfst du in jedem Zweig gleich `return` schreiben.
+
+</Tipps>
+
+</Aufgabe>
+
+</Station>
+
+<Knobel id="kn-1" titel="Quersumme Ziffer für Ziffer">
+
+<Aufgabe art="code" id="k-1" data-mode="programm" data-inputs="1234">
+
+<div class="a-task__text">
+
+Die Quersumme einer Zahl ist die Summe ihrer Ziffern, 1234 ergibt 1 + 2 + 3 + 4 = 10. Eingelesen wird eine ganze Zahl von 0 bis 99999. Eine Funktion `quersumme(n)` gibt die Quersumme zurück. Ausgegeben wird `Quersumme: 10`. Die letzte Ziffer einer Zahl bekommst du mit `n % 10`, die Zahl ohne ihre letzte Ziffer mit `int(n / 10)`.
+
+</div>
+
+<Editor datei="labor/k-1.vorlage.py" aria-label="Python-Code: Quersumme Ziffer für Ziffer" />
+
+<Python rolle="tests" datei="labor/k-1.tests.py" />
+
+<Python rolle="solution" datei="labor/k-1.solution.py" />
+
+<Tipps>
+
+1. Zeichne 1234 auf: Welche Ziffer fällt zuerst heraus, und was bleibt übrig?
+2. `n % 10` ist die letzte Ziffer, der Rest beim Teilen durch 10. Probier es mit 1234 von Hand.
+3. Die Schleife läuft, solange noch eine Ziffer da ist (`n > 0`). `summe` steht vor der Schleife.
+
+</Tipps>
+
+</Aufgabe>
+
+</Knobel>
+
+<Knobel id="kn-2" titel="Vollkommene Zahlen">
+
+<Aufgabe art="code" id="k-2" data-mode="programm" data-inputs="30">
+
+<div class="a-task__text">
+
+Eine Zahl ist vollkommen, wenn die Summe ihrer Teiler (ohne sie selbst) die Zahl ergibt. 6 hat die Teiler 1, 2 und 3: 1 + 2 + 3 ist 6. Eingelesen wird eine Grenze (höchstens 100). Ausgegeben werden alle vollkommenen Zahlen von 2 bis zur Grenze, je eine in einer Zeile. Dafür schreibst du `ist_teilbar(zahl, teiler)` und `teilersumme(n)`, die `ist_teilbar` aufruft. Beispiel: Die Grenze 30 ergibt 6 und 28.
+
+</div>
+
+<Editor datei="labor/k-2.vorlage.py" aria-label="Python-Code: Vollkommene Zahlen" />
+
+<Python rolle="tests" datei="labor/k-2.tests.py" />
+
+<Python rolle="solution" datei="labor/k-2.solution.py" />
+
+<Tipps>
+
+1. Teste von Hand: Die Teiler von 28 sind 1, 2, 4, 7 und 14.
+2. Die Funktion `teilersumme` summiert alle Teiler von 1 bis zur Hälfte von `n`. Kein Teiler ist größer als die Hälfte.
+3. Die Hauptschleife fragt `teilersumme(kandidat) == kandidat`.
+
+</Tipps>
+
+</Aufgabe>
+
+</Knobel>
+
+</Labor>

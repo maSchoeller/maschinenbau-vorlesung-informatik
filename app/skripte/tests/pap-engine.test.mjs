@@ -210,3 +210,46 @@ test('Funktion: Code mit def hinter dem Hauptprogramm wird mit Zeilennummer abge
   const ok = P.parseCode('def f(x):\n    return x\ny = f(2)', { erweitert: true });
   assert.equal(ok.nodes.length, 2, 'def zuerst ist erlaubt');
 });
+
+/* Termin 08 bis 10: vorgegebene Funktion in den Startdaten, Eingaben mit typ int, import random als erster Knoten */
+test('Startdaten mit fertiger Funktion (k: def) und zwei Eingaben mit typ int ergeben den Code, den der Zuschnitt verlangt', () => {
+  const start = [
+    { k: 'def', v: 'ist_gerade(n)', body: [], ret: 'n % 2 == 0' },
+    { k: 'in', v: 'a', typ: 'int', prompt: 'a: ' },
+    { k: 'in', v: 'b', typ: 'int', prompt: 'b: ' },
+  ];
+  const baum = P.fromJson(start);
+  assert.equal(baum[0].k, 'def');
+  assert.equal(P.toText(baum), 'def ist_gerade(n):\n    return n % 2 == 0\n\na = int(input("a: "))\nb = int(input("b: "))');
+  /* die Funktion steht vor dem Hauptprogramm, auch wenn sie in den Startdaten hinten steht */
+  const hinten = P.fromJson([start[1], start[2], start[0]]);
+  assert.equal(P.toText(hinten), P.toText(baum));
+  /* Rundlauf Code -> Baum -> Code */
+  const code = P.toText(baum);
+  assert.equal(P.toText(P.parseCode(code, { erweitert: true }).nodes), code);
+});
+
+test('Plan mit def und Verzweigung: die Antwort steht in einer Variablen, die Funktion hat ein Ende (Rückgabe antwort)', () => {
+  const baum = P.fromJson([{ k: 'def', v: 'sieger(summe)', body: [
+    { k: 'op', v: 'antwort = "Ben"' },
+    { k: 'if', v: 'summe % 2 == 0', yes: [{ k: 'op', v: 'antwort = "Anna"' }], no: [] },
+  ], ret: 'antwort' }, { k: 'call', v: 'print(sieger(7))' }]);
+  const code = P.toText(baum);
+  assert.equal(code, 'def sieger(summe):\n    antwort = "Ben"\n    if summe % 2 == 0:\n        antwort = "Anna"\n    return antwort\n\nprint(sieger(7))');
+  const alle = P.toPapAll(baum);
+  assert.equal(alle.length, 2);
+  assert.ok(P.svgAll(baum, { label: 'Test', minw: 1 }).length > 100, 'Zeichnung entsteht');
+});
+
+test('import random als erste Operation im Hauptplan: steht vor dem Hauptprogramm, nach den Funktionen, und überlebt den Rundlauf', () => {
+  const baum = P.fromJson([
+    { k: 'op', v: 'import random' },
+    { k: 'op', v: 'geheim = random.randint(1, 100)' },
+    { k: 'def', v: 'hinweis(geraten, geheim)', body: [], ret: '"Zu klein"' },
+    { k: 'out', v: 'hinweis(30, geheim)' },
+  ]);
+  const code = P.toText(baum);
+  assert.equal(code, 'def hinweis(geraten, geheim):\n    return "Zu klein"\n\nimport random\ngeheim = random.randint(1, 100)\nprint(hinweis(30, geheim))');
+  assert.equal(P.toText(P.parseCode(code, { erweitert: true }).nodes), code);
+  assert.ok(P.svgAll(baum, { label: 'Test', minw: 1 }).includes('import random'), 'die Operation steht im Plan');
+});

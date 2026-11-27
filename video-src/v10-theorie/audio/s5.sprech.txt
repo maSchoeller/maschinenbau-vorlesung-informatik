@@ -1,1 +1,0 @@
-Der Kontext ist das, was das Modell beim Vorhersagen sieht. Dein Mini-Modell sieht ein Wort, große Modelle viele tausend Tokens. Jeder erzeugte Satz besteht aus Wortpaaren, die es im Training gab. Darum klingt er flüssig, auch wenn die Aussage falsch ist. Das nennt man Halluzination. Das Modell prüft keine Quelle, es erzeugt Wahrscheinliches, nicht Wahres.

@@ -1,0 +1,7 @@
+[
+ "Das Spiel zieht eine Zufallszahl von 1 bis 100, einmal je Spiel.",
+ "Du rätst, bis der Tipp stimmt.",
+ "Nach jedem Tipp erscheint ein Hinweis: Zu klein, Zu groß oder Richtig!",
+ "Am Ende zeigt das Spiel, wie viele Versuche du gebraucht hast.",
+ "Das Spiel ist in Funktionen gegliedert: hinweis und spiel."
+]

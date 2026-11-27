@@ -256,7 +256,7 @@ a:hover { color: var(--red); }
   margin: 0; min-height: 2.6em; max-height: 20em; overflow: auto; background: #0F1720; color: #E8EFF5; font-family: var(--dhbw-font-mono); font-size: var(--fs-sm);
   line-height: var(--lh-code); padding: var(--sp-3) var(--sp-4); white-space: pre-wrap; word-break: break-word; border-radius: 0 0 var(--r-base) var(--r-base);
 }
-.k-runner__out:empty::before { content: "Ausgabe erscheint hier."; color: #9CB0C2; }
+.k-runner__out:not(.k-runner__out--rich):empty::before { content: "Ausgabe erscheint hier."; color: #9CB0C2; }
 .k-runner__out .err { color: #FFB3B3; }
 .k-runner__out .sys { color: #9CB0C2; font-style: italic; }
 .k-spinner { display: inline-block; width: 14px; height: 14px; border: 3px solid var(--red-mid); border-top-color: var(--red-dark); border-radius: 50%; animation: k-spin .8s linear infinite; vertical-align: -2px; margin-right: 6px; }

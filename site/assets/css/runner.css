@@ -53,7 +53,8 @@
 .k-runner--auto .k-runner__out { max-height: 16em; }
 
 /* Ausgabe bekommt nur dann Platzhalter, wenn sie sichtbar ist */
-.k-runner__out:not([hidden]):empty::before { content: "Ausgabe erscheint hier."; }
+.k-runner__out:not([hidden]):not(.k-runner__out--rich):empty::before { content: "Ausgabe erscheint hier."; }
+.k-runner__out--rich:empty { display: none; }
 .k-runner__out[hidden] { display: none; }
 
 /* Labor-Erweiterungen: Upload, Bilder, 3D, erzeugte Dateien */

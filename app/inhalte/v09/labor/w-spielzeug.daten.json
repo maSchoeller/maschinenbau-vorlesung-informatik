@@ -1,0 +1,64 @@
+{
+ "sprache": "befehle",
+ "leerzeichen": false,
+ "ausgabe": false,
+ "typhinweis": false,
+ "code": [
+  "LADE A",
+  "ADDIERE B",
+  "ADDIERE C",
+  "SPEICHERE D",
+  "STOPP"
+ ],
+ "vars": [
+  "Rechenplatz",
+  "D",
+  "Takte"
+ ],
+ "steps": [
+  {
+   "line": 1,
+   "set": {
+    "Rechenplatz": "2",
+    "Takte": "3"
+   },
+   "frage": "Zeile 1: Was steht danach im Rechenplatz, und wie viele Takte sind es bisher? Trag die Zahlen ein.",
+   "hint": "LADE A kopiert den Wert von A in den Rechenplatz. Jeder Befehl braucht 3 Takte."
+  },
+  {
+   "line": 2,
+   "set": {
+    "Rechenplatz": "9",
+    "Takte": "6"
+   },
+   "frage": "Zeile 2: Was steht danach im Rechenplatz, und wie viele Takte sind es bisher?",
+   "hint": "ADDIERE zählt den Wert der Zelle zum Wert im Rechenplatz dazu. Der Rechenplatz ist der Platz, an dem gerechnet wird."
+  },
+  {
+   "line": 3,
+   "set": {
+    "Rechenplatz": "14",
+    "Takte": "9"
+   },
+   "frage": "Zeile 3: Was steht danach im Rechenplatz, und wie viele Takte sind es bisher?",
+   "hint": "Zähl den Wert von C zum Rechenplatz dazu. Es kommen 3 Takte dazu."
+  },
+  {
+   "line": 4,
+   "set": {
+    "D": "14",
+    "Takte": "12"
+   },
+   "frage": "Zeile 4: Was steht danach in D, und wie viele Takte sind es bisher?",
+   "hint": "SPEICHERE schreibt den Rechenplatz in die Zelle. Erst jetzt steht das Ergebnis im Speicher."
+  },
+  {
+   "line": 5,
+   "set": {
+    "Takte": "15"
+   },
+   "frage": "Zeile 5: Wie viele Takte sind es am Ende?",
+   "hint": "Auch STOPP braucht seine drei Takte."
+  }
+ ]
+}

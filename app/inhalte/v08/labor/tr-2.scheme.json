@@ -1,0 +1,18 @@
+[
+ {
+  "p": 1,
+  "t": "def ist_gerade(zahl): mit Doppelpunkt am Ende der Zeile, die Funktion steht vor dem Hauptprogramm"
+ },
+ {
+  "p": 1,
+  "t": "Die Bedingung zahl % 2 == 0 und in beiden Zweigen eine Antwort: return True und return False (oder antwort gesetzt und am Ende zurückgegeben)"
+ },
+ {
+  "p": 1,
+  "t": "anzahl = 0 steht vor der Schleife, und die Schleife ist for i in range(1, n + 1): mit Doppelpunkt am Ende der Zeile"
+ },
+ {
+  "p": 1,
+  "t": "if ist_gerade(i): steht eingerückt im Rumpf der Schleife, darunter eingerückt anzahl = anzahl + 1"
+ }
+]

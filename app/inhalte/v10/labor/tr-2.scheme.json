@@ -1,0 +1,18 @@
+[
+ {
+  "p": 1,
+  "t": "import random steht als erste Zeile"
+ },
+ {
+  "p": 1,
+  "t": "wurf = random.randint(1, 6) steht vor der Schleife"
+ },
+ {
+  "p": 1,
+  "t": "while mit and: tipp != wurf and versuche < 3: mit Doppelpunkt am Ende der Zeile"
+ },
+ {
+  "p": 1,
+  "t": "im Rumpf der Schleife wächst versuche um 1"
+ }
+]
