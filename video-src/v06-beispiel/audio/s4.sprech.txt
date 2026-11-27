@@ -1,0 +1,1 @@
+Die Probe mit zwei, drei und den Plätzen eins, null, eins, eins, eins, null. Reihe eins: Platz eins ist belegt, der Zähler steht bei eins. Platz zwei ist frei. Platz drei ist belegt, der Zähler steht bei zwei. Reihe zwei: Platz eins und zwei sind belegt, der Zähler steht bei vier. Platz drei ist frei. Beide Schleifen sind fertig: vier von sechs Plätzen sind belegt.

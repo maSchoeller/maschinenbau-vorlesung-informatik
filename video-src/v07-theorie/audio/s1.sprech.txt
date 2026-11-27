@@ -1,0 +1,1 @@
+Ein Kilometerzähler hat fünf Räder. Der größte Stand ist neunundneunzigtausend neunhundertneunundneunzig. Fährst du einen Kilometer weiter, springt er auf null null null null null. Ein sechstes Rad gibt es nicht. Das ist ein Überlauf. Ein Zähler im Rechner läuft genauso über, wenn ihm die Stellen ausgehen.

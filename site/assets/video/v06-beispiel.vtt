@@ -1,0 +1,73 @@
+WEBVTT
+
+1
+00:00:00.400 --> 00:00:10.317
+Die Aufgabe: Ein Kinosaal hat Reihen mit Plätzen. Das Programm liest die Zahl der Reihen und die Plätze je Reihe ein, beide mindestens 1.
+
+2
+00:00:10.167 --> 00:00:22.317
+Dann fragt es für jeden Platz, Reihe für Reihe: 1 heißt belegt, 0 heißt frei. Am Ende gibt es aus, wie viele Plätze belegt sind, zum Beispiel: Belegt: 4 von 6.
+
+3
+00:00:22.167 --> 00:00:27.410
+In jeder Reihe jeder Platz: Das sind zwei Schleifen, eine in der anderen.
+
+4
+00:00:28.310 --> 00:00:33.338
+Zeichne zuerst den Plan. Zwei Eingaben: reihen und plaetze. Der Zähler belegt startet bei 0.
+
+5
+00:00:34.299 --> 00:00:46.863
+Die äußere Raute fragt: i von 1 bis reihen, gibt es noch eine Reihe? Bei ja kommt die innere Raute: j von 1 bis plaetze, gibt es noch einen Platz?
+
+6
+00:00:47.768 --> 00:00:58.643
+Im inneren Rumpf liest du einen Platz ein. Die Entscheidung fragt: platz gleich 1? Bei ja wird belegt um 1 größer. Dann geht es zurück zur inneren Raute.
+
+7
+00:00:58.948 --> 00:01:05.800
+Ist die Reihe fertig, geht es zurück zur äußeren Raute. Sind alle Reihen durch, wird gerechnet und ausgegeben.
+
+8
+00:01:06.700 --> 00:01:12.233
+Jetzt der Code. Die beiden Eingaben und belegt = 0 stehen ganz oben.
+
+9
+00:01:12.868 --> 00:01:25.738
+Aus der äußeren Raute wird for i in range(1, reihen + 1). Aus der inneren wird for j in range(1, plaetze + 1), eingerückt im Rumpf der äußeren.
+
+10
+00:01:26.094 --> 00:01:33.969
+Im inneren Rumpf stehen die Eingabe, mit i und j in der Frage, und das if. Es steht noch einmal weiter eingerückt.
+
+11
+00:01:34.752 --> 00:01:48.270
+Merke dir drei Stellen. Vor beiden Schleifen steht der Startwert. Im inneren Rumpf wird eingelesen und gezählt. Nach beiden Schleifen wird gerechnet und ausgegeben.
+
+12
+00:01:49.170 --> 00:01:53.900
+Die Probe mit 2, 3 und den Plätzen 1, 0, 1, 1, 1, 0.
+
+13
+00:01:54.909 --> 00:02:04.737
+Reihe 1: Platz 1 ist belegt, der Zähler steht bei 1. Platz 2 ist frei. Platz 3 ist belegt, der Zähler steht bei 2.
+
+14
+00:02:06.175 --> 00:02:13.129
+Reihe 2: Platz 1 und 2 sind belegt, der Zähler steht bei 4. Platz 3 ist frei.
+
+15
+00:02:14.626 --> 00:02:18.260
+Beide Schleifen sind fertig: 4 von 6 Plätzen sind belegt.
+
+16
+00:02:19.160 --> 00:02:24.843
+Der Grenzfall: eine Reihe, ein Platz. Du gibst 1, 1 und 1 ein.
+
+17
+00:02:25.065 --> 00:02:29.403
+Beide Schleifen laufen genau einmal. Das Programm gibt aus: Belegt: 1 von 1.
+
+18
+00:02:29.499 --> 00:02:37.770
+Jetzt du: Schieb belegt = 0 in den Rumpf der äußeren Schleife. Was passiert mit den Eingaben von eben?

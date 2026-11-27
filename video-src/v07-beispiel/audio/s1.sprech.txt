@@ -1,0 +1,1 @@
+Die Aufgabe: Das Programm liest eine Temperatur in Grad Celsius ein und gibt sie in Grad Fahrenheit aus. Die Umrechnung steht in einer Funktion. Der Ablauf in Worten: Wert einlesen, umrechnen, ausgeben. Was gehört in die Funktion? Die Umrechnung, weil man sie öfter braucht. Eingabe und Ausgabe bleiben im Hauptprogramm.

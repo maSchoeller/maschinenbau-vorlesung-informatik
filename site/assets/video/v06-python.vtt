@@ -1,0 +1,77 @@
+WEBVTT
+
+1
+00:00:00.400 --> 00:00:02.992
+Drei neue Karten für deinen Werkzeugkasten.
+
+2
+00:00:04.327 --> 00:00:09.745
+Karte 1 heißt range mit Schrittweite. Damit zählst du in Sprüngen und rückwärts.
+
+3
+00:00:10.663 --> 00:00:13.170
+Karte 2 zeigt eine Schleife in der Schleife.
+
+4
+00:00:13.876 --> 00:00:17.890
+Karte 3 hilft dir beim Nachprüfen: Hex und Bits in Python.
+
+5
+00:00:18.790 --> 00:00:26.694
+Karte 1 beginnt mit Sprüngen. range(0, 11, 5) hat drei Zahlen: Start, Stopp, Schritt.
+
+6
+00:00:27.386 --> 00:00:34.602
+Die Variable i beginnt bei 0 und springt jedes Mal um 5. Sie nimmt die Werte 0, 5 und 10 an.
+
+7
+00:00:35.211 --> 00:00:41.240
+Die 11 ist der Stoppwert und gehört nicht dazu. Der Rumpf läuft dreimal, dann kommt fertig.
+
+8
+00:00:42.140 --> 00:00:57.127
+Rückwärts zählst du mit dem Schritt minus 1. range(5, 0, -1) ergibt 5, 4, 3, 2, 1. Die 0 fehlt: Der Stoppwert gehört nie dazu.
+
+9
+00:00:56.977 --> 00:01:06.900
+Andere negative Schritte liest du nur. range(10, 0, -3) ergibt 10, 7, 4 und 1.
+
+10
+00:01:06.750 --> 00:01:17.472
+Achtung: Zählst du gegen den Schritt, läuft der Rumpf nie. range(5, 0) hat keine Zahl, und Python schweigt.
+
+11
+00:01:17.322 --> 00:01:21.470
+Ein Schritt von 0 meldet einen ValueError.
+
+12
+00:01:22.370 --> 00:01:33.731
+Karte 2 hat zwei Schleifen. Die äußere zählt i von 1 bis 2. Die innere steht in ihrem Rumpf, eingerückt, und zählt j von 1 bis 3.
+
+13
+00:01:33.581 --> 00:01:40.193
+Bei jedem i läuft die innere Schleife ganz durch. Danach beginnt j wieder bei 1.
+
+14
+00:01:40.043 --> 00:01:52.417
+Die Ausgabe ist 1 und 1, 1 und 2, 1 und 3, dann 2 und 1, 2 und 2, 2 und 3. Das sind 2 mal 3, also 6 Durchläufe.
+
+15
+00:01:52.267 --> 00:01:58.100
+Das fertig steht ganz links. Es läuft erst nach beiden Schleifen, einmal.
+
+16
+00:01:59.000 --> 00:02:04.253
+Karte 3 ist nur zum Nachprüfen, nicht für Aufgaben. Rechne zuerst auf Papier.
+
+17
+00:02:05.308 --> 00:02:18.413
+0xE2 ist die Hexzahl E2 und ergibt 226. Dasselbe ist 0b11100010, das Byte in binär.
+
+18
+00:02:18.911 --> 00:02:32.250
+hex(226) gibt 0xe2 aus, denn Python schreibt klein. int("E2", 16) liest den Text E2 als Hexzahl.
+
+19
+00:02:32.577 --> 00:02:49.130
+Für XOR schreibt Python ein Dach: a ^ b. Mit a gleich 1100 und b gleich 1010 kommt 6 heraus, binär 110. Das Dach ist hier XOR, nicht hoch.

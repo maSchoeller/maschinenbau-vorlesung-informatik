@@ -1,0 +1,57 @@
+WEBVTT
+
+1
+00:00:00.400 --> 00:00:09.088
+Vier Bit haben 16 Werte. Das sind die 16 Zeilen der Wahrheitstabelle, von 0000 bis 1111.
+
+2
+00:00:09.549 --> 00:00:27.772
+Dezimal gibt es nur die Ziffern 0 bis 9. Für die Werte 10 bis 15 nimmst du Buchstaben: A ist 10, B ist 11, C ist 12, D ist 13, E ist 14 und F ist 15.
+
+3
+00:00:28.710 --> 00:00:35.330
+Das ist das Hexadezimalsystem. Es hat 16 Ziffern, und jede steht für genau eine Vierergruppe.
+
+4
+00:00:36.230 --> 00:00:44.016
+Ein Byte besteht aus zwei Vierergruppen. Du schlägst jede Gruppe einzeln in der Tabelle nach.
+
+5
+00:00:44.523 --> 00:00:51.938
+Nimm 1110 0010. Die linke Gruppe ist E, die rechte ist 2. Das Byte ist also E2.
+
+6
+00:00:52.650 --> 00:00:59.397
+Noch eins zum Mitrechnen: 0011 1100 ergibt 3C.
+
+7
+00:00:59.929 --> 00:01:06.440
+Zurück geht es genauso: A7 wird zu 1010 0111.
+
+8
+00:01:07.340 --> 00:01:18.979
+Was ist E2 als Dezimalzahl? Die Hexzahl hat zwei Stellen. Die linke ist 16-mal so viel wert wie die rechte. Die Stellenwerte sind 16 und 1.
+
+9
+00:01:19.298 --> 00:01:26.811
+E ist 14. Du rechnest 14 mal 16, das sind 224, plus 2 mal 1. Das ergibt 226.
+
+10
+00:01:27.399 --> 00:01:39.950
+Zur Probe nimmst du das Byte 1110 0010: 128 plus 64 plus 32 plus 2 ergibt ebenfalls 226.
+
+11
+00:01:40.850 --> 00:01:51.555
+Wozu das Ganze? Hex ist kürzer als acht Nullen und Einsen und lässt sich trotzdem direkt in Bits zurückübersetzen. Du findest es zum Beispiel bei Farben im Web.
+
+12
+00:01:51.889 --> 00:02:07.403
+Der Code #E2001A ist das Rot der DHBW. Er besteht aus drei Bytes: E2 für Rot, 00 für Grün und 1A für Blau.
+
+13
+00:02:07.778 --> 00:02:18.368
+E2 ist 226, 00 ist 0 und 1A ist 26. Viel Rot, kein Grün, wenig Blau.
+
+14
+00:02:18.787 --> 00:02:22.180
+Gleich kannst du es mit dem Hex-Farbmischer selbst ausprobieren.

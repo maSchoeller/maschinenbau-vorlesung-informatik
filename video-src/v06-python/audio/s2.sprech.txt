@@ -1,0 +1,1 @@
+Karte eins beginnt mit Sprüngen. rehndsch von null, elf, fünf hat drei Zahlen: Start, Stopp, Schritt. Die Variable i beginnt bei null und springt jedes Mal um fünf. Sie nimmt die Werte null, fünf und zehn an. Die elf ist der Stoppwert und gehört nicht dazu. Der Rumpf läuft dreimal, dann kommt fertig.

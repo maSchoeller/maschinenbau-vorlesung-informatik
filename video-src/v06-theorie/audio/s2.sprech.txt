@@ -1,0 +1,1 @@
+Ein Byte besteht aus zwei Vierergruppen. Du schlägst jede Gruppe einzeln in der Tabelle nach. Nimm eins eins eins null, null null eins null. Die linke Gruppe ist eh, die rechte ist zwei. Das Byte ist also eh zwei. Noch eins zum Mitrechnen: null null eins eins, eins eins null null ergibt drei zeh. Zurück geht es genauso: ah sieben wird zu eins null eins null, null eins eins eins.

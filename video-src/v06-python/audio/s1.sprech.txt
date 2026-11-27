@@ -1,0 +1,1 @@
+Drei neue Karten für deinen Werkzeugkasten. Karte eins heißt rehndsch mit Schrittweite. Damit zählst du in Sprüngen und rückwärts. Karte zwei zeigt eine Schleife in der Schleife. Karte drei hilft dir beim Nachprüfen: Hex und Bits in Python.

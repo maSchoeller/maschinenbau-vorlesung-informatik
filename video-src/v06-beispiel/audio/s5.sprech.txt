@@ -1,0 +1,1 @@
+Der Grenzfall: eine Reihe, ein Platz. Du gibst eins, eins und eins ein. Beide Schleifen laufen genau einmal. Das Programm gibt aus: Belegt: eins von eins. Jetzt du: Schieb belegt gleich null in den Rumpf der äußeren Schleife. Was passiert mit den Eingaben von eben?

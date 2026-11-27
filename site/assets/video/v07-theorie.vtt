@@ -1,0 +1,57 @@
+WEBVTT
+
+1
+00:00:00.400 --> 00:00:06.807
+Ein Kilometerzähler hat fünf Räder. Der größte Stand ist 99 999.
+
+2
+00:00:06.868 --> 00:00:15.489
+Fährst du einen Kilometer weiter, springt er auf 00 000. Ein sechstes Rad gibt es nicht. Das ist ein Überlauf.
+
+3
+00:00:16.371 --> 00:00:20.210
+Ein Zähler im Rechner läuft genauso über, wenn ihm die Stellen ausgehen.
+
+4
+00:00:21.110 --> 00:00:29.165
+Ein Byte hat acht Schalter, jeder steht auf 0 oder 1. Das sind 256 Werte, von 0 bis 255.
+
+5
+00:00:29.692 --> 00:00:36.347
+Der größte Stand ist 1111 1111. Zählst du eins dazu, brauchst du eine neunte Stelle: 1 0000 0000.
+
+6
+00:00:36.857 --> 00:00:42.636
+Diese neunte Stelle gibt es nicht. Übrig bleiben acht Nullen, das Byte steht wieder auf 0000 0000.
+
+7
+00:00:43.291 --> 00:00:56.280
+Aus 255 plus 1 wird also 0. Der Rechner meldet keinen Fehler, er zählt einfach weiter. Ein Werkstückzähler in einer Anlage springt so von 255 auf 0.
+
+8
+00:00:57.180 --> 00:01:04.932
+Dieselben 256 Werte liegen auf einem Kreis. Nach der 255 geht es wieder bei 0 los.
+
+9
+00:01:05.750 --> 00:01:18.700
+Soll ein Byte auch negative Zahlen zeigen, ändert sich nur das Lesen. Der oberste Schalter zählt dann minus 128 statt plus 128. Die anderen sieben zählen wie bisher.
+
+10
+00:01:19.455 --> 00:01:30.598
+Die Tabelle zeigt dieselben Bits mit Vorzeichen gelesen. 1111 1111 steht dann für minus 1, 1000 0000 für minus 128.
+
+11
+00:01:31.060 --> 00:01:48.110
+Der Bereich geht von minus 128 bis 127. Nach der 127 kommt die minus 128, gleich weit wie von 255 nach 0. Ist der oberste Schalter 1, ist die Zahl negativ.
+
+12
+00:01:49.010 --> 00:01:57.334
+In Python ist das anders: Ganze Zahlen wachsen mit. 4294967295 + 1 ergibt 4294967296.
+
+13
+00:01:58.310 --> 00:02:10.178
+Der stärkste Beleg ist 2 ** 64 + 1. Das Ergebnis hat zwanzig Stellen und passt in kein Feld mit 64 Bit. Python rechnet trotzdem richtig.
+
+14
+00:02:11.223 --> 00:02:19.780
+Überläufe gibt es in Steuerungen, in Sensoren und in anderen Programmiersprachen. Bei ganzen Zahlen in Python gibt es sie nicht.
