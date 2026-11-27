@@ -120,7 +120,7 @@ In Klammern die Zahl der Blöcke.
 | 19 | Puffer (2) | P10 Schiffe versenken (2) |
 | 20 | T11 Klausurtraining (2) | P11 Klausurtraining (2) |
 
-Das 1. Semester hat keinen Puffer. Wird die Zeit knapp, rückt zuerst T6 Rechneraufbau in den Puffer des 2. Semesters, danach schrumpft T4 Bitoperationen auf einen halben Block. Bei den Zahlensystemen (T3, nur noch 2 Blöcke) ist am 2026-11-26 entschieden: Termin 05 bringt das Zweiersystem (Stellenwert, Umrechnen in beide Richtungen mit der Stellenwerttabelle, Bit, Byte, 2ⁿ Werte), Termin 06 das Hexadezimalsystem. Zweierkomplement, binäres Rechnen und Oktal entfallen; Wertebereich und Überlauf kommen mit T5 Datentypen (Termin 07).
+Das 1. Semester hat keinen Puffer. Wird die Zeit knapp, rückt zuerst T6 Rechneraufbau in den Puffer des 2. Semesters, danach schrumpft T4 Bitoperationen auf einen halben Block. Bei den Zahlensystemen (T3, nur noch 2 Blöcke) ist am 2026-11-26 entschieden: Termin 05 bringt das Zweiersystem (Stellenwert, Umrechnen in beide Richtungen mit der Stellenwerttabelle, Bit, Byte, 2ⁿ Werte), Termin 06 das Hexadezimalsystem. Binäres Rechnen und Oktal entfallen. Am 2026-11-27 ergänzt: Termin 06 bringt dazu Bitoperationen und XOR auf Papier; Termin 07 bringt mit T5 Datentypen Wertebereich, Überlauf und das Zweierkomplement nur als Idee (oberstes Bit zählt −128, ein Byte reicht von −128 bis 127, ohne Umrechnen), dazu die Genauigkeit von Kommazahlen in Python (`0.1 + 0.2`, Vergleich nach `round(x, 2)`). Termin 08 bringt `str`, `bool` und die Umwandlung. Einzelheiten in `briefing/termin-06-07-konzept.md`.
 
 ## Ablauf eines Termins (135 Minuten)
 
