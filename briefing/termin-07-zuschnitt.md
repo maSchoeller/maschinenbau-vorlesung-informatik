@@ -156,7 +156,7 @@ Unterprogramm: trennlinie()
 ```
 
   Die Funktion bekommt einen eigenen kleinen Plan mit dem Namen im Start-Symbol. Der Plan einer Funktion mit `return` kommt in Abschnitt 3 (Fahrenheit-Beispiel), hier reicht der Satz „Der Aufruf im Hauptplan ist das Rechteck mit den doppelten Seitenlinien“.
-- Neu im Plan: Der Aufruf einer eigenen Funktion ist ein Rechteck mit doppelten Seitenlinien. In der Norm DIN 66001 heißt es Unterprogramm. Welches Symbol für fertige Funktionen wie `round` gilt, ist offen (Frage 6): `print` und `input` bleiben Ausgabe und Eingabe.
+- Neu im Plan: Der Aufruf einer eigenen Funktion ist ein Rechteck mit doppelten Seitenlinien. In der Norm DIN 66001 heißt es Unterprogramm. Fertige Funktionen wie `round` stehen in einem normalen Rechteck (Entscheidung 6), `print` und `input` bleiben Ausgabe und Eingabe.
 
 Vorhersage „Aufruf vor der Definition“:
 
@@ -346,8 +346,8 @@ print(b)
 
 Spalten `zahl`, `x`, `b`, `Rückgabe`. 6 Schritte, von Hand geschrieben (Zeilenfolge 1, 4, 5, 2, 6 mit `sys.settrace` nachgeprüft; der zweite Besuch von Zeile 5 ist hier ein Lehrschritt, damit `b` seinen Wert in der Zeile bekommt, in der er zugewiesen wird): Zeile 1 `def`, es läuft nichts · Zeile 4 `zahl = 3` · Zeile 5 Aufruf, `x = 3` · Zeile 2 Rückgabe 6 · Zeile 5 zurück, `b = 6` · Zeile 6 Ausgabe `6`. Hinweise: bei Zeile 1 „`def` legt die Funktion nur an. Es läuft noch nichts darin.“; bei Zeile 5 „Der Aufruf gibt `x` den Wert von `zahl`.“; am Ende „`x` steht in der Tabelle weiter, obwohl die Funktion fertig ist. Das ist die flache Tabelle, kein Fehler.“ Verschiedene Namen im Hauptprogramm und in der Funktion, damit die flache Tabelle eindeutig bleibt (Technische Voraussetzung 5).
 
-**4 · Plan zeichnen: Summe prüfen (★★, 8 Min).** Art `pap-zeichnen`, erlaubt `in,out,op,if,call`. Die zwei Eingaben stehen schon im Editor. Text: Eingelesen werden zwei Kommazahlen. Ausgegeben wird `ja`, wenn ihre Summe, auf 2 Nachkommastellen gerundet, 0.3 ist, sonst `nein`. Bei 0.1 und 0.2 erscheint `ja`. Hinweis: Das Runden darf ein normales Rechteck sein (`gerundet = round(summe, 2)`); welches Symbol der Dozent für fertige Funktionen will, ist offen (Frage 6).
-Lösung: Eingabe a (float), Eingabe b (float) · Operation `summe = a + b` · Operation `gerundet = round(summe, 2)` (je nach Frage 6 als Unterprogramm) · Verzweigung `gerundet == 0.3`: ja Ausgabe `"ja"`, nein Ausgabe `"nein"`.
+**4 · Plan zeichnen: Summe prüfen (★★, 8 Min).** Art `pap-zeichnen`, erlaubt `in,out,op,if,call`. Die zwei Eingaben stehen schon im Editor. Text: Eingelesen werden zwei Kommazahlen. Ausgegeben wird `ja`, wenn ihre Summe, auf 2 Nachkommastellen gerundet, 0.3 ist, sonst `nein`. Bei 0.1 und 0.2 erscheint `ja`. Hinweis: Das Runden ist ein normales Rechteck (`gerundet = round(summe, 2)`), das Unterprogramm-Symbol gilt nur für eigene Funktionen (Entscheidung 6).
+Lösung: Eingabe a (float), Eingabe b (float) · Operation `summe = a + b` · Operation `gerundet = round(summe, 2)` · Verzweigung `gerundet == 0.3`: ja Ausgabe `"ja"`, nein Ausgabe `"nein"`.
 Tests (geprüft wird die letzte Zeile): 0.1 und 0.2 ergibt `ja` (ohne `round` käme `nein`) · 0.2 und 0.1 ergibt `ja` · 0.15 und 0.15 ergibt `ja` · 0.1 und 0.3 ergibt `nein` (der letzte Wert entscheidet) · 0.1 und 0.25 ergibt `nein` · 0.3 und 0.0 ergibt `ja` (Grenzfall, 0 addiert). Die Summen sind 0.30000000000000004, 0.3, 0.4 und 0.35: keine 5 an der Rundungsstelle. Die Tests prüfen die Ausgabe, nicht die Form des Symbols (Technische Voraussetzung 3).
 Tipps: (1) Zuerst addieren, dann runden, dann vergleichen. Drei Schritte, ein Symbol je Schritt. (2) Das Runden ist ein Aufruf einer fertigen Funktion: `gerundet = round(summe, 2)`. (3) Die Raute vergleicht `gerundet == 0.3`. Beide Ausgaben stehen in den Zweigen.
 
