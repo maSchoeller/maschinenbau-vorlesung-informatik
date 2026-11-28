@@ -1,0 +1,49 @@
+{
+ "sprache": "tabelle",
+ "leerzeichen": false,
+ "ausgabe": false,
+ "typhinweis": false,
+ "code": [
+  "A = 0110 1001, Art = UND, B = 1010 1100",
+  "A = 0110 1001, Art = ODER, B = 1010 1100",
+  "A = 0110 1001, Art = XOR, B = 1010 1100",
+  "A = 1100 0101, Art = XOR, B = 1010 1100"
+ ],
+ "vars": [
+  "Ergebnis"
+ ],
+ "steps": [
+  {
+   "line": 1,
+   "set": {
+    "Ergebnis": "0010 1000"
+   },
+   "frage": "Zeile 1: Verknüpfe 0110 1001 UND 1010 1100 Spalte für Spalte. Trag 8 Stellen ein, mit oder ohne Leerzeichen in der Mitte, ohne Anführungszeichen.",
+   "hint": "UND ist nur 1, wenn beide Bits 1 sind. Geh Spalte für Spalte."
+  },
+  {
+   "line": 2,
+   "set": {
+    "Ergebnis": "1110 1101"
+   },
+   "frage": "Zeile 2: Verknüpfe 0110 1001 ODER 1010 1100 Spalte für Spalte. Trag 8 Stellen ein, mit oder ohne Leerzeichen in der Mitte, ohne Anführungszeichen.",
+   "hint": "ODER ist 1, wenn mindestens ein Bit 1 ist. Geh Spalte für Spalte."
+  },
+  {
+   "line": 3,
+   "set": {
+    "Ergebnis": "1100 0101"
+   },
+   "frage": "Zeile 3: Verknüpfe 0110 1001 XOR 1010 1100 Spalte für Spalte. Trag 8 Stellen ein, mit oder ohne Leerzeichen in der Mitte, ohne Anführungszeichen.",
+   "hint": "XOR ist 1, wenn die beiden Bits verschieden sind."
+  },
+  {
+   "line": 4,
+   "set": {
+    "Ergebnis": "0110 1001"
+   },
+   "frage": "Zeile 4: Verknüpfe das Ergebnis aus Zeile 3 noch einmal mit XOR und demselben zweiten Byte, 1010 1100. Trag 8 Stellen ein, mit oder ohne Leerzeichen in der Mitte, ohne Anführungszeichen.",
+   "hint": "Das Ergebnis aus Zeile 3 noch einmal mit demselben Schlüssel (dem zweiten Byte). Schau dir das Ergebnis genau an: Kennst du es von irgendwoher?"
+  }
+ ]
+}

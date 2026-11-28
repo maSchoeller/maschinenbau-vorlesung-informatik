@@ -1,0 +1,22 @@
+[
+ {
+  "p": 1,
+  "t": "summe wird mit int(input(…)) als ganze Zahl eingelesen, und anzahl = 0 steht vor beiden Schleifen"
+ },
+ {
+  "p": 1,
+  "t": "äußere Schleife for i in range(1, 7): mit Doppelpunkt am Ende der Zeile"
+ },
+ {
+  "p": 1,
+  "t": "innere Schleife for j in range(1, 7): steht eingerückt im Rumpf der äußeren"
+ },
+ {
+  "p": 1,
+  "t": "if i + j == summe: steht in der inneren Schleife, anzahl = anzahl + 1 in der dritten Stufe"
+ },
+ {
+  "p": 1,
+  "t": "print steht einmal nach beiden Schleifen, ganz links"
+ }
+]

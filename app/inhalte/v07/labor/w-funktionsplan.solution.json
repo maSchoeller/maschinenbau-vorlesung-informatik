@@ -1,0 +1,1 @@
+{"baum": [{"k": "def", "v": "kmh_in_ms(v)", "ret": "wert", "body": [{"k": "op", "v": "wert = v / 3.6"}]}, {"k": "in", "v": "kmh", "prompt": "kmh: "}, {"k": "call", "v": "ms = kmh_in_ms(kmh)"}, {"k": "out", "v": "f\"{ms:.1f} m/s\""}]}

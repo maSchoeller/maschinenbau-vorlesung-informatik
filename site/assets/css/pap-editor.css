@@ -29,6 +29,9 @@
 /* Zeichenfläche: eigener Scrollbereich, Plan in Originalgröße (Zoom über --ped-zoom) */
 .ped-pap { overflow: auto; background: #fff; border: 1px solid var(--k-line); border-radius: var(--r-base); padding: var(--sp-2) var(--sp-3) var(--sp-4); max-height: min(78vh, 900px); min-height: 11rem; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
 .ped-pap .pap { width: calc(var(--pap-max, 300px) * var(--ped-zoom, 1)); max-width: none; min-width: 0; margin: 0 auto; }
+.ped-plan { margin-top: var(--sp-4); padding-top: var(--sp-2); border-top: 1px dashed var(--k-line); }
+.ped-plan:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
+.ped-plan__title, .pap-plan__title { margin: 0 0 var(--sp-1); font-size: var(--fs-sm, .875rem); font-weight: 600; color: var(--k-muted); text-align: center; }
 .pap--edit .pap-n { cursor: pointer; }
 .pap--edit .pap-n:hover .pap-shape { fill: #F3F4F6; }
 .pap--edit .pap-n:focus { outline: none; }

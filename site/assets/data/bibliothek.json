@@ -499,27 +499,23 @@
   },
   {
    "id": "potenz",
-   "name": "Potenz **",
+   "name": "** (hoch, nur lesen)",
    "kategorie": "Rechnen",
-   "eingefuehrt": "einem späteren Termin",
+   "eingefuehrt": "V07",
    "ampel": "kopf",
-   "kurz": "Potenzieren und Wurzelziehen.",
+   "kurz": "Zeigt, wie oft eine Zahl mit sich selbst malgenommen wird. In Termin 07 liest du es nur.",
    "syntax": "a ** b",
-   "erklaerung": "a ** b ist a hoch b. Mit gebrochenen Exponenten ziehst du Wurzeln: x ** 0.5 ist die Quadratwurzel. Das Zeichen ^, das du vom Taschenrechner kennst, ist in Python etwas ganz anderes (bitweises XOR).",
-   "beispiel": "d = 20\nprint(d**2)\nprint(2**10)\nprint(9**0.5)",
-   "wann_nutzen": "Für Quadrate, Kubikzahlen, Zweierpotenzen (Bits!) und Wurzeln ohne math-Modul.",
+   "erklaerung": "a ** b ist a hoch b. In Termin 07 liest du ** nur, zum Beispiel ist 2 ** 8 gleich 256. Selbst schreiben musst du es nicht. Das Zeichen ^, das du vom Taschenrechner kennst, ist in Python etwas ganz anderes (bitweises XOR).",
+   "beispiel": "print(2 ** 8)\nprint(2 ** 16)\nprint(2 ** 64 + 1)",
+   "wann_nutzen": "Zum Lesen, wenn die Zahl der Werte bei n Bit gemeint ist: 2 ** 8 ist 256.",
    "transfer": [
     {
      "situation": "Anzahl Werte bei n Bit",
-     "code": "bits = 8\nprint(2**bits)"
+     "code": "bits = 8\nprint(2 ** bits)"
     },
     {
-     "situation": "Kreisfläche aus dem Durchmesser",
-     "code": "d = 40\nprint(3.14159 * d**2 / 4)"
-    },
-    {
-     "situation": "Kubikwurzel als Exponent 1/3",
-     "code": "print(27 ** (1/3))"
+     "situation": "Werte bei 16 Bit",
+     "code": "print(2 ** 16)"
     }
    ],
    "verwandt": [
@@ -532,20 +528,14 @@
    ],
    "lauffaehig": true,
    "suchbegriffe": [],
-   "beispiel_ausgabe": "400\n1024\n3.0",
+   "beispiel_ausgabe": "256\n65536\n18446744073709551617",
    "typische_fehler": [
     {
      "beschreibung": "^ statt ** benutzt",
      "code": "print(2 ^ 3)",
      "meldung": "(keine Fehlermeldung) Ausgabe: 1 – ^ ist bitweises XOR, nicht Potenz."
-    },
-    {
-     "beschreibung": "Null hoch negative Zahl",
-     "code": "print(0 ** -1)",
-     "meldung": "ZeroDivisionError: 0.0 cannot be raised to a negative power"
     }
-   ],
-   "eingefuehrt_alt": "V02"
+   ]
   },
   {
    "id": "rangfolge",
@@ -700,11 +690,11 @@
    "id": "type",
    "name": "type()",
    "kategorie": "Variablen & Datentypen",
-   "eingefuehrt": "einem späteren Termin",
+   "eingefuehrt": "V07",
    "ampel": "lesen",
    "kurz": "Zeigt, welchen Datentyp ein Wert hat.",
    "syntax": "type(wert)",
-   "erklaerung": "type() verrät, ob ein Wert int, float, str oder bool ist. Das ist die schnellste Hilfe, wenn eine Rechnung merkwürdige Ergebnisse oder einen TypeError liefert, zum Beispiel weil input() Text geliefert hat.",
+   "erklaerung": "type() verrät, ob ein Wert int, float, str oder bool ist. Ab Termin 07 liest du die Ausgabe, zum Beispiel <class 'int'>. Das ist die schnellste Hilfe, wenn eine Rechnung merkwürdige Ergebnisse oder einen TypeError liefert, zum Beispiel weil input() Text geliefert hat.",
    "beispiel": "print(type(42))\nprint(type(3.14))\nprint(type(\"Hallo\"))\nprint(type(5 / 2))\nprint(type(True))",
    "wann_nutzen": "Beim Debuggen: Wenn ein Ergebnis überrascht oder ein TypeError auftritt.",
    "transfer": [
@@ -739,8 +729,7 @@
      "code": "\"5\" * \"3\"",
      "meldung": "TypeError: can't multiply sequence by non-int of type 'str'"
     }
-   ],
-   "eingefuehrt_alt": "V03"
+   ]
   },
   {
    "id": "typumwandlung",
@@ -851,21 +840,17 @@
    "id": "round",
    "name": "round()",
    "kategorie": "Rechnen",
-   "eingefuehrt": "einem späteren Termin",
+   "eingefuehrt": "V07",
    "ampel": "kopf",
    "kurz": "Rundet auf eine bestimmte Stellenzahl.",
-   "syntax": "round(x)    round(x, stellen)",
-   "erklaerung": "round(x, 2) rundet auf zwei Nachkommastellen, round(x) auf eine ganze Zahl. Bei genau .5 rundet Python zur nächsten geraden Zahl (round(2.5) ist 2) und wegen der Fließkomma-Darstellung kann auch round(2.675, 2) überraschen. Für reine Anzeige reicht oft die Formatierung mit :.2f im f-String.",
-   "beispiel": "print(round(3.14159, 2))\nprint(round(2.5), round(3.5))\nprint(round(1234.5678, -2))",
-   "wann_nutzen": "Wenn du den gerundeten Wert weiterverwenden willst; zum reinen Anzeigen nimm :.2f.",
+   "syntax": "round(x, stellen)",
+   "erklaerung": "round(x, 2) rundet auf zwei Nachkommastellen. Ab Termin 07 vergleichst du Kommazahlen mit round(x, 2), weil 0.1 + 0.2 nicht genau 0.3 ist. Für reine Anzeige reicht oft die Formatierung mit :.2f im f-String.",
+   "beispiel": "print(round(3.14159, 2))\nprint(round(0.1 + 0.2, 2) == 0.3)",
+   "wann_nutzen": "Wenn du den gerundeten Wert weiterverwenden oder vergleichen willst; zum reinen Anzeigen nimm :.2f.",
    "transfer": [
     {
      "situation": "Auf eine Nachkommastelle",
      "code": "print(round(20.46, 1))"
-    },
-    {
-     "situation": "Auf Hunderter runden",
-     "code": "print(round(8765, -2))"
     },
     {
      "situation": "Anzeige ohne den Wert zu verändern",
@@ -882,20 +867,14 @@
    ],
    "lauffaehig": true,
    "suchbegriffe": [],
-   "beispiel_ausgabe": "3.14\n2 4\n1200.0",
+   "beispiel_ausgabe": "3.14\nTrue",
    "typische_fehler": [
     {
      "beschreibung": "Text statt Zahl",
      "code": "round(\"3.5\")",
      "meldung": "TypeError: type str doesn't define __round__ method"
-    },
-    {
-     "beschreibung": "Dezimal-Rundung überrascht",
-     "code": "print(round(2.675, 2))",
-     "meldung": "(keine Fehlermeldung) Ausgabe: 2.67 – 2.675 ist intern etwas kleiner als 2,675."
     }
-   ],
-   "eingefuehrt_alt": "V03"
+   ]
   },
   {
    "id": "abs",
@@ -1733,7 +1712,7 @@
    "ampel": "kopf",
    "kurz": "Erzeugt eine Zahlenfolge für Schleifen.",
    "syntax": "range(stop)    range(start, stop)    range(start, stop, schritt)",
-   "erklaerung": "range(5) liefert 0, 1, 2, 3, 4: Der Startwert 0 ist dabei, der Endwert 5 nicht. range(1, 6) liefert 1 bis 5, range(0, 100, 25) liefert 0, 25, 50, 75. Mit negativem Schritt zählst du rückwärts.",
+   "erklaerung": "range(5) liefert 0, 1, 2, 3, 4: Der Startwert 0 ist dabei, der Endwert 5 nicht. range(1, 6) liefert 1 bis 5, range(0, 100, 25) liefert 0, 25, 50, 75. Die dritte Zahl ist die Schrittweite; sie kommt ab Termin 06 dran. Mit negativem Schritt zählst du rückwärts.",
    "beispiel": "for winkel in range(0, 91, 30):\n    print(winkel, \"Grad\")\nprint(list(range(5)))",
    "wann_nutzen": "Wenn du n-mal etwas tun oder eine Zahlenreihe durchlaufen willst.",
    "transfer": [
@@ -1917,12 +1896,12 @@
    "id": "def",
    "name": "def (Funktion definieren)",
    "kategorie": "Funktionen",
-   "eingefuehrt": "einem späteren Termin",
+   "eingefuehrt": "V07",
    "ampel": "kopf",
    "kurz": "Fasst Code unter einem Namen zusammen, damit du ihn wiederverwenden kannst.",
    "syntax": "def name(parameter):\n    anweisungen\n    return ergebnis",
-   "erklaerung": "Mit def bekommt ein Stück Code einen Namen. Der Block wird erst ausgeführt, wenn du die Funktion aufrufst: name(werte). Funktionen vermeiden Wiederholungen (DRY), halten Code lesbar und lassen sich einzeln testen.",
-   "beispiel": "def flaeche_kreis(d):\n    return 3.14159 * d**2 / 4\n\nprint(flaeche_kreis(20))\nprint(flaeche_kreis(40))",
+   "erklaerung": "Mit def bekommt ein Stück Code einen Namen. Der Block wird erst ausgeführt, wenn du die Funktion aufrufst: name(werte). Funktionen vermeiden Wiederholungen und halten Code lesbar.",
+   "beispiel": "def umfang_kreis(d):\n    return 3.14159 * d\n\nprint(umfang_kreis(20))\nprint(umfang_kreis(40))",
    "wann_nutzen": "Sobald du dieselbe Rechnung ein zweites Mal brauchst – oder einem Block einen Namen geben willst.",
    "transfer": [
     {
@@ -1936,16 +1915,14 @@
    ],
    "verwandt": [
     "parameter",
-    "return",
-    "default-werte",
-    "docstring"
+    "return"
    ],
    "bezeichner": [
     "def"
    ],
    "lauffaehig": true,
    "suchbegriffe": [],
-   "beispiel_ausgabe": "314.159\n1256.636",
+   "beispiel_ausgabe": "62.8318\n125.6636",
    "typische_fehler": [
     {
      "beschreibung": "Funktion vor der Definition aufgerufen",
@@ -1957,19 +1934,18 @@
      "code": "def quadrat(x)\n    return x * x",
      "meldung": "SyntaxError: expected ':'"
     }
-   ],
-   "eingefuehrt_alt": "V07"
+   ]
   },
   {
    "id": "parameter",
    "name": "Parameter & Argumente",
    "kategorie": "Funktionen",
-   "eingefuehrt": "einem späteren Termin",
+   "eingefuehrt": "V07",
    "ampel": "kopf",
    "kurz": "Werte, die du einer Funktion beim Aufruf mitgibst.",
-   "syntax": "def f(a, b): ...    f(1, 2)    f(b=2, a=1)",
-   "erklaerung": "Parameter stehen in der Klammer der Definition, Argumente beim Aufruf. Die Zuordnung erfolgt nach Position oder mit Namen (f(b=2, a=1)). Die Anzahl muss passen, sonst gibt es einen TypeError.",
-   "beispiel": "def spannung(kraft, flaeche):\n    return kraft / flaeche\n\nprint(spannung(1200, 40))\nprint(spannung(flaeche=40, kraft=1200))",
+   "syntax": "def f(a, b): ...    f(1, 2)",
+   "erklaerung": "Parameter stehen in der Klammer der Definition. Beim Aufruf legst du die Werte in die Klammer, in derselben Reihenfolge. Die Anzahl muss passen, sonst gibt es einen TypeError.",
+   "beispiel": "def spannung(kraft, flaeche):\n    return kraft / flaeche\n\nprint(spannung(1200, 40))\nprint(spannung(900, 30))",
    "wann_nutzen": "Wenn eine Funktion mit unterschiedlichen Eingabewerten arbeiten soll.",
    "transfer": [
     {
@@ -1977,14 +1953,13 @@
      "code": "def rechteck(a, b):\n    return a * b\n\nprint(rechteck(3, 4))"
     },
     {
-     "situation": "Mit Namen aufrufen verhindert Reihenfolgefehler",
-     "code": "def verhaeltnis(zaehler, nenner):\n    return zaehler / nenner\n\nprint(verhaeltnis(nenner=4, zaehler=1))"
+     "situation": "Ein Wert aus einer Variablen",
+     "code": "def doppelt(x):\n    return x * 2\n\nzahl = 7\nprint(doppelt(zahl))"
     }
    ],
    "verwandt": [
     "def",
-    "return",
-    "default-werte"
+    "return"
    ],
    "bezeichner": [
     "Parameter"
@@ -2003,28 +1978,27 @@
      "code": "def quadrat(x):\n    return x * x\n\nquadrat(2, 3)",
      "meldung": "TypeError: quadrat() takes 1 positional argument but 2 were given"
     }
-   ],
-   "eingefuehrt_alt": "V07"
+   ]
   },
   {
    "id": "return",
    "name": "return",
    "kategorie": "Funktionen",
-   "eingefuehrt": "einem späteren Termin",
+   "eingefuehrt": "V07",
    "ampel": "kopf",
    "kurz": "Gibt einen Wert aus der Funktion zurück und beendet sie.",
    "syntax": "return ausdruck",
    "erklaerung": "return liefert das Ergebnis an die aufrufende Stelle und beendet die Funktion sofort. Zeilen dahinter laufen nicht mehr. Ohne return gibt die Funktion None zurück. print() zeigt nur etwas an und gibt nichts zurück, das du weiterverwenden kannst.",
-   "beispiel": "def betrag_sicher(x):\n    if x < 0:\n        return -x\n    return x\n\nprint(betrag_sicher(-4), betrag_sicher(2.5))",
+   "beispiel": "def quadrat(x):\n    return x * x\n\nergebnis = quadrat(4)\nprint(ergebnis)",
    "wann_nutzen": "Immer, wenn du das Ergebnis weiterverwenden willst statt es nur anzuzeigen.",
    "transfer": [
     {
-     "situation": "Mehrere Werte als Tupel zurückgeben",
-     "code": "def min_max(a, b):\n    return min(a, b), max(a, b)\n\nkleiner, groesser = min_max(5, 2)\nprint(kleiner, groesser)"
+     "situation": "Das Ergebnis weiterrechnen",
+     "code": "def doppelt(x):\n    return x * 2\n\nb = doppelt(3)\nprint(b + 1)"
     },
     {
-     "situation": "Frühes return statt else",
-     "code": "def vorzeichen(x):\n    if x > 0:\n        return \"plus\"\n    if x < 0:\n        return \"minus\"\n    return \"null\"\n\nprint(vorzeichen(-3))"
+     "situation": "Umrechnung zurückgeben",
+     "code": "def kmh_in_ms(v):\n    return v / 3.6\n\nprint(kmh_in_ms(36))"
     }
    ],
    "verwandt": [
@@ -2037,20 +2011,14 @@
    ],
    "lauffaehig": true,
    "suchbegriffe": [],
-   "beispiel_ausgabe": "4 2.5",
+   "beispiel_ausgabe": "16",
    "typische_fehler": [
     {
      "beschreibung": "return vergessen: Ergebnis ist None",
      "code": "def verdopple(x):\n    x * 2\n\nprint(verdopple(3) + 1)",
      "meldung": "TypeError: unsupported operand type(s) for +: 'NoneType' and 'int'"
-    },
-    {
-     "beschreibung": "Code nach return wird nie ausgeführt",
-     "code": "def f():\n    return 1\n    print(\"nie\")\n\nf()",
-     "meldung": "(keine Fehlermeldung) Die Zeile print(\"nie\") läuft nie, die Funktion endet beim return."
     }
-   ],
-   "eingefuehrt_alt": "V07"
+   ]
   },
   {
    "id": "default-werte",

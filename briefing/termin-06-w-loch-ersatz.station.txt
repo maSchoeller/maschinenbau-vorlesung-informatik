@@ -1,0 +1,47 @@
+Ersatz für die Station "a-saeulen" in app/inhalte/v06/labor.mdx, falls der 3D-Lauf im Browser nicht klappt.
+Umschalten: den ganzen Block <Station id="a-saeulen" ...> bis </Station> in labor.mdx durch den Block unten ersetzen.
+Die Dateien labor/w-loch.vorlage.py, w-loch.tests.py und w-loch.solution.py liegen schon da; w-3d.* bleibt als Reserve liegen
+(nicht eingebunden, wird von keinem Prüfer gelesen). Zusätzlich in labor.mdx die beschreibung im Frontmatter anpassen ("Säulenreihe in 3D" durch "Lochreihe").
+Sonst ändert sich nichts: Minuten (10) und Sterne (2) bleiben, ebenso <Labor zuhause="47">. Die Lerneinheit bleibt unverändert.
+---------------------------------------------------------------------------------------------------------------
+
+<Station id="a-lochreihe" titel="Plan in Code: Lochreihe" teil="A" sterne="2" min="10">
+
+<p class="l-task__intro">Der Plan steht schon da, du überträgst ihn Symbol für Symbol in Code. Neu ist die Schrittweite: Das dritte Argument von `range` ist der Abstand der Löcher.</p>
+
+<Aufgabe art="code" id="w-loch" titel="Lochreihe" data-mode="programm" data-inputs="100|25">
+
+<div class="a-task__text">
+
+Eingelesen werden die Länge einer Leiste in mm und der Abstand der Löcher in mm (ganze Zahlen, Abstand mindestens 1). Das erste Loch sitzt bei 0 mm, das letzte höchstens bei der Länge. Ausgegeben wird jede Position als `Loch bei 25 mm`.
+
+<Plan titel="Lochreihe">
+
+```text
+Eingabe: laenge
+Eingabe: abstand
+Schleife: x von 0 bis laenge, Schritt abstand?
+  Ausgabe: "Loch bei", x, "mm"
+```
+
+</Plan>
+
+</div>
+
+<Editor datei="labor/w-loch.vorlage.py" aria-label="Python-Code: Lochreihe" />
+
+<Python rolle="tests" datei="labor/w-loch.tests.py" />
+
+<Python rolle="solution" datei="labor/w-loch.solution.py" />
+
+<Tipps>
+
+1. Das erste Loch sitzt bei 0. Von 0 bis zur Länge, in Schritten vom Abstand: Welches Argument von `range` ist was?
+2. Karte 1: `range(0, 101, 25)` ergibt 0, 25, 50, 75, 100. Der Stoppwert gehört nicht dazu. Was muss deshalb hinter `laenge` stehen?
+3. Im Rumpf steht nur die Ausgabe: `print(f"Loch bei {x} mm")`.
+
+</Tipps>
+
+</Aufgabe>
+
+</Station>

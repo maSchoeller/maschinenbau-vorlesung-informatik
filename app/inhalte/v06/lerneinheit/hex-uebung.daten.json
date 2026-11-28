@@ -1,0 +1,42 @@
+{
+ "sprache": "tabelle",
+ "leerzeichen": false,
+ "gross": false,
+ "ausgabe": false,
+ "typhinweis": false,
+ "code": [
+  "Zahl = 0110 1110, System = binär, gesucht = hex",
+  "Zahl = A7, System = hex, gesucht = binär",
+  "Zahl = B3, System = hex, gesucht = dezimal",
+  "Zahl = 100, System = dezimal, gesucht = hex"
+ ],
+ "vars": [
+  "Ergebnis"
+ ],
+ "steps": [
+  {
+   "line": 1,
+   "set": {"Ergebnis": "6E"},
+   "frage": "Zeile 1: Rechne 0110 1110 ins Hexadezimalsystem um. Trag zwei Ziffern ein, ohne Anführungszeichen.",
+   "hint": "Zwei Vierergruppen: 0110 ist 6, 1110 ist E. Jedes Byte hat zwei Hex-Ziffern, auch mit einer 0 vorn."
+  },
+  {
+   "line": 2,
+   "set": {"Ergebnis": "1010 0111"},
+   "frage": "Zeile 2: Rechne A7 ins Zweiersystem um. Trag 8 Stellen ein, mit oder ohne Leerzeichen in der Mitte, ohne Anführungszeichen.",
+   "hint": "Jede Hex-Ziffer wird eine Vierergruppe: A ist 1010, 7 ist 0111."
+  },
+  {
+   "line": 3,
+   "set": {"Ergebnis": "179"},
+   "frage": "Zeile 3: Rechne B3 in eine Dezimalzahl um. Trag die Zahl ein, ohne Anführungszeichen.",
+   "hint": "B ist 11. Rechne 11 · 16 + 3."
+  },
+  {
+   "line": 4,
+   "set": {"Ergebnis": "64"},
+   "frage": "Zeile 4: Rechne die Dezimalzahl 100 ins Hexadezimalsystem um. Trag zwei Ziffern ein, ohne Anführungszeichen.",
+   "hint": "Erst binär mit der Stellenwerttabelle (0110 0100), dann die Gruppen: 6 und 4."
+  }
+ ]
+}

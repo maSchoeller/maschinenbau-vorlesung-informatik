@@ -381,6 +381,13 @@ const PROBE_LEER = {
   leerzeichen: false,
   steps: [{ line: 1, set: { 'Binär': '0010 1101' }, frage: 'Trag zahl als Binärzahl ein.' }]
 };
+const PROBE_GROSS = {
+  code: ['farbe = 226', 'print(hex(farbe))'],
+  vars: ['Hex'],
+  ausgabe: false,
+  gross: false,
+  steps: [{ line: 1, set: { Hex: 'E2' }, frage: 'Trag farbe als Hexzahl ein.' }]
+};
 const PROBE = {
   code: ['geld = 2.0', 'if geld >= 1.5:', '    print("Cola")'],
   vars: ['geld', 'Bedingung', 'Weg'],
@@ -394,7 +401,7 @@ const PROBE = {
 async function ablaufSchalter(k) {
   console.log('\n== Ablauf verfolgen mit Schaltern (frage, ausgabe: false)');
   const p = k.page;
-  const einschub = `<div id="probe-schalter"><div class="a-task" data-a="trace" data-id="probe-schalter"><script type="application/json">${JSON.stringify(PROBE)}</script></div><div class="a-task" data-a="trace" data-id="probe-leer"><script type="application/json">${JSON.stringify(PROBE_LEER)}</script></div></div>`;
+  const einschub = `<div id="probe-schalter"><div class="a-task" data-a="trace" data-id="probe-schalter"><script type="application/json">${JSON.stringify(PROBE)}</script></div><div class="a-task" data-a="trace" data-id="probe-leer"><script type="application/json">${JSON.stringify(PROBE_LEER)}</script></div><div class="a-task" data-a="trace" data-id="probe-gross"><script type="application/json">${JSON.stringify(PROBE_GROSS)}</script></div></div>`;
   await p.route('**/lektionen/v01-labor.html*', async (route) => {
     const r = await route.fetch();
     const text = await r.text();
@@ -461,6 +468,18 @@ async function ablaufSchalter(k) {
   await tl.locator('tr.is-active input[data-var="Binär"]').fill('0010 1100');
   await tl.locator('button', { hasText: 'Zeile prüfen' }).click();
   pruefe(/^Noch nicht richtig/.test(await tl.locator('.a-trace__msg').innerText()), 'leerzeichen: false: andere Ziffern bleiben falsch');
+  /* gross: false: Groß- und Kleinschreibung zählt beim Vergleich nicht */
+  const tg = p.locator('.a-task[data-id="probe-gross"]');
+  for (const eingabe of ['E2', 'e2', ' e2 ']) {
+    await tg.locator('tr.is-active input[data-var="Hex"]').fill(eingabe);
+    await tg.locator('button', { hasText: 'Zeile prüfen' }).click();
+    const fertig = /Geschafft/.test(await tg.locator('.a-trace__msg').innerText());
+    pruefe(fertig, `gross: false: „${eingabe}“ wird angenommen`);
+    if (fertig) await tg.locator('button', { hasText: 'Von vorn' }).click();
+  }
+  await tg.locator('tr.is-active input[data-var="Hex"]').fill('E3');
+  await tg.locator('button', { hasText: 'Zeile prüfen' }).click();
+  pruefe(/^Noch nicht richtig/.test(await tg.locator('.a-trace__msg').innerText()), 'gross: false: anderer Wert bleibt falsch');
   /* bestehende Aufgabe ohne Schalter: unverändert */
   await p.unroute('**/lektionen/v01-labor.html*');
   await laborOeffnen(p, 'a-ablauf', 'w-trace');

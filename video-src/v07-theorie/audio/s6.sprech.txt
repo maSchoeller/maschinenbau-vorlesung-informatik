@@ -1,1 +1,0 @@
-Die häufigsten Fehler in Ka I-Code: ein print statt return, dann bekommst du den Wert None zurück. Oder ein Zweig, der keinen Wert zurückgibt, und die Einheit: Kilowatt statt Watt. Darum prüfst du jede Funktion einzeln mit einem Wert, den du von Hand nachrechnen kannst. Das Lesen von Typ-Hinweisen und Docstrings genügt dir. Das Schreiben der Funktionen übst du im Labor.

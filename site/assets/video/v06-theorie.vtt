@@ -1,137 +1,57 @@
 WEBVTT
 
 1
-00:00:00.400 --> 00:00:05.173
-Ein Werkstück kommt glühend aus dem Härteofen: 850 °C.
+00:00:00.400 --> 00:00:09.088
+Vier Bit haben 16 Werte. Das sind die 16 Zeilen der Wahrheitstabelle, von 0000 bis 1111.
 
 2
-00:00:05.474 --> 00:00:10.149
-Ab 60 °C darf es weiterbearbeitet werden. Doch wann ist das?
+00:00:09.549 --> 00:00:27.772
+Dezimal gibt es nur die Ziffern 0 bis 9. Für die Werte 10 bis 15 nimmst du Buchstaben: A ist 10, B ist 11, C ist 12, D ist 13, E ist 14 und F ist 15.
 
 3
-00:00:10.439 --> 00:00:15.566
-In jeder Minute gilt dieselbe Rechnung: Die neue Temperatur entsteht aus der alten.
+00:00:28.710 --> 00:00:35.330
+Das ist das Hexadezimalsystem. Es hat 16 Ziffern, und jede steht für genau eine Vierergruppe.
 
 4
-00:00:15.715 --> 00:00:18.745
-Punkt für Punkt wächst so die Abkühlkurve.
+00:00:36.230 --> 00:00:44.016
+Ein Byte besteht aus zwei Vierergruppen. Du schlägst jede Gruppe einzeln in der Tabelle nach.
 
 5
-00:00:18.999 --> 00:00:26.610
-Eine Rechnung immer wieder auf das letzte Ergebnis anzuwenden, nennt man Iteration, und im Programm schreibst du sie als Schleife.
+00:00:44.523 --> 00:00:51.938
+Nimm 1110 0010. Die linke Gruppe ist E, die rechte ist 2. Das Byte ist also E2.
 
 6
-00:00:27.510 --> 00:00:30.153
-Eine Schleife wiederholt einen Block von Anweisungen.
+00:00:52.650 --> 00:00:59.397
+Noch eins zum Mitrechnen: 0011 1100 ergibt 3C.
 
 7
-00:00:30.151 --> 00:00:37.114
-Im Programmablaufplan zeichnest du sie als Rückweg: Eine Linie führt vom Ende des Blocks zurück vor die Bedingung.
+00:00:59.929 --> 00:01:06.440
+Zurück geht es genauso: A7 wird zu 1010 0111.
 
 8
-00:00:37.835 --> 00:00:44.645
-Bei der kopfgesteuerten Schleife steht die Bedingung oben: Sie wird vor jedem Durchlauf geprüft, der Block läuft vielleicht gar nicht.
+00:01:07.340 --> 00:01:18.979
+Was ist E2 als Dezimalzahl? Die Hexzahl hat zwei Stellen. Die linke ist 16-mal so viel wert wie die rechte. Die Stellenwerte sind 16 und 1.
 
 9
-00:00:44.931 --> 00:00:50.364
-Bei der fußgesteuerten Schleife steht die Bedingung unten: Der Block läuft mindestens einmal.
+00:01:19.298 --> 00:01:26.811
+E ist 14. Du rechnest 14 mal 16, das sind 224, plus 2 mal 1. Das ergibt 226.
 
 10
-00:00:50.760 --> 00:00:55.874
-Und die Zählschleife wiederholt den Block genau so oft, wie du vorher festlegst.
+00:01:27.399 --> 00:01:39.950
+Zur Probe nimmst du das Byte 1110 0010: 128 plus 64 plus 32 plus 2 ergibt ebenfalls 226.
 
 11
-00:00:56.336 --> 00:01:02.120
-In Python schreibst du die kopfgesteuerte Schleife mit while und die Zählschleife mit for.
+00:01:40.850 --> 00:01:51.555
+Wozu das Ganze? Hex ist kürzer als acht Nullen und Einsen und lässt sich trotzdem direkt in Bits zurückübersetzen. Du findest es zum Beispiel bei Farben im Web.
 
 12
-00:01:03.020 --> 00:01:05.491
-Jede Schleife braucht eine Abbruchbedingung.
+00:01:51.889 --> 00:02:07.403
+Der Code #E2001A ist das Rot der DHBW. Er besteht aus drei Bytes: E2 für Rot, 00 für Grün und 1A für Blau.
 
 13
-00:01:05.551 --> 00:01:09.789
-Und im Block muss sich etwas ändern, das die Bedingung irgendwann falsch macht.
+00:02:07.778 --> 00:02:18.368
+E2 ist 226, 00 ist 0 und 1A ist 26. Viel Rot, kein Grün, wenig Blau.
 
 14
-00:01:10.764 --> 00:01:14.842
-Bei der Abkühlung sinkt die Temperatur, also ist irgendwann Schluss.
-
-15
-00:01:15.183 --> 00:01:20.090
-Ändert sich nichts, entsteht eine Endlosschleife: Das Programm läuft ewig weiter.
-
-16
-00:01:20.797 --> 00:01:24.542
-In einer Maschinensteuerung überwacht deshalb ein Watchdog das Programm.
-
-17
-00:01:24.529 --> 00:01:32.190
-Das ist eine Zeitüberwachung: Meldet sich das Programm nicht regelmäßig, löst sie einen Neustart oder Not-Halt aus.
-
-18
-00:01:33.090 --> 00:01:36.759
-Ein berühmtes Beispiel für Iteration ist das Newton-Verfahren.
-
-19
-00:01:36.964 --> 00:01:44.796
-Wir suchen die Wurzel aus 2, das ist die Stelle, an der die Kurve x² − 2 die x-Achse schneidet.
-
-20
-00:01:45.562 --> 00:01:48.013
-Wir starten mit einem Schätzwert: 2.
-
-21
-00:01:48.643 --> 00:01:56.132
-Dort legen wir die Tangente an die Kurve. Wo sie die x-Achse schneidet, liegt der nächste Schätzwert: 1,5.
-
-22
-00:01:56.965 --> 00:02:07.542
-Jede weitere Tangente bringt uns näher: 1,4167, dann 1,41422.
-
-23
-00:02:08.598 --> 00:02:12.020
-Die Tangenten bilden eine Treppe, die sich der Wurzel nähert.
-
-24
-00:02:12.920 --> 00:02:14.216
-Wann hören wir auf?
-
-25
-00:02:14.577 --> 00:02:19.308
-Die Wurzel aus 2 hat unendlich viele Nachkommastellen, wir treffen sie nie genau.
-
-26
-00:02:19.578 --> 00:02:23.334
-Darum legen wir eine Toleranz fest, zum Beispiel 0,000001.
-
-27
-00:02:23.578 --> 00:02:27.946
-Die Schleife endet, sobald sich der Schätzwert um weniger als die Toleranz ändert.
-
-28
-00:02:28.264 --> 00:02:32.471
-Hier ist das nach fünf Schritten der Fall: Die letzte Änderung ist winzig.
-
-29
-00:02:32.935 --> 00:02:41.050
-Dasselbe gilt für die Abkühlung: Das Ziel 60 °C treffen wir nicht genau, wir fragen nur, ob wir es unterschritten haben.
-
-30
-00:02:41.950 --> 00:02:44.375
-Zwei Muster brauchst du in fast jeder Schleife.
-
-31
-00:02:44.534 --> 00:02:49.521
-Ein Zähler zählt die Durchläufe: In jedem Durchlauf wird er um 1 größer.
-
-32
-00:02:49.889 --> 00:02:55.565
-Ein Akkumulator sammelt Werte auf: In jedem Durchlauf kommt der neue Wert dazu.
-
-33
-00:02:56.514 --> 00:02:59.982
-Beide bekommen vor der Schleife einen Startwert, meistens 0.
-
-34
-00:03:00.214 --> 00:03:08.800
-Bei den ersten fünf Abkühlminuten ergibt die Summe geteilt durch die Anzahl den Mittelwert: 670,8 °C.
+00:02:18.787 --> 00:02:22.180
+Gleich kannst du es mit dem Hex-Farbmischer selbst ausprobieren.

@@ -10,7 +10,7 @@ Dateien:
 | `site/pap-editor.html` | Editor-Seite mit Demo-Aufgabe |
 | `site/assets/js/explorables-v05.js` | Bausteine von Termin 05 (`byte`, `range`, `summe`), nutzt die Engine nicht; der alte PAP-Baukasten der früheren V05 ist entfernt, die Beispieldaten `wSpec`, `wRun`, `fehlerSpec` gibt es nicht mehr |
 
-`explorables-v06.js` hat eine eigene, fest verdrahtete PAP-Zeichnung (`papKopf`, `papFuss`, `papZaehl`) und nutzt die Engine nicht. Sie bleibt unverändert, damit die V06-Bilder gleich bleiben.
+`explorables-v06.js` (Bausteine von Termin 06: `hexfarbe`, `doppelschleife`, `xorschrift`) nutzt die Engine nicht; die alte Fassung mit eigener PAP-Zeichnung (`papKopf`, `papFuss`, `papZaehl`) ist ersetzt. Die Plan-Regeln kommen aus `v05.css`, `v06.css` enthält nur `.v06-…`-Regeln.
 
 ## 1. Engine in drei Zeilen
 
@@ -38,7 +38,7 @@ host.innerHTML = KursPAP.figure([
 
 ### Baum-Knoten (Editor, Baukasten)
 
-`{id, k, v}` mit `k`: `in` (`typ`: `float`/`int`/`str`, `prompt`), `out`, `op`, `call`, `if` (`yes`, `no`), `while`, `for`, `repeat` (`body`).
+`{id, k, v}` mit `k`: `in` (`typ`: `float`/`int`/`str`, `prompt`), `out`, `op`, `call`, `if` (`yes`, `no`), `while`, `for`, `repeat` (`body`), `def` (`body`, `ret`; ab Termin 07, siehe „Funktion“ unten).
 
 | Symbol | Python |
 |---|---|
@@ -48,10 +48,23 @@ host.innerHTML = KursPAP.figure([
 | Unterprogramm | Funktionsaufruf, z. B. `abs(-3)` |
 | Verzweigung | `if`; Raute direkt im Nein-Zweig → `elif`; sonst `else:` |
 | Schleife kopfgesteuert | `while bedingung:` |
-| Zählschleife | `for i in range(1, 6):` (im PAP eine Raute mit Rückführung; sie zeigt „i von 1 bis 5?“: `range(a, b)` wird zu „von a bis b − 1“ mit ausgerechneter Zahl, `range(a, n + 1)` zu „von a bis n“, `range(b)` zu „von 0 bis b − 1“, alles andere bleibt wie getippt) |
+| Zählschleife | `for i in range(1, 6):` (im PAP eine Raute mit Rückführung; sie zeigt „i von 1 bis 5?“: `range(a, b)` wird zu „von a bis b − 1“ mit ausgerechneter Zahl, `range(a, n + 1)` zu „von a bis n“, `range(b)` zu „von 0 bis b − 1“; mit Schrittweite (ab Termin 06) wird `range(2, 20, 3)` zu „i von 2 bis 19, Schritt 3“, `range(0, hoehe + 1, abstand)` zu „y von 0 bis hoehe, Schritt abstand“ und `range(5, 0, -1)` zu „i von 5 bis 1, Schritt −1“ („bis“ heißt „nicht weiter als“; bei negativem Schritt nur mit Zahlen), alles andere bleibt wie getippt) |
 | Schleife fußgesteuert | `while True:` … `if not bedingung: break` (die Bedingung ist die Wiederholungsbedingung: `ja` = zurück) |
+| Funktion (ab Termin 07) | `def name(parameter):` mit eingerücktem Rumpf, zuletzt `return wert`; siehe unten |
 
-`parseCode(src)` ohne Option verhält sich wie der V05-Baukasten (nur Zuweisung, `print`, `float(input())`, `if`/`elif`/`else`). Mit `{erweitert:true}` kommen `while`, `for … in …`, `int(input())`, `input()` und Aufrufe dazu. Blockköpfe wie `def`, `try`, `with` werden mit Zeilennummer abgelehnt.
+`parseCode(src)` ohne Option verhält sich wie der V05-Baukasten (nur Zuweisung, `print`, `float(input())`, `if`/`elif`/`else`). Mit `{erweitert:true}` kommen `while`, `for … in …`, `int(input())`, `input()` und Aufrufe dazu. Blockköpfe wie `try` und `with` werden mit Zeilennummer abgelehnt; `def` ist ab Termin 07 erlaubt (Regeln unten).
+
+### Funktion (`def`, ab Termin 07)
+
+Ein Block der obersten Ebene. Knoten `{k:'def', v:'name(parameter)', body:[…], ret:'wert'}`: `v` ist der Funktionskopf, `body` der Rumpf aus den bekannten Symbolen, `ret` der Rückgabewert (leer heißt: kein `return`). Der Rückgabewert steht im eigenen Feld, nicht als Symbol im Rumpf; ein `return` mitten in einer Verzweigung ist deshalb im Editor nicht zeichenbar.
+
+- **Code:** `toText` setzt alle Funktionen vor das Hauptprogramm (jede durch eine Leerzeile getrennt), egal wo der Block im Baum steht. Ein leerer Rumpf ohne Rückgabe ergibt `pass`, ein leerer Kopf die Lücke `pass  # Lücke: Funktionskopf eintragen`. Der Aufruf im Hauptplan ist ein `call`-Symbol (Unterprogramm), z. B. `ms = kmh_in_ms(kmh)`.
+- **Zeichnung:** Der Hauptplan enthält keine `def`-Knoten. Jede Funktion bekommt einen eigenen kleinen Plan: Start-Oval mit dem Kopf (`kmh_in_ms(v)`), der Rumpf, am Ende ein Oval „Rückgabe wert“ (ohne `ret` das normale „Ende“). `toPapAll(baum)` liefert `[{def, spec}]` (Hauptplan zuerst), `svgAll`, `exportSvgAll`, `describeAll` und `marksAll` arbeiten über alle Pläne; im Editor stehen die Pläne untereinander, die Funktionen mit Überschrift. Ohne Funktion ändert sich nichts: ein Plan, dieselbe Ausgabe wie bisher.
+- **Nummern:** Erst die Symbole des Hauptplans, dann die der Funktionen; die Funktion selbst (Start-Oval) trägt eine Nummer. Ein Klick auf das Rückgabe-Oval wählt die Funktion.
+- **Einfügen:** Das Symbol „Funktion“ erscheint im Einfügemenü nur an Stellen der obersten Ebene (nie in Verzweigung, Schleife oder Funktion). Im Plan einer Funktion sind die Einfügestellen `{parent: def.id, slot: 'body'}`. Mit „Nach oben/unten“ sortieren sich Funktionen nur untereinander; Symbole kommen nicht aus einer Funktion in den Hauptplan und umgekehrt.
+- **Parser:** `parseCode(src, {erweitert:true})` liest `def name(parameter):` nur auf Einrückung 0, höchstens zwei Parameter, ohne Standardwerte. `return` ist nur als letzte Zeile des Rumpfs erlaubt und wird zu `ret`. Fehler tragen die Zeilennummer („Zeile 3: return steht nur am Ende der Funktion.“). Aufrufe einer vorher definierten Funktion (`x = f(y)` oder `f(y)`) werden `call`-Symbole.
+- **Freischalten:** Aufgaben tragen `data-erlaubt="def,op,out"` (Kennung `def`). Ohne `data-erlaubt` gilt die ganze Liste, der freie Editor kennt das Symbol immer; die Aufgaben der Termine 01 bis 06 nennen ihre Symbole und bleiben unverändert.
+- **Im Text:** `<Plan>` kennt `Unterprogramm: aufruf` (Rechteck mit Doppellinien), als erste Zeile `Funktion: name(parameter)` (Start-Oval mit Namen) und als letzte Zeile `Rückgabe: wert` (Ende-Oval „Rückgabe wert“). Der Plan einer Funktion ist ein eigener `<Plan>`.
 
 ## 2. Editor-Seite
 
@@ -75,7 +88,7 @@ Einbinden (Reihenfolge wie in den Laboren, `pap-engine.js` vor `pap-editor.js`):
 Kopierfertiges Beispiel (in einem `.l-task` eines Labors oder frei auf einer Seite):
 
 ```html
-<div class="a-task k-pap-aufgabe" data-a="pap-zeichnen" data-id="v06-gerade-summe" data-timeout="8000"
+<div class="a-task k-pap-aufgabe" data-a="pap-zeichnen" data-id="summe-gerade" data-timeout="8000"
      data-erlaubt="in,out,op,if,while,repeat,for,call">
   <div class="a-task__head"><h3 class="a-task__title">Summe der geraden Zahlen</h3></div>
   <p>Zeichne einen PAP, der n einliest und die Summe der geraden Zahlen von 1 bis n ausgibt.</p>

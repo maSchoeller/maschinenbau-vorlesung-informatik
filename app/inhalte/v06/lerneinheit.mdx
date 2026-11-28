@@ -1,0 +1,605 @@
+---
+titel: "Termin 06 · Vier Bits, eine Ziffer: Hexadezimal, XOR und Schleifen in Schleifen · Lerneinheit · Informatik Maschinenbau"
+beschreibung: "Das Hexadezimalsystem mit Vierergruppen und Farbcodes, die Schrittweite von range mit Countdown, Schleife in Schleife mit Würfelpaaren und XOR als Geheimschrift. Mit Farbmischer, Schleifenraster und XOR-Baustein zum Ausprobieren."
+body:
+  data-lesson: V06
+  data-page: lerneinheit
+stile:
+  - ../assets/css/dhbw-base.css
+  - ../assets/css/kurs.css
+  - ../assets/css/aufgaben.css
+  - ../assets/css/editor.css
+  - ../assets/css/v05.css
+  - ../assets/css/v06.css
+skripte:
+  - ../assets/js/speicher.js
+  - ../assets/js/icons.js
+  - src: ../assets/js/editor.js
+    defer: true
+  - ../assets/js/pap-engine.js
+  - ../assets/js/explorables-v06.js
+  - ../assets/js/kurs.js
+  - ../assets/js/aufgaben.js
+---
+
+<Lerneinheit nr="V06" name="Termin 06" labor="v06-labor.html">
+
+<Kopf marke="Termin 06 · 1. Semester · Lerneinheit" titel="Vier Bits, eine Ziffer: Hexadezimal, XOR und Schleifen in Schleifen">
+
+Ein Byte mit acht Nullen und Einsen ist lang und leicht falsch abgeschrieben. Mit zwei Ziffern geht es kürzer: Jede Vierergruppe wird eine Ziffer. So stehen Farben im Web, und so schreibt man Bytes auf. Außerdem lässt du heute Schleifen auch rückwärts und in Sprüngen laufen, steckst eine Schleife in eine andere, und du verschlüsselst ein Wort mit einer einzigen Verknüpfung, die sich selbst wieder rückgängig macht.
+
+- eine Binärzahl mit bis zu 8 Stellen ins Hexadezimalsystem umrechnen und zurück, und eine zweistellige Hexzahl in eine Dezimalzahl
+- mit `range(start, stopp, schritt)` vorwärts in Sprüngen und rückwärts zählen, einen Plan mit der Raute „i von 5 bis 1, Schritt −1?“ lesen, in Code übertragen und angeben, welche Werte `i` annimmt
+- eine Schleife in eine andere stecken (Raute in der Raute), die Durchläufe zählen und mit `if` im inneren Rumpf Treffer zählen
+- XOR erklären und zwei Bytes bitweise mit UND, ODER und XOR verknüpfen, und wissen: Zweimal XOR mit demselben Schlüssel ergibt wieder das Original
+
+Alles aus Termin 02 bis 05 gilt weiter: Wahrheitstabellen, `if`, `and` und `or`, `while`, `for` mit `range` und das Zweiersystem. Geübt wird im [Programmierlabor](v06-labor.html).
+
+</Kopf>
+
+<Abschnitt id="hexadezimal" nr="1" titel="Das Hexadezimalsystem">
+
+Dezimal gibt es nur zehn Ziffern, 0 bis 9. Für die Werte 10 bis 15 nimmt man Buchstaben: A = 10, B = 11, C = 12, D = 13, E = 14, F = 15. Zusammen sind das 16 Ziffern.
+
+So entsteht das <Begriff e="Ein Zahlensystem mit 16 Ziffern: 0 bis 9 und A bis F.">Hexadezimalsystem</Begriff> (auch Sechzehnersystem). Eine <Begriff e="Eine der Ziffern 0 bis 9 und A bis F. A ist 10, F ist 15.">Hex-Ziffer</Begriff> kann also 16 verschiedene Werte haben.
+
+<div class="k-try">
+
+### Vorhersage: Wie viele Bit hat eine Hex-Ziffer?
+
+<Vorhersage>
+
+Eine Hex-Ziffer hat 16 mögliche Werte. Wie viele Bit braucht sie, um jeden davon darzustellen?
+
+- 2
+- [x] 4
+- 8
+- 16
+
+Vier Bit haben 2⁴ = 16 Werte, von 0000 bis 1111. Das sind die Zeilen einer Wahrheitstabelle mit vier Variablen. Darum ist jede Vierergruppe eine Ziffer und jedes Byte zwei.
+
+</Vorhersage>
+
+</div>
+
+Jede Hex-Ziffer steht also für eine Vierergruppe, und ein Byte wird zu zwei Ziffern. Die Tabelle zum Nachschlagen:
+
+<div class="k-tablewrap">
+<table class="k-types">
+<tbody>
+<tr><th scope="row">binär</th><td>0000</td><td>0001</td><td>0010</td><td>0011</td><td>0100</td><td>0101</td><td>0110</td><td>0111</td></tr>
+<tr><th scope="row">hex</th><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td></tr>
+<tr><th scope="row">dezimal</th><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="k-tablewrap">
+<table class="k-types">
+<tbody>
+<tr><th scope="row">binär</th><td>1000</td><td>1001</td><td>1010</td><td>1011</td><td>1100</td><td>1101</td><td>1110</td><td>1111</td></tr>
+<tr><th scope="row">hex</th><td>8</td><td>9</td><td>A</td><td>B</td><td>C</td><td>D</td><td>E</td><td>F</td></tr>
+<tr><th scope="row">dezimal</th><td>8</td><td>9</td><td>10</td><td>11</td><td>12</td><td>13</td><td>14</td><td>15</td></tr>
+</tbody>
+</table>
+</div>
+
+Hexzahlen schreibst du mit Großbuchstaben und mit genau zwei Ziffern je Byte: `E2`, `0A`. Eine Hexzahl wie `25` sieht aus wie eine Dezimalzahl, ist aber eine andere Zahl: 2 · 16 + 5 = 37. Wo eine Verwechslung droht, steht dazu, welches System gemeint ist.
+
+**Binär in hex, Gruppe für Gruppe.** `1110 0010`: 1110 ist E, 0010 ist 2, also **E2**. Noch ein Beispiel: `0011 1100` ergibt **3C**. Umgekehrt von hex in binär: `A7` ergibt A = 1010 und 7 = 0111, also `1010 0111`. Die Vierergruppen aus Termin 05 sind jetzt die Ziffern.
+
+**Hex in dezimal.** Wie im Zehnersystem die Zehner und Einer, so gibt es hier Sechzehner und Einer: Jede Stelle ist 16-mal so viel wert wie die rechts daneben. `E2` ist 14 · 16 + 2 · 1 = 224 + 2 = **226**. Die Probe über binär: `1110 0010` = 128 + 64 + 32 + 2 = 226.
+
+**Dezimal in hex, über binär.** Erst mit der Stellenwerttabelle aus Termin 05, dann Gruppe für Gruppe. 200 ist `1100 1000`, und 1100 ist C, 1000 ist 8. Also **C8**. Die Probe: 12 · 16 + 8 = 200.
+
+**Wozu das Ganze?** Hex ist kürzer und weniger fehleranfällig als acht Nullen und Einsen, und trotzdem direkt als Bits lesbar. Du siehst es jeden Tag bei Farben im Web. Jede Farbe hat drei Bytes, je eines für Rot, Grün und Blau. `#E2001A` ist das Rot der DHBW: E2 = 226 Rot, 00 = 0 Grün, 1A = 26 Blau.
+
+<Explorable name="hexfarbe" titel="Hex-Farbmischer">
+
+Stell Rot, Grün und Blau ein und sieh, wie aus jedem Byte zwei Hex-Ziffern werden. Du kannst auch einen Farbcode eintippen. Vermute zuerst: Was ergibt `#FFFFFF`? Und `#000000`? Danach: Was ergibt `#00FF00`?
+
+<Ohne>
+
+Für den Farbmischer wird JavaScript benötigt. Beispiel: Rot 226, Grün 0, Blau 26 ergibt `#E2001A`, denn 226 ist `1110 0010` und damit E2, 0 ist 00, und 26 ist `0001 1010` und damit 1A. Mit den Reglern probierst du aus, was `#FFFFFF`, `#000000` und `#00FF00` ergeben.
+
+</Ohne>
+
+</Explorable>
+
+Die Auflösung: `#FFFFFF` ist Weiß, denn alle drei Bytes sind FF und alle Bits sind an. `#000000` ist Schwarz, alle Bits sind aus. `#00FF00` ist reines Grün: nur das Grün-Byte ist voll.
+
+<div class="k-try">
+
+### Übung: Hexzahlen umrechnen
+
+Rechne um. Hexzahlen schreibst du mit zwei Ziffern, Binärzahlen mit 8 Stellen, ohne Anführungszeichen. Ob du groß oder klein schreibst, ist hier egal. Erst auf Papier, dann hier prüfen.
+
+<Aufgabe art="trace" id="hexzahlen" titel="Hexzahlen umrechnen">
+
+<Daten datei="lerneinheit/hex-uebung.daten.json" />
+
+</Aufgabe>
+
+</div>
+
+<Hinweis art="merke">
+
+Hexadezimal: 16 Ziffern, 0 bis 9 und A bis F. Eine Hex-Ziffer ist eine Vierergruppe, ein Byte sind zwei Ziffern. Binär und hex rechnest du Gruppe für Gruppe um, hex in dezimal mit den Stellenwerten 16 und 1, dezimal in hex über binär.
+
+</Hinweis>
+
+### Erklärvideo (ca. 3 Min)
+
+<Video name="v06-theorie" id="video-theorie" titel="Erklärvideo: Vierergruppen und Hex-Ziffern" fehlt="Video folgt. Bis dahin: Die Tabellen oben und der Farbmischer zeigen dasselbe.">
+
+Erklärvideo: Vierergruppen und Hex-Ziffern (ca. 3 Min). Untertitel sind eingeschaltet (Deutsch).
+
+</Video>
+
+</Abschnitt>
+
+<Abschnitt id="schrittweite" nr="2" titel="Sprünge und Rückwärtszählen: die Schrittweite">
+
+Mit `range(start, stopp, schritt)` zählt `for` von `start` in Schritten von `schritt`, solange `i` den Stoppwert noch nicht erreicht hat. Der Stoppwert selbst gehört nie dazu. Mit einem negativen Schritt zählt `for` rückwärts.
+
+Du kennst den Raketenstart aus Termin 04: ein Countdown mit `while` und einem eigenen Zähler, der um 1 sinkt (`zaehler = zaehler - 1`). Jetzt dasselbe mit `for`:
+
+```python
+for i in range(5, 0, -1):
+    print(i)
+print("Start")
+```
+
+<p class="k-small k-muted">Führ das Programm aus. Mit „Schritt für Schritt“ siehst du, wie `i` beim Rückwärtszählen kleiner wird.</p>
+
+Die Ausgabe ist `5`, `4`, `3`, `2`, `1`, `Start`. Die drei Zahlen heißen Start, Stopp und <Begriff e="Die dritte Zahl in range: Um wie viel springt i bei jedem Durchlauf? Ein negativer Wert zählt rückwärts.">Schrittweite</Begriff>. Der Stoppwert gehört wieder nicht dazu: Die 0 erscheint nicht. Im Plan beschriftet die Raute die Schrittweite:
+
+<Plan titel="Countdown mit for">
+
+```text
+Schleife: i von 5 bis 1, Schritt −1?
+  Ausgabe: i
+Ausgabe: "Start"
+```
+
+</Plan>
+
+Die Raute fragt: Ist noch ein `i` von 5 bis 1 übrig? Das „bis“ nennt den kleinsten Wert, den `i` noch haben darf: Stoppwert plus 1, weil es rückwärts geht.
+
+**Vorwärts in Sprüngen.** Drei Beispiele:
+
+<div class="k-tablewrap">
+<table class="k-types">
+<thead><tr><th scope="col">Aufruf</th><th scope="col">Werte von <code>i</code></th><th scope="col">Wie oft</th><th scope="col">Alltag</th></tr></thead>
+<tbody>
+<tr><th scope="row"><code>range(1, 10, 2)</code></th><td>1, 3, 5, 7, 9</td><td>5</td><td>Hausnummern einer Straßenseite</td></tr>
+<tr><th scope="row"><code>range(0, 11, 5)</code></th><td>0, 5, 10</td><td>3</td><td>alle 5 Minuten</td></tr>
+<tr><th scope="row"><code>range(0, 101, 25)</code></th><td>0, 25, 50, 75, 100</td><td>5</td><td>Löcher alle 25 mm auf einer 100 mm langen Leiste</td></tr>
+</tbody>
+</table>
+</div>
+
+Bei `range(0, 101, 25)` steht der Stoppwert 101, damit die 100 noch dazugehört. Mit `range(0, 100, 25)` fehlt die letzte Position (0, 25, 50, 75).
+
+Der Stoppwert muss nicht getroffen werden. `range(2, 20, 3)` ergibt 2, 5, 8, 11, 14, 17, also 6 Durchläufe. Die nächste Zahl wäre 20 und gehört nicht mehr dazu. Im Plan steht dafür „i von 2 bis 19, Schritt 3“. Das „bis“ heißt „nicht weiter als“: `i` darf nicht über 19 hinaus, auch wenn die Werte schon bei 17 enden.
+
+Die Faustregel aus Termin 05 bleibt: Steht vorher fest, wie oft, nimm `for`. Neu: Für Sprünge und Rückwärtszählen nimmst du den dritten Wert.
+
+<div class="k-try">
+
+### Vorhersage: Wo endet der Countdown?
+
+<Vorhersage>
+
+Was gibt das Programm aus?
+
+- 6, 5, 4, 3, 2, 1
+- [x] 6, 5, 4, 3, 2
+- 5, 4, 3, 2
+- 2, 3, 4, 5, 6
+
+Der Stoppwert 1 gehört nicht dazu, auch nicht beim Rückwärtszählen. Es sind 5 Durchläufe.
+
+</Vorhersage>
+
+```python
+for i in range(6, 1, -1):
+    print(i)
+```
+
+<p class="k-small k-muted">Wähl erst deinen Tipp, dann führ das Programm aus.</p>
+
+</div>
+
+<div class="k-try">
+
+### Vorhersage: Den Schritt vergessen
+
+<Vorhersage>
+
+Im Programm steht `for i in range(5, 0):` ohne den Schritt. Was erscheint?
+
+- 5, 4, 3, 2, 1
+- 1, 2, 3, 4, 5
+- [x] Nichts, der Rumpf läuft nie.
+- Eine Fehlermeldung
+
+Ohne Schritt zählt `range` vorwärts, und 5 ist schon größer als der Stoppwert 0. Es gibt keine Zahl. Python meldet das nicht.
+
+</Vorhersage>
+
+```python
+for i in range(5, 0):
+    print(i)
+```
+
+<p class="k-small k-muted">Wähl erst deinen Tipp, dann führ das Programm aus.</p>
+
+</div>
+
+<Hinweis art="achtung">
+
+Zählst du gegen den Schritt, läuft der Rumpf nie, und Python meldet nichts. `range(5, 0)` und `range(1, 6, -1)` geben keine Zahl. Rückwärts braucht den Schritt `-1`. Andere negative Schritte wie `range(10, 0, -3)` (10, 7, 4, 1) musst du nur lesen können, selbst schreiben musst du sie nicht.
+
+</Hinweis>
+
+</Abschnitt>
+
+<Abschnitt id="schleife-in-schleife" nr="3" titel="Schleife in Schleife">
+
+Steckt eine Schleife im Rumpf einer anderen, läuft die <Begriff e="Die Schleife im Rumpf einer anderen Schleife. Sie läuft bei jedem Durchlauf der äußeren einmal ganz durch.">innere Schleife</Begriff> bei jedem Durchlauf der äußeren einmal ganz durch.
+
+Ein Sitzplan zeigt die Idee: 2 Reihen mit je 3 Plätzen. Für jede Reihe `i` kommen alle Plätze `j`. Im Plan sitzt eine Raute in der anderen:
+
+<Plan titel="Sitzplan: Reihen und Plätze">
+
+```text
+Schleife: i von 1 bis 2?
+  Schleife: j von 1 bis 3?
+    Ausgabe: "Reihe", i, "Platz", j
+```
+
+</Plan>
+
+```python
+for i in range(1, 3):
+    for j in range(1, 4):
+        print(f"Reihe {i}, Platz {j}")
+```
+
+<p class="k-small k-muted">Führ das Programm aus und geh es mit „Schritt für Schritt“ durch.</p>
+
+Die Ausgabe: `Reihe 1, Platz 1`, `Reihe 1, Platz 2`, `Reihe 1, Platz 3`, `Reihe 2, Platz 1`, `Reihe 2, Platz 2`, `Reihe 2, Platz 3`. Das sind sechs Zeilen. Zuerst läuft `j` ganz durch, dann erst springt `i` weiter, und `j` beginnt wieder bei 1. Wie bei einem Kilometerzähler: Die rechte Ziffer läuft schnell, die linke langsam.
+
+Die Einrückung hat zwei Stufen: `for j` steht im Rumpf von `for i` (4 Leerzeichen), `print` steht im Rumpf von `for j` (8 Leerzeichen).
+
+<Explorable name="doppelschleife" titel="Schleife in Schleife">
+
+Stell die Grenzen für `i` und `j` ein und lass das Raster Zelle für Zelle laufen. Mit dem Schalter siehst du alle Würfelpaare. Vermute zuerst: Wie oft läuft der innere Rumpf bei 3 und 4? Und im Würfelmodus: Wie viele Zellen sind am Ende hervorgehoben?
+
+<Ohne>
+
+Für den Baustein wird JavaScript benötigt. Du stellst die Grenzen für `i` und `j` ein. Das Raster zeigt Zelle für Zelle, wie oft der innere Rumpf läuft. Bei jedem neuen `i` beginnt `j` wieder bei 1. Im Würfelmodus siehst du alle Paare zweier Würfel.
+
+</Ohne>
+
+</Explorable>
+
+Die Auflösung: Bei 3 und 4 läuft der innere Rumpf 3 · 4 = 12-mal, so oft, wie die Raster-Zellen es zeigen. Das gilt immer: Der innere Rumpf läuft so oft, wie außen mal innen. Im Würfelmodus sind am Ende 6 Zellen hervorgehoben, die sechs Paare mit Summe 7.
+
+<div class="k-try">
+
+### Vorhersage: Wer läuft schneller?
+
+<Vorhersage>
+
+Was gibt das Programm aus? Jede Zeile zeigt `i` und `j`.
+
+- `1 1`, `2 1`, `1 2`, `2 2`
+- [x] `1 1`, `1 2`, `2 1`, `2 2`
+- `1 1`, `2 2`
+- `1 2`, `1 1`, `2 2`, `2 1`
+
+Die innere Schleife läuft bei jedem `i` ganz durch: erst `1 1`, `1 2`, dann springt `i` auf 2, und `j` beginnt wieder bei 1. Zusammen 2 · 2 = 4 Zeilen.
+
+</Vorhersage>
+
+```python
+for i in range(1, 3):
+    for j in range(1, 3):
+        print(f"{i} {j}")
+```
+
+<p class="k-small k-muted">Wähl erst deinen Tipp, dann führ das Programm aus.</p>
+
+</div>
+
+**Alle Würfelpaare.** Zwei Würfel haben 6 · 6 = 36 Paare. Wie oft ist die Augensumme 7? Der Zähler steht vor beiden Schleifen, der Vergleich im inneren Rumpf:
+
+<Plan titel="Würfelpaare mit Summe 7">
+
+```text
+anzahl = 0
+Schleife: i von 1 bis 6?
+  Schleife: j von 1 bis 6?
+    Entscheidung: i + j == 7?
+      ja:
+        anzahl = anzahl + 1
+Ausgabe: anzahl
+```
+
+</Plan>
+
+```python
+anzahl = 0
+for i in range(1, 7):
+    for j in range(1, 7):
+        if i + j == 7:
+            anzahl = anzahl + 1
+print(f"Summe 7 kommt {anzahl}-mal vor")
+```
+
+<p class="k-small k-muted">Führ das Programm aus. Es erscheint `Summe 7 kommt 6-mal vor`.</p>
+
+Die Paare sind 1 und 6, 2 und 5, 3 und 4, 4 und 3, 5 und 2, 6 und 1. Die drei Stellen aus Termin 05 gelten jetzt für beide Schleifen: Der Zähler steht **vor** der äußeren Schleife, das `if` **im inneren Rumpf**, das `print` **nach** beiden Schleifen ganz links.
+
+Raster mit Zeilen und Spalten, Pixel auf dem Bildschirm und später das Spielfeld bei Schiffe versenken laufen nach demselben Prinzip. Die Einmaleins-Tafel im Labor ist dasselbe Prinzip mit zwei Zahlen.
+
+<div class="k-try">
+
+### Vorhersage: Zähler im äußeren Rumpf
+
+<Vorhersage>
+
+Bei den Würfelpaaren hat jemand `anzahl = 0` als erste Zeile in den Rumpf der äußeren Schleife gerückt. Was steht hinter „Summe 7 kommt“?
+
+- 0
+- [x] 1
+- 6
+- 36
+
+Bei jedem neuen `i` beginnt `anzahl` wieder bei 0. Am Ende zählt nur der letzte Durchlauf, `i = 6`, und der hat genau ein Paar (6 und 1). Der Startwert gehört vor beide Schleifen.
+
+</Vorhersage>
+
+```python data-run="nach-antwort"
+for i in range(1, 7):
+    anzahl = 0
+    for j in range(1, 7):
+        if i + j == 7:
+            anzahl = anzahl + 1
+print(f"Summe 7 kommt {anzahl}-mal vor")
+```
+
+<p class="k-small k-muted">Wähl erst deinen Tipp, dann führ das Programm aus.</p>
+
+</div>
+
+<Hinweis art="merke">
+
+Schleife in Schleife: Die innere Schleife läuft bei jedem Durchlauf der äußeren ganz durch und beginnt wieder bei ihrem Startwert. Durchläufe des inneren Rumpfs: außen mal innen. Der Zähler steht vor beiden Schleifen, die Arbeit im inneren Rumpf, das Ergebnis nach beiden.
+
+</Hinweis>
+
+</Abschnitt>
+
+<Abschnitt id="xor" nr="4" titel="Bitoperationen und XOR">
+
+UND und ODER kennst du aus Termin 03 und 04. Dabei heißt 1 wahr und 0 falsch. Dazu kommt <Begriff e="Entweder … oder: Eine dritte Verknüpfung neben UND und ODER.">XOR</Begriff>, „entweder … oder“.
+
+<div class="k-try">
+
+### Vorhersage: Wann ist XOR wahr?
+
+<Vorhersage>
+
+Wann ist XOR wahr?
+
+- Wenn mindestens eine Seite wahr ist.
+- [x] Wenn genau eine Seite wahr ist.
+- Wenn beide Seiten wahr sind.
+- Wenn beide Seiten gleich sind.
+
+„Mindestens eine“ ist ODER, „beide“ ist UND, „beide gleich“ ist das Gegenteil von XOR. Bei 1 XOR 1 kommt 0.
+
+</Vorhersage>
+
+</div>
+
+XOR ist wahr, wenn genau eine der beiden Seiten wahr ist. Die Wahrheitstabelle neben UND und ODER:
+
+<div class="k-tablewrap">
+<table class="k-types">
+<thead><tr><th scope="col">A</th><th scope="col">B</th><th scope="col">A UND B</th><th scope="col">A ODER B</th><th scope="col">A XOR B</th></tr></thead>
+<tbody>
+<tr><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>0</td><td>1</td><td>0</td><td>1</td><td>1</td></tr>
+<tr><td>1</td><td>0</td><td>0</td><td>1</td><td>1</td></tr>
+<tr><td>1</td><td>1</td><td>1</td><td>1</td><td>0</td></tr>
+</tbody>
+</table>
+</div>
+
+Der Unterschied zu ODER liegt nur in der letzten Zeile: Bei ODER darf auch beides sein, bei XOR nicht.
+
+Ein Beispiel aus dem Alltag ist das Treppenhauslicht mit zwei Schaltern, einer unten, einer oben. Das Licht ist an, wenn die Schalter verschieden stehen, und jeder Schalter schaltet um. Das ist XOR: Bei 0 und 1 ist es an, bei 1 und 0 auch, bei gleicher Stellung aus. Wer oben umlegt, kippt das Ergebnis, egal wie der untere steht.
+
+**Bitweise.** Zwei Bytes untereinander, und in jeder Spalte gilt die Tabelle. <Begriff e="Spalte für Spalte: Jedes Bit wird nur mit dem Bit darüber oder darunter verknüpft.">Bitweise</Begriff> mit 4 Bit: `1100` und `1010` ergeben bei UND `1000`, bei ODER `1110` und bei XOR `0110`. Jetzt mit einem Byte:
+
+<div class="k-tablewrap">
+<table class="k-types">
+<thead><tr><th scope="col"></th><th scope="col">Byte</th></tr></thead>
+<tbody>
+<tr><th scope="row">A</th><td>0110 1001</td></tr>
+<tr><th scope="row">B</th><td>1010 1100</td></tr>
+<tr><th scope="row">A UND B</th><td>0010 1000</td></tr>
+<tr><th scope="row">A ODER B</th><td>1110 1101</td></tr>
+<tr><th scope="row">A XOR B</th><td>1100 0101</td></tr>
+</tbody>
+</table>
+</div>
+
+**Verschlüsseln.** Verknüpfst du das Byte A mit einem <Begriff e="Ein Wert, mit dem man ein Byte verknüpft, um es zu verschlüsseln. Wer den Schlüssel kennt, kann es wieder entschlüsseln.">Schlüssel</Begriff> B per XOR, entsteht `1100 0101`.
+
+Als Geheimschrift nimmst du Buchstaben als Zahlen, A = 1 bis Z = 26, mit je 5 Bit. Das reicht, denn 2⁵ = 32 Werte decken die 26 Buchstaben ab. Auch der Schlüssel hat 5 Bit, also 0 bis 31. Beispiel: `HALLO` mit dem Schlüssel `01101` (13) ergibt `ELAAB`. Das H ist 8 = `01000`, und `01000` XOR `01101` ergibt `00101` = 5, also E.
+
+<Explorable name="xorschrift" titel="XOR-Geheimschrift">
+
+Gib ein Wort aus bis zu sechs Großbuchstaben und einen Schlüssel von 0 bis 31 ein und sieh, wie jede Spalte verknüpft wird. Mit dem Knopf verknüpfst du das Ergebnis noch einmal mit demselben Schlüssel. Vermute zuerst: Was kommt heraus, wenn du das Ergebnis noch einmal mit dem Schlüssel verknüpfst?
+
+<Ohne>
+
+Für den Baustein wird JavaScript benötigt. Du gibst ein Wort und einen Schlüssel ein und siehst Spalte für Spalte das XOR. Mit dem Knopf verknüpfst du das Ergebnis noch einmal mit dem Schlüssel. Ergibt das XOR 0 oder eine Zahl von 27 bis 31, gibt es dafür keinen Buchstaben, und die Zahl bleibt stehen.
+
+</Ohne>
+
+</Explorable>
+
+Die Auflösung: Verknüpfst du das Ergebnis noch einmal mit demselben Schlüssel, steht wieder das Original da. Beim Byte: `1100 0101` XOR `1010 1100` ergibt wieder `0110 1001`, also A. Der Grund: Jede Spalte wird zweimal gekippt oder gar nicht, und zweimal kippen heißt zurück. Das ist die einfachste Verschlüsselung und steckt als Teil in echten Verfahren.
+
+<Hinweis art="merke">
+
+XOR ist wahr, wenn genau eine Seite wahr ist. Zwei Bytes verknüpfst du bitweise, Spalte für Spalte. Zweimal XOR mit demselben Schlüssel ergibt wieder das Original, so wird mit XOR verschlüsselt und entschlüsselt.
+
+</Hinweis>
+
+</Abschnitt>
+
+<Abschnitt id="selbstcheck" nr="5" titel="Selbstcheck">
+
+Sechs Fragen in den Formen der Klausur: umrechnen, Farbe lesen, Durchläufe zählen, Ausgabe bestimmen, XOR verstehen. Die Reihenfolge der Fragen und Antworten ist bei jedem Aufruf anders. Rechne im Kopf oder auf Papier, nicht im Editor.
+
+<Quiz id="v06">
+
+<Frage id="binaer-hex" typ="mc" punkte="3" titel="Binär in hex">
+
+Welche Hexzahl ist `1001 1110`?
+
+- [x] `9E`
+- `E9`
+- `9F`
+- `8E`
+
+<Erklaerung>
+
+1001 ist 9, 1110 ist E, also `9E`. `E9` hat die Gruppen vertauscht, `9F` endet auf 1111, und `8E` beginnt mit 1000.
+
+</Erklaerung>
+
+</Frage>
+
+<Frage id="hex-dezimal" typ="num" punkte="3" antwort="93" tol="0" titel="Hex in dezimal">
+
+Welche Dezimalzahl ist die Hexzahl `5D`?
+
+<Erklaerung>
+
+D ist 13, also 5 · 16 + 13 = 80 + 13 = 93.
+
+</Erklaerung>
+
+</Frage>
+
+<Frage id="farbe" typ="mc" punkte="3" titel="Farbe lesen">
+
+Welche Farbe hat der Code `#00FF00`?
+
+- [x] reines Grün
+- reines Rot
+- reines Blau
+- Schwarz
+
+<Erklaerung>
+
+Die Bytes sind Rot 00, Grün FF und Blau 00. Nur Grün ist voll an.
+
+</Erklaerung>
+
+</Frage>
+
+<Frage id="durchlaeufe" typ="num" punkte="3" antwort="5" tol="0" titel="Durchläufe zählen">
+
+Wie oft läuft der Rumpf von `for i in range(1, 20, 4):`?
+
+<Erklaerung>
+
+`i` ist 1, 5, 9, 13, 17. Die nächste Zahl, 21, ist schon über dem Stoppwert 20.
+
+</Erklaerung>
+
+</Frage>
+
+<Frage id="doppelschleife" typ="output" punkte="4" antwort="5" titel="Ausgabe bestimmen: Schleife in Schleife">
+
+Was gibt das Programm aus?
+
+```python class="k-code" data-run="nach-antwort"
+anzahl = 0
+for i in range(1, 4):
+    for j in range(1, 5):
+        if i * j >= 6:
+            anzahl = anzahl + 1
+print(anzahl)
+```
+
+<Erklaerung>
+
+`i` ist 1 bis 3, `j` ist 1 bis 4. `i * j >= 6` stimmt bei 2 und 3 (6), 2 und 4 (8), 3 und 2 (6), 3 und 3 (9) und 3 und 4 (12). Das sind 5 Paare. `print` steht nach beiden Schleifen und läuft einmal.
+
+</Erklaerung>
+
+</Frage>
+
+<Frage id="xor-verstehen" typ="mc" punkte="4" titel="XOR verstehen (mehrere richtig)">
+
+Welche Aussagen stimmen? Kreuze alle richtigen an.
+
+- [x] Bei XOR ist das Ergebnis 1, wenn genau eines der beiden Bits 1 ist.
+- [x] Verknüpft man ein Byte zweimal mit demselben Schlüssel per XOR, steht wieder das Byte da.
+- Bei XOR ist das Ergebnis 1, wenn mindestens eines der beiden Bits 1 ist.
+- 1 XOR 1 ergibt 1.
+
+<Erklaerung>
+
+„Mindestens eines“ ist ODER, und bei XOR gibt 1 XOR 1 gleich 0.
+
+</Erklaerung>
+
+</Frage>
+
+</Quiz>
+
+</Abschnitt>
+
+<Weiter ziel="v06-labor.html">
+
+Jetzt bist du dran. Im Labor zeichnest du die Einmaleins-Tafel als Plan mit zwei Schleifen, überträgst einen Plan mit Schrittweite in Code und verknüpfst Bytes bitweise. Zwei weitere Videos findest du dort an der passenden Station: der Python-Werkzeugkasten und das vorgerechnete Beispiel. Das Umrechnen von Hexzahlen übst du im Training.
+
+</Weiter>
+
+<Dozent titel="Für Dozierende: Ablauf des Termins (125 Minuten) und Training">
+
+<p class="k-small k-muted">Vier Blöcke: zwei Theorie (T3 Zahlensysteme, Teil 2 von 2, und T4 Bitoperationen und XOR), zwei Programmieren (P3 Schleifen, Teil 6 und 7 von 7). Jeder Block à 30 Minuten verplant höchstens 28 Minuten, der letzte (25 Minuten) höchstens 24; die Minuten eines Abschnitts enthalten das Zeigen der genannten Karte. Die Lerneinheit ist zum Zeigen und Nachlesen, geübt wird im <a href="v06-labor.html">Programmierlabor</a>. Die Videos laufen nicht im Termin. XOR steht am Ende, weil es nichts Neues in Python braucht.</p>
+
+<div class="k-tablewrap">
+<table class="k-plan">
+<thead><tr><th scope="col">Minuten</th><th scope="col">Wo</th><th scope="col">Was zu tun ist</th></tr></thead>
+<tbody>
+<tr><td>0–10</td><td>Papier, Beamer</td><td><strong>Warm-up.</strong> Training Termin 05, „Umrechnen“: acht Zeilen auf Papier (5). Auflösung: 26, 85, 129, 254 sowie 0010 0101, 0110 0100, 1000 0000, 1111 1111 (2). Brücke in die Runde: Wenn jede Vierergruppe eine Ziffer wäre, wie lang wäre Zeile 5? Die Gruppen 0010 und 0101 sind 2 und 5, also <code>25</code>, und das ist nicht fünfundzwanzig, sondern 37 (3).</td></tr>
+<tr><td>10–40</td><td>Lerneinheit 1</td><td><strong>Theorie: das Hexadezimalsystem.</strong> Brücke: 16 Werte, Buchstaben A bis F, Tabelle der Vierergruppen, Vorhersage „Wie viele Bit hat eine Hex-Ziffer?“ (4). Binär in hex: <code>1110 0010</code> an der Tafel, <code>0011 1100</code> per Zuruf, hex in binär <code>A7</code> (5). Hex in dezimal: <code>E2</code> mit 16 und 1 (4). Dezimal in hex über binär: 200 (3). Baustein „Hex-Farbmischer“ mit Vermutung, das DHBW-Rot (5). Alle rechnen die Übung „Hexzahlen umrechnen“ auf Papier, Prüfen in der Übung (5). Verplant: 26. Die Karte zum Nachprüfen kommt erst im letzten Block.</td></tr>
+<tr><td>40–70</td><td>Lerneinheit 2, Labor 1 (Karte 1), 5</td><td><strong>Programmieren 1: Schrittweite.</strong> Rückgriff Raketenstart mit <code>while</code> (2). Countdown mit <code>for</code> und <code>range(5, 0, -1)</code>, Plan mit der Schrittweite, Karte 1 (5). Vorhersage „Wo endet der Countdown?“ (3). Sprünge vorwärts: Hausnummern, alle 5 Minuten, Lochreihe an der Tafel (4). Vorhersage „Den Schritt vergessen“ (3). Alle lösen den Plan in Code von Station 5 (10). Verplant: 27.</td></tr>
+<tr><td>70–100</td><td>Lerneinheit 3, Labor 1 (Karte 2), 4</td><td><strong>Programmieren 2: Schleife in Schleife.</strong> Sitzplan an der Tafel: Plan und Code, „Schritt für Schritt“, Karte 2 (5). Baustein „Schleife in Schleife“ mit Vermutung 12 (4). Vorhersage „Wer läuft schneller?“ (2). Würfelpaare, Summe 7: Plan und Code, 6-mal (5). Vorhersage „Zähler im äußeren Rumpf“ (2). Alle zeichnen die „Einmaleins-Tafel“ (10). Verplant: 28. Stationen 2 und 3 laufen nicht einzeln.</td></tr>
+<tr><td>100–125</td><td>Lerneinheit 4, Labor 1 (Karte 3), 6</td><td><strong>Theorie: XOR.</strong> Logik-XOR, Wahrheitstabelle neben UND und ODER, Treppenhauslicht, Vorhersage „Wann ist XOR wahr?“ (6). Bitweise: erst 4 Bit an der Tafel, dann ein Byte (4). Alle lösen „Bits verknüpfen“ (5). Baustein „XOR-Geheimschrift“ mit Vermutung, <code>HALLO</code> und <code>ELAAB</code> (6). Karte 3: So prüfst du nach (1). Auftrag für zu Hause, Pflicht, zusammen 47 Minuten: Stationen 2 und 3 (12), Selbstcheck (7), Training (28) (2). Termin 07 beginnt mit dem Umrechnen aus dem Training. Verplant: 24.</td></tr>
+</tbody>
+</table>
+</div>
+
+<p class="k-small k-muted">Wenn die Zeit knapp wird: Im Block 10–40 entfällt zuerst das Prüfen in der Übung (Hausaufgabe), die Hexzahlen werden nur auf Papier gerechnet und an der Tafel aufgelöst. Im Block 40–70 wird der Plan in Code gemeinsam am Beamer geschrieben statt einzeln (der Plan an die Tafel, die Schleife Zeile für Zeile). Im Block 70–100 wird die „Einmaleins-Tafel“ gemeinsam am Beamer gezeichnet statt einzeln. Im letzten Block entfällt zuerst „Bits verknüpfen“ (Hausaufgabe, sie ist die Hälfte der Papierübung des Blocks), dann Karte 3; der Baustein hat Vorrang, weil er das Verschlüsseln zeigt.</p>
+
+<p class="k-small k-muted">Die drei Klausurformen im Termin: Plan zeichnen (Station 4, Block 3), Plan in Code übertragen (Station 5, Block 2), Code lesen (Vorhersagen in jedem Block). Zu Hause kommen dazu: Ablauf verfolgen (Station 3), Plan in Code im Klausurmodus (Training 2) und Fehler finden (Training 3).</p>
+
+<p class="k-small k-muted">Wie weit die Gruppe im Training ist und an welcher Aufgabe sie hängt, zeigt vor dem nächsten Termin die Kursübersicht (Konto, „Kursübersicht für Dozierende“). Gezählt wird dort nur, wer mit Konto lernt. Die Knobelaufgaben am Ende des Labors sind freiwillig und zählen dort nicht mit.</p>
+
+</Dozent>
+
+</Lerneinheit>

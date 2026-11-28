@@ -1,0 +1,77 @@
+WEBVTT
+
+1
+00:00:00.400 --> 00:00:02.729
+Vier Karten für deinen Werkzeugkasten.
+
+2
+00:00:03.748 --> 00:00:16.057
+Karte 1 zeigt **: hoch. Karte 2 zeigt def, damit baust du eigene Befehle. Karte 3 zeigt return, damit gibt eine Funktion einen Wert zurück.
+
+3
+00:00:17.125 --> 00:00:22.610
+Karte 4 zeigt type und round. Alles aus den Terminen zwei bis sechs gilt weiter.
+
+4
+00:00:23.510 --> 00:00:33.232
+Karte 1 ist nur zum Lesen. Zwei Sterne heißen hoch. 2 ** 8 ergibt 256. Das ist die Zahl der Werte eines Bytes.
+
+5
+00:00:33.595 --> 00:00:38.049
+2 ** 16 ergibt 65536.
+
+6
+00:00:38.700 --> 00:00:50.514
+Die dritte Zeile ist 2 ** 64 + 1. Das Ergebnis ist 18446744073709551617. In ein Feld mit 64 Bit passt das nicht, Python rechnet trotzdem richtig.
+
+7
+00:00:51.222 --> 00:00:54.680
+Selbst schreiben musst du die zwei Sterne nicht. Du liest sie nur.
+
+8
+00:00:55.580 --> 00:01:05.997
+Karte 2 baut eine eigene Funktion. Mit def legst du sie an: das Wort def, der Name, eine Klammer mit dem Parameter und ein Doppelpunkt.
+
+9
+00:01:05.847 --> 00:01:14.357
+Der Rumpf steht eingerückt darunter. In der Zeile mit def läuft noch nichts. Erst der Aufruf führt den Rumpf aus.
+
+10
+00:01:14.207 --> 00:01:25.210
+Du rufst begruessen("Lea") auf, dann begruessen("Tom"). Der Parameter name ist beim ersten Mal Lea, beim zweiten Mal Tom. Die Ausgabe sind zwei Grüße.
+
+11
+00:01:25.060 --> 00:01:32.030
+Zuerst definieren, dann aufrufen. Und beim Aufruf stehen die Klammern, sonst passiert nichts.
+
+12
+00:01:32.930 --> 00:01:40.223
+Karte 3 gibt einen Wert zurück. Die Funktion quadrat rechnet x * x und gibt es mit return zurück.
+
+13
+00:01:41.110 --> 00:01:49.824
+Der Aufruf quadrat(4) wird durch das Ergebnis 16 ersetzt. Das landet in der Variablen ergebnis, und print zeigt es an.
+
+14
+00:01:50.669 --> 00:02:00.324
+Steht in der Funktion print statt return, zeigt sie die 16 an, gibt aber nichts zurück. In ergebnis steht dann None, das heißt nichts.
+
+15
+00:02:00.991 --> 00:02:05.380
+Merke dir: Anzeigen mit print, Weitergeben mit return.
+
+16
+00:02:06.280 --> 00:02:14.503
+Karte 4 hat zwei Werkzeuge. type nennt den Datentyp. Die Zahl 42 ist ein int, eine ganze Zahl.
+
+17
+00:02:14.353 --> 00:02:22.057
+7 / 2 ist ein float, eine Kommazahl. Der Schrägstrich ergibt immer eine Kommazahl.
+
+18
+00:02:21.907 --> 00:02:35.092
+round rundet. round(0.1 + 0.2, 2) rundet auf 2 Nachkommastellen und ergibt 0.3. Der Vergleich mit 0.3 ist dann True.
+
+19
+00:02:34.942 --> 00:02:39.610
+So vergleichst du Kommazahlen: erst runden, dann vergleichen.

@@ -1,0 +1,1 @@
+Die Probe mit zwanzig Grad. Du rechnest zwanzig mal neun durch fünf, das sind sechsunddreißig. Dazu kommen zweiunddreißig, das ergibt achtundsechzig. Der Lauf zeigt dasselbe: zwanzig Komma null Grad Celsius sind achtundsechzig Komma null Grad Fahrenheit. Beim Aufruf bekommt der Parameter zeh den Wert aus zellsius. Der Rückgabewert landet in fahr.
