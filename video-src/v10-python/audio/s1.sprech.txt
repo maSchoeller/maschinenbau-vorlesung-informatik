@@ -1,0 +1,1 @@
+Drei Karten für dein Zahlenraten. Karte eins zeigt eine Schleife mit änd. Sie endet aus zwei Gründen. Karte zwei liest Text ein und fragt: Noch einmal? Karte drei berechnet die Mitte mit int. Alles aus den Terminen zwei bis neun gilt weiter.

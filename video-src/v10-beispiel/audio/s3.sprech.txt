@@ -1,0 +1,1 @@
+Die Falle: Die Zufallszahl steht in der Schleife. Dann würfelt der Rechner bei jedem Tipp neu. Du kannst die Zahl nie finden, denn sie ändert sich, bevor du sie triffst. Die Zeile rändom punkt rand-int von eins bis hundert gehört darum vor die Schleife.

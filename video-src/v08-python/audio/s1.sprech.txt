@@ -1,0 +1,1 @@
+Vier Karten für deinen Werkzeugkasten. Karte eins zeigt Text und Wahrheitswerte. Karte zwei zeigt das Umwandeln. Karte drei zeigt, wo Namen in einer Funktion gelten. Karte vier zeigt den Rest beim Teilen und Funktionen, die truh oder fals zurückgeben. Alles aus den Terminen zwei bis sieben gilt weiter.

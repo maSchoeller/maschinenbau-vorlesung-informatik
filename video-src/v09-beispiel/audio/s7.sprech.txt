@@ -1,0 +1,1 @@
+Die Probe mit denselben Eingaben: eins und drei. Das ist Cola und drei Euro. Die Cola kostet zwei Komma fünf, und drei minus zwei Komma fünf ist null Komma fünf. Beide Fassungen geben dieselbe Zeile aus: Bitte sehr. Wechselgeld: null Komma fünf null Euro. Zerlegen ändert nur, wo etwas steht, nicht, was herauskommt.

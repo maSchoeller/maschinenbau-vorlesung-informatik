@@ -1,0 +1,1 @@
+Ein Lauf: Die geheime Zahl ist dreißig. Du tippst fünfzig, das ist zu groß. Dann zwanzig, das ist zu klein. Dann dreißig, und es steht Richtig da. Zuletzt zeigt das Programm Versuche drei. Das ist dein Spiel.

@@ -1,0 +1,1 @@
+Die Aufgabe: Ein Getränkeautomat mit drei Getränken. eins ist Cola, zwei ist Wasser, drei ist Saft. Das Programm hat vierzehn Zeilen, alles steht hintereinander. Es soll in Funktionen zerlegt werden, ohne dass sich die Ausgabe ändert. Der Ablauf: Einlesen, Preis bestimmen, Antwort bilden, Ausgeben.

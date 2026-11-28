@@ -1,0 +1,1 @@
+Jetzt du, zu Hause. Ändere in preis von den Preis der Cola auf drei Komma null und lass das Programm mit eins und drei laufen. Vermute zuerst: Was erscheint jetzt? Probiere es dann aus.

@@ -1,0 +1,93 @@
+WEBVTT
+
+1
+00:00:00.400 --> 00:00:07.809
+Die Aufgabe: Ein Getränkeautomat mit drei Getränken. 1 ist Cola, 2 ist Wasser, 3 ist Saft. Das Programm hat 14 Zeilen, alles steht hintereinander.
+
+2
+00:00:08.693 --> 00:00:16.993
+Es soll in Funktionen zerlegt werden, ohne dass sich die Ausgabe ändert.
+
+3
+00:00:17.765 --> 00:00:23.010
+Der Ablauf: Einlesen, Preis bestimmen, Antwort bilden, Ausgeben.
+
+4
+00:00:23.910 --> 00:00:29.923
+Was wird eine Funktion? Etwas, bei dem etwas hineingeht und etwas herauskommt.
+
+5
+00:00:30.395 --> 00:00:37.071
+Der Preis: Es geht eine Nummer hinein, ein Preis kommt heraus. Das ist preis_von(nr).
+
+6
+00:00:37.767 --> 00:00:45.137
+Die Antwort: Es gehen Geld und Preis hinein, ein Text kommt heraus. Das ist antwort(geld, preis).
+
+7
+00:00:45.763 --> 00:00:48.360
+Eingabe und Ausgabe bleiben im Hauptprogramm.
+
+8
+00:00:49.260 --> 00:00:52.850
+Zuerst der Hauptplan. Er liest wahl und geld ein.
+
+9
+00:00:53.207 --> 00:01:01.527
+Dann kommen zwei Rechtecke mit den doppelten Seitenlinien. Das erste ruft preis_von auf, das zweite antwort.
+
+10
+00:01:02.053 --> 00:01:06.350
+Zum Schluss gibt der Plan den Text aus. Er zeigt nur, was passiert.
+
+11
+00:01:07.250 --> 00:01:11.569
+Jede Funktion hat ihren eigenen Plan.
+
+12
+00:01:11.989 --> 00:01:23.161
+preis_von hat Entscheidungen: Ist die Nummer 1, ist der Preis 2.5. Ist sie 2, ist der Preis 1.0. Sonst ist er 2.0. Am Ende kommt die Rückgabe von preis.
+
+13
+00:01:23.561 --> 00:01:35.860
+antwort fragt, ob das Geld reicht. Ja: Wechselgeld ausrechnen und den Text bilden. Nein: Fehlbetrag ausrechnen und den Text bilden. Am Ende kommt die Rückgabe von text.
+
+14
+00:01:36.760 --> 00:01:39.587
+Jetzt der Code. Zuerst die Funktionen.
+
+15
+00:01:39.437 --> 00:01:48.250
+preis_von gibt mit return den Preis zurück, antwort gibt den Text zurück. Im Code steht in jedem Zweig gleich ein return.
+
+16
+00:01:49.150 --> 00:01:51.980
+Darunter steht das Hauptprogramm, nur noch vier Zeilen.
+
+17
+00:01:52.411 --> 00:01:57.757
+Zwei Eingaben, der Aufruf von preis_von und die Ausgabe von antwort.
+
+18
+00:01:57.934 --> 00:02:00.400
+Die Funktionen stehen vor dem Aufruf.
+
+19
+00:02:01.300 --> 00:02:07.603
+Die Probe mit denselben Eingaben: 1 und 3. Das ist Cola und drei Euro.
+
+20
+00:02:07.453 --> 00:02:22.013
+Die Cola kostet 2.5, und 3 minus 2.5 ist 0.5. Beide Fassungen geben dieselbe Zeile aus: Bitte sehr. Wechselgeld: 0.50 Euro.
+
+21
+00:02:21.863 --> 00:02:26.870
+Zerlegen ändert nur, wo etwas steht, nicht, was herauskommt.
+
+22
+00:02:27.770 --> 00:02:36.836
+Jetzt du, zu Hause. Ändere in preis_von den Preis der Cola auf 3.0 und lass das Programm mit 1 und 3 laufen.
+
+23
+00:02:36.686 --> 00:02:40.940
+Vermute zuerst: Was erscheint jetzt? Probiere es dann aus.

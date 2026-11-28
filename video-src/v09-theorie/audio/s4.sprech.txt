@@ -1,0 +1,1 @@
+Der Prozessor arbeitet ein Programm Befehl für Befehl ab. Jedes Mal macht er dasselbe, in drei Schritten. Erstens holt er den nächsten Befehl aus dem Speicher. Zweitens entschlüsselt er ihn. Er stellt fest, was der Befehl bedeutet. Drittens führt er ihn aus. Dann kommt der nächste Befehl.

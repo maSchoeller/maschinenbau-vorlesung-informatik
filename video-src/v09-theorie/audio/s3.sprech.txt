@@ -1,0 +1,1 @@
+Jetzt fällt der Strom aus. Der Arbeitsspeicher verliert seinen Inhalt. Er ist leer. Die ess ess dee behält alles, auch ohne Strom. Darum gibt es Speichern: Das Programm kopiert den Spielstand vom Arbeitsspeicher auf die ess ess dee. Erst dann bleibt er erhalten.

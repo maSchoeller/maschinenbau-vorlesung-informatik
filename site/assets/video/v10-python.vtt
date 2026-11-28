@@ -1,0 +1,61 @@
+WEBVTT
+
+1
+00:00:00.400 --> 00:00:02.557
+Drei Karten für dein Zahlenraten.
+
+2
+00:00:02.858 --> 00:00:12.055
+Karte 1 zeigt eine Schleife mit and. Sie endet aus zwei Gründen. Karte 2 liest Text ein und fragt: Noch einmal? Karte 3 berechnet die Mitte mit int.
+
+3
+00:00:12.528 --> 00:00:18.770
+Alles aus den Terminen zwei bis neun gilt weiter.
+
+4
+00:00:19.670 --> 00:00:24.088
+Karte 1. Das Programm liest Tipps, bis der Tipp 5 stimmt. Nach drei Versuchen ist aber auch Schluss.
+
+5
+00:00:24.970 --> 00:00:36.490
+Die Schleife läuft nur weiter, wenn beide Bedingungen stimmen: geraten != 5 and versuche < 3. Ist eine falsch, endet sie.
+
+6
+00:00:36.798 --> 00:00:49.278
+Du tippst 1, 2 und 3. Dann ist die Schleife vorbei, und das Programm zeigt 3. Du tippst gleich 5? Dann endet sie nach einem Versuch, und es steht 1 da.
+
+7
+00:00:49.607 --> 00:00:53.640
+Merke dir: and heißt, beide Bedingungen müssen stimmen.
+
+8
+00:00:54.540 --> 00:01:02.136
+Karte 2. Hier fragt das Programm nach einem Wort. Ein Tipp ist eine Zahl, hier ist es Text.
+
+9
+00:01:01.986 --> 00:01:10.929
+Die Variable weiter beginnt mit "ja". Die Schleife läuft, solange weiter == "ja" gilt.
+
+10
+00:01:10.779 --> 00:01:23.446
+In jeder Runde zeigt das Programm Runde und fragt: Noch einmal? Du tippst ja, ja und dann nein. Dreimal steht Runde da, und beim Wort nein endet die Schleife.
+
+11
+00:01:23.296 --> 00:01:29.070
+input liefert immer Text. Du vergleichst darum Text mit Text, ohne int.
+
+12
+00:01:29.970 --> 00:01:35.198
+Karte 3 berechnet die Mitte zwischen zwei Zahlen. Das brauchst du für die Knobelaufgabe.
+
+13
+00:01:35.303 --> 00:01:46.832
+Die Mitte von 1 und 100 ist (1 + 100) / 2, also 50 Komma 5. int schneidet die Nachkommastellen ab. Es bleibt 50.
+
+14
+00:01:46.937 --> 00:01:52.689
+Mit 51 und 100 kommt 75 heraus, mit 3 und 4 kommt 3 heraus.
+
+15
+00:01:53.718 --> 00:01:58.420
+Der Schrägstrich gibt immer eine Kommazahl, und int macht daraus eine ganze Zahl.

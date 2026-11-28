@@ -1,0 +1,1 @@
+Aus dem Tipp wird eine Schleife. Sie wiederholt zwei Dinge: Tipp einlesen und Hinweis zeigen. Sie läuft, solange geraten ungleich geheim gilt. Darum braucht geraten vor der Schleife einen Startwert, die null. Sonst gäbe es beim ersten Prüfen noch keinen Wert. Die Zufallszahl wird einmal gezogen, direkt vor der Schleife.

@@ -1,0 +1,1 @@
+Eine Uhr gibt den Takt vor. Bei jedem Takt macht der Prozessor einen kleinen Schritt. drei Gigahertz sind drei Milliarden Takte pro Sekunde. Eine Python-Zeile wie c gleich a plus b wird im Rechner zu mehreren solcher Befehle. Python übersetzt sie für dich.

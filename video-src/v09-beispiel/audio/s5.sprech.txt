@@ -1,0 +1,1 @@
+Jetzt der Code. Zuerst die Funktionen. preis von gibt mit rietörn den Preis zurück, antwort gibt den Text zurück. Im Code steht in jedem Zweig gleich ein rietörn.

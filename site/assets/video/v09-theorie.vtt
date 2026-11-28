@@ -1,0 +1,73 @@
+WEBVTT
+
+1
+00:00:00.400 --> 00:00:10.673
+Du startest ein Spiel. Es liegt auf der SSD. Beim Start wird es in den Arbeitsspeicher geladen. Dort arbeitet der Prozessor es Schritt für Schritt ab.
+
+2
+00:00:10.995 --> 00:00:20.219
+Mit der Eingabe, zum Beispiel einer Taste, sagst du dem Spiel, was es tun soll. Die Ausgabe, zum Beispiel der Bildschirm, zeigt dir das Ergebnis.
+
+3
+00:00:20.568 --> 00:00:26.120
+Der Bus ist die Leitung dazwischen. Über ihn gehen alle Daten von einem Bauteil zum anderen.
+
+4
+00:00:26.869 --> 00:00:35.330
+Als Bild aus der Werkhalle: Der Prozessor ist der Facharbeiter, der Arbeitsspeicher seine Werkbank, die SSD das Lager.
+
+5
+00:00:36.230 --> 00:00:43.669
+Der Weg eines Programms: von der SSD über den Bus in den Arbeitsspeicher, dann über den Bus zum Prozessor.
+
+6
+00:00:44.667 --> 00:00:48.003
+Der Prozessor arbeitet nie direkt mit der SSD.
+
+7
+00:00:48.155 --> 00:00:52.600
+Das Ergebnis geht über den Bus zurück in den Arbeitsspeicher und zur Ausgabe.
+
+8
+00:00:53.500 --> 00:00:55.447
+Jetzt fällt der Strom aus.
+
+9
+00:00:55.297 --> 00:00:59.317
+Der Arbeitsspeicher verliert seinen Inhalt. Er ist leer.
+
+10
+00:00:59.167 --> 00:01:02.496
+Die SSD behält alles, auch ohne Strom.
+
+11
+00:01:02.346 --> 00:01:11.550
+Darum gibt es Speichern: Das Programm kopiert den Spielstand vom Arbeitsspeicher auf die SSD. Erst dann bleibt er erhalten.
+
+12
+00:01:12.450 --> 00:01:18.886
+Der Prozessor arbeitet ein Programm Befehl für Befehl ab. Jedes Mal macht er dasselbe, in drei Schritten.
+
+13
+00:01:19.157 --> 00:01:22.340
+Erstens holt er den nächsten Befehl aus dem Speicher.
+
+14
+00:01:22.612 --> 00:01:27.267
+Zweitens entschlüsselt er ihn. Er stellt fest, was der Befehl bedeutet.
+
+15
+00:01:27.467 --> 00:01:31.380
+Drittens führt er ihn aus. Dann kommt der nächste Befehl.
+
+16
+00:01:32.280 --> 00:01:38.502
+Eine Uhr gibt den Takt vor. Bei jedem Takt macht der Prozessor einen kleinen Schritt.
+
+17
+00:01:38.486 --> 00:01:40.732
+3 GHz sind 3 Milliarden Takte pro Sekunde.
+
+18
+00:01:40.997 --> 00:01:48.730
+Eine Python-Zeile wie c = a + b wird im Rechner zu mehreren solcher Befehle. Python übersetzt sie für dich.

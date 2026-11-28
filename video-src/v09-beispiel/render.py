@@ -78,7 +78,7 @@ def zeiten_plan(D, tn):
 
 
 # ---------------------------------------------------------------- 1 Die Aufgabe
-CX1, CY1, CW1, CS1, CLH1 = 60, 104, 800, 20, 34
+CX1, CY1, CW1, CS1, CLH1 = 60, 104, 800, 20, 33
 G1 = CodeGeo(CX1, CY1, CW1, CS1, CLH1, len(LANG)); assert CY1 + G1.h <= 690, G1.h
 
 
@@ -88,8 +88,8 @@ def sc1(f, t, ct):
     E(f, t, 0.1, lambda d, dy: code_lauf(d, CX1, CY1 + dy, CW1, LANG, t, CS1, CLH1, title="Python: langes Programm"))
     E(f, t, a(0, pos(1, 0, "Das Programm hat")), lambda d, dy: tag(d, 900, 120 + dy, 320, 56, "14 Zeilen hintereinander", LIGHTA, AMB, 24, 700, outl=AMB))
     E(f, t, a(1, 0.0), lambda d, dy: tag(d, 900, 200 + dy, 320, 72, "zerlegen: gleiche Ausgabe", LIGHTK, DARK, 24, 700, outl=LINE))
-    schritte = [("Eingabe lesen", a(2, pos(1, 2, "Getränk"))), ("Preis bestimmen", a(2, pos(1, 2, "Den Preis"))),
-                ("Antwort bilden", a(2, pos(1, 2, "Die Antwort"))), ("ausgeben", a(2, pos(1, 2, "Ausgeben")))]
+    schritte = [("Eingabe lesen", a(2, pos(1, 2, "Einlesen"))), ("Preis bestimmen", a(2, pos(1, 2, "Preis bestimmen"))),
+                ("Antwort bilden", a(2, pos(1, 2, "Antwort bilden"))), ("ausgeben", a(2, pos(1, 2, "Ausgeben")))]
     for j, (txt, tin) in enumerate(schritte):
         def schritt(d, dy, j=j, txt=txt):
             y = 360 + j * 70 + dy
@@ -155,7 +155,7 @@ def sc4(f, t, ct):
     # preis_von: Schluessel in Reihenfolge, gleichmaessig ueber den Satz verteilt
     def verteilt(D, t0, t1_):
         n = len(D.reihenfolge); return {k: t0 + (t1_ - t0) * i / max(1, n - 1) for i, k in enumerate(D.reihenfolge)}
-    tmp = verteilt(PREIS, a(0, pos(4, 0, "Im Start")), a(1, 0.97))
+    tmp = verteilt(PREIS, a(0, pos(4, 0, "Jede")), a(1, 0.97))
     tma = verteilt(ANTW, t2, a(2, 0.97))
     tmp["fs"] = a(0, 0.02)
     zp, cp = plan_draw(f, 1.0, PREIS, PB2, vis=reveal(t, tmp))
@@ -175,20 +175,19 @@ assert CY5 + CodeGeo(CX5, CY5, CW5, CS5, CLH5, N5).h <= 690
 def sc5(f, t, ct):
     a = lambda k, fr=0.0: AT[5](ct, k, fr)
     kopf(f, t, "Der Code: erst die Funktionen")
-    t0 = a(0, 0.05); t_p = a(0, pos(5, 0, "Zuerst")); t_a = a(1, 0.0)
+    t0 = a(0, 0.05); t_p = a(0, pos(5, 0, "Zuerst")); t_a = a(1, pos(5, 1, "antwort gibt")); t_e = a(1, 0.999)
     tm = [t0, t0 + 0.2, t0 + 0.8, t0 + 1.4, t0 + 2.0, t0 + 2.6, t0 + 3.2, t0 + 3.8, t0 + 4.2,
           t_a, t_a + 0.6, t_a + 1.2, t_a + 1.8, t_a + 2.4, t_a + 3.0, t_a + 3.6]
-    aktiv = aktuell(t, [(a(1, pos(5, 1, "gibt mit")), {3}), (a(1, pos(5, 1, "den Text")), {12}), (a(2, 0.0), None)])
+    aktiv = aktuell(t, [(a(1, pos(5, 1, "gibt mit")), {3}), (t_a, {12}), (a(1, pos(5, 1, "Im Code")), None)])
     E(f, t, 0.0, lambda d, dy: code_lauf(d, CX5, CY5 + dy, CW5, ZERL[:N5], t, CS5, CLH5, times=tm, aktiv=aktiv))
     g = lambda dy: CodeGeo(CX5, CY5 + dy, CW5, CS5, CLH5, N5)
     NX, NW = 960, 270
-    E(f, t, a(0, pos(5, 0, "Zuerst")), lambda d, dy: zeilen_notiz(d, g(dy), 1, NX, NW, "Kopf: preis_von", LIGHTA, AMB, size=22, h=36, outl=AMB), tout=a(2, 0.0))
-    E(f, t, a(1, 0.0), lambda d, dy: zeilen_notiz(d, g(dy), 9, NX, NW, "Kopf: antwort", LIGHTG, GREEN, size=22, h=36, outl=GREEN), tout=a(2, 0.0))
+    E(f, t, a(0, pos(5, 0, "Zuerst")), lambda d, dy: zeilen_notiz(d, g(dy), 1, NX, NW, "Kopf: preis_von", LIGHTA, AMB, size=22, h=36, outl=AMB), tout=t_e)
+    E(f, t, t_a, lambda d, dy: zeilen_notiz(d, g(dy), 9, NX, NW, "Kopf: antwort", LIGHTG, GREEN, size=22, h=36, outl=GREEN), tout=t_e)
     E(f, t, a(1, pos(5, 1, "Im Code")), lambda d, dy: (code_markiere(d, g(dy), 3, *spalte(ZERL[3], "return"), RED), code_markiere(d, g(dy), 5, *spalte(ZERL[5], "return"), RED),
                                                        code_markiere(d, g(dy), 7, *spalte(ZERL[7], "return"), RED), code_markiere(d, g(dy), 12, *spalte(ZERL[12], "return"), RED),
-                                                       code_markiere(d, g(dy), 15, *spalte(ZERL[15], "return"), RED)), tout=a(2, 0.0))
-    E(f, t, a(1, pos(5, 1, "Im Code")), lambda d, dy: tag(d, NX, 520 + dy, NW, 56, "return in jedem Zweig", LIGHTR, RED, 22, 700, outl=RED), tout=a(2, 0.0))
-    E(f, t, a(2, 0.0), lambda d, dy: tag(d, NX, 300 + dy, NW, 100, "nur neue Stelle", LIGHTK, DARK, 24, 700, outl=LINE))
+                                                       code_markiere(d, g(dy), 15, *spalte(ZERL[15], "return"), RED)), tout=t_e)
+    E(f, t, a(1, pos(5, 1, "Im Code")), lambda d, dy: tag(d, NX, 520 + dy, NW, 56, "return in jedem Zweig", LIGHTR, RED, 22, 700, outl=RED), tout=t_e)
 
 
 # ---------------------------------------------------------------- 6 Das Hauptprogramm
@@ -242,9 +241,9 @@ def sc8(f, t, ct):
     E(f, t, a(0, pos(8, 0, "Ändere")), lambda d, dy: (code_markiere(d, g(dy), 3, *spalte(ZERL[3], "2.5"), RED),
                                                      zeilen_notiz(d, g(dy), 3, 960, 270, "hier: 3.0 statt 2.5", LIGHTR, RED, size=22, h=36, outl=RED)))
     E(f, t, a(0, pos(8, 0, "und lass")), lambda d, dy: tag(d, 60, 460 + dy, 860, 56, "dann das Programm mit 1 und 3 laufen lassen", LIGHTK, DARK, 28, 700, outl=LINE))
-    for k, (txt, tin) in enumerate((("1 Vermuten", a(1, 0.0)), ("2 Ausprobieren", a(1, pos(8, 1, "Probiere"))), ("3 Auflösung lesen", a(2, 0.0)))):
+    for k, (txt, tin) in enumerate((("1 Vermuten", a(1, 0.0)), ("2 Ausprobieren", a(1, pos(8, 1, "Probiere"))))):
         E(f, t, tin, lambda d, dy, k=k, txt=txt: tag(d, 60 + k * 300, 560 + dy, 280, 60, txt, LIGHTK, DARK, 26, 700, outl=LINE))
-    E(f, t, a(1, 0.0), lambda d, dy: tag(d, 60, 640 + dy, 860, 40, "Wo musst du etwas ändern, wo nicht?", LIGHTR, RED, 24, 700, outl=RED))
+    E(f, t, a(1, 0.0), lambda d, dy: tag(d, 60, 640 + dy, 860, 40, "Was erscheint jetzt?", LIGHTR, RED, 24, 700, outl=RED))
 
 
 SCENES = {1: sc1, 2: sc2, 3: sc3, 4: sc4, 5: sc5, 6: sc6, 7: sc7, 8: sc8}

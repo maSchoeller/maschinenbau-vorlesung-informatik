@@ -1,0 +1,1 @@
+Dein Spiel besteht aus kleinen Schritten. Die Funktion Hinweis steht schon da. Sie bekommt den Tipp und die geheime Zahl und gibt Zu klein, Zu groß oder Richtig zurück. Der erste Schritt: Zahl ziehen, einen Tipp einlesen, den Hinweis zeigen. Das ist ein einziger Versuch. Das Spiel soll aber fragen, bis der Tipp stimmt.

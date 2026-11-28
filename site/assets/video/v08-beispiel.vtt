@@ -1,0 +1,73 @@
+WEBVTT
+
+1
+00:00:00.400 --> 00:00:07.460
+Die Aufgabe: Anna und Ben zeigen je einen bis fünf Finger. Ist die Summe gerade, gewinnt Anna. Sonst gewinnt Ben.
+
+2
+00:00:08.260 --> 00:00:15.689
+Der Ablauf in Worten: Zwei Zahlen einlesen, die Summe bilden, fragen, wer gewinnt, und den Sieger ausgeben.
+
+3
+00:00:16.583 --> 00:00:28.370
+Was gehört in welche Funktion? Eine Funktion beantwortet nur: Ist die Zahl gerade? Eine zweite macht daraus einen Namen. Eingabe und Ausgabe bleiben im Hauptprogramm.
+
+4
+00:00:29.270 --> 00:00:41.720
+Zuerst die Pläne. Der Hauptplan liest anna und ben ein. Dann kommt das Rechteck mit den doppelten Seitenlinien: wer = sieger(anna + ben). Danach gibt er den Sieger aus.
+
+5
+00:00:41.570 --> 00:00:51.065
+Die Funktion ist_gerade hat einen eigenen Plan. Im Start-Symbol steht ihr Kopf. Dann kommt die Raute: n % 2 == 0.
+
+6
+00:00:50.915 --> 00:00:58.555
+Ist der Rest 0, wird die Antwort True. Sonst wird sie False. Am Ende geht die Antwort zurück an den Aufruf.
+
+7
+00:00:58.405 --> 00:01:03.640
+Den Plan von sieger zeichnest du gleich selbst. Er fehlt hier mit Absicht.
+
+8
+00:01:04.540 --> 00:01:13.983
+Jetzt der Code. Zuerst kommt ist_gerade mit def. Die Raute wird zu if und else, und in beiden Zweigen steht ein return.
+
+9
+00:01:14.485 --> 00:01:26.722
+Dann folgt sieger. Die Funktion ruft ist_gerade direkt in der Bedingung auf. Ist die Summe gerade, kommt "Anna" zurück, sonst "Ben".
+
+10
+00:01:27.352 --> 00:01:41.944
+Das Hauptprogramm steht unten, ohne Einrückung. Es liest beide Zahlen mit int(input(...)) ein, denn input liefert Text. Es ruft sieger auf und speichert das Ergebnis in wer. Dann gibt es den Sieger aus.
+
+11
+00:01:42.400 --> 00:01:45.470
+Wichtig: Erst definieren, dann aufrufen.
+
+12
+00:01:46.370 --> 00:01:49.579
+Die Probe mit 3 und 5. Die Summe ist 8.
+
+13
+00:01:50.067 --> 00:01:57.656
+8 % 2 ergibt 0. Also ist die Antwort True, und sieger gibt "Anna" zurück.
+
+14
+00:01:58.407 --> 00:02:01.641
+Der Lauf zeigt dasselbe: Sieger, Doppelpunkt, Anna.
+
+15
+00:02:02.268 --> 00:02:08.820
+Der Wert geht durch das Programm: von summe nach n, als True zurück, als Name zurück, und landet in wer.
+
+16
+00:02:09.720 --> 00:02:18.420
+Jetzt du, zu Hause. Ersetze in sieger das return "Ben" durch print("Ben").
+
+17
+00:02:18.270 --> 00:02:26.896
+Lass das Programm mit 2 und 3 laufen. Überlege zuerst, was du erwartest. Schau dann genau hin, was erscheint.
+
+18
+00:02:26.746 --> 00:02:36.330
+Lies jede Zeile der Ausgabe. Erkläre dir, warum sie so aussieht. Der Unterschied zwischen Anzeigen und Zurückgeben ist der Kern.

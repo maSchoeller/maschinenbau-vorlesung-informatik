@@ -1,0 +1,73 @@
+WEBVTT
+
+1
+00:00:00.400 --> 00:00:02.758
+Vier Karten für deinen Werkzeugkasten.
+
+2
+00:00:03.097 --> 00:00:12.302
+Karte 1 zeigt Text und Wahrheitswerte. Karte 2 zeigt das Umwandeln. Karte 3 zeigt, wo Namen in einer Funktion gelten.
+
+3
+00:00:12.711 --> 00:00:22.130
+Karte 4 zeigt den Rest beim Teilen und Funktionen, die True oder False zurückgeben. Alles aus den Terminen zwei bis sieben gilt weiter.
+
+4
+00:00:23.030 --> 00:00:31.437
+Karte 1: Text steht in Anführungszeichen. Mit + hängst du Text aneinander. Das Leerzeichen gehört in den Text.
+
+5
+00:00:32.216 --> 00:00:41.520
+type nennt den Typ. Der Text hat den Typ str. Ein Vergleich wie 5 > 3 hat den Typ bool.
+
+6
+00:00:42.285 --> 00:00:51.080
+Mit == vergleichst du Text mit Text. name == "Lea" ergibt True.
+
+7
+00:00:51.980 --> 00:01:03.623
+Karte 2 wandelt um. int("5") macht aus dem Text die Zahl 5. Danach kannst du rechnen: 5 plus 3 ergibt 8.
+
+8
+00:01:04.974 --> 00:01:13.002
+float("2.5") macht eine Kommazahl daraus. Mal zwei ergibt 5.0.
+
+9
+00:01:13.551 --> 00:01:23.250
+str(12) macht aus der Zahl einen Text, den du an Punkte hängst. int(3.7) ergibt 3: int schneidet ab.
+
+10
+00:01:24.258 --> 00:01:29.230
+Denk daran: input liefert Text. Wandle um, bevor du rechnest.
+
+11
+00:01:30.130 --> 00:01:38.284
+Karte 3 zeigt die Funktion quadrat. Sie rechnet x * x, speichert es in ergebnis und gibt es mit return zurück.
+
+12
+00:01:38.845 --> 00:01:44.026
+Draußen speicherst du den Wert in zahl. Das zeigt print: 16.
+
+13
+00:01:44.493 --> 00:01:52.688
+In der letzten Zeile will print ergebnis zeigen. Draußen gibt es diesen Namen nicht. Python meldet einen NameError: Der Name ist nicht definiert.
+
+14
+00:01:53.047 --> 00:02:03.220
+x und ergebnis gibt es nur in der Funktion. Hinein geht ein Wert per Parameter, heraus geht er per return.
+
+15
+00:02:04.120 --> 00:02:18.813
+Karte 4 beginnt mit dem Rest beim Teilen. Das Zeichen % liefert den Rest. 7 % 2 ergibt 1, 8 % 2 ergibt 0.
+
+16
+00:02:19.788 --> 00:02:24.868
+Gerade heißt: Rest 0. Die Funktion ist_gerade fragt n % 2 == 0.
+
+17
+00:02:25.170 --> 00:02:31.630
+In beiden Zweigen steht ein return: True oder False. Es läuft immer nur eines von beiden.
+
+18
+00:02:31.981 --> 00:02:39.770
+Der Aufruf darf direkt in der Bedingung stehen. if ist_gerade(10): druckt gerade.

@@ -1,0 +1,1 @@
+Die Probe mit drei und fünf. Die Summe ist acht. acht Prozent zwei ergibt null. Also ist die Antwort truh, und sieger gibt Anna in Anführungszeichen zurück. Der Lauf zeigt dasselbe: Sieger, Doppelpunkt, Anna. Der Wert geht durch das Programm: von summe nach n, als truh zurück, als Name zurück, und landet in wer.

@@ -1,0 +1,1 @@
+Der vierte Typ heißt buhl. Er kennt nur zwei Werte: truh und fals. Ein Vergleich wie fünf größer drei ergibt einen davon. Das kennst du schon aus if: Die Bedingung ist ein Vergleich, und er ist wahr oder falsch. Merke dir: input liefert Text. Mit int, floht und ess-tee-er wandelst du um. Python rechnet nur mit Werten, die zusammenpassen.
