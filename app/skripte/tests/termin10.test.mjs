@@ -258,7 +258,7 @@ test('Termin 10, gemeinsame Werkzeuge: freiwilliges Training, Musterlösung ohne
   assert.match(labor, /<Labor [^>]*training="freiwillig"/, 'Termin 10 kennzeichnet das Training als freiwillig');
   assert.match(labor, /id="w-stufe4"[^>]*data-loesung-nach-tipps/, 'Stufe 4: Musterlösung erst nach allen Tipps');
   const laborJs = lese('site/assets/js/labor.js');
-  assert.match(laborJs, /data-training'\) === 'freiwillig' \? 'freiwillig'/, 'Überschrift Teil B: freiwillig statt Pflicht');
+  assert.match(laborJs, /data-training'\) === 'freiwillig'\) \{[^\n]*?return 'freiwillig'/, 'Überschrift Teil B: freiwillig statt Pflicht, mit der Dauer des Trainings');
   const bausteine = lese('app/src/lib/mdx/bausteine.mjs');
   assert.match(bausteine, /training === 'freiwillig'/, 'Baustein Labor wertet training aus');
   const pap = lese('site/assets/js/pap-editor.js');
