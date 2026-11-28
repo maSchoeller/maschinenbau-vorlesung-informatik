@@ -1,0 +1,1 @@
+{"baum": [{"k": "def", "v": "ist_gerade(n)", "ret": "antwort", "body": [{"k": "if", "v": "n % 2 == 0", "yes": [{"k": "op", "v": "antwort = True"}], "no": [{"k": "op", "v": "antwort = False"}]}]}, {"k": "in", "v": "anna", "typ": "int"}, {"k": "in", "v": "ben", "typ": "int"}, {"k": "call", "v": "wer = sieger(anna + ben)"}, {"k": "out", "v": "\"Sieger:\", wer"}]}

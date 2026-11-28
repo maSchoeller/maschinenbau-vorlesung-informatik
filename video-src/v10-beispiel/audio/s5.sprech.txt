@@ -1,0 +1,1 @@
+Zum Schluss gliederst du das Spiel. Die Zufallszahl, der Zähler und die Schleife wandern in die Funktion spiel. Am Ende steht rietörn versuche. Das Hauptprogramm ruft spiel auf und merkt sich die Zahl in anzahl. Dann zeigt es sie an.

@@ -1,0 +1,67 @@
+{
+ "sprache": "tabelle",
+ "leerzeichen": false,
+ "ausgabe": false,
+ "typhinweis": false,
+ "code": [
+  "Beschreibung = Rechnet und führt die Befehle eines Programms aus",
+  "Beschreibung = Hält das laufende Spiel und verliert alles bei Strom aus",
+  "Beschreibung = Speichert den Spielstand dauerhaft",
+  "Beschreibung = Die Tastatur",
+  "Beschreibung = Der Lautsprecher",
+  "Beschreibung = Die Leitungen für den Datenaustausch zwischen den Bauteilen"
+ ],
+ "vars": [
+  "Antwort"
+ ],
+ "steps": [
+  {
+   "line": 1,
+   "set": {
+    "Antwort": "1"
+   },
+   "frage": "Zeile 1: Welches Bauteil ist gemeint? Trag die Nummer ein, ohne Leerzeichen.",
+   "hint": "Welches Bauteil rechnet? Im Bild aus der Werkhalle ist es der Facharbeiter."
+  },
+  {
+   "line": 2,
+   "set": {
+    "Antwort": "2"
+   },
+   "frage": "Zeile 2: Welches Bauteil ist gemeint? Trag die Nummer ein, ohne Leerzeichen.",
+   "hint": "Was verschwindet, wenn der Strom ausfällt?"
+  },
+  {
+   "line": 3,
+   "set": {
+    "Antwort": "3"
+   },
+   "frage": "Zeile 3: Welches Bauteil ist gemeint? Trag die Nummer ein, ohne Leerzeichen.",
+   "hint": "Was behält seine Daten ohne Strom?"
+  },
+  {
+   "line": 4,
+   "set": {
+    "Antwort": "4"
+   },
+   "frage": "Zeile 4: Welches Bauteil ist gemeint? Trag die Nummer ein, ohne Leerzeichen.",
+   "hint": "Eine Tastatur schickt etwas in den Rechner hinein."
+  },
+  {
+   "line": 5,
+   "set": {
+    "Antwort": "4"
+   },
+   "frage": "Zeile 5: Welches Bauteil ist gemeint? Trag die Nummer ein, ohne Leerzeichen.",
+   "hint": "Eingabe und Ausgabe haben dieselbe Nummer."
+  },
+  {
+   "line": 6,
+   "set": {
+    "Antwort": "5"
+   },
+   "frage": "Zeile 6: Welches Bauteil ist gemeint? Trag die Nummer ein, ohne Leerzeichen.",
+   "hint": "Welches Bauteil verbindet die anderen miteinander?"
+  }
+ ]
+}

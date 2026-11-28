@@ -1052,6 +1052,14 @@ _result
       li.appendChild(head); ul.appendChild(li);
     });
   }
+  /* Gibt es schon eine 3D-Vorschau, ein Bild oder eine Tabelle als Ausgabe? Dann ist „keine Ausgabe“ falsch. */
+  function hatReicheAusgabe(out) {
+    if (!out) return false;
+    var sel = 'canvas, img, svg, table, .k-rich__3d, .k-rich__fig';
+    if (out.querySelector && out.querySelector(sel)) return true;
+    var h = out._kRich;
+    return !!(h && h.querySelector && h.querySelector(sel));
+  }
   function renderRich(holder, art, daten) {
     var d;
     try { d = typeof daten === 'string' ? JSON.parse(daten) : daten; } catch (e) { return; }
@@ -1081,6 +1089,7 @@ _result
     var holder = out._kRich;
     if (!holder) { holder = el('div', { class: 'k-rich' }); out.insertAdjacentElement('afterend', holder); out._kRich = holder; }
     holder.textContent = ''; holder._kFiles = null;
+    out.classList.remove('k-runner__out--rich');
     var load = null;
     function status(t) {
       if (!t) { if (load && load.parentNode) load.parentNode.removeChild(load); load = null; return; }
@@ -1091,7 +1100,7 @@ _result
       files: o.files || null, scan: o.scan || null,
       upload: typeof o.upload === 'function' ? o.upload() : (o.upload || null),
       onStatus: status,
-      onRich: function (art, daten) { renderRich(holder, art, daten); },
+      onRich: function (art, daten) { out.classList.add('k-runner__out--rich'); renderRich(holder, art, daten); },
       onFiles: function (list) { renderFiles(holder, list); },
       finish: function () { status(''); }
     };
@@ -1278,7 +1287,7 @@ _result
     function finish(r, gotOutput) {
       if (r.timedOut) append('\nAbgebrochen nach ' + (timeout / 1000) + ' s. Läuft da eine Endlosschleife?\n', 'err');
       else if (r.error) append((out.textContent && !/\n$/.test(out.textContent) ? '\n' : '') + r.error.replace(/\s+$/, '') + '\n', 'err');
-      else if (!gotOutput) append('(keine Ausgabe. Hast du print() benutzt?)', 'sys');
+      else if (!gotOutput && !hatReicheAusgabe(out)) append('(keine Ausgabe. Hast du print() benutzt?)', 'sys');
       status.textContent = r.timedOut ? 'abgebrochen' : (r.error ? 'Fehler' : 'fertig');
       if (predict && predicted) box._kVorhersage.zeige();
     }
@@ -1598,8 +1607,8 @@ _result
     return t.replace(/\s+$/, '') + '\n';
   }
   function copyBar(getText, sprache) {
-    /* Ein Plan ist kein Python: Überschrift „Plan“ und nichts zum Kopieren */
-    if (sprache === 'plan' || sprache === 'tabelle') return el('div', { class: 'k-copy__bar' }, [el('span', { class: 'k-copy__lang', text: sprache === 'plan' ? 'Plan' : 'Tabelle' })]);
+    /* Ein Plan ist kein Python: Überschrift „Plan“ (Tabelle, Programm) und nichts zum Kopieren */
+    if (sprache === 'plan' || sprache === 'tabelle' || sprache === 'befehle') return el('div', { class: 'k-copy__bar' }, [el('span', { class: 'k-copy__lang', text: sprache === 'plan' ? 'Plan' : sprache === 'befehle' ? 'Programm' : 'Tabelle' })]);
     var btn = el('button', { type: 'button', class: 'k-copy__btn', 'aria-label': 'Code kopieren' });
     btn.innerHTML = COPY_ICON + '<span class="k-copy__label">Kopieren</span>';
     var label = btn.querySelector('.k-copy__label');

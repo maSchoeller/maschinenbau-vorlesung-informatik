@@ -1,0 +1,18 @@
+[
+ {
+  "p": 1,
+  "t": "def rabatt_satz(betrag): mit Doppelpunkt am Ende der Zeile, die Funktion steht vor dem Hauptprogramm"
+ },
+ {
+  "p": 1,
+  "t": "die Funktion gibt den Satz mit return zurück (10, 5 oder 0) und zeigt nichts an"
+ },
+ {
+  "p": 1,
+  "t": "das Hauptprogramm ruft die Funktion mit rabatt_satz(betrag) auf"
+ },
+ {
+  "p": 1,
+  "t": "die Zweige mit if, elif, else stehen nur noch in der Funktion, nicht mehr im Hauptprogramm"
+ }
+]

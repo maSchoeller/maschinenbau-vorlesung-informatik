@@ -9,7 +9,7 @@ from pathlib import Path
 HIER = Path(__file__).resolve().parent
 sys.path.insert(0, str(HIER))
 import helfer  # noqa: E402
-import teil1, teil2, teil3, teil4_v16, teil5_v20  # noqa: E402,F401
+import teil1, teil2, teil3, teil4_v16, teil5_v20, teil6_v09_10  # noqa: E402,F401
 
 ZIEL = HIER.parents[2] / "site" / "assets" / "data" / "bibliothek.json"
 PROBLEME = []
@@ -69,6 +69,12 @@ NEUE_TERMINE = {
     "V01": ["int", "float", "typumwandlung", "rechenoperatoren"],
     "V02": ["bool", "vergleiche", "if", "else", "einrueckung", "fstring"],
     "V03": ["elif", "and-or"],
+    "V04": ["while"],
+    "V05": ["for", "range"],
+    "V07": ["def", "return", "parameter", "type", "round", "potenz"],
+    "V08": ["str-text", "modulo", "lokale-variablen"],
+    "V09": ["import-random", "random-randint"],
+    "V10": ["ord-chr"],
 }
 for _v, _ids in NEUE_TERMINE.items():
     for _e in helfer.EINTRAEGE:

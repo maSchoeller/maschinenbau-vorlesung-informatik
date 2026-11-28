@@ -1,0 +1,136 @@
+{
+ "typhinweis": false,
+ "code": [
+  "summe = 0",
+  "for i in range(1, 3):",
+  "    for j in range(1, 3):",
+  "        summe = summe + i * j",
+  "print(summe)"
+ ],
+ "vars": [
+  "i",
+  "j",
+  "summe",
+  "Weg"
+ ],
+ "steps": [
+  {
+   "line": 1,
+   "set": {
+    "summe": "0"
+   },
+   "hint": "Der Startwert: summe beginnt bei 0."
+  },
+  {
+   "line": 2,
+   "set": {
+    "i": "1",
+    "Weg": "ja"
+   },
+   "frage": "Zeile 2 steht vor dem ersten Durchlauf der äußeren Schleife. Trag den Wert von i ein und in Weg ja oder nein (ja, wenn der Rumpf läuft), ohne Anführungszeichen.",
+   "hint": "range(1, 3) liefert 1 und 2. Beim ersten Durchlauf ist i gleich 1, und der Rumpf läuft: ja. Schreib die Wörter ohne Anführungszeichen."
+  },
+  {
+   "line": 3,
+   "set": {
+    "j": "1",
+    "Weg": "ja"
+   },
+   "frage": "Zeile 3 ist die innere Schleife und startet jetzt zum ersten Mal. Trag den Wert von j ein und den Weg (ja oder nein, ohne Anführungszeichen).",
+   "hint": "range(1, 3) liefert auch hier 1 und 2. Die innere Schleife beginnt bei 1, und ihr Rumpf läuft: ja."
+  },
+  {
+   "line": 4,
+   "set": {
+    "summe": "1"
+   },
+   "hint": "summe war 0, jetzt kommt i * j dazu: 1 * 1 ist 1."
+  },
+  {
+   "line": 3,
+   "set": {
+    "j": "2",
+    "Weg": "ja"
+   },
+   "frage": "Zeile 3: Die innere Schleife fragt das zweite Mal nach. Trag j und den Weg ein (ja oder nein, ohne Anführungszeichen).",
+   "hint": "Die nächste Zahl aus range(1, 3) ist 2, und der Rumpf läuft noch einmal: ja."
+  },
+  {
+   "line": 4,
+   "set": {
+    "summe": "3"
+   },
+   "hint": "summe war 1, jetzt kommt i * j dazu: 1 * 2 ist 2, also 3."
+  },
+  {
+   "line": 3,
+   "set": {
+    "Weg": "nein"
+   },
+   "frage": "Zeile 3 steht noch einmal da, weil die innere Schleife nach der 2 nachfragt. Trag den Weg ein (ja oder nein, ohne Anführungszeichen). j ändert sich nicht.",
+   "hint": "range(1, 3) liefert 1 und 2. Die 2 war schon dran, also ist die innere Schleife fertig: nein. j bleibt 2."
+  },
+  {
+   "line": 2,
+   "set": {
+    "i": "2",
+    "Weg": "ja"
+   },
+   "frage": "Zurück in Zeile 2: Die äußere Schleife nimmt die nächste Zahl. Trag i und den Weg ein (ja oder nein, ohne Anführungszeichen).",
+   "hint": "Die nächste Zahl aus range(1, 3) ist 2, und der Rumpf läuft noch einmal: ja."
+  },
+  {
+   "line": 3,
+   "set": {
+    "j": "1",
+    "Weg": "ja"
+   },
+   "frage": "Zeile 3: Die innere Schleife startet für das neue i von vorn. Trag j und den Weg ein (ja oder nein, ohne Anführungszeichen).",
+   "hint": "Die innere Schleife beginnt für jedes neue i wieder bei 1."
+  },
+  {
+   "line": 4,
+   "set": {
+    "summe": "5"
+   },
+   "hint": "summe war 3, jetzt kommt i * j dazu: 2 * 1 ist 2, also 5."
+  },
+  {
+   "line": 3,
+   "set": {
+    "j": "2",
+    "Weg": "ja"
+   },
+   "frage": "Zeile 3: Die innere Schleife fragt das zweite Mal nach. Trag j und den Weg ein (ja oder nein, ohne Anführungszeichen).",
+   "hint": "Die nächste Zahl aus range(1, 3) ist 2, und der Rumpf läuft noch einmal: ja."
+  },
+  {
+   "line": 4,
+   "set": {
+    "summe": "9"
+   },
+   "hint": "summe war 5, jetzt kommt i * j dazu: 2 * 2 ist 4, also 9."
+  },
+  {
+   "line": 3,
+   "set": {
+    "Weg": "nein"
+   },
+   "frage": "Zeile 3 steht wieder einmal mehr da, weil die innere Schleife nach der 2 nachfragt. Trag den Weg ein (ja oder nein, ohne Anführungszeichen). j ändert sich nicht.",
+   "hint": "range(1, 3) liefert 1 und 2. Die 2 war schon dran, also ist die innere Schleife fertig: nein. j bleibt 2."
+  },
+  {
+   "line": 2,
+   "set": {
+    "Weg": "nein"
+   },
+   "frage": "Zeile 2 steht noch einmal da, weil die äußere Schleife nach der 2 nachfragt. Trag den Weg ein (ja oder nein, ohne Anführungszeichen). i ändert sich nicht.",
+   "hint": "range(1, 3) liefert 1 und 2. Die 2 war schon dran, also ist auch die äußere Schleife fertig: nein. i bleibt 2."
+  },
+  {
+   "line": 5,
+   "out": "9",
+   "hint": "print schreibt den Wert von summe: 9. Es steht ganz links und läuft nur einmal, nach beiden Schleifen."
+  }
+ ]
+}

@@ -1,1 +1,0 @@
-Zum Erzeugen würfelt das Modell den Nachfolger nach diesen Wahrscheinlichkeiten, hängt ihn an und macht weiter, Token für Token. Die Temperatur regelt den Zufall: Niedrig heißt fast immer das häufigste Wort, hoch heißt, auch Unwahrscheinliches kommt dran. Der Seed macht den Zufall wiederholbar: Gleicher Seed, gleicher Text.

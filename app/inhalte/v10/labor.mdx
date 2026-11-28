@@ -1,0 +1,453 @@
+---
+titel: "Termin 10 · Programmierlabor · Informatik Maschinenbau"
+beschreibung: "Programmierlabor zu Termin 10: Zahlenraten in drei Stufen, vom Plan über die Schleife mit Hinweis bis zum Spiel mit Zähler und Funktionen. Mit Ausbau für die Schnellen, freiwilligem Training für die Praxisphase und der Knobelaufgabe „Der Computer rät“."
+body:
+  data-lesson: V10
+  data-page: labor
+stile:
+  - ../assets/css/dhbw-base.css
+  - ../assets/css/kurs.css
+  - ../assets/css/aufgaben.css
+  - ../assets/css/editor.css
+  - ../assets/css/labor.css
+  - ../assets/css/v05.css
+  - ../assets/css/pap-editor.css
+skripte:
+  - ../assets/js/speicher.js
+  - ../assets/js/icons.js
+  - src: ../assets/js/editor.js
+    defer: true
+  - ../assets/js/pap-engine.js
+  - ../assets/js/kurs.js
+  - ../assets/js/aufgaben.js
+  - ../assets/js/pap-editor.js
+  - ../assets/js/labor.js
+---
+
+<Labor nr="V10" zuhause="15" training="freiwillig" name="Termin 10" lerneinheit="v10-speicher-und-zahlenraten.html">
+
+<Station id="a-werkzeugkasten" titel="Werkzeugkasten" teil="A" min="5">
+
+<p class="l-task__intro">Vier Karten. Zu Hause sind 15 Minuten Pflicht: Werkzeugkasten (5), Selbstcheck (7) und Spiel sichern (3). Alles aus Termin 02 bis 09 gilt weiter. Karte 1 bis 3 sind bekannte Werkzeuge mit neuer Anwendung, Karte 4 ist nur zum Lesen. Jeder Codeblock läuft: Ändere etwas und führ ihn aus. Den Werkzeugkasten erreichst du von jeder Aufgabe aus in der Befehls-Bibliothek oben rechts.</p>
+
+<Video name="v10-python" titel="Python-Werkzeugkasten: Mehr als ein Grund zum Aufhören" fehlt="Video folgt. Bis dahin: Lies die Karten und probier jeden Codeblock aus.">
+
+Python-Werkzeugkasten: Mehr als ein Grund zum Aufhören (ca. 2 Min). Karte 4 kommt im Video nicht vor. Untertitel sind eingeschaltet (Deutsch).
+
+</Video>
+
+<Werkzeugkasten>
+
+<Syntaxkarte id="sk-while-and" nr="1" titel="while mit and: begrenzte Versuche">
+
+```python
+versuche = 0
+geraten = 0
+while geraten != 5 and versuche < 3:
+    geraten = int(input("Tipp: "))
+    versuche = versuche + 1
+print(versuche)
+```
+
+- Die Eingaben 1, 2, 3 ergeben `3`: Die Schleife endet nach 3 Versuchen. Die Eingabe 5 ergibt `1`: Der Tipp stimmt.
+- `and`: Beide Bedingungen müssen stimmen, damit die Schleife weiterläuft. Sie endet, sobald eine nicht mehr stimmt.
+- Beide Variablen der Bedingung, `geraten` und `versuche`, brauchen vor der Schleife einen Startwert.
+
+</Syntaxkarte>
+
+<Syntaxkarte id="sk-weiter" nr="2" titel="Text einlesen: Noch einmal?">
+
+```python
+weiter = "ja"
+while weiter == "ja":
+    print("Runde")
+    weiter = input("Noch einmal? (ja/nein) ")
+```
+
+- Die Eingaben `ja`, `ja`, `nein` ergeben dreimal `Runde`.
+- `input` liefert Text, `==` vergleicht Text mit Text. Der Text steht in Anführungszeichen.
+- `weiter` braucht vor der Schleife einen Wert, der sie startet.
+
+</Syntaxkarte>
+
+<Syntaxkarte id="sk-mitte" nr="3" titel="Die Mitte">
+
+```python
+print(int((1 + 100) / 2))
+print(int((51 + 100) / 2))
+print(int((3 + 4) / 2))
+```
+
+- Ausgabe: `50`, `75`, `3`.
+- `/` ergibt eine Kommazahl, `int` schneidet die Nachkommastellen ab (Termin 08).
+- Das brauchst du für die Knobelaufgabe am Ende.
+
+</Syntaxkarte>
+
+<Syntaxkarte id="sk-ord" nr="4" titel="ord und chr (nur lesen)">
+
+```python
+print(ord("A"))
+print(chr(66))
+```
+
+- Ausgabe: `65` und `B`.
+- `ord` nennt die Nummer eines Zeichens, `chr` das Zeichen zu einer Nummer. Das sind genau die Nummern aus dem Baustein „Zeichen sind Zahlen“.
+- Du liest es nur. Selbst schreiben musst du es nicht, und es kommt in keiner Aufgabe und nicht in der Klausur vor.
+
+</Syntaxkarte>
+
+</Werkzeugkasten>
+
+</Station>
+
+<Station id="a-plan" titel="Plan zeichnen: Raten, bis es stimmt" teil="A" sterne="2" min="8">
+
+<p class="l-task__intro">Der Rechner zieht eine Zahl, du tippst, und das Spiel meldet sich nach jedem Tipp. Die Funktion `hinweis` und die Zeile `import random` stehen schon im Editor. Gezeichnet wird der übrige Hauptplan. „Prüfen“ führt deinen Plan mit Beispielwerten aus.</p>
+
+<Aufgabe art="pap-zeichnen" id="w-plan" titel="Raten, bis es stimmt" data-timeout="8000" data-erlaubt="in,out,op,while,call" data-ohne-code>
+
+Der Rechner zieht eine Zahl von 1 bis 100. Du tippst, das Spiel sagt nach jedem Tipp `Zu klein`, `Zu groß` oder `Richtig!` und fragt weiter, bis der Tipp stimmt. Die vorgegebene Funktion `hinweis(geraten, geheim)` gibt den Hinweis zurück. Die Zeile `import random` steht schon da. Zeichne den übrigen Hauptplan.
+
+<Python rolle="tests" datei="labor/w-plan.tests.py" />
+
+<Daten datei="labor/w-plan.start.json" rolle="start" />
+
+<Daten datei="labor/w-plan.solution.json" rolle="solution" />
+
+<Tipps>
+
+1. Was passiert vor der Schleife, was in jeder Runde?
+2. Die Bedingung der Schleife heißt „der Tipp ist nicht die Zahl“. `geraten` braucht vor der Schleife einen Wert.
+3. Im Rumpf steht zuerst der Tipp, dann der Hinweis.
+
+</Tipps>
+
+</Aufgabe>
+
+</Station>
+
+<Station id="a-stufe2" titel="Code zum Plan: Stufe 2" teil="A" sterne="2" min="9">
+
+<p class="l-task__intro">Jetzt wird dein Plan zu Code. Die Funktion `hinweis` steht schon in der Vorlage. Das Gerüst sagt dir, was jede Zeile tun soll. Mit „Ausführen“ spielst du dein Spiel.</p>
+
+<Aufgabe art="code" id="w-stufe2" titel="Raten, bis es stimmt" data-mode="programm">
+
+<div class="a-task__text">
+
+Übertrage deinen Plan in Code. Der Rechner zieht eine Zahl von 1 bis 100, du tippst, und nach jedem Tipp erscheint `Zu klein`, `Zu groß` oder `Richtig!`. Das Spiel fragt weiter, bis der Tipp stimmt. Die Zufallszahl wird vor der Schleife gezogen.
+
+</div>
+
+<Editor datei="labor/w-stufe2.vorlage.py" aria-label="Python-Code: Raten, bis es stimmt" />
+
+<Python rolle="tests" datei="labor/w-stufe2.tests.py" />
+
+<Python rolle="solution" datei="labor/w-stufe2.solution.py" />
+
+<Tipps>
+
+1. Der Plan: oben die zwei Zeilen vor der Schleife, dann `while`.
+2. Die Bedingung heißt `geraten != geheim`, die Zeilen im Rumpf sind eingerückt.
+3. Das Beispiel „Summe bis 0“ in der Lerneinheit und Karte 1 aus Termin 04 zeigen die Form.
+
+</Tipps>
+
+</Aufgabe>
+
+</Station>
+
+<Station id="a-stufe3" titel="Versuche zählen: Stufe 3" teil="A" sterne="2" min="10">
+
+<p class="l-task__intro">Jetzt gibt es keinen Plan und kein Gerüst mehr. Mit „Meinen Code laden“ holst du deinen Code aus Station 3 in den Editor. Der Knopf sagt dir, welchen Code er geladen hat.</p>
+
+<Aufgabe art="code" id="w-stufe3" titel="Versuche zählen" data-mode="programm" data-start-aus="w-stufe2">
+
+<div class="a-task__text">
+
+Das Spiel soll zählen, wie viele Tipps du gebraucht hast. Nach dem Treffer zeigt es die Zahl in einer eigenen Zeile, zum Beispiel `Versuche: 3`. Ergänze deinen Code.
+
+</div>
+
+<Editor datei="labor/w-stufe3.vorlage.py" aria-label="Python-Code: Versuche zählen" />
+
+<Python rolle="tests" datei="labor/w-stufe3.tests.py" />
+
+<Python rolle="solution" datei="labor/w-stufe3.solution.py" />
+
+<Tipps>
+
+1. Wo muss der Zähler anfangen, und wann zählt er?
+2. `versuche = 0` vor der Schleife, im Rumpf eine Zeile `versuche = versuche + 1`.
+3. Die Ausgabe `Versuche: …` steht nach der Schleife, nicht in ihr.
+
+</Tipps>
+
+</Aufgabe>
+
+</Station>
+
+<Station id="a-stufe4" titel="Dein Spiel: Stufe 4" teil="A" sterne="3" min="12">
+
+<p class="l-task__intro">Jetzt gliederst du dein Spiel und machst es fertig. Mit „Meinen Code laden“ holst du deinen Code aus Station 4. Die Pflichtliste unter dem Editor zeigt, was dein Spiel können soll.</p>
+
+<Aufgabe art="code" id="w-stufe4" titel="Dein Spiel" data-mode="programm" data-start-aus="w-stufe3" data-loesung-nach-tipps="ja" data-erfolg="Dein Spiel läuft. Das ist dein erstes vollständiges Programm.">
+
+<div class="a-task__text">
+
+Gliedere dein Spiel. Die Funktion `hinweis(geraten, geheim)` gibt den Hinweis zurück (sie steht schon in deinem geladenen Code). Die Funktion `spiel()` spielt eine Runde: Sie zieht die Zahl, fragt, bis der Tipp stimmt, zeigt jeden Hinweis und gibt die Zahl der Versuche zurück. Das Hauptprogramm ruft `spiel()` auf und zeigt zum Beispiel `Versuche: 3`.
+
+</div>
+
+<Editor datei="labor/w-stufe4.vorlage.py" aria-label="Python-Code: Dein Spiel" />
+
+<Python rolle="tests" datei="labor/w-stufe4.tests.py" />
+
+<Python rolle="solution" datei="labor/w-stufe4.solution.py" />
+
+<Daten datei="labor/w-stufe4.pflicht.json" rolle="pflicht" />
+
+<Daten datei="labor/w-stufe4.scheme.json" rolle="scheme" />
+
+<Tipps>
+
+1. Was gehört in `spiel()`, was bleibt draußen?
+2. Die Zufallszahl, der Zähler und die Schleife wandern in die Funktion. Am Ende steht `return versuche`.
+3. Der Plan von `spiel()`: Zuerst `geheim = random.randint(1, 100)`, `geraten = 0` und `versuche = 0`. Dann die Schleife `geraten != geheim` mit Eingabe, `versuche = versuche + 1`, dem Aufruf von `hinweis` und der Ausgabe. Am Ende `Rückgabe: versuche`. Das Hauptprogramm ist `anzahl = spiel()` und dann `print(f"Versuche: {anzahl}")`.
+
+</Tipps>
+
+</Aufgabe>
+
+<Video name="v10-beispiel" titel="Dein Spiel Schritt für Schritt" fehlt="Video folgt. Bis dahin: Lies die Musterlösung Zeile für Zeile.">
+
+Dein Spiel Schritt für Schritt (ca. 2 Min). Schau das Video erst an, wenn du die Stufe 4 selbst versucht hast. Untertitel sind eingeschaltet (Deutsch).
+
+</Video>
+
+<p class="k-small k-muted"><strong>Spiel sichern (3 Minuten, zu Hause).</strong> Die App merkt sich deinen Stand nur in diesem Browser. Klick am Editor auf „Kopieren“ und füge den Code in eine eigene Datei ein, zum Beispiel `zahlenraten.py`, oder schick ihn dir per Mail. So hast du dein Spiel auch in der Praxisphase.</p>
+
+</Station>
+
+<Station id="a-ausbau-a" titel="Ausbau A: begrenzte Versuche" teil="A" sterne="3" min="8" extra="freiwillig">
+
+<p class="l-task__intro">Für die Schnellen, freiwillig. Mit „Meinen Code laden“ holst du deinen Code aus Station 5. Diese Aufgabe zählt nicht in deinem Fortschritt.</p>
+
+<Aufgabe art="code" id="w-ausbau-a" titel="Begrenzte Versuche" data-count="0" data-mode="programm" data-start-aus="w-stufe4">
+
+<div class="a-task__text">
+
+Nach 7 Versuchen ist Schluss. Hast du die Zahl gefunden, erscheint als letzte Zeile zum Beispiel `Gewonnen! Versuche: 4`, sonst `Verloren, die Zahl war 57` mit der gesuchten Zahl. Anders als in Station 5 zeigt `spiel()` das Ergebnis jetzt selbst, weil es zwei verschiedene Schlusszeilen gibt. Das Hauptprogramm ruft sie nur auf.
+
+</div>
+
+<Editor datei="labor/w-ausbau-a.vorlage.py" aria-label="Python-Code: Begrenzte Versuche" />
+
+<Python rolle="tests" datei="labor/w-ausbau-a.tests.py" />
+
+<Python rolle="solution" datei="labor/w-ausbau-a.solution.py" />
+
+<Tipps>
+
+1. Die Schleife soll in zwei Fällen enden: Der Tipp stimmt, oder 7 Versuche sind vorbei.
+2. Karte 1 zeigt eine Schleife mit `and`.
+3. Nach der Schleife entscheidet ein `if`, ob der letzte Tipp stimmte.
+
+</Tipps>
+
+</Aufgabe>
+
+</Station>
+
+<Station id="a-ausbau-b" titel="Ausbau B: Noch einmal?" teil="A" sterne="3" min="8" extra="freiwillig">
+
+<p class="l-task__intro">Für die Schnellen, freiwillig. Mit „Meinen Code laden“ holst du deinen Code aus Station 6. Diese Aufgabe zählt nicht in deinem Fortschritt.</p>
+
+<Aufgabe art="code" id="w-ausbau-b" titel="Noch einmal?" data-count="0" data-mode="programm" data-start-aus="w-ausbau-a">
+
+<div class="a-task__text">
+
+Nach jedem Spiel fragt das Programm `Noch einmal? (ja/nein)`. Bei `ja` beginnt ein neues Spiel mit einer neuen Zufallszahl, bei `nein` endet das Programm. Das Spiel ist die Funktion aus Ausbau A.
+
+</div>
+
+<Editor datei="labor/w-ausbau-b.vorlage.py" aria-label="Python-Code: Noch einmal?" />
+
+<Python rolle="tests" datei="labor/w-ausbau-b.tests.py" />
+
+<Python rolle="solution" datei="labor/w-ausbau-b.solution.py" />
+
+<Tipps>
+
+1. Das ganze Spiel steckt schon in `spiel()`. Du brauchst nur eine äußere Schleife.
+2. Karte 2 zeigt, wie `weiter` die Schleife steuert.
+3. `weiter` muss vor der Schleife einen Wert haben, der sie startet.
+
+</Tipps>
+
+</Aufgabe>
+
+</Station>
+
+<Station id="t-1" titel="Größen und Zeichen" teil="B" sterne="1" min="6">
+
+<p class="l-task__intro">Das Training 10 ist freiwillig. Am besten machst du es in der letzten Woche vor Termin 11, etwa 30 Minuten. Jetzt die erste Aufgabe: Rechne zuerst auf Papier, dann prüf hier. Rechne mit 1 GB gleich 1000 MB und 1 MB gleich 1000 KB. A hat die Nummer 65, B die 66, und so weiter. Trag die Zahl oder den Buchstaben ein, ohne Leerzeichen und ohne Anführungszeichen.</p>
+
+<Aufgabe art="trace" id="tr-1" titel="Größen und Zeichen" data-count="0">
+
+<Daten datei="labor/tr-1.daten.json" />
+
+</Aufgabe>
+
+</Station>
+
+<Station id="t-2" titel="Plan in Code übertragen: Würfelraten mit drei Versuchen" teil="B" sterne="2" min="10">
+
+<p class="l-task__intro">Klausurform „Plan in Code übertragen“: Schreib das Programm wie auf Papier, ohne Ausführen und ohne Vorschläge des Editors. Dann abgeben und mit der Lösung vergleichen.</p>
+
+<Aufgabe art="klausur" id="tr-2" titel="Würfelraten mit drei Versuchen" data-count="0" data-mode="programm" data-minutes="10">
+
+<div class="a-task__text">
+
+Übertrage den Plan in ein Python-Programm. Der Rechner würfelt eine Zahl von 1 bis 6. Du hast drei Versuche. Wer trifft, bekommt als letzte Zeile zum Beispiel `Treffer, Versuche: 2`, sonst `Verloren, es war 4` mit der gewürfelten Zahl.
+
+<Plan titel="Würfelraten mit drei Versuchen">
+
+```text
+wurf = random.randint(1, 6)
+versuche = 0
+tipp = 0
+Schleife: tipp != wurf and versuche < 3?
+  Eingabe: tipp
+  versuche = versuche + 1
+Entscheidung: tipp == wurf?
+  ja:
+    Ausgabe: "Treffer, Versuche:", versuche
+  nein:
+    Ausgabe: "Verloren, es war", wurf
+```
+
+</Plan>
+
+</div>
+
+<Editor data-assist="off" aria-label="Python-Code von Hand schreiben, ohne Ausführen" />
+
+<Python rolle="tests" datei="labor/tr-2.tests.py" />
+
+<Python rolle="solution" datei="labor/tr-2.solution.py" />
+
+<Daten datei="labor/tr-2.scheme.json" rolle="scheme" />
+
+<Tipps>
+
+1. Lies zuerst die Schleife im Plan: Sie endet auf zwei Arten.
+2. Karte 1 zeigt eine Schleife mit `and`.
+3. Nach der Schleife entscheidet ein `if`, ob der letzte Tipp stimmt.
+
+</Tipps>
+
+</Aufgabe>
+
+</Station>
+
+<Station id="t-3" titel="Code lesen: Dein Spiel verfolgen" teil="B" sterne="2" min="6">
+
+<p class="l-task__intro">Das ist dein Spiel aus Stufe 3, nur mit festem `geheim` und festen Tipps. Die Funktion `hinweis` kennst du:</p>
+
+```python data-run="no"
+def hinweis(geraten, geheim):
+    if geraten < geheim:
+        return "Zu klein"
+    elif geraten > geheim:
+        return "Zu groß"
+    else:
+        return "Richtig!"
+```
+
+<p class="l-task__intro">Das Programm:</p>
+
+```python data-run="no"
+geheim = 64
+geraten = 0
+versuche = 0
+while geraten != geheim:
+    geraten = int(input("Dein Tipp (1 bis 100): "))
+    versuche = versuche + 1
+    print(hinweis(geraten, geheim))
+print(f"Versuche: {versuche}")
+```
+
+<p class="l-task__intro">Es bekommt nacheinander die Tipps 80, 50, 70 und 64. Trag nach jeder Runde `geraten`, `versuche` und die Ausgabe dieser Runde ein. Die Schlusszeile gehört nicht dazu.</p>
+
+<Aufgabe art="trace" id="tr-3" titel="Dein Spiel verfolgen" data-count="0">
+
+<Daten datei="labor/tr-3.daten.json" />
+
+</Aufgabe>
+
+</Station>
+
+<Station id="t-4" titel="Fehler finden: Zufallszahl in der Schleife" teil="B" sterne="2" min="8">
+
+<p class="l-task__intro">In diesem Programm stecken zwei Fehler: einer, den Python meldet, und einer, den du nur an der Ausgabe findest.</p>
+
+<Aufgabe art="code" id="tr-4" titel="Zufallszahl in der Schleife" data-count="0" data-mode="programm" data-inputs="50|20|30">
+
+<div class="a-task__text">
+
+Das Programm zieht eine Zahl von 1 bis 100 und fragt, bis der Tipp stimmt. Am Ende zeigt es die Zahl der Versuche. Behebe beide Fehler.
+
+</div>
+
+<Editor datei="labor/tr-4.vorlage.py" aria-label="Python-Code: Zufallszahl in der Schleife" />
+
+<Python rolle="tests" datei="labor/tr-4.tests.py" />
+
+<Python rolle="solution" datei="labor/tr-4.solution.py" />
+
+<Tipps>
+
+1. Führ das Programm aus und lies die Meldung von unten: In welcher Zeile fehlt etwas?
+2. Läuft es, rate mit der Mitte (50, dann 25 oder 75 und so weiter). Nach höchstens 7 Tipps muss `Richtig!` kommen. Passen die Hinweise zueinander?
+3. Wie oft wird die Zufallszahl gezogen? Lies noch einmal, was vor der Schleife steht und was in ihr.
+
+</Tipps>
+
+</Aufgabe>
+
+<p class="k-small k-muted"><strong>Zum Schluss: Spiel sichern.</strong> Klick am Editor auf „Kopieren“ und füge dein fertiges Spiel aus Station 5 in eine eigene Datei ein, oder schick es dir per Mail. Die App merkt sich deinen Stand nur in diesem Browser.</p>
+
+</Station>
+
+<Knobel id="kn-1" titel="Der Computer rät">
+
+<Aufgabe art="code" id="k-1" data-mode="code">
+
+<div class="a-task__text">
+
+Du denkst dir eine Zahl von 1 bis 100, der Computer rät sie mit der Mitte. Er kennt deine Zahl nicht: `geheim` darfst du nur an `hinweis` weitergeben, für deine Tipps benutzt du nur die Antworten von `hinweis` (`Zu klein`, `Zu groß` und `Richtig!`). Schreib die Funktion `computer_raet(geheim)`: Sie rät mit der Mitte, fragt dazu jedes Mal `hinweis(tipp, geheim)` und gibt die Zahl der Versuche zurück. Für jede Zahl von 1 bis 100 sollen höchstens 7 Versuche reichen. Der erste Tipp darf nicht von `geheim` abhängen.
+
+</div>
+
+<Editor datei="labor/k-1.vorlage.py" aria-label="Python-Code: Der Computer rät" />
+
+<Python rolle="tests" datei="labor/k-1.tests.py" />
+
+<Python rolle="solution" datei="labor/k-1.solution.py" />
+
+<Tipps>
+
+1. Wenn du 50 tippst und `Zu klein` hörst, welche Zahlen bleiben übrig?
+2. Du merkst dir die Grenzen `unten` und `oben` und tippst immer die Mitte.
+3. Die Mitte ist `int((unten + oben) / 2)`. Bei `Zu klein` wird `unten` zu `tipp + 1`, bei `Zu groß` wird `oben` zu `tipp - 1`.
+
+</Tipps>
+
+</Aufgabe>
+
+<p class="k-small k-muted">Zum Weiterdenken: Mach daraus ein Spiel mit dir. Statt `hinweis(tipp, geheim)` fragt der Computer mit `input`, ob seine Zahl zu klein, zu groß oder richtig ist, zum Beispiel mit `k`, `g` und `r`. Dann denkst du dir eine Zahl, und er findet sie in höchstens 7 Versuchen. Mit 1 bis 1000 sind es höchstens 10. Dasselbe Prinzip nutzt ein Rechner, wenn er in einem nach Größe sortierten Verzeichnis sucht, zum Beispiel in einem Telefonbuch.</p>
+
+</Knobel>
+
+</Labor>

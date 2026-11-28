@@ -9,6 +9,7 @@ export default function assetsKopieren() {
   let n = 0, ausgelassen = 0;
   const filter = (quelle) => {
     if (ohneVideo && quelle.toLowerCase().endsWith('.mp4')) { ausgelassen++; return false; }
+    if (path.basename(quelle) === '__pycache__' || quelle.toLowerCase().endsWith('.pyc')) return false;
     if (fs.statSync(quelle).isFile()) n++;
     return true;
   };

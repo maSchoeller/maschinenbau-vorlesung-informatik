@@ -1,0 +1,1 @@
+Zuerst der Hauptplan. Er liest wahl und geld ein. Dann kommen zwei Rechtecke mit den doppelten Seitenlinien. Das erste ruft preis von auf, das zweite antwort. Zum Schluss gibt der Plan den Text aus. Er zeigt nur, was passiert.

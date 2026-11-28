@@ -250,7 +250,7 @@ E("for", "for", SC, "V06", "kopf",
 E("range", "range()", SC, "V06", "kopf",
   "Erzeugt eine Zahlenfolge für Schleifen.",
   "range(stop)    range(start, stop)    range(start, stop, schritt)",
-  "range(5) liefert 0, 1, 2, 3, 4: Der Startwert 0 ist dabei, der Endwert 5 nicht. range(1, 6) liefert 1 bis 5, range(0, 100, 25) liefert 0, 25, 50, 75. Mit negativem Schritt zählst du rückwärts.",
+  "range(5) liefert 0, 1, 2, 3, 4: Der Startwert 0 ist dabei, der Endwert 5 nicht. range(1, 6) liefert 1 bis 5, range(0, 100, 25) liefert 0, 25, 50, 75. Die dritte Zahl ist die Schrittweite; sie kommt ab Termin 06 dran. Mit negativem Schritt zählst du rückwärts.",
   '''
   for winkel in range(0, 91, 30):
       print(winkel, "Grad")
@@ -322,56 +322,54 @@ E("zaehler-summe", "Zähler & Summe (+=)", SC, "V06", "kopf",
 E("def", "def (Funktion definieren)", FU, "V07", "kopf",
   "Fasst Code unter einem Namen zusammen, damit du ihn wiederverwenden kannst.",
   "def name(parameter):\n    anweisungen\n    return ergebnis",
-  "Mit def bekommt ein Stück Code einen Namen. Der Block wird erst ausgeführt, wenn du die Funktion aufrufst: name(werte). Funktionen vermeiden Wiederholungen (DRY), halten Code lesbar und lassen sich einzeln testen.",
+  "Mit def bekommt ein Stück Code einen Namen. Der Block wird erst ausgeführt, wenn du die Funktion aufrufst: name(werte). Funktionen vermeiden Wiederholungen und halten Code lesbar.",
   '''
-  def flaeche_kreis(d):
-      return 3.14159 * d**2 / 4
+  def umfang_kreis(d):
+      return 3.14159 * d
 
-  print(flaeche_kreis(20))
-  print(flaeche_kreis(40))
+  print(umfang_kreis(20))
+  print(umfang_kreis(40))
   ''',
   "Sobald du dieselbe Rechnung ein zweites Mal brauchst – oder einem Block einen Namen geben willst.",
   [("Umrechnung als Funktion", 'def mm_zu_m(mm):\n    return mm / 1000\n\nprint(mm_zu_m(2500))'),
    ("Funktion ohne Rückgabewert, nur mit Ausgabe", 'def gruss(name):\n    print("Hallo", name)\n\ngruss("Anna")')],
   [("Funktion vor der Definition aufgerufen", 'print(quadrat(3))\n\ndef quadrat(x):\n    return x * x'),
    ("Doppelpunkt vergessen", 'def quadrat(x)\n    return x * x')],
-  ["parameter", "return", "default-werte", "docstring"])
+  ["parameter", "return"])
 
 E("parameter", "Parameter & Argumente", FU, "V07", "kopf",
   "Werte, die du einer Funktion beim Aufruf mitgibst.",
-  "def f(a, b): ...    f(1, 2)    f(b=2, a=1)",
-  "Parameter stehen in der Klammer der Definition, Argumente beim Aufruf. Die Zuordnung erfolgt nach Position oder mit Namen (f(b=2, a=1)). Die Anzahl muss passen, sonst gibt es einen TypeError.",
+  "def f(a, b): ...    f(1, 2)",
+  "Parameter stehen in der Klammer der Definition. Beim Aufruf legst du die Werte in die Klammer, in derselben Reihenfolge. Die Anzahl muss passen, sonst gibt es einen TypeError.",
   '''
   def spannung(kraft, flaeche):
       return kraft / flaeche
 
   print(spannung(1200, 40))
-  print(spannung(flaeche=40, kraft=1200))
+  print(spannung(900, 30))
   ''',
   "Wenn eine Funktion mit unterschiedlichen Eingabewerten arbeiten soll.",
   [("Zwei Werte, ein Ergebnis", 'def rechteck(a, b):\n    return a * b\n\nprint(rechteck(3, 4))'),
-   ("Mit Namen aufrufen verhindert Reihenfolgefehler", 'def verhaeltnis(zaehler, nenner):\n    return zaehler / nenner\n\nprint(verhaeltnis(nenner=4, zaehler=1))')],
+   ("Ein Wert aus einer Variablen", 'def doppelt(x):\n    return x * 2\n\nzahl = 7\nprint(doppelt(zahl))')],
   [("Argument fehlt", 'def spannung(kraft, flaeche):\n    return kraft / flaeche\n\nspannung(1200)'),
    ("Zu viele Argumente", 'def quadrat(x):\n    return x * x\n\nquadrat(2, 3)')],
-  ["def", "return", "default-werte"])
+  ["def", "return"])
 
 E("return", "return", FU, "V07", "kopf",
   "Gibt einen Wert aus der Funktion zurück und beendet sie.",
   "return ausdruck",
   "return liefert das Ergebnis an die aufrufende Stelle und beendet die Funktion sofort. Zeilen dahinter laufen nicht mehr. Ohne return gibt die Funktion None zurück. print() zeigt nur etwas an und gibt nichts zurück, das du weiterverwenden kannst.",
   '''
-  def betrag_sicher(x):
-      if x < 0:
-          return -x
-      return x
+  def quadrat(x):
+      return x * x
 
-  print(betrag_sicher(-4), betrag_sicher(2.5))
+  ergebnis = quadrat(4)
+  print(ergebnis)
   ''',
   "Immer, wenn du das Ergebnis weiterverwenden willst statt es nur anzuzeigen.",
-  [("Mehrere Werte als Tupel zurückgeben", 'def min_max(a, b):\n    return min(a, b), max(a, b)\n\nkleiner, groesser = min_max(5, 2)\nprint(kleiner, groesser)'),
-   ("Frühes return statt else", 'def vorzeichen(x):\n    if x > 0:\n        return "plus"\n    if x < 0:\n        return "minus"\n    return "null"\n\nprint(vorzeichen(-3))')],
-  [("return vergessen: Ergebnis ist None", 'def verdopple(x):\n    x * 2\n\nprint(verdopple(3) + 1)'),
-   ("Code nach return wird nie ausgeführt", 'def f():\n    return 1\n    print("nie")\n\nf()', "(keine Fehlermeldung) Die Zeile print(\"nie\") läuft nie, die Funktion endet beim return.")],
+  [("Das Ergebnis weiterrechnen", 'def doppelt(x):\n    return x * 2\n\nb = doppelt(3)\nprint(b + 1)'),
+   ("Umrechnung zurückgeben", 'def kmh_in_ms(v):\n    return v / 3.6\n\nprint(kmh_in_ms(36))')],
+  [("return vergessen: Ergebnis ist None", 'def verdopple(x):\n    x * 2\n\nprint(verdopple(3) + 1)')],
   ["def", "parameter", "print"])
 
 E("default-werte", "Standardwerte für Parameter", FU, "V07", "kopf",

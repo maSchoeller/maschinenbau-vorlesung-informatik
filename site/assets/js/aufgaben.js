@@ -50,13 +50,13 @@
   /* ── Fortschritt „x von y gelöst“ ────────────────────────── */
   /* Knobelaufgaben (data-knobel, freiwillig) haben Status und Abzeichen wie jede Aufgabe, zählen aber nicht mit:
      taskNodes() ist die Menge, die zählt; badgeNodes() die, die „gelöst“ gezeigt bekommt. */
-  function taskNodes() { return $$('[data-a][data-id]:not([data-count="0"]):not([data-knobel])'); }
+  function taskNodes() { return $$('[data-a][data-id]:not([data-count="0"]):not([data-knobel]):not([data-freiwillig])'); }
   function badgeNodes() { return $$('[data-a][data-id]:not([data-count="0"])'); }
   function updateProgress() {
     var lesson = lessonId(), sv = Store.solved(lesson);
     var nodes = taskNodes(), n = 0;
     nodes.forEach(function (t) { var ok = !!sv[t.getAttribute('data-id')]; if (ok) n++; t.classList.toggle('is-solved', ok); });
-    $$('[data-a][data-knobel][data-id]').forEach(function (t) { t.classList.toggle('is-solved', !!sv[t.getAttribute('data-id')]); });
+    $$('[data-a][data-id][data-knobel],[data-a][data-id][data-freiwillig]').forEach(function (t) { t.classList.toggle('is-solved', !!sv[t.getAttribute('data-id')]); });
     $$('[data-a-progress]').forEach(function (p) {
       var pct = nodes.length ? Math.round(100 * n / nodes.length) : 0;
       var fill = $('.a-progress__fill', p), txt = $('.a-progress__text', p), bar = $('.a-progress__bar', p);
@@ -96,8 +96,10 @@ def _hint(e):
         return "Einrückung prüfen: Zeilen im selben Block stehen gleich weit eingerückt (4 Leerzeichen), nach einem Doppelpunkt eine Stufe tiefer."
     if isinstance(e, SyntaxError):
         return "Syntaxfehler: Klammern, Anführungszeichen und Doppelpunkte prüfen. Dezimalzahlen schreibt Python mit Punkt, nicht mit Komma."
+    if isinstance(e, UnboundLocalError):
+        return "Dieser Name bekommt auf diesem Weg durch die Funktion noch keinen Wert. Steht in jedem Zweig eine Zeile, die ihn setzt? Oder gib den Wert über einen Parameter hinein."
     if isinstance(e, NameError):
-        return "Dieser Name ist unbekannt. Tippfehler? Groß-/Kleinschreibung? Oder die Variable wird erst weiter unten definiert?"
+        return "Dieser Name ist unbekannt. Tippfehler? Groß-/Kleinschreibung? Oder die Variable wird erst weiter unten definiert? Oder der Name gilt nur in einer Funktion?"
     if isinstance(e, TypeError) and ("positional argument" in m or "unexpected keyword" in m):
         return "Anzahl oder Namen der Argumente beim Aufruf prüfen: Passen sie zu den Parametern im def?"
     if isinstance(e, TypeError) and "NoneType" in m:
@@ -118,6 +120,8 @@ def _hint(e):
         return "Das Programm wollte mehr Eingaben lesen, als vorgesehen sind. Zählt dein Programm die input()-Aufrufe richtig?"
     if isinstance(e, ZeroDivisionError):
         return "Division durch null. Welcher Nenner ist null?"
+    if isinstance(e, AttributeError) and "NoneType" in m:
+        return "Ein Wert ist None (nichts). Fehlt in der Funktion ein return? print() zeigt nur an, gibt aber nichts zurück."
     if isinstance(e, AttributeError) or isinstance(e, ModuleNotFoundError):
         return "Name im Modul falsch geschrieben, oder import vergessen? Beispiel: import math, dann math.pi."
     return ""
@@ -302,12 +306,29 @@ def _main(kind, src, inputs, tests_src, mode, term=None):
         if err:
             raise AssertionError("Dein Programm bricht bei den Eingaben %s ab:\n%s%s" % (list(eingaben), err[0], ("\nHinweis: " + err[1]) if err[1] else ""))
         return out
+    def mit_zufall(werte, eingaben=()):
+        # Lässt random.randint nacheinander die Werte liefern (der letzte gilt weiter) und merkt sich die Aufrufe (a, b).
+        # Gibt (zeilen, aufrufe) zurück. So sind Tests mit Zufall wiederholbar; aufrufe == [(1, 100)] prüft „genau einmal gezogen“.
+        import random
+        werte = list(werte)
+        aufrufe = []
+        echt = random.randint
+        def fest(a, b):
+            aufrufe.append((a, b))
+            return werte[min(len(aufrufe), len(werte)) - 1]
+        random.randint = fest
+        try:
+            text = run_program([str(e) for e in eingaben])
+        finally:
+            random.randint = echt
+        return zeilen(text), aufrufe
     # Hilfsfunktionen für Tests: immer unter _zeilen/_zahlen/_run_program; die kurzen Namen nur,
     # wenn der Studierendencode sie nicht selbst belegt (sonst würde z. B. eine Liste "zahlen" überschrieben)
-    ns.update(_run_program=run_program, _zeilen=zeilen, _zahlen=zahlen, _ausgabe_text=ausgabe_text)
+    ns.update(_run_program=run_program, _zeilen=zeilen, _zahlen=zahlen, _ausgabe_text=ausgabe_text, _mit_zufall=mit_zufall)
     ns.setdefault("run_program", run_program)
     ns.setdefault("zeilen", zeilen)
     ns.setdefault("zahlen", zahlen)
+    ns.setdefault("mit_zufall", mit_zufall)
     ns.setdefault("ausgabe_text", ausgabe_text)
     ns.setdefault("math", math)
     before = set(ns)
@@ -388,6 +409,22 @@ def _main(kind, src, inputs, tests_src, mode, term=None):
     var s = $('script[data-role="' + role + '"]', root);
     return s ? s.textContent.replace(/^\n/, '').replace(/\s+$/, '') : '';
   }
+  /* Startcode aus einer Vorstufe (Knopf „Meinen Code laden“, Attribut data-start-aus):
+     parse: „w-stufe2“ (diese Lektion) oder „V10:w-stufe2“ -> {lektion, id}; waehle: gespeicherter Stand {code} vor Musterlösung. */
+  var Startcode = {
+    parse: function (spec, heute) {
+      var t = String(spec == null ? '' : spec).trim();
+      if (!t) return null;
+      var i = t.indexOf(':');
+      var lek = i < 0 ? heute : t.slice(0, i).trim(), id = (i < 0 ? t : t.slice(i + 1)).trim();
+      return lek && id ? { lektion: lek, id: id } : null;
+    },
+    waehle: function (stand, loesung) {
+      if (stand && typeof stand.code === 'string' && stand.code.trim()) return { code: stand.code, quelle: 'eigen' };
+      if (typeof loesung === 'string' && loesung.trim()) return { code: loesung, quelle: 'muster' };
+      return null;
+    }
+  };
   function setValue(ta, v) {
     ta.value = v;
     try { ta.dispatchEvent(new Event('input', { bubbles: true })); } catch (e) { /* ältere Browser */ }
@@ -405,6 +442,8 @@ def _main(kind, src, inputs, tests_src, mode, term=None):
     // Hinweise (gestuft)
     var hintsList = $('.a-hints', root);
     ui.hintBtn = null;
+    /* data-loesung-nach-tipps: die Musterlösung wird erst frei, wenn alle Tipps gezeigt sind (und ein Versuch geprüft ist) */
+    ui.alleTipps = !(root.hasAttribute('data-loesung-nach-tipps') && hintsList && $$('li', hintsList).length);
     if (hintsList) {
       var items = $$('li', hintsList);
       hintsList.hidden = true;
@@ -418,7 +457,7 @@ def _main(kind, src, inputs, tests_src, mode, term=None):
         hintBox.appendChild(box);
         shown++;
         ui.hintBtn.textContent = shown >= items.length ? 'Keine weiteren Tipps' : 'Tipp ' + (shown + 1) + ' von ' + items.length;
-        if (shown >= items.length) ui.hintBtn.disabled = true;
+        if (shown >= items.length) { ui.hintBtn.disabled = true; ui.alleTipps = true; if (ui.refreshSolution) ui.refreshSolution(); }
       });
       ui.hintBox = hintBox;
       ui.hintsEl = hintsList;
@@ -431,15 +470,22 @@ def _main(kind, src, inputs, tests_src, mode, term=None):
       ui.solBox = el('div', { class: 'a-solution', hidden: '' }, [el('strong', { text: 'Musterlösung' }), el('pre', { class: 'k-code', text: sol })]);
       ui.solBtn = el('button', { type: 'button', class: 'k-btn k-btn--small k-btn--link', text: 'Musterlösung ansehen', 'aria-disabled': 'true', title: 'Erst einen Versuch prüfen, dann kannst du die Musterlösung aufdecken.' });
       ui.solBtn.addEventListener('click', function () {
+        if (!ui.alleTipps) { ui.status.textContent = 'Erst alle Tipps ansehen, dann die Musterlösung.'; return; }
         if (!ui.attempted) { ui.status.textContent = 'Erst einen eigenen Versuch prüfen, dann die Musterlösung.'; return; }
         var open = ui.solBox.hidden;
         ui.solBox.hidden = !open;
         ui.solBtn.textContent = open ? 'Musterlösung verbergen' : 'Musterlösung ansehen';
       });
     }
+    ui.refreshSolution = function () {
+      if (!ui.solBtn) return;
+      var frei = ui.attempted && ui.alleTipps;
+      ui.solBtn.setAttribute('aria-disabled', frei ? 'false' : 'true');
+      ui.solBtn.title = frei ? '' : (ui.alleTipps ? 'Erst einen Versuch prüfen, dann kannst du die Musterlösung aufdecken.' : 'Erst alle Tipps ansehen und einen Versuch prüfen, dann kannst du die Musterlösung aufdecken.');
+    };
     ui.unlockSolution = function () {
       ui.attempted = true;
-      if (ui.solBtn) { ui.solBtn.setAttribute('aria-disabled', 'false'); ui.solBtn.title = ''; }
+      ui.refreshSolution();
     };
     return ui;
   }
@@ -477,9 +523,78 @@ def _main(kind, src, inputs, tests_src, mode, term=None):
     });
     var total = r.results.length;
     var all = total > 0 && ok === total;
-    ui.results.appendChild(el('div', { class: 'a-banner ' + (all ? 'is-ok' : 'is-bad'), text: total === 0 ? 'Keine Tests gefunden.' : (all ? 'Alle ' + total + ' Tests bestanden. Aufgabe gelöst.' : ok + ' von ' + total + ' Tests bestanden. Lies die Meldungen bei den nicht bestandenen Einträgen.') }));
+    ui.results.appendChild(el('div', { class: 'a-banner ' + (all ? 'is-ok' : 'is-bad'), text: total === 0 ? 'Keine Tests gefunden.' : (all ? (root && root.getAttribute('data-erfolg') ? root.getAttribute('data-erfolg') : 'Alle ' + total + ' Tests bestanden. Aufgabe gelöst.') : ok + ' von ' + total + ' Tests bestanden. Lies die Meldungen bei den nicht bestandenen Einträgen.') }));
     ui.results.appendChild(list);
     return all;
+  }
+
+  /* ── Abhaklisten bei code-Aufgaben ────────────────────────
+     Pflichtliste (script data-role="pflicht", JSON-Liste von Texten): immer sichtbar, Kästchen werden mit dem Stand gespeichert.
+     Schema (script data-role="scheme", JSON [{t, p}]): Selbstbewertung nach bestandenen Tests, wie in der Klausuraufgabe, aber ohne Einfluss auf „gelöst“.
+     Rückgabe: {stand(): {pf?, sh?}, stelle(w), leeren(), zeigeSchema(), pruefe(root)} */
+  function initAbhaken(root, cursor, speichern) {
+    var pflichtEl = $('script[data-role="pflicht"]', root), schemeEl = $('script[data-role="scheme"]', root);
+    var pflicht = [], scheme = [];
+    try { pflicht = pflichtEl ? JSON.parse(pflichtEl.textContent) : []; } catch (e) { pflicht = []; }
+    try { scheme = schemeEl ? JSON.parse(schemeEl.textContent) : []; } catch (e) { scheme = []; }
+    if (!Array.isArray(pflicht)) pflicht = [];
+    if (!Array.isArray(scheme)) scheme = [];
+    if (!pflicht.length && !scheme.length) return null;
+    var id = root.getAttribute('data-id') || 'a';
+    var pBoxes = [], sBoxes = [], pBox = null, sBox = null, sScore = null;
+    var maxPts = scheme.reduce(function (n, x) { return n + (x.p || 0); }, 0);
+    var anker = cursor;
+    if (pflicht.length) {
+      var fs = el('fieldset', { class: 'a-scheme__fs a-pflicht' }, [el('legend', { text: 'Pflichtliste: Hake ab, was dein Spiel schon kann' })]);
+      pflicht.forEach(function (t, i) {
+        var cid = id + '-p' + i;
+        var cb = el('input', { type: 'checkbox', id: cid });
+        cb.addEventListener('change', function () { speichern(); });
+        pBoxes.push(cb);
+        fs.appendChild(el('label', { class: 'a-scheme__item', 'for': cid }, [cb, el('span', { text: String(t) })]));
+      });
+      pBox = el('div', { class: 'a-scheme a-pflichtbox' }, [fs]);
+      anker.insertAdjacentElement('afterend', pBox); anker = pBox;
+    }
+    if (scheme.length) {
+      sBox = el('div', { class: 'a-scheme', hidden: '' });
+      var fs2 = el('fieldset', { class: 'a-scheme__fs' }, [el('legend', { text: 'Selbstbewertung (' + maxPts + ' Punkte)' })]);
+      fs2.appendChild(el('p', { class: 'k-small k-muted', text: 'Lies deinen Code und die Musterlösung. Setze ein Häkchen nur dort, wo dein Code die Anforderung wirklich erfüllt.' }));
+      scheme.forEach(function (it, i) {
+        var cid = id + '-s' + i;
+        var cb = el('input', { type: 'checkbox', id: cid });
+        cb.addEventListener('change', function () { zeige(); speichern(); });
+        sBoxes.push({ cb: cb, p: it.p || 0 });
+        fs2.appendChild(el('label', { class: 'a-scheme__item', 'for': cid }, [cb, el('span', { text: it.t }), el('span', { class: 'a-scheme__pts', text: (it.p || 0) + ((it.p || 0) === 1 ? ' Punkt' : ' Punkte') })]));
+      });
+      sScore = el('p', { class: 'a-scheme__score', role: 'status', 'aria-live': 'polite' });
+      sBox.appendChild(fs2); sBox.appendChild(sScore);
+      anker.insertAdjacentElement('afterend', sBox); anker = sBox;
+    }
+    function zeige() {
+      var got = sBoxes.reduce(function (n, b) { return n + (b.cb.checked ? b.p : 0); }, 0);
+      sScore.textContent = sBoxes.some(function (b) { return b.cb.checked; }) ? 'Du gibst dir ' + got + ' von ' + maxPts + ' Punkten.' : 'Noch nichts angekreuzt.';
+    }
+    return {
+      ende: anker,
+      /* nach grünen Tests: Schema zeigen */
+      zeigeSchema: function () { if (sBox && sBox.hidden) { sBox.hidden = false; zeige(); } },
+      stand: function () {
+        var o = {}, any = false;
+        if (pBoxes.some(function (c) { return c.checked; })) { o.pf = pBoxes.map(function (c) { return c.checked ? 1 : 0; }); any = true; }
+        if (sBox && !sBox.hidden) { o.sh = sBoxes.map(function (b) { return b.cb.checked ? 1 : 0; }); any = true; }
+        return any ? o : null;
+      },
+      stelle: function (w) {
+        if (Array.isArray(w.pf) && w.pf.length === pBoxes.length) pBoxes.forEach(function (c, i) { c.checked = !!w.pf[i]; });
+        if (sBox && Array.isArray(w.sh) && w.sh.length === sBoxes.length) { sBoxes.forEach(function (b, i) { b.cb.checked = !!w.sh[i]; }); sBox.hidden = false; zeige(); }
+      },
+      leeren: function () {
+        pBoxes.forEach(function (c) { c.checked = false; });
+        sBoxes.forEach(function (b) { b.cb.checked = false; });
+        if (sBox) sBox.hidden = true;
+      }
+    };
   }
 
   /* ── Typ: run / code / klausur ───────────────────────────── */
@@ -521,7 +636,7 @@ def _main(kind, src, inputs, tests_src, mode, term=None):
       if (schalter) schalter.el.hidden = !hatInput();
     }
 
-    var runBtn = null, checkBtn = null, resetBtn, submitBtn = null, abortBtn = null;
+    var runBtn = null, checkBtn = null, resetBtn, submitBtn = null, abortBtn = null, ladeBtn = null;
     if (kind !== 'klausur') runBtn = el('button', { type: 'button', class: 'k-btn k-btn--small' + (kind === 'code' ? ' k-btn--ghost' : ''), text: 'Ausführen' });
     var stepBtn = null;
     if (kind !== 'klausur') {
@@ -548,7 +663,9 @@ def _main(kind, src, inputs, tests_src, mode, term=None):
     if (kind === 'code') checkBtn = el('button', { type: 'button', class: 'k-btn k-btn--small', text: 'Prüfen' });
     if (kind === 'klausur') submitBtn = el('button', { type: 'button', class: 'k-btn k-btn--small', text: 'Abgeben und prüfen' });
     resetBtn = el('button', { type: 'button', class: 'k-btn k-btn--small k-btn--link', text: kind === 'klausur' ? 'Neu schreiben' : 'Zurücksetzen' });
-    [runBtn, stepBtn, abortBtn, checkBtn, submitBtn, resetBtn, ui.hintBtn, ui.solBtn].forEach(function (b) { if (b) ui.bar.appendChild(b); });
+    var startSpec = kind !== 'klausur' ? Startcode.parse(root.getAttribute('data-start-aus'), lessonId()) : null;
+    if (startSpec) ladeBtn = el('button', { type: 'button', class: 'k-btn k-btn--small k-btn--ghost', text: 'Meinen Code laden' });
+    [runBtn, stepBtn, abortBtn, checkBtn, submitBtn, ladeBtn, resetBtn, ui.hintBtn, ui.solBtn].forEach(function (b) { if (b) ui.bar.appendChild(b); });
     if (kind !== 'klausur' && KP && KP.modusSchalter) {
       schalter = KP.modusSchalter(function () { syncInputs(); });
       ui.bar.appendChild(schalter.el);
@@ -568,6 +685,8 @@ def _main(kind, src, inputs, tests_src, mode, term=None):
       cursor.insertAdjacentElement('afterend', ui.out); cursor = ui.out;
     }
     cursor.insertAdjacentElement('afterend', ui.results); cursor = ui.results;
+    var abhaken = kind === 'code' ? initAbhaken(root, cursor, function () { speichern(); }) : null;
+    if (abhaken) cursor = abhaken.ende;
     if (ui.hintBox) { cursor.insertAdjacentElement('afterend', ui.hintBox); cursor = ui.hintBox; }
     if (ui.solBox) { cursor.insertAdjacentElement('afterend', ui.solBox); cursor = ui.solBox; }
 
@@ -579,6 +698,15 @@ def _main(kind, src, inputs, tests_src, mode, term=None):
     }
     function loadingText() { return window.KursPy && !window.KursPy.worker ? 'Python wird geladen (einmalig, ca. 10 MB) …' : 'läuft …'; }
     function currentInputs() { return inputsTa ? inputsTa.value.replace(/\r/g, '').split('\n').filter(function (l, i, a) { return !(i === a.length - 1 && l === ''); }) : []; }
+
+    /* Reiche Ausgabe (3D, Bild, Tabelle): liegt in out selbst oder im Bereich k-rich, den KursPy.ui direkt hinter out anlegt */
+    function reicheAusgabe(out) {
+      if (!out) return false;
+      var sel = 'canvas, img, svg, table, .k-rich__3d, .k-rich__fig';
+      if (out.querySelector && out.querySelector(sel)) return true;
+      var h = out._kRich;
+      return !!(h && h.querySelector && h.querySelector(sel));
+    }
 
     function app(t, cls) { var s = el('span', cls ? { class: cls } : null); s.textContent = t; ui.out.appendChild(s); ui.out.scrollTop = ui.out.scrollHeight; }
 
@@ -603,7 +731,7 @@ def _main(kind, src, inputs, tests_src, mode, term=None):
           if (r.loadError) app('Python konnte nicht gestartet werden. Bist du online? (' + r.loadError + ')\n', 'err');
           else if (r.timedOut) app('\nAbgebrochen nach ' + (timeout / 1000) + ' s. Läuft da eine Endlosschleife?\n', 'err');
           else if (r.jsError) app(r.jsError + '\n', 'err');
-          else if (!term.hasOutput()) app('(keine Ausgabe. Hast du print() benutzt?)', 'sys');
+          else if (!term.hasOutput() && !reicheAusgabe(ui.out)) app('(keine Ausgabe. Hast du print() benutzt?)', 'sys');
           busy(false);
           ui.status.textContent = r.timedOut ? 'abgebrochen' : (r.loadError ? 'Ladefehler, bitte erneut versuchen' : 'fertig');
           var viz = vizNachLauf; vizNachLauf = false;
@@ -641,7 +769,7 @@ def _main(kind, src, inputs, tests_src, mode, term=None):
         if (r.loadError) app('Python konnte nicht gestartet werden. Bist du online? (' + r.loadError + ')\n', 'err');
         else if (r.timedOut) app('\nAbgebrochen nach ' + (timeout / 1000) + ' s. Läuft da eine Endlosschleife?\n', 'err');
         else if (r.jsError) app(r.jsError + '\n', 'err');
-        else if (!got) app('(keine Ausgabe. Hast du print() benutzt?)', 'sys');
+        else if (!got && !reicheAusgabe(ui.out)) app('(keine Ausgabe. Hast du print() benutzt?)', 'sys');
         busy(false);
         ui.status.textContent = r.timedOut ? 'abgebrochen' : (r.loadError ? 'Ladefehler, bitte erneut versuchen' : 'fertig');
       });
@@ -657,7 +785,7 @@ def _main(kind, src, inputs, tests_src, mode, term=None):
         var all = renderResults(ui, r, root, timeout);
         if (!r.loadError && !r.timedOut) ui.unlockSolution();
         ui.status.textContent = all ? 'bestanden' : 'geprüft';
-        if (all) { markSolved(root); addBadge(root); }
+        if (all) { markSolved(root); addBadge(root); if (abhaken) { abhaken.zeigeSchema(); speichern(); } }
         if (afterwards) afterwards(all, r);
       });
     }
@@ -668,10 +796,36 @@ def _main(kind, src, inputs, tests_src, mode, term=None):
       if ((e.ctrlKey || e.metaKey) && e.key === 'Enter' && kind !== 'klausur') { e.preventDefault(); doRun(); }
     });
 
+    if (ladeBtn) {
+      var ladeNachfrage = false;
+      var ladeText = ladeBtn.textContent;
+      var ladeZurueck = function () { ladeNachfrage = false; ladeBtn.textContent = ladeText; };
+      ta.addEventListener('input', ladeZurueck);
+      ladeBtn.addEventListener('click', function () {
+        var stand = KS && KS.sofort ? KS.sofort.lesen(KS.pfad(startSpec.lektion, 'code:' + startSpec.id)) : undefined;
+        var lsg = null;
+        var vor = $$('[data-a][data-id]').filter(function (n) { return n.getAttribute('data-id') === startSpec.id; })[0];
+        if (vor && startSpec.lektion === lessonId()) lsg = readScript(vor, 'solution');
+        var w = Startcode.waehle(stand, lsg);
+        if (!w) { ui.status.textContent = 'Zu dieser Aufgabe gibt es noch keinen Code.'; return; }
+        if (!ladeNachfrage && codeText() !== original && codeText() !== w.code) {
+          ladeNachfrage = true; ladeBtn.textContent = 'Wirklich ersetzen?';
+          ui.status.textContent = 'Dein Code hier wird ersetzt.';
+          return;
+        }
+        if (term) { term.abort(null); vizNachLauf = false; }
+        setValue(ta, w.code);
+        ladeZurueck();
+        ui.results.textContent = '';
+        ui.status.textContent = w.quelle === 'eigen' ? 'Dein Code aus der letzten Aufgabe ist geladen.' : 'Du hast die letzte Aufgabe nicht bearbeitet. Geladen ist die Musterlösung.';
+      });
+    }
+
     resetBtn.addEventListener('click', function () {
       if (kind === 'klausur') return;
       if (term) { term.abort(null); vizNachLauf = false; }
       setValue(ta, original);
+      if (abhaken) abhaken.leeren();
       if (inputsTa) inputsTa.value = startInputs;
       if (ui.out) { ui.out.textContent = ''; ui.out.hidden = true; }
       ui.results.innerHTML = '';
@@ -688,7 +842,9 @@ def _main(kind, src, inputs, tests_src, mode, term=None):
       if (inputsTa && inputsTa.value !== startInputs) o.eingaben = inputsTa.value;
       var h = kl ? kl.stand() : null;
       if (h) { o.ab = 1; o.haken = h; }
-      return (c === original && o.eingaben === undefined && !o.ab) ? null : o;
+      var ah = abhaken ? abhaken.stand() : null;
+      if (ah) { o.pf = ah.pf; o.sh = ah.sh; }
+      return (c === original && o.eingaben === undefined && !o.ab && !ah) ? null : o;
     }
     function speichern() { if (!stelleWieder) st.aendern(codeStand); }
     ta.addEventListener('input', speichern);
@@ -703,6 +859,7 @@ def _main(kind, src, inputs, tests_src, mode, term=None):
         if (inputsTa && typeof w.eingaben === 'string') { inputsTa.value = w.eingaben; inputsTa.rows = Math.max(1, w.eingaben.split(String.fromCharCode(10)).length); }
         syncInputs();
         if (kl && w.ab) kl.stelle(w);
+        if (abhaken) abhaken.stelle(w);
       } finally { stelleWieder = false; }
     });
   }
@@ -908,12 +1065,15 @@ def _main(kind, src, inputs, tests_src, mode, term=None):
     var ohneLeer = cfg.leerzeichen === false;
     /* Der Schalter gilt für die ganze Aufgabe. Anführungszeichen und Zeilenenden werden weiter normalisiert (normVal, normOut). */
     function gleichOhneLeer(a, b) { return String(a).replace(/\s+/g, '') === String(b).replace(/\s+/g, ''); }
-    function gleichWert(a, b) { return ohneLeer ? gleichOhneLeer(normVal(a), normVal(b)) : normVal(a) === normVal(b); }
-    function gleichAus(a, b) { return ohneLeer ? gleichOhneLeer(normOut(a), normOut(b)) : normOut(a) === normOut(b); }
-    /* sprache: "plan" oder "tabelle": Die Zeilen sind ein Plan oder eine Tabelle, kein Python. Der Block heißt dann „Plan“ bzw. „Tabelle“
+    /* gross: false: Groß- und Kleinschreibung zählt beim Vergleich nicht (E2 und e2 sind gleich, z. B. bei Hexzahlen). Gilt für Werte und Ausgabe. */
+    var ohneGross = cfg.gross === false;
+    function fall(s) { return ohneGross ? String(s).toUpperCase() : String(s); }
+    function gleichWert(a, b) { a = fall(normVal(a)); b = fall(normVal(b)); return ohneLeer ? gleichOhneLeer(a, b) : a === b; }
+    function gleichAus(a, b) { a = fall(normOut(a)); b = fall(normOut(b)); return ohneLeer ? gleichOhneLeer(a, b) : a === b; }
+    /* sprache: "plan", "tabelle" oder "befehle": Die Zeilen sind ein Plan, eine Tabelle oder ein Programm des Spielzeug-Rechners, kein Python. Der Block heißt dann „Plan“, „Tabelle“ bzw. „Programm“
        statt „Python“ und hat keinen Kopieren-Knopf. typhinweis: false lässt den festen Satz „Typen beachten: Text steht in Anführungszeichen.“
        weg (bei Plan und Tabelle immer weggelassen). */
-    var istPlan = cfg.sprache === 'plan' || cfg.sprache === 'tabelle';
+    var istPlan = cfg.sprache === 'plan' || cfg.sprache === 'tabelle' || cfg.sprache === 'befehle';
     var mitTyphinweis = cfg.typhinweis !== false && !istPlan;
     var cur = 0, revealedCount = 0;
     var state = {};
@@ -924,7 +1084,7 @@ def _main(kind, src, inputs, tests_src, mode, term=None):
       var gelesen = code.map(function (l) { var m = [], re = /(\w+)\s*=\s*([^,]+)/g, x; while ((x = re.exec(l))) m.push([x[1], x[2].trim()]); return m; });
       if (gelesen.length && gelesen[0].length && gelesen.every(function (g) { return g.length === gelesen[0].length && g.every(function (c, i) { return c[0] === gelesen[0][i][0]; }); })) tabellenSpalten = { namen: gelesen[0].map(function (c) { return c[0]; }), werte: gelesen.map(function (g) { return g.map(function (c) { return c[1]; }); }) };
     }
-    var codeOl = el('ol', { class: 'a-trace__code', 'aria-label': istPlan ? (cfg.sprache === 'tabelle' ? 'Zeilen der Tabelle' : 'Zeilen des Plans') : 'Programmzeilen' });
+    var codeOl = el('ol', { class: 'a-trace__code', 'aria-label': istPlan ? (cfg.sprache === 'tabelle' ? 'Zeilen der Tabelle' : cfg.sprache === 'befehle' ? 'Zeilen des Programms' : 'Zeilen des Plans') : 'Programmzeilen' });
     if (istPlan) codeOl.setAttribute('data-sprache', cfg.sprache);
     code.forEach(function (l, i) {
       var li = el('li', { 'data-line': String(i + 1) }); li.appendChild(el('code', { text: l.length ? l : ' ' }));
@@ -955,7 +1115,7 @@ def _main(kind, src, inputs, tests_src, mode, term=None):
     var tries = 0, inputs = [], outInput = null, rowEl = null, revList = [];
     /* Bearbeitungsstand: ablauf:<kennung> = {v, f, n (erreichter Schritt), r (aufgedeckte Schritte), e (Eintrag im offenen Schritt)} */
     var traceId = root.getAttribute('data-id');
-    var st = traceId ? stand('ablauf:' + traceId) : KEIN_STAND, traceF = kurzHash(JSON.stringify((mitAusgabe ? [code, vars, steps] : [code, vars, steps, 'ohne-ausgabe']).concat(ohneLeer ? ['ohne-leerzeichen'] : []))), stelleWieder = false;
+    var st = traceId ? stand('ablauf:' + traceId) : KEIN_STAND, traceF = kurzHash(JSON.stringify((mitAusgabe ? [code, vars, steps] : [code, vars, steps, 'ohne-ausgabe']).concat(ohneLeer ? ['ohne-leerzeichen'] : [], ohneGross ? ['ohne-gross'] : []))), stelleWieder = false;
     function traceStand() {
       var e = {}, n = 0;
       inputs.forEach(function (inp) { if (inp.value) { e[inp.getAttribute('data-var')] = inp.value; n++; } });
@@ -1075,7 +1235,7 @@ def _main(kind, src, inputs, tests_src, mode, term=None):
       tbody.innerHTML = ''; cur = 0; revealedCount = 0; revList = []; state = {};
       checkBtn.hidden = false; addRow(); highlight(steps[0].line);
       st.loeschen();
-      (inputs[0] || outInput).focus();
+      var f0 = inputs[0] || outInput; if (f0) f0.focus();
     });
     tbody.addEventListener('input', speichern);
     addRow();
@@ -1335,5 +1495,5 @@ def _main(kind, src, inputs, tests_src, mode, term=None):
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
 
-  window.KursAufgaben = { pyProgram: pyProgram, runPython: runPython, prelude: PY_PRELUDE, store: Store, update: updateProgress };
+  window.KursAufgaben = { startcode: Startcode, pyProgram: pyProgram, runPython: runPython, prelude: PY_PRELUDE, store: Store, update: updateProgress };
 })();

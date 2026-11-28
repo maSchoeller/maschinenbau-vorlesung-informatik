@@ -1,0 +1,1 @@
+{"baum": [{"k": "in", "v": "a", "typ": "float"}, {"k": "in", "v": "b", "typ": "float"}, {"k": "op", "v": "summe = a + b"}, {"k": "op", "v": "gerundet = round(summe, 2)"}, {"k": "if", "v": "gerundet == 0.3", "yes": [{"k": "out", "v": "\"ja\""}], "no": [{"k": "out", "v": "\"nein\""}]}]}

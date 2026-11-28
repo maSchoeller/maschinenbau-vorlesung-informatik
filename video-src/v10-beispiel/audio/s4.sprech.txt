@@ -1,0 +1,1 @@
+Jetzt der Zähler. versuche beginnt vor der Schleife bei null. In jeder Runde kommt eins dazu. Nach der Schleife zeigt print die Zahl. Die Zeile steht ohne Einrückung unter der Schleife, sie läuft also erst nach dem Treffer.

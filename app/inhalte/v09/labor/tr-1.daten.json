@@ -1,0 +1,67 @@
+{
+ "sprache": "tabelle",
+ "leerzeichen": false,
+ "ausgabe": false,
+ "typhinweis": false,
+ "code": [
+  "Frage = Was steht nach dem 1. Befehl im Rechenplatz?",
+  "Frage = Was steht nach dem 2. Befehl in D?",
+  "Frage = Was steht nach dem 3. Befehl im Rechenplatz?",
+  "Frage = Was steht nach dem 4. Befehl im Rechenplatz?",
+  "Frage = Was steht am Ende in A?",
+  "Frage = Wie viele Takte braucht das ganze Programm?"
+ ],
+ "vars": [
+  "Antwort"
+ ],
+ "steps": [
+  {
+   "line": 1,
+   "set": {
+    "Antwort": "9"
+   },
+   "frage": "Zeile 1: Was steht nach dem 1. Befehl im Rechenplatz? Trag die Zahl ein, ohne Leerzeichen.",
+   "hint": "Geh Befehl für Befehl. LADE überschreibt den Rechenplatz, ADDIERE zählt dazu."
+  },
+  {
+   "line": 2,
+   "set": {
+    "Antwort": "9"
+   },
+   "frage": "Zeile 2: Was steht nach dem 2. Befehl in D? Trag die Zahl ein, ohne Leerzeichen.",
+   "hint": "Geh Befehl für Befehl. LADE überschreibt den Rechenplatz, ADDIERE zählt dazu."
+  },
+  {
+   "line": 3,
+   "set": {
+    "Antwort": "6"
+   },
+   "frage": "Zeile 3: Was steht nach dem 3. Befehl im Rechenplatz? Trag die Zahl ein, ohne Leerzeichen.",
+   "hint": "Geh Befehl für Befehl. LADE überschreibt den Rechenplatz, ADDIERE zählt dazu."
+  },
+  {
+   "line": 4,
+   "set": {
+    "Antwort": "15"
+   },
+   "frage": "Zeile 4: Was steht nach dem 4. Befehl im Rechenplatz? Trag die Zahl ein, ohne Leerzeichen.",
+   "hint": "Geh Befehl für Befehl. LADE überschreibt den Rechenplatz, ADDIERE zählt dazu."
+  },
+  {
+   "line": 5,
+   "set": {
+    "Antwort": "15"
+   },
+   "frage": "Zeile 5: Was steht am Ende in A? Trag die Zahl ein, ohne Leerzeichen.",
+   "hint": "SPEICHERE A schreibt den Rechenplatz in die Zelle A. Welcher Wert stand zuletzt im Rechenplatz?"
+  },
+  {
+   "line": 6,
+   "set": {
+    "Antwort": "18"
+   },
+   "frage": "Zeile 6: Wie viele Takte braucht das ganze Programm? Trag die Zahl ein, ohne Leerzeichen.",
+   "hint": "Zähl die Befehle, STOPP gehört dazu. Jeder braucht 3 Takte."
+  }
+ ]
+}

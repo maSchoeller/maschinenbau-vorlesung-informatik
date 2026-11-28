@@ -1,0 +1,1 @@
+Schau, wie die Werte wandern. Der Aufruf frage von erste Zahl liefert drei, und a bekommt diesen Wert. Der zweite Aufruf liefert vier für b. Dann steht in melde von a plus b die Summe sieben, und melde zeigt sie an. Das Hauptprogramm liest sich wie die Beschreibung der Aufgabe. Funktionen oben, Hauptprogramm unten. Eine Funktion, eine Aufgabe.

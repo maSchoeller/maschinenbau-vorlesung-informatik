@@ -1,0 +1,554 @@
+---
+titel: "Termin 08 · Zahl oder Text: Datentypen, lokale Namen und Funktionen mit Antwort · Lerneinheit · Informatik Maschinenbau"
+beschreibung: "Die Datentypen str und bool, Umwandlung mit int, float und str, Text mit +, lokale Namen in Funktionen, der Rest beim Teilen mit %, Funktionen mit True oder False und ein 3D-Bauteil aus Parametern. Mit Umwandler, Zwei Räumen und Aufrufkette zum Ausprobieren."
+body:
+  data-lesson: V08
+  data-page: lerneinheit
+stile:
+  - ../assets/css/dhbw-base.css
+  - ../assets/css/kurs.css
+  - ../assets/css/aufgaben.css
+  - ../assets/css/editor.css
+  - ../assets/css/v05.css
+  - ../assets/css/v08.css
+skripte:
+  - ../assets/js/speicher.js
+  - ../assets/js/icons.js
+  - src: ../assets/js/editor.js
+    defer: true
+  - ../assets/js/pap-engine.js
+  - ../assets/js/explorables-v08.js
+  - ../assets/js/kurs.js
+  - ../assets/js/aufgaben.js
+---
+
+<Lerneinheit nr="V08" name="Termin 08" labor="v08-labor.html">
+
+<Kopf marke="Termin 08 · 1. Semester · Lerneinheit" titel="Zahl oder Text: Datentypen, lokale Namen und Funktionen mit Antwort">
+
+Eine 5 ist nicht immer eine 5. Heute siehst du, was Python aus einem Wert macht, wenn er in Anführungszeichen steht, und wie du Zahl, Text und Ja oder Nein ineinander umwandelst. Danach geht es um die Frage, welche Namen eine Funktion kennt, was beim Teilen übrig bleibt, wie eine Funktion mit True oder False antwortet, wie eine Funktion eine andere ruft und wie ein einziger Parameter eine Schraube in 3D länger oder dicker macht.
+
+- die Datentypen `int`, `float`, `str` und `bool` unterscheiden und Werte mit `int()`, `float()` und `str()` umwandeln
+- Text mit `+` zusammensetzen und die Meldung `TypeError` lesen
+- erklären, welche Namen eine Funktion hat und was draußen mit ihnen passiert, wenn sie fertig ist
+- den Rest beim Teilen mit `%` berechnen und damit prüfen, ob eine Zahl gerade ist
+- eine Funktion schreiben, die mit True oder False antwortet und die eine andere aufruft, und den Plan dazu zeichnen
+- mit Parametern ein 3D-Bauteil bauen: eine Funktion, die einen Körper zurückgibt
+
+Alles aus Termin 02 bis 07 gilt weiter: Schleifen, eigene Funktionen mit `def` und `return`, die Datentypen `int` und `float`. Geübt wird im [Programmierlabor](v08-labor.html).
+
+</Kopf>
+
+<Abschnitt id="zahl-oder-text" nr="1" titel="Zahl oder Text: str, bool und Umwandlung">
+
+Aus Termin 07 kennst du `int` (ganze Zahl) und `float` (Kommazahl). Der <Begriff e="Sagt, wie die Bits eines Werts gelesen werden.">Datentyp</Begriff> eines Werts bestimmt, was Python damit tun kann. Zwei neue Typen kommen dazu:
+
+- <Begriff e="Eine Folge von Zeichen in Anführungszeichen, zum Beispiel „Lea“ oder „5“.">Text</Begriff>, in Python `str`. Er steht in doppelten Anführungszeichen: `"Hallo"`, `"Lea"`, `"5"`.
+- <Begriff e="Ein Wert mit nur zwei Möglichkeiten: True oder False. Jeder Vergleich liefert einen.">Wahrheitswert</Begriff>, in Python `bool`. Er kennt nur `True` und `False`, beide mit großem Anfangsbuchstaben.
+
+Das Ergebnis eines Vergleichs ist immer ein `bool`. Mit `type` fragst du nach dem Datentyp:
+
+```python
+name = "Lea"
+print("Hallo " + name)
+print(name == "Lea")
+print(type(name))
+print(5 > 3)
+print(type(5 > 3))
+```
+
+<p class="k-small k-muted">Führ das Programm aus. Die Ausgabe ist `Hallo Lea`, `True`, `<class 'str'>`, `True` und `<class 'bool'>`.</p>
+
+Mit `+` hängst du Text aneinander, wie ein f-String, nur mit `+`. Das Leerzeichen gehört in den Text: `"Hallo "` hat eins am Ende. Mit `==` vergleichst du Text mit Text und fragst, ob beide gleich sind. Auch Text liegt als Bits im Speicher. Welche Bits zu welchem Zeichen gehören, kommt in Termin 10.
+
+Jetzt wandelst du um. Mit `int(…)`, `float(…)` und `str(…)` machst du aus einem Wert einen Wert eines anderen Typs. Das nennt man <Begriff e="Aus einem Wert eines Typs einen Wert eines anderen Typs machen, zum Beispiel aus dem Text „5“ die Zahl 5.">Umwandlung</Begriff>.
+
+<Explorable name="umwandler" titel="Umwandler">
+
+Der Umwandler hat zwei Teile. Teil 1 wandelt einen Wert um und zeigt Ausgabe und Typ. Vermute zuerst: Was ergibt `int(3.7)`? Teil 2 rechnet mit `+`. Vermute auch dort zuerst: Was ergibt `"5" + "3"`? Probiere danach alle Kombinationen aus.
+
+<Ohne>
+
+Für den Umwandler wird JavaScript benötigt. Der Baustein wandelt einen Wert mit `int`, `float` oder `str` um und zeigt die Ausgabe und den Typ des Ergebnisses. Teil 2 rechnet mit `+` und zeigt für jede Kombination von Zahl und Text, was Python ausgibt oder meldet.
+
+</Ohne>
+
+</Explorable>
+
+**Was du gesehen hast.** `int(3.7)` ist `3`. `int` schneidet die Stellen nach dem Komma ab, es rundet nicht. `"5" + "3"` ist `53`. Python zeigt Text mit einfachen Anführungszeichen, `'5'` und `"5"` sind dasselbe. In Anführungszeichen ist die 5 ein Zeichen und kein Zahlenwert, `+` hängt die beiden Zeichen aneinander. Text plus Zahl ist ein Fehler:
+
+```python data-run="no"
+print("5" + 3)
+```
+
+Python meldet `TypeError: can only concatenate str (not "int") to str`. Lies die Meldung von unten nach oben: `TypeError` heißt „die Typen passen nicht zusammen“. `str` und `int` sind die beiden Typen, die sich nicht verbinden lassen. Bei `5 + "3"` (zuerst die Zahl, dann der Text) meldet Python eine andere Zeile, die du im Umwandler gesehen hast. Das Programm bricht in beiden Fällen in dieser Zeile ab.
+
+Die Lösung hängt davon ab, was du willst. Soll gerechnet werden, schreibst du `int("5") + 3`, das ergibt `8`. Soll Text entstehen, schreibst du `"5" + str(3)`, das ergibt `53`.
+
+<div class="k-try">
+
+### Vorhersage: input und plus
+
+<Vorhersage>
+
+Der Benutzer tippt 17 ein. Welche Ausgabe erscheint?
+
+- 18
+- 171
+- [x] `TypeError: can only concatenate str (not "int") to str`
+- `17 + 1`
+
+`input` liefert den Text `"17"`, nicht die Zahl 17. Text plus Zahl geht nicht. Richtig wäre `alter = int(input("Alter: "))`.
+
+</Vorhersage>
+
+```python data-run="nach-antwort" data-stdin="17"
+alter = input("Alter: ")
+print(alter + 1)
+```
+
+<p class="k-small k-muted">Wähl erst deinen Tipp, dann führ das Programm aus.</p>
+
+</div>
+
+**`input()` liefert immer Text**, auch wenn du Ziffern eintippst. Deshalb schreibst du seit Termin 01 `int(input(...))` und `float(input(...))`: Das ist genau diese Umwandlung. `str(…)` geht in die andere Richtung: `"Punkte: " + str(12)` ergibt `Punkte: 12`.
+
+<Hinweis art="merke">
+
+Jeder Wert hat einen Datentyp: `int`, `float`, `str` oder `bool`. Python rechnet nur mit Werten, die zusammenpassen. `input()` liefert immer Text. Mit `int()`, `float()` und `str()` wandelst du um, `int(3.7)` ergibt 3. Text plus Zahl meldet einen `TypeError`.
+
+</Hinweis>
+
+### Erklärvideo (ca. 2 Min)
+
+<Video name="v08-theorie" id="video-theorie" titel="Erklärvideo: Zahl oder Text?" fehlt="Video folgt. Bis dahin: Der Umwandler oben zeigt dasselbe.">
+
+Erklärvideo: Zahl oder Text? (ca. 2 Min). Untertitel sind eingeschaltet (Deutsch).
+
+</Video>
+
+</Abschnitt>
+
+<Abschnitt id="lokale-namen" nr="2" titel="Namen, die nur in der Funktion gelten">
+
+In Termin 07 hast du `fahrenheit(c)` mit der Variablen `grad` im Rumpf geschrieben und den Aufruf Schritt für Schritt gesehen. Eine Frage dazu: Was wird aus den Namen der Funktion, wenn sie fertig ist?
+
+<Explorable name="raeume" titel="Zwei Räume">
+
+Wähle Programm A oder Programm B und geh mit „Ein Schritt“ durch. Rechts siehst du, welche Namen es gerade gibt. Vermute vor Programm A: Was passiert in der letzten Zeile? Vermute vor Programm B: Was zeigt `print(x)` in Zeile 7?
+
+<Ohne>
+
+Für die zwei Räume wird JavaScript benötigt. Der Baustein führt zwei kleine Programme Schritt für Schritt aus. Rechts stehen die Namen, getrennt nach Hauptprogramm und Funktion.
+
+</Ohne>
+
+</Explorable>
+
+**Programm A zum Nachlesen:**
+
+```python
+def quadrat(x):
+    ergebnis = x * x
+    return ergebnis
+
+zahl = quadrat(4)
+print(zahl)
+print(ergebnis)
+```
+
+Die Ausgabe ist `16`, dann `NameError: name 'ergebnis' is not defined` in Zeile 7. Der Name `ergebnis` gehört der Funktion `quadrat` und ist draußen unbekannt. Dasselbe gilt für den Parameter `x`: `print(x)` unter dem Aufruf meldet `NameError: name 'x' is not defined`.
+
+Die Funktion ist ein eigener Raum. Was drinnen angelegt wird, bleibt drinnen und ist weg, sobald die Funktion fertig ist. Solche Namen heißen <Begriff e="Gilt nur in der Funktion: Parameter und Variablen im Rumpf. Draußen sind sie unbekannt.">lokal</Begriff>. Nur was `return` herausgibt, kommt an.
+
+**Programm B zum Nachlesen: gleicher Name, zwei Plätze.**
+
+```python
+def verdoppeln(x):
+    x = x * 2
+    return x
+
+x = 5
+y = verdoppeln(x)
+print(x)
+print(y)
+```
+
+Die Ausgabe ist `5` und `10`. Draußen gibt es ein `x` mit dem Wert 5. In der Funktion gibt es ein anderes `x`: zuerst 5, dann 10. Die Funktion hat dein `x` nicht verändert. Der Wert wurde übergeben, und das `x` der Funktion ist ein eigener Platz. Das übst du heute nur beim Lesen. Wenn du selbst schreibst, benutzt du verschiedene Namen.
+
+<p class="k-small k-muted">Mit „Schritt für Schritt“ am Programm B siehst du dieselben Räume: ein eigener Kasten, der nach `return` verschwindet.</p>
+
+Was die Funktion wissen soll, gibst du ihr als Parameter. Was sie berechnet hat, gibt sie mit `return` zurück. Was passiert mit dem Rückgabewert, wenn draußen nichts mit ihm geschieht?
+
+<div class="k-try">
+
+### Vorhersage: Aufruf ohne Speichern
+
+<Vorhersage>
+
+Was gibt das Programm aus?
+
+- 10
+- [x] 0
+- 20
+- `NameError`
+
+Die Funktion gibt 10 zurück, aber draußen speichert niemand den Wert. `punkte` bleibt 0. Wer den Wert braucht, speichert ihn draußen in einer Variablen: `punkte = treffer(punkte)`.
+
+</Vorhersage>
+
+```python data-run="nach-antwort"
+punkte = 0
+
+def treffer(stand):
+    return stand + 10
+
+treffer(punkte)
+print(punkte)
+```
+
+<p class="k-small k-muted">Wähl erst deinen Tipp, dann führ das Programm aus. Hier heißen Parameter und Variable verschieden, weil es nur um den nicht gespeicherten Rückgabewert geht.</p>
+
+</div>
+
+<Hinweis art="merke">
+
+**Hinein per Parameter, heraus per `return`.** Parameter und Variablen im Rumpf gibt es nur in der Funktion und nur, solange sie läuft. Ein Ergebnis, das du draußen brauchst, speicherst du draußen in einer Variablen.
+
+Ein ehrlicher Satz dazu: Python lässt eine Funktion auch einen Namen von draußen lesen. Das nutzen wir nicht. Eine Funktion, die nur ihre Parameter benutzt, verstehst du, ohne das ganze Programm zu lesen.
+
+</Hinweis>
+
+</Abschnitt>
+
+<Abschnitt id="rest-und-antwort" nr="3" titel="Rest, True und False: Funktionen mit Antwort">
+
+Ein Spiel: Anna und Ben zeigen je 1 bis 5 Finger. Ist die Summe gerade, gewinnt Anna, sonst Ben. Dazu braucht es die Frage „Ist diese Zahl gerade?“ als eigene Funktion.
+
+**Der Rest beim Teilen.** Zusammen zeigen Anna und Ben 7 Finger. 7 geteilt durch 2 ist 3, und 1 bleibt übrig. Dieser <Begriff e="Was beim Teilen übrig bleibt. 7 % 2 ist 1, 8 % 2 ist 0.">Rest</Begriff> heißt in Python `7 % 2` und ist `1`. `8 % 2` ist `0`: Es bleibt nichts übrig. `10 % 3` ist `1`. Das Zeichen `%` heißt Prozentzeichen, bedeutet hier aber nicht Prozent, sondern „Rest beim Teilen“.
+
+Eine Zahl ist gerade, wenn beim Teilen durch 2 nichts übrig bleibt: `n % 2 == 0`. Erst wird der Rest gerechnet, dann verglichen.
+
+**Plan zuerst.** Die Funktion antwortet mit einem Wahrheitswert. Im Plan hat sie nur einen Ausgang: Das Ergebnis steht erst in einer Variablen und wird am Schluss zurückgegeben.
+
+<Plan titel="Funktion ist_gerade">
+
+```text
+Funktion: ist_gerade(n)
+Entscheidung: n % 2 == 0?
+  ja:
+    antwort = True
+  nein:
+    antwort = False
+Rückgabe: antwort
+```
+
+</Plan>
+
+Die Raute fragt genau das: Ist der Rest 0?
+
+**Code nach dem Plan:**
+
+```python
+def ist_gerade(n):
+    if n % 2 == 0:
+        antwort = True
+    else:
+        antwort = False
+    return antwort
+
+print(ist_gerade(8))
+print(ist_gerade(7))
+```
+
+Die Ausgabe ist `True` und `False`. Eine <Begriff e="Eine Funktion, die True oder False zurückgibt. Der Name beginnt oft mit ist_.">Funktion mit Wahrheitswert</Begriff> beginnt oft mit `ist_`. Kürzer geht es so: Jeder Zweig gibt seine Antwort gleich mit `return` zurück.
+
+```python
+def ist_gerade(n):
+    if n % 2 == 0:
+        return True
+    else:
+        return False
+
+if ist_gerade(10):
+    print("gerade")
+```
+
+Der Aufruf steht direkt in der Bedingung. Das Programm gibt `gerade` aus. `return` beendet die Funktion sofort. Von den zwei `return` läuft immer nur eines.
+
+<div class="k-try">
+
+### Vorhersage: Zweig ohne return
+
+<Vorhersage>
+
+Was gibt das Programm aus?
+
+- True
+- False
+- [x] None
+- Eine Fehlermeldung
+
+Für 7 läuft der `if`-Zweig nicht, die Funktion endet ohne `return` und gibt `None` zurück, wie in Termin 07. Deshalb steht in jedem Zweig ein `return`.
+
+</Vorhersage>
+
+```python data-run="nach-antwort"
+def ist_gerade(n):
+    if n % 2 == 0:
+        return True
+
+print(ist_gerade(7))
+```
+
+<p class="k-small k-muted">Wähl erst deinen Tipp, dann führ das Programm aus.</p>
+
+</div>
+
+**Funktion ruft Funktion.** Die Funktion `sieger(summe)` fragt `ist_gerade`:
+
+```python
+def ist_gerade(n):
+    if n % 2 == 0:
+        return True
+    else:
+        return False
+
+def sieger(summe):
+    if ist_gerade(summe):
+        return "Anna"
+    else:
+        return "Ben"
+
+print(sieger(7))
+```
+
+Erst definieren, dann aufrufen: `ist_gerade` steht oben, weil `sieger` sie braucht. Die Ausgabe ist `Ben`.
+
+<Explorable name="kette" titel="Aufrufkette">
+
+Wähle die Summe und geh mit „Ein Schritt“ durch. Rechts wächst und schrumpft ein Stapel von Kästen. Vermute zuerst: Wie viele Kästen stehen auf dem Höhepunkt übereinander, das Hauptprogramm mitgezählt?
+
+<Ohne>
+
+Für die Aufrufkette wird JavaScript benötigt. Der Baustein führt `sieger(summe)` Schritt für Schritt aus. Neben dem Programm stehen die Kästen der laufenden Funktionen mit ihren Namen. Zeilen, die nicht laufen, bleiben grau.
+
+</Ohne>
+
+</Explorable>
+
+Nur ein `return` pro Aufruf läuft. Und die innere Funktion ist fertig, bevor die äußere weitermacht. Jede Funktion hat ihren eigenen Raum, wie in Abschnitt 2.
+
+**Den Plan von `sieger`** zeichnest du im Labor selbst. Auch dort hat er nur ein Ende: Ein Name wird gesetzt und am Schluss zurückgegeben.
+
+<Hinweis art="merke">
+
+`%` ist der Rest beim Teilen: `n % 2 == 0` heißt „n ist gerade“. Eine Funktion kann `True` oder `False` zurückgeben, ihr Aufruf steht dann direkt in einem `if`. Eine Funktion darf eine andere aufrufen. In jedem Zweig steht ein `return`.
+
+</Hinweis>
+
+</Abschnitt>
+
+<Abschnitt id="bauteil" nr="4" titel="Parameter formen ein Bauteil">
+
+In Termin 06 hast du die Säulenreihe gebaut. Jetzt packst du den Bau in eine eigene Funktion. Bisher gab deine Funktion Zahlen und Text zurück. Jetzt gibt sie einen Körper zurück. Für Python ist das auch nur ein Wert. Die Werkzeuge `zylinder`, `verschiebe` und `vereinige` kennst du aus Termin 06. Neu ist `ring`. Alle sind selbst Funktionen, die du aufrufst. `verschiebe` hat jetzt alle drei Richtungen: rechts, hinten, oben.
+
+Das Beispiel ist eine Buchse, ein Rohr mit Wand. Der Code steht unter der Frage. `ring(aussen, innen, laenge)` ist ein Rohr: Außendurchmesser, Innendurchmesser, Länge, alles in mm. Die Wand ist der Rand zwischen innen und außen.
+
+<div class="k-try">
+
+### Vorhersage: Ein Parameter ändert sich
+
+<Vorhersage>
+
+Die Funktion `buchse(aussen, laenge)` gibt `ring(aussen, aussen - 4, laenge)` zurück. Du ersetzt im ersten Aufruf die 30 durch 50. Wie dick ist danach die Wand der ersten Buchse?
+
+- [x] 2 mm
+- 10 mm
+- 4 mm
+- Es gibt eine Fehlermeldung.
+
+4 mm ist der Unterschied der Durchmesser. Die Wand ist auf jeder Seite nur halb so dick. Die Wand bleibt 2 mm, weil der Innendurchmesser `aussen - 4` ist. Mit 50 ist er 46, und die Wand ist (50 − 46) / 2 = 2 mm dick.
+
+</Vorhersage>
+
+```python data-run="nach-antwort" data-files="../assets/py/bauteil3d.py" data-timeout="10000"
+from bauteil3d import *
+
+def buchse(aussen, laenge):
+    return ring(aussen, aussen - 4, laenge)
+
+zeige(vereinige(buchse(30, 20), verschiebe(buchse(20, 40), 40, 0, 0)))
+```
+
+<p class="k-small k-muted">Wähl erst deinen Tipp. Setz dann im ersten Aufruf die 50 statt der 30 ein und führ das Programm aus. Die Vorschau zeigt das Bauteil.</p>
+
+</div>
+
+Mit den ursprünglichen Maßen zeigt die Vorschau zwei Buchsen: eine 30 mm breit und 20 mm hoch, daneben, 40 mm weiter rechts, eine 20 mm breit und 40 mm hoch. Zusammen sind sie 65 × 30 × 40 mm groß. Die Funktion `buchse` ruft `ring` auf und gibt den Körper zurück. Wer sie aufruft, entscheidet über Größe und Platz.
+
+Im Labor schreibst du selbst eine Funktion `schraube(d, l)`: Der Plan steht da, der Kopf ist doppelt so breit wie der Schaft.
+
+<Hinweis art="merke">
+
+Die Funktion bekommt Maße und gibt einen Körper zurück. Mit anderen Parametern entsteht ein anderes Bauteil. Die 3D-Vorschau kommt in der Klausur nicht vor. Was du hier übst, sind Parameter und `return`.
+
+</Hinweis>
+
+</Abschnitt>
+
+<Abschnitt id="selbstcheck" nr="5" titel="Selbstcheck">
+
+Sechs Fragen in den Formen der Klausur: Datentyp bestimmen, Ausgabe bestimmen, Meldung lesen und Funktionen lesen. Die Reihenfolge der Fragen und Antworten ist bei jedem Aufruf anders. Rechne im Kopf oder auf Papier, nicht im Editor.
+
+<Quiz id="v08">
+
+<Frage id="typ-vergleich" typ="mc" punkte="3" titel="Typ eines Vergleichs">
+
+Welchen Datentyp hat der Ausdruck `5 > 3`?
+
+- [x] `bool`
+- `int`
+- `str`
+- `float`
+
+<Erklaerung>
+
+Jeder Vergleich ergibt `True` oder `False`, und das ist ein `bool`.
+
+</Erklaerung>
+
+</Frage>
+
+<Frage id="eingabe-ist-text" typ="output" punkte="3" antwort="44" titel="Eingabe ist Text">
+
+Die Eingabe ist 4. Was gibt das Programm aus?
+
+```python class="k-code" data-run="nach-antwort" data-stdin="4"
+x = input()
+print(x + x)
+```
+
+<Erklaerung>
+
+`input` liefert den Text `"4"`. Text plus Text wird aneinandergehängt: `44`. Mit `int(input())` wäre es 8.
+
+</Erklaerung>
+
+</Frage>
+
+<Frage id="umwandlung-schneidet" typ="num" punkte="3" antwort="8" tol="0" titel="Umwandlung schneidet ab">
+
+Was gibt `print(int(8.9))` aus?
+
+<Erklaerung>
+
+`int` schneidet die Stellen nach dem Komma ab und rundet nicht. Aus 8.9 wird 8.
+
+</Erklaerung>
+
+</Frage>
+
+<Frage id="meldung-lesen" typ="mc" punkte="3" titel="Meldung lesen">
+
+Was geschieht bei `print("Punkte: " + 12)`?
+
+- [x] `TypeError: can only concatenate str (not "int") to str`
+- `NameError: name 'Punkte' is not defined`
+- `SyntaxError: expected ':'`
+- Es erscheint `Punkte: 12`.
+
+<Erklaerung>
+
+Text und Zahl lassen sich nicht mit `+` verbinden. Mit `str(12)` oder einem f-String geht es.
+
+</Erklaerung>
+
+</Frage>
+
+<Frage id="gleicher-name" typ="output" punkte="4" antwort="10" titel="Gleicher Name, zwei Plätze">
+
+Was gibt das Programm aus?
+
+```python class="k-code" data-run="nach-antwort"
+def f(x):
+    x = x + 1
+    return x
+
+x = 10
+y = f(x)
+print(x)
+```
+
+<Erklaerung>
+
+Das `x` in der Funktion ist ein eigener Platz. Draußen bleibt `x` bei 10, in `y` steht 11.
+
+</Erklaerung>
+
+</Frage>
+
+<Frage id="funktion-ruft-funktion" typ="output" punkte="4" antwort="ungerade" titel="Funktion ruft Funktion">
+
+Was gibt das Programm aus?
+
+```python class="k-code" data-run="nach-antwort"
+def ist_gerade(n):
+    if n % 2 == 0:
+        return True
+    else:
+        return False
+
+def meldung(n):
+    if ist_gerade(n):
+        return "gerade"
+    else:
+        return "ungerade"
+
+print(meldung(9))
+```
+
+<Erklaerung>
+
+`ist_gerade(9)` rechnet `9 % 2`: Der Rest ist 1, nicht 0, also `False`. Also gibt `meldung` den Text `ungerade` zurück.
+
+</Erklaerung>
+
+</Frage>
+
+</Quiz>
+
+</Abschnitt>
+
+<Weiter ziel="v08-labor.html">
+
+Jetzt bist du dran. Im Labor verfolgst du lokale Namen Schritt für Schritt, zeichnest den Plan der Funktion „Sieger“, baust in 3D eine Schraube aus Parametern und suchst einen Fehler in einem Preisprogramm. Zwei weitere Videos findest du dort an der passenden Station: der Python-Werkzeugkasten und das vorgerechnete Beispiel Fingerspiel.
+
+</Weiter>
+
+<Dozent titel="Für Dozierende: Ablauf des Termins (125 Minuten) und Training">
+
+<p class="k-small k-muted">Vier Blöcke: einer Theorie (T5 Datentypen, Teil 3 von 3) und drei Programmieren (P4 Funktionen, Teil 3, 4 und 5 von 6). Jeder Block à 30 Minuten verplant höchstens 28 Minuten, der letzte (25 Minuten) höchstens 24; die Minuten eines Abschnitts enthalten das Zeigen der genannten Karte. Die Lerneinheit ist zum Zeigen und Nachlesen, geübt wird im <a href="v08-labor.html">Programmierlabor</a>. Die Videos laufen nicht im Termin. Das Wort „global“ fällt nicht, Namen im Hauptprogramm heißen „draußen“.</p>
+
+<div class="k-tablewrap">
+<table class="k-plan">
+<thead><tr><th scope="col">Minuten</th><th scope="col">Wo</th><th scope="col">Was zu tun ist</th></tr></thead>
+<tbody>
+<tr><td>0–10</td><td>Papier, Beamer</td><td><strong>Warm-up.</strong> Training Termin 07, Aufgabe 1 „Wertebereich und Überlauf“ auf Papier (5). Auflösung: 64, 63, 127, 4, 1 und −128 (2). Brücke in die Runde: In Zeile 6 waren die Bits 1000 0000 ohne Vorzeichen 128, mit Vorzeichen −128. Der Datentyp sagt, wie man die Bits liest. Du tippst bei <code>input()</code> eine 5 ein. Liest Python die Bits als Zahl 5 oder als etwas anderes? Die Auflösung kommt in der Theorie (3).</td></tr>
+<tr><td>10–40</td><td>Lerneinheit 1</td><td><strong>Theorie: Zahl oder Text.</strong> Datentypen <code>str</code> und <code>bool</code>, <code>type</code> mit den Beispielen, Karte 1 vor dem Baustein (4). Text zusammensetzen mit <code>+</code> (3). Baustein „Umwandler“ mit den zwei Vermutungen <code>int(3.7)</code> und <code>"5" + "3"</code>, alle Fälle (8). Beobachtung: <code>int</code> schneidet ab, Text plus Zahl ist ein Fehler, Meldung von unten lesen (4). Vorhersage „input und plus“ (2). <code>input()</code> liefert Text, <code>int(input())</code> mit Grund, Karte 2 nach dem Baustein (4). Verplant: 25.</td></tr>
+<tr><td>40–70</td><td>Lerneinheit 2, Labor 1 (Karte 3), 7</td><td><strong>Programmieren 1: lokale Namen.</strong> Rückgriff auf <code>fahrenheit</code> und das Bild vom eigenen Raum (3). Baustein „Zwei Räume“, Programm A, Vermutung (5). Auflösung <code>NameError</code>, Merksatz hinein und heraus (3). Programm B „gleicher Name, zwei Plätze“ mit Vermutung (4). Vorhersage „Aufruf ohne Speichern“ (3). Karte 3 (1). Alle lösen „Fehler finden: Preis mit Steuer“ (7). Verplant: 26 („Schritt für Schritt“ läuft im Termin nicht). Stationen 3 und 5 laufen nicht einzeln.</td></tr>
+<tr><td>70–100</td><td>Lerneinheit 3, Labor 1 (Karte 4), 2, 4</td><td><strong>Programmieren 2: Rest und Funktionen mit Antwort.</strong> Fingerspiel, der Rest beim Teilen mit <code>%</code>: 7 durch 2, 8 durch 2, kurze Frage an alle (<code>9 % 2</code>, <code>12 % 5</code>, <code>20 % 4</code>) (4). Plan von <code>ist_gerade</code> mit der Raute <code>n % 2 == 0</code> (2). Code, Abkürzung mit <code>return</code> im Zweig, der Aufruf in der Bedingung, Karte 4 (4). Die Vorhersage „Zweig ohne return“ läuft im Termin nicht (Nachlesen). <code>sieger(summe)</code> ruft <code>ist_gerade</code>, Baustein „Aufrufkette“ mit Vermutung (6). Fingerspiel am Beamer: zwei Pläne nur ansehen, Code, Probe (2). Alle zeichnen den Funktionsplan „Sieger“ (9). Verplant: 27.</td></tr>
+<tr><td>100–125</td><td>Lerneinheit 4, Labor 6</td><td><strong>Programmieren 3: Parameter formen ein Bauteil.</strong> Rückgriff auf die Säulenreihe, eine Funktion gibt einen Körper zurück (1). <code>buchse(aussen, laenge)</code> am Beamer: Code, Lauf, Vorschau (4). Alle ändern einen Parameter und beobachten (Vermutung) (4). Werkzeuge ansehen (1). Alle übertragen den Plan „Schraube“ in Code (10). Auftrag für zu Hause, Pflicht, zusammen 47 Minuten: Stationen 3 und 5 (9), Vorgerechnet Schritt 6 (1), Selbstcheck (7), Training (30) (2). Termin 09 beginnt mit Training 1 auf Papier. Verplant: 22.</td></tr>
+</tbody>
+</table>
+</div>
+
+<p class="k-small k-muted">Wenn die Zeit knapp wird: Im Block 10–40 entfällt zuerst die Vorhersage „input und plus“ (sie steht in der Lerneinheit), danach wird Teil 2 des Bausteins (Kombinationen) verkürzt auf <code>"5" + 3</code>. Im Block 40–70 wird Programm B im Baustein weggelassen und nur als Programm zum Nachlesen gelesen, „Fehler finden“ wird gemeinsam am Beamer gelöst statt einzeln. Im Block 70–100 gilt: Wird es eng, wird zuerst „Fingerspiel“ am Beamer gekürzt (nur Code und ein Lauf, 1 statt 2 Minuten). Der Rest mit <code>%</code> wird nicht gekürzt (neuer Stoff), nur die Frage an alle darf entfallen (1 Minute). Danach wird der Funktionsplan „Sieger“ (9 Minuten im Termin, 8 laut Station) gemeinsam an der Tafel gezeichnet und der Editor-Teil geht nach Hause; das wird ausdrücklich gesagt, die Hausaufgabe wächst dann auf 55 Minuten. Im letzten Block entfällt zuerst der Vermutungs-Teil des Beamer-Beispiels (4 Minuten), dann sinkt die Schraube auf „nur den Plan lesen und die Funktion abschreiben“. „Schraube“ ist die einzige Übung „Plan in Code“ des Termins, sie geht erst zuletzt nach Hause, und das wird dann ausdrücklich gesagt. Läuft die 3D-Vorschau im Hörsaal nicht, gilt die Variante ohne 3D (Station 6, <code>bezeichnung</code>).</p>
+
+<p class="k-small k-muted">Die drei Klausurformen im Termin: Plan zeichnen (Station 4 mit Funktionsblock in Block 3), Plan in Code übertragen (Station 6 in Block 4), Code lesen (Vorhersagen in jedem Block, Station 7 in Block 2). Zu Hause kommen dazu: Ablauf verfolgen (Station 3), Plan in Code im Klausurmodus (Training 2) und Fehler finden (Training 3).</p>
+
+<p class="k-small k-muted">Wie weit die Gruppe im Training ist und an welcher Aufgabe sie hängt, zeigt vor dem nächsten Termin die Kursübersicht (Konto, „Kursübersicht für Dozierende“). Gezählt wird dort nur, wer mit Konto lernt. Die Knobelaufgaben am Ende des Labors sind freiwillig und zählen dort nicht mit.</p>
+
+</Dozent>
+
+</Lerneinheit>

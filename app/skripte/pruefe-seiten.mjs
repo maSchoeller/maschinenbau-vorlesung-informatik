@@ -406,7 +406,7 @@ async function main() {
           /* Pläne und Tabellen im Ablauf-Block sind kein Python: Überschrift „Plan“ bzw. „Tabelle“, kein Kopieren-Knopf */
           for (const o of document.querySelectorAll('.a-trace__code[data-sprache]')) {
             const bar = o.closest('.k-copy'), spr = o.getAttribute('data-sprache');
-            const soll = spr === 'plan' ? 'Plan' : 'Tabelle';
+            const soll = spr === 'plan' ? 'Plan' : spr === 'befehle' ? 'Programm' : 'Tabelle';
             if (bar && (!bar.querySelector('.k-copy__lang') || bar.querySelector('.k-copy__lang').textContent !== soll || bar.querySelector('.k-copy__btn'))) r.push('Ablauf-Block „' + spr + '“ hat falsche Überschrift oder einen Kopieren-Knopf');
           }
           /* Wahrheitstabelle als Ablauf-Aufgabe: Spalten A, B statt Schritt und Zeile, nichts zum seitlichen Scrollen (auch das nicht im .a-trace__tw, das die Abschneide-Prüfung oben ausnimmt) */

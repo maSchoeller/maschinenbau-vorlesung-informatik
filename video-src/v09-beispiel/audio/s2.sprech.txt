@@ -1,0 +1,1 @@
+Was wird eine Funktion? Etwas, bei dem etwas hineingeht und etwas herauskommt. Der Preis: Es geht eine Nummer hinein, ein Preis kommt heraus. Das ist preis von nr. Die Antwort: Es gehen Geld und Preis hinein, ein Text kommt heraus. Das ist antwort von geld und preis. Eingabe und Ausgabe bleiben im Hauptprogramm.

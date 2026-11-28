@@ -69,6 +69,48 @@ bauteil3d.zeige(f.mesh(), "Flansch DN40")
 
 Ausgabe im Labor: die Vorschau erscheint unter der Textausgabe, mit „STL herunterladen“. Aufgabenidee: Studierende ändern `n` oder `lochkreis` und sehen sofort die Wirkung; ungültige Maße (Bohrung ragt über den Rand) lösen einen `ValueError` mit verständlicher Meldung aus.
 
+## Beispiel: Aufgabe mit 3D-Vorschau (Termin 06)
+
+Eine Code-Aufgabe lädt das Modul über `data-files` ins Arbeitsverzeichnis; der Pfad ist relativ zur Lektionsseite (`../assets/py/bauteil3d.py`). Die Labor-Seite muss `kurs.js` einbinden. Ohne `data-files` meldet der Lauf „ModuleNotFoundError … import vergessen?“, was dann in die Irre führt.
+
+```mdx
+<Aufgabe art="code" id="w-3d" data-mode="code" data-files="../assets/py/bauteil3d.py">
+
+<Editor datei="labor/w-3d.vorlage.py" aria-label="Python-Code: Säulenreihe" />
+
+<Python rolle="tests" datei="labor/w-3d.tests.py" />
+
+<Python rolle="solution" datei="labor/w-3d.solution.py" />
+
+</Aufgabe>
+```
+
+`w-3d.vorlage.py` (so liegt sie in `app/inhalte/v06/labor/`):
+
+```python
+# Säulenreihe: 5 Säulen, Abstand 25 mm, die erste steht bei x = 0.
+# Die Werkzeuge: zylinder(10, 30) ist eine Säule (Durchmesser 10, Höhe 30), verschiebe(säule, x) setzt sie
+# um x mm nach rechts, vereinige(a, b) hängt zwei Körper zusammen, zeige(körper) zeigt ihn.
+from bauteil3d import *
+reihe = zylinder(10, 30)
+# Hier fehlen die Schleife und ihr Rumpf.
+zeige(reihe)
+```
+
+`w-3d.tests.py`:
+
+```python
+def test_abmessungen():
+    """Die Reihe ist 110 mm lang"""
+    assert abs(abmessungen(reihe)[0] - 110) < 0.5
+
+def test_volumen():
+    """Fünf Säulen mit dem Volumen des facettierten Zylinders"""
+    assert abs(volumen(reihe) - 5 * volumen(zylinder(10, 30))) < 1
+```
+
+Nur mit `data-mode="code"` laufen die Tests im selben Namensraum wie der Schülercode (bei `programm` bleibt der Namensraum leer und sie enden mit NameError). Sie dürfen `reihe`, `abmessungen` und `volumen` direkt nutzen. Vergleiche das Volumen mit dem facettierten Sollwert (`volumen(zylinder(...))`), nicht mit π · r² · l (2 349,5 statt 2 356,2 mm³ je Säule, rund 0,3 % Unterschied). Im Testmodus wird die Vorschau ohne Handler verworfen, ohne Fehler. Der erste Lauf lädt Pyodide (rund 10 MB; `bauteil3d` braucht nur `json` und `math`). Die Schreibweise der Aufgaben steht in `docs/app/INHALTE.md`.
+
 ## Anbindung an den Python-Runner
 
 Nachricht vom Worker: `{type: 'rich', art: '3d', daten: <Mesh>}`; der Main-Thread ruft `Vorschau3D.zeige(container, daten)` auf (siehe `SCHNITTSTELLEN.md`, Abschnitt 3).

@@ -1,0 +1,1 @@
+{"baum": [{"k": "def", "v": "urteil(a, b)", "ret": "text", "body": [{"k": "if", "v": "a == b", "yes": [{"k": "op", "v": "text = \"Unentschieden\""}], "no": [{"k": "if", "v": "(a == 1 and b == 3) or (a == 2 and b == 1) or (a == 3 and b == 2)", "yes": [{"k": "op", "v": "text = \"Ich gewinne\""}], "no": [{"k": "op", "v": "text = \"Du gewinnst\""}]}]}]}]}

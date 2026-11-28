@@ -1,0 +1,1 @@
+Darunter steht das Hauptprogramm, nur noch vier Zeilen. Zwei Eingaben, der Aufruf von preis von und die Ausgabe von antwort. Die Funktionen stehen vor dem Aufruf.

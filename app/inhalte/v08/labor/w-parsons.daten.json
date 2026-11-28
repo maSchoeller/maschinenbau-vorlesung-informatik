@@ -1,0 +1,16 @@
+{
+ "solution": [
+  "def anrede(name, alter):",
+  "    return \"Hallo \" + name + \", du wirst \" + str(alter + 1) + \".\"",
+  "vorname = input(\"Name: \")",
+  "jahre = int(input(\"Alter: \"))",
+  "text = anrede(vorname, jahre)",
+  "print(text)"
+ ],
+ "distractors": [
+  "    return \"Hallo \" + name + \", du wirst \" + alter + 1 + \".\"",
+  "    print(\"Hallo \" + name + \", du wirst \" + str(alter + 1) + \".\")"
+ ],
+ "alts": [],
+ "ok": "Die Funktion steht zuerst. str macht aus der Zahl Text, damit + hängt. return gibt den Text an die Stelle zurück, die aufgerufen hat."
+}

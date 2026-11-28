@@ -1,0 +1,1 @@
+Jetzt du, zu Hause. Ersetze in sieger das rietörn Ben in Anführungszeichen durch print von Ben in Anführungszeichen. Lass das Programm mit zwei und drei laufen. Überlege zuerst, was du erwartest. Schau dann genau hin, was erscheint. Lies jede Zeile der Ausgabe. Erkläre dir, warum sie so aussieht. Der Unterschied zwischen Anzeigen und Zurückgeben ist der Kern.

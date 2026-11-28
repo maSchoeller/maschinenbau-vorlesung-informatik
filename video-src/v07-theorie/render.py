@@ -1,335 +1,229 @@
-"""V07 Theorie: Zerlegung & Funktionen. Aufruf: python render.py [text|zeiten|scan|stills t1 t2..|full|mux]"""
+"""Termin 07, Video 1: Ein Byte, zwei Lesarten (Kilometerzaehler laeuft ueber, Byte 255 + 1 wird 0, Zahlenkreis mit Vorzeichen,
+Python-Ganzzahlen wachsen mit).
+Aufruf: python render.py [text|zeiten|scan|probe [Ordner]|stills t1 t2 ..]
+Vertonung (tts) sowie full und mux startet nur der Orchestrator."""
 import os, sys, math
 HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, os.path.join(HERE, "..", "v07-common"))
-from h7 import *
+sys.path.insert(0, os.path.join(HERE, "..", "v01-common"))
+sys.path.insert(0, os.path.join(HERE, "..", "v02-common"))
+from b02 import *
 from texte import SRC
 
-NAME = "v07-theorie"; LABEL = "DHBW · Informatik · V07 · Zerlegung & Funktionen"
+NAME = "v07-theorie"; LABEL = "DHBW · Informatik · Termin 07 · Ein Byte, zwei Lesarten"
 SECS = make_secs(SRC)
+AT = {i: zeiten(SECS, i) for i in range(1, len(SECS) + 1)}
 
-# ---------------------------------------------------------------- Zahlen vorab pruefen
-def de(x, n): return f"{x:.{n}f}".replace(".", ",")
-def T_of(P, n): return P * 1000 / (2 * math.pi * n / 60)
-def W_of(d): return math.pi * d ** 3 / 16
-def tau_of(P, n, d): return T_of(P, n) * 1000 / W_of(d)
-WELLEN = [(15.0, 1450, 30), (7.5, 960, 35), (22.0, 1450, 40)]
-TAU = [tau_of(*w) for w in WELLEN]
-BUG = T_of(22.0, 1450) * 1000 / (math.pi * 40 ** 2 / 16)
-assert [round(x, 1) for x in TAU] == [18.6, 8.9, 11.5] and round(BUG) == 461
-assert round(T_of(22.0, 1450), 1) == 144.9 and round(W_of(40)) == 12566 and round(T_of(15.0, 1450), 1) == 98.8
-LIGHTG = (230, 247, 238); LIGHTR = (255, 226, 230); LIGHTB = (219, 232, 252); LIGHTA = (255, 240, 214)
-BLUE = (37, 99, 235); BLOCK = [BLUE, GREEN, AMBER]
+# ---------------------------------------------------------------- Fachwerte (nachgerechnet)
+assert 99999 + 1 == 100000 and (99999 + 1) % 10 ** 5 == 0 and len(str(99999)) == 5
+assert 2 ** 8 == 256 and int("11111111", 2) == 255 and (255 + 1) % 256 == 0 and f"{255 + 1:b}" == "100000000" and len(f"{256:b}") == 9
+WERTE = [128, 64, 32, 16, 8, 4, 2, 1]
+assert sum(WERTE) == 255
+def vorz(bits):
+    """Wert eines Bytes mit Vorzeichen: oberstes Bit zaehlt minus 128."""
+    b = [int(c) for c in bits]; return -128 * b[0] + sum(w * x for w, x in zip(WERTE[1:], b[1:]))
+assert vorz("11111111") == -128 + 127 == -1 and vorz("10000000") == -128 and vorz("01111111") == 127 and vorz("11111110") == -2
+assert vorz("00000000") == 0 and (127 + 1 - 256) == -128 and vorz("10000000") == (128 - 256)
+TABELLE = [("0000 0000", 0), ("0111 1111", 127), ("1000 0000", 128), ("1111 1110", 254), ("1111 1111", 255)]
+for _b, _u in TABELLE:
+    assert int(_b.replace(" ", ""), 2) == _u
+TAB_VZ = [vorz(b.replace(" ", "")) for b, _ in TABELLE]
+assert TAB_VZ == [0, 127, -128, -2, -1], TAB_VZ
+MIN8, MAX8 = -128, 127
+assert MIN8 == -2 ** 7 and MAX8 == 2 ** 7 - 1
+CODE = ["print(4294967295 + 1)", "print(2 ** 64 + 1)"]
+OUT = run(NL.join(CODE))
+assert OUT == ["4294967296", "18446744073709551617"], OUT
+assert len(OUT[1]) == 20 and 2 ** 64 + 1 > 18446744073709551615 == 2 ** 64 - 1 and 4294967295 == 2 ** 32 - 1
+MINUS = "−"
+def zahl(n): return str(n).replace("-", MINUS)
 
-def show(t, tin, tout=None):
-    return ap(t, tin, 0.45) * (1 - (ap(t, tout, 0.3) if tout is not None else 0))
 
-def fit(txt, font, w, what=""):
-    assert font.getlength(txt) <= w, f"{what}: Text zu breit ({font.getlength(txt):.0f} > {w}): {txt}"
+def pos(i, k, snip, after=None):
+    """Anteil (0..1) im Satz k der Szene i, an dem der Sprechtext `snip` beginnt (zeichenproportional, leicht vorgezogen)."""
+    s = SECS[i - 1][k][1]; st = s.find(after) if after else 0
+    j = s.find(snip, max(st, 0)); assert j >= 0, f"Sprechtext enthaelt nicht: {snip!r}"
+    return max(0.0, j / len(s) - 0.02)
 
-def box(d, x, y, w, h, txt, fill=WHITE, outl=DARK, tc=DARK, size=24, wt=700, ow=3, mono=False, r=10):
-    d.rounded_rectangle((x, y, x + w, y + h), r, fill=fill, outline=outl, width=ow)
-    fnt = M(size, True) if mono else F(size, wt)
-    fit(txt, fnt, w - 12, "Box"); T2(d, x + w / 2, y + h / 2, txt, fnt, tc, "mm")
 
-def tag(d, x, y, w, h, txt, fill=RED, tc=WHITE, size=24, wt=700, outl=None):
-    fit(txt, F(size, wt), w - 16, "Etikett")
-    d.rounded_rectangle((x, y, x + w, y + h), h // 2, fill=fill, outline=outl, width=2 if outl else 0)
-    T2(d, x + w / 2, y + h / 2, txt, F(size, wt), tc, "mm")
+# ---------------------------------------------------------------- eigene Hilfen (nur in diesem Video)
+def feld(d, x, y, w, h, txt, size, col=DARK, fill=WHITE, outl=LINE, wd=2, mono=True, what="Feld"):
+    imbild(y, y + h, what)
+    d.rounded_rectangle((x, y, x + w, y + h), 10, fill=fill, outline=outl, width=wd)
+    TB(d, x + w / 2, y + h / 2, txt, M(size, True) if mono else F(size, 700), col, w - 8, "mm", what)
 
-def dashed(d, x0, y0, x1, y1, col, w=3, seg=10):
-    L = math.hypot(x1 - x0, y1 - y0); n = int(L // (2 * seg)) + 1
-    for k in range(n):
-        a = k * 2 * seg / L; b = min((k * 2 + 1) * seg / L, 1)
-        d.line((x0 + (x1 - x0) * a, y0 + (y1 - y0) * a, x0 + (x1 - x0) * b, y0 + (y1 - y0) * b), fill=col, width=w)
 
-def codeline(d, x, y, s, size, nchars=10**9, bg=BOX):
-    draw_segs(d, x, y, highlight(s), M(size), nchars, 1.0, bg)
+def leer(d, x, y, w, h, txt=None, size=40, col=GREYL):
+    """Gestrichelte, leere Stelle (gibt es nicht)."""
+    imbild(y, y + h, "leere Stelle")
+    gestrichelt(d, [(x, y), (x + w, y), (x + w, y + h), (x, y + h)], GREYL, 3)
+    if txt: TB(d, x + w / 2, y + h / 2, txt, F(size, 700), col, w - 8, "mm", "leere Stelle")
 
-# ---------------------------------------------------------------- 1 Hook: Skript mit Tippfehler
-BLK = [("# Welle 1: 15 kW, 1450 1/min, d = 30 mm", "omega1 = 2 * math.pi * 1450 / 60", "T1 = 15.0 * 1000 / omega1", "W1 = math.pi * d1 ** 3 / 16", "tau1 = T1 * 1000 / W1"),
-       ("# Welle 2: 7.5 kW, 960 1/min, d = 35 mm", "omega2 = 2 * math.pi * 960 / 60", "T2 = 7.5 * 1000 / omega2", "W2 = math.pi * d2 ** 3 / 16", "tau2 = T2 * 1000 / W2"),
-       ("# Welle 3: 22 kW, 1450 1/min, d = 40 mm", "omega3 = 2 * math.pi * 1450 / 60", "T3 = 22.0 * 1000 / omega3", "W3 = math.pi * d3 ** 2 / 16", "tau3 = T3 * 1000 / W3")]
-LINES1 = [l for b in BLK for l in b]
-assert "d3 ** 2" in LINES1[13]
 
+# ---------------------------------------------------------------- 1 Der Kilometerzaehler
 def sc1(f, t, ct):
-    heading(f, t, "Ein Skript, drei Kopien, ein Tippfehler")
-    px, py, pw, size, lh = 60, 120, 700, 18, 26
-    top = 54; ph = top + lh * 15 + 16
-    # Tippzeiten je Zeile
-    times = []; c = ct(0) + 0.3
-    for l in LINES1: times.append(c); c += len(l) / 90 + 0.05
-    def panel(d, dy):
-        d.rounded_rectangle((px, py + dy, px + pw, py + ph + dy), 14, fill=BOX)
-        T(d, px + 22, py + 14 + dy, "wellen.py  (44 Zeilen, hier die drei Blöcke)", F(20, 600), CODE_C)
-        for i, ln in enumerate(LINES1):
-            blk = i // 5; yy = py + top + i * lh + dy
-            if t < times[i]: continue
-            d.rectangle((px + 10, yy - 2, px + pw - 10, yy + lh - 4), fill=mix(BOX, BLOCK[blk], 0.20))
-            d.rectangle((px + 10, yy - 2, px + 16, yy + lh - 4), fill=BLOCK[blk])
-            codeline(d, px + 30, yy, ln, size, int((t - times[i]) * 90))
-    f.el(ap(t, 0.2, 0.4), panel)
-    # roter Fehler
-    xs = px + 30 + M(size).getlength("W3 = math.pi * "); xe = xs + M(size).getlength("d3 ** 2"); yy = py + top + 13 * lh
-    a = ap(t, ct(1) + 0.8, 0.4)
-    def bug(d, dy):
-        d.rounded_rectangle((xs - 4, yy - 3, xe + 4, yy + lh - 3), 5, outline=RED, width=3)
-        d.line((xe + 8, yy + lh / 2 - 2, 800, 330), fill=RED, width=3)
-        tag(d, 800, 306, 410, 48, "Tippfehler: d ** 2 statt d ** 3", RED, WHITE, 25)
-    f.el(a, bug)
-    f.el(show(t, ct(1) + 0.2), lambda d, dy: tag(d, 800, 150 + dy, 410, 48, "Formel 3 Mal kopiert", WHITE, DARK, 25, 700, outl=LINE))
-    # Konsole
-    ent = [(ct(2) + 0.2, [("Welle 1: 18.6 MPa -> ok", CODE_T)]), (ct(2) + 1.2, [("Welle 2: 8.9 MPa -> ok", CODE_T)]),
-           (ct(2) + 2.2, [("Welle 3: 461 MPa -> zu hoch", CODE_R)])]
-    for _, sg in ent: fit(sg[0][0], M(20), 370, "Konsole")
-    a2 = ap(t, ct(2), 0.4)
-    f.el(a2, lambda d, dy: console_panel(d, 800, 380 + dy, 420, 150, ent, t, 20, "Ausgabe", 30))
-    f.el(show(t, ct(2) + 3.2), lambda d, dy: tag(d, 800, 548 + dy, 420, 44, "Richtig wären 11,5 MPa: Welle 3 hält", LIGHTG, GREEN, 22, 700, outl=GREEN))
-    # keine Fehlermeldung
-    def noerr(d, dy):
-        d.ellipse((800, 620 + dy, 836, 656 + dy), fill=GREEN)
-        d.line((808, 638 + dy, 816, 646 + dy), fill=WHITE, width=5); d.line((816, 646 + dy, 829, 629 + dy), fill=WHITE, width=5)
-        T2(d, 850, 638 + dy, "läuft ohne Fehlermeldung", F(26, 700), DARK, "lm")
-    f.el(show(t, ct(3) + 0.5), noerr, dy=int((1 - show(t, ct(3) + 0.5)) * 10))
-    f.el(show(t, ct(4) + 0.2), lambda d, dy: tag(d, 60, 640 + dy, 700, 52, "Lösung: in Bausteine zerlegen", RED, WHITE, 30))
+    a = lambda k, fr=0.0: AT[1](ct, k, fr)
+    kopf(f, t, "Der Kilometerzähler läuft über")
+    t_spr = a(1, pos(1, 1, "springt"))
+    cw, ch, gap, x0, y0 = 120, 170, 14, 360, 170
+    E(f, t, a(0, 0.15), lambda d, dy: TB(d, x0 + (5 * (cw + gap) - gap) / 2, y0 - 22 + dy, "Kilometerzähler mit fünf Rädern", F(28, 600), GREY, 700, "mm", "Beschriftung"))
+    def raeder(d, dy):
+        vor = t < t_spr
+        for k in range(5):
+            if vor: feld(d, x0 + k * (cw + gap), y0 + dy, cw, ch, "9", 100, AMB, LIGHTA, AMB, 3, what="Rad")
+            else: feld(d, x0 + k * (cw + gap), y0 + dy, cw, ch, "0", 100, RED, LIGHTR, RED, 3, what="Rad")
+    E(f, t, a(0, 0.1), raeder)
+    E(f, t, a(1, 0.0), lambda d, dy: (tag(d, 40, y0 + 30 + dy, 250, 56, "+ 1 Kilometer", LIGHTK, DARK, 28, 700, outl=LINE),
+                                      pfeil(d, 300, y0 + 58 + dy, 352, y0 + 58 + dy, GREY, 5, 15)), tout=t_spr)
+    # ein sechstes Rad gibt es nicht
+    t_sechs = a(1, pos(1, 1, "Ein sechstes"))
+    E(f, t, t_sechs, lambda d, dy: (leer(d, x0 - 150, y0 + dy, cw, ch, "6.", 60),
+                                    TB(d, x0 - 90, y0 + ch + 40 + dy, "gibt es nicht", F(28, 700), GREY, 260, "mm", "Beschriftung")))
+    E(f, t, t_spr, lambda d, dy: tag(d, 360, 420 + dy, 670, 76, "Überlauf: zurück auf 0", RED, WHITE, 42))
+    E(f, t, a(2, 0.0), lambda d, dy: tag(d, 160, 560 + dy, 960, 70, "Im Rechner läuft ein Zähler genauso über", LIGHTK, DARK, 36, 700, outl=LINE))
 
-# ---------------------------------------------------------------- 2 Baum
-LEAVES = [("torsionsmoment(P, n)", ["Moment aus Leistung", "und Drehzahl"]),
-          ("widerstandsmoment(d)", ["Widerstandsmoment", "aus dem Durchmesser"]),
-          ("tau(T, d)", ["Spannung aus Moment", "und Durchmesser"]),
-          ("pruefe(tau_vorh)", ["Ergebnis: ok oder", "zu hoch"])]
-LCX = [190, 480, 770, 1060]; LW = 260
-L1 = [("1  Moment bestimmen", 190, [0]), ("2  Spannung berechnen", 625, [1, 2]), ("3  Ergebnis bewerten", 1060, [3])]
+
+# ---------------------------------------------------------------- 2 Ein Byte: 255 + 1
+BX0, BW, BH, BGAP, BY = 330, 92, 120, 10, 250
 
 def sc2(f, t, ct):
-    heading(f, t, "Top-down-Zerlegung")
-    RY, RH_ = 130, 70; Y1, H1 = 290, 66; Y2, H2 = 450, 128
-    def rootbox(d, dy): box(d, 340, RY + dy, 600, RH_, "Hält die Welle das Moment aus?", RED, RED, WHITE, 30, 700, 3, False, 14)
-    f.el(show(t, ct(1) + 0.1), rootbox, dy=int((1 - show(t, ct(1) + 0.1)) * 12))
-    f.el(show(t, ct(0) + 0.8, ct(1) + 0.1), lambda d, dy: tag(d, 340, RY + 12 + dy, 600, 46, "oben: das ganze Problem", WHITE, GREY, 26, 600, outl=LINE))
-    for k, (txt, cx, kids) in enumerate(L1):
-        tin = ct(2) + 0.3 + 0.9 * k; a = show(t, tin)
-        def l1(d, dy, txt=txt, cx=cx):
-            box(d, cx - 145, Y1 + dy, 290, H1, txt, WHITE, DARK, DARK, 24, 700, 3)
-        f.el(a, l1, dy=int((1 - a) * 12))
-        f.el(ap(t, tin - 0.1, 0.5), lambda d, dy, cx=cx: d.line((640, RY + RH_, 640, RY + RH_ + 24, ), fill=DARK, width=3) or d.line((cx, RY + RH_ + 24, cx, Y1), fill=DARK, width=3)
-             or d.line((min(cx, 640), RY + RH_ + 24, max(cx, 640), RY + RH_ + 24), fill=DARK, width=3))
-    for k, (name, desc) in enumerate(LEAVES):
-        tin = ct(3) + 0.3 + 0.7 * k; a = show(t, tin); cx = LCX[k]
-        par = [i for i, (_, _, kids) in enumerate(L1) if k in kids][0]; pcx = L1[par][1]
-        def leaf(d, dy, name=name, desc=desc, cx=cx):
-            hot = ap(t, ct(4) + 0.3, 0.5)
-            d.rounded_rectangle((cx - LW // 2, Y2 + dy, cx + LW // 2, Y2 + H2 + dy), 12, fill=mix(WHITE, LIGHTR, hot), outline=mix(LINE, RED, hot), width=3)
-            fit(name, M(19, True), LW - 16, "Leaf"); T2(d, cx, Y2 + 30 + dy, name, M(19, True), RED, "mm")
-            for j, ln in enumerate(desc): fit(ln, F(21, 500), LW - 16, "Leaf2"); T2(d, cx, Y2 + 70 + 26 * j + dy, ln, F(21, 500), DARK, "mm")
-        f.el(a, leaf, dy=int((1 - a) * 12))
-        f.el(ap(t, tin - 0.1, 0.5), lambda d, dy, cx=cx, pcx=pcx: (d.line((pcx, Y1 + H1, pcx, Y1 + H1 + 30), fill=DARK, width=3), d.line((min(cx, pcx), Y1 + H1 + 30, max(cx, pcx), Y1 + H1 + 30), fill=DARK, width=3), d.line((cx, Y1 + H1 + 30, cx, Y2), fill=DARK, width=3)))
-    f.el(show(t, ct(3) + 3.4, ct(4) + 0.2), lambda d, dy: tag(d, 340, 618 + dy, 600, 48, "Ein Satz genügt, um jeden Baustein zu beschreiben", WHITE, DARK, 24, 600, outl=LINE))
-    f.el(show(t, ct(4) + 0.5), lambda d, dy: tag(d, 340, 618 + dy, 600, 52, "Baustein = Funktion  (def)", RED, WHITE, 30))
+    a = lambda k, fr=0.0: AT[2](ct, k, fr)
+    kopf(f, t, "Ein Byte: aus 255 plus 1 wird 0")
+    t_voll = a(1, 0.0); t_plus = a(1, pos(2, 1, "Zählst du")); t_neun = a(1, pos(2, 1, "eine neunte")); t_null = a(2, pos(2, 2, "Übrig"))
+    t_streich = a(2, 0.0)
+    def bits():
+        return "00000000" if t < t_voll else ("11111111" if t < t_null else "00000000")
+    def schalter(d, dy):
+        b = bits()
+        for k in range(8):
+            x = BX0 + k * (BW + BGAP); an = b[k] == "1"
+            TB(d, x + BW / 2, BY - 26 + dy, str(WERTE[k]), F(24, 600), GREY, BW, "mm", "Gewicht")
+            feld(d, x, BY + dy, BW, BH, b[k], 70, GREEN if an else GREY, LIGHTG if an else WHITE, GREEN if an else LINE, 3 if an else 2, what="Schalter")
+    E(f, t, a(0, 0.2), schalter)
+    E(f, t, a(0, 0.2), lambda d, dy: TB(d, BX0 + (8 * (BW + BGAP) - BGAP) / 2, 164 + dy, "acht Schalter, jeder 0 oder 1", F(30, 700), DARK, 800, "mm", "Beschriftung"))
+    # Wert rechts unten
+    def wert(d, dy):
+        b = bits(); n = int(b, 2)
+        TB(d, BX0, 430 + dy, "Wert:", F(32, 600), GREY, 120, "lm", "Wert")
+        TB(d, BX0 + 120, 430 + dy, str(n), F(60, 700), RED if n == 255 else DARK, 200, "lm", "Wert")
+    E(f, t, a(0, 0.5), wert)
+    E(f, t, a(0, pos(2, 0, "zweihundertsechs")), lambda d, dy: tag(d, 700, 408 + dy, 436, 56, "256 Werte: 0 bis 255", LIGHTK, DARK, 30, 700, outl=LINE))
+    # + 1 und neunte Stelle
+    E(f, t, t_plus, lambda d, dy: tag(d, 120, BY + 30 + dy, 150, 60, "+ 1", AMB, WHITE, 38), tout=t_null)
+    def neunte(d, dy):
+        x = BX0 - (BW + BGAP)
+        feld(d, x, BY + dy, BW, BH, "1", 70, AMB, LIGHTA, AMB, 3, what="neunte Stelle")
+        if t >= t_streich: durchstreichen(d, x + 8, BY + 10 + dy, x + BW - 8, BY + BH - 10 + dy)
+    E(f, t, t_neun, neunte)
+    E(f, t, t_neun + 0.3, lambda d, dy: TB(d, BX0 - (BW + BGAP) / 2 - 10, BY + BH + 36 + dy, "9. Stelle", F(26, 700), AMB, 160, "mm", "Beschriftung"), tout=t_null)
+    E(f, t, t_streich, lambda d, dy: tag(d, 120, 520 + dy, 470, 56, "diese Stelle gibt es nicht", LIGHTR, RED, 28, 700, outl=RED))
+    E(f, t, a(3, 0.0), lambda d, dy: tag(d, 330, 520 + dy, 830, 64, "255 + 1 = 0, ohne Fehlermeldung", RED, WHITE, 38))
+    E(f, t, a(3, pos(2, 3, "Ein Werkst")), lambda d, dy: tag(d, 330, 604 + dy, 830, 56, "z. B. ein Werkstückzähler: von 255 auf 0", LIGHTK, DARK, 28, 700, outl=LINE))
 
-# ---------------------------------------------------------------- 3 DRY / SRP / KISS
+
+# ---------------------------------------------------------------- 3 Zahlenkreis und Vorzeichen
+CX, CY, CR = 300, 395, 170
+
+def winkel(v): return -90 + 360 * v / 256
+def kreispunkt(v, r=CR):
+    w = math.radians(winkel(v)); return (CX + r * math.cos(w), CY + r * math.sin(w))
+TX, TY, TRH = 620, 150, 52
+TABW = [("Byte", 200), ("ohne Vorzeichen", 200), ("mit Vorzeichen", 190)]
+
 def sc3(f, t, ct):
-    heading(f, t, "Drei Regeln zum Zerlegen")
-    tiles = [("DRY", "Jede Formel nur einmal.", "eine Stelle für Fehler", ct(1)),
-             ("SRP", "Eine Funktion, eine Aufgabe.", "zum Beispiel nur das Moment", ct(2)),
-             ("KISS", "Jeder Baustein auf einen Blick.", "klein halten und prüfen", ct(3))]
-    for k, (big, l1, l2, tin) in enumerate(tiles):
-        x = 60 + k * 395; a = show(t, tin - 0.2)
-        act = ap(t, tin, 0.3) * (1 - ap(t, tiles[k + 1][3] if k < 2 else ct(4), 0.3))
-        def tl(d, dy, x=x, big=big, l1=l1, l2=l2, act=act):
-            d.rounded_rectangle((x, 120 + dy, x + 370, 250 + dy), 14, fill=mix(WHITE, LIGHTR, act), outline=mix(LINE, RED, act), width=3)
-            T2(d, x + 24, 128 + dy, big, F(40, 700), RED, "la")
-            fit(l1, F(23, 700), 340, "Kachel"); T2(d, x + 24, 182 + dy, l1, F(23, 700), DARK, "la")
-            fit(l2, F(21, 400), 330, "Kachel2"); T2(d, x + 24, 214 + dy, l2, F(21, 400), GREY, "la")
-        f.el(a, tl, dy=int((1 - a) * 12))
-    # links: Original mit Kopien
-    def left(d, dy):
-        card(d, 60, 290 + dy, 560, 380)
-        T2(d, 92, 304 + dy, "Vorher: 44 Zeilen", F(28, 700), DARK, "la")
-    f.el(show(t, ct(0) + 0.6), left, dy=int((1 - show(t, ct(0) + 0.6)) * 12))
-    for k in range(3):
-        tin = ct(0) + 1.4 + 0.5 * k
-        gone = ap(t, ct(1) + 1.8, 0.5) if k > 0 else 0
-        def blk(d, dy, k=k, gone=gone):
-            y = 358 + k * 100
-            fill = mix(mix(WHITE, BLOCK[k], 0.18), WHITE, gone); ol = mix(BLOCK[k], LINE, gone)
-            d.rounded_rectangle((100, y + dy, 580, y + 84 + dy), 10, fill=fill, outline=ol, width=3)
-            tc = mix(DARK, WHITE, gone * 0.85); T2(d, 120, y + 12 + dy, f"Welle {k + 1}", F(24, 700), tc, "la")
-            T2(d, 120, y + 46 + dy, "omega, T, W, tau", M(22), mix(GREY, WHITE, gone * 0.85), "la")
-            if k == 0 and t >= ct(1) + 1.8: tag(d, 400, y + 24 + dy, 160, 38, "nur 1 Mal", GREEN, WHITE, 22)
-            if k == 2 and gone < 0.5 and t >= ct(1) + 0.6:
-                T2(d, 560, y + 42 + dy, "Tippfehler", F(22, 700), RED, "rm")
-        f.el(show(t, tin), blk, dy=int((1 - show(t, tin)) * 10))
-    # rechts: vier Funktionen
-    def right(d, dy):
-        card(d, 660, 290 + dy, 560, 380)
-        T2(d, 692, 304 + dy, "Nachher: vier Funktionen", F(28, 700), DARK, "la")
-    f.el(show(t, ct(2) + 0.3), right, dy=int((1 - show(t, ct(2) + 0.3)) * 12))
-    fn = [("torsionsmoment", "nur das Moment", "2 Zeilen"), ("widerstandsmoment", "nur W", "1 Zeile"), ("tau", "nur die Spannung", "1 Zeile"), ("pruefe", "nur ok / zu hoch", "4 Zeilen")]
-    for k, (nm, job, zl) in enumerate(fn):
-        tin = ct(2) + 1.0 + 0.7 * k; a = show(t, tin)
-        def fcard(d, dy, k=k, nm=nm, job=job, zl=zl):
-            x = 692 + (k % 2) * 264; y = 352 + (k // 2) * 108
-            d.rounded_rectangle((x, y + dy, x + 252, y + 96 + dy), 10, fill=WHITE, outline=DARK, width=3)
-            fit(nm, M(19, True), 236, "fn"); T2(d, x + 14, y + 12 + dy, nm, M(19, True), RED, "la")
-            T2(d, x + 14, y + 40 + dy, job, F(21, 500), DARK, "la")
-            if t >= ct(3) + 0.8: T2(d, x + 14, y + 68 + dy, zl, F(19, 700), GREEN, "la")
-        f.el(a, fcard, dy=int((1 - a) * 10))
-    f.el(show(t, ct(4) + 0.2), lambda d, dy: tag(d, 692, 584 + dy, 496, 56, "44 Zeilen  ->  4 kurze Funktionen", RED, WHITE, 26))
-    f.el(show(t, ct(4) + 0.2), lambda d, dy: arrow(d, 622, 480 + dy, 656, 480 + dy, RED, 4))
+    a = lambda k, fr=0.0: AT[3](ct, k, fr)
+    kopf(f, t, "Zahlenkreis und Vorzeichen")
+    t_sig = a(1, 0.0); t_rech = a(2, 0.0); t_tab = a(3, 0.0)
+    box = (CX - CR, CY - CR, CX + CR, CY + CR)
+    def ring(d, dy):
+        b = (box[0], box[1] + dy, box[2], box[3] + dy)
+        if t < t_sig: d.arc(b, 0, 360, fill=BLUE, width=18)
+        else:
+            d.arc(b, winkel(0), winkel(128), fill=GREEN, width=18); d.arc(b, winkel(128), winkel(256), fill=RED, width=18)
+        for v, col in ((0, DARK), (255, DARK)) + (((127, GREEN), (128, RED)) if t >= t_sig else ()):
+            x, y = kreispunkt(v); d.ellipse((x - 11, y - 11 + dy, x + 11, y + 11 + dy), fill=col)
+    E(f, t, 0.3, ring)
+    def beschr(d, dy):
+        TB(d, CX + 24, CY - CR - 36 + dy, "0", F(30, 700), DARK, 80, "lm", "Marke")
+        TB(d, CX - 24, CY - CR - 36 + dy, "255", F(30, 700), DARK, 100, "rm", "Marke")
+    E(f, t, a(0, 0.3), beschr)
+    E(f, t, t_sig, lambda d, dy: (TB(d, CX + 24, CY + CR + 36 + dy, "127", F(30, 700), GREEN, 100, "lm", "Marke"),
+                                  TB(d, CX - 24, CY + CR + 36 + dy, "128", F(30, 700), RED, 100, "rm", "Marke")))
+    # Mitte: der Sprung
+    E(f, t, a(0, pos(3, 0, "Nach der")), lambda d, dy: TB(d, CX, CY + dy, "255 + 1 → 0", F(38, 700), DARK, 230, "mm", "Mitte"), tout=t_tab)
+    E(f, t, t_tab + 0.2, lambda d, dy: TB(d, CX, CY + dy, f"127 + 1 → {zahl(-128)}", F(34, 700), RED, 250, "mm", "Mitte"))
+    # Gewichte der Schalter
+    wx0, wcw, wg, wy = 620, 68, 6, 160
+    bt = "10000000"
+    def gewichte(d, dy):
+        TB(d, wx0, wy - 36 + dy, "Gewicht der Schalter", F(28, 700), GREY, 500, "lm", "Titel")
+        for k in range(8):
+            x = wx0 + k * (wcw + wg); neg = k == 0
+            txt = zahl(-128) if neg else str(WERTE[k])
+            feld(d, x, wy + dy, wcw, 64, txt, 24, RED if neg else DARK, LIGHTR if neg else WHITE, RED if neg else LINE, 3 if neg else 2, mono=False, what="Gewicht")
+    E(f, t, t_sig, gewichte, tout=t_tab)
+    E(f, t, a(1, pos(3, 1, "Der oberste")), lambda d, dy: tag(d, wx0, wy + 90 + dy, 586, 52, "oberster Schalter: minus 128 statt plus 128", LIGHTR, RED, 24, 700, outl=RED), tout=t_tab)
+    # Tabelle und Bereich
+    def tab(d, dy):
+        wges = sum(w for _, w in TABW); y = TY + dy
+        d.rounded_rectangle((TX, y, TX + wges, y + TRH * 6), 14, fill=WHITE, outline=LINE, width=2)
+        d.rounded_rectangle((TX, y, TX + wges, y + TRH), 14, fill=LIGHTK); d.rectangle((TX, y + TRH - 14, TX + wges, y + TRH), fill=LIGHTK)
+        x = TX
+        for nm, w in TABW:
+            TB(d, x + w / 2, y + TRH / 2, nm, F(22, 700), GREY, w - 10, "mm", "Spalte"); x += w
+        for r, ((bs, u), v) in enumerate(zip(TABELLE, TAB_VZ), 1):
+            d.line((TX, y + r * TRH, TX + wges, y + r * TRH), fill=LINE, width=2)
+            neg = v < 0
+            TB(d, TX + TABW[0][1] / 2, y + r * TRH + TRH / 2, bs, M(28, True), DARK, TABW[0][1] - 10, "mm", "Zelle")
+            TB(d, TX + TABW[0][1] + TABW[1][1] / 2, y + r * TRH + TRH / 2, str(u), F(30, 700), BLUE, TABW[1][1] - 10, "mm", "Zelle")
+            TB(d, TX + TABW[0][1] + TABW[1][1] + TABW[2][1] / 2, y + r * TRH + TRH / 2, zahl(v), F(30, 700), RED if neg else GREEN, TABW[2][1] - 10, "mm", "Zelle")
+    E(f, t, t_tab, tab)
+    E(f, t, a(3, pos(3, 3, "Der Bereich")), lambda d, dy: tag(d, TX, 500 + dy, 590, 60, f"Bereich: {zahl(-128)} bis 127", RED, WHITE, 36))
+    E(f, t, a(3, pos(3, 3, "Ist der oberste")), lambda d, dy: tag(d, TX, 580 + dy, 590, 56, "oberster Schalter 1: negativ", LIGHTR, RED, 28, 700, outl=RED))
 
-# ---------------------------------------------------------------- 4 Blackbox + PAP
-def pap_oval(d, cx, y, w, h, txt, fill=WHITE):
-    d.rounded_rectangle((cx - w // 2, y, cx + w // 2, y + h), h // 2, fill=fill, outline=DARK, width=3)
-    fit(txt, F(21, 700), w - 20, "Oval"); T2(d, cx, y + h / 2, txt, F(21, 700), DARK, "mm")
 
-def pap_proc(d, cx, y, w, h, txt, mono=False, fill=WHITE, col=DARK, size=21):
-    d.rectangle((cx - w // 2, y, cx + w // 2, y + h), fill=fill, outline=DARK, width=3)
-    fnt = M(size - 3, True) if mono else F(size, 700); fit(txt, fnt, w - 16, "Proc"); T2(d, cx, y + h / 2, txt, fnt, col, "mm")
-
-def pap_sub(d, cx, y, w, h, txt, fill=WHITE, col=DARK):
-    d.rectangle((cx - w // 2, y, cx + w // 2, y + h), fill=fill, outline=DARK, width=3)
-    d.line((cx - w // 2 + 14, y, cx - w // 2 + 14, y + h), fill=DARK, width=3); d.line((cx + w // 2 - 14, y, cx + w // 2 - 14, y + h), fill=DARK, width=3)
-    fit(txt, M(18, True), w - 48, "Sub"); T2(d, cx, y + h / 2, txt, M(18, True), col, "mm")
-
-def pap_io(d, cx, y, w, h, txt):
-    sk = 16
-    d.polygon([(cx - w // 2 + sk, y), (cx + w // 2, y), (cx + w // 2 - sk, y + h), (cx - w // 2, y + h)], fill=WHITE, outline=DARK, width=3)
-    fit(txt, F(21, 700), w - 50, "IO"); T2(d, cx, y + h / 2, txt, F(21, 700), DARK, "mm")
-
+# ---------------------------------------------------------------- 4 Python waechst mit
 def sc4(f, t, ct):
-    heading(f, t, "Funktion = Blackbox, im PAP ein Unterprogramm")
-    bx, by, bw, bh = 220, 250, 240, 170
-    f.el(ap(t, 0.4, 0.5), lambda d, dy: (d.rounded_rectangle((bx, by + dy, bx + bw, by + bh + dy), 14, fill=(52, 58, 70)),
-                                         T2(d, bx + bw / 2, by + 56 + dy, "tau(T, d)", M(30, True), WHITE, "mm")))
-    inner = ap(t, ct(2) + 0.2, 0.5)
-    f.el(inner, lambda d, dy: (T2(d, bx + bw / 2, by + 116 + dy, "innen: egal", F(24, 600), (190, 196, 206), "mm")))
-    for k, (lbl, val, x) in enumerate((("T", "144,9", 290), ("d", "40", 390))):
-        tin = ct(0) + 1.0 + 1.2 * k; a = show(t, tin)
-        def par(d, dy, lbl=lbl, val=val, x=x, a=a):
-            yo = 130 + int((1 - a) * -20)
-            T2(d, x, 140 + dy, f"{lbl} = {val}", F(26, 700), DARK, "mm"); arrow(d, x, 166 + dy, x, by - 2 + dy, RED, 4, 13)
-        f.el(a, par)
-    f.el(show(t, ct(0) + 0.6), lambda d, dy: tag(d, 60, 186 + dy, 150, 44, "Parameter", WHITE, RED, 24, 700, outl=RED))
-    a1 = show(t, ct(1) + 0.4)
-    def ret(d, dy):
-        arrow(d, 340, by + bh + 2 + dy, 340, by + bh + 90 + dy, GREEN, 5, 14)
-        T2(d, 340, by + bh + 112 + dy, "11,5 MPa", F(30, 700), GREEN, "mm")
-    f.el(a1, ret)
-    f.el(show(t, ct(1) + 0.1), lambda d, dy: tag(d, 60, by + bh + 52 + dy, 170, 44, "Rückgabewert", WHITE, GREEN, 22, 700, outl=GREEN))
-    f.el(show(t, ct(2) + 1.0), lambda d, dy: T2(d, 340, 620 + dy, "Aufrufer kennt nur: was hinein, was heraus", F(22, 600), GREY, "mm"))
-    # rechts: PAP
-    cm, cs = 790, 1095
-    f.el(show(t, ct(3) + 0.1), lambda d, dy: T2(d, cm, 128 + dy, "Hauptprogramm", F(24, 700), RED, "mm"))
-    shapes = [(pap_oval, 160, 40, "Start"), (pap_proc, 240, 50, "T bestimmen"), (pap_sub, 325, 60, "tau(T, d)"), (pap_io, 425, 50, "Ausgabe tau"), (pap_oval, 515, 40, "Ende")]
-    for k, (fn_, y, h, txt) in enumerate(shapes):
-        tin = ct(3) + 0.5 + 0.55 * k
-        def shp(d, dy, fn_=fn_, y=y, h=h, txt=txt, k=k):
-            hot = ap(t, ct(3) + 3.2, 0.4) if k == 2 else 0
-            if fn_ is pap_sub: pap_sub(d, cm, y + dy, 210, h, txt, mix(WHITE, LIGHTR, hot), RED if hot > 0.5 else DARK)
-            elif fn_ is pap_oval: pap_oval(d, cm, y + dy, 150, h, txt)
-            elif fn_ is pap_io: pap_io(d, cm, y + dy, 210, h, txt)
-            else: pap_proc(d, cm, y + dy, 210, h, txt)
-            if k < 4: arrow(d, cm, y + h + dy, cm, shapes[k + 1][1] + dy, DARK, 3, 10)
-        f.el(show(t, tin), shp)
-    f.el(show(t, ct(3) + 3.4), lambda d, dy: tag(d, 940, 232 + dy, 280, 40, "Doppelte Seitenlinien", WHITE, RED, 20, 700, outl=RED) if False else None)
-    f.el(show(t, ct(4) + 0.1), lambda d, dy: T2(d, cs, 128 + dy, "Unterprogramm tau", F(24, 700), RED, "mm"))
-    sub = [(pap_oval, 335, 40, "tau(T, d)"), (pap_proc, 415, 50, "return T * 1000 / W"), (pap_oval, 505, 40, "Ende")]
-    for k, (fn_, y, h, txt) in enumerate(sub):
-        tin = ct(4) + 0.6 + 0.6 * k
-        def shp2(d, dy, fn_=fn_, y=y, h=h, txt=txt, k=k):
-            if fn_ is pap_oval: pap_oval(d, cs, y + dy, 170, h, txt)
-            else: pap_proc(d, cs, y + dy, 230, h, txt, True, WHITE, DARK, 20)
-            if k < 2: arrow(d, cs, y + h + dy, cs, sub[k + 1][1] + dy, DARK, 3, 10)
-        f.el(show(t, tin), shp2)
-    f.el(show(t, ct(4) + 0.3), lambda d, dy: (dashed(d, 895, 355 + dy, 1005, 355 + dy, RED, 3), arrow(d, 985, 355 + dy, 1008, 355 + dy, RED, 3, 11)))
+    a = lambda k, fr=0.0: AT[4](ct, k, fr)
+    kopf(f, t, "In Python wachsen ganze Zahlen mit")
+    tm = [a(0, 0.05), a(1, 0.05)]
+    aktiv = aktuell(t, [(a(0, 0.0), {0}), (a(1, 0.0), {1}), (a(2, 0.0), None)])
+    E(f, t, 0.2, lambda d, dy: code_lauf(d, 60, 130 + dy, 600, CODE, t, 28, 46, times=tm, aktiv=aktiv))
+    zl = [(a(0, 0.5), OUT[0], None, None), (a(1, 0.5), OUT[1], None, None)]
+    E(f, t, a(0, 0.4), lambda d, dy: lauf_panel(d, 60, 330 + dy, 600, zl, t, 28, 46, "Ausgabe"))
+    E(f, t, a(1, pos(4, 1, "Das Ergebnis")), lambda d, dy: tag(d, 60, 520 + dy, 600, 56, "20 Stellen, kein Feld mit 64 Bit reicht", LIGHTA, AMB, 26, 700, outl=AMB))
+    def karte(d, dy, y, titel, zeile, col, fill):
+        card(d, 720, y + dy, 500, 190, stripe=False)
+        d.rounded_rectangle((720, y + dy, 1220, y + 12 + dy), 6, fill=col)
+        TB(d, 750, y + 52 + dy, titel, F(28, 700), DARK, 440, "lm", "Kartentitel")
+        d.rounded_rectangle((750, y + 90 + dy, 1190, y + 150 + dy), 12, fill=fill)
+        TB(d, 970, y + 120 + dy, zeile, M(24, True), col, 430, "mm", "Kartenzeile")
+    E(f, t, a(2, 0.0), lambda d, dy: karte(d, dy, 140, "Zähler in einer Steuerung (8 Bit)", "255 + 1 ergibt 0", RED, LIGHTR))
+    E(f, t, a(2, pos(4, 2, "Bei ganzen")), lambda d, dy: karte(d, dy, 350, "Ganze Zahl in Python", "4294967295 + 1 ergibt 4294967296", GREEN, LIGHTG))
+    E(f, t, a(2, pos(4, 2, "Bei ganzen")), lambda d, dy: tag(d, 720, 570 + dy, 500, 56, "Python: kein Überlauf", GREEN, WHITE, 30))
 
-# ---------------------------------------------------------------- 5 Aufrufstapel
-CODE5 = ["def widerstandsmoment(d):", "    return math.pi * d ** 3 / 16", "def tau(T, d):", "    return T * 1000 / widerstandsmoment(d)", "print(tau(144.9, 40))"]
-SX, SW, SH = 700, 500, 108
-def frame_y(k): return 536 - k * (SH + 12)   # k = 0 unten
 
-def sc5(f, t, ct):
-    heading(f, t, "Der Aufrufstapel")
-    ta, tb, tc_ = ct(4) + 1.1, ct(4) + 3.9, ct(4) + 5.6
-    sched = [(0, {4}), (ct(1), {4}), (ct(2), {2, 3}), (ct(3) + 0.2, {3}), (ct(3) + 2.4, {0, 1}), (ta, {1}), (ta + 1.4, {3}), (tb, {3}), (tb + 1.4, {4})]
-    hl = hl_at(t, sched)
-    code_box(f, t, CODE5, 60, 130, 600, 20, 34, hl, [0.5, 0.9, 1.3, 1.7, 2.2], True, 60, 0.2)
-    f.el(show(t, 0.5), lambda d, dy: (T2(d, SX, 128 + dy, "Aufrufstapel", F(26, 700), DARK, "la"), T2(d, SX + SW, 134 + dy, "wächst nach oben", F(20, 600), GREY, "ra")))
-    def fr(d, dy, k, title, lines, a_hot=0.0, out=None):
-        y = frame_y(k) + dy
-        d.rounded_rectangle((SX, y, SX + SW, y + SH), 12, fill=mix(WHITE, LIGHTR, a_hot), outline=mix(DARK, RED, a_hot), width=3)
-        d.rectangle((SX, y, SX + 8, y + SH), fill=RED) if k > 0 else None
-        T2(d, SX + 26, y + 12, title, F(26, 700), DARK, "la")
-        for j, ln in enumerate(lines): fit(ln, M(22), SW - 40, "Frame"); T2(d, SX + 26, y + 50 + 28 * j, ln, M(22), DARK, "la")
-        if out: tag(d, SX + SW - 190, y + 10, 180, 40, out, GREEN, WHITE, 22)
-    # Hauptprogramm
-    state_main = t >= tb + 1.4
-    f.el(show(t, 0.9), lambda d, dy: fr(d, dy, 0, "Hauptprogramm", ["print(...)  wartet" if not state_main else "Ausgabe: 11.5"], 0.0, None))
-    # tau-Frame
-    life1 = show(t, ct(1) + 0.2, tb + 0.6)
-    ink = ap(t, ct(2) + 0.3, 0.5) * (1 - ap(t, ct(3), 0.3))
-    f.el(life1, lambda d, dy: fr(d, dy, 1, "tau", ["T = 144.9", "d = 40"], ink, "-> 11.5" if tb <= t < tb + 1.4 else None), dy=int((1 - life1) * -20) if t < tb else int(ap(t, tb, 0.6) * -20))
-    f.el(show(t, ct(2) + 0.5, ct(3) + 0.2), lambda d, dy: tag(d, SX, 180 + dy, SW, 44, "lokal: von außen unsichtbar", LIGHTR, RED, 22, 700, outl=RED))
-    # widerstandsmoment-Frame
-    life2 = show(t, ct(3) + 2.4, ta + 0.6)
-    f.el(life2, lambda d, dy: fr(d, dy, 2, "widerstandsmoment", ["d = 40"], 0.0, "-> 12566.4" if ta <= t < ta + 1.4 else None), dy=int((1 - life2) * -20) if t < ta else int(ap(t, ta, 0.6) * -20))
-    f.el(show(t, ct(3) + 3.0, ta), lambda d, dy: tag(d, SX + 120, 120 + 28 + dy, 300, 40, "zweiter Frame obendrauf", RED, WHITE, 22) if False else None)
-    # return-Etiketten
-    f.el(show(t, ta - 0.2, ta + 1.4), lambda d, dy: tag(d, 940, 130 + dy, 280, 46, "return: Frame weg", RED, WHITE, 24) if False else None)
-    f.el(show(t, ct(4) + 0.2), lambda d, dy: tag(d, 60, 530 + dy, 600, 48, "return: oberster Frame verschwindet, Wert geht zurück", WHITE, DARK, 22, 600, outl=LINE))
+SCENES = {1: sc1, 2: sc2, 3: sc3, 4: sc4}
+assert len(SRC) == 4 == len(SCENES)
 
-# ---------------------------------------------------------------- 6 Typische Fehler
-ERR = [("print statt return", "print(T * 1000 / W)", "Rückgabe: None", RED),
-       ("Zweig ohne return", 'if t <= 40: return "ok"', "sonst: None", AMBER),
-       ("falsche Einheit", "return P / omega  # P in kW", "Ergebnis um Faktor 1000 daneben", AMBER)]
-
-def sc6(f, t, ct):
-    heading(f, t, "Typische Fehler in KI-Code")
-    tins = [ct(0) + 2.2, ct(1) + 0.3, ct(1) + 4.2]
-    for k, (ti, code, wrong, col) in enumerate(ERR):
-        y = 130 + k * 118; a = show(t, tins[k])
-        def row(d, dy, k=k, ti=ti, code=code, wrong=wrong, col=col, y=y):
-            card(d, 60, y + dy, 1160, 100)
-            d.ellipse((92, y + 34 + dy, 124, y + 66 + dy), fill=col)
-            T2(d, 150, y + 14 + dy, ti, F(28, 700), DARK, "la")
-            T2(d, 150, y + 56 + dy, wrong, F(24, 400), GREY, "la")
-            d.rounded_rectangle((600, y + 16 + dy, 1190, y + 84 + dy), 10, fill=BOX)
-            fit(code, M(24), 560, "Fehlercode"); codeline(d, 620, y + 36 + dy, code, 24)
-        f.el(a, row, dy=int((1 - a) * 12))
-    # Pruefen von Hand
-    def chk(d, dy):
-        card(d, 60, 500 + dy, 1160, 96)
-        T2(d, 92, 514 + dy, "Jede Funktion einzeln prüfen", F(28, 700), DARK, "la")
-        T2(d, 92, 554 + dy, "Handrechnung: 15 000 W / 151,8 1/s = 98,8 N·m", F(24, 400), GREY, "la")
-        d.rounded_rectangle((690, 514 + dy, 1190, 582 + dy), 10, fill=BOX)
-        codeline(d, 710, 534 + dy, "torsionsmoment(15.0, 1450)", 22)
-    f.el(show(t, ct(2) + 0.3), chk, dy=int((1 - show(t, ct(2) + 0.3)) * 12))
-    def res(d, dy):
-        d.ellipse((1036, 524 + dy, 1066, 554 + dy), fill=GREEN)
-        d.line((1043, 540 + dy, 1049, 546 + dy), fill=WHITE, width=4); d.line((1049, 546 + dy, 1060, 532 + dy), fill=WHITE, width=4)
-        T2(d, 1100, 539 + dy, "98.8", M(24, True), CODE_G, "lm") if False else None
-    f.el(show(t, ct(2) + 2.5), res)
-    f.el(show(t, ct(2) + 2.5), lambda d, dy: T2(d, 1078, 539 + dy, "98.8", M(24, True), CODE_G, "lm"))
-    f.el(show(t, ct(3) + 0.3), lambda d, dy: tag(d, 60, 626 + dy, 560, 54, "Lesen und prüfen: hier in der Vorlesung", WHITE, DARK, 26, 700, outl=LINE))
-    f.el(show(t, ct(3) + 2.4), lambda d, dy: tag(d, 660, 626 + dy, 560, 54, "Schreiben: im Labor", RED, WHITE, 26))
-
-SCENES = {1: sc1, 2: sc2, 3: sc3, 4: sc4, 5: sc5, 6: sc6}
 
 def poster(path):
     f = Frame()
     def fn(d, dy):
         d.rectangle((0, 0, 24, H), fill=RED)
-        T2(d, 90, 120, "V07 · Informatik", F(34, 600), GREY)
-        T2(d, 90, 170, "Zerlegung & Funktionen", F(88, 700), DARK)
-        T2(d, 90, 290, "Aus 44 Zeilen werden Bausteine", F(48, 400), GREY)
-        d.rounded_rectangle((300, 430, 580, 580), 14, fill=(52, 58, 70))
-        T2(d, 440, 505, "tau(T, d)", M(34, True), WHITE, "mm")
-        arrow(d, 370, 340, 370, 428, RED, 5, 14); arrow(d, 510, 340, 510, 428, RED, 5, 14); arrow(d, 440, 582, 440, 650, GREEN, 5, 14)
-        T2(d, 370, 322, "T", F(30, 700), DARK, "mm"); T2(d, 510, 322, "d", F(30, 700), DARK, "mm"); T2(d, 440, 672, "11,5 MPa", F(30, 700), GREEN, "mm")
+        T2(d, 90, 110, "Termin 07 · Informatik", F(34, 600), GREY)
+        T2(d, 90, 160, "Ein Byte,", F(96, 700), DARK)
+        T2(d, 90, 270, "zwei Lesarten", F(96, 700), DARK)
+        T2(d, 90, 400, "Überlauf und Vorzeichen", F(40, 400), GREY)
+        tag(d, 90, 600, 560, 70, f"255 + 1 = 0   und   {zahl(-128)} bis 127", RED, WHITE, 34)
         T2(d, 1220, 694, LABEL, F(16, 400), GREY, "ra")
-    f.el(1, fn); f.img.save(path)
+        for k in range(8):
+            feld(d, 700 + k * 62, 200, 54, 80, "1" if k < 1 else "0", 36, GREEN if k < 1 else GREY, LIGHTG if k < 1 else WHITE, GREEN if k < 1 else LINE, 2, what="Bit")
+        d.arc((780, 340, 1100, 660), 0, 360, fill=BLUE, width=18)
+        d.arc((780, 340, 1100, 660), 90, 270, fill=RED, width=18)
+        d.arc((780, 340, 1100, 660), -90, 90, fill=GREEN, width=18)
+    f.el(1, fn)
+    f.img.save(path)
+
 
 if __name__ == "__main__":
     dispatch(HERE, SRC, SECS, SCENES, LABEL, poster, NAME)

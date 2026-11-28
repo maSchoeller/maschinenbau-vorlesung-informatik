@@ -1,218 +1,289 @@
-"""V06 Vorgerechnet: Wie lange kühlt das Werkstück ab? (Code aus briefing/v06-beispiel.py).
-Aufruf: python render.py [text|tts|zeiten|scan|stills t1 t2..|full|mux]"""
+"""Termin 06, Video 3: Vorgerechnet: Kino (Aufgabe mit Reihen und Plaetzen, Plan mit der Raute in der Raute und einer Entscheidung im
+inneren Rumpf, Code mit zwei for-Schleifen und if, die drei Stellen, Probe mit 2, 3 und 1, 0, 1, 1, 1, 0, Grenzfall 1, 1, 1).
+Aufruf: python render.py [text|zeiten|scan|probe [Ordner]|stills t1 t2 ..]
+Vertonung (tts) sowie full und mux startet nur der Orchestrator.
+Der Code muss zeichengleich mit der Seite sein (app/inhalte/v06/labor/w-vorgemacht.vorlage.py, sobald es sie gibt)."""
 import os, sys, math
 HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.join(HERE, "..", "v01-common"))
+sys.path.insert(0, os.path.join(HERE, "..", "v02-common"))
+sys.path.insert(0, os.path.join(HERE, "..", "v04-common"))
 sys.path.insert(0, os.path.join(HERE, "..", "v06-common"))
-from h6 import *
+from b06 import *
 from texte import SRC
 
-NAME = "v06-beispiel"; LABEL = "DHBW · Informatik · V06 · Wie lange kühlt das Werkstück ab?"
+NAME = "v06-beispiel"; LABEL = "DHBW · Informatik · Termin 06 · Vorgerechnet: Kino"
 SECS = make_secs(SRC)
+AT = {i: zeiten(SECS, i) for i in range(1, len(SECS) + 1)}
 
-# ---------------------------------------------------------------- exakter Code und Pruefung aller Ausgaben
-CODE = open(os.path.join(HERE, "..", "..", "briefing", "v06-beispiel.py"), encoding="utf-8").read().rstrip("\n").split("\n")
-assert len(CODE) == 23
-EXPECT = ["Nach 37 Minuten: 58.0 °C", "Minute 1:  783.6 °C", "Minute 2:  722.5 °C", "Minute 3:  666.3 °C", "Minute 4:  614.6 °C", "Minute 5:  567.0 °C",
-          "Mittelwert der ersten 5 Minuten: 670.8 °C"]
-assert run("\n".join(CODE)) == EXPECT
-K, UMG, ZIEL = 0.08, 20.0, 60.0
-TEMPS = [850.0]
-while len(TEMPS) < 61: TEMPS.append(TEMPS[-1] - K * (TEMPS[-1] - UMG))
-assert next(i for i, v in enumerate(TEMPS) if v <= ZIEL) == 37 and f"{TEMPS[37]:.1f}" == "58.0" and TEMPS[36] > ZIEL
-assert [f"{TEMPS[i]:.1f}" for i in range(1, 6)] == ["783.6", "722.5", "666.3", "614.6", "567.0"]
-SUMS = [sum(TEMPS[1:i + 1]) for i in range(1, 6)]
-assert f"{SUMS[-1] / 5:.1f}" == "670.8" and f"{SUMS[-1]:.2f}" == "3354.07"
-assert abs(TEMPS[37] - (20 + 830 * 0.92 ** 37)) < 1e-9 and f"{TEMPS[37]:.4f}" == "57.9514"
-assert f"{850 - TEMPS[1]:.1f}" == "66.4" and f"{TEMPS[4] - TEMPS[5]:.1f}" == "47.6" and f"{830 * 0.92:.1f}" == "763.6"
-assert [f"{830 * 0.92 ** n:.1f}" for n in (1, 2, 3)] == ["763.6", "702.5", "646.3"]
-def de(x, n): return f"{x:.{n}f}".replace(".", ",")
+# ---------------------------------------------------------------- Code (zeichengenau wie auf der Seite) und echte Programmlaeufe
+CODE = ['# Kino: Wie viele Plätze sind belegt?',
+        'reihen = int(input("Wie viele Reihen? "))',
+        'plaetze = int(input("Wie viele Plätze je Reihe? "))',
+        "belegt = 0",
+        "for i in range(1, reihen + 1):",
+        "    for j in range(1, plaetze + 1):",
+        '        platz = int(input(f"Reihe {i}, Platz {j} (1 belegt, 0 frei): "))',
+        "        if platz == 1:",
+        "            belegt = belegt + 1",
+        "gesamt = reihen * plaetze",
+        'print(f"Belegt: {belegt} von {gesamt}")']
+_SEITE = os.path.join(HERE, "..", "..", "app", "inhalte", "v06", "labor", "w-vorgemacht.vorlage.py")
+if os.path.exists(_SEITE) and open(_SEITE, encoding="utf-8").read().splitlines() != CODE:
+    raise AssertionError("Code weicht von app/inhalte/v06/labor/w-vorgemacht.vorlage.py ab")
+QUELLE = NL.join(CODE)
+EING = ["2", "3", "1", "0", "1", "1", "1", "0"]
+LAUF = run(QUELLE, EING)
+assert len(LAUF) == 9 and LAUF[0] == "Wie viele Reihen? 2" and LAUF[1] == "Wie viele Plätze je Reihe? 3", LAUF
+assert LAUF[2] == "Reihe 1, Platz 1 (1 belegt, 0 frei): 1" and LAUF[7] == "Reihe 2, Platz 3 (1 belegt, 0 frei): 0", LAUF
+assert LAUF[-1] == "Belegt: 4 von 6", LAUF
+EING1 = ["1", "1", "1"]
+LAUF1 = run(QUELLE, EING1)
+assert LAUF1[-1] == "Belegt: 1 von 1" and len(LAUF1) == 4, LAUF1
+PLAETZE = [[1, 0, 1], [1, 1, 0]]
+assert [int(x) for x in EING[2:]] == [p for r in PLAETZE for p in r] and sum(map(sum, PLAETZE)) == 4 and 2 * 3 == 6
+BELEGT = []; _b = 0                                                             # Zaehler nach jedem Platz
+for _r in PLAETZE:
+    for _p in _r:
+        _b += _p; BELEGT.append(_b)
+assert BELEGT == [1, 1, 2, 3, 4, 4], BELEGT
+# Fehlerbild der Auftragsfrage: belegt = 0 im Rumpf der aeusseren Schleife
+FALSCH = NL.join(CODE[:4] + CODE[4:5] + ["    belegt = 0"] + CODE[5:])
+assert run(FALSCH, EING)[-1] == "Belegt: 2 von 6"                                # nur die letzte Reihe zaehlt (wird im Video nicht gezeigt)
+PROMPTS = [LAUF[0][:-1], LAUF[1][:-1]]
+PL = [LAUF[2 + k][:-1] for k in range(6)]
+assert all(LAUF[2 + k].endswith(EING[2 + k]) for k in range(6)) and PL[3] == "Reihe 2, Platz 1 (1 belegt, 0 frei): "
+P1 = [LAUF1[0][:-1], LAUF1[1][:-1], LAUF1[2][:-1]]
 
-CX, CW, CSZ, CLH, CY = 30, 765, 16, 23, 100
-RX, RW = 815, 421
-fit_check(CODE, M(CSZ), CW - 62 - 10, "Code"); fit_check(EXPECT, M(16), RW - 44 - 6, "Konsole")
-FULL = lambda n: [-1 if i < n else 1e9 for i in range(len(CODE))]
+# ---------------------------------------------------------------- Plan
+PLAN = kino_plan()
+KNOTEN = [k for k in PLAN.reihenfolge if k in PLAN.nodes]
+assert KNOTEN == ["s", "r", "p", "b", "wi", "wj", "e", "d", "a", "g", "o", "end"], KNOTEN
+W = kino_weg(PLAN, PLAETZE); W1 = kino_weg(PLAN, [[1]])
+assert W.count("e") == 6 and W.count("a") == 4 and W.count("wj-zurueck") == 6 and W.count("wi") == 3 and W.count("wj") == 8
+assert W1.count("e") == 1 and W1.count("a") == 1 and W1[-1] == "end"
 
-def draw_code(f, t, times, hl):
-    f.el(ap(t, 0.0, 0.3), lambda d, dy: code_panel(d, CX, CY + dy, CW, CODE, times, t, CSZ, 55, hl=hl, dim_others=True, lh=CLH))
-def typed(times, idx, start, cps=55, gap=0.12):
-    c = start
-    for i in idx:
-        times[i] = c; c += len(CODE[i]) / cps + gap
-    return times
-def state_cells(f, t, temp_txt, min_txt, cond, y=100, a=1.0):
-    cw = [130, 150, 125]
-    def fn(d, dy):
-        x = RX
-        box_cell(d, x, y + dy, cw[0], 96, "minuten", min_txt, DARK, 38); x += cw[0] + 8
-        box_cell(d, x, y + dy, cw[1], 96, "temperatur", temp_txt, RED, 38); x += cw[1] + 8
-        ok = cond == "wahr"
-        box_cell(d, x, y + dy, cw[2], 96, "Bedingung", cond, GREEN if ok else RED, 32)
-    f.el(a, fn)
-def console(f, t, entries, y, h):
-    f.el(ap(t, 0.0, 0.4), lambda d, dy: console_panel(d, RX, y + dy, RW, h, entries, t, 16, lh=24))
 
-# ---------------------------------------------------------------- 1 Aufgabe
+def plan_y(box, z, cam, k):
+    return plan_xy(box, z, cam, 0, PLAN.nodes[k].cy)[1]
+
+
+# ---------------------------------------------------------------- Sitzplan
+def sitz(d, x, y, c, zust, aktiv=False, nr=None):
+    """Ein Sitz. zust: None = noch nicht gefragt (gestrichelt), 1 = belegt (rot), 0 = frei (grau)."""
+    if zust is None:
+        gestrichelt(d, [(x, y), (x + c, y), (x + c, y + c), (x, y + c)], GREYL, 3)
+    else:
+        d.rounded_rectangle((x, y + 10, x + c, y + c), 14, fill=LIGHTR if zust else WHITE, outline=RED if zust else LINE, width=3)
+        d.rounded_rectangle((x + 8, y, x + c - 8, y + 22), 8, fill=mix(LIGHTR if zust else WHITE, RED if zust else GREYL, 0.35))
+        TB(d, x + c / 2, y + c * 0.62, str(zust), F(int(c * 0.46), 700), RED if zust else GREY, c - 10, "mm", "Sitz")
+    if aktiv: d.rounded_rectangle((x - 6, y - 6, x + c + 6, y + c + 6), 18, outline=RED, width=5)
+
+
+def sitzplan(d, x, y, zustaende, c=96, gap=18, aktiv=None, beschriftung=True):
+    """zustaende: je Reihe eine Liste (None, 0 oder 1); aktiv: (reihe, platz) oder None. Gibt (breite, hoehe) zurueck."""
+    nr, np_ = len(zustaende), len(zustaende[0]); lw = 130 if beschriftung else 0
+    imbild(y, y + 40 + nr * (c + gap), "Sitzplan")
+    if beschriftung:
+        for j in range(np_): TB(d, x + lw + j * (c + gap) + c / 2, y + 12, f"Platz {j + 1}", F(24, 600), GREY, c + 10, "mm", "Platz")
+    for i, reihe in enumerate(zustaende):
+        yy = y + 40 + i * (c + gap)
+        if beschriftung: TB(d, x, yy + c / 2, f"Reihe {i + 1}", F(26, 700), DARK, lw - 10, "lm", "Reihe")
+        for j, z in enumerate(reihe):
+            sitz(d, x + lw + j * (c + gap), yy, c, z, aktiv == (i, j))
+    return lw + np_ * (c + gap) - gap, 40 + nr * (c + gap) - gap
+
+
+# ---------------------------------------------------------------- 1 Die Aufgabe
 def sc1(f, t, ct):
-    heading(f, t, "Die Aufgabe: Abkühlung nach dem Härten")
-    cool = ap(t, ct(0) + 1.0, 10.0)
-    def piece(d, dy):
-        col = mix((255, 92, 24), (150, 156, 168), cool)
-        d.rounded_rectangle((90, 220 + dy, 400, 360 + dy), 18, fill=col, outline=DARK, width=4)
-        T2(d, 245, 290 + dy, "Werkstück", F(30, 700), WHITE, "mm")
-        T2(d, 245, 190 + dy, "850 °C direkt nach dem Ofen", F(26, 700), DARK, "mm")
-        d.rounded_rectangle((470, 220 + dy, 760, 360 + dy), 18, fill=WHITE, outline=LINE, width=3)
-        T2(d, 615, 262 + dy, "Halle", F(28, 700), GREY, "mm"); T2(d, 615, 318 + dy, "20 °C", F(46, 700), DARK, "mm")
-        arrow(d, 410, 290 + dy, 460, 290 + dy, RED, 5)
-    f.el(ap(t, ct(0) + 0.2, 0.5), piece, dy=int((1 - ap(t, ct(0) + 0.2, 0.5)) * 12))
-    def law(d, dy):
-        card(d, 800, 160 + dy, 436, 210)
-        T2(d, 828, 172 + dy, "Pro Minute gehen 8 %", F(28, 700), DARK); T2(d, 828, 206 + dy, "des Unterschieds verloren", F(28, 700), DARK)
-        T2(d, 828, 256 + dy, "Unterschied zur Halle:", F(24, 400), GREY)
-        T2(d, 828, 294 + dy, "830 °C", F(34, 700), DARK); arrow(d, 960, 312 + dy, 1020, 312 + dy, RED, 4); T2(d, 1034, 294 + dy, "763,6 °C", F(34, 700), RED)
-        T2(d, 828, 336 + dy, "nach 1 Minute: 92 % bleiben", F(22, 400), GREY)
-    f.el(ap(t, ct(1) + 0.8, 0.5), law, dy=int((1 - ap(t, ct(1) + 0.8, 0.5)) * 12))
-    pill(f, t, ct(2) + 0.2, 90, 430, 670, 54, "Newtonsches Abkühlungsgesetz", fill=DARK, size=30)
-    def q(d, dy):
-        card(d, 90, 520 + dy, 540, 120); card(d, 660, 520 + dy, 576, 120)
-        T2(d, 118, 534 + dy, "Frage 1", F(26, 700), RED); T2(d, 118, 572 + dy, "Nach wie vielen Minuten sind", F(24, 400), DARK); T2(d, 118, 600 + dy, "es höchstens 60 °C?", F(24, 400), DARK)
-        T2(d, 688, 534 + dy, "Frage 2", F(26, 700), RED); T2(d, 688, 572 + dy, "Wie sehen die ersten", F(24, 400), DARK); T2(d, 688, 600 + dy, "fünf Minuten aus?", F(24, 400), DARK)
-    f.el(ap(t, ct(3) + 0.3, 0.5), q, dy=int((1 - ap(t, ct(3) + 0.3, 0.5)) * 12))
-    pill(f, t, ct(4) + 0.2, 800, 400, 436, 54, "Abschnitt für Abschnitt", size=26)
+    a = lambda k, fr=0.0: AT[1](ct, k, fr)
+    kopf(f, t, "Die Aufgabe: Plätze im Kino zählen")
+    t_s = [a(1, 0.45 + 0.1 * k) for k in range(6)]
+    def plan_sitze(d, dy):
+        zust = [[(PLAETZE[i][j] if t >= t_s[3 * i + j] else None) for j in range(3)] for i in range(2)]
+        sitzplan(d, 60, 124 + dy, zust)
+    E(f, t, a(0, 0.1), plan_sitze)
+    E(f, t, a(1, 0.2), lambda d, dy: (tag(d, 60, 450 + dy, 180, 54, "1 belegt", LIGHTR, RED, 28, 700, outl=RED),
+                                      tag(d, 260, 450 + dy, 180, 54, "0 frei", WHITE, GREY, 28, 700, outl=LINE)))
+    def auftrag(d, dy):
+        card(d, 660, 130 + dy, 560, 250, stripe=False)
+        TB(d, 690, 164 + dy, "Auftrag", F(30, 700), GREY, 200, "lm", "Auftrag")
+    E(f, t, a(0, 0.05), auftrag)
+    schritte = [("Reihen und Plätze je Reihe einlesen", a(0, 0.3)), ("jeden Platz abfragen: 1 oder 0", a(1, 0.05)), ("Ausgabe: Belegt: 4 von 6", a(1, 0.7))]
+    for j, (txt, tin) in enumerate(schritte):
+        def schritt(d, dy, j=j, txt=txt):
+            y = 218 + j * 62 + dy
+            num_circle(d, 706, y, 20, j + 1, RED); TB(d, 740, y, txt, F(30, 600), DARK, 460, "lm", "Schritt")
+        E(f, t, tin, schritt)
+    E(f, t, a(2, 0.0), lambda d, dy: tag(d, 660, 450 + dy, 560, 60, "In jeder Reihe jeder Platz", LIGHTK, DARK, 32, 700, outl=LINE))
+    E(f, t, a(2, 0.4), lambda d, dy: tag(d, 660, 530 + dy, 560, 76, "zwei Schleifen ineinander", RED, WHITE, 40))
 
-# ---------------------------------------------------------------- 2 Eingangsdaten (Zeilen 4 bis 7)
+
+# ---------------------------------------------------------------- 2 Der Plan: Raute in der Raute
+PBOX2 = (40, 96, 440, 590)
+TAGX = 540
+
 def sc2(f, t, ct):
-    heading(f, t, "Abschnitt 1: Eingangsdaten (Zeilen 4 bis 7)")
-    tm = [1e9] * len(CODE)
-    typed(tm, [0, 1, 3, 4, 5, 6], ct(0) + 0.2, cps=90, gap=0.05)
-    hl = hl_at(t, [(0, None), (ct(1), {3, 4}), (ct(2), {5}), (ct(3), {6}), (ct(4), {0, 1, 3, 4, 5, 6})])
-    draw_code(f, t, tm, hl)
-    def cells(d, dy):
-        for (lab, val, tin, col, x, y) in (("temperatur", "850.0", ct(1) + 0.3, RED, 0, 100), ("umgebung", "20.0", ct(1) + 4.4, DARK, 216, 100),
-                                           ("k", "0.08", ct(2) + 0.8, DARK, 0, 226), ("ziel", "60.0", ct(3) + 0.6, GREEN, 216, 226)):
-            if t < tin: continue
-            a = ap(t, tin, 0.45)
-            yy = y + int((1 - a) * 10)
-            lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); dd = ImageDraw.Draw(lay)
-            box_cell(dd, RX + x, yy + dy, 205, 112, lab, val, col, 46)
-            lay.putalpha(lay.getchannel("A").point(lambda v: int(v * a))); f.img.paste(lay, (0, 0), lay)
-    cells(None, 0)
-    tile(f, t, ct(2) + 3.5, RX, 360, RW, 96, "0,08 pro Minute = 8 %", "Abkühlkonstante k", DARK, bigsize=26)
-    tile(f, t, ct(3) + 3.4, RX, 468, RW, 96, "ab 60 °C weiterbearbeiten", "Ziel der Abkühlung", GREEN, bigsize=26)
-    tile(f, t, ct(4) + 0.3, RX, 576, RW, 96, "Kommentare nach dem #", "nennen die Einheiten (°C, pro Minute)", DARK, bigsize=26)
+    a = lambda k, fr=0.0: AT[2](ct, k, fr)
+    kopf(f, t, "Erst der Plan: Raute in der Raute")
+    tn = {"s": 0.5, "r": a(0, 0.15), "p": a(0, 0.4), "b": a(0, 0.72), "wi": a(1, 0.2), "wj": a(1, 0.62),
+          "e": a(2, 0.06), "d": a(2, 0.3), "a": a(2, 0.6), "g": a(3, 0.5), "o": a(3, 0.75), "end": a(3, 0.92)}
+    tm = dict(tn)
+    for k, e in PLAN.into.items(): tm[e] = tn[k] - 0.2
+    tm["a-m"] = tn["a"] + 0.25; tm["d-nein"] = a(2, 0.78); tm["wj-zurueck"] = a(2, 0.9)
+    tm["wj-nein"] = a(3, 0.12); tm["wi-nein"] = a(3, 0.42)
+    assert set(tm) == set(PLAN.reihenfolge), set(PLAN.reihenfolge) ^ set(tm)
+    sched = [(tn["r"], ["r"]), (tn["p"], ["p"]), (tn["b"], ["b"]), (tn["wi"], ["wi"]), (tn["wj"], ["wi-wj", "wj"]), (tn["e"], ["wj-e", "e"]),
+             (tn["d"], ["e-d", "d"]), (tn["a"], ["d-a", "a"]), (tm["d-nein"], ["d-nein"]), (tm["wj-zurueck"], ["wj-zurueck"]),
+             (tm["wj-nein"], ["wj-nein"]), (tm["wi-nein"], ["wi-nein", "g", "g-o", "o"]), (tn["end"] + 0.5, [])]
+    cur = aktuell(t, sched) or []
+    z, cam = kino_draw(f, 1.0, PLAN, PBOX2, vis=reveal(t, tm), hl={k: RED for k in cur})
+    yw1, yw2, yd, ya = (plan_y(PBOX2, z, cam, k) for k in ("wi", "wj", "d", "a"))
+    yg = plan_y(PBOX2, z, cam, "g")
+    E(f, t, a(1, 0.3), lambda d, dy: tag(d, TAGX, yw1 - 28 + dy, 600, 56, "Gibt es noch eine Reihe?", LIGHTA, AMB, 30, 700, outl=AMB))
+    E(f, t, a(1, 0.7), lambda d, dy: tag(d, TAGX, yw2 - 28 + dy, 600, 56, "Gibt es noch einen Platz in dieser Reihe?", LIGHTA, AMB, 28, 700, outl=AMB))
+    E(f, t, a(2, 0.36), lambda d, dy: tag(d, TAGX, yd - 28 + dy, 600, 56, "Ist der Platz belegt?", LIGHTK, DARK, 30, 700, outl=LINE))
+    E(f, t, a(2, 0.64), lambda d, dy: tag(d, TAGX, ya - 28 + dy, 600, 56, "ja: der Zähler wird größer", LIGHTG, GREEN, 28, 700, outl=GREEN), tout=a(2, 0.86))
+    E(f, t, a(2, 0.88), lambda d, dy: tag(d, TAGX, ya - 28 + dy, 600, 56, "zurück: der nächste Platz", LIGHTR, RED, 28, 700, outl=RED), tout=a(3, 0.1))
+    E(f, t, a(3, 0.18), lambda d, dy: tag(d, TAGX, ya - 28 + dy, 600, 56, "zurück: die nächste Reihe", LIGHTR, RED, 28, 700, outl=RED), tout=a(3, 0.52))
+    E(f, t, a(3, 0.6), lambda d, dy: tag(d, TAGX, yg - 28 + dy, 600, 56, "alle Reihen durch: rechnen und ausgeben", LIGHTG, GREEN, 28, 700, outl=GREEN))
 
-# ---------------------------------------------------------------- 3 while-Schleife (Zeilen 9 bis 12)
-def n_of(t, ct):
-    """Anzahl der Durchlaeufe (Minuten), die gerade angezeigt wird."""
-    t0 = ct(5) + 3.6
-    if t >= t0: return min(37, 1 + int((t - t0) / 0.035))
-    return 1 if t >= ct(4) + 0.3 else 0
+
+# ---------------------------------------------------------------- 3 Vom Plan zum Code: zwei for und if, die drei Stellen
+PBOX3 = (20, 96, 400, 590)
+CX3, CY3, CW3, CS3, CLH3 = 430, 112, 820, 17, 36
+G3 = CodeGeo(CX3, CY3, CW3, CS3, CLH3, len(CODE))
+assert all(G3.cx(len(z)) + 16 <= CX3 + CW3 for z in CODE), max(G3.cx(len(z)) for z in CODE)
+CX3B = 60                                         # Code zieht nach links, wenn der Plan geht
+G3B = CodeGeo(CX3B, CY3, CW3, CS3, CLH3, len(CODE))
+
 def sc3(f, t, ct):
-    heading(f, t, "Abschnitt 2: die while-Schleife (Zeilen 9 bis 12)")
-    tm = [(-1 if i < 7 else 1e9) for i in range(len(CODE))]
-    typed(tm, [8], ct(0) + 0.3); typed(tm, [9], ct(1) + 0.2); typed(tm, [10], ct(2) + 0.3); typed(tm, [11], ct(4) + 0.1)
-    hl = hl_at(t, [(0, None), (ct(0), {8}), (ct(1), {9}), (ct(2), {10}), (ct(4), {11}), (ct(5), {9, 10, 11})])
-    draw_code(f, t, tm, hl)
-    n = n_of(t, ct)
-    if n >= 1: shown_T = TEMPS[n]
-    elif t >= ct(3) + 0.2: shown_T = TEMPS[1]      # Zeile 11 rechnet zuerst, Zeile 12 zaehlt danach
-    else: shown_T = TEMPS[0]
-    cond = "wahr" if shown_T > ZIEL else "falsch"
-    state_cells(f, t, f"{shown_T:.1f}", str(n), cond, a=ap(t, ct(0) + 0.5, 0.4))
-    P = Plot((880, 250, 1220, 580), (0, 40), (0, 900))
-    def ax(d, dy): P.axes(d, dy, range(0, 41, 10), range(0, 901, 300), "Minuten", "°C")
-    f.el(ap(t, ct(3) + 0.2, 0.5), ax)
-    def pts(d, dy):
-        for i in range(0, n): d.line((P.px(i), P.py(TEMPS[i]), P.px(i + 1), P.py(TEMPS[i + 1])), fill=(150, 156, 168), width=2)
-        for i in range(0, n + 1):
-            x, y = P.px(i), P.py(TEMPS[i]); d.ellipse((x - 4, y - 4, x + 4, y + 4), fill=RED)
-        P.hline(d, 0, ZIEL, GREEN, None)
-    if t >= ct(3) + 0.2: f.el(1, pts)
+    a = lambda k, fr=0.0: AT[3](ct, k, fr)
+    kopf(f, t, "Vom Plan zum Code: zwei for und ein if")
+    t_aus = a(3, 0.0)
+    times = [0.4, a(0, 0.15), a(0, 0.4), a(0, 0.7), a(1, 0.0) + 0.3, a(1, 0.45), a(2, 0.05), a(2, 0.45), a(2, 0.7), a(3, 0.05), a(3, 0.12)]
+    cx = lerp(CX3, CX3B, ap(t, t_aus, 0.9))
+    pa = 1 - ap(t, t_aus, 0.5)
+    sched = [(times[1], ["r"]), (times[2], ["p"]), (times[3], ["b"]), (times[4], ["b-wi", "wi", "wi-wj"]), (times[5], ["wj", "wj-e"]),
+             (times[6], ["e", "e-d"]), (times[7], ["d", "d-a"]), (times[8], ["a"]), (times[9], [])]
+    hl_keys = aktuell(t, sched) or []
+    if pa > 0.004: kino_draw(f, pa, PLAN, PBOX3, hl={k: RED for k in hl_keys})
+    aktiv = aktuell(t, [(times[i], {i}) for i in range(1, 9)] + [(times[9], set())]) or set()
+    geo = lambda dy: CodeGeo(cx, CY3 + dy, CW3, CS3, CLH3, len(CODE))
+    E(f, t, 0.3, lambda d, dy: code_lauf(d, cx, CY3 + dy, CW3, CODE, t, CS3, CLH3, times=times, aktiv=aktiv, cps=140))
+    # Satz 3: i und j stecken in der Frage, das if ist noch einmal eingerueckt
+    E(f, t, a(2, 0.08), lambda d, dy: (code_markiere(d, geo(dy), 6, *spalte(CODE[6], "{i}")), code_markiere(d, geo(dy), 6, *spalte(CODE[6], "{j}"), BLUE)),
+      tout=a(2, 0.42))
+    E(f, t, a(2, 0.5), lambda d, dy: code_einrueckung(d, geo(dy), 7, 8), tout=t_aus)
+    E(f, t, a(2, 0.55), lambda d, dy: tag(d, CX3, 600 + dy, CW3, 56, "Das if steht im inneren Rumpf: drei Stufen Einrückung", LIGHTK, DARK, 28, 700, outl=LINE), tout=t_aus)
+    # Satz 4: drei Stellen
+    stellen = [(1, 3, BLUE, LIGHTB, "vor beiden: Startwert", a(3, 0.22)), (6, 8, RED, LIGHTR, "im Rumpf innen: einlesen, zählen", a(3, 0.42)),
+               (9, 10, GREEN, LIGHTG, "nach beiden: rechnen, ausgeben", a(3, 0.74))]
+    for j, (i0, i1, col, fill, txt, tin) in enumerate(stellen):
+        def rahmen(d, dy, i0=i0, i1=i1, col=col):
+            g = geo(dy)
+            d.rounded_rectangle((g.x + 6, g.zy(i0) - 6, g.x + g.w - 6, g.zy(i1) + CLH3 - 10), 8, outline=col, width=4)
+        E(f, t, tin, rahmen)
+        w = 376
+        E(f, t, tin, lambda d, dy, j=j, fill=fill, col=col, txt=txt, w=w: tag(d, 60 + j * (w + 16), 600 + dy, w, 56, txt, fill, col, 22, 700, outl=col))
 
-# ---------------------------------------------------------------- 4 Ausgabe (Zeile 14)
+
+# ---------------------------------------------------------------- 4 Die Probe mit 2, 3 und 1, 0, 1, 1, 1, 0
+TAB_X, TAB_Y = 700, 200
+TAB_C = [("i", 90), ("j", 90), ("platz", 150), ("belegt", 170)]
+TAB_RH = 52
+
 def sc4(f, t, ct):
-    heading(f, t, "Abschnitt 3: Ausgabe (Zeile 14)")
-    tm = [(-1 if i < 12 else 1e9) for i in range(len(CODE))]
-    typed(tm, [13], ct(1) + 0.2)
-    hl = hl_at(t, [(0, {9, 10, 11}), (ct(1), {13}), (ct(3), {9, 10, 11, 13})])
-    draw_code(f, t, tm, hl)
-    state_cells(f, t, "58.0", "37", "falsch")
-    console(f, t, [(ct(1) + 2.8, [(EXPECT[0], CODE_G)])], 216, 90)
-    tile(f, t, ct(2) + 0.3, RX, 322, RW, 100, "Eine Nachkommastelle", "statt 57,9514 steht 58.0 da", DARK, bigsize=26)
-    tile(f, t, ct(3) + 0.4, RX, 438, RW, 130, "58,0 ist kleiner als 60", ["Ziel unterschritten,", "aber nicht genau getroffen"], RED, bigsize=26)
+    a = lambda k, fr=0.0: AT[4](ct, k, fr)
+    kopf(f, t, "Die Probe: 2 Reihen, 3 Plätze")
+    # Eingaben als Reihe
+    for j, (lab, w) in enumerate((("reihen = 2", 190), ("plaetze = 3", 210))):
+        E(f, t, a(0, 0.12) + 0.3 * j, lambda d, dy, j=j, lab=lab, w=w: chip(d, 60 + j * 210, 116 + dy, w, 52, lab, LIGHTR if j == 0 else LIGHTK, DARK, 26, outl=LINE, mono=True))
+    # Zeitpunkte je Platz
+    tp = [a(1, 0.0), a(1, 0.42), a(1, 0.68), a(2, 0.0), a(2, 0.36), a(2, 0.72)]
+    tp[0] = max(tp[0], a(0, 0.5))
+    t_ende = a(3, 0.0)
+    def stand():
+        """Nummer des zuletzt abgefragten Platzes (-1 = keiner)."""
+        n = -1
+        for q in range(6):
+            if t >= tp[q]: n = q
+        return n
+    n = stand()
+    def sitze(d, dy):
+        zust = [[(PLAETZE[i][j] if 3 * i + j <= n else None) for j in range(3)] for i in range(2)]
+        akt = (n // 3, n % 3) if 0 <= n and t < t_ende else None
+        sitzplan(d, 60, 200 + dy, zust, c=96, gap=18, aktiv=akt)
+    E(f, t, a(0, 0.35), sitze)
+    # Tabelle
+    def geruest(d, dy):
+        x = TAB_X; y = TAB_Y + dy; wges = sum(w for _, w in TAB_C)
+        d.rounded_rectangle((x, y, x + wges, y + TAB_RH * 7), 14, fill=WHITE, outline=LINE, width=2)
+        d.rounded_rectangle((x, y, x + wges, y + TAB_RH), 14, fill=LIGHTK); d.rectangle((x, y + TAB_RH - 14, x + wges, y + TAB_RH), fill=LIGHTK)
+        cx0 = x
+        for name, w in TAB_C:
+            TB(d, cx0 + w / 2, y + TAB_RH / 2, name, M(28), GREY, w - 10, "mm", "Spalte"); cx0 += w
+        for r in range(1, 7): d.line((x, y + r * TAB_RH, x + wges, y + r * TAB_RH), fill=LINE, width=2)
+        d.line((x + TAB_C[0][1] + TAB_C[1][1], y, x + TAB_C[0][1] + TAB_C[1][1], y + TAB_RH * 7), fill=LINE, width=2)
+    E(f, t, a(0, 0.5), geruest)
+    zeile_hl = aktuell(t, [(tp[q], q) for q in range(6)] + [(t_ende, None)])
+    for q in range(6):
+        def zeile(d, dy, q=q):
+            x = TAB_X; y = TAB_Y + dy + (q + 1) * TAB_RH
+            if zeile_hl == q:
+                d.rectangle((x + 4, y + 3, x + sum(w for _, w in TAB_C) - 4, y + TAB_RH - 3), fill=LIGHTR); d.rectangle((x + 4, y + 3, x + 9, y + TAB_RH - 3), fill=RED)
+        E(f, t, tp[q], zeile)
+        vals = [str(q // 3 + 1), str(q % 3 + 1), str(PLAETZE[q // 3][q % 3]), str(BELEGT[q])]
+        cx0 = TAB_X
+        for k, ((name, w), txt) in enumerate(zip(TAB_C, vals)):
+            tin = tp[q] + (0.0 if k < 2 else 0.25 if k == 2 else 0.55)
+            col = RED if name == "belegt" else DARK
+            E(f, t, tin, lambda d, dy, cx0=cx0, w=w, q=q, txt=txt, col=col:
+              TB(d, cx0 + w / 2, TAB_Y + dy + (q + 1) * TAB_RH + TAB_RH / 2, txt, M(30), col, w - 10, "mm", "Zelle"))
+            cx0 += w
+    # Hinweise zu den Reihen
+    E(f, t, a(1, 0.1), lambda d, dy: tag(d, 60, 560 + dy, 600, 50, "Reihe 1: j beginnt bei 1", LIGHTK, DARK, 26, 700, outl=LINE), tout=a(2, 0.0))
+    E(f, t, a(2, 0.0), lambda d, dy: tag(d, 60, 560 + dy, 600, 50, "Reihe 2: j beginnt wieder bei 1", LIGHTA, AMB, 26, 700, outl=AMB), tout=t_ende)
+    # Schluss
+    E(f, t, t_ende, lambda d, dy: tag(d, 60, 560 + dy, 600, 50, "Beide Schleifen sind zu Ende", LIGHTK, DARK, 26, 700, outl=LINE))
+    E(f, t, a(3, 0.3), lambda d, dy: monobox(d, 700, 590 + dy, 520, 70, "Belegt: 4 von 6", 40))
 
-# ---------------------------------------------------------------- 5 for-Schleife (Zeilen 16 bis 23)
+
+# ---------------------------------------------------------------- 5 Grenzfall: 1 Reihe, 1 Platz
 def sc5(f, t, ct):
-    heading(f, t, "Abschnitt 4: for und range (Zeilen 16 bis 23)")
-    tm = [(-1 if i < 14 else 1e9) for i in range(len(CODE))]
-    typed(tm, [15, 16, 17], ct(0) + 0.3, cps=90, gap=0.05); typed(tm, [18], ct(1) + 0.2)
-    typed(tm, [19, 20, 21], ct(2) + 0.2, cps=70); typed(tm, [22], ct(4) + 0.2)
-    hl = hl_at(t, [(0, None), (ct(0), {15, 16, 17}), (ct(1), {18}), (ct(2), {19, 20, 21}), (ct(3), {21}), (ct(4), {22})])
-    draw_code(f, t, tm, hl)
-    def strip(d, dy):
-        T2(d, RX, 100 + dy, "Minute:", F(24, 700), GREY)
-        numline(d, RX + 100, 94 + dy, [1, 2, 3, 4, 5, 6], {1, 2, 3, 4, 5}, cw=44, stop=6, size=24)
-        T2(d, RX + RW, 144 + dy, "6: nicht mehr dabei", F(20, 700), RED, "ra")
-    f.el(ap(t, ct(1) + 1.2, 0.5), strip)
-    rows = [[str(i + 1), f"{TEMPS[i + 1]:.2f}", f"{SUMS[i]:.2f}"] for i in range(5)]
-    rt = [ct(2) + 0.5 + 0.9 * i for i in range(5)]
-    f.el(ap(t, ct(2) + 0.2, 0.4), lambda d, dy: grid(d, RX, 190 + dy, [90, 150, 181], ["minute", "t", "summe"], rows, t, rt, size=22, rh=36, colors={(i, 2): GREEN for i in range(5)}))
-    ents = [(rt[i] + 0.3, [(EXPECT[1 + i], CODE_T)]) for i in range(5)] + [(ct(4) + 2.2, [(EXPECT[6], CODE_G)])]
-    console(f, t, ents, 420, 196)
-    tile(f, t, ct(3) + 0.3, RX, 628, RW, 56, "Feldbreite 6, eine Nachkommastelle", "", DARK, bigsize=22)
+    a = lambda k, fr=0.0: AT[5](ct, k, fr)
+    kopf(f, t, "Grenzfall: 1 Reihe, 1 Platz")
+    E(f, t, a(0, 0.1), lambda d, dy: sitzplan(d, 60, 130 + dy, [[1 if t >= a(1, 0.0) else None]], c=120, gap=18))
+    zeilen = [(0.6, P1[0], a(0, 0.4), "1"), (a(0, 0.55), P1[1], a(0, 0.7), "1"), (a(0, 0.8), P1[2], a(0, 0.92), "1"), (a(1, 0.5), LAUF1[3], None, None, CODE_G)]
+    E(f, t, 0.4, lambda d, dy: lauf_panel(d, 60, 330 + dy, 760, zeilen, t, 26, 42, hl={3} if t >= a(1, 0.5) else None))
+    E(f, t, a(1, 0.0), lambda d, dy: tag(d, 420, 150 + dy, 560, 60, "beide Schleifen: genau einmal", LIGHTK, DARK, 32, 700, outl=LINE))
+    E(f, t, a(1, 0.6), lambda d, dy: tag(d, 420, 232 + dy, 560, 60, "1 belegt von 1 Platz", LIGHTG, GREEN, 32, 700, outl=GREEN))
+    def auftrag(d, dy):
+        card(d, 60, 588 + dy, 1160, 90, stripe=False)
+        TB(d, 90, 633 + dy, "Auftrag", F(28, 600), GREY, 130, "lm", "Auftrag")
+        TB(d, 240, 633 + dy, "belegt = 0 in den äußeren Rumpf: was passiert?", F(32, 700), DARK, 940, "lm", "Auftrag")
+    E(f, t, a(2, 0.15), auftrag)
 
-# ---------------------------------------------------------------- 6 Plausibilitaet
-def sc6(f, t, ct):
-    heading(f, t, "Plausibel? Exponentielles Abklingen")
-    P = Plot((120, 160, 740, 570), (0, 60), (0, 900))
-    def ax(d, dy):
-        P.axes(d, dy, range(0, 61, 10), range(0, 901, 300), "Zeit in Minuten", "Temperatur in °C")
-        d.line([(P.px(i), P.py(TEMPS[i]) + dy) for i in range(61)], fill=(150, 156, 168), width=3)
-    f.el(ap(t, 0.1, 0.5), ax)
-    def a1(d, dy):
-        for i in range(1, 6):
-            x, y = P.px(i), P.py(TEMPS[i]); d.ellipse((x - 6, y - 6, x + 6, y + 6), fill=RED)
-        yy = P.py(670.8); d.line((P.px(1), yy, P.px(5), yy), fill=GREEN, width=4)
-        T2(d, P.px(5) + 18, yy - 14, "Mittelwert 670,8 °C", F(24, 700), GREEN, "la")
-    f.el(ap(t, ct(0) + 2.5, 0.5), a1)
-    def a2(d, dy):
-        T2(d, P.px(1) + 14, P.py(850) - 4, "−66,4", F(22, 700), RED, "la"); T2(d, P.px(5) + 12, P.py(TEMPS[5]) + 6, "−47,6", F(22, 700), RED, "la")
-    f.el(ap(t, ct(1) + 0.5, 0.5), a2)
-    f.el(ap(t, ct(3) + 0.3, 0.5), lambda d, dy: (P.hline(d, dy, ZIEL, GREEN, "Ziel: 60 °C", lx=330), P.hline(d, dy, UMG, GREY, None), d.rectangle((P.x1 - 160, P.py(UMG) - 36, P.x1, P.py(UMG) - 6), fill=BG), T2(d, P.x1, P.py(UMG) - 32, "Halle: 20 °C", F(22, 700), GREY, "ra")))
-    def a3(d, dy):
-        x, y = P.px(37), P.py(TEMPS[37]); d.ellipse((x - 8, y - 8, x + 8, y + 8), fill=GREEN)
-        T2(d, x - 12, y - 78, "Minute 37", F(22, 700), GREEN, "ma"); d.line((x, y - 52, x, y - 14), fill=GREEN, width=3)
-    f.el(ap(t, ct(3) + 3.0, 0.5), a3)
-    def c1(d, dy):
-        card(d, 790, 150 + dy, 446, 120)
-        T2(d, 818, 162 + dy, "Die Abnahme wird kleiner", F(26, 700), DARK); T2(d, 818, 202 + dy, "1. Minute: 66 °C weniger", F(24, 400), GREY); T2(d, 818, 232 + dy, "5. Minute: nur 48 °C weniger", F(24, 400), GREY)
-    f.el(ap(t, ct(1) + 0.3, 0.5), c1, dy=int((1 - ap(t, ct(1) + 0.3, 0.5)) * 12))
-    def c2(d, dy):
-        card(d, 790, 290 + dy, 446, 150)
-        T2(d, 818, 302 + dy, "92 % bleiben pro Minute", F(26, 700), RED); T2(d, 818, 342 + dy, "Unterschied zur Halle:", F(23, 400), GREY)
-        T2(d, 818, 372 + dy, "830 → 763,6 → 702,5 → 646,3 …", F(25, 700), DARK); T2(d, 818, 408 + dy, "exponentielles Abklingen", F(23, 400), GREY)
-    f.el(ap(t, ct(2) + 0.3, 0.5), c2, dy=int((1 - ap(t, ct(2) + 0.3, 0.5)) * 12))
-    def c3(d, dy):
-        card(d, 790, 460 + dy, 446, 120)
-        T2(d, 818, 472 + dy, "Nie genau null, nie genau 60", F(26, 700), DARK); T2(d, 818, 512 + dy, "Die Schleife fragt nur:", F(24, 400), GREY); T2(d, 818, 542 + dy, "Ziel unterschritten?", F(24, 700), GREEN)
-    f.el(ap(t, ct(3) + 0.3, 0.5), c3, dy=int((1 - ap(t, ct(3) + 0.3, 0.5)) * 12))
-    pill(f, t, ct(4) + 0.2, 120, 626, 1000, 54, "Ändere k oder ziel und sage vorher, was herauskommt", size=28)
 
-SCENES = {1: sc1, 2: sc2, 3: sc3, 4: sc4, 5: sc5, 6: sc6}
+SCENES = {1: sc1, 2: sc2, 3: sc3, 4: sc4, 5: sc5}
+assert len(SRC) == 5 == len(SCENES)
+
 
 def poster(path):
     f = Frame()
     def fn(d, dy):
         d.rectangle((0, 0, 24, H), fill=RED)
-        T2(d, 90, 110, "V06 · Informatik", F(34, 600), GREY)
-        T2(d, 90, 160, "Vorgerechnet", F(104, 700), DARK)
-        T2(d, 90, 290, "Wie lange kühlt das Werkstück ab?", F(52, 400), GREY)
-        code_panel(d, 90, 400, 780, CODE[8:12], [0, 0, 0, 0], 9, 22, lineno=False, lh=36)
-        P = Plot((920, 410, 1200, 600), (0, 60), (0, 900))
-        d.line((P.x0, P.y1, P.x1, P.y1), fill=DARK, width=3); d.line((P.x0, P.y0, P.x0, P.y1), fill=DARK, width=3)
-        d.line([(P.px(i), P.py(TEMPS[i])) for i in range(61)], fill=RED, width=4)
-        P.hline(d, 0, ZIEL, GREEN, None)
+        T2(d, 90, 56, "Termin 06 · Informatik", F(34, 600), GREY)
+        T2(d, 90, 100, "Vorgerechnet: Kino", F(58, 700), DARK)
+        T2(d, 90, 250, "Belegte Plätze zählen", F(48, 700), DARK)
+        T2(d, 90, 318, "for i … for j …", M(34, True), RED)
+        T2(d, 90, 420, "Raute in der Raute,", F(32, 600), GREY)
+        T2(d, 90, 462, "dann der Code", F(32, 600), GREY)
         T2(d, 1220, 694, LABEL, F(16, 400), GREY, "ra")
-    f.el(1, fn); f.img.save(path)
+        sitzplan(d, 90, 520, [[1, 0, 1]], c=70, gap=14, beschriftung=False)
+    f.el(1, fn)
+    kino_draw(f, 1.0, PLAN, (800, 70, 440, 600), hl={k: RED for k in ("wj", "wj-e", "e", "e-d", "d", "d-a", "a", "wj-zurueck")})
+    f.img.save(path)
 
 if __name__ == "__main__":
     dispatch(HERE, SRC, SECS, SCENES, LABEL, poster, NAME)

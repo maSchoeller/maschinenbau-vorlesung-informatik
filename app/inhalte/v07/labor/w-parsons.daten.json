@@ -1,0 +1,16 @@
+{
+ "solution": [
+  "def flaeche(laenge, breite):",
+  "    return laenge * breite",
+  "lang = int(input(\"Länge in m: \"))",
+  "breit = int(input(\"Breite in m: \"))",
+  "f = flaeche(lang, breit)",
+  "print(f\"Fläche: {f} m²\")"
+ ],
+ "distractors": [
+  "    print(laenge * breite)",
+  "def flaeche(laenge):"
+ ],
+ "alts": [],
+ "ok": "Die Funktion steht zuerst, der Aufruf danach. return gibt die Fläche an die Stelle zurück, die aufgerufen hat."
+}

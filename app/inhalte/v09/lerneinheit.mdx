@@ -1,0 +1,565 @@
+---
+titel: "Termin 09 · Was im Rechner läuft: Bauteile, Befehle und dein erstes Spiel · Lerneinheit · Informatik Maschinenbau"
+beschreibung: "Die Bauteile eines Rechners, ein Programm in Funktionen zerlegen, die erste Stufe des Zahlenratens mit random.randint und der Dreischritt des Prozessors. Mit Rechner-Baukasten, Zerlege-Baustein und Spielzeug-Rechner zum Ausprobieren."
+body:
+  data-lesson: V09
+  data-page: lerneinheit
+stile:
+  - ../assets/css/dhbw-base.css
+  - ../assets/css/kurs.css
+  - ../assets/css/aufgaben.css
+  - ../assets/css/editor.css
+  - ../assets/css/v05.css
+  - ../assets/css/v09.css
+skripte:
+  - ../assets/js/speicher.js
+  - ../assets/js/icons.js
+  - src: ../assets/js/editor.js
+    defer: true
+  - ../assets/js/pap-engine.js
+  - ../assets/js/explorables-v09.js
+  - ../assets/js/kurs.js
+  - ../assets/js/aufgaben.js
+---
+
+<Lerneinheit nr="V09" name="Termin 09" labor="v09-labor.html">
+
+<Kopf marke="Termin 09 · 1. Semester · Lerneinheit" titel="Was im Rechner läuft: Bauteile, Befehle und dein erstes Spiel">
+
+Dein Programm läuft nicht im Bildschirm, sondern in einem Rechner mit festen Bauteilen und einem Takt. Heute siehst du, was darin passiert, Befehl für Befehl, und du lernst, ein langes Programm in Funktionen zu zerlegen. Danach beginnt dein erstes Spiel: Der Rechner denkt sich eine Zahl aus, und du rätst sie.
+
+- die fünf Bauteile (Prozessor, Arbeitsspeicher, Festplatte oder SSD, Eingabe und Ausgabe, Bus) nennen, ihre Aufgabe beschreiben und sagen, was bei Strom aus bleibt
+- erklären, wie ein Prozessor einen Befehl bearbeitet (holen, entschlüsseln, ausführen, im Takt) und ein kleines Programm des Spielzeug-Rechners von Hand durchgehen
+- ein Programm in Funktionen zerlegen und den Hauptplan mit Unterprogrammen lesen und zeichnen
+- mit `random.randint(1, 100)` eine Zufallszahl ziehen und mit einer Funktion `hinweis(geraten, geheim)` einen Tipp bewerten
+
+Alles aus Termin 02 bis 08 gilt weiter: Verzweigungen, Schleifen, Funktionen mit `def` und `return`, Text und Umwandlung. Geübt wird im [Programmierlabor](v09-labor.html).
+
+</Kopf>
+
+<Abschnitt id="bauteile" nr="1" titel="Die Bauteile eines Rechners">
+
+Stell dir ein Spiel am Rechner vor. Das Spiel liegt auf der **SSD**. Beim Start wird es in den **Arbeitsspeicher** geladen. Der **Prozessor** führt es aus, Schritt für Schritt. Du gibst etwas mit der **Eingabe** ein, zum Beispiel mit Tastatur, Maus oder Touchscreen. Das Ergebnis siehst du auf der **Ausgabe**, zum Beispiel auf dem Bildschirm. Der **Bus** transportiert die Daten zwischen allen.
+
+Als Bild für Maschinenbauer: Der Prozessor ist der Facharbeiter, der Arbeitsspeicher seine Werkbank, die SSD das Lager und der Bus der Transportweg. Mehr als dieses eine Bild brauchst du nicht.
+
+Die fünf Bauteile haben je eine Aufgabe. Eingabe und Ausgabe zählen zusammen als ein Bauteil.
+
+<div class="k-tablewrap">
+<table class="k-types">
+<thead><tr><th scope="col">Bauteil</th><th scope="col">Aufgabe</th></tr></thead>
+<tbody>
+<tr><td>Prozessor</td><td>rechnet und führt Befehle aus</td></tr>
+<tr><td>Arbeitsspeicher</td><td>hält das laufende Programm und seine Daten, schnell</td></tr>
+<tr><td>Festplatte oder SSD</td><td>speichert Programme und Dateien, größer, aber langsamer</td></tr>
+<tr><td>Eingabe und Ausgabe</td><td>verbinden den Rechner mit dir, zum Beispiel Tastatur, Maus, Bildschirm, Lautsprecher</td></tr>
+<tr><td>Bus</td><td>die Leitungen zwischen den Bauteilen</td></tr>
+</tbody>
+</table>
+</div>
+
+<Explorable name="bauteile" titel="Rechner-Baukasten">
+
+Der Baukasten zeigt ein Spiel in einem Rechner. Jeder Knopf löst eine Aktion aus, und die beteiligten Bauteile leuchten auf. Probier die Knöpfe aus und lies den Satz darunter. Vermute zuerst: Du hast zuletzt Level 3 gespeichert und spielst jetzt in Level 5. Dann fällt der Strom aus. In welchem Level startest du danach neu? Teste es dann mit „Strom aus“.
+
+<Ohne>
+
+Für den Rechner-Baukasten wird JavaScript benötigt. Der Baustein zeigt ein Schema mit Prozessor, Arbeitsspeicher, SSD, Eingabe und Ausgabe und dem Bus. Sechs Knöpfe lassen ein Spiel starten, eine Taste drücken, rechnen, das Ergebnis zeigen, den Spielstand speichern und den Strom ausschalten. Dabei leuchten die beteiligten Bauteile auf.
+
+</Ohne>
+
+</Explorable>
+
+**Bleiben oder verschwinden.** Beim Ausschalten leert sich der <Begriff e="Hält das laufende Programm und seine Daten. Der Inhalt verschwindet, wenn der Strom ausfällt.">Arbeitsspeicher</Begriff>. Alles, was nur dort stand, ist weg. Die <Begriff e="Speichert Programme und Dateien dauerhaft, auch ohne Strom. Eine Festplatte macht dasselbe, nur langsamer.">SSD</Begriff> behält ihren Inhalt. Im Baukasten bleibt also Level 3 übrig, solange du Level 5 nicht gespeichert hast.
+
+Darum gibt es „Speichern“: Das Programm kopiert den Spielstand vom Arbeitsspeicher auf die SSD. Probier es im Baukasten: Erst „Spielstand speichern“, dann „Strom aus“.
+
+**Der Weg eines Programms.** Das Spiel liegt auf der SSD. Es geht über den <Begriff e="Die Leitungen, über die die Bauteile Daten austauschen.">Bus</Begriff> in den Arbeitsspeicher. Von dort holt sich der <Begriff e="Das Bauteil, das rechnet und die Befehle eines Programms ausführt.">Prozessor</Begriff> Befehl für Befehl, wieder über den Bus. Das Ergebnis geht über den Bus zurück in den Arbeitsspeicher und weiter zur Ausgabe. Der Prozessor arbeitet nie direkt mit der SSD.
+
+Der Bus verbindet alle Bauteile. Was er transportiert, geht durch dieselben Leitungen. Mehr musst du über ihn nicht wissen.
+
+<Hinweis art="merke">
+
+Der Prozessor rechnet. Der Arbeitsspeicher hält, was gerade läuft, und verliert es, wenn der Strom ausfällt. Die SSD oder Festplatte behält ihren Inhalt auch ohne Strom. Eingabe und Ausgabe verbinden den Rechner mit dir. Der Bus verbindet alle Bauteile.
+
+</Hinweis>
+
+### Erklärvideo (ca. 2 Min)
+
+<Video name="v09-theorie" id="video-theorie" titel="Erklärvideo: Was im Rechner arbeitet" fehlt="Video folgt. Bis dahin: Der Rechner-Baukasten oben zeigt den ersten Teil, den Dreischritt zeigt der Spielzeug-Rechner in Abschnitt 4.">
+
+Erklärvideo: Was im Rechner arbeitet (ca. 2 Min). Untertitel sind eingeschaltet (Deutsch).
+
+</Video>
+
+</Abschnitt>
+
+<Abschnitt id="zerlegen" nr="2" titel="Ein Programm in Funktionen zerlegen">
+
+Du kennst `def`, Parameter und `return`. Bisher hast du kleine Funktionen geschrieben. Jetzt nimmst du ein ganzes Programm auseinander. Das Programm unten ist ein Getränkeautomat wie in Termin 02, jetzt mit drei Getränken. Es hat 14 Zeilen ohne den Kommentar, alles steht hintereinander.
+
+```python data-stdin="1\n3"
+# Getränkeautomat: 1 = Cola, 2 = Wasser, 3 = Saft
+wahl = int(input("Getränk (1 Cola, 2 Wasser, 3 Saft): "))
+geld = float(input("Geld in Euro: "))
+if wahl == 1:
+    preis = 2.5
+elif wahl == 2:
+    preis = 1.0
+else:
+    preis = 2.0
+if geld >= preis:
+    rest = geld - preis
+    print(f"Bitte sehr. Wechselgeld: {rest:.2f} Euro")
+else:
+    fehlt = preis - geld
+    print(f"Es fehlen {fehlt:.2f} Euro")
+```
+
+<p class="k-small k-muted">Führ das Programm aus. Die Eingaben 1 und 3 stehen schon bereit.</p>
+
+Zerlegen geht in drei Schritten.
+
+1. **Aufgaben in Worten.** Schreib auf, was das Programm tut: Eingabe lesen. Den Preis zum Getränk bestimmen. Die Antwort bilden. Ausgeben.
+2. **Was wird eine Funktion?** Jede Aufgabe, in die etwas hineingeht und aus der ein Wert oder ein Text herauskommt. Beim Preis geht eine Nummer hinein, und ein Preis kommt heraus: `preis_von(nr)`. Bei der Antwort gehen Geld und Preis hinein, und ein Text kommt heraus: `antwort(geld, preis)`.
+3. **Hauptprogramm.** Es ruft die Funktionen nur noch der Reihe nach auf und liest sich wie die Beschreibung aus Schritt 1.
+
+<div class="k-try">
+
+### Vorhersage: Wie lang bleibt das Hauptprogramm?
+
+<Vorhersage>
+
+Das Programm wird so zerlegt, dass `preis_von` und `antwort` Funktionen sind und alles Übrige im Hauptprogramm bleibt. Wie viele Zeilen hat das Hauptprogramm danach, ohne den Kommentar?
+
+- 14
+- [x] 4
+- 8
+- 1
+
+Das Hauptprogramm hat vier Zeilen: die zwei Eingaben, den Aufruf von `preis_von` und `print(antwort(…))`. Alles andere steht in den Funktionen.
+
+</Vorhersage>
+
+</div>
+
+So sieht das zerlegte Programm aus. Erst kommen die Funktionen, dann das Hauptprogramm:
+
+```python data-stdin="1\n3"
+# Getränkeautomat: 1 = Cola, 2 = Wasser, 3 = Saft
+def preis_von(nr):
+    if nr == 1:
+        return 2.5
+    elif nr == 2:
+        return 1.0
+    else:
+        return 2.0
+
+def antwort(geld, preis):
+    if geld >= preis:
+        rest = geld - preis
+        return f"Bitte sehr. Wechselgeld: {rest:.2f} Euro"
+    else:
+        fehlt = preis - geld
+        return f"Es fehlen {fehlt:.2f} Euro"
+
+wahl = int(input("Getränk (1 Cola, 2 Wasser, 3 Saft): "))
+geld = float(input("Geld in Euro: "))
+preis = preis_von(wahl)
+print(antwort(geld, preis))
+```
+
+<p class="k-small k-muted">Führ das Programm aus und geh es mit „Schritt für Schritt“ durch: Der Aufruf springt in die Funktion und kehrt mit dem Wert zurück.</p>
+
+Das <Begriff e="Der Teil, der die Funktionen der Reihe nach aufruft. Er steht unter den Funktionen.">Hauptprogramm</Begriff> hat nur noch 4 Zeilen.
+
+<Explorable name="zerlegen" titel="Programm zerlegen">
+
+Der Baustein zeigt das lange Programm. Seine Zeilen haben drei Farben: Preis bestimmen, Antwort bilden, Eingabe. „Zerlegen“ schiebt die Gruppen in die Funktionen `preis_von` und `antwort`. „Beide laufen lassen“ führt beide Fassungen mit deiner Eingabe aus. Vermute zuerst: Stell Getränk 3 und 1.5 Euro ein. Ändert sich die Ausgabe, wenn das Programm zerlegt ist?
+
+<Ohne>
+
+Für den Baustein wird JavaScript benötigt. Er zeigt das lange Programm des Getränkeautomaten und das zerlegte Programm mit den Funktionen `preis_von` und `antwort`. Mit einer Eingabe aus Getränk und Geld lässt er beide laufen und zeigt, welche Zeile als Nächstes dran ist.
+
+</Ohne>
+
+</Explorable>
+
+Mit der Eingabe 1 und 3 erscheint `Bitte sehr. Wechselgeld: 0.50 Euro`. Mit 2 und 1 erscheint `Bitte sehr. Wechselgeld: 0.00 Euro`.
+
+**Im Plan.** Das Zerlegen siehst du auch im Plan. Der Hauptplan zeigt nur noch, was passiert, nicht, wie. Jeder Aufruf ist ein Rechteck mit doppelten Seitenlinien, ein <Begriff e="Das Plan-Symbol für den Aufruf einer Funktion: ein Rechteck mit doppelten Seitenlinien.">Unterprogramm</Begriff>:
+
+<Plan titel="Hauptplan des Getränkeautomaten">
+
+```text
+Eingabe: wahl
+Eingabe: geld
+Unterprogramm: preis = preis_von(wahl)
+Unterprogramm: text = antwort(geld, preis)
+Ausgabe: text
+```
+
+</Plan>
+
+Im Plan steht das Ergebnis in `text` und wird danach ausgegeben. Im Code darfst du das zusammenziehen: `print(antwort(geld, preis))`. Das Ergebnis ist dasselbe.
+
+Das „Wie“ steht in den Plänen der Funktionen. Jeder Plan schreibt sein Ergebnis in eine Variable und gibt sie am Ende zurück:
+
+<Plan titel="Funktion preis_von">
+
+```text
+Funktion: preis_von(nr)
+Entscheidung: nr == 1?
+  ja:
+    preis = 2.5
+  nein:
+    Entscheidung: nr == 2?
+      ja:
+        preis = 1.0
+      nein:
+        preis = 2.0
+Rückgabe: preis
+```
+
+</Plan>
+
+<Plan titel="Funktion antwort">
+
+```text
+Funktion: antwort(geld, preis)
+Entscheidung: geld >= preis?
+  ja:
+    rest = geld - preis
+    text = f"Bitte sehr. Wechselgeld: {rest:.2f} Euro"
+  nein:
+    fehlt = preis - geld
+    text = f"Es fehlen {fehlt:.2f} Euro"
+Rückgabe: text
+```
+
+</Plan>
+
+<Hinweis art="merke">
+
+**Eine Funktion, eine Aufgabe.** Was hineingeht, sind die Parameter, was herauskommt, ist der Rückgabewert. Das Hauptprogramm ruft die Funktionen der Reihe nach auf und liest sich wie die Beschreibung. Zerlegen ändert nur, wo etwas steht, nicht, was herauskommt.
+
+</Hinweis>
+
+</Abschnitt>
+
+<Abschnitt id="zahlenraten" nr="3" titel="Zahlenraten, Teil 1: Ein Tipp">
+
+Jetzt beginnt dein erstes Spiel. Der Rechner denkt sich eine Zahl aus. Du rätst, und er sagt dir `Zu klein`, `Zu groß` oder `Richtig!`. In dieser Stunde baust du einen einzigen Tipp. In Termin 10 wird daraus das ganze Spiel.
+
+Für die Zufallszahl brauchst du ein Werkzeug, das Python mitbringt. Du holst es mit `import random` in dein Programm. Dann ziehst du mit `random.randint(1, 100)` eine Zahl.
+
+<div class="k-try">
+
+### Vorhersage: Welche Zahlen sind möglich?
+
+<Vorhersage>
+
+Welche Werte kann `geheim = random.randint(1, 100)` annehmen?
+
+- 1 bis 99
+- 0 bis 100
+- [x] 1 bis 100
+- 0 bis 99
+
+Beide Grenzen gehören dazu, es sind alle ganzen Zahlen von 1 bis 100. `randint(a, b)` nimmt beide Grenzen mit. Bei `range(1, 100)` ist das anders: Dort fehlt die 100.
+
+</Vorhersage>
+
+</div>
+
+**Der Plan zuerst.** Die Zufallszahl ist ein normales Rechteck, so wie `round`. Der Tipp wird eingelesen, und die Funktion `hinweis` bewertet ihn. Sie schreibt den Text in eine Variable und gibt sie am Ende zurück.
+
+<Plan titel="Hauptplan des Zahlenratens, Stufe 1">
+
+```text
+geheim = random.randint(1, 100)
+Eingabe: geraten
+Unterprogramm: text = hinweis(geraten, geheim)
+Ausgabe: text
+```
+
+</Plan>
+
+<Plan titel="Funktion hinweis">
+
+```text
+Funktion: hinweis(geraten, geheim)
+Entscheidung: geraten < geheim?
+  ja:
+    text = "Zu klein"
+  nein:
+    Entscheidung: geraten > geheim?
+      ja:
+        text = "Zu groß"
+      nein:
+        text = "Richtig!"
+Rückgabe: text
+```
+
+</Plan>
+
+**Der Code.** `import random` steht ganz oben. Danach kommt die Funktion, danach das Hauptprogramm. Die Zahl wird einmal gezogen und in `geheim` gespeichert. Bei jedem Lauf wird neu gezogen. Meist kommt eine andere Zahl.
+
+```python data-stdin="30"
+import random
+
+def hinweis(geraten, geheim):
+    if geraten < geheim:
+        return "Zu klein"
+    elif geraten > geheim:
+        return "Zu groß"
+    else:
+        return "Richtig!"
+
+geheim = random.randint(1, 100)
+geraten = int(input("Dein Tipp (1 bis 100): "))
+print(hinweis(geraten, geheim))
+```
+
+<p class="k-small k-muted">Führ das Programm mehrmals aus. Weil die Zahl zufällig ist, kann die Ausgabe sich ändern. Mit „Schritt für Schritt“ siehst du, was in `geheim` steht.</p>
+
+Stell dir `geheim` mit 42 vor. Tipp 30 ergibt `Zu klein`, Tipp 77 ergibt `Zu groß`, Tipp 42 ergibt `Richtig!`. Auch die Grenzen gehen: Bei `geheim` 1 und Tipp 100 kommt `Zu groß`.
+
+<Hinweis art="merke">
+
+In der Datei steht oben `import random`, dann die Funktion, dann das Hauptprogramm. `random.randint(1, 100)` liefert eine ganze Zahl von 1 bis 100, beide Grenzen gehören dazu. Ohne `import random` meldet Python `NameError: name 'random' is not defined`. Diese zwei Zeilen brauchst du in der Klausur ohne Vorlage.
+
+</Hinweis>
+
+</Abschnitt>
+
+<Abschnitt id="befehle" nr="4" titel="Wie ein Prozessor einen Befehl abarbeitet">
+
+Der Prozessor arbeitet ein Programm Befehl für Befehl ab. Jeder <Begriff e="Ein einzelner kleiner Schritt, den der Prozessor ausführt, zum Beispiel laden, addieren oder speichern.">Befehl</Begriff> geht im selben Dreischritt:
+
+1. **holen:** Der Prozessor holt den nächsten Befehl aus dem Speicher.
+2. **entschlüsseln:** Er stellt fest, was der Befehl bedeutet.
+3. **ausführen:** Er macht es.
+
+Dann kommt der nächste Befehl. Ein Pfeil am Programm zeigt, welcher Befehl dran ist.
+
+Eine Uhr gibt den <Begriff e="Die Uhr des Prozessors: Bei jedem Takt macht er einen kleinen Schritt.">Takt</Begriff> vor. Bei jedem Takt macht der Prozessor einen kleinen Schritt. Ein Prozessor mit 3 GHz schafft 3 Milliarden Takte pro Sekunde. 1 GHz sind 1 Milliarde Takte pro Sekunde.
+
+**Der Spielzeug-Rechner.** Echte Prozessoren kennen sehr viele Befehle. Der Spielzeug-Rechner hat nur vier, damit du den Dreischritt in Ruhe sehen kannst. Er hat vier Zellen `A`, `B`, `C` und `D`, in jeder steht eine ganze Zahl. Dazu kommt im Prozessor der <Begriff e="Der Platz im Prozessor, an dem gerechnet wird.">Rechenplatz</Begriff>.
+
+<div class="k-tablewrap">
+<table class="k-types">
+<thead><tr><th scope="col">Befehl</th><th scope="col">Wirkung</th></tr></thead>
+<tbody>
+<tr><td><code>LADE x</code></td><td>Der Rechenplatz bekommt den Wert der Zelle x.</td></tr>
+<tr><td><code>ADDIERE x</code></td><td>Der Rechenplatz bekommt seinen alten Wert plus den Wert der Zelle x.</td></tr>
+<tr><td><code>SPEICHERE x</code></td><td>Die Zelle x bekommt den Wert des Rechenplatzes.</td></tr>
+<tr><td><code>STOPP</code></td><td>Der Rechner hält an.</td></tr>
+</tbody>
+</table>
+</div>
+
+Jeder Befehl braucht drei Takte: holen, entschlüsseln, ausführen. Im Spielzeug sind es immer drei, im echten Rechner je nach Befehl verschieden.
+
+Ein Beispiel: `A` ist 5, `B` ist 3, `C` ist 0. Das Programm lautet:
+
+```text
+LADE A
+ADDIERE B
+SPEICHERE C
+STOPP
+```
+
+Es rechnet `C = A + B`. Danach steht in `C` die 8, und der Rechner hat 12 Takte gebraucht.
+
+<div class="k-try">
+
+### Vorhersage: Was steht am Ende in D?
+
+<Vorhersage>
+
+Zelle `A` ist 4. Das Programm lautet `LADE A`, `ADDIERE A`, `SPEICHERE B`, `ADDIERE B`, `SPEICHERE D`, `STOPP`. Was steht danach in `D`?
+
+- 8
+- 12
+- [x] 16
+- 4
+
+Es sind 16. Lass das Vermutungsprogramm unten im Spielzeug-Rechner Takt für Takt laufen und vergleiche.
+
+</Vorhersage>
+
+</div>
+
+<Explorable name="spielzeug" titel="Spielzeug-Rechner">
+
+Wähle ein Programm und klick auf „Ein Takt“. Das Lämpchen zeigt, ob der Rechner gerade holt, entschlüsselt oder ausführt. „Ein Befehl“ springt gleich um drei Takte weiter, „Von vorn“ setzt alles zurück. Wähle das Vermutungsprogramm. Vermute zuerst, wie viele Takte es braucht. Danach läuft es Takt für Takt, und du prüfst auch deine Vorhersage.
+
+<Ohne>
+
+Für den Spielzeug-Rechner wird JavaScript benötigt. Der Baustein zeigt ein Programm mit einem Pfeil „nächster Befehl“, das Feld „geholt“, den Rechenplatz, die vier Zellen, einen Taktzähler und drei Lämpchen für holen, entschlüsseln und ausführen.
+
+</Ohne>
+
+</Explorable>
+
+Beim Vermutungsprogramm ergibt `LADE A` im Rechenplatz 4, `ADDIERE A` ergibt 8, `SPEICHERE B` legt die 8 in `B`, `ADDIERE B` ergibt 16 und `SPEICHERE D` legt die 16 in `D`. Das sind 6 Befehle mal 3 Takte, also 18 Takte.
+
+Im Rechenplatz steht nur ein Zwischenergebnis. In die Zellen kommt erst etwas, wenn `SPEICHERE` es hineinschreibt.
+
+**Die Brücke zu Python.** `c = a + b` ist in Python eine einzige Zeile. Im Rechner werden daraus mehrere solcher kleinen Befehle. Python übersetzt jede Zeile für dich.
+
+<Hinweis art="merke">
+
+Der Prozessor arbeitet jeden Befehl im Dreischritt holen, entschlüsseln, ausführen ab. Eine Uhr gibt den Takt vor, bei jedem Takt macht er einen kleinen Schritt. Der Rechenplatz hält das Zwischenergebnis, die Zellen halten nur, was `SPEICHERE` hineinschreibt.
+
+</Hinweis>
+
+</Abschnitt>
+
+<Abschnitt id="selbstcheck" nr="5" titel="Selbstcheck">
+
+Sechs Fragen in den Formen der Klausur: Bauteile, Befehle im Prozessor, Programme zerlegen und Code lesen. Die Reihenfolge der Fragen und Antworten ist bei jedem Aufruf anders. Rechne im Kopf oder auf Papier, nicht im Editor.
+
+<Quiz id="v09">
+
+<Frage id="wo-laeuft" typ="mc" punkte="3" titel="Wo läuft das Programm">
+
+Wo liegen ein Programm und seine Daten, während es läuft?
+
+- [x] Im Arbeitsspeicher
+- Nur auf der SSD
+- Im Bus
+- In der Ausgabe
+
+<Erklaerung>
+
+Der Prozessor arbeitet mit dem Arbeitsspeicher, nicht direkt mit der SSD. Die SSD bewahrt das Programm auf. Zum Laufen wird es in den Arbeitsspeicher geladen. Dort arbeitet der Prozessor damit.
+
+</Erklaerung>
+
+</Frage>
+
+<Frage id="strom-aus" typ="mc" punkte="4" titel="Was Strom aus übersteht (mehrere richtig)">
+
+Welche Bauteile behalten ihre Daten, wenn der Strom ausfällt? Kreuze alle richtigen an.
+
+- [x] SSD
+- [x] Festplatte
+- Arbeitsspeicher
+- Bus
+
+<Erklaerung>
+
+SSD und Festplatte speichern ohne Strom weiter. Der Arbeitsspeicher verliert alles. Der Bus speichert nichts, er transportiert nur.
+
+</Erklaerung>
+
+</Frage>
+
+<Frage id="befehl-schritte" typ="mc" punkte="3" titel="Befehl bearbeiten">
+
+In welcher Abfolge bearbeitet der Prozessor einen Befehl?
+
+- [x] holen, entschlüsseln, ausführen
+- ausführen, holen, entschlüsseln
+- entschlüsseln, holen, ausführen
+- speichern, holen, ausführen
+
+<Erklaerung>
+
+Zuerst muss der Befehl da sein (holen), dann wird er verstanden (entschlüsseln), dann gemacht (ausführen).
+
+</Erklaerung>
+
+</Frage>
+
+<Frage id="spielzeug-rechnen" typ="num" punkte="4" antwort="12" tol="0" titel="Spielzeug-Rechner">
+
+Zelle `A` ist 6, Zelle `B` ist 0. Das Programm lautet `LADE A`, `ADDIERE A`, `SPEICHERE B`, `STOPP`. Was steht danach in `B`?
+
+<Erklaerung>
+
+`LADE A` ergibt im Rechenplatz 6, `ADDIERE A` ergibt 12, und `SPEICHERE B` legt die 12 in `B`.
+
+</Erklaerung>
+
+</Frage>
+
+<Frage id="zerlegen-preis" typ="mc" punkte="3" titel="Zerlegtes Programm ändern">
+
+Im zerlegten Getränkeautomaten soll der Saft 2.20 Euro kosten. Wo änderst du etwas?
+
+- [x] Nur in `preis_von`
+- Nur im Hauptprogramm
+- In `preis_von` und im Hauptprogramm
+- In `antwort`
+
+<Erklaerung>
+
+Der Preis steht nur in `preis_von`. Das Hauptprogramm und `antwort` bekommen ihn als Wert und bleiben, wie sie sind.
+
+</Erklaerung>
+
+</Frage>
+
+<Frage id="tipp-bewerten" typ="output" punkte="3" antwort="Zu groß" titel="Tipp bewerten">
+
+Was gibt das Programm aus?
+
+```python class="k-code" data-run="nach-antwort"
+def hinweis(geraten, geheim):
+    if geraten < geheim:
+        return "Zu klein"
+    elif geraten > geheim:
+        return "Zu groß"
+    else:
+        return "Richtig!"
+
+print(hinweis(40, 25))
+```
+
+<Erklaerung>
+
+40 ist größer als 25, also kommt der zweite Zweig: `Zu groß`.
+
+</Erklaerung>
+
+</Frage>
+
+</Quiz>
+
+</Abschnitt>
+
+<Weiter ziel="v09-labor.html">
+
+Jetzt bist du dran. Im Labor zerlegst du ein Programm selbst, zeichnest einen Hauptplan, ordnest Bauteile zu, verfolgst den Spielzeug-Rechner Schritt für Schritt und baust die erste Stufe des Zahlenratens. Zwei weitere Videos findest du dort an der passenden Station: der Python-Werkzeugkasten und das vorgerechnete Beispiel.
+
+</Weiter>
+
+<Dozent titel="Für Dozierende: Ablauf des Termins (125 Minuten) und Training">
+
+<p class="k-small k-muted">Vier Blöcke: zwei Theorie (T6 Rechneraufbau, Teil 1 und 2 von 3) und zwei Programmieren (P4 Funktionen, Teil 6 von 6, und P5 Zahlenraten, Teil 1 von 4). Die Theorie steht am Anfang und am Ende, die Programmierblöcke in der Mitte: So folgt das Zahlenraten direkt auf das Zerlegen. Jeder Block à 30 Minuten verplant höchstens 28 Minuten, der letzte (25 Minuten) höchstens 24; die Minuten eines Abschnitts enthalten das Zeigen der genannten Karte. Die Lerneinheit ist zum Zeigen und Nachlesen, geübt wird im <a href="v09-labor.html">Programmierlabor</a>. Die Videos laufen nicht im Termin. Der Spielzeug-Rechner kennt nur zwei feste Programme, eigene Programme gibt es nicht.</p>
+
+<div class="k-tablewrap">
+<table class="k-plan">
+<thead><tr><th scope="col">Minuten</th><th scope="col">Wo</th><th scope="col">Was zu tun ist</th></tr></thead>
+<tbody>
+<tr><td>0–10</td><td>Papier, Beamer</td><td><strong>Warm-up.</strong> Training Termin 08, Aufgabe 1 „Typen und Umwandlung“: sechs Zeilen auf Papier (5). Auflösung: <code>7</code>, <code>45</code>, <code>9</code>, <code>str</code>, <code>Punkte: 15</code> und <code>TypeError</code> bei <code>"3" + 4</code> (2). Brücke in die Runde: <code>input()</code> liefert immer Text. Du tippst eine 5 auf der Tastatur. Wo steht das Programm, während es läuft, und welche Bauteile arbeiten, bis <code>print</code> das Ergebnis zeigt? Die Auflösung kommt in der Theorie: Eingabe, Bus, Prozessor, Arbeitsspeicher, Bildschirm (3).</td></tr>
+<tr><td>10–40</td><td>Lerneinheit 1</td><td><strong>Theorie: Bauteile.</strong> Das Bild eines Spiels am Rechner und die fünf Bauteile (8). Baustein „Rechner-Baukasten“ mit der Vermutung „Strom aus“, vor der Auflösung (9). „Bleiben oder verschwinden“, Weg eines Programms und Bus (6). Verbindung zur Hausaufgabe, Station „Bauteile zuordnen“ (2). Keine eigene Vorhersage in diesem Block. Verplant: 25.</td></tr>
+<tr><td>40–70</td><td>Lerneinheit 2, Labor 1 (Karte 2), 2, 4</td><td><strong>Programmieren 1: zerlegen.</strong> Das lange Programm, Aufgaben in Worten (3). Vorhersage „Wie lang bleibt das Hauptprogramm?“ (2). Zerlegen am Beamer, Vorgerechnet Schritt 1 bis 4 (3). Baustein „Programm zerlegen“ mit Vermutung (5). Vorgerechnet Schritt 5, die Probe (1). Hauptplan mit Unterprogrammen lesen, Karte 2, „Schritt für Schritt“ (4). Alle zeichnen den Hauptplan „Schere-Stein-Papier“ (8). Verplant: 26.</td></tr>
+<tr><td>70–100</td><td>Lerneinheit 3, Labor 1 (Karte 1), 6, 7</td><td><strong>Programmieren 2: Zahlenraten, Stufe 1.</strong> Das Spiel zeigen, einmal spielen (3). Vorhersage „Welche Zahlen sind möglich?“ (3). Karte 1 mit Auflösung: Die Grenzen gehören dazu (3). Der Plan, einmal am Beamer gelesen (2). Lückencode „Ein Tipp“ (6). Läufe und Grenzfälle am Beamer (2). „Würfelraten“ als Plan in Code (8). Verplant: 27.</td></tr>
+<tr><td>100–125</td><td>Lerneinheit 4, Labor 5</td><td><strong>Theorie: der Befehl im Prozessor.</strong> Dreischritt und Takt (5). Spielzeug-Rechner vorgestellt, Beispielprogramm (4). Baustein „Spielzeug-Rechner“ mit Vermutung (7). Ablauf verfolgen, Station 5 (5). Brücke zu Python: Aus einer Zeile werden mehrere Befehle (1). Auftrag für zu Hause, Pflicht, zusammen 42 Minuten: Bauteile zuordnen (4), Vorgerechnet Schritt 6 (1), Selbstcheck (7), Training (30) (2). Termin 10 beginnt mit Training 1 „Spielzeug-Rechner von Hand“ auf Papier. Verplant: 24.</td></tr>
+</tbody>
+</table>
+</div>
+
+<p class="k-small k-muted">Wenn die Zeit knapp wird: Im Block 10–40 ist Luft (5 Minuten). Bei Zeitnot zeigt der Baustein „Rechner-Baukasten“ nur „Strom aus“ und „Spielstand speichern“ (3 Minuten gespart). Im Block 40–70 entfällt zuerst die Vorhersage (sie steht in der Lerneinheit), dann läuft der Baustein „Programm zerlegen“ als Vorführung des Dozenten (2 statt 5 Minuten), dann wird das Vorgerechnete auf Schritt 1, 2 und 5 verkürzt. Der Hauptplan „Schere-Stein-Papier“ bleibt im Termin, notfalls zu zweit gezeichnet: Er ist die einzige Aufgabe zur Klausurform „Plan zeichnen“ in diesem Termin. Im Block 70–100 hat „Würfelraten“ Vorrang vor dem Lückencode, weil es die Klausurform „Plan in Code übertragen“ ist. Der Lückencode läuft dann gemeinsam am Beamer. Im letzten Block entfällt zuerst die Brücke zu Python, dann wird Station 5 zu Hause gemacht. Die Hausaufgabe wächst dann auf 48 Minuten, das wird ausdrücklich gesagt.</p>
+
+<p class="k-small k-muted">Die drei Klausurformen im Termin: Plan zeichnen (Hauptplan in Block 40–70), Plan in Code übertragen („Würfelraten“ in Block 70–100), Code lesen (Vorhersagen in den Blöcken 40–70, 70–100 und 100–125, Lückencode, Spielzeug-Rechner). Zu Hause kommen dazu: Plan in Code im Klausurmodus (Training 2), Fehler finden (Training 3) und Zerlegen selbst (Training 4). <code>import random</code> und <code>random.randint(a, b)</code> samt beider Grenzen sind Klausurstoff und müssen im Kopf sein: Die Klausur gibt die zwei Zeilen nicht vor.</p>
+
+<p class="k-small k-muted">Wie weit die Gruppe im Training ist und an welcher Aufgabe sie hängt, zeigt vor dem nächsten Termin die Kursübersicht (Konto, „Kursübersicht für Dozierende“). Gezählt wird dort nur, wer mit Konto lernt. Die Knobelaufgabe am Ende des Labors ist freiwillig und zählt dort nicht mit.</p>
+
+</Dozent>
+
+</Lerneinheit>

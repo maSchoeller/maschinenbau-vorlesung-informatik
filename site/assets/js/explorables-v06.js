@@ -1,466 +1,535 @@
 /* =============================================================
-   explorables-v06.js – interaktive Bausteine für V06 (reines JS, kein Framework)
-   (A) Abkühlkurve live: eine while-Schleife läuft als Programmablaufplan Schritt für Schritt (Marke auf der
-       Ablauflinie, aktive Symbole rot; Zähler, Temperatur, Bedingung), Parameter k und Ziel veränderbar; Ziel = Umgebung zeigt die Endlosschleife
-       und den Watchdog.
-   (B) Newton-Treppe: Tangenten-Schritte zur Wurzel, Anzahl Iterationen bis zur Toleranz.
-   Der Rechenkern ist ohne DOM per node testbar (siehe module.exports).
+   explorables-v06.js – interaktive Bausteine für Termin 06 (Hexadezimalsystem, Schleife in Schleife, XOR)
+     data-explorable="hexfarbe"       „Hex-Farbmischer“: drei Regler Rot, Grün, Blau (0 bis 255) mit Zahlfeld, Farbcode als Eingabefeld;
+                                      je Byte zwei Vierergruppen mit Hex-Ziffer, der Farbcode und die Farbfläche, die Farbe immer auch als Text
+     data-explorable="doppelschleife" „Schleife in Schleife“: Grenzen für i und j mit Plus und Minus, Schalter „Würfelpaare“,
+                                      die zwei for-Zeilen, Tabelle i, j, Durchläufe und ein Raster, das sich Zelle für Zelle füllt
+     data-explorable="xorschrift"     „XOR-Geheimschrift“: ein Wort aus 1 bis 6 Buchstaben, ein Schlüssel von 0 bis 31 (fünf Schalter oder Zahl),
+                                      je Buchstabe Zahl, 5 Bit, Schlüssel und XOR-Ergebnis; „Noch einmal mit demselben Schlüssel“ ergibt das Wort
+   Eigenständig wie alle explorables-vNN.js: keine Bibliothek, Texte per textContent.
+   Der Rechenkern steht oben und ist ohne Browser prüfbar (module.exports, app/skripte/tests/explorables-v06.test.mjs).
+   Meldungstexte ohne Gedankenstrich. Zustand steht immer auch als Wort, Zeichen oder Linienstärke da, nie nur als Farbe.
    ============================================================= */
-(function (root) {
+(function () {
   'use strict';
 
-  /* ── Kern ────────────────────────────────────────────────── */
-  /* Abkühlung wie im Code: while temperatur > ziel: temperatur = temperatur - k * (temperatur - umgebung) */
-  function coolingSeries(t0, tu, k, ziel, maxN) {
-    var temps = [t0], t = t0, n = 0;
-    while (t > ziel && n < maxN) { t = t - k * (t - tu); n++; temps.push(t); }
-    var reached = !(t > ziel);
-    return { temps: temps, n: n, reached: reached, watchdog: !reached };
+  /* ── Rechenkern: Hex und Farbe (ohne DOM) ─────────────────── */
+  var HEX = '0123456789ABCDEF';
+  function klemme(x, lo, hi) { return Math.max(lo, Math.min(hi, x)); }
+  function bytGueltig(z) { return typeof z === 'number' && isFinite(z) && z === Math.floor(z) && z >= 0 && z <= 255; }
+  function vier(n) { var s = n.toString(2); while (s.length < 4) s = '0' + s; return s; }
+  /* ein Byte: zwei Vierergruppen, je Gruppe die Hex-Ziffer; 226 ergibt 1110 0010, E und 2 */
+  function byteHex(z) {
+    var hoch = z >> 4, tief = z & 15;
+    return {
+      zahl: z, bits: vier(hoch) + vier(tief), gruppen: [vier(hoch), vier(tief)], ziffern: [HEX.charAt(hoch), HEX.charAt(tief)],
+      hex: HEX.charAt(hoch) + HEX.charAt(tief),
+      satz: vier(hoch) + ' ist ' + HEX.charAt(hoch) + ', ' + vier(tief) + ' ist ' + HEX.charAt(tief) + '.'
+    };
   }
-  /* Newton für f(x) = x² − a. Abbruch, sobald |x² − a| <= tol (oder nach maxN Schritten). */
-  function newtonSeries(a, x0, tol, maxN) {
-    var xs = [x0], x = x0, n = 0;
-    while (Math.abs(x * x - a) > tol && n < maxN) { x = (x + a / x) / 2; n++; xs.push(x); }
-    return { xs: xs, n: n, converged: Math.abs(x * x - a) <= tol };
+  function farbcode(r, g, b) { return '#' + byteHex(r).hex + byteHex(g).hex + byteHex(b).hex; }
+  /* Die Farbe als Text, damit sie nie nur als Fläche da ist */
+  function farbText(r, g, b) { return 'Rot ' + r + ', Grün ' + g + ', Blau ' + b; }
+  function farbWort(r, g, b) {
+    var c = farbcode(r, g, b);
+    if (c === '#FFFFFF') return 'Weiß: alle drei Bytes sind FF, alle Bits an.';
+    if (c === '#000000') return 'Schwarz: alle drei Bytes sind 00, alle Bits aus.';
+    if (c === '#FF0000') return 'Reines Rot: nur das Rot-Byte ist FF.';
+    if (c === '#00FF00') return 'Reines Grün: nur das Grün-Byte ist FF.';
+    if (c === '#0000FF') return 'Reines Blau: nur das Blau-Byte ist FF.';
+    if (c === '#E2001A') return 'Das Rot der DHBW.';
+    if (r === g && g === b) return 'Ein Grau: alle drei Bytes sind gleich.';
+    return '';
   }
-  /* Zahl so schreiben, wie Python sie druckt (Punkt, e-Schreibweise mit zweistelligem Exponenten) */
-  function py(x) {
-    if (x === 0) return '0.0';
-    var ax = Math.abs(x), s;
-    if (ax < 1e-4 || ax >= 1e16) { s = x.toExponential().replace(/e([+-])(\d)$/, 'e$10$2'); return s; }
-    s = String(x);
-    return /^-?\d+$/.test(s) ? s + '.0' : s;
+  var MELDUNG_CODE = 'Ein Farbcode hat sechs Hex-Ziffern: 0 bis 9 und A bis F, zum Beispiel E2001A.';
+  /* Farbcode prüfen: mit oder ohne #, Groß- und Kleinschreibung egal, genau sechs Hex-Ziffern */
+  function pruefeFarbcode(text) {
+    var t = String(text === undefined || text === null ? '' : text).replace(/\s+/g, '');
+    if (t.charAt(0) === '#') t = t.slice(1);
+    if (!/^[0-9a-fA-F]+$/.test(t)) return { ok: false, meldung: MELDUNG_CODE };
+    if (t.length !== 6) return { ok: false, meldung: t.length < 6 ? 'Es fehlen noch Ziffern. ' + MELDUNG_CODE : 'Das sind zu viele Ziffern. ' + MELDUNG_CODE };
+    t = t.toUpperCase();
+    return { ok: true, r: parseInt(t.slice(0, 2), 16), g: parseInt(t.slice(2, 4), 16), b: parseInt(t.slice(4, 6), 16), code: '#' + t };
   }
-  function de(x, d) { return x.toLocaleString('de-DE', { minimumFractionDigits: d, maximumFractionDigits: d }).replace('-', '−'); }
-  function niceMax(n) {
-    var c = [10, 20, 30, 40, 50, 60, 80, 100, 150, 200, 300];
-    for (var i = 0; i < c.length; i++) if (n <= c[i]) return c[i];
-    return Math.ceil(n / 100) * 100;
+  function pruefeKanal(text) {
+    var t = String(text === undefined || text === null ? '' : text).replace(/\s+/g, '');
+    if (t === '' || !/^\d+$/.test(t)) return { ok: false, meldung: 'Gib eine ganze Zahl von 0 bis 255 ein.' };
+    var n = Number(t);
+    if (n > 255) return { ok: false, meldung: 'Ein Byte reicht von 0 bis 255.' };
+    return { ok: true, zahl: n };
+  }
+  var KANAELE = ['Rot', 'Grün', 'Blau'];
+  /* alles, was der Baustein zeigt, für drei Zahlen */
+  function ansichtFarbe(r, g, b) {
+    var w = [r, g, b], k = w.map(byteHex);
+    return {
+      werte: w, kanaele: k, code: farbcode(r, g, b), text: farbText(r, g, b), wort: farbWort(r, g, b),
+      satz: 'Farbcode ' + farbcode(r, g, b) + '. ' + farbText(r, g, b) + '.' + (farbWort(r, g, b) ? ' ' + farbWort(r, g, b) : '')
+    };
   }
 
-  /* ── Programmablaufplan (DIN 66001) als SVG-Text ───────────────
-     Eine Funktion zeichnet die PAPs der Lerneinheit (statisch, per Node erzeugt und eingefügt)
-     und den PAP im Explorable (zur Laufzeit, mit Marke und roten aktiven Elementen).
-     Knoten: oval (Grenzstelle), rect (Operation), para (Ein-/Ausgabe), dia (Verzweigung/Raute).
-     Kanten: Linienzug mit Pfeilspitze am letzten Punkt. Farben und Strichstärken stehen in v06.css. */
-  var PAPW = 420, PAPCX = 200;
-  function xesc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
-  function papNode(n) {
-    var cx = PAPCX, x = cx - n.w / 2, y = n.y, w = n.w, h = n.h, shape;
-    if (n.t === 'oval') shape = '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="' + h / 2 + '"/>';
-    else if (n.t === 'rect') shape = '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '"/>';
-    else if (n.t === 'para') { var sk = 14; shape = '<polygon points="' + [x + sk, y, x + w, y, x + w - sk, y + h, x, y + h].join(' ') + '"/>'; }
-    else shape = '<polygon points="' + [cx, y, cx + w / 2, y + h / 2, cx, y + h, cx - w / 2, y + h / 2].join(' ') + '"/>';
-    var lines = n.lines, lh = 16, y0 = y + h / 2 - (lines.length - 1) * lh / 2 + 4.5;
-    var txt = '<text x="' + cx + '" y="' + y0 + '" text-anchor="middle">' + lines.map(function (l, i) { return '<tspan x="' + cx + '" dy="' + (i ? lh : 0) + '">' + xesc(l) + '</tspan>'; }).join('') + '</text>';
-    return '<g class="pap-n" data-n="' + n.id + '">' + shape + txt + '</g>';
+  /* ── Rechenkern: Schleife in Schleife (ohne DOM) ──────────── */
+  var GRENZE_MAX = 6, GRENZE_MIN = 1;
+  /* Einstellungen: Grenzen (letzter Wert von i und j) oder Würfelmodus (6 und 6, Summe 7) */
+  function einstellung(a, b, wuerfel) {
+    if (wuerfel) { a = 6; b = 6; }
+    return { a: klemme(a, GRENZE_MIN, GRENZE_MAX), b: klemme(b, GRENZE_MIN, GRENZE_MAX), wuerfel: !!wuerfel };
   }
-  function papEdge(e) {
-    var p = e.pts, a = p[p.length - 2], b = p[p.length - 1];
-    var dx = b[0] - a[0], dy = b[1] - a[1], d = Math.sqrt(dx * dx + dy * dy); dx /= d; dy /= d;
-    var bx = b[0] - 9 * dx, by = b[1] - 9 * dy, qx = -dy * 4.5, qy = dx * 4.5;
-    var head = [b[0], b[1], bx + qx, by + qy, bx - qx, by - qy].map(function (v) { return Math.round(v * 10) / 10; }).join(' ');
-    var out = '<g class="pap-e" data-e="' + e.id + '"><polyline points="' + p.map(function (q) { return q.join(','); }).join(' ') + '"/><polygon points="' + head + '"/></g>';
-    if (e.label) out += '<text class="pap-lbl" x="' + e.label[1] + '" y="' + e.label[2] + '">' + xesc(e.label[0]) + '</text>';
-    return out;
+  function durchlaeufeInnen(a, b) { return a * b; }
+  function rechnungInnen(a, b) { return a + ' mal ' + b + ' = ' + (a * b) + ' Durchläufe des inneren Rumpfs'; }
+  function zeilenText(c) {
+    var z = [];
+    if (c.wuerfel) z.push({ ein: 0, text: 'anzahl = 0', art: 'start' });
+    z.push({ ein: 0, text: 'for i in range(1, ' + (c.a + 1) + '):', art: 'i' });
+    z.push({ ein: 1, text: 'for j in range(1, ' + (c.b + 1) + '):', art: 'j' });
+    if (c.wuerfel) {
+      z.push({ ein: 2, text: 'if i + j == 7:', art: 'if' });
+      z.push({ ein: 3, text: 'anzahl = anzahl + 1', art: 'rumpf' });
+      z.push({ ein: 0, text: 'print(anzahl)', art: 'ende' });
+    } else z.push({ ein: 2, text: 'print(i, j)', art: 'rumpf' });
+    return z;
   }
-  function papSvg(spec) {
-    return '<svg class="pap" viewBox="0 0 ' + PAPW + ' ' + spec.h + '" role="img" aria-label="' + xesc(spec.aria) + '" focusable="false">' +
-      spec.edges.map(papEdge).join('') + spec.nodes.map(papNode).join('') + '</svg>';
+  /* Alle Durchläufe des inneren Rumpfs in der richtigen Reihenfolge */
+  function durchlaeufe(c) {
+    var r = [], n = 0, treffer = 0, i, j;
+    for (i = 1; i <= c.a; i++) {
+      for (j = 1; j <= c.b; j++) {
+        n++;
+        var tr = c.wuerfel && i + j === 7;
+        if (tr) treffer++;
+        r.push({ nr: n, i: i, j: j, neuesI: j === 1, treffer: tr, trefferBisher: treffer });
+      }
+    }
+    return r;
   }
-  /* Kopfgesteuerte Schleife (Abkühlung). v = { aria, init: [2 Zeilen], cond, rechne: [2 Zeilen] } */
-  function papKopf(v) {
-    return { h: 534, aria: v.aria, nodes: [
-      { id: 'start', t: 'oval', y: 8, h: 32, w: 100, lines: ['Start'] },
-      { id: 'init', t: 'rect', y: 62, h: 46, w: 272, lines: v.init },
-      { id: 'dia', t: 'dia', y: 144, h: 84, w: 232, lines: [v.cond] },
-      { id: 'op1', t: 'rect', y: 258, h: 46, w: 272, lines: v.rechne },
-      { id: 'op2', t: 'rect', y: 326, h: 32, w: 200, lines: ['minuten = minuten + 1'] },
-      { id: 'out', t: 'para', y: 436, h: 36, w: 272, lines: ['Ausgabe: minuten, temperatur'] },
-      { id: 'ende', t: 'oval', y: 494, h: 32, w: 100, lines: ['Ende'] }
-    ], edges: [
-      { id: 'start', pts: [[200, 40], [200, 62]] },
-      { id: 'init', pts: [[200, 108], [200, 144]] },
-      { id: 'ja', pts: [[200, 228], [200, 258]], label: ['ja', 208, 247] },
-      { id: 'e12', pts: [[200, 304], [200, 326]] },
-      { id: 'loop', pts: [[200, 358], [200, 376], [16, 376], [16, 126], [200, 126]] },
-      { id: 'nein', pts: [[316, 186], [392, 186], [392, 414], [200, 414], [200, 436]], label: ['nein', 324, 178] },
-      { id: 'eout', pts: [[200, 472], [200, 494]] }
-    ] };
+  function trefferGesamt(c) { return durchlaeufe(c).filter(function (d) { return d.treffer; }).length; }
+  /* Satz zum Stand nach p Durchläufen (0 = am Anfang) */
+  function satzSchleife(c, p) {
+    var d = durchlaeufe(c);
+    if (p <= 0) return 'Noch kein Durchlauf. Als Nächstes: i ist 1, j ist 1.';
+    var e = d[Math.min(p, d.length) - 1];
+    var s = 'Durchlauf ' + e.nr + ': i ist ' + e.i + ', j ist ' + e.j + '.';
+    if (e.j === 1 && e.i > 1) s = 'Durchlauf ' + e.nr + ': i ist ' + e.i + ', und j beginnt wieder bei 1.';
+    if (c.wuerfel && e.treffer) s += ' Summe 7: Treffer ' + e.trefferBisher + '.';
+    if (p >= d.length) s += ' Beide Schleifen sind zu Ende' + (c.wuerfel ? ': ' + trefferGesamt(c) + ' Würfelpaare haben die Summe 7.' : '.');
+    return s;
   }
-  var PAPK = { dC: 186, op1C: 281, mid: 315, op2C: 342, outC: 454, endC: 489 };
-  /* Fußgesteuerte Schleife: erst Rumpf (Eingabe), dann die Raute, bei „nein“ zurück vor den Rumpf */
-  function papFuss() {
-    return { h: 404, aria: 'Programmablaufplan fußgesteuerte Schleife: Start; Ausgabe Messwert eingeben; Eingabe wert einlesen; Verzweigung wert größer null; bei nein zurück vor das Einlesen, bei ja weiterrechnen mit wert; Ende', nodes: [
-      { id: 'start', t: 'oval', y: 8, h: 32, w: 100, lines: ['Start'] },
-      { id: 'a', t: 'para', y: 62, h: 36, w: 272, lines: ['Ausgabe: Messwert eingeben'] },
-      { id: 'b', t: 'para', y: 140, h: 36, w: 200, lines: ['wert einlesen'] },
-      { id: 'dia', t: 'dia', y: 198, h: 80, w: 232, lines: ['wert > 0?'] },
-      { id: 'c', t: 'rect', y: 308, h: 36, w: 240, lines: ['weiterrechnen mit wert'] },
-      { id: 'ende', t: 'oval', y: 364, h: 32, w: 100, lines: ['Ende'] }
-    ], edges: [
-      { id: 's1', pts: [[200, 40], [200, 62]] },
-      { id: 's2', pts: [[200, 98], [200, 140]] },
-      { id: 's3', pts: [[200, 176], [200, 198]] },
-      { id: 'ja', pts: [[200, 278], [200, 308]], label: ['ja', 208, 298] },
-      { id: 's4', pts: [[200, 344], [200, 364]] },
-      { id: 'nein', pts: [[316, 238], [392, 238], [392, 120], [200, 120]], label: ['nein', 324, 230] }
-    ] };
+  /* Welche Zeilen sind nach p Durchläufen aktiv? */
+  function aktiveZeilen(c, p) {
+    if (p <= 0) return [];
+    var d = durchlaeufe(c), e = d[Math.min(p, d.length) - 1], z = zeilenText(c), r = [];
+    z.forEach(function (x, k) {
+      if (x.art === 'i' && e.neuesI) r.push(k);
+      else if (x.art === 'j') r.push(k);
+      else if (x.art === 'if') r.push(k);
+      else if (x.art === 'ende' && p >= d.length) r.push(k);
+      else if (x.art === 'rumpf' && (!c.wuerfel || e.treffer)) r.push(k);
+    });
+    return r;
   }
-  /* Zählschleife: Initialisierung, Raute (Zähler ≤ Ende?), Rumpf, Zähler erhöhen, Rückführung */
-  function papZaehl() {
-    return { h: 530, aria: 'Programmablaufplan Zählschleife: Start; summe gleich null und minute gleich eins setzen; Verzweigung minute kleiner gleich fünf; bei ja temperatur neu berechnen, zur summe addieren, minute um eins erhöhen und zurück vor die Verzweigung; bei nein Ausgabe summe geteilt durch fünf; Ende', nodes: [
-      { id: 'start', t: 'oval', y: 8, h: 32, w: 100, lines: ['Start'] },
-      { id: 'init', t: 'rect', y: 62, h: 32, w: 240, lines: ['summe = 0; minute = 1'] },
-      { id: 'dia', t: 'dia', y: 134, h: 80, w: 232, lines: ['minute ≤ 5?'] },
-      { id: 'op1', t: 'rect', y: 242, h: 32, w: 240, lines: ['temperatur neu berechnen'] },
-      { id: 'op2', t: 'rect', y: 292, h: 32, w: 272, lines: ['summe = summe + temperatur'] },
-      { id: 'op3', t: 'rect', y: 342, h: 32, w: 220, lines: ['minute = minute + 1'] },
-      { id: 'out', t: 'para', y: 436, h: 36, w: 240, lines: ['Ausgabe: summe / 5'] },
-      { id: 'ende', t: 'oval', y: 490, h: 32, w: 100, lines: ['Ende'] }
-    ], edges: [
-      { id: 's1', pts: [[200, 40], [200, 62]] },
-      { id: 's2', pts: [[200, 94], [200, 134]] },
-      { id: 'ja', pts: [[200, 214], [200, 242]], label: ['ja', 208, 233] },
-      { id: 'e12', pts: [[200, 274], [200, 292]] },
-      { id: 'e23', pts: [[200, 324], [200, 342]] },
-      { id: 'loop', pts: [[200, 374], [200, 392], [16, 392], [16, 116], [200, 116]] },
-      { id: 'nein', pts: [[316, 174], [392, 174], [392, 414], [200, 414], [200, 436]], label: ['nein', 324, 166] },
-      { id: 'eout', pts: [[200, 472], [200, 490]] }
-    ] };
-  }
-  var PAPKOPF_STATIC = papKopf({ aria: 'Programmablaufplan kopfgesteuerte Schleife: Start; temperatur, umgebung und minuten vorbelegen; Verzweigung temperatur größer ziel; bei ja temperatur neu berechnen, minuten um eins erhöhen und zurück vor die Verzweigung; bei nein Ausgabe minuten und temperatur; Ende',
-    init: ['temperatur = 850.0; minuten = 0', 'umgebung = 20.0'], cond: 'temperatur > ziel?', rechne: ['temperatur = temperatur −', 'k · (temperatur − umgebung)'] });
 
+  /* ── Rechenkern: XOR-Geheimschrift (ohne DOM) ─────────────── */
+  var A_BIS_Z = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  function zahlVon(buchstabe) { return A_BIS_Z.indexOf(buchstabe) + 1; }
+  /* 1 bis 26 sind Buchstaben, alles andere (0 und 27 bis 31) bekommt ein Fragezeichen */
+  function buchstabeVon(zahl) { return zahl >= 1 && zahl <= 26 ? A_BIS_Z.charAt(zahl - 1) : '?'; }
+  function fuenf(n) { var s = n.toString(2); while (s.length < 5) s = '0' + s; return s; }
+  /* XOR spaltenweise: jede Stelle für sich, genau eins von beiden ergibt 1 */
+  function xorBits(a, b) {
+    var r = '';
+    for (var k = 0; k < a.length; k++) r += a.charAt(k) !== b.charAt(k) ? '1' : '0';
+    return r;
+  }
+  function xorZahl(a, b) { return parseInt(xorBits(fuenf(a), fuenf(b)), 2); }
+  function keinBuchstabe(z) { return 'Für ' + z + ' gibt es keinen Buchstaben. Er bleibt als Zahl stehen.'; }
+  /* Eine Spalte: Zahl, Bits, Schlüssel, Ergebnis */
+  function spalte(zahl, schluessel) {
+    var e = xorZahl(zahl, schluessel);
+    return {
+      zahl: zahl, buchstabe: buchstabeVon(zahl), bits: fuenf(zahl), schluesselBits: fuenf(schluessel),
+      ergebnis: e, ergebnisBits: fuenf(e), ergebnisBuchstabe: buchstabeVon(e), hatBuchstabe: e >= 1 && e <= 26
+    };
+  }
+  /* Wort verschlüsseln: xor5('HALLO', 13) ergibt die Spalten, Geheimtext ELAAB */
+  function xor5(wort, schluessel) {
+    var s = [], k;
+    for (k = 0; k < wort.length; k++) s.push(spalte(zahlVon(wort.charAt(k)), schluessel));
+    return {
+      wort: wort, schluessel: schluessel, spalten: s,
+      zahlen: s.map(function (x) { return x.ergebnis; }),
+      text: s.map(function (x) { return x.ergebnisBuchstabe; }).join('')
+    };
+  }
+  /* Noch einmal mit demselben Schlüssel, aber mit den Zahlen des Geheimtextes (so geht es immer, auch bei 0 und 27 bis 31) */
+  function nocheinmal(ergebnis) {
+    var s = ergebnis.zahlen.map(function (z) { return spalte(z, ergebnis.schluessel); });
+    return { schluessel: ergebnis.schluessel, spalten: s, zahlen: s.map(function (x) { return x.ergebnis; }), text: s.map(function (x) { return x.ergebnisBuchstabe; }).join('') };
+  }
+  var MELDUNG_WORT = 'Schreib 1 bis 6 Buchstaben von A bis Z. Umlaute und Zahlen gehen nicht.';
+  function pruefeWort(text) {
+    var t = String(text === undefined || text === null ? '' : text).replace(/\s+/g, '');
+    if (t === '') return { ok: false, meldung: MELDUNG_WORT };
+    t = t.toUpperCase();
+    if (!/^[A-Z]+$/.test(t)) return { ok: false, meldung: MELDUNG_WORT };
+    if (t.length > 6) return { ok: false, meldung: 'Das Wort ist zu lang. ' + MELDUNG_WORT };
+    return { ok: true, wort: t };
+  }
+  function pruefeSchluessel(text) {
+    var t = String(text === undefined || text === null ? '' : text).replace(/\s+/g, '');
+    if (t === '' || !/^\d+$/.test(t)) return { ok: false, meldung: 'Der Schlüssel ist eine ganze Zahl von 0 bis 31.' };
+    var n = Number(t);
+    if (n > 31) return { ok: false, meldung: 'Fünf Bit reichen nur von 0 bis 31.' };
+    return { ok: true, zahl: n };
+  }
+  function schluesselHinweis(k) { return k === 0 ? 'Dieser Schlüssel ändert nichts.' : ''; }
+  function satzXor(e, zweite) {
+    var s = 'Wort ' + e.wort + ', Schlüssel ' + e.schluessel + ' (' + fuenf(e.schluessel) + '). Ergebnis als Zahlen: ' + e.zahlen.join(', ') + ', als Buchstaben: ' + e.text + '.';
+    if (zweite) s += ' Noch einmal mit demselben Schlüssel ergibt ' + zweite.text + '.';
+    return s;
+  }
 
-  var api = { papSvg: papSvg, papKopf: papKopf, papFuss: papFuss, papZaehl: papZaehl, papStaticKopf: PAPKOPF_STATIC, coolingSeries: coolingSeries, newtonSeries: newtonSeries, py: py, niceMax: niceMax };
-  if (typeof module !== 'undefined' && module.exports) { module.exports = api; }
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+      HEX: HEX, KANAELE: KANAELE, klemme: klemme, bytGueltig: bytGueltig, byteHex: byteHex, farbcode: farbcode, farbText: farbText, farbWort: farbWort,
+      pruefeFarbcode: pruefeFarbcode, pruefeKanal: pruefeKanal, ansichtFarbe: ansichtFarbe, MELDUNG_CODE: MELDUNG_CODE,
+      GRENZE_MAX: GRENZE_MAX, GRENZE_MIN: GRENZE_MIN, einstellung: einstellung, durchlaeufeInnen: durchlaeufeInnen, rechnungInnen: rechnungInnen,
+      zeilenText: zeilenText, durchlaeufe: durchlaeufe, trefferGesamt: trefferGesamt, satzSchleife: satzSchleife, aktiveZeilen: aktiveZeilen,
+      zahlVon: zahlVon, buchstabeVon: buchstabeVon, fuenf: fuenf, xorBits: xorBits, xorZahl: xorZahl, keinBuchstabe: keinBuchstabe, spalte: spalte, xor5: xor5,
+      nocheinmal: nocheinmal, pruefeWort: pruefeWort, pruefeSchluessel: pruefeSchluessel, schluesselHinweis: schluesselHinweis, satzXor: satzXor
+    };
+  }
   if (typeof document === 'undefined') return;
 
-  /* ── DOM-Hilfen ──────────────────────────────────────────── */
-  function el(tag, attrs, kids) {
+  /* ── DOM-Hilfen ───────────────────────────────────────────── */
+  var nr = 0;
+  function el(tag, attrs, kinder) {
     var n = document.createElement(tag);
-    if (attrs) Object.keys(attrs).forEach(function (k) { if (k === 'class') n.className = attrs[k]; else if (k === 'text') n.textContent = attrs[k]; else n.setAttribute(k, attrs[k]); });
-    (kids || []).forEach(function (c) { n.appendChild(typeof c === 'string' ? document.createTextNode(c) : c); });
+    Object.keys(attrs || {}).forEach(function (k) {
+      if (k === 'class') n.className = attrs[k];
+      else if (k === 'text') n.textContent = attrs[k];
+      else n.setAttribute(k, attrs[k]);
+    });
+    (kinder || []).forEach(function (c) { if (c) n.appendChild(typeof c === 'string' ? document.createTextNode(c) : c); });
     return n;
   }
-  var svgNS = 'http://www.w3.org/2000/svg';
-  function S(tag, attrs, text) { var n = document.createElementNS(svgNS, tag); Object.keys(attrs).forEach(function (k) { n.setAttribute(k, attrs[k]); }); if (text) n.textContent = text; return n; }
-  var uid = 0;
-  function slider(host, label, min, max, step, value, fmt, onInput) {
-    var id = 'v06r' + (++uid);
-    var inp = el('input', { type: 'range', id: id, min: String(min), max: String(max), step: String(step), value: String(value) });
-    var out = el('output', { 'for': id, text: fmt(value) });
-    var field = el('div', { class: 'k-field' }, [el('label', { 'for': id }, [label + ' ', out]), inp]);
-    inp.addEventListener('input', function () { var v = parseFloat(inp.value); out.textContent = fmt(v); onInput(v); });
-    host.appendChild(field);
-    return inp;
+  function aktion(text, leise) { return el('button', { type: 'button', class: 'v06-aktion' + (leise ? ' v06-aktion--leise' : ''), text: text }); }
+  function sperre(b, aus) { b.setAttribute('aria-disabled', aus ? 'true' : 'false'); b.classList.toggle('is-aus', !!aus); }
+  function schalterKnopf(text, fn) {
+    var b = el('button', { type: 'button', class: 'v06-schalter', role: 'switch', 'aria-checked': 'false' });
+    var z = el('span', { class: 'v06-schalter__zustand', 'aria-hidden': 'true' });
+    b.appendChild(el('span', { class: 'v06-schalter__name', text: text }));
+    b.appendChild(el('span', { class: 'v06-schalter__hebel', 'aria-hidden': 'true' }));
+    b.appendChild(z);
+    b.addEventListener('click', fn);
+    return { knopf: b, zustand: z };
   }
-  function segment(labels, label, activeIdx, onPick) {
-    var btns = labels.map(function (t, i) { return el('button', { type: 'button', 'aria-pressed': i === activeIdx ? 'true' : 'false', text: t }); });
-    var seg = el('div', { class: 'k-seg', role: 'group', 'aria-label': label }, btns);
-    btns.forEach(function (b, i) {
-      b.addEventListener('click', function () {
-        btns.forEach(function (o) { o.setAttribute('aria-pressed', o === b ? 'true' : 'false'); });
-        onPick(i);
+  function setzeSchalter(s, an) {
+    s.knopf.setAttribute('aria-checked', an ? 'true' : 'false');
+    s.knopf.classList.toggle('is-an', !!an);
+    s.zustand.textContent = an ? 'an' : 'aus';
+  }
+  function stepper(label, wert, lo, hi, fn) {
+    var minus = el('button', { type: 'button', class: 'v06-knopf v06-stufe', text: '−', 'aria-label': label + ' verkleinern' });
+    var plus = el('button', { type: 'button', class: 'v06-knopf v06-stufe', text: '+', 'aria-label': label + ' vergrößern' });
+    var zeigt = el('output', { class: 'v06-stufe__wert', 'aria-label': label });
+    var w = wert, gesperrt = false;
+    function setze(x) { w = klemme(x, lo, hi); zeigt.textContent = String(w); sperre(minus, w <= lo); sperre(plus, w >= hi); }
+    minus.addEventListener('click', function () { if (!gesperrt && w > lo) { setze(w - 1); fn(w); } });
+    plus.addEventListener('click', function () { if (!gesperrt && w < hi) { setze(w + 1); fn(w); } });
+    setze(wert);
+    return { zeile: el('div', { class: 'v06-stufen', role: 'group', 'aria-label': label }, [el('span', { class: 'v06-stufen__name', text: label }), minus, zeigt, plus]), setze: setze, sperre: function (aus) { gesperrt = !!aus; sperre(minus, aus || w <= lo); sperre(plus, aus || w >= hi); } };
+  }
+
+  /* ── hexfarbe ─────────────────────────────────────────────── */
+  function initHexfarbe(host) {
+    var id = 'v06-hex-' + (++nr);
+    var w = [226, 0, 26];
+    host.textContent = '';
+    var regler = [], zahlfelder = [], bytBloecke = [];
+    var kanalMeld = el('p', { class: 'v06-meldung', role: 'alert', hidden: '' });
+    var reglerHost = el('div', { class: 'v06-kanaele' });
+    KANAELE.forEach(function (name, k) {
+      var r = el('input', { type: 'range', id: id + '-r' + k, class: 'v06-regler', min: '0', max: '255', step: '1', 'aria-label': name + ', Regler von 0 bis 255' });
+      var f = el('input', { type: 'number', id: id + '-n' + k, class: 'v06-feld v06-feld--eng', min: '0', max: '255', step: '1', inputmode: 'numeric', 'aria-label': name + ', Zahl von 0 bis 255' });
+      r.value = String(w[k]); f.value = String(w[k]);
+      r.addEventListener('input', function () { w[k] = Number(r.value); f.value = r.value; f.removeAttribute('aria-invalid'); kanalMeld.hidden = true; zeige(true, ''); });
+      f.addEventListener('input', function () {
+        var p = pruefeKanal(f.value);
+        if (p.ok) { w[k] = p.zahl; r.value = String(p.zahl); f.removeAttribute('aria-invalid'); kanalMeld.hidden = true; zeige(true, ''); }
+        else { f.setAttribute('aria-invalid', 'true'); kanalMeld.textContent = p.meldung; kanalMeld.hidden = false; }
       });
+      f.addEventListener('change', function () { f.value = String(w[k]); f.removeAttribute('aria-invalid'); kanalMeld.hidden = true; });
+      regler.push(r); zahlfelder.push(f);
+      reglerHost.appendChild(el('div', { class: 'v06-kanal' }, [
+        el('label', { class: 'v06-kanal__name', for: id + '-r' + k, text: name }), r, f
+      ]));
     });
-    return seg;
-  }
-  function player(host, onStep, onReset, onEnd, isDone, getIntervalMs) {
-    /* Knopfleiste: Schritt · Abspielen/Pause · Zum Ende · Zurücksetzen */
-    var bStep = el('button', { type: 'button', class: 'k-btn k-btn--small', text: 'Schritt' });
-    var bPlay = el('button', { type: 'button', class: 'k-btn k-btn--small k-btn--ghost', text: 'Abspielen' });
-    var bEnd = el('button', { type: 'button', class: 'k-btn k-btn--small k-btn--ghost', text: 'Zum Ende' });
-    var bReset = el('button', { type: 'button', class: 'k-btn k-btn--small k-btn--link', text: 'Zurücksetzen' });
-    var bar = el('div', { class: 'k-presets v06-bar', role: 'group', 'aria-label': 'Ablauf steuern' }, [bStep, bPlay, bEnd, bReset]);
-    var timer = null;
-    function stop() { if (timer) { clearInterval(timer); timer = null; } bPlay.textContent = 'Abspielen'; bPlay.setAttribute('aria-pressed', 'false'); }
-    function play() {
-      if (isDone()) onReset();
-      bPlay.textContent = 'Pause'; bPlay.setAttribute('aria-pressed', 'true');
-      timer = setInterval(function () { onStep(true); if (isDone()) stop(); }, getIntervalMs());
-    }
-    bStep.addEventListener('click', function () { stop(); onStep(false); });
-    bPlay.addEventListener('click', function () { if (timer) stop(); else play(); });
-    bEnd.addEventListener('click', function () { stop(); onEnd(); });
-    bReset.addEventListener('click', function () { stop(); onReset(); });
-    host.appendChild(bar);
-    return { stop: stop };
-  }
-  /* Auf schmalen Bildschirmen wird das SVG verkleinert dargestellt: Schrift dann größer setzen */
-  function FS(n) { return (typeof window !== 'undefined' && window.innerWidth < 560) ? Math.round(n * 1.55) : n; }
-  function axisText(svg, x, y, txt, anchor, size, fill) { svg.appendChild(S('text', { x: x, y: y, 'text-anchor': anchor || 'start', 'font-size': FS(size || 11), fill: fill || '#4B5563' }, txt)); }
-
-  /* ── (A) Abkühlkurve live ────────────────────────────────── */
-  function initCooling(host) {
-    var T0 = 850, TU = 20, MAXN = 300;
-    var k = 0.08, ziel = 60;
-    var s = 0, ser, total, pl;
-
-    var ctr = el('div', { class: 'k-controls' });
-    host.appendChild(ctr);
-    slider(ctr, 'Abkühlkonstante k =', 0.02, 0.2, 0.01, k, function (v) { return de(v, 2) + ' je Minute'; }, function (v) { k = v; recompute(); });
-    slider(ctr, 'Ziel =', 20, 300, 1, ziel, function (v) { return de(v, 0) + ' °C'; }, function (v) { ziel = v; recompute(); });
-
-    var barHost = el('div');
-    host.appendChild(barHost);
-    var grid = el('div', { class: 'v06-grid' });
-    var papHost = el('div', { class: 'v06-pap' });
-    var marker = null, anim = 0, mpos = [200, PAPK.dC];
-    var verdict = el('p', { class: 'v06-verdict', 'aria-hidden': 'true' });
-    var left = el('div', { class: 'v06-left' }, [papHost, verdict]);
-    var svg = S('svg', { viewBox: '0 0 640 310', class: 'k-chart', role: 'img' });
-    grid.appendChild(left); grid.appendChild(el('div', { class: 'v06-right' }, [svg]));
-    host.appendChild(grid);
-
-    var msg = el('p', { class: 'v06-msg', role: 'status', 'aria-live': 'polite' });
-    var out = el('div', { class: 'k-readout' });
-    host.insertBefore(msg, grid);
-    host.appendChild(el('div', { class: 'k-legend' }, [
-      el('span', {}, [Object.assign(el('i'), { style: 'background:#B50016' }), 'bisherige Durchläufe']),
-      el('span', {}, [Object.assign(el('i'), { style: 'background:#C9CDD3' }), 'noch nicht berechnet']),
-      el('span', {}, [Object.assign(el('i'), { style: 'background:#164B8C' }), 'Ziel'])
-    ]));
-    host.appendChild(out);
-
-    pl = player(barHost,
-      function (auto) { if (s < total - 1) s++; draw(!auto, auto); },
-      function () { s = 0; draw(true); },
-      function () { s = total - 1; draw(true); },
-      function () { return s >= total - 1; },
-      function () { return Math.max(15, Math.min(260, Math.round(6000 / total))); });
-
-    var lastS = 0, lastAuto = false;
-    function buildPap() {
-      var spec = api.papKopf({
-        aria: 'Programmablaufplan der Schleife',
-        init: ['temperatur = ' + py(T0) + '; minuten = 0', 'umgebung = ' + py(TU)],
-        cond: 'temperatur > ' + py(ziel) + '?',
-        rechne: ['temperatur = temperatur −', de(k, 2) + ' · (temperatur − umgebung)']
+    var codeFeld = el('input', { type: 'text', id: id + '-code', class: 'v06-feld v06-feld--code', maxlength: '9', autocomplete: 'off', spellcheck: 'false', 'aria-describedby': id + '-codehilfe' });
+    var codeMeld = el('p', { class: 'v06-meldung', role: 'alert', hidden: '' });
+    codeFeld.addEventListener('input', function () {
+      var p = pruefeFarbcode(codeFeld.value);
+      if (p.ok) {
+        w = [p.r, p.g, p.b]; codeFeld.removeAttribute('aria-invalid'); codeMeld.hidden = true; zeige(true, '', true);
+      } else { codeFeld.setAttribute('aria-invalid', 'true'); codeMeld.textContent = p.meldung; codeMeld.hidden = false; }
+    });
+    codeFeld.addEventListener('change', function () { codeFeld.value = farbcode(w[0], w[1], w[2]); codeFeld.removeAttribute('aria-invalid'); codeMeld.hidden = true; });
+    var codeZeile = el('div', { class: 'v06-feldzeile' }, [el('label', { for: id + '-code', text: 'Farbcode eintippen' }), codeFeld,
+      el('p', { id: id + '-codehilfe', class: 'k-small k-muted', text: 'Sechs Hex-Ziffern, zum Beispiel E2001A. Groß oder klein ist egal.' })]);
+    var blockHost = el('div', { class: 'v06-bytebloecke' });
+    KANAELE.forEach(function (name) {
+      var tit = el('p', { class: 'v06-byte__titel' });
+      var zahlEl = el('p', { class: 'v06-byte__zahl' });
+      var gr = [0, 1].map(function () {
+        var bitsEl = el('code', { class: 'v06-gruppe__bits' });
+        var hexEl = el('strong', { class: 'v06-gruppe__hex' });
+        var pf = el('span', { class: 'v06-gruppe__pfeil', 'aria-hidden': 'true', text: '→' });
+        return { bits: bitsEl, hex: hexEl, el: el('div', { class: 'v06-gruppe' }, [bitsEl, pf, hexEl]) };
       });
-      papHost.innerHTML = api.papSvg(spec);
-      var svgEl = papHost.firstChild;
-      marker = S('circle', { r: 8, class: 'pap-marker', cx: mpos[0], cy: mpos[1] });
-      svgEl.appendChild(marker);
-      lastS = 0;
-    }
-    function setActive(nodes, edges) {
-      Array.prototype.forEach.call(papHost.querySelectorAll('.pap-n'), function (g) { g.classList.toggle('is-cur', nodes.indexOf(g.getAttribute('data-n')) >= 0); });
-      Array.prototype.forEach.call(papHost.querySelectorAll('.pap-e'), function (g) { g.classList.toggle('is-cur', edges.indexOf(g.getAttribute('data-e')) >= 0); });
-    }
-    /* Marke: entlang der Ablauflinie laufen (route) oder direkt springen */
-    function moveMarker(target, route, auto) {
-      var myAnim = ++anim;
-      function put(p) { mpos = p; marker.setAttribute('cx', p[0]); marker.setAttribute('cy', p[1]); }
-      var reduce = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
-      var interval = auto ? Math.max(15, Math.min(260, Math.round(6000 / total))) : 0;
-      if (!route || reduce || (auto && interval < 70)) { put(target); return; }
-      var lens = [0], tot = 0, i;
-      for (i = 1; i < route.length; i++) { tot += Math.hypot(route[i][0] - route[i - 1][0], route[i][1] - route[i - 1][1]); lens.push(tot); }
-      var dur = auto ? Math.min(interval * 0.85, 600) : Math.min(1100, 250 + tot * 2.2), t0 = null;
-      put(route[0]);
-      function frame(ts) {
-        if (myAnim !== anim) return;
-        if (t0 === null) t0 = ts;
-        var f = Math.min(1, (ts - t0) / dur), d = f * tot, j = 1;
-        while (j < lens.length - 1 && lens[j] < d) j++;
-        var seg = lens[j] - lens[j - 1] || 1, u = (d - lens[j - 1]) / seg;
-        put([route[j - 1][0] + (route[j][0] - route[j - 1][0]) * u, route[j - 1][1] + (route[j][1] - route[j - 1][1]) * u]);
-        if (f < 1) requestAnimationFrame(frame); else put(target);
+      var satz = el('p', { class: 'v06-byte__satz' });
+      var b = el('div', { class: 'v06-byte', role: 'group', 'aria-label': 'Byte ' + name }, [tit, zahlEl, el('div', { class: 'v06-gruppen' }, [gr[0].el, gr[1].el]), satz]);
+      bytBloecke.push({ tit: tit, zahl: zahlEl, gr: gr, satz: satz, name: name });
+      blockHost.appendChild(b);
+    });
+    var codeGross = el('strong', { class: 'v06-codegross' });
+    var fl = el('span', { class: 'v06-flaeche', role: 'img' });
+    var farbEl = el('p', { class: 'v06-farbtext' });
+    var wortEl = el('p', { class: 'v06-hinweis' });
+    var status = el('p', { class: 'k-sr', role: 'status', 'aria-live': 'polite' });
+    function zeige(ansagen, vorsatz, vomCode) {
+      var a = ansichtFarbe(w[0], w[1], w[2]);
+      for (var k = 0; k < 3; k++) {
+        if (document.activeElement !== regler[k]) regler[k].value = String(w[k]);
+        if (document.activeElement !== zahlfelder[k]) zahlfelder[k].value = String(w[k]);
+        var bb = bytBloecke[k], kk = a.kanaele[k];
+        bb.tit.textContent = KANAELE[k] + ': Byte ' + kk.hex;
+        bb.zahl.textContent = 'Dezimal ' + kk.zahl;
+        [0, 1].forEach(function (g) { bb.gr[g].bits.textContent = kk.gruppen[g]; bb.gr[g].hex.textContent = kk.ziffern[g]; });
+        bb.satz.textContent = kk.satz;
       }
-      requestAnimationFrame(frame);
+      if (!vomCode) codeFeld.value = a.code;
+      codeGross.textContent = a.code;
+      fl.style.backgroundColor = 'rgb(' + w[0] + ',' + w[1] + ',' + w[2] + ')';
+      fl.setAttribute('aria-label', 'Farbfläche: ' + a.text);
+      farbEl.textContent = a.text;
+      wortEl.textContent = a.wort; wortEl.hidden = !a.wort;
+      if (ansagen) status.textContent = (vorsatz || '') + a.satz;
     }
+    zeige(false);
+    host.appendChild(el('div', { class: 'v06-hexfarbe' }, [
+      el('div', { class: 'v06-hexfarbe__links' }, [
+        el('p', { class: 'v06-titel', text: 'Drei Regler, je von 0 bis 255' }), reglerHost, kanalMeld,
+        codeZeile, codeMeld
+      ]),
+      el('div', { class: 'v06-hexfarbe__rechts' }, [
+        el('p', { class: 'v06-titel', text: 'Farbcode' }), el('p', { class: 'v06-codezeile' }, [codeGross, fl]), farbEl, wortEl,
+        el('p', { class: 'v06-titel', text: 'Die drei Bytes in Vierergruppen' }), blockHost, status
+      ])
+    ]));
+  }
 
-    function recompute() {
-      pl.stop();
-      ser = api.coolingSeries(T0, TU, k, ziel, MAXN);
-      total = 2 * ser.n + 1;
-      s = 0;
-      buildPap();
-      draw(true);
-    }
-
-    function draw(announce, auto) {
-      lastAuto = !!auto;
-      var c = Math.ceil(s / 2), phase = s % 2 === 0 ? 'check' : 'body', t = ser.temps[c];
-      var last = s === total - 1;
-      var cond = t > ziel;
-      var prev = lastS; lastS = s;
-      var reachedEnd = last && ser.reached;
-      var nodes = [], edges = [], target, route = null;
-      if (phase === 'check') {
-        nodes = ['dia']; target = [200, PAPK.dC];
-        edges = c === 0 ? ['start', 'init'] : ['loop'];
-        if (reachedEnd) { nodes = ['dia', 'out', 'ende']; edges = ['nein', 'eout']; target = [200, PAPK.endC]; }
-        if (prev === s - 1 && s > 0) {
-          route = reachedEnd
-            ? [[200, PAPK.op2C], [200, 358], [200, 376], [16, 376], [16, 126], [200, 126], [200, PAPK.dC], [316, PAPK.dC], [392, PAPK.dC], [392, 414], [200, 414], [200, PAPK.outC], [200, PAPK.endC]]
-            : [[200, PAPK.mid], [200, PAPK.op2C], [200, 358], [200, 376], [16, 376], [16, 126], [200, 126], [200, PAPK.dC]];
+  /* ── doppelschleife ───────────────────────────────────────── */
+  function initDoppelschleife(host) {
+    var a = 3, b = 4, wuerfel = false, p = 0, c = einstellung(a, b, wuerfel), d = durchlaeufe(c);
+    host.textContent = '';
+    var sI = stepper('Grenze für i', a, GRENZE_MIN, GRENZE_MAX, function (x) { a = x; reset('Grenze für i ist ' + x + '. '); });
+    var sJ = stepper('Grenze für j', b, GRENZE_MIN, GRENZE_MAX, function (x) { b = x; reset('Grenze für j ist ' + x + '. '); });
+    var sw = schalterKnopf('Würfelpaare (6 mal 6) mit Summe 7', function () { wuerfel = !wuerfel; reset(wuerfel ? 'Würfelmodus an. ' : 'Würfelmodus aus. '); });
+    var codeEl = el('div', { class: 'v06-prog', role: 'region', 'aria-label': 'Das Programm, die zuletzt ausgeführten Zeilen sind markiert', tabindex: '0' });
+    var einer = aktion('Ein Schritt'), ende = aktion('Bis zum Ende'), zurueck = aktion('Von vorn', true);
+    var jetzt = el('p', { class: 'v06-jetzt' });
+    var rechnungEl = el('p', { class: 'v06-rechnung' });
+    var rasterHost = el('div', { class: 'v06-raster-host', tabindex: '0', role: 'region', 'aria-label': 'Raster: Zeilen sind i, Spalten sind j' });
+    var tabelleHost = el('div', { class: 'v06-tabelle-host', tabindex: '0', role: 'region', 'aria-label': 'Durchläufe des inneren Rumpfs' });
+    var zaehlerEl = el('p', { class: 'v06-zaehler', hidden: '' });
+    var status = el('p', { class: 'k-sr', role: 'status', 'aria-live': 'polite' });
+    function zeige(ansagen, vorsatz) {
+      var zl = zeilenText(c), akt = aktiveZeilen(c, p), fertig = p >= d.length;
+      codeEl.textContent = '';
+      zl.forEach(function (z, k) {
+        var r = el('div', { class: 'v06-zeile' + (akt.indexOf(k) >= 0 ? ' is-jetzt' : ''), }, [
+          el('span', { class: 'v06-zeile__nr', 'aria-hidden': 'true', text: String(k + 1) }),
+          el('span', { class: 'v06-zeile__text', text: new Array(z.ein + 1).join('    ') + z.text })
+        ]);
+        if (akt.indexOf(k) >= 0) r.setAttribute('aria-current', 'true');
+        codeEl.appendChild(r);
+      });
+      /* Raster */
+      var cur = p > 0 ? d[p - 1] : null, zeilen = [], i, j;
+      var kopf = [el('th', { scope: 'col', class: 'v06-raster__ecke', text: 'i \\ j' })];
+      for (j = 1; j <= c.b; j++) kopf.push(el('th', { scope: 'col', text: 'j ' + j }));
+      for (i = 1; i <= c.a; i++) {
+        var zellen = [el('th', { scope: 'row', text: 'i ' + i })];
+        for (j = 1; j <= c.b; j++) {
+          var idx = (i - 1) * c.b + (j - 1), e = d[idx], getan = idx < p, jetztZ = cur && cur.i === i && cur.j === j;
+          var cls = 'v06-zelle' + (getan ? ' is-getan' : '') + (jetztZ ? ' is-jetzt' : '') + (getan && e.treffer ? ' is-treffer' : '');
+          var txt = getan ? String(e.nr) : '';
+          var z = el('td', { class: cls }, [el('span', { class: 'v06-zelle__nr', text: txt })]);
+          if (getan && e.treffer) z.appendChild(el('span', { class: 'v06-zelle__marke', text: 'Summe 7' }));
+          if (jetztZ) z.setAttribute('aria-current', 'true');
+          z.setAttribute('aria-label', 'i ' + i + ', j ' + j + ': ' + (getan ? 'Durchlauf ' + e.nr + (e.treffer ? ', Summe 7' : '') : 'noch nicht dran'));
+          zellen.push(z);
         }
-      } else {
-        nodes = ['op1', 'op2']; edges = ['ja', 'e12']; target = [200, PAPK.mid];
-        if (prev === s - 1) route = [[200, PAPK.dC], [200, PAPK.op1C], [200, PAPK.mid]];
+        zeilen.push(el('tr', {}, zellen));
       }
-      setActive(nodes, edges);
-      moveMarker(target, route, lastAuto);
-      papHost.firstChild.setAttribute('aria-label', 'Programmablaufplan der Schleife. ' + (phase === 'check' ? 'Aktiv: die Raute, die Bedingung temperatur größer ziel wird geprüft.' : 'Aktiv: der Schleifenrumpf mit der Berechnung der Temperatur und dem Zähler.') + (last ? (ser.reached ? ' Die Schleife ist verlassen, die Ausgabe ist erreicht.' : ' Watchdog: Die Raute antwortet immer ja.') : ''));
-      var vtxt;
-      if (phase === 'check') vtxt = 'Bedingung prüfen: ' + t.toFixed(1) + ' > ' + py(ziel) + ' ist ' + (cond ? 'wahr' : 'falsch') + (last ? (ser.reached ? '  →  Schleife endet' : '  →  Watchdog greift') : '  →  Rumpf läuft');
-      else vtxt = 'Rumpf ausgeführt: Durchlauf ' + c + ' ist fertig';
-      verdict.textContent = vtxt;
-      verdict.className = 'v06-verdict' + (phase === 'check' ? (last ? (ser.reached ? ' is-end' : ' is-bad') : ' is-go') : '');
-
-      if (last) {
-        msg.className = 'v06-msg is-on' + (ser.reached ? ' is-ok' : ' is-bad');
-        msg.textContent = ser.reached
-          ? 'Fertig: Nach ' + c + ' Minuten sind es ' + de(t, 1) + ' °C und damit nicht mehr über ' + de(ziel, 0) + ' °C. Die Bedingung ist falsch geworden, die Schleife endet. Der Zähler minuten steht auf ' + c + '.'
-          : 'Endlosschleife: Das Teil kühlt immer langsamer und erreicht ' + de(TU, 0) + ' °C nie ganz. Die Bedingung temperatur > ziel bleibt wahr. Hier greift der Watchdog nach ' + MAXN + ' Durchläufen ein und bricht ab. In einer Steuerung würde er die Anlage in einen sicheren Zustand fahren.';
-      } else if (announce) {
-        msg.className = 'v06-msg';
-        msg.textContent = phase === 'check' ? 'Schritt ' + (s + 1) + ' von ' + total + ': die Bedingung wird geprüft.' : 'Schritt ' + (s + 1) + ' von ' + total + ': der Schleifenrumpf rechnet einen Durchlauf.';
-      } else { msg.className = 'v06-msg'; msg.textContent = ''; }
-
-      // Diagramm
-      var W = 640, H = 310, L = 58, R = 16, T = 14, B = 42, pw = W - L - R, ph = H - T - B;
-      var xmax = niceMax(Math.max(ser.n, 10)), ymax = 900;
-      var X = function (v) { return L + pw * v / xmax; };
-      var Y = function (v) { return T + ph * (1 - v / ymax); };
-      while (svg.firstChild) svg.removeChild(svg.firstChild);
-      [0, 200, 400, 600, 800].forEach(function (v) {
-        svg.appendChild(S('line', { x1: L, x2: W - R, y1: Y(v), y2: Y(v), stroke: v === 0 ? '#6B7280' : '#E5E7EB' }));
-        axisText(svg, L - 6, Y(v) + 4, String(v), 'end');
-      });
-      [0, 0.25, 0.5, 0.75, 1].forEach(function (f) {
-        axisText(svg, L + pw * f, H - B + 16, String(Math.round(xmax * f)), f === 0 ? 'start' : (f === 1 ? 'end' : 'middle'));
-      });
-      svg.appendChild(S('line', { x1: L, x2: L, y1: T, y2: H - B, stroke: '#6B7280' }));
-      axisText(svg, L + pw / 2, H - 4, 'Minuten (Zähler minuten)', 'middle', 12, '#1A1A1A');
-      svg.appendChild(S('text', { x: 14, y: T + ph / 2, 'text-anchor': 'middle', 'font-size': FS(12), fill: '#1A1A1A', transform: 'rotate(-90 14 ' + (T + ph / 2) + ')' }, 'Temperatur in °C'));
-      // Umgebung und Ziel
-      svg.appendChild(S('line', { x1: L, x2: W - R, y1: Y(TU), y2: Y(TU), stroke: '#9CA3AF', 'stroke-dasharray': '2 3' }));
-      axisText(svg, L + 6, Y(TU) + 15, 'Umgebung ' + TU + ' °C', 'start', 11, '#4B5563');
-      svg.appendChild(S('line', { x1: L, x2: W - R, y1: Y(ziel), y2: Y(ziel), stroke: '#164B8C', 'stroke-width': 1.75, 'stroke-dasharray': '6 4' }));
-      axisText(svg, W - R - 4, Y(ziel) - 6, 'Ziel ' + de(ziel, 0) + ' °C', 'end', 11, '#164B8C');
-      // Geisterkurve (komplett) und bisheriger Weg
-      var ghost = ser.temps.map(function (v, i) { return X(i).toFixed(1) + ',' + Y(v).toFixed(1); }).join(' ');
-      svg.appendChild(S('polyline', { points: ghost, fill: 'none', stroke: '#C9CDD3', 'stroke-width': 2, 'stroke-linejoin': 'round' }));
-      var done = ser.temps.slice(0, c + 1).map(function (v, i) { return X(i).toFixed(1) + ',' + Y(v).toFixed(1); }).join(' ');
-      svg.appendChild(S('polyline', { points: done, fill: 'none', stroke: '#B50016', 'stroke-width': 2.5, 'stroke-linejoin': 'round' }));
-      if (ser.n <= 60) for (var i = 0; i < c; i++) svg.appendChild(S('circle', { cx: X(i), cy: Y(ser.temps[i]), r: 3, fill: '#B50016' }));
-      svg.appendChild(S('circle', { cx: X(c), cy: Y(t), r: 6, fill: phase === 'body' ? '#B50016' : '#fff', stroke: '#B50016', 'stroke-width': 2.5 }));
-      svg.setAttribute('aria-label', 'Diagramm: Temperatur über den Minuten, k = ' + de(k, 2) + ', Ziel ' + de(ziel, 0) + ' °C. Aktuell Durchlauf ' + c + ', Temperatur ' + de(t, 1) + ' °C.' + (last ? (ser.reached ? ' Ziel erreicht.' : ' Ziel nie erreicht, Watchdog bricht ab.') : ''));
-
-      var dl = el('dl');
-      function r(key, val, big) { dl.appendChild(el('dt', { text: key })); dl.appendChild(el('dd', { class: big ? 'k-big' : '', text: val })); }
-      r('Zähler minuten', String(c), true);
-      r('Temperatur', t.toFixed(1) + ' °C', true);
-      r('Bedingung temperatur > ziel', phase === 'check' ? (cond ? 'wahr: weiter' : 'falsch: Ende') : '(wurde vor diesem Durchlauf geprüft)');
-      r('Halbierung des Abstands', 'etwa alle ' + Math.max(1, Math.round(Math.log(0.5) / Math.log(1 - k))) + ' Minuten');
-      out.innerHTML = ''; out.appendChild(dl);
+      rasterHost.textContent = '';
+      rasterHost.appendChild(el('table', { class: 'v06-raster' }, [
+        el('caption', { class: 'k-sr', text: 'Raster der Durchläufe. Die Zeilen sind die Werte von i, die Spalten die Werte von j. In jeder erledigten Zelle steht die Nummer des Durchlaufs.' }),
+        el('thead', {}, [el('tr', {}, kopf)]), el('tbody', {}, zeilen)
+      ]));
+      /* Tabelle */
+      var tz = [], q;
+      for (q = 1; q <= p; q++) {
+        var x = d[q - 1];
+        var tr = el('tr', { class: q === p ? 'is-jetzt' : '' }, [el('th', { scope: 'row', text: String(x.nr) }), el('td', { text: String(x.i) }), el('td', { text: String(x.j) })].concat(c.wuerfel ? [el('td', { text: x.treffer ? 'ja' : 'nein' })] : []));
+        if (q === p) tr.setAttribute('aria-current', 'true');
+        tz.push(tr);
+      }
+      var sp = ['Durchlauf', 'i', 'j'].concat(c.wuerfel ? ['i + j ist 7'] : []);
+      tabelleHost.textContent = '';
+      tabelleHost.appendChild(el('table', { class: 'k-types v06-tabelle' }, [
+        el('caption', { class: 'k-sr', text: 'Die Werte von i und j bei jedem Durchlauf des inneren Rumpfs; die letzte Zeile ist markiert' }),
+        el('thead', {}, [el('tr', {}, sp.map(function (t) { return el('th', { scope: 'col', text: t }); }))]),
+        el('tbody', {}, tz.length ? tz : [el('tr', {}, [el('td', { colspan: String(sp.length), text: 'Noch kein Durchlauf.' })])])
+      ]));
+      /* Erst nach dem letzten Durchlauf, sonst steht die Antwort auf die Vermutung schon da */
+      rechnungEl.textContent = fertig ? rechnungInnen(c.a, c.b) + '.' : '';
+      rechnungEl.hidden = !fertig;
+      zaehlerEl.hidden = !c.wuerfel;
+      zaehlerEl.textContent = c.wuerfel ? 'Treffer bisher: ' + (cur ? cur.trefferBisher : 0) + ' (Würfelpaare mit Summe 7)' : '';
+      jetzt.textContent = p === 0 ? 'Noch kein Durchlauf.' : (fertig ? 'Fertig: Beide Schleifen sind zu Ende nach ' + d.length + ' Durchläufen.' : 'Zuletzt: Durchlauf ' + p + '.');
+      setzeSchalter(sw, wuerfel);
+      sI.sperre(wuerfel); sJ.sperre(wuerfel);
+      sperre(einer, fertig); sperre(ende, fertig); sperre(zurueck, p === 0);
+      if (ansagen) status.textContent = (vorsatz || '') + satzSchleife(c, p);
     }
-    recompute();
+    function reset(vorsatz) {
+      c = einstellung(a, b, wuerfel); d = durchlaeufe(c); p = 0;
+      if (wuerfel) { sI.setze(6); sJ.setze(6); sI.sperre(true); sJ.sperre(true); } else { sI.setze(a); sJ.setze(b); }
+      zeige(!!vorsatz, vorsatz ? vorsatz + 'Das Programm steht am Anfang. ' : '');
+    }
+    einer.addEventListener('click', function () { if (p >= d.length) return; p++; zeige(true); });
+    ende.addEventListener('click', function () { if (p >= d.length) return; p = d.length; zeige(true); });
+    zurueck.addEventListener('click', function () { if (p === 0) return; p = 0; zeige(true, 'Von vorn. '); });
+    reset('');
+    host.appendChild(el('div', { class: 'v06-doppel' }, [
+      el('div', { class: 'v06-doppel__links' }, [
+        el('p', { class: 'v06-titel', text: 'Grenzen einstellen' }), sI.zeile, sJ.zeile,
+        el('div', { class: 'v06-schalterreihe' }, [sw.knopf]), codeEl, rechnungEl,
+        el('div', { class: 'v06-aktionen' }, [einer, ende, zurueck]), jetzt, zaehlerEl
+      ]),
+      el('div', { class: 'v06-doppel__rechts' }, [
+        el('p', { class: 'v06-titel', text: 'Raster: Zeilen i, Spalten j' }), rasterHost,
+        el('p', { class: 'v06-titel', text: 'Durchläufe' }), tabelleHost, status
+      ])
+    ]));
   }
 
-  /* ── (B) Newton-Treppe ───────────────────────────────────── */
-  function initNewton(host) {
-    var a = 2, x0 = 4, tol = 1e-9, MAXN = 40;
-    var s = 0, ser, pl;
-    var ctr = el('div', { class: 'k-controls' });
-    host.appendChild(ctr);
-    slider(ctr, 'Gesucht: Wurzel aus a, a =', 2, 50, 1, a, function (v) { return String(v); }, function (v) { a = v; recompute(); });
-    slider(ctr, 'Startwert x₀ =', 1, 10, 0.5, x0, function (v) { return de(v, 1); }, function (v) { x0 = v; recompute(); });
-    var tols = [[1e-1, '0.1'], [1e-3, '0.001'], [1e-6, '1e-06'], [1e-9, '1e-09']];
-    ctr.appendChild(el('div', { class: 'k-field' }, [el('span', { text: 'Toleranz (Abbruch bei |x² − a| ≤ Toleranz)' }),
-      segment(tols.map(function (t) { return t[1]; }), 'Toleranz', 3, function (i) { tol = tols[i][0]; recompute(); })]));
-
-    var barHost = el('div');
-    host.appendChild(barHost);
-    var msg = el('p', { class: 'v06-msg', role: 'status', 'aria-live': 'polite' });
-    host.appendChild(msg);
-    var svg = S('svg', { viewBox: '0 0 640 320', class: 'k-chart', role: 'img' });
-    host.appendChild(svg);
-    host.appendChild(el('div', { class: 'k-legend' }, [
-      el('span', {}, [Object.assign(el('i'), { style: 'background:#6B7280' }), 'Kurve f(x) = x² − a']),
-      el('span', {}, [Object.assign(el('i'), { style: 'background:#B50016' }), 'Tangente und neue Schätzung']),
-      el('span', {}, [Object.assign(el('i'), { style: 'background:#164B8C' }), 'Nullstelle (gesuchte Wurzel)'])
-    ]));
-    var tw = el('div', { class: 'k-tablewrap' });
-    host.appendChild(tw);
-    var tip = el('p', { class: 'k-small k-muted', text: 'Tipp: Setz die Toleranz auf 1e-09 und schau in die Spalte „Abweichung“: Die Zahl der richtigen Stellen verdoppelt sich ungefähr in jedem Schritt.' });
-    host.appendChild(tip);
-
-    pl = player(barHost,
-      function (auto) { if (s < ser.n) s++; draw(!auto); },
-      function () { s = 0; draw(true); },
-      function () { s = ser.n; draw(true); },
-      function () { return s >= ser.n; },
-      function () { return 650; });
-
-    function recompute() { pl.stop(); ser = api.newtonSeries(a, x0, tol, MAXN); s = 0; draw(true); }
-
-    function draw(announce) {
-      var root2 = Math.sqrt(a), xs = ser.xs;
-      var xmax = Math.max(x0, root2) * 1.12;
-      var f = function (x) { return x * x - a; };
-      var ymin = -a * 1.15, ymax = Math.max(f(xmax), 1) * 1.05;
-      var W = 640, H = 320, L = 52, R = 16, T = 12, B = 38, pw = W - L - R, ph = H - T - B;
-      var X = function (x) { return L + pw * x / xmax; };
-      var Y = function (y) { return T + ph * (1 - (y - ymin) / (ymax - ymin)); };
-      while (svg.firstChild) svg.removeChild(svg.firstChild);
-      svg.appendChild(S('line', { x1: L, x2: W - R, y1: Y(0), y2: Y(0), stroke: '#6B7280' }));
-      svg.appendChild(S('line', { x1: X(0), x2: X(0), y1: T, y2: H - B, stroke: '#E5E7EB' }));
-      [0, 0.25, 0.5, 0.75, 1].forEach(function (fr) { axisText(svg, L + pw * fr, Y(0) + (ymin < -ymax * 0.05 ? 16 : 16), de(xmax * fr, 1), fr === 0 ? 'start' : (fr === 1 ? 'end' : 'middle')); });
-      axisText(svg, L + pw / 2, H - 4, 'x', 'middle', 12, '#1A1A1A');
-      axisText(svg, L - 6, Y(0) + 4, '0', 'end');
-      axisText(svg, L - 6, Y(ymax * 0.95) + 4, de(ymax * 0.95, 0), 'end');
-      axisText(svg, L - 6, Y(ymin * 0.95) + 4, de(ymin * 0.95, 0), 'end');
-      var pts = [];
-      for (var i = 0; i <= 120; i++) { var x = xmax * i / 120; pts.push(X(x).toFixed(1) + ',' + Y(f(x)).toFixed(1)); }
-      svg.appendChild(S('polyline', { points: pts.join(' '), fill: 'none', stroke: '#6B7280', 'stroke-width': 2 }));
-      svg.appendChild(S('circle', { cx: X(root2), cy: Y(0), r: 5, fill: '#164B8C', stroke: '#fff', 'stroke-width': 2 }));
-      axisText(svg, X(root2), Y(0) - 10, '√' + a + ' ≈ ' + de(root2, 4), 'middle', 11, '#164B8C');
-      for (var j = 0; j < s; j++) {
-        var cur = j === s - 1, col = '#B50016', xa = xs[j], xb = xs[j + 1];
-        svg.appendChild(S('line', { x1: X(xa), y1: Y(0), x2: X(xa), y2: Y(f(xa)), stroke: col, 'stroke-width': 1, 'stroke-dasharray': '3 3', opacity: cur ? 1 : 0.55 }));
-        svg.appendChild(S('line', { x1: X(xa), y1: Y(f(xa)), x2: X(xb), y2: Y(0), stroke: col, 'stroke-width': cur ? 2.5 : 1.5, opacity: cur ? 1 : 0.7 }));
-        svg.appendChild(S('circle', { cx: X(xa), cy: Y(f(xa)), r: cur ? 4.5 : 3, fill: col }));
-      }
-      svg.appendChild(S('circle', { cx: X(xs[s]), cy: Y(0), r: 6, fill: '#fff', stroke: '#B50016', 'stroke-width': 2.5 }));
-      axisText(svg, X(xs[s]), Y(0) + 30, 'x' + s, 'middle', 11, '#B50016');
-      var fin = s === ser.n;
-      svg.setAttribute('aria-label', 'Diagramm: Parabel f(x) = x² − ' + a + ' mit ' + s + ' Tangenten-Schritten. Aktuelle Schätzung x = ' + py(xs[s]) + '.');
-
-      var tab = el('table', { class: 'k-types v06-tab' });
-      tab.appendChild(el('thead', {}, [el('tr', {}, ['Schritt n', 'Schätzung x', 'x² − a', 'Abweichung |x − √a|', '|x² − a| ≤ Toleranz?'].map(function (h) { return el('th', { scope: 'col', text: h }); }))]));
-      var tb = el('tbody');
-      for (var q = 0; q <= s; q++) {
-        var res = f(xs[q]), ok = Math.abs(res) <= tol;
-        var tr = el('tr', { class: q === s ? 'is-cur' : '' }, [
-          el('th', { scope: 'row', text: String(q) }), el('td', { text: py(xs[q]) }), el('td', { text: py(res) }), el('td', { text: py(Math.abs(xs[q] - root2)) }),
-          el('td', { text: ok ? 'ja: Abbruch' : 'nein: weiter' })]);
-        tb.appendChild(tr);
-      }
-      tab.appendChild(tb);
-      tw.innerHTML = ''; tw.appendChild(tab);
-
-      if (fin) {
-        msg.className = 'v06-msg is-on is-ok';
-        msg.textContent = ser.n === 0
-          ? 'Schon der Startwert genügt der Toleranz: 0 Iterationen.'
-          : 'Fertig nach ' + ser.n + ' Iterationen: |x² − a| = ' + py(Math.abs(f(xs[s]))) + ' liegt unter der Toleranz. Die Schleife endet mit x = ' + py(xs[s]) + '.';
-        if (!ser.converged) { msg.className = 'v06-msg is-on is-bad'; msg.textContent = 'Nach ' + MAXN + ' Schritten nicht konvergiert: Abbruch durch den Sicherheitszähler.'; }
-      } else if (announce) {
-        msg.className = 'v06-msg';
-        msg.textContent = s === 0 ? 'Startwert x₀ = ' + py(xs[0]) + '. Noch nicht genau genug: Klick „Schritt“ für die erste Tangente.' : 'Schritt ' + s + ': neue Schätzung x = ' + py(xs[s]) + '. Noch nicht genau genug, weiter.';
-      } else { msg.className = 'v06-msg'; msg.textContent = ''; }
+  /* ── xorschrift ───────────────────────────────────────────── */
+  function initXorschrift(host) {
+    var id = 'v06-xor-' + (++nr);
+    var wort = 'HALLO', key = 13, zweite = false;
+    host.textContent = '';
+    var wortFeld = el('input', { type: 'text', id: id + '-wort', class: 'v06-feld v06-feld--wort', maxlength: '8', autocomplete: 'off', spellcheck: 'false', 'aria-describedby': id + '-wortHilfe' });
+    wortFeld.value = wort;
+    var wortMeld = el('p', { class: 'v06-meldung', role: 'alert', hidden: '' });
+    var schlFeld = el('input', { type: 'number', id: id + '-schl', class: 'v06-feld v06-feld--eng', min: '0', max: '31', step: '1', inputmode: 'numeric' });
+    schlFeld.value = String(key);
+    var schlMeld = el('p', { class: 'v06-meldung', role: 'alert', hidden: '' });
+    var kipp = [];
+    var kippHost = el('div', { class: 'v06-kippreihe', role: 'group', 'aria-label': 'Fünf Schalter für den Schlüssel, links der Stellenwert 16, rechts 1' });
+    [16, 8, 4, 2, 1].forEach(function (wert, pos) {
+      var bt = el('button', { type: 'button', class: 'v06-bit', role: 'switch', 'aria-checked': 'false', 'aria-label': 'Schlüssel, Stellenwert ' + wert });
+      var zf = el('span', { class: 'v06-bit__ziffer' });
+      bt.appendChild(el('span', { class: 'v06-bit__wert', text: String(wert) }));
+      bt.appendChild(el('span', { class: 'v06-bit__hebel', 'aria-hidden': 'true' }));
+      bt.appendChild(zf);
+      bt.addEventListener('click', function () { key = key ^ wert; zweite = false; schlMeld.hidden = true; schlFeld.removeAttribute('aria-invalid'); zeige(true, 'Schalter ' + wert + ((key & wert) ? ' an. ' : ' aus. ')); });
+      kipp.push({ b: bt, z: zf, wert: wert });
+      kippHost.appendChild(bt);
+    });
+    wortFeld.addEventListener('input', function () {
+      var pw = pruefeWort(wortFeld.value);
+      if (pw.ok) { wort = pw.wort; zweite = false; wortFeld.removeAttribute('aria-invalid'); wortMeld.hidden = true; zeige(true, ''); }
+      else { wortFeld.setAttribute('aria-invalid', 'true'); wortMeld.textContent = pw.meldung; wortMeld.hidden = false; }
+    });
+    wortFeld.addEventListener('change', function () { wortFeld.value = wort; wortFeld.removeAttribute('aria-invalid'); wortMeld.hidden = true; });
+    schlFeld.addEventListener('input', function () {
+      var ps = pruefeSchluessel(schlFeld.value);
+      if (ps.ok) { key = ps.zahl; zweite = false; schlFeld.removeAttribute('aria-invalid'); schlMeld.hidden = true; zeige(true, ''); }
+      else { schlFeld.setAttribute('aria-invalid', 'true'); schlMeld.textContent = ps.meldung; schlMeld.hidden = false; }
+    });
+    schlFeld.addEventListener('change', function () { schlFeld.value = String(key); schlFeld.removeAttribute('aria-invalid'); schlMeld.hidden = true; });
+    var nochmal = aktion('Noch einmal mit demselben Schlüssel'), zurueck = aktion('Zurück zum Wort', true);
+    nochmal.addEventListener('click', function () { if (zweite) return; zweite = true; zeige(true, ''); });
+    zurueck.addEventListener('click', function () { if (!zweite) return; zweite = false; zeige(true, 'Zurück zum Wort. '); });
+    var schlHinweis = el('p', { class: 'v06-hinweis' });
+    var tabHost = el('div', { class: 'v06-xor-host', tabindex: '0', role: 'region', 'aria-label': 'Verschlüsselung Buchstabe für Buchstabe' });
+    var keineMeld = el('p', { class: 'v06-hinweis' });
+    var ergebnisEl = el('p', { class: 'v06-rechnung' });
+    var status = el('p', { class: 'k-sr', role: 'status', 'aria-live': 'polite' });
+    function zelle(t, cls, tag) { return el(tag || 'td', { class: cls || '', text: t }); }
+    function baueBlock(titel, spalten, mitBuchstabe) {
+      var zeilen = [];
+      zeilen.push(el('tr', {}, [el('th', { scope: 'row', text: mitBuchstabe ? 'Buchstabe' : 'Buchstabe (oder ?)' })].concat(spalten.map(function (s) { return zelle(s.buchstabe, 'v06-xor__buch'); }))));
+      zeilen.push(el('tr', {}, [el('th', { scope: 'row', text: 'Zahl' })].concat(spalten.map(function (s) { return zelle(String(s.zahl)); }))));
+      zeilen.push(el('tr', {}, [el('th', { scope: 'row', text: 'Bits' })].concat(spalten.map(function (s) { return zelle(s.bits, 'v06-xor__bits'); }))));
+      zeilen.push(el('tr', {}, [el('th', { scope: 'row', text: 'Schlüssel' })].concat(spalten.map(function (s) { return zelle(s.schluesselBits, 'v06-xor__bits v06-xor__schl'); }))));
+      zeilen.push(el('tr', { class: 'v06-xor__ergebnis' }, [el('th', { scope: 'row', text: 'XOR, Bits' })].concat(spalten.map(function (s) { return zelle(s.ergebnisBits, 'v06-xor__bits'); }))));
+      zeilen.push(el('tr', { class: 'v06-xor__ergebnis' }, [el('th', { scope: 'row', text: 'XOR, Zahl' })].concat(spalten.map(function (s) { return zelle(String(s.ergebnis)); }))));
+      zeilen.push(el('tr', { class: 'v06-xor__ergebnis' }, [el('th', { scope: 'row', text: 'XOR, Buchstabe' })].concat(spalten.map(function (s) { return zelle(s.ergebnisBuchstabe, s.hatBuchstabe ? 'v06-xor__buch' : 'v06-xor__buch is-kein'); }))));
+      return el('table', { class: 'k-types v06-xor' }, [
+        el('caption', { text: titel }),
+        el('tbody', {}, zeilen)
+      ]);
     }
-    recompute();
+    function zeige(ansagen, vorsatz) {
+      var e = xor5(wort, key), z2 = zweite ? nocheinmal(e) : null;
+      kipp.forEach(function (x) {
+        var on = (key & x.wert) !== 0;
+        x.b.setAttribute('aria-checked', on ? 'true' : 'false'); x.b.classList.toggle('is-an', on); x.z.textContent = on ? '1' : '0';
+      });
+      if (document.activeElement !== schlFeld) schlFeld.value = String(key);
+      if (document.activeElement !== wortFeld) wortFeld.value = wort;
+      schlHinweis.textContent = schluesselHinweis(key); schlHinweis.hidden = !schlHinweis.textContent;
+      tabHost.textContent = '';
+      tabHost.appendChild(baueBlock('Wort ' + wort + ' mit dem Schlüssel ' + fuenf(key) + ' verschlüsselt', e.spalten, true));
+      var kein = e.spalten.filter(function (s) { return !s.hatBuchstabe; });
+      var kz = kein.length ? kein[0].ergebnis : null;
+      keineMeld.textContent = kein.length ? keinBuchstabe(kz) : ''; keineMeld.hidden = !kein.length;
+      ergebnisEl.textContent = 'Geheimtext: ' + e.text + ' (Zahlen ' + e.zahlen.join(', ') + ')';
+      if (z2) {
+        tabHost.appendChild(baueBlock('Noch einmal mit demselben Schlüssel verknüpft: Das Wort ist zurück', z2.spalten, false));
+        ergebnisEl.textContent += '. Danach: ' + z2.text;
+      }
+      sperre(nochmal, zweite); sperre(zurueck, !zweite);
+      if (ansagen) status.textContent = (vorsatz || '') + satzXor(e, z2) + (kein.length ? ' ' + keinBuchstabe(kz) : '') + (key === 0 ? ' ' + schluesselHinweis(0) : '');
+    }
+    zeige(false);
+    host.appendChild(el('div', { class: 'v06-xorbau' }, [
+      el('div', { class: 'v06-xorbau__oben' }, [
+        el('div', {}, [
+          el('div', { class: 'v06-feldzeile' }, [el('label', { for: id + '-wort', text: 'Wort aus 1 bis 6 Buchstaben' }), wortFeld,
+            el('p', { id: id + '-wortHilfe', class: 'k-small k-muted', text: 'A bis Z. A ist 1, B ist 2, bis Z ist 26.' })]), wortMeld
+        ]),
+        el('div', {}, [
+          el('p', { class: 'v06-titel', text: 'Schlüssel: fünf Schalter' }), kippHost,
+          el('div', { class: 'v06-feldzeile' }, [el('label', { for: id + '-schl', text: 'oder als Zahl von 0 bis 31' }), schlFeld]), schlMeld, schlHinweis
+        ])
+      ]),
+      el('div', { class: 'v06-aktionen' }, [nochmal, zurueck]),
+      tabHost, keineMeld, ergebnisEl, status
+    ]));
   }
 
   function init() {
-    Array.prototype.forEach.call(document.querySelectorAll('[data-explorable="abkuehlung"]'), initCooling);
-    Array.prototype.forEach.call(document.querySelectorAll('[data-explorable="newton"]'), initNewton);
+    var map = { hexfarbe: initHexfarbe, doppelschleife: initDoppelschleife, xorschrift: initXorschrift };
+    Object.keys(map).forEach(function (k) {
+      Array.prototype.forEach.call(document.querySelectorAll('[data-explorable="' + k + '"]'), function (host) {
+        if (host._v06) return;
+        host._v06 = true;
+        map[k](host);
+      });
+    });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
-})(typeof window !== 'undefined' ? window : globalThis);
+})();

@@ -1,467 +1,561 @@
 /* =============================================================
-   explorables-v09.js – interaktive Bausteine für V09 „Dateien & Fehler“ (reines JS, kein Framework)
-   (A) Textkodierung: Zeichen werden Bytes (UTF-8 oder Latin-1) und wieder Zeichen: warum „ä“ kaputt aussieht.
-   (B) CSV-Zeile zerlegen: strip → split → Feld wählen → replace → float, Schritt für Schritt.
-   (C) try/except: Sprung in den except-Block (ValueError, IndexError, nicht gefangener Fehler).
-   (D) Datei Zeile für Zeile lesen: Programmablaufplan (KursPAP) + Code + Zeilen der Datei.
-   Der Rechenkern ist ohne DOM per node testbar (module.exports).
+   explorables-v09.js – interaktive Bausteine für Termin 09 (Rechneraufbau, Programm zerlegen, Spielzeug-Rechner)
+     data-explorable="bauteile"  „Rechner-Baukasten“: Schema mit Prozessor, Arbeitsspeicher, SSD, Eingabe und Ausgabe und einem Bus;
+                                 sechs Knöpfe (Spiel starten, Taste drücken, Rechnen, Ergebnis zeigen, Spielstand speichern, Strom aus),
+                                 je Knopf leuchten die beteiligten Bauteile und Pfeile am Bus auf, ein Satz sagt, was passiert
+     data-explorable="zerlegen"  „Programm zerlegen“: Getränkeautomat (Getränk 1 bis 3, Geld 0 bis 5 Euro in halben Euro),
+                                 langes Programm mit drei Gruppen, „Zerlegen“ bildet die Funktionen preis_von und antwort,
+                                 „Beide laufen lassen“ zeigt unter beiden Fassungen die Ausgabe, beim zerlegten Programm die nächste Zeile
+     data-explorable="spielzeug" „Spielzeug-Rechner“: vier Zellen A bis D, Rechenplatz, vier Befehle (LADE, ADDIERE, SPEICHERE, STOPP),
+                                 zwei feste Programme, Knöpfe „Ein Takt“, „Ein Befehl“, „Von vorn“, drei Lämpchen für holen, entschlüsseln, ausführen
+   Eigenständig wie alle explorables-vNN.js: keine Bibliothek, Texte per textContent.
+   Der Rechenkern steht oben und ist ohne Browser prüfbar (module.exports, app/skripte/tests/explorables-v09.test.mjs).
+   Im Ausgangszustand steht keine Lösung: Ergebnisse erscheinen erst nach dem Ausprobieren.
+   Meldungstexte ohne Gedankenstrich. Zustand steht immer auch als Wort, Zeichen oder Linienstärke da, nie nur als Farbe.
    ============================================================= */
-(function (root) {
+(function () {
   'use strict';
 
-  /* ── Kern (ohne DOM) ─────────────────────────────────────── */
-  /* Text so schreiben, wie Python ihn mit repr() druckt (einfache Anführungszeichen, \n sichtbar) */
-  function reprStr(s) {
-    return "'" + String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/\n/g, '\\n').replace(/\r/g, '\\r').replace(/\t/g, '\\t') + "'";
-  }
-  function reprList(a) { return '[' + a.map(reprStr).join(', ') + ']'; }
-  /* Zahl so schreiben, wie Python sie druckt (für die hier vorkommenden Werte genügt das) */
-  function reprNum(x) { var s = String(x); return /^-?\d+$/.test(s) ? s + '.0' : s; }
-  /* float(text) wie Python (nur die hier relevanten Formen): gibt {ok, v} oder {ok:false} */
-  function pyFloat(text) {
-    var t = String(text).trim();
-    if (!/^[+-]?(\d+\.?\d*|\.\d+)([eE][+-]?\d+)?$/.test(t)) return { ok: false };
-    return { ok: true, v: parseFloat(t) };
-  }
-  var TRAENNER = [';', ','];
-
-  /* (B) Schritte beim Zerlegen einer CSV-Zeile. opt: {trenn, spalte, replace} */
-  function zerlegeSchritte(roh, opt) {
-    var trenn = opt.trenn, sp = opt.spalte, mitRep = opt.replace !== false;
-    var st = [], s1, felder, text, text2, f;
-    st.push({ code: 'zeile', ausdruck: 'zeile', wert: reprStr(roh), art: 'text', msg: 'So liefert Python die Zeile aus der Datei: ein Text, und am Ende steht noch der Zeilenumbruch \\n.' });
-    s1 = roh.trim();
-    st.push({ code: 'zeile.strip()', ausdruck: 'zeile.strip()', wert: reprStr(s1), art: 'text', msg: 'strip() schneidet Leerzeichen und Zeilenumbruch an beiden Enden ab. Der Text in der Mitte bleibt, wie er ist.' });
-    felder = s1.split(trenn);
-    st.push({ code: 'zeile.strip().split(' + reprStr(trenn) + ')', ausdruck: 'felder = ...split(' + reprStr(trenn) + ')', felder: felder, art: 'felder',
-      msg: 'split(' + reprStr(trenn) + ') zerschneidet den Text an jedem Trennzeichen und liefert eine Liste (V08) aus ' + felder.length + ' Texten.' +
-        (felder.length !== 5 ? ' Die Datei hat aber fünf Spalten: Hier stimmt das Trennzeichen nicht oder die Zeile ist kaputt.' : '') });
-    if (sp >= felder.length) {
-      st.push({ code: 'felder[' + sp + ']', ausdruck: 'felder[' + sp + ']', fehler: 'IndexError: list index out of range', art: 'fehler', sel: sp,
-        msg: 'Die Liste hat nur ' + felder.length + ' Elemente (Index 0 bis ' + (felder.length - 1) + '). Index ' + sp + ' gibt es nicht: IndexError. Das Programm bricht hier ab, wenn kein try/except dahinter steht.' });
-      return st;
+  /* ── Rechenkern: bauteile ─────────────────────────────────── */
+  var BAUTEIL_NAMEN = { prozessor: 'Prozessor', ram: 'Arbeitsspeicher', ssd: 'SSD', ea: 'Eingabe und Ausgabe' };
+  /* Kanten: Richtung 'zum_bus' (vom Bauteil auf den Bus), 'vom_bus' (vom Bus zum Bauteil) oder 'beide' */
+  var SZENARIEN = [
+    { id: 'starten', knopf: 'Spiel starten' },
+    { id: 'taste', knopf: 'Taste drücken' },
+    { id: 'rechnen', knopf: 'Rechnen' },
+    { id: 'ergebnis', knopf: 'Ergebnis zeigen' },
+    { id: 'speichern', knopf: 'Spielstand speichern' },
+    { id: 'strom_aus', knopf: 'Strom aus' }
+  ];
+  var MELDUNG_AUS = 'Der Rechner ist aus und der Arbeitsspeicher ist leer. Drück „Spiel starten“, dann geht der Rechner wieder an.';
+  /* Ausgangszustand: Auf der SSD liegt Level 3, im Arbeitsspeicher läuft das Spiel bei Level 5 */
+  function startBau() { return { ssd: 3, ram: 5 }; }
+  function laeuft(z) { return z.ram !== null; }
+  function stromAus(z) { return { ssd: z.ssd, ram: null }; }
+  function speichern(z) { return laeuft(z) ? { ssd: z.ram, ram: z.ram } : { ssd: z.ssd, ram: z.ram }; }
+  function laden(z) { return laeuft(z) ? { ssd: z.ssd, ram: z.ram } : { ssd: z.ssd, ram: z.ssd }; }
+  function ssdText(z) { return 'Spielstand: Level ' + z.ssd; }
+  function ramText(z) { return laeuft(z) ? 'Spiel läuft: Level ' + z.ram : 'leer'; }
+  function kanten(spec) { return spec; }
+  /* Ein Knopf: neuer Zustand, beteiligte Bauteile, Kanten am Bus, Satz */
+  function anwenden(z, id) {
+    var aus = { zustand: z, boxen: [], kanten: [], satz: MELDUNG_AUS, geaendert: false };
+    if (id === 'starten') {
+      if (laeuft(z)) return {
+        zustand: z, boxen: ['ssd', 'ram'], kanten: kanten([{ box: 'ssd', richtung: 'zum_bus' }, { box: 'ram', richtung: 'vom_bus' }]),
+        satz: 'Beim Start kam das Spiel von der SSD über den Bus in den Arbeitsspeicher. Es läuft schon.', geaendert: false
+      };
+      var n = laden(z);
+      return {
+        zustand: n, boxen: ['ssd', 'ram'], kanten: kanten([{ box: 'ssd', richtung: 'zum_bus' }, { box: 'ram', richtung: 'vom_bus' }]),
+        satz: 'Das Spiel wird von der SSD in den Arbeitsspeicher geladen. Es startet bei Level ' + n.ram + '.', geaendert: true
+      };
     }
-    text = felder[sp];
-    st.push({ code: 'felder[' + sp + ']', ausdruck: 'text = felder[' + sp + ']', wert: reprStr(text), art: 'text', sel: sp, felder: felder,
-      msg: 'Mit dem Index (V08) holst du die gesuchte Spalte. Bei phyphox ist Spalte 0 die Zeit und Spalte 2 die Beschleunigung in y-Richtung. Noch ist es ein Text, keine Zahl.' });
-    text2 = mitRep ? text.replace(/,/g, '.') : text;
-    if (mitRep) st.push({ code: 'text.replace(",", ".")', ausdruck: 'text = text.replace(",", ".")', wert: reprStr(text2), art: 'text',
-      msg: text2 === text ? 'replace ersetzt jedes Komma durch einen Punkt. Hier steht kein Komma im Text, also ändert sich nichts.' : 'replace ersetzt jedes Komma durch einen Punkt: Python kennt als Dezimaltrenner nur den Punkt (V03).' });
-    f = pyFloat(text2);
-    if (f.ok) st.push({ code: 'float(text)', ausdruck: 'zahl = float(text)', wert: reprNum(f.v), art: 'zahl',
-      msg: 'float() macht aus dem Text eine Kommazahl (V03). Jetzt kannst du rechnen: ' + reprNum(f.v) + ' m/s².' });
-    else st.push({ code: 'float(text)', ausdruck: 'zahl = float(text)', fehler: 'ValueError: could not convert string to float: ' + reprStr(text2), art: 'fehler',
-      msg: 'float() kann ' + reprStr(text2) + ' nicht in eine Zahl umwandeln: ValueError.' + (mitRep ? '' : ' Das Dezimalkomma ist der Grund: Ohne replace(",", ".") scheitert float bei jeder Zeile.') });
-    return st;
-  }
-
-  /* (C) Schritte des try/except-Beispiels */
-  var TRY_ZEILEN = {
-    ok: ['4,94', '0,10', '-3,78'],
-    wert: ['5,04', '0,07', 'Fehler'],
-    kurz: ['5,02', '0,09']
-  };
-  var TRY_CODE_BASIS = ['kaputt = 0', 'try:', '    t = zahl(zeile[0])', '    a = zahl(zeile[2])', '    print("ok:", t, a)', null, '    kaputt = kaputt + 1', '    print("kaputte Zeile")', 'print("weiter, kaputt =", kaputt)'];
-  function tryCode(beide) {
-    var c = TRY_CODE_BASIS.slice();
-    c[5] = beide ? 'except (ValueError, IndexError):' : 'except ValueError:';
-    return c;
-  }
-  function zahlTxt(t) { var f = pyFloat(String(t).replace(',', '.')); return f.ok ? f : null; }
-  function trySteps(szenario, beide) {
-    var z = TRY_ZEILEN[szenario], st = [], v = { kaputt: null, t: null, a: null }, out = [];
-    function snap(line, msg, extra) {
-      var o = { line: line, msg: msg, vars: { kaputt: v.kaputt, t: v.t, a: v.a }, out: out.slice(), skipped: [], mode: '' };
-      if (extra) Object.keys(extra).forEach(function (k) { o[k] = extra[k]; });
-      st.push(o);
+    if (id === 'strom_aus') {
+      var s = stromAus(z);
+      return {
+        zustand: s, boxen: [], kanten: [],
+        satz: laeuft(z) ? 'Strom aus. Der Arbeitsspeicher ist leer. Die SSD zeigt weiter: ' + ssdText(s) + '.' : 'Der Strom war schon aus. Die SSD zeigt weiter: ' + ssdText(s) + '.',
+        geaendert: laeuft(z)
+      };
     }
-    snap(1, 'Der Zähler für kaputte Zeilen startet bei 0.'); v.kaputt = 0; st[0].vars.kaputt = 0;
-    snap(2, 'try: heißt „versuch es“. Python führt den eingerückten Block aus. Geht alles gut, wird der except-Block ganz übersprungen.', { mode: 'try' });
-    var t = zahlTxt(z[0]);
-    if (!t) { return finish(1, 'ValueError: could not convert string to float: ' + reprStr(z[0])); }
-    v.t = t.v;
-    snap(3, 't = zahl(zeile[0]): Aus ' + reprStr(z[0]) + ' wird die Zahl ' + reprNum(t.v) + '.', { mode: 'try' });
-    if (2 >= z.length) return finish(2, 'IndexError: list index out of range', 'Die Zeile hat nur ' + z.length + ' Spalten, zeile[2] gibt es nicht.');
-    var a = zahlTxt(z[2]);
-    if (!a) return finish(2, 'ValueError: could not convert string to float: ' + reprStr(z[2]), 'Aus ' + reprStr(z[2]) + ' lässt sich keine Zahl machen.');
-    v.a = a.v;
-    snap(4, 'a = zahl(zeile[2]): Aus ' + reprStr(z[2]) + ' wird ' + reprNum(a.v) + '.', { mode: 'try' });
-    out.push('ok: ' + reprNum(t.v) + ' ' + reprNum(a.v));
-    snap(5, 'print gibt die Werte aus. Der Block ist ohne Fehler zu Ende: Der except-Block wird übersprungen.', { mode: 'try', skipped: [6, 7, 8] });
-    snap(9, 'Das Programm läuft nach dem try/except normal weiter.', { skipped: [6, 7, 8] });
-    return st;
-
-    function finish(nr, fehler, grund) {
-      var bad = nr + 2;  /* Zeile im Code, in der der Fehler auftritt (3 oder 4) */
-      var uebersprungen = [];
-      for (var k = bad + 1; k <= 5; k++) uebersprungen.push(k);
-      var fangen = fehler.indexOf('ValueError') === 0 || beide;
-      snap(bad, 'In dieser Zeile passiert der Fehler. ' + (grund || '') + ' Python löst eine Ausnahme aus: ' + fehler, { mode: 'fehler', fehler: fehler, skipped: uebersprungen });
-      if (fangen) {
-        snap(6, 'Python springt sofort in den passenden except-Block. Er fängt ' + (fehler.split(':')[0]) + ' ab. ' + (uebersprungen.length === 1 ? 'Die Zeile ' + uebersprungen[0] + ' des try-Blocks wird nicht mehr ausgeführt.' : 'Die Zeilen ' + uebersprungen.join(' und ') + ' des try-Blocks werden nicht mehr ausgeführt.'), { mode: 'except', skipped: uebersprungen });
-        v.kaputt = 1;
-        snap(7, 'Der Zähler wird um 1 erhöht.', { mode: 'except', skipped: uebersprungen });
-        out.push('kaputte Zeile');
-        snap(8, 'Die Meldung kommt: Das Programm ist nicht abgestürzt, es hat den Fehler behandelt.', { mode: 'except', skipped: uebersprungen });
-        snap(9, 'Das Programm läuft nach dem try/except normal weiter, der Zähler steht auf 1.', { skipped: uebersprungen });
-      } else {
-        snap(6, 'Der Block sagt except ValueError, aber der Fehler ist ein ' + fehler.split(':')[0] + '. Die Art passt nicht, also fängt dieser except-Block ihn nicht.', { mode: 'unpassend', skipped: uebersprungen });
-        st.push({ line: 0, msg: 'Das Programm bricht ab. Python druckt den Traceback, die letzte Zeile nennt die Fehlerart: ' + fehler, vars: { kaputt: v.kaputt, t: v.t, a: v.a }, out: out.slice(), skipped: [], mode: 'abbruch', fehler: fehler, ende: true });
-      }
-      return st;
+    if (!laeuft(z)) return aus;
+    if (id === 'taste') {
+      return { zustand: z, boxen: ['ea', 'prozessor'], kanten: kanten([{ box: 'ea', richtung: 'zum_bus' }, { box: 'prozessor', richtung: 'vom_bus' }]), satz: 'Die Taste geht über die Eingabe und den Bus zum Prozessor.', geaendert: false };
     }
+    if (id === 'rechnen') {
+      return {
+        zustand: z, boxen: ['prozessor', 'ram'], kanten: kanten([{ box: 'prozessor', richtung: 'beide' }, { box: 'ram', richtung: 'beide' }]),
+        satz: 'Der Prozessor holt Befehle und Daten aus dem Arbeitsspeicher, rechnet und legt Zwischenergebnisse dort wieder ab.', geaendert: false
+      };
+    }
+    if (id === 'ergebnis') {
+      return {
+        zustand: z, boxen: ['prozessor', 'ram', 'ea'], kanten: kanten([{ box: 'prozessor', richtung: 'zum_bus' }, { box: 'ram', richtung: 'vom_bus' }, { box: 'ea', richtung: 'vom_bus' }]),
+        satz: 'Das Ergebnis geht über den Bus zum Arbeitsspeicher und weiter zur Ausgabe.', geaendert: false
+      };
+    }
+    if (id === 'speichern') {
+      var g = speichern(z);
+      return {
+        zustand: g, boxen: ['ram', 'ssd'], kanten: kanten([{ box: 'ram', richtung: 'zum_bus' }, { box: 'ssd', richtung: 'vom_bus' }]),
+        satz: 'Der Spielstand Level ' + g.ssd + ' wird vom Arbeitsspeicher auf die SSD kopiert.', geaendert: g.ssd !== z.ssd
+      };
+    }
+    return aus;
   }
 
-  /* (D) Schritte beim Einlesen einer kleinen Datei */
-  var DATEI_ZEILEN = ['0,00;-0,06', '0,02;-0,31', '0,04;Fehler', '0,06;-2,10', '0,08;', '0,10;-3,78'];
-  function dateiSteps(zeilen) {
-    var st = [], werte = [], kaputt = 0, i;
-    function snap(line, nodes, edges, i, msg, extra) {
-      var o = { line: line, nodes: nodes, edges: edges, i: i, msg: msg, werte: werte.slice(), kaputt: kaputt };
-      if (extra) Object.keys(extra).forEach(function (k) { o[k] = extra[k]; });
-      st.push(o);
+  /* ── Rechenkern: zerlegen ─────────────────────────────────── */
+  var GRUPPEN = { eingabe: 'Eingabe', preis: 'Preis bestimmen', antwort: 'Antwort bilden' };
+  var GRUPPEN_KURZ = { eingabe: 'Eingabe', preis: 'Preis', antwort: 'Antwort' };
+  var GRUPPEN_ID = ['eingabe', 'preis', 'antwort'];
+  var Z_WAHL = 'wahl = int(input("Getränk (1 Cola, 2 Wasser, 3 Saft): "))';
+  var Z_GELD = 'geld = float(input("Geld in Euro: "))';
+  var Z_BITTE = 'f"Bitte sehr. Wechselgeld: {rest:.2f} Euro"';
+  var Z_FEHLT = 'f"Es fehlen {fehlt:.2f} Euro"';
+  /* Das lange Programm (14 Zeilen ohne Kommentar) */
+  var LANG = [
+    { ein: 0, text: Z_WAHL, gruppe: 'eingabe' },
+    { ein: 0, text: Z_GELD, gruppe: 'eingabe' },
+    { ein: 0, text: 'if wahl == 1:', gruppe: 'preis' },
+    { ein: 1, text: 'preis = 2.5', gruppe: 'preis' },
+    { ein: 0, text: 'elif wahl == 2:', gruppe: 'preis' },
+    { ein: 1, text: 'preis = 1.0', gruppe: 'preis' },
+    { ein: 0, text: 'else:', gruppe: 'preis' },
+    { ein: 1, text: 'preis = 2.0', gruppe: 'preis' },
+    { ein: 0, text: 'if geld >= preis:', gruppe: 'antwort' },
+    { ein: 1, text: 'rest = geld - preis', gruppe: 'antwort' },
+    { ein: 1, text: 'print(' + Z_BITTE + ')', gruppe: 'antwort' },
+    { ein: 0, text: 'else:', gruppe: 'antwort' },
+    { ein: 1, text: 'fehlt = preis - geld', gruppe: 'antwort' },
+    { ein: 1, text: 'print(' + Z_FEHLT + ')', gruppe: 'antwort' }
+  ];
+  /* Das zerlegte Programm; teil: wohin die Zeile gehört (preis_von, antwort, haupt); leer: Leerzeile */
+  var ZERLEGT = [
+    { ein: 0, text: 'def preis_von(nr):', gruppe: 'preis', teil: 'preis_von' },
+    { ein: 1, text: 'if nr == 1:', gruppe: 'preis', teil: 'preis_von' },
+    { ein: 2, text: 'return 2.5', gruppe: 'preis', teil: 'preis_von' },
+    { ein: 1, text: 'elif nr == 2:', gruppe: 'preis', teil: 'preis_von' },
+    { ein: 2, text: 'return 1.0', gruppe: 'preis', teil: 'preis_von' },
+    { ein: 1, text: 'else:', gruppe: 'preis', teil: 'preis_von' },
+    { ein: 2, text: 'return 2.0', gruppe: 'preis', teil: 'preis_von' },
+    { ein: 0, text: '', leer: true, teil: 'trenn' },
+    { ein: 0, text: 'def antwort(geld, preis):', gruppe: 'antwort', teil: 'antwort' },
+    { ein: 1, text: 'if geld >= preis:', gruppe: 'antwort', teil: 'antwort' },
+    { ein: 2, text: 'rest = geld - preis', gruppe: 'antwort', teil: 'antwort' },
+    { ein: 2, text: 'return ' + Z_BITTE, gruppe: 'antwort', teil: 'antwort' },
+    { ein: 1, text: 'else:', gruppe: 'antwort', teil: 'antwort' },
+    { ein: 2, text: 'fehlt = preis - geld', gruppe: 'antwort', teil: 'antwort' },
+    { ein: 2, text: 'return ' + Z_FEHLT, gruppe: 'antwort', teil: 'antwort' },
+    { ein: 0, text: '', leer: true, teil: 'trenn' },
+    { ein: 0, text: Z_WAHL, gruppe: 'eingabe', teil: 'haupt' },
+    { ein: 0, text: Z_GELD, gruppe: 'eingabe', teil: 'haupt' },
+    { ein: 0, text: 'preis = preis_von(wahl)', gruppe: 'preis', teil: 'haupt' },
+    { ein: 0, text: 'print(antwort(geld, preis))', gruppe: 'antwort', teil: 'haupt' }
+  ];
+  var TEIL_NAMEN = { preis_von: 'Funktion preis_von', antwort: 'Funktion antwort', haupt: 'Hauptprogramm' };
+  var GETRAENKE = [{ wert: 1, text: '1 Cola' }, { wert: 2, text: '2 Wasser' }, { wert: 3, text: '3 Saft' }];
+  var GELD_WERTE = [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5];
+  function pyFloat(x) { return Number.isInteger(x) ? x.toFixed(1) : String(x); }
+  function anzahlCode(zeilen) { return zeilen.filter(function (z) { return !z.leer; }).length; }
+  function hauptZeilen() { return ZERLEGT.filter(function (z) { return z.teil === 'haupt'; }).length; }
+  function einr(z) { return new Array(z.ein + 1).join('    ') + z.text; }
+  function codeText(zeilen) { return zeilen.map(einr).join('\n'); }
+  function preisLang(wahl) { if (wahl === 1) return 2.5; if (wahl === 2) return 1.0; return 2.0; }
+  /* Das lange Programm: nur das, was print ausgibt */
+  function ausgabeLang(wahl, geld) {
+    var preis = preisLang(wahl);
+    if (geld >= preis) { var rest = geld - preis; return 'Bitte sehr. Wechselgeld: ' + rest.toFixed(2) + ' Euro'; }
+    var fehlt = preis - geld; return 'Es fehlen ' + fehlt.toFixed(2) + ' Euro';
+  }
+  /* Das zerlegte Programm mit echten Funktionen */
+  function preisVon(nr) { if (nr === 1) return 2.5; else if (nr === 2) return 1.0; else return 2.0; }
+  function antwortVon(geld, preis) {
+    if (geld >= preis) { var rest = geld - preis; return 'Bitte sehr. Wechselgeld: ' + rest.toFixed(2) + ' Euro'; }
+    var fehlt = preis - geld; return 'Es fehlen ' + fehlt.toFixed(2) + ' Euro';
+  }
+  function ausgabeZerlegt(wahl, geld) { var preis = preisVon(wahl); return antwortVon(geld, preis); }
+  /* Ablauf des zerlegten Programms: welche Zeile (Index in ZERLEGT) als Nächstes dran ist */
+  function ablauf(wahl, geld) {
+    var preis = preisVon(wahl), s = [];
+    function add(zeile, satz) { s.push({ zeile: zeile, wo: ZERLEGT[zeile].teil, satz: satz }); }
+    add(16, 'Hauptprogramm: wahl wird eingelesen.');
+    add(17, 'Hauptprogramm: geld wird eingelesen.');
+    add(18, 'Hauptprogramm: Der Aufruf preis_von(wahl) springt in die Funktion.');
+    add(1, 'In preis_von: Ist nr gleich 1?');
+    if (wahl === 1) add(2, 'In preis_von: return gibt ' + pyFloat(preis) + ' zurück.');
+    else {
+      add(3, 'In preis_von: Ist nr gleich 2?');
+      add(wahl === 2 ? 4 : 6, 'In preis_von: return gibt ' + pyFloat(preis) + ' zurück.');
     }
-    var prev;
-    snap(1, ['init'], [['start', 'init', '']], -1, 'Zuerst startet der Zähler für kaputte Zeilen bei 0, und die Liste werte ist leer (Kopfzeile schon gelesen).');
-    prev = ['init', 'loop', ''];
-    for (i = 0; i < zeilen.length; i++) {
-      var teile = zeilen[i].split(';'), f = zahlTxt(teile[1] === undefined ? '' : teile[1]);
-      snap(3, ['loop', 'nxt'], [prev, ['loop', 'nxt', 'ja']], i, 'Es ist noch eine Zeile übrig: ' + reprStr(zeilen[i]) + ' (Zeile ' + (i + 1) + ' von ' + zeilen.length + ' nach der Kopfzeile).');
-      snap(5, ['chk'], [['nxt', 'chk', '']], i, 'Versuch: Lässt sich ' + reprStr(teile[1] === undefined ? '' : teile[1]) + ' in eine Zahl umwandeln? ' + (f ? 'Ja.' : 'Nein, das gibt einen ValueError.'), { ok: !!f, test: true });
-      if (f) {
-        werte.push(f.v);
-        snap(6, ['ok'], [['chk', 'ok', 'ja']], i, 'Die Umwandlung gelingt: ' + reprNum(f.v) + ' wird an die Liste werte angehängt.', { ok: true });
-        prev = ['ok', 'loop', ''];
-      } else {
-        kaputt = kaputt + 1;
-        snap(8, ['bad'], [['chk', 'bad', 'nein']], i, 'Der except-Block läuft: Der Zähler kaputt steht jetzt auf ' + kaputt + '. Die Zeile wird übersprungen, das Programm läuft weiter.', { ok: false });
-        prev = ['bad', 'loop', ''];
-      }
+    add(18, 'Zurück im Hauptprogramm: preis ist jetzt ' + pyFloat(preis) + '.');
+    add(19, 'Hauptprogramm: print ruft antwort(geld, preis) auf.');
+    add(9, 'In antwort: Ist geld >= preis?');
+    if (geld >= preis) {
+      add(10, 'In antwort: rest wird ausgerechnet.');
+      add(11, 'In antwort: return gibt den Text zurück.');
+    } else {
+      add(13, 'In antwort: fehlt wird ausgerechnet.');
+      add(14, 'In antwort: return gibt den Text zurück.');
     }
-    snap(9, ['loop', 'out', 'end'], [prev, ['loop', 'out', 'nein'], ['out', 'end', '']], zeilen.length, 'Keine Zeile mehr übrig: Die Schleife endet. Es gibt ' + werte.length + ' gültige Werte und ' + kaputt + ' kaputte Zeilen.', { done: true });
-    return st;
-  }
-
-  /* (A) Kodierung */
-  function utf8Bytes(s) {
-    var b = [], i, c, cp;
-    for (i = 0; i < s.length; i++) {
-      cp = s.codePointAt(i);
-      if (cp > 0xFFFF) i++;
-      if (cp < 0x80) b.push(cp);
-      else if (cp < 0x800) b.push(0xC0 | (cp >> 6), 0x80 | (cp & 63));
-      else if (cp < 0x10000) b.push(0xE0 | (cp >> 12), 0x80 | ((cp >> 6) & 63), 0x80 | (cp & 63));
-      else b.push(0xF0 | (cp >> 18), 0x80 | ((cp >> 12) & 63), 0x80 | ((cp >> 6) & 63), 0x80 | (cp & 63));
-    }
-    return b;
-  }
-  /* Windows-1252: wie Latin-1, aber 0x80 bis 0x9F belegt mit Zeichen wie € und Š */
-  var CP_HOCH = '€�‚ƒ„…†‡ˆ‰Š‹Œ�Ž��‘’“”•–—˜™š›œ�žŸ';
-  function cp1252Bytes(s) {
-    var b = [], bad = [], i, c, k;
-    for (i = 0; i < s.length; i++) {
-      c = s.charCodeAt(i);
-      if (c < 0x80 || (c >= 0xA0 && c < 256)) b.push(c);
-      else { k = CP_HOCH.indexOf(s.charAt(i)); if (k >= 0 && s.charAt(i) !== '�') b.push(0x80 + k); else { b.push(63); bad.push(s.charAt(i)); } }
-    }
-    return { bytes: b, nichtDarstellbar: bad };
-  }
-  function hex2(n) { return (n < 16 ? '0' : '') + n.toString(16).toUpperCase(); }
-  function hex2l(n) { return '0x' + (n < 16 ? '0' : '') + n.toString(16); }
-  /* UTF-8 lesen: {ok, text} oder {ok:false, pos, byte, grund} wie Python */
-  function utf8Lesen(b) {
-    var i = 0, out = '', c, n, k, cp;
-    while (i < b.length) {
-      c = b[i];
-      if (c < 0x80) { out += String.fromCharCode(c); i++; continue; }
-      if (c >= 0xC2 && c <= 0xDF) n = 1; else if (c >= 0xE0 && c <= 0xEF) n = 2; else if (c >= 0xF0 && c <= 0xF4) n = 3; else return { ok: false, pos: i, byte: c, grund: 'invalid start byte' };
-      cp = c & (0xFF >> (n + 2));
-      for (k = 1; k <= n; k++) {
-        if (i + k >= b.length) return { ok: false, pos: i, byte: c, grund: 'unexpected end of data' };
-        if ((b[i + k] & 0xC0) !== 0x80) return { ok: false, pos: i, byte: c, grund: 'invalid continuation byte' };
-        cp = (cp << 6) | (b[i + k] & 63);
-      }
-      out += String.fromCodePoint(cp); i += n + 1;
-    }
-    return { ok: true, text: out };
-  }
-  function cp1252Lesen(b) { return b.map(function (x) { return x >= 0x80 && x < 0xA0 ? CP_HOCH.charAt(x - 0x80) : String.fromCharCode(x); }).join(''); }
-  function kodierung(text, speichern, lesen) {
-    var bytes = [], hinweis = '';
-    if (speichern === 'utf8') bytes = utf8Bytes(text);
-    else { var l = cp1252Bytes(text); bytes = l.bytes; if (l.nichtDarstellbar.length) hinweis = 'Windows-1252 kennt nur 256 Zeichen: ' + l.nichtDarstellbar.join(' ') + ' wird zu „?“ (Python würde einen UnicodeEncodeError melden).'; }
-    var res;
-    if (lesen === 'utf8') {
-      var r = utf8Lesen(bytes);
-      res = r.ok ? { text: r.text } : { fehler: "UnicodeDecodeError: 'utf-8' codec can't decode byte " + hex2l(r.byte) + ' in position ' + r.pos + ': ' + r.grund };
-    } else res = { text: cp1252Lesen(bytes) };
-    return { bytes: bytes, hinweis: hinweis, ergebnis: res };
-  }
-
-  var core = { reprStr: reprStr, reprList: reprList, reprNum: reprNum, pyFloat: pyFloat, zerlegeSchritte: zerlegeSchritte, trySteps: trySteps, tryCode: tryCode, dateiSteps: dateiSteps, DATEI_ZEILEN: DATEI_ZEILEN, kodierung: kodierung, utf8Bytes: utf8Bytes, utf8Lesen: utf8Lesen };
-  if (typeof module !== 'undefined' && module.exports) module.exports = core;
-  if (typeof document === 'undefined') return;
-
-  /* ── Hilfen (DOM) ────────────────────────────────────────── */
-  var uid = 0;
-  function el(tag, attrs, kids) {
-    var n = document.createElement(tag);
-    Object.keys(attrs || {}).forEach(function (k) { if (k === 'class') n.className = attrs[k]; else if (k === 'text') n.textContent = attrs[k]; else n.setAttribute(k, attrs[k]); });
-    (kids || []).forEach(function (c) { n.appendChild(typeof c === 'string' ? document.createTextNode(c) : c); });
-    return n;
-  }
-  function field(label, input) { var id = 'v09f' + (++uid); input.id = id; return el('div', { class: 'k-field' }, [el('label', { 'for': id, text: label }), input]); }
-  function select(opts, val) {
-    var s = el('select', {});
-    opts.forEach(function (o) { var op = el('option', { value: o[0], text: o[1] }); if (o[0] === val) op.selected = true; s.appendChild(op); });
+    add(19, 'Zurück im Hauptprogramm: print gibt den Text aus.');
     return s;
   }
-  function player(host, o) {
-    var bBack = el('button', { type: 'button', class: 'k-btn k-btn--small k-btn--ghost', text: 'Zurück' });
-    var bNext = el('button', { type: 'button', class: 'k-btn k-btn--small', text: 'Nächster Schritt' });
-    var bPlay = el('button', { type: 'button', class: 'k-btn k-btn--small k-btn--ghost', text: 'Abspielen', 'aria-pressed': 'false' });
-    var bReset = el('button', { type: 'button', class: 'k-btn k-btn--small k-btn--link', text: 'Neu starten' });
-    var count = el('span', { class: 'v09-count k-small k-muted', 'aria-hidden': 'true' });
-    host.appendChild(el('div', { class: 'k-presets v09-bar', role: 'group', 'aria-label': 'Ablauf steuern' }, [bNext, bBack, bPlay, bReset, count]));
-    var timer = null;
-    function stop() { if (timer) { clearInterval(timer); timer = null; } bPlay.textContent = 'Abspielen'; bPlay.setAttribute('aria-pressed', 'false'); }
-    bNext.addEventListener('click', function () { stop(); o.next(); });
-    bBack.addEventListener('click', function () { stop(); o.back(); });
-    bReset.addEventListener('click', function () { stop(); o.reset(); });
-    bPlay.addEventListener('click', function () {
-      if (timer) { stop(); return; }
-      if (o.done()) o.reset();
-      bPlay.textContent = 'Pause'; bPlay.setAttribute('aria-pressed', 'true');
-      timer = setInterval(function () { o.next(); if (o.done()) stop(); }, o.interval || 1300);
+  function satzAblauf(s, p) {
+    if (p >= s.length) return 'Das Programm ist zu Ende.';
+    return 'Als Nächstes: ' + s[p].satz;
+  }
+  function geldText(g) { return pyFloat(g) + ' Euro'; }
+  function eingabeText(wahl, geld) { return 'Eingabe: Getränk ' + wahl + ', Geld ' + geldText(geld); }
+
+  /* ── Rechenkern: spielzeug ────────────────────────────────── */
+  var ZELLEN = ['A', 'B', 'C', 'D'];
+  var LAMPEN = ['holen', 'entschlüsseln', 'ausführen'];
+  var PROGRAMME = {
+    beispiel: { name: 'Beispiel (Summe)', zellen: { A: 5, B: 3, C: 0, D: 0 }, zeilen: ['LADE A', 'ADDIERE B', 'SPEICHERE C', 'STOPP'] },
+    vermutung: { name: 'Vermutungsprogramm', zellen: { A: 4, B: 0, C: 0, D: 0 }, zeilen: ['LADE A', 'ADDIERE A', 'SPEICHERE B', 'ADDIERE B', 'SPEICHERE D', 'STOPP'] }
+  };
+  var PROGRAMM_IDS = ['beispiel', 'vermutung'];
+  var TAKTE_PRO_BEFEHL = 3;
+  function kopie(o) { var n = {}; Object.keys(o).forEach(function (k) { n[k] = o[k]; }); return n; }
+  function neuSpielzeug(id) {
+    var p = PROGRAMME[id];
+    return { id: id, pc: 0, aktiv: -1, phase: -1, takte: 0, platz: 0, zellen: kopie(p.zellen), geholt: '', halt: false };
+  }
+  function teile(befehl) { var t = befehl.split(' '); return { op: t[0], zelle: t[1] }; }
+  function bedeutung(befehl) {
+    var b = teile(befehl);
+    if (b.op === 'LADE') return 'Der Rechenplatz bekommt den Wert der Zelle ' + b.zelle + '.';
+    if (b.op === 'ADDIERE') return 'Zum Rechenplatz kommt der Wert der Zelle ' + b.zelle + ' dazu.';
+    if (b.op === 'SPEICHERE') return 'Die Zelle ' + b.zelle + ' bekommt den Wert des Rechenplatzes.';
+    return 'Der Rechner hält an.';
+  }
+  /* Ein Takt: holen, entschlüsseln oder ausführen. Der Pfeil „nächster Befehl“ rückt beim Holen weiter. */
+  function takt(z) {
+    if (z.halt) return { zustand: z, satz: 'Der Rechner hat angehalten. Mit „Von vorn“ startet das Programm neu.', getan: false };
+    var zeilen = PROGRAMME[z.id].zeilen;
+    var n = kopie(z); n.zellen = kopie(z.zellen);
+    var ph = (z.phase + 1) % 3, satz, b;
+    n.phase = ph; n.takte = z.takte + 1;
+    var vorn = 'Takt ' + n.takte + ', ' + LAMPEN[ph] + ': ';
+    if (ph === 0) {
+      n.aktiv = z.pc; n.geholt = zeilen[z.pc]; n.pc = z.pc + 1;
+      satz = vorn + 'Der Prozessor holt den Befehl ' + n.geholt + '.';
+    } else if (ph === 1) {
+      satz = vorn + n.geholt + ' heißt: ' + bedeutung(n.geholt);
+    } else {
+      b = teile(z.geholt);
+      if (b.op === 'LADE') { n.platz = z.zellen[b.zelle]; satz = vorn + 'Der Rechenplatz bekommt ' + n.platz + '.'; }
+      else if (b.op === 'ADDIERE') { n.platz = z.platz + z.zellen[b.zelle]; satz = vorn + 'Der Rechenplatz ist jetzt ' + n.platz + '.'; }
+      else if (b.op === 'SPEICHERE') { n.zellen[b.zelle] = z.platz; satz = vorn + 'Die Zelle ' + b.zelle + ' bekommt ' + z.platz + '.'; }
+      else { n.halt = true; satz = vorn + 'Der Rechner hält an. Das Programm ist zu Ende.'; }
+    }
+    return { zustand: n, satz: satz, getan: true };
+  }
+  /* Ein Befehl: bis zum Ende des Dreischritts (mitten im Befehl wird er zu Ende geführt) */
+  function befehl(z) {
+    var r = takt(z), n = r.zustand, saetze = [r.satz];
+    if (!r.getan) return { zustand: z, satz: r.satz, getan: false };
+    while (n.phase !== 2 && !n.halt) { r = takt(n); n = r.zustand; saetze.push(r.satz); }
+    return { zustand: n, satz: saetze[saetze.length - 1], getan: true };
+  }
+  function laufen(z) {
+    var n = z, guard = 0;
+    while (!n.halt && guard++ < 200) n = takt(n).zustand;
+    return n;
+  }
+  function schlussSatz(z) {
+    if (!z.halt) return '';
+    return z.id === 'beispiel' ? 'Das Programm hat C aus A und B berechnet, so wie die Python-Zeile c = a + b.' : 'Das Programm ist zu Ende.';
+  }
+
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+      BAUTEIL_NAMEN: BAUTEIL_NAMEN, SZENARIEN: SZENARIEN, MELDUNG_AUS: MELDUNG_AUS, startBau: startBau, laeuft: laeuft, stromAus: stromAus, speichern: speichern,
+      laden: laden, ssdText: ssdText, ramText: ramText, anwenden: anwenden,
+      GRUPPEN: GRUPPEN, GRUPPEN_KURZ: GRUPPEN_KURZ, LANG: LANG, ZERLEGT: ZERLEGT, TEIL_NAMEN: TEIL_NAMEN, GETRAENKE: GETRAENKE, GELD_WERTE: GELD_WERTE,
+      pyFloat: pyFloat, anzahlCode: anzahlCode, hauptZeilen: hauptZeilen, einr: einr, codeText: codeText,
+      ausgabeLang: ausgabeLang, ausgabeZerlegt: ausgabeZerlegt, ablauf: ablauf, satzAblauf: satzAblauf, geldText: geldText, eingabeText: eingabeText,
+      ZELLEN: ZELLEN, LAMPEN: LAMPEN, PROGRAMME: PROGRAMME, PROGRAMM_IDS: PROGRAMM_IDS, TAKTE_PRO_BEFEHL: TAKTE_PRO_BEFEHL,
+      neuSpielzeug: neuSpielzeug, bedeutung: bedeutung, takt: takt, befehl: befehl, laufen: laufen, schlussSatz: schlussSatz
+    };
+  }
+  if (typeof document === 'undefined') return;
+
+  /* ── DOM-Hilfen ───────────────────────────────────────────── */
+  var nr = 0;
+  var SVGNS = 'http://www.w3.org/2000/svg';
+  function el(tag, attrs, kinder) {
+    var n = document.createElement(tag);
+    Object.keys(attrs || {}).forEach(function (k) {
+      if (k === 'class') n.className = attrs[k];
+      else if (k === 'text') n.textContent = attrs[k];
+      else n.setAttribute(k, attrs[k]);
     });
-    return { stop: stop, count: count, bBack: bBack, bNext: bNext };
+    (kinder || []).forEach(function (c) { if (c) n.appendChild(typeof c === 'string' ? document.createTextNode(c) : c); });
+    return n;
   }
-  function setMsg(p, text, cls) { p.className = 'v09-msg is-on' + (cls ? ' ' + cls : ''); p.textContent = text; }
-
-  /* ══════════════════════════════════════════════════════════
-     (A) Textkodierung
-     ══════════════════════════════════════════════════════════ */
-  function initKodierung(host) {
-    var tIn = el('input', { type: 'text', value: 'Größe 3 m/s²', size: '22', autocomplete: 'off', spellcheck: 'false' });
-    var sSel = select([['utf8', 'UTF-8'], ['cp1252', 'Windows-1252 (alt, Latin-1-Verwandter)']], 'utf8');
-    var lSel = select([['utf8', 'UTF-8'], ['cp1252', 'Windows-1252 (alt, Latin-1-Verwandter)']], 'cp1252');
-    var bytesBox = el('p', { class: 'v09-bytes', 'aria-label': 'Die Bytes der Datei' });
-    var res = el('p', { class: 'v09-res', role: 'status', 'aria-live': 'polite' });
-    var note = el('p', { class: 'v09-msg', role: 'status', 'aria-live': 'polite' });
-    host.appendChild(el('div', { class: 'k-controls' }, [field('Text in der Datei', tIn), field('Gespeichert als', sSel), field('Gelesen als', lSel)]));
-    host.appendChild(el('p', { class: 'v09-lbl' }, ['Bytes in der Datei (Hexadezimal, V02):']));
-    host.appendChild(bytesBox);
-    host.appendChild(el('p', { class: 'v09-lbl' }, ['Was das Programm beim Lesen daraus macht:']));
-    host.appendChild(res);
-    host.appendChild(note);
-    function upd() {
-      var k = kodierung(tIn.value, sSel.value, lSel.value);
-      bytesBox.textContent = '';
-      k.bytes.forEach(function (b) { bytesBox.appendChild(el('span', { class: 'v09-byte' + (b >= 128 ? ' is-hi' : ''), text: hex2(b) })); });
-      if (k.ergebnis.fehler) { res.className = 'v09-res is-bad'; res.textContent = k.ergebnis.fehler; }
-      else {
-        var gleich = k.ergebnis.text === tIn.value;
-        res.className = 'v09-res ' + (gleich ? 'is-ok' : 'is-bad');
-        res.textContent = k.ergebnis.text;
-      }
-      var m;
-      if (sSel.value === lSel.value) m = 'Gleiche Kodierung beim Speichern und Lesen: Der Text kommt unverändert zurück. So soll es sein. Deshalb schreiben und lesen wir in diesem Kurs immer mit encoding="utf-8".';
-      else if (sSel.value === 'utf8') m = 'In UTF-8 brauchen Umlaute zwei Bytes (zum Beispiel C3 B6 für ö). Windows-1252 liest jedes Byte einzeln als ein Zeichen: C3 wird „Ã“, B6 wird „¶“. Das ist der klassische „Ã¶“-Salat.';
-      else m = 'In Windows-1252 (und Latin-1) ist ö ein einzelnes Byte (F6). UTF-8 erwartet dort aber den Anfang einer Mehrbyte-Folge, findet sie nicht und meldet einen UnicodeDecodeError. Das passiert bei alten Dateien oder Exporten, die du aus Excel mit „CSV (Trennzeichen-getrennt)“ speicherst.';
-      if (k.hinweis) m += ' ' + k.hinweis;
-      setMsg(note, m, '');
-    }
-    [tIn, sSel, lSel].forEach(function (c) { c.addEventListener('input', upd); c.addEventListener('change', upd); });
-    upd();
+  function sv(tag, attrs, text) {
+    var n = document.createElementNS(SVGNS, tag);
+    Object.keys(attrs || {}).forEach(function (k) { n.setAttribute(k, attrs[k]); });
+    if (text !== undefined) n.textContent = text;
+    return n;
   }
-
-  /* ══════════════════════════════════════════════════════════
-     (B) CSV-Zeile zerlegen
-     ══════════════════════════════════════════════════════════ */
-  var ZEILEN = [
-    ['bremsen', 'Bremsen: Semikolon, Dezimalkomma', '4,940000E+00;-1,260731E-01;-3,777725E+00;3,835629E-01;3,799239E+00\n', ';'],
-    ['wasch', 'Waschmaschine: Komma, Dezimalpunkt', '1.000000E-02,2.586069E-01,2.916015E-02,-6.552941E-03,2.603282E-01\n', ','],
-    ['fehler', 'kaputte Zeile (Text statt Zahl)', '2,400000E+00;1,045510E-01;Fehler;-4,365308E-01;4,491179E-01\n', ';'],
-    ['kurz', 'kaputte Zeile (nur zwei Spalten)', '5,020000E+00;9,305883E-02\n', ';']
-  ];
-  function initZerlegen(host) {
-    var zSel = select(ZEILEN.map(function (z) { return [z[0], z[1]]; }), 'bremsen');
-    var tSel = select([[';', 'Semikolon ;'], [',', 'Komma ,']], ';');
-    var cb = el('input', { type: 'checkbox', checked: 'checked' });
-    var cbLab = el('label', { class: 'v09-cb' }, [cb, ' replace(",", ".") verwenden']);
-    var msg = el('p', { class: 'v09-msg', role: 'status', 'aria-live': 'polite' });
-    var stage = el('ol', { class: 'v09-stage', 'aria-label': 'Die Zwischenergebnisse' });
-    var steps = [], s = 0;
-    host.appendChild(el('div', { class: 'k-controls' }, [field('Zeile aus der Datei', zSel), field('Trennzeichen im split', tSel), el('div', { class: 'k-field' }, [cbLab])]));
-    var pl = player(host, { next: next, back: back, reset: reset, done: function () { return s >= steps.length - 1; } });
-    host.appendChild(msg);
-    host.appendChild(stage);
-    function build(resetPos) {
-      var z = ZEILEN.filter(function (x) { return x[0] === zSel.value; })[0];
-      steps = zerlegeSchritte(z[2], { trenn: tSel.value, spalte: 2, replace: cb.checked });
-      if (resetPos) s = 0;
-      if (s > steps.length - 1) s = steps.length - 1;
-      paint();
-    }
-    function paint() {
-      stage.textContent = '';
-      var k, st, li, res;
-      for (k = 0; k <= s; k++) {
-        st = steps[k];
-        li = el('li', { class: 'v09-stg' + (k === s ? ' is-active' : ' is-past') + (st.fehler ? ' is-bad' : '') });
-        li.appendChild(el('code', { class: 'v09-stg__code', text: st.ausdruck }));
-        res = el('div', { class: 'v09-stg__val' });
-        if (st.felder) {
-          st.felder.forEach(function (f, i) {
-            res.appendChild(el('span', { class: 'v09-chip' + (st.sel === i && k === s ? ' is-sel' : '') }, [el('span', { class: 'v09-chip__i', text: String(i) }), el('span', { class: 'v09-chip__t', text: f })]));
-          });
-        } else if (st.fehler) res.appendChild(el('code', { class: 'v09-err', text: st.fehler }));
-        else res.appendChild(el('code', { text: st.wert }));
-        li.appendChild(res);
-        stage.appendChild(li);
-      }
-      var st2 = steps[s];
-      setMsg(msg, 'Schritt ' + (s + 1) + ' von ' + steps.length + ': ' + st2.msg, st2.fehler ? 'is-bad' : (st2.art === 'zahl' ? 'is-ok' : ''));
-      pl.count.textContent = (s + 1) + ' / ' + steps.length;
-      pl.bBack.disabled = s === 0; pl.bNext.disabled = s >= steps.length - 1;
-    }
-    function next() { if (s < steps.length - 1) { s++; paint(); } }
-    function back() { if (s > 0) { s--; paint(); } }
-    function reset() { s = 0; paint(); }
-    zSel.addEventListener('change', function () {
-      var z = ZEILEN.filter(function (x) { return x[0] === zSel.value; })[0];
-      tSel.value = z[3]; pl.stop(); build(true);
+  function aktion(text, leise) { return el('button', { type: 'button', class: 'v09-aktion' + (leise ? ' v09-aktion--leise' : ''), text: text }); }
+  function sperre(b, aus) { b.setAttribute('aria-disabled', aus ? 'true' : 'false'); b.classList.toggle('is-aus', !!aus); }
+  /* Gesperrte Knöpfe bleiben im Tab-Fluss, tun aber nichts */
+  function klick(b, fn) { b.addEventListener('click', function () { if (b.getAttribute('aria-disabled') === 'true') return; fn(); }); }
+  /* Auswahl mit einem Wert (Radio-Knöpfe), Pfeiltasten wechseln */
+  function wahl(label, optionen, fn) {
+    var knoepfe = [], host = el('div', { class: 'v09-wahl', role: 'radiogroup', 'aria-label': label });
+    optionen.forEach(function (o, k) {
+      var b = el('button', { type: 'button', class: 'v09-knopf v09-wahl__knopf', role: 'radio', 'aria-checked': 'false', tabindex: k === 0 ? '0' : '-1', text: o.text });
+      b.addEventListener('click', function () { setze(o.wert); fn(o.wert); });
+      b.addEventListener('keydown', function (e) {
+        var d = (e.key === 'ArrowRight' || e.key === 'ArrowDown') ? 1 : (e.key === 'ArrowLeft' || e.key === 'ArrowUp') ? -1 : 0;
+        if (!d) return;
+        e.preventDefault();
+        var m = (k + d + optionen.length) % optionen.length;
+        setze(optionen[m].wert); fn(optionen[m].wert); knoepfe[m].focus();
+      });
+      knoepfe.push(b); host.appendChild(b);
     });
-    tSel.addEventListener('change', function () { pl.stop(); build(true); });
-    cb.addEventListener('change', function () { pl.stop(); build(true); });
-    build(true);
+    function setze(w) {
+      optionen.forEach(function (o, k) {
+        var an = o.wert === w;
+        knoepfe[k].setAttribute('aria-checked', an ? 'true' : 'false'); knoepfe[k].classList.toggle('is-an', an); knoepfe[k].tabIndex = an ? 0 : -1;
+      });
+    }
+    return { host: host, setze: setze };
   }
 
-  /* ══════════════════════════════════════════════════════════
-     (C) try/except
-     ══════════════════════════════════════════════════════════ */
-  function initTry(host) {
-    var zSel = select([['ok', 'Zeile ist in Ordnung: 4,94 ; 0,10 ; -3,78'], ['wert', 'Text statt Zahl: 5,04 ; 0,07 ; Fehler'], ['kurz', 'Zeile zu kurz: 5,02 ; 0,09']], 'ok');
-    var cb = el('input', { type: 'checkbox' });
-    var cbLab = el('label', { class: 'v09-cb' }, [cb, ' except fängt auch IndexError']);
-    var msg = el('p', { class: 'v09-msg', role: 'status', 'aria-live': 'polite' });
-    var codeBox = el('ol', { class: 'v09-code', 'aria-label': 'Python-Code mit try und except' });
-    var vars = el('dl', { class: 'v09-vars' });
-    var outBox = el('pre', { class: 'v09-out', 'aria-label': 'Ausgabe des Programms', 'data-run': 'no' });
-    var steps = [], s = 0, code = [];
-    host.appendChild(el('div', { class: 'k-controls' }, [field('Die Zeile aus der Datei (Liste zeile)', zSel), el('div', { class: 'k-field' }, [cbLab])]));
-    var pl = player(host, { next: next, back: back, reset: reset, done: function () { return s >= steps.length - 1; } });
-    host.appendChild(msg);
-    host.appendChild(el('div', { class: 'v09-grid' }, [codeBox, el('div', { class: 'v09-right' }, [vars, outBox])]));
-    function build() { code = tryCode(cb.checked); steps = trySteps(zSel.value, cb.checked); s = 0; renderCode(); paint(); }
-    function renderCode() {
-      codeBox.textContent = '';
-      code.forEach(function (l, i) { codeBox.appendChild(el('li', { 'data-ln': String(i + 1) }, [el('code', { text: l })])); });
+  /* ── bauteile ─────────────────────────────────────────────── */
+  var BOX = {
+    ea: { x: 20, y: 30, b: 170, h: 100, oben: true },
+    prozessor: { x: 235, y: 30, b: 170, h: 100, oben: true },
+    ram: { x: 450, y: 30, b: 170, h: 100, oben: true },
+    ssd: { x: 235, y: 230, b: 170, h: 100, oben: false }
+  };
+  var BUS_Y = 170, BUS_H = 20;
+  function initBauteile(host) {
+    var z = startBau(), aktivBoxen = [], aktivKanten = [], satz = '', gedrueckt = null;
+    host.textContent = '';
+    var svg = sv('svg', { class: 'v09-bau__svg', viewBox: '0 0 640 360', role: 'img' });
+    var satzEl = el('p', { class: 'v09-satz', 'aria-live': 'off' });
+    var status = el('p', { class: 'k-sr', role: 'status', 'aria-live': 'polite' });
+    var knoepfe = {};
+    function dreieck(cx, cy, nachUnten) {
+      var d = nachUnten ? [[cx - 9, cy - 8], [cx + 9, cy - 8], [cx, cy + 8]] : [[cx - 9, cy + 8], [cx + 9, cy + 8], [cx, cy - 8]];
+      return sv('polygon', { points: d.map(function (p) { return p.join(','); }).join(' '), class: 'v09-pfeil' });
     }
-    function paint() {
-      var st = steps[s];
-      Array.prototype.forEach.call(codeBox.children, function (li) {
-        var n = Number(li.getAttribute('data-ln'));
-        li.className = (n === st.line ? 'is-active ' : '') + (st.skipped.indexOf(n) >= 0 ? 'is-skipped ' : '') + (st.mode === 'fehler' && n === st.line ? 'is-err' : '');
-      });
-      vars.textContent = '';
-      [['kaputt', st.vars.kaputt === null ? '–' : String(st.vars.kaputt)], ['t', st.vars.t === null ? '–' : reprNum(st.vars.t)], ['a', st.vars.a === null ? '–' : reprNum(st.vars.a)]].forEach(function (p) {
-        vars.appendChild(el('dt', { text: p[0] })); vars.appendChild(el('dd', { text: p[1] }));
-      });
-      var o = st.out.join('\n');
-      if (st.ende) o += (o ? '\n' : '') + 'Traceback (most recent call last):\n  ...\n' + st.fehler;
-      outBox.textContent = o || '(noch nichts ausgegeben)';
-      outBox.className = 'v09-out' + (st.ende ? ' is-bad' : '');
-      setMsg(msg, 'Schritt ' + (s + 1) + ' von ' + steps.length + ': ' + st.msg, st.ende || st.mode === 'fehler' ? 'is-bad' : (st.mode === 'except' ? '' : ''));
-      pl.count.textContent = (s + 1) + ' / ' + steps.length;
-      pl.bBack.disabled = s === 0; pl.bNext.disabled = s >= steps.length - 1;
-    }
-    function next() { if (s < steps.length - 1) { s++; paint(); } }
-    function back() { if (s > 0) { s--; paint(); } }
-    function reset() { s = 0; paint(); }
-    zSel.addEventListener('change', function () { pl.stop(); build(); });
-    cb.addEventListener('change', function () { pl.stop(); build(); });
-    build();
-  }
-
-  /* ══════════════════════════════════════════════════════════
-     (D) Datei lesen, Programmablaufplan live
-     ══════════════════════════════════════════════════════════ */
-  var DATEI_CODE = ['kaputt = 0', 'werte = []', 'for zeile in leser:', '    try:', '        a = zahl(zeile[1])', '        werte.append(a)', '    except ValueError:', '        kaputt = kaputt + 1', 'print(len(werte), kaputt)'];
-  function dateiSpec() {
-    var P = root.KursPAP && root.KursPAP.P;
-    return [P.start('start'), P.op('kaputt = 0\nwerte = [ ]', 'init'),
-      P.whil('noch eine Zeile\nin der Datei übrig?', [
-        P.op('zeile = nächste\nZeile lesen', 'nxt'),
-        P.iff('Umwandlung\ngelingt?', [P.op('Wert an werte\nanhängen', 'ok')], [P.op('kaputt =\nkaputt + 1', 'bad')], 'chk')], 'loop'),
-      P.io('Ausgabe: Anzahl\ngültig und kaputt', 'out'), P.end('end', 'Ende')];
-  }
-  function initDatei(host) {
-    if (!root.KursPAP || !root.KursPAP.P) { host.appendChild(el('p', { class: 'k-small k-muted', text: 'Der Programmablaufplan braucht pap-engine.js.' })); return; }
-    var steps = dateiSteps(DATEI_ZEILEN), s = 0;
-    var msg = el('p', { class: 'v09-msg', role: 'status', 'aria-live': 'polite' });
-    var papHost = el('div', { class: 'pap-wrap v09-pap' });
-    var cells = el('ol', { class: 'v09-rows', 'aria-label': 'Die Zeilen der Datei' });
-    var codeBox = el('ol', { class: 'v09-code', 'aria-label': 'Python-Code der Schleife' });
-    DATEI_CODE.forEach(function (l, i) { codeBox.appendChild(el('li', { 'data-ln': String(i + 1) }, [el('code', { text: l })])); });
-    var vars = el('dl', { class: 'v09-vars' });
-    var right = el('div', { class: 'v09-right' }, [cells, codeBox, vars]);
-    var pl = player(host, { next: next, back: back, reset: reset, done: function () { return s >= steps.length - 1; }, interval: 1200 });
-    host.appendChild(msg);
-    host.appendChild(el('div', { class: 'v09-grid v09-grid--pap' }, [papHost, right]));
-    papHost.innerHTML = root.KursPAP.svg(dateiSpec(), { cls: 'pap--run', label: 'Programmablaufplan zum Einlesen einer Datei: Zähler und Liste anlegen, solange eine Zeile übrig ist die Zeile lesen, prüfen ob die Umwandlung gelingt, bei ja den Wert merken, bei nein den Zähler kaputt erhöhen, am Ende ausgeben.' });
-    function edgeEl(f, t, l) { return papHost.querySelector('.pap-e[data-from="' + f + '"][data-to="' + t + '"][data-lab="' + l + '"]'); }
-    function nodeEl(id) { return papHost.querySelector('.pap-n[data-id="' + id + '"]'); }
-    function paint() {
-      var st = steps[s], k;
-      Array.prototype.forEach.call(papHost.querySelectorAll('.is-active, .is-on, .is-done, .is-past'), function (n) { n.classList.remove('is-active', 'is-on', 'is-done', 'is-past'); });
-      for (k = 0; k < s; k++) {
-        steps[k].nodes.forEach(function (id) { var n = nodeEl(id); if (n) n.classList.add('is-done'); });
-        steps[k].edges.forEach(function (e) { var x = edgeEl(e[0], e[1], e[2]); if (x) x.classList.add('is-past'); });
-      }
-      st.nodes.forEach(function (id) { var n = nodeEl(id); if (n) { n.classList.remove('is-done'); n.classList.add('is-active'); } });
-      st.edges.forEach(function (e) { var x = edgeEl(e[0], e[1], e[2]); if (x) { x.classList.remove('is-past'); x.classList.add('is-on'); } });
-      cells.textContent = '';
-      DATEI_ZEILEN.forEach(function (z, i) {
-        var li = el('li', { class: 'v09-row' }, [el('code', { text: z })]);
-        if (i === st.i) li.classList.add('is-sel');
-        else if (i < st.i) {
-          var f = zahlTxt((z.split(';')[1]) || '');
-          li.classList.add(f ? 'is-ok' : 'is-bad');
+    function baue() {
+      while (svg.firstChild) svg.removeChild(svg.firstChild);
+      var busAktiv = aktivKanten.length > 0;
+      svg.setAttribute('aria-label', 'Schema eines Rechners: Prozessor, Arbeitsspeicher, SSD sowie Eingabe und Ausgabe, verbunden durch den Bus. Arbeitsspeicher: ' + ramText(z) + '. SSD: ' + ssdText(z) + '.');
+      /* Leitungen zwischen Boxen und Bus */
+      Object.keys(BOX).forEach(function (id) {
+        var b = BOX[id], cx = b.x + b.b / 2, kante = null;
+        aktivKanten.forEach(function (k) { if (k.box === id) kante = k; });
+        var y1 = b.oben ? b.y + b.h : BUS_Y + BUS_H, y2 = b.oben ? BUS_Y : b.y;
+        svg.appendChild(sv('line', { x1: cx, y1: y1, x2: cx, y2: y2, class: 'v09-leitung' + (kante ? ' is-aktiv' : '') }));
+        if (kante) {
+          var my = (y1 + y2) / 2, r = kante.richtung;
+          /* zum_bus: bei oberen Boxen nach unten, bei der unteren nach oben */
+          if (r === 'zum_bus' || r === 'beide') svg.appendChild(dreieck(cx - (r === 'beide' ? 14 : 0), my, b.oben));
+          if (r === 'vom_bus' || r === 'beide') svg.appendChild(dreieck(cx + (r === 'beide' ? 14 : 0), my, !b.oben));
         }
-        cells.appendChild(li);
       });
-      Array.prototype.forEach.call(codeBox.children, function (li) { li.classList.toggle('is-active', li.getAttribute('data-ln') === String(st.line)); });
-      vars.textContent = '';
-      [['werte', '[' + st.werte.map(reprNum).join(', ') + ']'], ['kaputt', String(st.kaputt)]].forEach(function (p) { vars.appendChild(el('dt', { text: p[0] })); vars.appendChild(el('dd', { text: p[1] })); });
-      setMsg(msg, 'Schritt ' + (s + 1) + ' von ' + steps.length + ': ' + st.msg, st.done ? 'is-ok' : (st.ok === false ? 'is-bad' : ''));
-      pl.count.textContent = (s + 1) + ' / ' + steps.length;
-      pl.bBack.disabled = s === 0; pl.bNext.disabled = s >= steps.length - 1;
+      svg.appendChild(sv('rect', { x: 20, y: BUS_Y, width: 600, height: BUS_H, rx: 4, class: 'v09-bus' + (busAktiv ? ' is-aktiv' : '') }));
+      svg.appendChild(sv('text', { x: 430, y: BUS_Y + 14, class: 'v09-bus__text', 'text-anchor': 'middle' }, busAktiv ? 'Bus (in Benutzung)' : 'Bus'));
+      Object.keys(BOX).forEach(function (id) {
+        var b = BOX[id], an = aktivBoxen.indexOf(id) >= 0, leer = id === 'ram' && !laeuft(z);
+        svg.appendChild(sv('rect', { x: b.x, y: b.y, width: b.b, height: b.h, rx: 6, class: 'v09-box' + (an ? ' is-aktiv' : '') + (leer ? ' is-leer' : '') }));
+        svg.appendChild(sv('text', { x: b.x + b.b / 2, y: b.y + 28, class: 'v09-box__name', 'text-anchor': 'middle' }, BAUTEIL_NAMEN[id]));
+        var inhalt = id === 'ram' ? ramText(z) : id === 'ssd' ? ssdText(z) : id === 'ea' ? 'Tastatur, Bildschirm' : '';
+        if (inhalt) svg.appendChild(sv('text', { x: b.x + b.b / 2, y: b.y + 58, class: 'v09-box__inhalt', 'text-anchor': 'middle' }, inhalt));
+        if (an) svg.appendChild(sv('text', { x: b.x + b.b / 2, y: b.y + b.h - 12, class: 'v09-box__marke', 'text-anchor': 'middle' }, 'beteiligt'));
+      });
     }
-    function next() { if (s < steps.length - 1) { s++; paint(); } }
-    function back() { if (s > 0) { s--; paint(); } }
-    function reset() { s = 0; paint(); }
-    paint();
+    function zeige(ansagen, vorsatz) {
+      baue();
+      satzEl.textContent = satz || 'Drück einen Knopf. Hier steht, was im Rechner passiert.';
+      SZENARIEN.forEach(function (s) { knoepfe[s.id].setAttribute('aria-pressed', gedrueckt === s.id ? 'true' : 'false'); knoepfe[s.id].classList.toggle('is-an', gedrueckt === s.id); });
+      if (ansagen) status.textContent = (vorsatz || '') + satz;
+    }
+    var reihe = el('div', { class: 'v09-aktionen', role: 'group', 'aria-label': 'Was der Rechner tun soll' });
+    SZENARIEN.forEach(function (s) {
+      var b = aktion(s.knopf, true);
+      b.setAttribute('aria-pressed', 'false');
+      b.addEventListener('click', function () {
+        var r = anwenden(z, s.id);
+        z = r.zustand; aktivBoxen = r.boxen; aktivKanten = r.kanten; satz = r.satz; gedrueckt = s.id; zeige(true);
+      });
+      knoepfe[s.id] = b; reihe.appendChild(b);
+    });
+    var zurueck = aktion('Von vorn', true);
+    zurueck.addEventListener('click', function () { z = startBau(); aktivBoxen = []; aktivKanten = []; satz = ''; gedrueckt = null; zeige(true, 'Von vorn. Der Rechner steht wieder wie am Anfang. '); });
+    reihe.appendChild(zurueck);
+    zeige(false);
+    host.appendChild(el('div', { class: 'v09-bau' }, [
+      el('p', { class: 'v09-titel', text: 'Was soll der Rechner tun?' }), reihe,
+      el('div', { class: 'v09-bau__bild' }, [svg]), satzEl, status
+    ]));
   }
 
-  /* ── Selbstcheck-Haken für Papieraufgaben ─────────────────── */
-  function initCheck(host) {
-    var cb = host.querySelector('input[type="checkbox"]'), task = host.closest('[data-a]');
-    var A = root.KursAufgaben, lesson = document.body.getAttribute('data-lesson') || 'V09';
-    if (!cb || !task) return;
-    var sv = A ? A.store.solved(lesson) : {};
-    if (sv[task.getAttribute('data-id')]) cb.checked = true;
-    cb.addEventListener('change', function () {
-      if (!cb.checked || !A) return;
-      A.store.setSolved(lesson, task.getAttribute('data-id'));
-      task.classList.add('is-solved');
-      A.update();
+  /* ── zerlegen ─────────────────────────────────────────────── */
+  function codeZeile(z, k, extra) {
+    var cls = 'v09-zeile' + (z.gruppe ? ' v09-gruppe--' + z.gruppe : '') + (z.leer ? ' is-leer' : '') + (extra ? ' ' + extra : '');
+    return el('div', { class: cls, 'data-zeile': String(k) }, [
+      el('span', { class: 'v09-zeile__nr', 'aria-hidden': 'true', text: z.leer ? '' : String(k + 1) }),
+      el('span', { class: 'v09-zeile__pfeil', 'aria-hidden': 'true' }),
+      el('span', { class: 'v09-zeile__text', text: z.leer ? ' ' : einr(z) }),
+      el('span', { class: 'v09-zeile__tag', text: z.gruppe ? GRUPPEN_KURZ[z.gruppe] : '' })
+    ]);
+  }
+  function initZerlegen(host) {
+    var id = 'v09-zerlegen-' + (++nr);
+    var gw = 1, gg = 3, zerlegt = false, gelaufen = false, ap = 0, folge = [];
+    host.textContent = '';
+    var getrWahl = wahl('Getränk', GETRAENKE, function (w) { gw = w; reset('Eingabe geändert. '); });
+    getrWahl.setze(gw);
+    var geldSel = el('select', { id: id + '-geld', class: 'v09-feld v09-feld--eng' });
+    GELD_WERTE.forEach(function (g) { geldSel.appendChild(el('option', { value: String(g), text: geldText(g) })); });
+    geldSel.value = String(gg);
+    geldSel.addEventListener('change', function () { gg = Number(geldSel.value); reset('Eingabe geändert. '); });
+    var zerlegeKnopf = aktion('Zerlegen'), laufKnopf = aktion('Beide laufen lassen', true), vonVorn = aktion('Von vorn', true);
+    klick(zerlegeKnopf, function () { if (zerlegt) return; zerlegt = true; gelaufen = false; zeige(true, 'Zerlegt. Die Zeilen stehen jetzt in den Funktionen preis_von und antwort. '); });
+    klick(laufKnopf, function () { gelaufen = true; ap = 0; folge = ablauf(gw, gg); zeige(true, 'Beide Fassungen gelaufen. '); });
+    vonVorn.addEventListener('click', function () { zerlegt = false; gelaufen = false; ap = 0; zeige(true, 'Von vorn. Es steht wieder nur das lange Programm da. '); });
+    var einer = aktion('Ein Schritt'), zurueckSchritt = aktion('Ablauf von vorn', true);
+    klick(einer, function () { if (ap >= folge.length) return; ap++; zeige(true); });
+    klick(zurueckSchritt, function () { if (ap === 0) return; ap = 0; zeige(true, 'Ablauf von vorn. '); });
+    var langHost = el('div', { class: 'v09-prog', role: 'region', 'aria-label': 'Das lange Programm', tabindex: '0' });
+    var zerlegtHost = el('div', { class: 'v09-prog', role: 'region', 'aria-label': 'Das zerlegte Programm', tabindex: '0' });
+    var langKopf = el('p', { class: 'v09-titel', text: 'Langes Programm' }), zerlegtKopf = el('p', { class: 'v09-titel', text: 'Zerlegtes Programm' });
+    var langAus = el('p', { class: 'v09-ausgabe' }), zerlegtAus = el('p', { class: 'v09-ausgabe' });
+    var ablaufEl = el('p', { class: 'v09-jetzt' });
+    var leerEl = el('p', { class: 'v09-leer', text: 'Noch nicht zerlegt. Drück „Zerlegen“.' });
+    var hinweis = el('p', { class: 'v09-hinweis k-small k-muted', text: 'Zum Laufenlassen zerlege zuerst das Programm.' });
+    var status = el('p', { class: 'k-sr', role: 'status', 'aria-live': 'polite' });
+    var legende = el('ul', { class: 'v09-legende', 'aria-label': 'Die drei Gruppen von Zeilen' });
+    GRUPPEN_ID.forEach(function (g) { legende.appendChild(el('li', { class: 'v09-legende__punkt v09-gruppe--' + g, text: GRUPPEN[g] })); });
+    function reset(vorsatz) { gelaufen = false; ap = 0; zeige(true, vorsatz); }
+    function zeige(ansagen, vorsatz) {
+      var k, aktuell = (gelaufen && ap < folge.length) ? folge[ap].zeile : -1;
+      langHost.textContent = ''; zerlegtHost.textContent = '';
+      for (k = 0; k < LANG.length; k++) langHost.appendChild(codeZeile(LANG[k], k));
+      if (zerlegt) {
+        var letzter = '';
+        for (k = 0; k < ZERLEGT.length; k++) {
+          var t = ZERLEGT[k].teil;
+          if (t !== 'trenn' && t !== letzter) { zerlegtHost.appendChild(el('div', { class: 'v09-teilkopf', text: TEIL_NAMEN[t] + (t === 'haupt' ? ' (' + hauptZeilen() + ' Zeilen)' : '') })); letzter = t; }
+          zerlegtHost.appendChild(codeZeile(ZERLEGT[k], k, k === aktuell ? 'is-jetzt' : ''));
+          if (k === aktuell) zerlegtHost.lastChild.querySelector('.v09-zeile__pfeil').textContent = '▶';
+          if (k === aktuell) zerlegtHost.lastChild.querySelector('.v09-zeile__tag').textContent = 'als Nächstes';
+        }
+      }
+      zerlegtHost.hidden = !zerlegt; zerlegtKopf.hidden = !zerlegt; leerEl.hidden = zerlegt;
+      langAus.hidden = !gelaufen; zerlegtAus.hidden = !(zerlegt && gelaufen);
+      if (gelaufen) {
+        langAus.textContent = 'Ausgabe: ' + ausgabeLang(gw, gg);
+        zerlegtAus.textContent = 'Ausgabe: ' + ausgabeZerlegt(gw, gg);
+      }
+      ablaufEl.hidden = !(zerlegt && gelaufen);
+      if (zerlegt && gelaufen) ablaufEl.textContent = satzAblauf(folge, ap);
+      sperre(zerlegeKnopf, zerlegt); sperre(laufKnopf, !zerlegt);
+      hinweis.hidden = zerlegt;
+      einer.hidden = !(zerlegt && gelaufen); zurueckSchritt.hidden = !(zerlegt && gelaufen);
+      if (zerlegt && gelaufen) { sperre(einer, ap >= folge.length); sperre(zurueckSchritt, ap === 0); }
+      if (ansagen) status.textContent = (vorsatz || '') + (gelaufen ? 'Lang: ' + ausgabeLang(gw, gg) + '. ' + (zerlegt ? 'Zerlegt: ' + ausgabeZerlegt(gw, gg) + '. ' + satzAblauf(folge, ap) : '') : '');
+    }
+    zeige(false);
+    host.appendChild(el('div', { class: 'v09-zerl' }, [
+      el('div', { class: 'v09-zerl__eingabe' }, [
+        el('p', { class: 'v09-titel', text: 'Eingaben für den Getränkeautomaten' }), getrWahl.host,
+        el('div', { class: 'v09-feldzeile' }, [el('label', { for: id + '-geld', text: 'Geld in Euro' }), geldSel])
+      ]),
+      el('div', { class: 'v09-aktionen' }, [zerlegeKnopf, laufKnopf, vonVorn]), hinweis, legende,
+      el('div', { class: 'v09-zerl__spalten' }, [
+        el('div', { class: 'v09-zerl__teil' }, [langKopf, langHost, langAus]),
+        el('div', { class: 'v09-zerl__teil' }, [zerlegtKopf, zerlegtHost, leerEl, zerlegtAus])
+      ]),
+      ablaufEl, el('div', { class: 'v09-aktionen' }, [einer, zurueckSchritt]), status
+    ]));
+  }
+
+  /* ── spielzeug ────────────────────────────────────────────── */
+  function initSpielzeug(host) {
+    var id = 'v09-spielzeug-' + (++nr);
+    var pid = 'beispiel', z = neuSpielzeug(pid), satz = '';
+    host.textContent = '';
+    var progWahl = wahl('Programm', PROGRAMM_IDS.map(function (k) { return { wert: k, text: PROGRAMME[k].name }; }), function (w) {
+      pid = w; z = neuSpielzeug(pid); satz = ''; zeige(true, PROGRAMME[pid].name + ' geladen. ');
     });
+    progWahl.setze(pid);
+    var knopfTakt = aktion('Ein Takt'), knopfBefehl = aktion('Ein Befehl'), knopfVorn = aktion('Von vorn', true);
+    klick(knopfTakt, function () { var r = takt(z); z = r.zustand; satz = r.satz; zeige(true); });
+    klick(knopfBefehl, function () { var r = befehl(z); z = r.zustand; satz = r.satz; zeige(true); });
+    knopfVorn.addEventListener('click', function () { z = neuSpielzeug(pid); satz = ''; zeige(true, 'Von vorn. '); });
+    var progEl = el('div', { class: 'v09-prog', role: 'region', 'aria-label': 'Das Programm', tabindex: '0' });
+    var geholtEl = el('p', { class: 'v09-feldwert', 'aria-label': 'geholter Befehl' });
+    var platzEl = el('p', { class: 'v09-feldwert v09-feldwert--zahl', 'aria-label': 'Rechenplatz' });
+    var taktEl = el('p', { class: 'v09-feldwert v09-feldwert--zahl', 'aria-label': 'Takte bisher' });
+    var lampenEl = el('ul', { class: 'v09-lampen', 'aria-label': 'Die drei Schritte eines Befehls' });
+    var lampen = LAMPEN.map(function (n) {
+      var li = el('li', { class: 'v09-lampe' }, [el('span', { class: 'v09-lampe__punkt', 'aria-hidden': 'true' }), el('span', { class: 'v09-lampe__wort', text: n })]);
+      lampenEl.appendChild(li); return li;
+    });
+    var zellenEl = el('div', { class: 'v09-zellen', role: 'group', 'aria-label': 'Die vier Zellen' });
+    var zellen = ZELLEN.map(function (n) {
+      var w = el('span', { class: 'v09-zelle__wert' });
+      var c = el('div', { class: 'v09-zelle' }, [el('span', { class: 'v09-zelle__name', text: n }), w]);
+      zellenEl.appendChild(c); return w;
+    });
+    var satzEl = el('p', { class: 'v09-jetzt' });
+    var schlussEl = el('p', { class: 'v09-hinweis' });
+    var status = el('p', { class: 'k-sr', role: 'status', 'aria-live': 'polite' });
+    function zeige(ansagen, vorsatz) {
+      var zeilen = PROGRAMME[pid].zeilen, k;
+      progEl.textContent = '';
+      for (k = 0; k < zeilen.length; k++) {
+        var istAktiv = k === z.aktiv && !z.halt, istNaechst = k === z.pc && !z.halt;
+        var row = el('div', { class: 'v09-zeile' + (istAktiv ? ' is-jetzt' : '') + (k === z.aktiv && z.halt ? ' is-fertig' : '') }, [
+          el('span', { class: 'v09-zeile__nr', 'aria-hidden': 'true', text: String(k + 1) }),
+          el('span', { class: 'v09-zeile__pfeil', 'aria-hidden': 'true', text: istNaechst ? '▶' : '' }),
+          el('span', { class: 'v09-zeile__text', text: zeilen[k] }),
+          el('span', { class: 'v09-zeile__tag', text: istNaechst ? 'nächster Befehl' : (istAktiv ? 'wird bearbeitet' : '') })
+        ]);
+        if (istNaechst) row.setAttribute('aria-current', 'step');
+        progEl.appendChild(row);
+      }
+      geholtEl.textContent = z.geholt || 'noch nichts geholt';
+      geholtEl.classList.toggle('is-leer', !z.geholt);
+      platzEl.textContent = String(z.platz);
+      taktEl.textContent = String(z.takte);
+      lampen.forEach(function (li, j) {
+        var an = z.phase === j && z.takte > 0;
+        li.classList.toggle('is-an', an);
+        li.querySelector('.v09-lampe__punkt').textContent = an ? '●' : '○';
+        if (an) li.setAttribute('aria-current', 'true'); else li.removeAttribute('aria-current');
+      });
+      ZELLEN.forEach(function (n, j) { zellen[j].textContent = String(z.zellen[n]); });
+      satzEl.textContent = satz || 'Noch kein Takt gelaufen. Drück „Ein Takt“.';
+      schlussEl.textContent = schlussSatz(z); schlussEl.hidden = !z.halt;
+      sperre(knopfTakt, z.halt); sperre(knopfBefehl, z.halt);
+      if (ansagen) status.textContent = (vorsatz || '') + (satz ? satz + (z.halt ? ' ' + schlussSatz(z) : '') : '');
+    }
+    zeige(false);
+    host.appendChild(el('div', { class: 'v09-spiel' }, [
+      el('div', { class: 'v09-spiel__kopf' }, [el('p', { class: 'v09-titel', text: 'Programm wählen' }), progWahl.host]),
+      el('div', { class: 'v09-spiel__spalten' }, [
+        el('div', { class: 'v09-spiel__links' }, [el('p', { class: 'v09-titel', text: 'Programm (ein Befehl je Zeile)' }), progEl]),
+        el('div', { class: 'v09-spiel__rechts' }, [
+          el('div', { class: 'v09-feld-gruppe' }, [
+            el('p', { class: 'v09-titel', text: 'Prozessor' }), lampenEl,
+            el('div', { class: 'v09-werte' }, [
+              el('div', { class: 'v09-wert' }, [el('span', { class: 'v09-wert__name', text: 'geholt' }), geholtEl]),
+              el('div', { class: 'v09-wert' }, [el('span', { class: 'v09-wert__name', text: 'Rechenplatz' }), platzEl]),
+              el('div', { class: 'v09-wert' }, [el('span', { class: 'v09-wert__name', text: 'Takte' }), taktEl])
+            ])
+          ]),
+          el('div', { class: 'v09-feld-gruppe' }, [el('p', { class: 'v09-titel', text: 'Speicher' }), zellenEl])
+        ])
+      ]),
+      el('div', { class: 'v09-aktionen' }, [knopfTakt, knopfBefehl, knopfVorn]),
+      satzEl, schlussEl,
+      el('p', { class: 'v09-hinweis k-small k-muted', text: 'Im Spielzeug braucht jeder Befehl drei Takte. Im echten Rechner ist das je nach Befehl verschieden.' }), status
+    ]));
   }
 
   function init() {
-    var map = { kodierung: initKodierung, zerlegen: initZerlegen, 'try': initTry, datei: initDatei, check: initCheck };
-    Object.keys(map).forEach(function (k) { Array.prototype.forEach.call(document.querySelectorAll('[data-explorable="' + k + '"]'), map[k]); });
+    var map = { bauteile: initBauteile, zerlegen: initZerlegen, spielzeug: initSpielzeug };
+    Object.keys(map).forEach(function (k) {
+      Array.prototype.forEach.call(document.querySelectorAll('[data-explorable="' + k + '"]'), function (hostEl) {
+        if (hostEl._v09) return;
+        hostEl._v09 = true;
+        map[k](hostEl);
+      });
+    });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
-})(typeof window !== 'undefined' ? window : globalThis);
+})();

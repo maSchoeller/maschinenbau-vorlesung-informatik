@@ -1,0 +1,55 @@
+{
+ "sprache": "tabelle",
+ "leerzeichen": false,
+ "ausgabe": false,
+ "typhinweis": false,
+ "code": [
+  "Frage = Wie viele Werte hat eine Zahl mit 6 Bit?",
+  "Frage = Größte Zahl mit 6 Bit ohne Vorzeichen?",
+  "Frage = Größte Zahl mit 7 Bit ohne Vorzeichen?",
+  "Frage = Ein 8-Bit-Zähler ohne Vorzeichen steht auf 250. Was zeigt er nach 10-mal +1?",
+  "Frage = Ein 4-Bit-Zähler ohne Vorzeichen steht auf 14. Was zeigt er nach 3-mal +1?",
+  "Frage = Ein 8-Bit-Zähler mit Vorzeichen steht auf 127. Was zeigt er nach 1-mal +1?"
+ ],
+ "vars": [
+  "Antwort"
+ ],
+ "steps": [
+  {
+   "line": 1,
+   "set": {"Antwort": "64"},
+   "frage": "Zeile 1: Wie viele Werte hat eine Zahl mit 6 Bit? Trag die Zahl ein, ohne Anführungszeichen.",
+   "hint": "Jedes Bit verdoppelt die Zahl der Werte: 1 Bit hat 2 Werte, 2 Bit haben 4, 3 Bit haben 8, und so weiter bis 6 Bit."
+  },
+  {
+   "line": 2,
+   "set": {"Antwort": "63"},
+   "frage": "Zeile 2: Was ist die größte Zahl mit 6 Bit, ohne Vorzeichen? Trag die Zahl ein, ohne Anführungszeichen.",
+   "hint": "Die Zahlen fangen bei 0 an. Die größte Zahl ist deshalb die Zahl der Werte minus 1."
+  },
+  {
+   "line": 3,
+   "set": {"Antwort": "127"},
+   "frage": "Zeile 3: Was ist die größte Zahl mit 7 Bit, ohne Vorzeichen? Trag die Zahl ein, ohne Anführungszeichen.",
+   "hint": "Ein Bit mehr verdoppelt die Zahl der Werte. Die größte Zahl ist die Zahl der Werte minus 1."
+  },
+  {
+   "line": 4,
+   "set": {"Antwort": "4"},
+   "frage": "Zeile 4: Ein 8-Bit-Zähler ohne Vorzeichen steht auf 250. Was zeigt er nach 10-mal +1? Zeichne dir den Zahlenkreis auf. Trag die Zahl ein, ohne Anführungszeichen.",
+   "hint": "Zähl auf dem Kreis weiter. Nach dem größten Wert kommt der kleinste. Von 250 bis 255 sind es 5 Schritte, dann geht es bei 0 weiter."
+  },
+  {
+   "line": 5,
+   "set": {"Antwort": "1"},
+   "frage": "Zeile 5: Ein 4-Bit-Zähler ohne Vorzeichen steht auf 14. Was zeigt er nach 3-mal +1? Zeichne dir den Zahlenkreis auf. Trag die Zahl ein, ohne Anführungszeichen.",
+   "hint": "Zähl auf dem Kreis weiter. Der größte Wert mit 4 Bit ist 15. Danach kommt der kleinste Wert."
+  },
+  {
+   "line": 6,
+   "set": {"Antwort": "-128"},
+   "frage": "Zeile 6: Ein 8-Bit-Zähler mit Vorzeichen steht auf 127. Was zeigt er nach 1-mal +1? Trag die Zahl mit Minuszeichen ein, wenn sie negativ ist, ohne Anführungszeichen.",
+   "hint": "Zähl auf dem Kreis weiter. Mit Vorzeichen reicht der Kreis von -128 bis 127. Nach dem größten Wert kommt der kleinste."
+  }
+ ]
+}

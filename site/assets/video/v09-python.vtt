@@ -1,0 +1,57 @@
+WEBVTT
+
+1
+00:00:00.400 --> 00:00:03.206
+Zwei Karten für deinen Werkzeugkasten.
+
+2
+00:00:03.056 --> 00:00:12.225
+Karte 1 zeigt random. Damit zieht der Rechner eine Zufallszahl. Karte 2 zeigt, wie du ein Programm in Funktionen gliederst.
+
+3
+00:00:12.075 --> 00:00:15.650
+Alles aus den Terminen zwei bis acht gilt weiter.
+
+4
+00:00:16.550 --> 00:00:23.776
+Karte 1 beginnt mit import random. Das steht ganz oben und holt das Werkzeug für den Zufall ins Programm.
+
+5
+00:00:24.470 --> 00:00:40.795
+random.randint(1, 100) zieht eine ganze Zahl von 1 bis 100. Beide Grenzen gehören dazu: Die 1 ist möglich, die 100 auch. Bei range ist das anders: Dort gehört der Stoppwert nicht dazu.
+
+6
+00:00:41.117 --> 00:00:47.552
+Die Zahl landet in zahl, und print zeigt sie an. Bei jedem Lauf kommt eine andere Zahl.
+
+7
+00:00:47.947 --> 00:00:54.487
+Fehlt die Zeile mit import, meldet Python einen NameError: Der Name random ist nicht bekannt.
+
+8
+00:00:54.909 --> 00:00:58.840
+Diese zwei Zeilen musst du in der Klausur ohne Vorlage schreiben können.
+
+9
+00:00:59.740 --> 00:01:09.169
+Karte 2 gliedert ein Programm. Oben stehen die Funktionen. frage liest eine Zahl ein und gibt sie zurück. melde zeigt ein Ergebnis an.
+
+10
+00:01:09.712 --> 00:01:21.815
+Darunter steht das Hauptprogramm. Es ruft frage zweimal auf und gibt die Summe an melde weiter. Die Funktionen stehen oben, damit Python sie kennt, wenn das Hauptprogramm sie aufruft.
+
+11
+00:01:22.417 --> 00:01:26.270
+Mit den Eingaben 3 und 4 steht da: Ergebnis 7.
+
+12
+00:01:27.170 --> 00:01:36.111
+Schau, wie die Werte wandern. Der Aufruf frage("Erste Zahl: ") liefert 3, und a bekommt diesen Wert. Der zweite Aufruf liefert 4 für b.
+
+13
+00:01:36.467 --> 00:01:44.979
+Dann steht in melde(a + b) die Summe 7, und melde zeigt sie an.
+
+14
+00:01:45.495 --> 00:01:53.780
+Das Hauptprogramm liest sich wie die Beschreibung der Aufgabe. Funktionen oben, Hauptprogramm unten. Eine Funktion, eine Aufgabe.

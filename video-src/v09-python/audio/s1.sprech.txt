@@ -1,0 +1,1 @@
+Zwei Karten für deinen Werkzeugkasten. Karte eins zeigt rändom. Damit zieht der Rechner eine Zufallszahl. Karte zwei zeigt, wie du ein Programm in Funktionen gliederst. Alles aus den Terminen zwei bis acht gilt weiter.

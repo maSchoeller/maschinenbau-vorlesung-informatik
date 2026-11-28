@@ -1,137 +1,77 @@
 WEBVTT
 
 1
-00:00:00.400 --> 00:00:04.445
-Die while-Schleife wiederholt ihren Block, solange eine Bedingung wahr ist.
+00:00:00.400 --> 00:00:02.992
+Drei neue Karten für deinen Werkzeugkasten.
 
 2
-00:00:04.784 --> 00:00:10.120
-Hinter while steht die Bedingung und ein Doppelpunkt, der Block darunter ist eingerückt.
+00:00:04.327 --> 00:00:09.745
+Karte 1 heißt range mit Schrittweite. Damit zählst du in Sprüngen und rückwärts.
 
 3
-00:00:10.359 --> 00:00:16.491
-Im Beispiel startet zaehler bei 1, und die Schleife läuft, solange zaehler <= 3 gilt.
+00:00:10.663 --> 00:00:13.170
+Karte 2 zeigt eine Schleife in der Schleife.
 
 4
-00:00:16.735 --> 00:00:21.114
-In jedem Durchlauf gibt sie den Wert aus und erhöht ihn um 1.
+00:00:13.876 --> 00:00:17.890
+Karte 3 hilft dir beim Nachprüfen: Hex und Bits in Python.
 
 5
-00:00:21.367 --> 00:00:25.899
-Rechts siehst du, wie sich die Variable von Durchlauf zu Durchlauf ändert.
+00:00:18.790 --> 00:00:26.694
+Karte 1 beginnt mit Sprüngen. range(0, 11, 5) hat drei Zahlen: Start, Stopp, Schritt.
 
 6
-00:00:26.524 --> 00:00:29.970
-Beim vierten Mal ist die Bedingung falsch, und die Schleife endet.
+00:00:27.386 --> 00:00:34.602
+Die Variable i beginnt bei 0 und springt jedes Mal um 5. Sie nimmt die Werte 0, 5 und 10 an.
 
 7
-00:00:30.870 --> 00:00:35.355
-Steht die Anzahl der Durchläufe vorher fest, nimmst du for mit range.
+00:00:35.211 --> 00:00:41.240
+Die 11 ist der Stoppwert und gehört nicht dazu. Der Rumpf läuft dreimal, dann kommt fertig.
 
 8
-00:00:35.772 --> 00:00:43.704
-range(5) liefert die Zahlen 0 bis 4: Der Startwert 0 gehört dazu, der Stoppwert 5 nicht.
+00:00:42.140 --> 00:00:57.127
+Rückwärts zählst du mit dem Schritt minus 1. range(5, 0, -1) ergibt 5, 4, 3, 2, 1. Die 0 fehlt: Der Stoppwert gehört nie dazu.
 
 9
-00:00:44.345 --> 00:00:51.366
-Das ist die Falle beim Off-by-one-Fehler: Es sind fünf Durchläufe, aber die Zahl 5 kommt nie vor.
+00:00:56.977 --> 00:01:06.900
+Andere negative Schritte liest du nur. range(10, 0, -3) ergibt 10, 7, 4 und 1.
 
 10
-00:00:52.127 --> 00:00:56.528
-Mit range(1, 6) zählst du von 1 bis 5.
+00:01:06.750 --> 00:01:17.472
+Achtung: Zählst du gegen den Schritt, läuft der Rumpf nie. range(5, 0) hat keine Zahl, und Python schweigt.
 
 11
-00:00:56.869 --> 00:01:05.866
-Und der dritte Wert ist die Schrittweite: range(0, 10, 3) liefert 0, 3, 6 und 9.
+00:01:17.322 --> 00:01:21.470
+Ein Schritt von 0 meldet einen ValueError.
 
 12
-00:01:06.299 --> 00:01:10.440
-Ohne Schrittweite sind es immer Stopp minus Start Durchläufe.
+00:01:22.370 --> 00:01:33.731
+Karte 2 hat zwei Schleifen. Die äußere zählt i von 1 bis 2. Die innere steht in ihrem Rumpf, eingerückt, und zählt j von 1 bis 3.
 
 13
-00:01:11.340 --> 00:01:18.539
-Jetzt ein typisches Muster: Fünf Messwerte kommen nacheinander herein, und wir wollen Summe, Mittelwert und Maximum.
+00:01:33.581 --> 00:01:40.193
+Bei jedem i läuft die innere Schleife ganz durch. Danach beginnt j wieder bei 1.
 
 14
-00:01:19.492 --> 00:01:22.428
-Gespeichert wird nichts, wir rechnen im Vorbeigehen.
+00:01:40.043 --> 00:01:52.417
+Die Ausgabe ist 1 und 1, 1 und 2, 1 und 3, dann 2 und 1, 2 und 2, 2 und 3. Das sind 2 mal 3, also 6 Durchläufe.
 
 15
-00:01:23.265 --> 00:01:26.757
-Vor der Schleife bekommen summe und maximum den Startwert 0.
+00:01:52.267 --> 00:01:58.100
+Das fertig steht ganz links. Es läuft erst nach beiden Schleifen, einmal.
 
 16
-00:01:26.999 --> 00:01:35.257
-In jedem Durchlauf liest input einen Wert, summe wächst um diesen Wert, und ist er größer als das bisherige Maximum, ersetzt er es.
+00:01:59.000 --> 00:02:04.253
+Karte 3 ist nur zum Nachprüfen, nicht für Aufgaben. Rechne zuerst auf Papier.
 
 17
-00:01:35.573 --> 00:01:40.830
-Nach der Schleife teilen wir die Summe durch 5 und erhalten den Mittelwert 10.8.
+00:02:05.308 --> 00:02:18.413
+0xE2 ist die Hexzahl E2 und ergibt 226. Dasselbe ist 0b11100010, das Byte in binär.
 
 18
-00:01:41.730 --> 00:01:46.568
-break bricht die Schleife sofort ab, continue springt gleich zum nächsten Durchlauf.
+00:02:18.911 --> 00:02:32.250
+hex(226) gibt 0xe2 aus, denn Python schreibt klein. int("E2", 16) liest den Text E2 als Hexzahl.
 
 19
-00:01:47.237 --> 00:01:50.290
-Im Beispiel zählt i von 1 bis 7.
-
-20
-00:01:50.317 --> 00:01:55.279
-Bei 3 überspringt continue den Rest des Blocks, die 3 wird also nicht ausgegeben.
-
-21
-00:01:55.610 --> 00:01:59.871
-Bei 6 beendet break die ganze Schleife, die 7 kommt gar nicht mehr dran.
-
-22
-00:02:00.246 --> 00:02:04.500
-Ausgegeben werden nur 1, 2, 4 und 5.
-
-23
-00:02:05.400 --> 00:02:08.912
-Der häufigste Fehler bei while ist die Endlosschleife.
-
-24
-00:02:09.130 --> 00:02:11.508
-Hier fehlt die Zeile, die zaehler erhöht.
-
-25
-00:02:11.566 --> 00:02:18.688
-Die Variable bleibt 1, die Bedingung bleibt für immer wahr, und das Programm gibt endlos eine 1 nach der anderen aus.
-
-26
-00:02:18.883 --> 00:02:22.375
-Du stoppst es mit der Stopp-Taste oder mit Strg C.
-
-27
-00:02:22.640 --> 00:02:28.470
-Mit der ergänzten Zeile zaehler = zaehler + 1 läuft alles wie gewünscht.
-
-28
-00:02:28.685 --> 00:02:34.490
-Prüfe deshalb bei jeder while-Schleife: Ändert sich im Block eine Variable aus der Bedingung?
-
-29
-00:02:35.390 --> 00:02:36.629
-Wann nimmst du was?
-
-30
-00:02:37.201 --> 00:02:41.454
-Steht die Anzahl der Durchläufe fest, nimmst du for mit range.
-
-31
-00:02:41.715 --> 00:02:46.409
-Hängt das Ende von einer Bedingung ab, wie bei der Abkühlung, nimmst du while.
-
-32
-00:02:47.038 --> 00:02:53.273
-Bei jeder Schleife prüfst du drei Dinge: den Startwert, die Bedingung und die Änderung im Block.
-
-33
-00:02:53.602 --> 00:02:58.034
-Und bei range denkst du daran: Der Stoppwert gehört nicht mehr dazu.
-
-34
-00:02:58.646 --> 00:03:00.160
-Probier alles selbst aus!
+00:02:32.577 --> 00:02:49.130
+Für XOR schreibt Python ein Dach: a ^ b. Mit a gleich 1100 und b gleich 1010 kommt 6 heraus, binär 110. Das Dach ist hier XOR, nicht hoch.

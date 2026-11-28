@@ -1,48 +1,114 @@
 /* =============================================================
-   v06.css – Lektion V06 (Schleifen): Programmablaufpläne mit Schleifen und die beiden Explorables
-   (Abkühlkurve live, Newton-Treppe). Baut auf kurs.css auf (.k-controls, .k-field, .k-seg, .k-chart, .k-readout).
-   Präfix pap = Programmablaufplan (SVG), v06- = Explorables.
+   v06.css – Stile der Bausteine von Termin 06 (hexfarbe, doppelschleife, xorschrift in explorables-v06.js, Präfix v06-)
+   Baut auf kurs.css auf. Die Plan-Regeln stehen in v05.css, die Seite lädt beide. Rot nur für den aktiven Zustand.
+   Zustand steht immer auch als Wort, Zeichen oder Linienstärke da, nie nur als Farbe. Nur Desktop und Tablet (ab 768 px).
    ============================================================= */
-
-/* ── Programmablaufplan (PAP, DIN 66001) als inline-SVG, statisch oder vom Explorable gesteuert ── */
-.pap { display: block; width: 100%; height: auto; max-width: 440px; }
-.pap-n > rect, .pap-n > polygon { fill: #fff; stroke: #374151; stroke-width: 1.75; stroke-linejoin: round; }
-.pap-n text { font-family: var(--dhbw-font-mono); font-size: 13px; fill: var(--text); }
-.pap-e polyline { fill: none; stroke: #374151; stroke-width: 1.75; stroke-linejoin: round; stroke-linecap: round; }
-.pap-e polygon { fill: #374151; stroke: none; }
-.pap-lbl { font-family: var(--dhbw-font); font-size: 12px; font-weight: 600; fill: var(--k-muted); }
-.pap-n.is-cur > rect, .pap-n.is-cur > polygon { fill: var(--red-tint); stroke: #E2001A; stroke-width: 3; }
-.pap-e.is-cur polyline { stroke: #E2001A; stroke-width: 3; }
-.pap-e.is-cur polygon { fill: #E2001A; }
-.pap-marker { fill: #E2001A; stroke: #fff; stroke-width: 2.5; }
-.pap__cap { font-family: var(--dhbw-font); font-size: var(--fs-sm); font-weight: 600; color: var(--k-muted); margin: 0 0 var(--sp-2); }
-
-/* PAP-Reihe: drei Schleifenformen nebeneinander */
-.v06-forms { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sp-5); align-items: start; max-width: none !important; }
-.v06-forms figure { margin: 0; display: grid; gap: var(--sp-2); align-content: start; }
-.v06-forms figcaption { font-size: var(--fs-sm); color: var(--k-muted); }
-@media (max-width: 1000px) { .v06-forms { grid-template-columns: minmax(0, 1fr); } }
-
-/* ── Explorables ── */
-.v06-bar { margin: 0 0 var(--sp-3); align-items: center; }
-.v06-bar .k-btn { min-height: 44px; }
-.v06-grid { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.4fr); gap: var(--sp-5); align-items: start; margin-bottom: var(--sp-3); }
-@media (max-width: 900px) { .v06-grid { grid-template-columns: minmax(0, 1fr); } }
-.v06-left { display: grid; gap: var(--sp-3); }
-.v06-pap { max-width: 440px; }
-.v06-verdict { margin: 0; padding: var(--sp-2) var(--sp-3); font-family: var(--dhbw-font-mono); font-size: var(--fs-sm); border-left: 3px solid var(--border); background: var(--canvas); min-height: 2.6em; max-width: none; }
-.v06-verdict.is-go { border-color: var(--k-ok); background: var(--k-ok-bg); }
-.v06-verdict.is-end { border-color: var(--k-info); background: var(--k-info-bg); }
-.v06-verdict.is-bad { border-color: var(--k-bad); background: var(--k-bad-bg); color: var(--k-bad); font-weight: 600; }
-.v06-msg { min-height: 1.65em; margin: 0 0 var(--sp-3); font-weight: 600; max-width: var(--k-measure); }
-.v06-msg.is-on { padding: var(--sp-3) var(--sp-4); border-left: 3px solid var(--k-info); background: var(--k-info-bg); }
-.v06-msg.is-on.is-ok { border-color: var(--k-ok); background: var(--k-ok-bg); }
-.v06-msg.is-on.is-bad { border-color: var(--k-bad); background: var(--k-bad-bg); color: var(--k-bad); }
-.v06-tab td, .v06-tab th { font-family: var(--dhbw-font-mono); white-space: nowrap; }
-.v06-tab tr.is-cur td, .v06-tab tr.is-cur th { background: var(--red-tint); font-weight: 600; }
-.k-field output { font-family: var(--dhbw-font-mono); color: var(--red-dark); }
-@media (max-width: 480px) {
-  .v06-bar .k-btn { flex: 1 1 auto; }
+[class^="v06-"][hidden], [class*=" v06-"][hidden] { display: none; }
+.v06-titel { margin: 0 0 var(--sp-1); font-size: var(--fs-sm); font-weight: 600; color: var(--k-muted); }
+.v06-knopf, .v06-aktion {
+  min-height: 44px; min-width: 44px; padding: var(--sp-2) var(--sp-4); font: inherit; font-weight: 600; color: var(--text); background: #fff; cursor: pointer;
+  border: 2px solid var(--text); border-radius: var(--r-base);
 }
+.v06-aktion { background: var(--text); color: #fff; }
+.v06-aktion--leise { background: #fff; color: var(--text); }
+.v06-aktion.is-aus, .v06-knopf.is-aus { opacity: .5; cursor: default; text-decoration: line-through; }
+.v06-aktionen { display: flex; flex-wrap: wrap; gap: var(--sp-3); margin: var(--sp-3) 0; }
+.v06-jetzt { margin: 0 0 var(--sp-3); font-weight: 600; }
+.v06-rechnung { margin: 0 0 var(--sp-2); font-weight: 700; font-variant-numeric: tabular-nums; }
+.v06-hinweis { margin: 0 0 var(--sp-3); font-weight: 600; }
+.v06-zaehler { margin: 0 0 var(--sp-3); font-weight: 700; font-variant-numeric: tabular-nums; }
+.v06-meldung { margin: 0 0 var(--sp-3); padding: var(--sp-3) var(--sp-4); font-weight: 700; color: var(--k-bad); border-left: 6px solid var(--k-bad); background: var(--red-tint); }
+.v06-prog, .v06-codegross, .v06-gruppe__bits, .v06-xor__bits { font-family: var(--font-mono, ui-monospace, Consolas, monospace); }
+.v06-feldzeile { display: grid; gap: var(--sp-1); margin-bottom: var(--sp-3); max-width: 260px; }
+.v06-feldzeile label { font-size: var(--fs-sm); font-weight: 600; }
+.v06-feld { font: inherit; min-height: 44px; padding: var(--sp-2) var(--sp-3); color: var(--text); background: #fff; border: 2px solid var(--text); border-radius: var(--r-base); max-width: 100%; font-variant-numeric: tabular-nums; }
+.v06-feld[aria-invalid="true"] { border-color: var(--k-bad); box-shadow: inset 0 -4px 0 var(--k-bad); }
+.v06-feld--eng { width: 5.5em; }
+.v06-feld--code, .v06-feld--wort { font-family: var(--font-mono, ui-monospace, Consolas, monospace); font-size: 1.15em; letter-spacing: .08em; }
+.v06-feld--wort { text-transform: uppercase; }
+.v06-feld:focus-visible, .v06-regler:focus-visible, .v06-knopf:focus-visible, .v06-aktion:focus-visible, .v06-schalter:focus-visible, .v06-bit:focus-visible { outline: 3px solid var(--k-focus); outline-offset: 2px; }
 
-[data-explorable="newton"] .k-chart { max-width: 900px; }
+/* Schalter (an oder aus, mit Wort) und Stellenwert-Kippschalter */
+.v06-schalterreihe { display: flex; flex-wrap: wrap; gap: var(--sp-3); margin: var(--sp-3) 0; }
+.v06-schalter, .v06-bit {
+  display: grid; justify-items: center; gap: var(--sp-2); min-height: 44px; padding: var(--sp-3) var(--sp-4);
+  font: inherit; font-weight: 600; color: var(--text); background: #fff; cursor: pointer; border: 2px solid var(--text); border-radius: var(--r-base);
+}
+.v06-schalter { min-width: 104px; }
+.v06-bit { min-width: 64px; padding: var(--sp-3) var(--sp-2); }
+.v06-schalter__hebel, .v06-bit__hebel { position: relative; width: 56px; height: 28px; border-radius: 14px; background: #E5E7EB; border: 2px solid var(--text); }
+.v06-bit__hebel { width: 40px; }
+.v06-schalter__hebel::after, .v06-bit__hebel::after { content: ""; position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; border-radius: 50%; background: var(--text); }
+.v06-schalter.is-an, .v06-bit.is-an { border-color: var(--red-dark); background: var(--red-tint); }
+.v06-schalter.is-an .v06-schalter__hebel, .v06-bit.is-an .v06-bit__hebel { background: var(--red-dark); border-color: var(--red-dark); }
+.v06-schalter.is-an .v06-schalter__hebel::after { left: 30px; background: #fff; }
+.v06-bit.is-an .v06-bit__hebel::after { left: 14px; background: #fff; }
+.v06-schalter__name, .v06-bit__wert { font-size: var(--fs-sm); font-variant-numeric: tabular-nums; }
+.v06-bit__ziffer { font-size: 1.25em; font-variant-numeric: tabular-nums; }
+.v06-kippreihe { display: flex; flex-wrap: wrap; gap: var(--sp-2); margin: 0 0 var(--sp-3); }
+
+/* Stepper */
+.v06-stufen { display: flex; align-items: center; flex-wrap: wrap; gap: var(--sp-2); margin-bottom: var(--sp-3); }
+.v06-stufen__name { min-width: 7em; font-weight: 600; }
+.v06-stufe { padding: var(--sp-2) var(--sp-3); font-size: 1.25em; }
+.v06-stufe__wert { min-width: 2em; text-align: center; font-size: 1.4em; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+/* hexfarbe */
+.v06-hexfarbe, .v06-doppel { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: var(--sp-4) var(--sp-5); align-items: start; }
+.v06-kanal { display: grid; grid-template-columns: 4.5em minmax(120px, 1fr) auto; align-items: center; gap: var(--sp-3); margin-bottom: var(--sp-3); }
+.v06-kanal__name { font-weight: 700; }
+.v06-regler { width: 100%; min-height: 44px; accent-color: var(--red-dark); }
+.v06-codezeile { display: flex; align-items: center; gap: var(--sp-4); margin: 0 0 var(--sp-2); }
+.v06-codegross { font-size: 2.2em; font-weight: 700; letter-spacing: .06em; }
+.v06-flaeche { display: inline-block; width: 96px; height: 56px; border: 3px solid var(--text); border-radius: var(--r-base); flex: none; }
+.v06-farbtext { margin: 0 0 var(--sp-2); font-weight: 700; font-variant-numeric: tabular-nums; }
+.v06-bytebloecke { display: grid; gap: var(--sp-3); }
+.v06-byte { padding: var(--sp-3); border: 2px solid var(--k-line); border-left: 6px solid var(--text); border-radius: var(--r-base); background: #fff; }
+.v06-byte__titel { margin: 0; font-weight: 700; }
+.v06-byte__zahl { margin: 0 0 var(--sp-2); font-variant-numeric: tabular-nums; color: var(--k-muted); font-weight: 600; }
+.v06-gruppen { display: flex; flex-wrap: wrap; gap: var(--sp-5); margin-bottom: var(--sp-2); }
+.v06-gruppe { display: flex; align-items: center; gap: var(--sp-2); padding-top: var(--sp-1); border-top: 3px solid var(--k-line); }
+.v06-gruppe__bits { font-size: 1.3em; font-weight: 700; letter-spacing: .08em; }
+.v06-gruppe__hex { font-size: 1.6em; min-width: 1.2em; text-align: center; padding: 0 var(--sp-2); border: 2px solid var(--text); border-radius: var(--r-base); background: var(--red-tint); }
+.v06-byte__satz { margin: 0; font-size: var(--fs-sm); font-weight: 600; }
+
+/* doppelschleife: Programm mit markierten Zeilen, Raster, Tabelle */
+.v06-prog { margin: var(--sp-3) 0; padding: var(--sp-2) 0; background: #1E1E1E; color: #F3F4F6; border-radius: var(--r-base); overflow-x: auto; font-size: .9375rem; }
+.v06-zeile { display: flex; gap: var(--sp-3); padding: 2px var(--sp-3); border-left: 6px solid transparent; white-space: pre; }
+.v06-zeile__nr { flex: none; width: 1.6em; text-align: right; color: #B6BCC6; font-variant-numeric: tabular-nums; }
+.v06-zeile.is-jetzt { background: #3B2A2D; border-left-color: #FF6B6B; font-weight: 700; }
+.v06-zeile.is-jetzt .v06-zeile__nr { color: #fff; }
+.v06-raster-host, .v06-tabelle-host, .v06-xor-host { overflow: auto; margin-bottom: var(--sp-3); }
+.v06-tabelle-host { max-height: 16em; }
+.v06-raster { border-collapse: collapse; margin: 0; }
+.v06-raster th { padding: var(--sp-2) var(--sp-3); font-weight: 700; font-size: var(--fs-sm); text-align: center; }
+.v06-zelle { min-width: 64px; height: 56px; padding: var(--sp-1); text-align: center; vertical-align: middle; border: 2px solid var(--k-line); background: #fff; font-variant-numeric: tabular-nums; }
+.v06-zelle.is-getan { background: var(--canvas); border-color: var(--k-muted); font-weight: 600; }
+.v06-zelle.is-treffer { border-color: var(--text); border-width: 3px; font-weight: 700; }
+.v06-zelle.is-jetzt { background: var(--red-tint); border-color: var(--red-dark); border-width: 4px; box-shadow: inset 0 -4px 0 var(--red-dark); font-weight: 700; }
+.v06-zelle__nr { display: block; font-size: 1.1em; }
+.v06-zelle__marke { display: block; font-size: .75rem; font-weight: 700; }
+.v06-tabelle { margin: 0; width: 100%; }
+.v06-tabelle th, .v06-tabelle td { text-align: center; font-variant-numeric: tabular-nums; }
+.v06-tabelle tbody th { border-bottom: 1px solid var(--border); font-weight: 600; }
+.v06-tabelle tbody tr.is-jetzt th, .v06-tabelle tbody tr.is-jetzt td { background: var(--red-tint); font-weight: 700; box-shadow: inset 0 -2px 0 var(--red); }
+
+/* xorschrift */
+.v06-xorbau { display: grid; gap: var(--sp-2); }
+.v06-xorbau__oben { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: var(--sp-4) var(--sp-5); align-items: start; }
+.v06-xor { margin: 0 0 var(--sp-3); }
+.v06-xor caption { text-align: left; font-weight: 700; padding-bottom: var(--sp-2); }
+.v06-xor th[scope="row"] { text-align: left; font-weight: 600; white-space: nowrap; }
+.v06-xor td { text-align: center; font-variant-numeric: tabular-nums; }
+.v06-xor__bits { letter-spacing: .1em; }
+.v06-xor__schl { color: var(--k-muted); }
+.v06-xor__buch { font-size: 1.3em; font-weight: 700; }
+.v06-xor__buch.is-kein { color: var(--k-bad); border-bottom: 3px dashed var(--k-bad); }
+.v06-xor__ergebnis th, .v06-xor__ergebnis td { background: var(--red-tint); font-weight: 700; }
+
+@media (max-width: 1099px) { .v06-hexfarbe, .v06-doppel, .v06-xorbau__oben { grid-template-columns: minmax(0, 1fr); } }
+/* Schmaler Inhalt (breites Tutor-Panel): einspaltig wie unter 1100 px */
+html.app-eng .v06-hexfarbe, html.app-eng .v06-doppel, html.app-eng .v06-xorbau__oben { grid-template-columns: minmax(0, 1fr); }
+@media (prefers-reduced-motion: no-preference) {
+  .v06-schalter__hebel, .v06-schalter__hebel::after, .v06-bit__hebel, .v06-bit__hebel::after { transition: background-color .15s, left .15s, border-color .15s; }
+}

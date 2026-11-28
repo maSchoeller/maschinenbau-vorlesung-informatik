@@ -1,0 +1,1 @@
+Jetzt du, zu Hause. Ersetze rietörn grad durch print von grad und lass das Programm laufen. Überlege zuerst, was du erwartest. Probiere es dann aus. Lies die Meldung genau. Wenn du magst, schreibst du zusätzlich print von fahr unter den Aufruf. Dann siehst du, was in fahr steht.

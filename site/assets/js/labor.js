@@ -43,7 +43,7 @@
      zählen nirgends mit. countable() ist die Menge, die zählt („x/11“, Fortschritt); statusNodes() die, deren
      Status die Liste zeigt (mit Knobelaufgaben). */
   function statusNodes(sec) { return $$('[data-a][data-id]:not([data-count="0"])', sec); }
-  function countable(sec) { return $$('[data-a][data-id]:not([data-count="0"]):not([data-knobel])', sec); }
+  function countable(sec) { return $$('[data-a][data-id]:not([data-count="0"]):not([data-knobel]):not([data-freiwillig])', sec); }
   function istKnobel(sec) { return sec.hasAttribute('data-knobel'); }
   function stars(n) { n = parseInt(n, 10) || 0; if (!n) return null; return window.KStars(n, 4); }
   function setMark(node, s) { node.textContent = ''; node.appendChild(window.KIcon(MARK[s])); }
@@ -72,7 +72,7 @@
     var inPart = tasks.filter(function (t) { return t.getAttribute('data-part') === part; });
     if (!inPart.length) return;
     var kn = part === 'K';
-    var h = el('h2', { class: 'lab__group' + (kn ? ' lab__group--knobel' : ''), text: kn ? partName.K : partName[part] + (part === 'A' ? ' (im Termin)' : ' (' + (/^\d+$/.test(lab.getAttribute('data-zuhause') || '') ? lab.getAttribute('data-zuhause') + ' Min, ' : '') + 'Pflicht)') });
+    var h = el('h2', { class: 'lab__group' + (kn ? ' lab__group--knobel' : ''), text: kn ? partName.K : partName[part] + (part === 'A' ? ' (im Termin)' : ' (' + (function () { var z = lab.getAttribute('data-zuhause') || '', min = /^\d+$/.test(z) ? z + ' Min' : ''; if (lab.getAttribute('data-training') === 'freiwillig') { /* zuhause nennt die Pflichtminuten (Teil A); hier zählt die Dauer des Trainings selbst */ var tm = inPart.reduce(function (s, t) { var m = t.getAttribute('data-min') || ''; return s + (/^\d+$/.test(m) ? parseInt(m, 10) : 0); }, 0); return 'freiwillig' + (tm ? ', ' + tm + ' Min' : ''); } return (min ? min + ', ' : '') + 'Pflicht'; })() + ')') });
     var ol = el('ol', { class: 'lab__items' + (kn ? ' lab__items--knobel' : '') });
     var og = el('optgroup', { label: partName[part] });
     inPart.forEach(function (t) {

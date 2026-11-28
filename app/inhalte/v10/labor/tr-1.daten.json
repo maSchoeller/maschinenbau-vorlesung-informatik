@@ -1,0 +1,68 @@
+{
+ "sprache": "tabelle",
+ "leerzeichen": false,
+ "gross": false,
+ "ausgabe": false,
+ "typhinweis": false,
+ "code": [
+  "Frage = Wie viele KB sind 3 MB?",
+  "Frage = Wie viele MB sind 2 GB?",
+  "Frage = Wie viele Fotos mit 5 MB passen auf 4 GB?",
+  "Frage = Welche Nummer hat C?",
+  "Frage = Welcher Buchstabe hat die Nummer 70?",
+  "Frage = Wie viele Werte hat ein 6-Bit-Code?"
+ ],
+ "vars": [
+  "Antwort"
+ ],
+ "steps": [
+  {
+   "line": 1,
+   "set": {
+    "Antwort": "3000"
+   },
+   "frage": "Zeile 1: Wie viele KB sind 3 MB? Trag die Zahl ein, ohne Leerzeichen.",
+   "hint": "Ein MB sind 1000 KB. Rechne 3 mal 1000."
+  },
+  {
+   "line": 2,
+   "set": {
+    "Antwort": "2000"
+   },
+   "frage": "Zeile 2: Wie viele MB sind 2 GB? Trag die Zahl ein, ohne Leerzeichen.",
+   "hint": "Ein GB sind 1000 MB. Rechne 2 mal 1000."
+  },
+  {
+   "line": 3,
+   "set": {
+    "Antwort": "800"
+   },
+   "frage": "Zeile 3: Wie viele Fotos mit 5 MB passen auf 4 GB? Trag die Zahl ein, ohne Leerzeichen.",
+   "hint": "Rechne zuerst 4 GB in MB um, dann teile durch 5."
+  },
+  {
+   "line": 4,
+   "set": {
+    "Antwort": "67"
+   },
+   "frage": "Zeile 4: Welche Nummer hat C? Trag die Zahl ein, ohne Leerzeichen.",
+   "hint": "Zähl vom A aus weiter: A ist 65, B ist 66, ..."
+  },
+  {
+   "line": 5,
+   "set": {
+    "Antwort": "F"
+   },
+   "frage": "Zeile 5: Welcher Buchstabe hat die Nummer 70? Trag den Buchstaben ein, ohne Anführungszeichen.",
+   "hint": "Zähl vom A aus weiter: A ist 65, B ist 66, ..."
+  },
+  {
+   "line": 6,
+   "set": {
+    "Antwort": "64"
+   },
+   "frage": "Zeile 6: Wie viele Werte hat ein 6-Bit-Code? Trag die Zahl ein, ohne Leerzeichen.",
+   "hint": "Jedes Bit verdoppelt die Zahl der Werte. Fang mit 1 an und verdopple sechsmal."
+  }
+ ]
+}

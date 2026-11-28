@@ -1,117 +1,61 @@
 WEBVTT
 
 1
-00:00:00.400 --> 00:00:08.183
-Am Koordinatenmessgerät werden acht Bohrungen derselben Serie gemessen, Soll 12 Millimeter, Toleranzklasse H7.
+00:00:00.400 --> 00:00:10.601
+Ein Programm fragt nach dem Alter. Du tippst 17 in das Eingabefeld. Aber Python speichert das nicht als Zahl.
 
 2
-00:00:08.740 --> 00:00:13.693
-Gefragt sind der Mittelwert, die Spannweite und die Zahl der Werte außerhalb der Toleranz.
+00:00:11.031 --> 00:00:15.361
+Was input liefert, ist immer Text. type zeigt es: str. Das steht für Text.
 
 3
-00:00:14.356 --> 00:00:18.700
-Acht Variablen anzulegen wäre mühsam, bei achtzig Werten unbrauchbar.
+00:00:15.802 --> 00:00:23.130
+Text steht in Anführungszeichen, hier "17". Es sieht aus wie eine Zahl, ist aber Text.
 
 4
-00:00:19.299 --> 00:00:25.490
-Ein Programm braucht einen Weg, viele Werte unter einem Namen abzulegen. Das leisten Datenstrukturen.
+00:00:23.765 --> 00:00:32.930
+Neben int und float gibt es also einen dritten Typ. Der Typ sagt Python, wie ein Wert zu behandeln ist.
 
 5
-00:00:26.390 --> 00:00:28.110
-Die wichtigste ist die Liste.
+00:00:33.830 --> 00:00:43.181
+Mit + hängst du Text aneinander: "Hallo " + name ergibt Hallo Lea. Das Leerzeichen gehört in den Text.
 
 6
-00:00:28.308 --> 00:00:33.930
-Stell sie dir als Reihe nummerierter Kästchen im Speicher vor, mit einem Namen für die ganze Reihe.
+00:00:43.031 --> 00:00:51.140
+Anders ist es bei Text und Zahl. Zählst du zum Alter eins dazu, bricht Python ab und meldet einen TypeError.
 
 7
-00:00:34.300 --> 00:00:38.256
-Gezählt wird ab null: Das erste Kästchen hat den Index 0.
+00:00:50.990 --> 00:01:02.021
+Lies die Meldung von unten. TypeError heißt: Die Typen passen nicht zusammen. str und int sind die zwei Typen, die sich nicht mischen lassen.
 
 8
-00:00:38.567 --> 00:00:44.356
-Von hinten zählst du mit negativen Zahlen: Der Index minus eins ist immer das letzte Element.
+00:01:01.871 --> 00:01:06.840
+Die Meldung ist keine Strafe. Sie sagt dir genau, was nicht passt.
 
 9
-00:00:44.539 --> 00:00:53.340
-Ein Index außerhalb der Liste ist ein IndexError. Ein Slice dagegen schneidet einen Ausschnitt heraus, und sein Endwert gehört nicht mehr dazu.
+00:01:07.740 --> 00:01:18.904
+Was du tust, hängt davon ab, was du willst. Willst du rechnen, machst du mit int aus dem Text eine Zahl. Deshalb schreibst du seit Termin eins int(input(...)).
 
 10
-00:00:53.559 --> 00:00:57.880
-Mit append hängst du hinten einen Wert an, die Liste wächst.
+00:01:18.754 --> 00:01:24.166
+Dann steht in alter die Zahl 17, und alter + 1 ergibt 18.
 
 11
-00:00:58.780 --> 00:01:02.806
-Über eine Liste läufst du mit einer Schleife: für jeden Wert in der Liste.
+00:01:24.016 --> 00:01:34.479
+str geht in die andere Richtung. str(12) macht aus der Zahl einen Text. So hängst du sie an einen Text an: Punkte, Doppelpunkt, 12.
 
 12
-00:01:03.053 --> 00:01:14.145
-Im Programmablaufplan ist das eine Zählschleife: Eine Raute fragt, ob noch ein Wert übrig ist, der Rumpf holt den nächsten, und die Rückführlinie führt wieder vor die Raute.
+00:01:34.329 --> 00:01:43.950
+Und noch etwas zu int: int(3.7) ergibt 3. Die Umwandlung schneidet die Stellen nach dem Komma ab, sie rundet nicht.
 
 13
-00:01:14.892 --> 00:01:24.119
-So zählen wir die Werte außerhalb der Toleranz: Ein if im Rumpf prüft die Grenzen, und append sammelt die Verletzer in einer zweiten Liste.
+00:01:44.850 --> 00:01:54.621
+Der vierte Typ heißt bool. Er kennt nur zwei Werte: True und False. Ein Vergleich wie 5 > 3 ergibt einen davon.
 
 14
-00:01:24.347 --> 00:01:30.350
-Es sind zwei Werte: 11,998 und 12,019.
+00:01:54.950 --> 00:02:00.668
+Das kennst du schon aus if: Die Bedingung ist ein Vergleich, und er ist wahr oder falsch.
 
 15
-00:01:31.250 --> 00:01:38.306
-Jetzt die Falle. Ein Name wie a enthält die Liste nicht, er zeigt auf sie, wie ein Schild mit Pfeil.
-
-16
-00:01:38.661 --> 00:01:44.211
-b = a legt keine neue Liste an. Es hängt nur ein zweites Schild an dieselbe.
-
-17
-00:01:44.718 --> 00:01:50.596
-Hängst du über b einen Wert an, ändert sich auch a. Das nennt man Aliasing.
-
-18
-00:01:51.386 --> 00:01:59.621
-Eine echte Kopie machst du mit a[:]: Dann gibt es zwei getrennte Listen.
-
-19
-00:02:00.037 --> 00:02:03.940
-Der Fehler wirft keine Meldung. Er verfälscht still deine Daten.
-
-20
-00:02:04.840 --> 00:02:09.420
-Das Tupel sieht aus wie eine Liste, hat aber runde Klammern und lässt sich nicht ändern.
-
-21
-00:02:10.926 --> 00:02:18.505
-Ideal für feste Paare: die Toleranz als untere und obere Grenze, oder ein Punkt aus x und y.
-
-22
-00:02:19.740 --> 00:02:25.386
-Eine Stückliste ist etwas anderes: Hier ist nicht die Position wichtig, sondern die Teilenummer.
-
-23
-00:02:25.828 --> 00:02:32.153
-Dafür gibt es das Dictionary, eine Tabelle aus Schlüssel und Wert. Du schlägst mit dem Schlüssel nach.
-
-24
-00:02:32.356 --> 00:02:38.170
-Gibt es den Schlüssel nicht, meldet Python einen KeyError. Mit in fragst du vorher.
-
-25
-00:02:39.070 --> 00:02:40.956
-Zum Schluss die Faustregel.
-
-26
-00:02:41.254 --> 00:02:47.041
-Eine Liste für Werte, die wachsen und nach Position geordnet sind, etwa eine Messreihe.
-
-27
-00:02:47.324 --> 00:02:50.402
-Ein Tupel für feste, zusammengehörige Werte.
-
-28
-00:02:50.598 --> 00:02:55.924
-Ein Dictionary für Werte, die du über einen Namen findest, etwa eine Stückliste.
-
-29
-00:02:56.263 --> 00:03:06.240
-Und beim Prüfen von KI-Code achtest du auf drei Dinge: Index um eins daneben, Kopie, die keine ist, und Schlüssel, die es nicht gibt.
+00:02:01.389 --> 00:02:11.220
+Merke dir: input liefert Text. Mit int, float und str wandelst du um. Python rechnet nur mit Werten, die zusammenpassen.

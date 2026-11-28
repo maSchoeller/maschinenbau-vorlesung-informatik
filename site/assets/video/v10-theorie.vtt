@@ -1,77 +1,45 @@
 WEBVTT
 
 1
-00:00:00.400 --> 00:00:08.064
-Du fragst eine KI: Welches Anzugsdrehmoment hat eine Schraube M10 der Festigkeitsklasse 8.8?
+00:00:00.400 --> 00:00:11.802
+Ein Rechner hat nicht einen Speicher, sondern vier Stufen. Ganz oben sitzt der Speicher im Prozessor. Dann kommt der Arbeitsspeicher, dann die SSD, ganz unten die Festplatte.
 
 2
-00:00:08.385 --> 00:00:20.079
-Die Antwort kommt sofort: 86 Nm. Das klingt sicher. Der Tabellenwert ist aber 49 Nm. Die sechsundachtzig gehören zur M12.
+00:00:12.835 --> 00:00:21.834
+Wir spielen es in Zeitlupe. Der Arbeitsspeicher braucht für einen Zugriff eine Sekunde. Der Speicher im Prozessor braucht dann nur 0,01 Sekunden.
 
 3
-00:00:20.901 --> 00:00:24.530
-Wie kommt eine KI zu so einer selbstbewussten Falschaussage?
+00:00:22.338 --> 00:00:31.192
+Die SSD braucht in dieser Zeitlupe rund 17 Minuten. Die Festplatte braucht rund 28 Stunden, also mehr als einen ganzen Tag.
 
 4
-00:00:25.430 --> 00:00:29.139
-Ein Sprachmodell rechnet nicht mit Buchstaben, sondern mit Tokens.
+00:00:31.774 --> 00:00:40.210
+Je schneller ein Speicher ist, desto kleiner und teurer ist er. Darum liegt oben, was der Prozessor jetzt braucht, und unten der große Rest.
 
 5
-00:00:29.324 --> 00:00:36.141
-Ein Tokenizer zerlegt den Text in Stücke und gibt jedem Stück eine Nummer.
+00:00:41.110 --> 00:00:49.603
+Gemessen wird in Byte. Ein Byte sind 8 Bit. Es reicht für eine Zahl bis 255 oder für einen Buchstaben.
 
 6
-00:00:36.436 --> 00:00:42.349
-Häufige Wörter sind ein Token. Lange Wörter werden zerlegt: Wellendichtring wird zu Wellen, dicht und ring.
+00:00:49.937 --> 00:01:02.271
+Von Einheit zu Einheit geht es mal 1000. Ein KB sind 1000 Byte, ein MB sind 1000 KB, ein GB sind 1000 MB. Viele Programme rechnen mit 1024, wir rechnen mit 1000.
 
 7
-00:00:43.164 --> 00:00:45.000
-Das Modell sieht nur die Nummern.
+00:01:03.326 --> 00:01:19.000
+Eine Textseite hat etwa 2 KB. Ein Foto hat etwa 3 MB. Ein Film hat etwa 2 GB, das sind 2000 MB.
 
 8
-00:00:45.900 --> 00:00:50.175
-Beim Training wird gezählt: Welches Token folgte auf welchen Kontext?
+00:01:19.900 --> 00:01:27.400
+Der Rechner kennt nur Zahlen. Darum ist auch jeder Buchstabe eine Zahl. Diese Zuordnung heißt Code.
 
 9
-00:00:50.468 --> 00:01:00.460
-Kam nach dem Wort „die“ fünfmal ein Wort, viermal Welle und einmal Schraube, dann sind das achtzig Prozent für Welle und zwanzig Prozent für Schraube.
+00:01:27.250 --> 00:01:33.860
+Ein einfacher Code ist ASCII. Er hat 7 Bit, das sind 128 Zeichen.
 
 10
-00:01:00.856 --> 00:01:10.270
-Das ist ein Bigramm-Modell, der einfachste Fall. Große Modelle speichern ihre Wahrscheinlichkeiten in einem neuronalen Netz, aber gelernt wird dasselbe.
+00:01:33.710 --> 00:01:46.407
+Das große A ist die 65. In Bits ist das 100 0001. Das B ist die 66, das C die 67, und so geht es weiter.
 
 11
-00:01:11.170 --> 00:01:18.339
-Zum Erzeugen würfelt das Modell den Nachfolger nach diesen Wahrscheinlichkeiten, hängt ihn an und macht weiter, Token für Token.
-
-12
-00:01:19.237 --> 00:01:27.036
-Die Temperatur regelt den Zufall: Niedrig heißt fast immer das häufigste Wort, hoch heißt, auch Unwahrscheinliches kommt dran.
-
-13
-00:01:27.896 --> 00:01:32.100
-Der Seed macht den Zufall wiederholbar: Gleicher Seed, gleicher Text.
-
-14
-00:01:33.000 --> 00:01:41.636
-Der Kontext ist das, was das Modell beim Vorhersagen sieht. Dein Mini-Modell sieht ein Wort, große Modelle viele tausend Tokens.
-
-15
-00:01:42.421 --> 00:01:49.545
-Jeder erzeugte Satz besteht aus Wortpaaren, die es im Training gab. Darum klingt er flüssig, auch wenn die Aussage falsch ist.
-
-16
-00:01:49.835 --> 00:01:57.290
-Das nennt man Halluzination. Das Modell prüft keine Quelle, es erzeugt Wahrscheinliches, nicht Wahres.
-
-17
-00:01:58.190 --> 00:02:08.183
-Für dich als Ingenieur heißt das: Zahlen gegenrechnen oder in der Tabelle nachschlagen, Einheiten prüfen, Normen im Original öffnen und Quellen anklicken.
-
-18
-00:02:09.012 --> 00:02:12.061
-Vertrauliche Daten gehören nicht in eine öffentliche KI.
-
-19
-00:02:12.245 --> 00:02:16.880
-Die KI schreibt den Entwurf, du verantwortest das Ergebnis.
+00:01:46.257 --> 00:01:56.430
+Das kleine a ist die 97, in Bits 110 0001. Zwischen groß und klein liegen immer 32.

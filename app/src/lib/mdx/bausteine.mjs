@@ -12,7 +12,7 @@
      <Icon n="head" />                            Symbol aus dem Sprite
      <Hinweis art="merke|achtung|warum">          die drei Hinweis-Typen
      <Abschnitt id nr titel [zusatz] [kopf]>      Abschnitt einer Lerneinheit
-     <Labor nr name lerneinheit [zuhause]>        [zuhause] = Minuten Training zu Hause für die Überschrift von Teil B
+     <Labor nr name lerneinheit [zuhause] [training]>  [zuhause] = Minuten Training zu Hause für die Überschrift von Teil B; training="freiwillig" macht Teil B freiwillig (Überschrift, zählt nicht im Fortschritt)
      <Station id titel teil [sterne] [min] [extra]>  Station im Labor
      <Knobel id titel>                            freiwillige Knobelaufgabe, ganz am Ende des Labors (Regeln: INHALTE.md)
      <Vorhersage>  Frage, Liste der Antworten ([x] = richtig), Auflösung
@@ -43,6 +43,9 @@ function papEngine() {
                                      bei „nein“ geht es unter der Schleife weiter. Die Bedingung wird wie im PAP-Editor
                                      geschrieben (!= ≠, <= ≤, >= ≥, and und, or oder, not nicht, == =); der Rumpf darf
                                      wieder Entscheidungen und Schleifen enthalten
+     Unterprogramm: aufruf           Rechteck mit doppelten Seitenlinien (Aufruf einer eigenen Funktion)
+     Funktion: name(parameter)       nur als erste Zeile: Start-Symbol trägt den Namen statt „Start“ (Plan einer Funktion)
+     Rückgabe: wert                  nur als letzte Zeile: Ende-Symbol „Rückgabe wert“ statt „Ende“
      alles andere                    Rechteck
    Einrückung: zwei Leerzeichen je Ebene. Ein Zweig darf leer sein (dann nur „ja:“ oder nur „nein:“)
    und selbst wieder eine Entscheidung enthalten. Start und Ende kommen von selbst.
@@ -66,6 +69,14 @@ export function planSpec(K, text) {
     if (leer % 2) throw new Error(`<Plan>: Einrückung mit ${leer} Leerzeichen (erlaubt sind 2 je Ebene): „${z.trim()}“`);
     return { ebene: leer / 2, text: z.trim() };
   });
+  /* Plan einer Funktion: erste Zeile „Funktion: …“, letzte Zeile „Rückgabe: …“ (jeweils auf oberster Ebene) */
+  let kopf = null;
+  let rueck = null;
+  const ersteZeile = zeilen[0] && /^Funktion:\s*(.+)$/i.exec(zeilen[0].text);
+  if (ersteZeile && zeilen[0].ebene === 0) { kopf = ersteZeile[1].trim(); zeilen.shift(); }
+  const letzte = zeilen[zeilen.length - 1];
+  const letzteRueck = letzte && letzte.ebene === 0 && /^Rückgabe:\s*(.*)$/i.exec(letzte.text);
+  if (letzteRueck) { rueck = letzteRueck[1].trim(); zeilen.pop(); }
   let nr = 0;
   const id = () => 'n' + (++nr);
   let i = 0;
@@ -75,6 +86,7 @@ export function planSpec(K, text) {
       const z = zeilen[i];
       if (z.ebene > ebene) throw new Error(`<Plan>: Zeile „${z.text}“ ist zu weit eingerückt`);
       if (/^(ja|nein):/i.test(z.text)) throw new Error(`<Plan>: „${z.text}“ steht ohne Entscheidung darüber`);
+      if (/^(Rückgabe|Funktion):/i.test(z.text)) throw new Error(`<Plan>: „${z.text}“ steht nur als ${/^Funktion/i.test(z.text) ? 'erste' : 'letzte'} Zeile des Plans`);
       i++;
       const m = /^Entscheidung:\s*(.+)$/i.exec(z.text);
       const sl = /^Schleife:\s*(.+)$/i.exec(z.text);
@@ -89,15 +101,16 @@ export function planSpec(K, text) {
           zweige[welcher] = folge(ebene + 2);
         }
         knoten.push(K.P.iff(m[1], zweige.ja, zweige.nein, id(), { wrapAt: 28 }));
-      } else if (/^(Eingabe|Ausgabe)\b/.test(z.text)) knoten.push(K.P.io(z.text, id(), { wrapAt: 40 }));
+      } else if (/^Unterprogramm:\s*\S/i.test(z.text)) knoten.push(K.P.sub(z.text.replace(/^Unterprogramm:\s*/i, ''), id(), { wrapAt: 40 }));
+      else if (/^(Eingabe|Ausgabe)\b/.test(z.text)) knoten.push(K.P.io(z.text, id(), { wrapAt: 40 }));
       else knoten.push(K.P.op(z.text, id(), { wrapAt: 40 }));
     }
     return knoten;
   }
   const mitte = folge(0);
   if (i < zeilen.length) throw new Error(`<Plan>: Zeile „${zeilen[i].text}“ passt nicht in den Ablauf`);
-  if (!mitte.length) throw new Error('<Plan>: der Ablauf ist leer');
-  return [K.P.start('n0'), ...mitte, K.P.end('n' + (nr + 1))];
+  if (!mitte.length && !kopf && !rueck) throw new Error('<Plan>: der Ablauf ist leer');
+  return [K.P.start('n0', kopf || undefined), ...mitte, K.P.end('n' + (nr + 1), rueck ? 'Rückgabe ' + rueck : undefined)];
 }
 
 const HINWEIS_TITEL = { merke: 'Merke', achtung: 'Achtung', warum: 'Warum muss ich das wissen?' };
@@ -256,7 +269,8 @@ export function bausteine({ ordner = null, datei = 'MDX' } = {}) {
     },
 
     /* Labor: Aufgabenliste, Kopfzeile mit Auswahl und Werkzeugkasten-Knopf, Stationen, Blättern */
-    Labor({ nr, name, lerneinheit, zuhause, kinder }) {
+    Labor({ nr, name, lerneinheit, zuhause, training, kinder }) {
+      if (training !== undefined && training !== 'freiwillig') throw new Error(`<Labor>: training ist "freiwillig" oder fehlt, nicht "${training}"`);
       const k = ohneLeerraum(kinder);
       const stationen = k.filter((x) => hatKlasse(x, 'l-task'));
       const knobel = stationen.filter((x) => x.attrs['data-knobel']);
@@ -267,8 +281,10 @@ export function bausteine({ ordner = null, datei = 'MDX' } = {}) {
       const doppelt = knobel.map((x) => x.attrs.id).filter((id, i, l) => l.indexOf(id) !== i);
       if (doppelt.length) throw new Error(`<Labor>: <Knobel id="${doppelt[0]}"> kommt doppelt vor`);
       if (stationen[0].attrs['data-knobel'] || !stationen[0].kinder.some((x) => hatKlasse(x, 'lab__toolbox'))) throw new Error('<Labor>: die erste <Station> muss den <Werkzeugkasten> enthalten');
+      /* training="freiwillig": die Aufgaben in Teil B zählen nirgends mit (data-freiwillig an der Aufgabe) */
+      if (training === 'freiwillig') stationen.filter((x) => x.attrs['data-part'] === 'B').forEach((x) => aufgabenIn(x.kinder).forEach((a) => { a.attrs['data-freiwillig'] = true; }));
       const zeichen = (n, text) => h('span', null, h('svg', { class: 'k-ic', 'aria-hidden': 'true', focusable: 'false' }, h('use', { href: `../assets/img/icons.svg#i-${n}` })), ' ' + text);
-      return h('div', { class: 'lab', 'data-lab': true, 'data-zuhause': zuhause },
+      return h('div', { class: 'lab', 'data-lab': true, 'data-zuhause': zuhause, 'data-training': training },
         h('nav', { class: 'lab__list', 'aria-label': 'Aufgabenliste' },
           h('div', { class: 'lab__listhead' },
             h('button', { type: 'button', class: 'lab__fold', 'data-lab-fold': true, 'aria-expanded': 'true', 'aria-label': 'Aufgabenliste einklappen' },

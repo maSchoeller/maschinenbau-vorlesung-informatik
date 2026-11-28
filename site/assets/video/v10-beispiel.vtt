@@ -1,0 +1,57 @@
+WEBVTT
+
+1
+00:00:00.400 --> 00:00:11.993
+Dein Spiel besteht aus kleinen Schritten. Die Funktion hinweis steht schon da. Sie bekommt den Tipp und die geheime Zahl und gibt Zu klein, Zu groß oder Richtig zurück.
+
+2
+00:00:11.843 --> 00:00:18.941
+Der erste Schritt: Zahl ziehen, einen Tipp einlesen, den Hinweis zeigen. Das ist ein einziger Versuch.
+
+3
+00:00:18.791 --> 00:00:22.210
+Das Spiel soll aber fragen, bis der Tipp stimmt.
+
+4
+00:00:23.110 --> 00:00:33.396
+Aus dem Tipp wird eine Schleife. Sie wiederholt zwei Dinge: Tipp einlesen und Hinweis zeigen. Sie läuft, solange geraten != geheim gilt.
+
+5
+00:00:33.947 --> 00:00:40.308
+Darum braucht geraten vor der Schleife einen Startwert, die 0. Sonst gäbe es beim ersten Prüfen noch keinen Wert.
+
+6
+00:00:40.637 --> 00:00:44.520
+Die Zufallszahl wird einmal gezogen, direkt vor der Schleife.
+
+7
+00:00:45.420 --> 00:00:55.881
+Die Falle: Die Zufallszahl steht in der Schleife. Dann würfelt der Rechner bei jedem Tipp neu.
+
+8
+00:00:57.170 --> 00:01:03.870
+Du kannst die Zahl nie finden, denn sie ändert sich, bevor du sie triffst. Die Zeile random.randint(1, 100) gehört darum vor die Schleife.
+
+9
+00:01:04.770 --> 00:01:10.535
+Jetzt der Zähler. versuche beginnt vor der Schleife bei 0. In jeder Runde kommt 1 dazu.
+
+10
+00:01:10.848 --> 00:01:18.820
+Nach der Schleife zeigt print die Zahl. Die Zeile steht ohne Einrückung unter der Schleife, sie läuft also erst nach dem Treffer.
+
+11
+00:01:19.720 --> 00:01:29.375
+Zum Schluss gliederst du das Spiel. Die Zufallszahl, der Zähler und die Schleife wandern in die Funktion spiel. Am Ende steht return versuche.
+
+12
+00:01:29.225 --> 00:01:35.290
+Das Hauptprogramm ruft spiel() auf und merkt sich die Zahl in anzahl. Dann zeigt es sie an.
+
+13
+00:01:36.190 --> 00:01:47.005
+Ein Lauf: Die geheime Zahl ist 30. Du tippst 50, das ist zu groß. Dann 20, das ist zu klein. Dann 30, und es steht Richtig da.
+
+14
+00:01:47.726 --> 00:01:52.080
+Zuletzt zeigt das Programm Versuche 3. Das ist dein Spiel.

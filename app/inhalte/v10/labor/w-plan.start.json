@@ -1,0 +1,1 @@
+{"baum": [{"k": "def", "v": "hinweis(geraten, geheim)", "body": [{"k": "if", "v": "geraten < geheim", "yes": [{"k": "op", "v": "text = \"Zu klein\""}], "no": [{"k": "if", "v": "geraten > geheim", "yes": [{"k": "op", "v": "text = \"Zu groß\""}], "no": [{"k": "op", "v": "text = \"Richtig!\""}]}]}], "ret": "text"}, {"k": "op", "v": "import random"}]}

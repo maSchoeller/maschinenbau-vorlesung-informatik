@@ -1,0 +1,1 @@
+Karte zwei gliedert ein Programm. Oben stehen die Funktionen. frage liest eine Zahl ein und gibt sie zurück. melde zeigt ein Ergebnis an. Darunter steht das Hauptprogramm. Es ruft frage zweimal auf und gibt die Summe an melde weiter. Die Funktionen stehen oben, damit Python sie kennt, wenn das Hauptprogramm sie aufruft. Mit den Eingaben drei und vier steht da: Ergebnis sieben.

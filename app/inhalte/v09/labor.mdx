@@ -1,0 +1,544 @@
+---
+titel: "Termin 09 · Programmierlabor · Informatik Maschinenbau"
+beschreibung: "Programmierlabor zu Termin 09: ein Programm in Funktionen zerlegen, den Hauptplan mit Unterprogrammen zeichnen, eine Zufallszahl mit random.randint ziehen, der Spielzeug-Rechner Befehl für Befehl. Mit Training zum Spielzeug-Rechner, zu Medaillen, zum Zahlenraten und zum Zerlegen für zu Hause."
+body:
+  data-lesson: V09
+  data-page: labor
+stile:
+  - ../assets/css/dhbw-base.css
+  - ../assets/css/kurs.css
+  - ../assets/css/aufgaben.css
+  - ../assets/css/editor.css
+  - ../assets/css/labor.css
+  - ../assets/css/v05.css
+  - ../assets/css/pap-editor.css
+skripte:
+  - ../assets/js/speicher.js
+  - ../assets/js/icons.js
+  - src: ../assets/js/editor.js
+    defer: true
+  - ../assets/js/pap-engine.js
+  - ../assets/js/kurs.js
+  - ../assets/js/aufgaben.js
+  - ../assets/js/pap-editor.js
+  - ../assets/js/labor.js
+---
+
+<Labor nr="V09" zuhause="42" name="Termin 09" lerneinheit="v09-rechneraufbau-und-zufall.html">
+
+<Station id="a-werkzeugkasten" titel="Werkzeugkasten" teil="A" min="5">
+
+<p class="l-task__intro">Zwei neue Karten. Alles aus Termin 02 bis 08 gilt weiter. Jeder Codeblock läuft: Ändere etwas und führ ihn aus. Den Werkzeugkasten erreichst du von jeder Aufgabe aus in der Befehls-Bibliothek oben rechts.</p>
+
+<Video name="v09-python" titel="Python-Werkzeugkasten: random und ein Programm in Funktionen" fehlt="Video folgt. Bis dahin: Lies die zwei Karten und probier jeden Codeblock aus.">
+
+Python-Werkzeugkasten: random und ein Programm in Funktionen (ca. 2 Min). Untertitel sind eingeschaltet (Deutsch).
+
+</Video>
+
+<Werkzeugkasten>
+
+<Syntaxkarte id="sk-random" nr="1" titel="random: Zufallszahl">
+
+```python
+import random
+
+zahl = random.randint(1, 100)
+print(zahl)
+```
+
+- Ausgabe: eine Zahl von 1 bis 100. Bei jedem Lauf wird neu gezogen, meist kommt eine andere Zahl.
+- `import random` steht ganz oben. `random.randint(1, 100)` zieht eine ganze Zahl, beide Grenzen gehören dazu. Bei `range` ist das anders: Dort gehört der Stoppwert nicht dazu.
+- Die Zahl wird einmal gezogen und in einem Namen gespeichert, hier `zahl`.
+- Ohne `import` meldet Python `NameError: name 'random' is not defined`. Dann fehlt oben das `import random`.
+- Diese zwei Zeilen brauchst du in der Klausur ohne Vorlage.
+
+</Syntaxkarte>
+
+<Syntaxkarte id="sk-zerlegen" nr="2" titel="Programm in Funktionen">
+
+```python
+def frage(text):
+    return int(input(text))
+
+def melde(x):
+    print(f"Ergebnis: {x}")
+
+a = frage("Erste Zahl: ")
+b = frage("Zweite Zahl: ")
+melde(a + b)
+```
+
+- Die Eingaben 3 und 4 ergeben `Ergebnis: 7`.
+- Die Funktionen stehen oben, das Hauptprogramm steht unten.
+- Das Hauptprogramm liest sich wie die Beschreibung: erste Zahl fragen, zweite Zahl fragen, Ergebnis melden.
+- Eine Funktion, eine Aufgabe: Was hineingeht, sind die Parameter. Was herauskommt, ist der Rückgabewert.
+
+</Syntaxkarte>
+
+</Werkzeugkasten>
+
+</Station>
+
+<Station id="a-vorgemacht" titel="Vorgerechnetes Beispiel: Getränkeautomat zerlegen" teil="A" min="5">
+
+<p class="l-task__intro">Aufgabe: Ein langes Programm soll in Funktionen zerlegt werden. Die Ausgabe darf sich dabei nicht ändern. Wieder gilt: **erst der Plan, dann der Code.** Hier ist das Programm vorher, 14 Zeilen ohne den Kommentar hintereinander:</p>
+
+```python
+# Getränkeautomat: 1 = Cola, 2 = Wasser, 3 = Saft
+wahl = int(input("Getränk (1 Cola, 2 Wasser, 3 Saft): "))
+geld = float(input("Geld in Euro: "))
+if wahl == 1:
+    preis = 2.5
+elif wahl == 2:
+    preis = 1.0
+else:
+    preis = 2.0
+if geld >= preis:
+    rest = geld - preis
+    print(f"Bitte sehr. Wechselgeld: {rest:.2f} Euro")
+else:
+    fehlt = preis - geld
+    print(f"Es fehlen {fehlt:.2f} Euro")
+```
+
+<Video name="v09-beispiel" titel="Vorgerechnet: Getränkeautomat zerlegen" fehlt="Video folgt. Bis dahin: Lies die Pläne und den Code Zeile für Zeile und probier das zerlegte Programm mit 1 und 3 und mit 2 und 1 aus.">
+
+Vorgerechnet: Getränkeautomat zerlegen (ca. 2,5 Min). Untertitel sind eingeschaltet (Deutsch).
+
+</Video>
+
+<Plan titel="Getränkeautomat, Hauptprogramm">
+
+```text
+Eingabe: wahl
+Eingabe: geld
+Unterprogramm: preis = preis_von(wahl)
+Unterprogramm: text = antwort(geld, preis)
+Ausgabe: text
+```
+
+</Plan>
+
+<p class="k-small k-muted">Im Code darfst du `text = …` und `print(text)` zu `print(antwort(…))` zusammenziehen.</p>
+
+<Plan titel="Getränkeautomat, Funktion preis_von">
+
+```text
+Funktion: preis_von(nr)
+Entscheidung: nr == 1?
+  ja:
+    preis = 2.5
+  nein:
+    Entscheidung: nr == 2?
+      ja:
+        preis = 1.0
+      nein:
+        preis = 2.0
+Rückgabe: preis
+```
+
+</Plan>
+
+<Plan titel="Getränkeautomat, Funktion antwort">
+
+```text
+Funktion: antwort(geld, preis)
+Entscheidung: geld >= preis?
+  ja:
+    rest = geld - preis
+    text = f"Bitte sehr. Wechselgeld: {rest:.2f} Euro"
+  nein:
+    fehlt = preis - geld
+    text = f"Es fehlen {fehlt:.2f} Euro"
+Rückgabe: text
+```
+
+</Plan>
+
+<Aufgabe art="run" id="w-vorgemacht" data-count="0" data-mode="programm" data-inputs="1|3">
+
+<Editor datei="labor/w-vorgemacht.vorlage.py" aria-label="Python-Code: Getränkeautomat, zerlegt" />
+
+</Aufgabe>
+
+<Schritte>
+
+1. **Der Ablauf in Worten:** Getränk und Geld einlesen. Den Preis zum Getränk bestimmen. Die Antwort bilden. Ausgeben.
+2. **Was wird eine Funktion?** Der Preis und die Antwort, weil jeweils etwas hineingeht und etwas herauskommt: eine Nummer hinein und ein Preis heraus, Geld und Preis hinein und ein Text heraus. Eingabe und Ausgabe bleiben im Hauptprogramm.
+3. **Die Pläne:** Der Hauptplan hat zwei Rechtecke mit Doppellinien, je eines für `preis_von` und `antwort`. Jede Funktion hat ihren eigenen kleinen Plan: Start mit dem Namen, die Verzweigung, am Ende die Rückgabe.
+4. **Der Code:** Erst die zwei Funktionen, dann das Hauptprogramm mit vier Zeilen. Die Funktionen stehen vor dem Aufruf.
+5. **Probe:** Mit den Eingaben 1 und 3 erscheint `Bitte sehr. Wechselgeld: 0.50 Euro`, genau wie beim langen Programm: Die Cola kostet 2.5, und 3 minus 2.5 ist 0.5.
+6. **Selbsterklärung:** Ändere in `preis_von` den Preis der Cola auf 3.0 und lass das Programm mit 1 und 3 laufen. Vermute: Was erscheint jetzt? Probier es aus und lies dann Schritt 7.
+7. **Auflösung:** Du musstest nur in `preis_von` etwas ändern, im Hauptprogramm und in `antwort` nicht. Es erscheint `Bitte sehr. Wechselgeld: 0.00 Euro`. Das ist der Vorteil: Jede Aufgabe steht an genau einer Stelle.
+
+</Schritte>
+
+</Station>
+
+<Station id="a-bauteile" titel="Bauteile zuordnen" teil="A" min="4">
+
+<p class="l-task__intro">Welches Bauteil ist gemeint? Trag in jeder Zeile die Nummer ein: 1 Prozessor, 2 Arbeitsspeicher, 3 SSD, 4 Eingabe oder Ausgabe, 5 Bus. Eingabe und Ausgabe haben zusammen eine Nummer.</p>
+
+<Aufgabe art="trace" id="w-bauteile">
+
+<Daten datei="labor/w-bauteile.daten.json" />
+
+</Aufgabe>
+
+</Station>
+
+<Station id="a-hauptplan" titel="Hauptplan zeichnen: Schere, Stein, Papier" teil="A" sterne="2" min="8">
+
+<p class="l-task__intro">Die Funktion `urteil` steht schon im Editor, gezeichnet wird nur der Hauptplan. Das Symbol mit Doppellinien ruft eine eigene Funktion auf. „Prüfen“ führt deinen Plan mit Beispielwerten aus.</p>
+
+<Aufgabe art="pap-zeichnen" id="w-hauptplan" titel="Schere, Stein, Papier" data-timeout="8000" data-erlaubt="in,out,for,call,def">
+
+Das Programm aus Termin 03 wird zerlegt. Gespielt werden drei Runden, 1 ist Schere, 2 ist Stein, 3 ist Papier. Die vorgegebene Funktion `urteil(a, b)` gibt `Unentschieden`, `Ich gewinne` oder `Du gewinnst` zurück. Zeichne den Hauptplan: drei Runden, in jeder Runde zwei Eingaben, dann das Urteil holen und ausgeben.
+
+<Python rolle="tests" datei="labor/w-hauptplan.tests.py" />
+
+<Daten datei="labor/w-hauptplan.start.json" rolle="start" />
+
+<Daten datei="labor/w-hauptplan.solution.json" rolle="solution" />
+
+<Tipps>
+
+1. Was passiert in jeder Runde?
+2. Die Schleife wiederholt alles dreimal: zwei Eingaben, den Aufruf von `urteil`, die Ausgabe.
+3. Das Rechteck mit den Doppellinien steht in der Schleife. `urteil` ist schon da.
+
+</Tipps>
+
+</Aufgabe>
+
+</Station>
+
+<Station id="a-spielzeug" titel="Ablauf verfolgen: Spielzeug-Rechner" teil="A" min="6">
+
+<p class="l-task__intro">Zelle `A` ist 2, `B` ist 7, `C` ist 5, `D` ist 0. Du verfolgst das Programm Zeile für Zeile. Trag nach jedem Befehl die markierten Felder ein: den Rechenplatz, den Inhalt von `D` und den Taktzähler. Jeder Befehl braucht 3 Takte.</p>
+
+<Aufgabe art="trace" id="w-spielzeug">
+
+<Daten datei="labor/w-spielzeug.daten.json" />
+
+</Aufgabe>
+
+</Station>
+
+<Station id="a-luecken" titel="Lücken füllen: Ein Tipp" teil="A" min="6">
+
+<p class="l-task__intro">Der Rechner zieht eine Zahl, du tippst, und eine Funktion sagt, ob der Tipp zu klein, zu groß oder richtig ist. Die Pläne stehen vollständig da. Ergänze die sechs Lücken. Dann läuft der erste Teil deines Spiels.</p>
+
+<Aufgabe art="gap" id="w-luecken" data-mode="programm">
+
+<Plan titel="Ein Tipp, Hauptprogramm">
+
+```text
+geheim = random.randint(1, 100)
+Eingabe: geraten
+Unterprogramm: text = hinweis(geraten, geheim)
+Ausgabe: text
+```
+
+</Plan>
+
+<Plan titel="Ein Tipp, Funktion">
+
+```text
+Funktion: hinweis(geraten, geheim)
+Entscheidung: geraten < geheim?
+  ja:
+    text = "Zu klein"
+  nein:
+    Entscheidung: geraten > geheim?
+      ja:
+        text = "Zu groß"
+      nein:
+        text = "Richtig!"
+Rückgabe: text
+```
+
+</Plan>
+
+<p class="k-small k-muted">Im Code darfst du `text = …` und `print(text)` zu `print(hinweis(…))` zusammenziehen.</p>
+
+```text class="a-gap__src" data-run="no"
+@@import@@ random
+
+def hinweis(geraten, geheim):
+    if geraten @@<@@ geheim:
+        @@return@@ "Zu klein"
+    elif geraten @@>@@ geheim:
+        return "Zu groß"
+    else:
+        return "Richtig!"
+
+geheim = random.@@randint@@(1, 100)
+geraten = int(input("Dein Tipp (1 bis 100): "))
+print(@@hinweis@@(geraten, geheim))
+```
+
+<Python rolle="tests" datei="labor/w-luecken.tests.py" />
+
+<Tipps>
+
+1. Lücke 1 und 5: Welches Wort holt `random`? Wie heißt die Funktion, die eine ganze Zahl zieht?
+2. Lücke 2 und 4: Wann ist der Tipp zu klein, wann zu groß?
+3. Lücke 3 und 6: Eine Funktion gibt ihr Ergebnis mit `return` zurück. Am Ende ruft das Hauptprogramm die Funktion `hinweis` auf und zeigt, was sie zurückgibt. Karte 1 zeigt `import` und `randint`.
+
+</Tipps>
+
+</Aufgabe>
+
+</Station>
+
+<Station id="a-wuerfel" titel="Erste eigene Aufgabe: Würfelraten" teil="A" sterne="2" min="8">
+
+<p class="l-task__intro">Der Rechner würfelt, du tippst eine Zahl von 1 bis 6. Die Pläne stehen schon da, du überträgst sie Symbol für Symbol in Code.</p>
+
+<Aufgabe art="code" id="w-wuerfel" titel="Würfelraten" data-mode="programm" data-inputs="4">
+
+<div class="a-task__text">
+
+Eine Funktion `bewerte(tipp, wurf)` gibt `Treffer` zurück, wenn der Tipp stimmt, sonst zum Beispiel `Leider nein, es war 4` mit der gewürfelten Zahl. Das Hauptprogramm würfelt mit `random.randint(1, 6)`, liest den Tipp ein und gibt den Text aus.
+
+<Plan titel="Würfelraten, Hauptprogramm">
+
+```text
+wurf = random.randint(1, 6)
+Eingabe: tipp
+Unterprogramm: text = bewerte(tipp, wurf)
+Ausgabe: text
+```
+
+</Plan>
+
+<Plan titel="Würfelraten, Funktion">
+
+```text
+Funktion: bewerte(tipp, wurf)
+Entscheidung: tipp == wurf?
+  ja:
+    text = "Treffer"
+  nein:
+    text = "Leider nein, es war " + str(wurf)
+Rückgabe: text
+```
+
+</Plan>
+
+</div>
+
+<Editor datei="labor/w-wuerfel.vorlage.py" aria-label="Python-Code: Würfelraten" />
+
+<Python rolle="tests" datei="labor/w-wuerfel.tests.py" />
+
+<Python rolle="solution" datei="labor/w-wuerfel.solution.py" />
+
+<Tipps>
+
+1. Lies zuerst den Plan der Funktion: Was geht in `bewerte` hinein, was kommt heraus?
+2. `import random` ist die erste Zeile. Die Funktion steht vor dem Hauptprogramm, wo sie benutzt wird.
+3. Die Aufgabe „Lücken füllen: Ein Tipp“: Du hast das fast genauso schon geschrieben.
+
+</Tipps>
+
+</Aufgabe>
+
+</Station>
+
+<Station id="t-1" titel="Spielzeug-Rechner von Hand" teil="B" sterne="1" min="6">
+
+<p class="l-task__intro">Das Training gehört zum Termin: Mit der Aufgabe „Bauteile zuordnen“, Schritt 6 und 7 der vorgerechneten Aufgabe und dem Selbstcheck sind es etwa 42 Minuten bis zum nächsten Mal. Termin 10 beginnt mit dieser Aufgabe. Rechne zuerst auf Papier, dann prüf hier. Zelle `A` ist 6, `B` ist 1, `C` ist 9, `D` ist 0. Das Programm:</p>
+
+```text
+LADE C
+SPEICHERE D
+LADE A
+ADDIERE D
+SPEICHERE A
+STOPP
+```
+
+<p class="l-task__intro">Trag die Zahl ein, ohne Leerzeichen. Jeder Befehl braucht 3 Takte.</p>
+
+<Aufgabe art="trace" id="tr-1" titel="Spielzeug-Rechner von Hand">
+
+<Daten datei="labor/tr-1.daten.json" />
+
+</Aufgabe>
+
+</Station>
+
+<Station id="t-2" titel="Plan in Code übertragen: Medaille" teil="B" sterne="2" min="8">
+
+<p class="l-task__intro">Klausurform „Plan in Code übertragen“: Schreib das Programm wie auf Papier, ohne Ausführen und ohne Vorschläge des Editors. Dann abgeben und mit der Lösung vergleichen. Die Funktion hat einen Plan mit einer Rückgabe am Ende. Im Code darfst du `return` auch in den Zweigen schreiben.</p>
+
+<Aufgabe art="klausur" id="tr-2" titel="Medaille" data-mode="programm" data-minutes="8">
+
+<div class="a-task__text">
+
+Übertrage die Pläne in ein Python-Programm. Eingelesen werden die Punkte (ganze Zahl). Eine Funktion `medaille(punkte)` gibt `Gold` ab 90 Punkten zurück, `Silber` ab 70, `Bronze` ab 50, sonst `keine`. Ausgegeben wird zum Beispiel `Medaille: Gold`.
+
+<Plan titel="Medaille, Hauptprogramm">
+
+```text
+Eingabe: punkte
+Unterprogramm: m = medaille(punkte)
+Ausgabe: "Medaille:", m
+```
+
+</Plan>
+
+<Plan titel="Medaille, Funktion">
+
+```text
+Funktion: medaille(punkte)
+Entscheidung: punkte >= 90?
+  ja:
+    name = "Gold"
+  nein:
+    Entscheidung: punkte >= 70?
+      ja:
+        name = "Silber"
+      nein:
+        Entscheidung: punkte >= 50?
+          ja:
+            name = "Bronze"
+          nein:
+            name = "keine"
+Rückgabe: name
+```
+
+</Plan>
+
+</div>
+
+<Editor data-assist="off" aria-label="Python-Code von Hand schreiben, ohne Ausführen" />
+
+<Python rolle="tests" datei="labor/tr-2.tests.py" />
+
+<Python rolle="solution" datei="labor/tr-2.solution.py" />
+
+<Daten datei="labor/tr-2.scheme.json" rolle="scheme" />
+
+<Tipps>
+
+1. Lies zuerst den Plan der Funktion: Was kommt hinein, was kommt heraus?
+2. Die Zweige setzen `name`, am Ende gibt die Funktion `name` zurück.
+3. Fängt der Plan mit der größten Grenze an, bleibt die Reihenfolge der Zweige so.
+
+</Tipps>
+
+</Aufgabe>
+
+</Station>
+
+<Station id="t-3" titel="Fehler finden und beheben: Ein Tipp" teil="B" sterne="2" min="8">
+
+<p class="l-task__intro">In diesem Programm stecken zwei Fehler: einer, den Python meldet, und einer, den du nur an der Ausgabe findest. Probier die Eingabe 30.</p>
+
+<Aufgabe art="code" id="tr-3" titel="Ein Tipp" data-mode="programm" data-inputs="30">
+
+<div class="a-task__text">
+
+Das Programm zieht eine Zahl von 1 bis 100 und bewertet deinen Tipp. Bei der Zufallszahl 42 und dem Tipp 30 soll `Zu klein` erscheinen und sonst nichts. Beim Ausführen zieht der Rechner eine andere Zahl, der Hinweis kann also anders lauten. Achte darauf, was außer dem Hinweis noch erscheint. Die Funktion `hinweis` soll den Text zurückgeben, nicht selbst anzeigen, denn so braucht ihn Termin 10. Behebe beide Fehler.
+
+</div>
+
+<Editor datei="labor/tr-3.vorlage.py" aria-label="Python-Code: Ein Tipp" />
+
+<Python rolle="tests" datei="labor/tr-3.tests.py" />
+
+<Python rolle="solution" datei="labor/tr-3.solution.py" />
+
+<Tipps>
+
+1. Führ das Programm aus und lies die Meldung von unten: Welcher Name ist unbekannt?
+2. Läuft es, schau auf die Ausgabe: Was steht außer dem Hinweis noch da?
+3. Abschnitt 3 der Lerneinheit und die Station „Lücken füllen: Ein Tipp“: Wie bekommt die Funktion ihr Ergebnis nach außen?
+
+</Tipps>
+
+</Aufgabe>
+
+</Station>
+
+<Station id="t-4" titel="Programm zerlegen: Einkauf" teil="B" sterne="3" min="8">
+
+<p class="l-task__intro">Klausurform „Zerlegen“: Zeichne zuerst den Plan auf Papier, dann schreib das Programm um, ohne Ausführen. Das Programm steht im Aufgabentext, du schreibst es im Editor neu. Danach abgeben und mit der Lösung vergleichen.</p>
+
+<Aufgabe art="klausur" id="tr-4" titel="Einkauf" data-mode="programm" data-minutes="8">
+
+<div class="a-task__text">
+
+Das folgende Programm rechnet einen Rabatt nach dem Einkaufsbetrag (ab 100 Euro 10 Prozent, ab 50 Euro 5 Prozent, sonst nichts) und fügt 10 Prozent Trinkgeld hinzu. Zerlege es: Eine Funktion `rabatt_satz(betrag)` gibt den Satz zurück (10, 5 oder 0). Die Ausgabe bleibt dieselbe.
+
+```python
+# Einkauf: Rabatt nach Betrag, danach Trinkgeld.
+betrag = float(input("Einkauf in Euro: "))
+if betrag >= 100:
+    satz = 10
+elif betrag >= 50:
+    satz = 5
+else:
+    satz = 0
+nach_rabatt = betrag - betrag * satz / 100
+trinkgeld = nach_rabatt * 0.1
+gesamt = nach_rabatt + trinkgeld
+print(f"Rabatt: {satz} Prozent")
+print(f"Gesamt mit Trinkgeld: {gesamt:.2f} Euro")
+```
+
+</div>
+
+<Editor data-assist="off" aria-label="Python-Code von Hand umschreiben, ohne Ausführen" />
+
+<Python rolle="tests" datei="labor/tr-4.tests.py" />
+
+<Python rolle="solution" datei="labor/tr-4.solution.py" />
+
+<Daten datei="labor/tr-4.scheme.json" rolle="scheme" />
+
+<Tipps>
+
+1. Was geht hinein, was kommt heraus?
+2. Die drei Zweige wandern in die Funktion. Sie geben die Zahl mit `return` zurück, in jedem Zweig oder einmal am Ende.
+3. Im Hauptprogramm bleibt `satz = rabatt_satz(betrag)`.
+
+</Tipps>
+
+</Aufgabe>
+
+</Station>
+
+<Knobel id="kn-1" titel="Hoch ohne Mal">
+
+<Aufgabe art="code" id="k-1" data-mode="programm" data-inputs="2|10">
+
+<div class="a-task__text">
+
+Der Spielzeug-Rechner kann nur addieren. Malnehmen kann er nicht. Wie weit kommst du in Python, wenn du nur `+` benutzt? Eingelesen werden eine Zahl `a` und ein Exponent `b` (ganze Zahlen, `a` höchstens 10, `b` höchstens 5). Eine Funktion `hoch(a, b)` gibt `a` hoch `b` zurück, **ohne `*` und ohne `**`**. Ausgegeben wird zum Beispiel `2 hoch 10 ist 1024`.
+
+</div>
+
+<Editor datei="labor/k-1.vorlage.py" aria-label="Python-Code: Hoch ohne Mal" />
+
+<Python rolle="tests" datei="labor/k-1.tests.py" />
+
+<Python rolle="solution" datei="labor/k-1.solution.py" />
+
+<Tipps>
+
+1. Mit `+` baust du ein Mal: `a` mal `x` ist `x` einmal `a`-mal addiert.
+2. Das Hoch ist ein Mal, das `b`-mal wiederholt wird.
+3. Zwei Schleifen ineinander, die innere hängt von `a` ab, die äußere von `b`. `ergebnis` fängt bei 1 an.
+
+</Tipps>
+
+</Aufgabe>
+
+</Knobel>
+
+</Labor>

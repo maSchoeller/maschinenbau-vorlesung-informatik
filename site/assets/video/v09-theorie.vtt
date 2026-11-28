@@ -1,81 +1,73 @@
 WEBVTT
 
 1
-00:00:00.400 --> 00:00:04.537
-Du hast dein Handy am Fahrradlenker befestigt und eine Bremsung aufgezeichnet.
+00:00:00.400 --> 00:00:10.673
+Du startest ein Spiel. Es liegt auf der SSD. Beim Start wird es in den Arbeitsspeicher geladen. Dort arbeitet der Prozessor es Schritt für Schritt ab.
 
 2
-00:00:04.654 --> 00:00:11.172
-Die App phyphox exportiert die Messung als Datei: 400 Zeilen, 50 Messungen pro Sekunde.
+00:00:10.995 --> 00:00:20.219
+Mit der Eingabe, zum Beispiel einer Taste, sagst du dem Spiel, was es tun soll. Die Ausgabe, zum Beispiel der Bildschirm, zeigt dir das Ergebnis.
 
 3
-00:00:11.321 --> 00:00:19.570
-Gesucht ist die Spitze der Verzögerung. Dafür muss dein Programm die Datei lesen können, und es muss auch mit einer kaputten Zeile klarkommen.
+00:00:20.568 --> 00:00:26.120
+Der Bus ist die Leitung dazwischen. Über ihn gehen alle Daten von einem Bauteil zum anderen.
 
 4
-00:00:20.470 --> 00:00:29.076
-Eine Datei ist ein Inhalt, der unter einem Namen auf einem Datenträger liegt. Sie steckt in einem Ordner, und der Pfad beschreibt den Weg dorthin.
+00:00:26.869 --> 00:00:35.330
+Als Bild aus der Werkhalle: Der Prozessor ist der Facharbeiter, der Arbeitsspeicher seine Werkbank, die SSD das Lager.
 
 5
-00:00:29.485 --> 00:00:37.275
-Ein absoluter Pfad beginnt ganz oben im Laufwerk. Ein relativer Pfad beginnt im Ordner, in dem dein Programm steht.
+00:00:36.230 --> 00:00:43.669
+Der Weg eines Programms: von der SSD über den Bus in den Arbeitsspeicher, dann über den Bus zum Prozessor.
 
 6
-00:00:38.254 --> 00:00:48.040
-Die häufigste Fehlermeldung ist `FileNotFoundError`: Die Datei gibt es unter diesem Namen nicht. Meist ist es ein Tippfehler oder der falsche Ordner.
+00:00:44.667 --> 00:00:48.003
+Der Prozessor arbeitet nie direkt mit der SSD.
 
 7
-00:00:48.940 --> 00:00:54.865
-Eine Datei besteht nur aus Bytes. Wie daraus Buchstaben werden, legt die Textkodierung fest.
+00:00:48.155 --> 00:00:52.600
+Das Ergebnis geht über den Bus zurück in den Arbeitsspeicher und zur Ausgabe.
 
 8
-00:00:55.043 --> 00:01:00.084
-Heute gilt UTF-8: Umlaute brauchen dort zwei Bytes.
+00:00:53.500 --> 00:00:55.447
+Jetzt fällt der Strom aus.
 
 9
-00:01:00.379 --> 00:01:13.470
-Liest dein Programm mit der falschen Tabelle, wird aus einem ä ein „Ã¤“. Darum schreibst du immer `encoding="utf-8"`.
+00:00:55.297 --> 00:00:59.317
+Der Arbeitsspeicher verliert seinen Inhalt. Er ist leer.
 
 10
-00:01:14.370 --> 00:01:22.900
-Tabellen speichert man als CSV-Datei: eine Zeile je Messung, die Spalten durch ein Trennzeichen getrennt, oben die Kopfzeile.
+00:00:59.167 --> 00:01:02.496
+Die SSD behält alles, auch ohne Strom.
 
 11
-00:01:23.860 --> 00:01:34.400
-Dein deutsches Excel nimmt das Semikolon als Trennzeichen und das Komma als Dezimalzeichen. Andere Programme nehmen das Komma als Trenner und den Punkt als Dezimalpunkt.
+00:01:02.346 --> 00:01:11.550
+Darum gibt es Speichern: Das Programm kopiert den Spielstand vom Arbeitsspeicher auf die SSD. Erst dann bleibt er erhalten.
 
 12
-00:01:34.850 --> 00:01:41.020
-Beides siehst du erst in der Datei. Python versteht als Dezimalzeichen nur den Punkt.
+00:01:12.450 --> 00:01:18.886
+Der Prozessor arbeitet ein Programm Befehl für Befehl ab. Jedes Mal macht er dasselbe, in drei Schritten.
 
 13
-00:01:41.960 --> 00:01:44.550
-So wird aus einer Zeile eine Zahl.
+00:01:19.157 --> 00:01:22.340
+Erstens holt er den nächsten Befehl aus dem Speicher.
 
 14
-00:01:45.601 --> 00:01:53.522
-strip schneidet den Zeilenumbruch ab. split zerschneidet den Text am Trennzeichen, das Ergebnis ist eine Liste aus Texten.
+00:01:22.612 --> 00:01:27.267
+Zweitens entschlüsselt er ihn. Er stellt fest, was der Befehl bedeutet.
 
 15
-00:01:54.323 --> 00:01:59.786
-replace macht aus dem Komma einen Punkt, und float macht daraus endlich eine Zahl.
+00:01:27.467 --> 00:01:31.380
+Drittens führt er ihn aus. Dann kommt der nächste Befehl.
 
 16
-00:02:00.788 --> 00:02:03.610
-Bis zum letzten Schritt ist alles nur Text.
+00:01:32.280 --> 00:01:38.502
+Eine Uhr gibt den Takt vor. Bei jedem Takt macht der Prozessor einen kleinen Schritt.
 
 17
-00:02:04.510 --> 00:02:10.408
-Was passiert bei einer kaputten Zeile? Python löst eine Ausnahme aus, und das Programm bricht ab.
+00:01:38.486 --> 00:01:40.732
+3 GHz sind 3 Milliarden Takte pro Sekunde.
 
 18
-00:02:10.833 --> 00:02:15.367
-Den Traceback liest du von unten nach oben: Die letzte Zeile nennt die Fehlerart.
-
-19
-00:02:15.726 --> 00:02:24.243
-Mit try und except fängst du eine Fehlerart ab: Bei einer kaputten Zeile springt Python in den Block mit except, du zählst sie mit und machst weiter.
-
-20
-00:02:24.729 --> 00:02:29.760
-Fang aber nur die Fehlerart, die du erwartest, und verschweige nie, was du übersprungen hast.
+00:01:40.997 --> 00:01:48.730
+Eine Python-Zeile wie c = a + b wird im Rechner zu mehreren solcher Befehle. Python übersetzt sie für dich.

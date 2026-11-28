@@ -42,9 +42,10 @@
     while:  { name: 'Schleife, kopfgesteuert', form: 'Raute vor dem Rumpf', label: 'Schleife läuft, solange gilt', ph: 'z. B. x < 10', def: 'x < 10' },
     repeat: { name: 'Schleife, fußgesteuert', form: 'Raute nach dem Rumpf', label: 'Schleife wiederholt, solange gilt', ph: 'z. B. x < 10', def: 'x < 10' },
     for:    { name: 'Zählschleife', form: 'Raute vor dem Rumpf', label: 'Zählschleife (Python: for …)', ph: 'z. B. i in range(1, 6)', def: 'i in range(1, 6)' },
-    call:   { name: 'Unterprogramm', form: 'Rechteck mit Doppellinien', label: 'Aufruf', ph: 'z. B. abs(-3)', def: 'abs(-3)' }
+    call:   { name: 'Unterprogramm', form: 'Rechteck mit Doppellinien', label: 'Aufruf', ph: 'z. B. abs(-3)', def: 'abs(-3)' },
+    def:    { name: 'Funktion', form: 'Start mit Namen, Ende mit Rückgabe', label: 'Funktionskopf', ph: 'z. B. umrechnen(x)', def: 'umrechnen(x)' }
   };
-  var ORDER = ['in', 'out', 'op', 'if', 'while', 'repeat', 'for', 'call'];
+  var ORDER = ['in', 'out', 'op', 'if', 'while', 'repeat', 'for', 'call', 'def'];
   var SIMPLE = ['in', 'out', 'op', 'call'];
   function makeNode(k) {
     var d = KIND[k].def;
@@ -52,6 +53,7 @@
     if (k === 'out') return K.nOut(d);
     if (k === 'op') return K.nOp(d);
     if (k === 'call') return K.nCall(d);
+    if (k === 'def') return K.nDef(d, [], '');
     if (k === 'if') return K.nIf(d, [], []);
     if (k === 'while') return K.nWhile(d, []);
     if (k === 'repeat') return K.nRepeat(d, []);
@@ -66,7 +68,7 @@
     opts = opts || {};
     var allowed = (opts.allowed && opts.allowed.length ? opts.allowed : ORDER).filter(function (k) { return KIND[k]; });
     var tree = opts.json ? K.fromJson(opts.json) : [];
-    var sel = null, svgEl = null, marksList = [], zoom = 1, lastKey = null, listeners = [];
+    var sel = null, marksList = [], zoom = 1, lastKey = null, listeners = [];
     var hist = [JSON.stringify(tree)], pos = 0, menu = null, menuOpener = null;
     var id = uid('ped');
 
@@ -114,8 +116,17 @@
 
     function targetLabel(t) {
       var parent = t.parent ? K.find(tree, t.parent) : null, arr = parent ? slotArr(parent.node, t.slot) : tree;
+      if (!parent) {
+        /* oberste Ebene: Symbole des Hauptplans zuerst, Funktionen als eigene Pläne */
+        var cur = arr[t.idx], prv = arr[t.idx - 1];
+        if (cur && !K.isDef(cur)) return 'vor Symbol ' + cur.num;
+        if (prv && !K.isDef(prv)) return 'nach Symbol ' + prv.num;
+        if (cur) return 'vor Funktion ' + cur.num;
+        if (prv) return 'nach Funktion ' + prv.num;
+        return 'zwischen Start und Ende';
+      }
       if (!arr.length) {
-        if (!parent) return 'zwischen Start und Ende';
+        if (parent.node.k === 'def') return 'in die Funktion ' + parent.node.num;
         return t.slot === 'yes' ? 'in den Zweig „ja“ von Symbol ' + parent.node.num : (t.slot === 'no' ? 'in den Zweig „nein“ von Symbol ' + parent.node.num : 'in die Schleife von Symbol ' + parent.node.num);
       }
       if (t.idx < arr.length) return 'vor Symbol ' + arr[t.idx].num;
@@ -123,30 +134,37 @@
     }
 
     /* ── PAP zeichnen ── */
-    function nodeEl(nid) { return svgEl ? svgEl.querySelector('.pap-n[data-id="' + nid + '"]') : null; }
+    function nodeEl(nid) { return wrap.querySelector('.pap-n[data-id="' + nid + '"]'); }
+    function svgEls() { return $$('svg.pap', wrap); }
     function renderPap(focusNode) {
       var hadFocus = wrap.contains(doc.activeElement);
       prep();
-      var m = K.marks(tree);
-      marksList = m.marks;
-      var html = K.svg(m.spec, { cls: 'pap--edit', label: 'Programmablaufplan', minw: 1 }), mk = '';
-      m.marks.forEach(function (mm, i) {
-        mk += '<g class="ped-mark" data-m="' + i + '" transform="translate(' + f1(mm.x) + ' ' + f1(mm.y) + ')" role="button" tabindex="-1" aria-label="' + esc('Symbol einfügen ' + targetLabel(mm.targets[0])) + '"><circle class="ped-mark-hit" r="20"/><circle class="ped-mark-dot" r="9.5"/><path class="ped-mark-plus" d="M-4.5 0H4.5M0 -4.5V4.5"/></g>';
+      var plans = K.marksAll(tree), html = '', mi = 0, nMain = K.countBlocks(tree.filter(function (n) { return !K.isDef(n); }));
+      marksList = [];
+      plans.forEach(function (m) {
+        var mk = '', head = m.def ? String(m.def.v).trim() || 'ohne Namen' : '';
+        m.marks.forEach(function (mm) {
+          marksList.push(mm);
+          mk += '<g class="ped-mark" data-m="' + mi + '" transform="translate(' + f1(mm.x) + ' ' + f1(mm.y) + ')" role="button" tabindex="-1" aria-label="' + esc('Symbol einfügen ' + targetLabel(mm.targets[0])) + '"><circle class="ped-mark-hit" r="20"/><circle class="ped-mark-dot" r="9.5"/><path class="ped-mark-plus" d="M-4.5 0H4.5M0 -4.5V4.5"/></g>';
+          mi += 1;
+        });
+        var one = K.svg(m.spec, { cls: 'pap--edit', label: m.def ? 'Funktion ' + head : 'Programmablaufplan', minw: 1 }).replace(/<\/svg>$/, mk + '</svg>');
+        one = one.replace('role="img"', 'role="group" data-plan="' + (m.def ? esc(m.def.id) : 'main') + '" ');
+        one = one.replace(/aria-label="[^"]*"/, 'aria-label="' + esc(m.def ? 'Funktion ' + head + ', ' + plural(K.countBlocks(m.def.body), 'Symbol', 'Symbole') + ' im Rumpf' : 'Programmablaufplan, ' + plural(nMain, 'Symbol', 'Symbole') + ' zwischen Start und Ende') + '"');
+        html += plans.length > 1 ? '<div class="ped-plan"><p class="ped-plan__title" aria-hidden="true">' + (m.def ? 'Funktion ' + esc(head) : 'Hauptprogramm') + '</p>' + one + '</div>' : one;
       });
-      wrap.innerHTML = html.replace(/<\/svg>$/, mk + '</svg>');
-      svgEl = wrap.firstChild;
-      svgEl.setAttribute('role', 'group'); svgEl.setAttribute('aria-label', 'Programmablaufplan, ' + plural(K.countBlocks(tree), 'Symbol', 'Symbole') + ' zwischen Start und Ende');
-      svgEl.style.setProperty('--ped-zoom', String(zoom));
-      var first = tree.length ? tree[0].id : null, tabbed = sel && K.find(tree, sel) ? sel : first;
-      $$('.pap-n', svgEl).forEach(function (g) {
-        var f = K.find(tree, g.getAttribute('data-id'));
+      wrap.innerHTML = html;
+      svgEls().forEach(function (e) { e.style.setProperty('--ped-zoom', String(zoom)); });
+      var fl = K.flat(tree), first = fl.length ? fl[0].id : null, tabbed = sel && K.find(tree, sel) ? sel : first;
+      $$('.pap-n', wrap).forEach(function (g) {
+        var gid = g.getAttribute('data-id'), isEnd = /^end-/.test(gid) && K.find(tree, gid.slice(4)), f = K.find(tree, isEnd ? gid.slice(4) : gid);
         if (!f) { g.setAttribute('aria-hidden', 'true'); return; }
-        g.setAttribute('role', 'button'); g.setAttribute('aria-label', nodeLabel(f.node));
+        g.setAttribute('role', 'button');
+        g.setAttribute('aria-label', isEnd ? 'Rückgabe von Funktion ' + f.node.v + (String(f.node.ret || '').trim() ? ': ' + f.node.ret : ': keine') : nodeLabel(f.node));
         g.setAttribute('aria-pressed', f.node.id === sel ? 'true' : 'false');
-        g.setAttribute('tabindex', f.node.id === tabbed ? '0' : '-1');
+        g.setAttribute('tabindex', !isEnd && f.node.id === tabbed ? '0' : '-1');
       });
-      var sp = m.spec;
-      desc.textContent = K.describe(sp);
+      desc.textContent = K.describeAll(tree);
       if (focusNode || (hadFocus && sel)) { var g = nodeEl(sel); if (g) { g.focus({ preventScroll: true }); keepVisible(g); } }
     }
     function keepVisible(g) {
@@ -190,7 +208,10 @@
         typ.addEventListener('change', function () { n.typ = typ.value === 'float' ? undefined : typ.value; change(); renderPap(); });
         fields.appendChild(el('label', { class: 'k-field ped-field' }, [el('span', { text: 'Datentyp' }), typ]));
         fields.appendChild(textField('Eingabeaufforderung (leer = Standard)', n.prompt === undefined ? '' : n.prompt, (n.v || 'x') + ': ', function (v) { n.prompt = v === '' ? undefined : v; change('p:' + n.id); renderPap(); }, 'Eingabeaufforderung, Symbol ' + n.num));
-      } else fields.appendChild(textField(meta.label, n.v, meta.ph, function (v) { n.v = v; change('v:' + n.id); renderPap(); }, meta.label + ', Symbol ' + n.num));
+      } else {
+        fields.appendChild(textField(meta.label, n.v, meta.ph, function (v) { n.v = v; change('v:' + n.id); renderPap(); }, meta.label + ', Symbol ' + n.num));
+        if (n.k === 'def') fields.appendChild(textField('Rückgabe (leer = kein return)', n.ret || '', 'z. B. wert', function (v) { n.ret = v; change('r:' + n.id); renderPap(); }, 'Rückgabewert der Funktion, Symbol ' + n.num));
+      }
       panel.appendChild(fields);
       var act = el('div', { class: 'ped-actions' });
       if (SIMPLE.indexOf(n.k) >= 0) {
@@ -209,6 +230,9 @@
         var iy = btn('In „ja“ einfügen', function () { openMenu(iy, [{ parent: n.id, slot: 'yes', idx: n.yes.length }]); });
         var inn = btn('In „nein“ einfügen', function () { openMenu(inn, [{ parent: n.id, slot: 'no', idx: n.no.length }]); });
         act.appendChild(iy); act.appendChild(inn);
+      } else if (n.k === 'def') {
+        var idf = btn('In die Funktion einfügen', function () { openMenu(idf, [{ parent: n.id, slot: 'body', idx: n.body.length }]); });
+        act.appendChild(idf);
       } else if (K.isLoop(n)) {
         var ib = btn('In die Schleife einfügen', function () { openMenu(ib, [{ parent: n.id, slot: 'body', idx: n.body.length }]); });
         act.appendChild(ib);
@@ -247,11 +271,20 @@
     function moveNode(nid, d) {
       var f = K.find(tree, nid); if (!f) return;
       var arr = f.arr, i = f.idx, n = f.node, nb = arr[i + d], moved = false;
-      if (nb && compound(nb)) {
+      if (!f.parent) {
+        /* oberste Ebene: Funktionen sortieren sich nur untereinander, Symbole des Hauptplans nur untereinander */
+        var j = i + d;
+        while (arr[j] && K.isDef(arr[j]) !== K.isDef(n)) j += d;
+        nb = arr[j];
+        if (nb && !(compound(nb) && !K.isDef(n))) { arr[i] = nb; arr[j] = n; moved = true; }
+        else if (!nb) { announce(d > 0 ? 'Das Symbol steht schon ganz unten.' : 'Das Symbol steht schon ganz oben.'); return; }
+      }
+      if (moved) { /* oberste Ebene schon erledigt */ }
+      else if (nb && compound(nb)) {
         var kids = K.kids(nb), kd = d > 0 ? kids[0] : kids[kids.length - 1];
         arr.splice(i, 1); kd.arr.splice(d > 0 ? 0 : kd.arr.length, 0, n); moved = true;
       } else if (nb) { arr[i] = nb; arr[i + d] = n; moved = true; }
-      else if (f.parent) {
+      else if (f.parent && f.parent.k !== 'def') {
         var pf = K.find(tree, f.parent.id);
         arr.splice(i, 1); pf.arr.splice(d > 0 ? pf.idx + 1 : pf.idx, 0, n); moved = true;
       }
@@ -290,6 +323,7 @@
       }
       var items = [];
       allowed.forEach(function (k) {
+        if (k === 'def' && targets.some(function (t) { return t.parent !== null || t.slot !== 'root'; })) return;
         var b = el('button', { type: 'button', role: 'menuitem', class: 'ped-menu__item' }, [el('strong', { text: KIND[k].name }), el('span', { text: KIND[k].form })]);
         b.addEventListener('click', function () { var t = targets[tIdx]; closeMenu(); insertAt(t, k); });
         menu.appendChild(b); items.push(b);
@@ -318,8 +352,9 @@
     wrap.addEventListener('click', function (e) {
       var m = e.target.closest ? e.target.closest('.ped-mark') : null;
       if (m) { openMenu(m, marksList[parseInt(m.getAttribute('data-m'), 10)].targets); return; }
-      var g = e.target.closest ? e.target.closest('.pap-n') : null;
-      if (g && K.find(tree, g.getAttribute('data-id'))) select(g.getAttribute('data-id'), true);
+      var g = e.target.closest ? e.target.closest('.pap-n') : null, gid = g ? g.getAttribute('data-id') : '';
+      if (/^end-/.test(gid)) gid = gid.slice(4);
+      if (g && K.find(tree, gid)) select(gid, true);
     });
     wrap.addEventListener('keydown', function (e) {
       var m = e.target.closest ? e.target.closest('.ped-mark') : null;
@@ -346,14 +381,14 @@
     });
     root.addEventListener('resize', function () { if (menu) closeMenu(); });
     bUndo.addEventListener('click', undo); bRedo.addEventListener('click', redo);
-    function setZoom(z) { zoom = Math.max(0.5, Math.min(1.6, Math.round(z * 100) / 100)); if (svgEl) svgEl.style.setProperty('--ped-zoom', String(zoom)); updateButtons(); }
+    function setZoom(z) { zoom = Math.max(0.5, Math.min(1.6, Math.round(z * 100) / 100)); svgEls().forEach(function (e) { e.style.setProperty('--ped-zoom', String(zoom)); }); updateButtons(); }
     bZout.addEventListener('click', function () { setZoom(zoom - 0.2); });
     bZin.addEventListener('click', function () { setZoom(zoom + 0.2); });
 
     /* ── Austausch ── */
     function cleanTree() { return K.fromJson(K.toJson(tree)); }
     function hasGaps() { var g = false; walk(tree, function (n) { if (isEmpty(n)) g = true; }); return g; }
-    function svgText(title, scale) { return K.exportSvg(K.toPap(cleanTree()), { title: title || 'Programmablaufplan', scale: scale || 1 }); }
+    function svgText(title, scale) { return K.exportSvgAll(cleanTree(), { title: title || 'Programmablaufplan', scale: scale || 1 }); }
     function pngBlob(scale) {
       scale = scale || 2;
       return new Promise(function (resolve, reject) {
@@ -384,7 +419,7 @@
       hasGaps: hasGaps, svgText: svgText, pngBlob: pngBlob, announce: announce,
       codeText: function () { return K.toText(cleanTree()); },
       onChange: function (fn) { listeners.push(fn); },
-      focus: function () { var g = sel ? nodeEl(sel) : $('.pap-n[tabindex="0"]', svgEl); if (g) g.focus(); else bUndo.focus(); },
+      focus: function () { var g = sel ? nodeEl(sel) : $('.pap-n[tabindex="0"]', wrap); if (g) g.focus(); else bUndo.focus(); },
       zoom: setZoom
     };
     renderAll(); updateButtons();
@@ -638,7 +673,9 @@
     var codeHost = el('div'); codeDet.appendChild(codeHost);
     var attempted = false, running = false, cp = null;
 
-    box.appendChild(edHost); box.appendChild(bar); box.appendChild(results); box.appendChild(hintBox); box.appendChild(codeDet);
+    box.appendChild(edHost); box.appendChild(bar); box.appendChild(results); box.appendChild(hintBox);
+    /* data-ohne-code: der erzeugte Code bleibt verborgen (die Aufgabe liefert ihn nicht vorab, z. B. wenn er die nächste Station löst) */
+    if (!box.hasAttribute('data-ohne-code')) box.appendChild(codeDet);
     var ctl = create(edHost, { allowed: erlaubt.length ? erlaubt : ORDER, json: startJson || [] });
     bar.appendChild(status);
 
@@ -658,9 +695,10 @@
     if (solJson) {
       var solTree = K.fromJson(solJson);
       solBox = el('div', { class: 'a-solution', hidden: true }, [el('strong', { text: 'Musterlösung' })]);
-      var fig = el('div'); fig.innerHTML = K.figure(K.toPap(solTree), { label: 'Musterlösung: ' + K.describe(K.toPap(solTree)), minw: 1 });
+      var fig = el('div'); fig.innerHTML = '<div class="pap-wrap">' + K.svgAll(solTree, { label: 'Musterlösung: ' + K.describeAll(solTree), minw: 1 }) + '</div>';
       solBox.appendChild(fig);
-      solBox.appendChild(el('pre', { class: 'k-code', 'data-run': 'no', text: K.toText(solTree) }));
+      /* data-ohne-code gilt auch für die Musterlösung: kein erzeugter Python-Code */
+      if (!box.hasAttribute('data-ohne-code')) solBox.appendChild(el('pre', { class: 'k-code', 'data-run': 'no', text: K.toText(solTree) }));
       bSol = el('button', { type: 'button', class: 'k-btn k-btn--small k-btn--link', text: 'Musterlösung ansehen', 'aria-disabled': 'true', title: 'Erst einen Versuch prüfen, dann kannst du die Musterlösung aufdecken.' });
       bSol.addEventListener('click', function () {
         if (!attempted) { status.textContent = 'Erst einen eigenen Versuch prüfen, dann die Musterlösung.'; return; }

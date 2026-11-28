@@ -1,0 +1,532 @@
+---
+titel: "Termin 10 · Schnell, groß, Zahlen: Speicher und dein fertiges Spiel · Lerneinheit · Informatik Maschinenbau"
+beschreibung: "Die Stufen des Speichers von schnell und klein bis langsam und groß, KB, MB und GB, Zeichen als Zahlen (ASCII) und dein fertiges Zahlenraten mit Schleife, Zähler und Funktionen. Mit Speicher-Treppe, Zeichen-Baustein und Halbieren zum Ausprobieren."
+body:
+  data-lesson: V10
+  data-page: lerneinheit
+stile:
+  - ../assets/css/dhbw-base.css
+  - ../assets/css/kurs.css
+  - ../assets/css/aufgaben.css
+  - ../assets/css/editor.css
+  - ../assets/css/v05.css
+  - ../assets/css/v10.css
+skripte:
+  - ../assets/js/speicher.js
+  - ../assets/js/icons.js
+  - src: ../assets/js/editor.js
+    defer: true
+  - ../assets/js/pap-engine.js
+  - ../assets/js/explorables-v10.js
+  - ../assets/js/kurs.js
+  - ../assets/js/aufgaben.js
+---
+
+<Lerneinheit nr="V10" name="Termin 10" labor="v10-labor.html">
+
+<Kopf marke="Termin 10 · 1. Semester · Lerneinheit" titel="Schnell, groß, Zahlen: Speicher und dein fertiges Spiel">
+
+Ein Rechner hat Speicher in mehreren Stufen, vom winzigen und blitzschnellen bis zum riesigen und langsamen. Und alles darin, auch Buchstaben, ist Zahl. Danach baust du dein Spiel fertig: Der Rechner denkt sich eine Zahl aus, du rätst, und am Ende zeigt dir das Spiel, wie viele Versuche du gebraucht hast.
+
+- die Stufen des Speichers vom schnellen und kleinen bis zum langsamen und großen ordnen und mit KB, MB und GB rechnen
+- erklären, dass Zeichen als Zahlen gespeichert werden (ASCII), und den Code eines Buchstabens aus dem Alphabet ableiten
+- ein Spiel mit Zufallszahl, Schleife und Funktionen Schritt für Schritt bauen: Raten bis richtig, Versuche zählen, in Funktionen gliedern
+- erklären, wo die Zufallszahl im Spiel stehen muss und wie viele Versuche „immer die Mitte“ höchstens braucht
+
+Alles aus Termin 02 bis 09 gilt weiter: Schleifen, Funktionen mit `def` und `return`, `random.randint` und die Bauteile des Rechners. Geübt wird im [Programmierlabor](v10-labor.html).
+
+</Kopf>
+
+<Abschnitt id="speicher" nr="1" titel="Speicher und Zeichen">
+
+In Termin 09 hast du gesehen: Der Inhalt des Arbeitsspeichers ist weg, wenn der Strom ausfällt, SSD und Festplatte behalten ihn. Warum hat ein Rechner mehrere Speicher? Es gibt keinen Speicher, der zugleich groß, schnell und billig ist. Also nimmt man mehrere. Was der Prozessor jetzt braucht, liegt oben, der Rest unten.
+
+Das Bild aus Termin 09 geht weiter. Das Werkzeug in der Hand ist der Speicher im Prozessor. Die Werkbank ist der Arbeitsspeicher, das Lager die SSD, das Außenlager die Festplatte. Im Speicher im Prozessor liegen <Begriff e="Ein winziger Speicherplatz direkt im Rechenwerk für die Zahl, mit der gerade gerechnet wird.">Register</Begriff> und <Begriff e="Ein kleiner Speicher im Prozessor, in dem Daten liegen, die gleich wieder gebraucht werden.">Cache</Begriff>. Wir zählen beides zusammen als eine Stufe.
+
+Die Stufen unterscheiden sich zuerst in der Größe. Die Werte sind gerundet und gelten ungefähr:
+
+<div class="k-tablewrap">
+<table class="k-types">
+<thead><tr><th scope="col">Stufe</th><th scope="col">Größe, ungefähr</th></tr></thead>
+<tbody>
+<tr><td>Speicher im Prozessor (Register, Cache)</td><td>einige KB bis einige MB</td></tr>
+<tr><td>Arbeitsspeicher</td><td>8 bis 32 GB</td></tr>
+<tr><td>SSD</td><td>0,5 bis 2 TB</td></tr>
+<tr><td>Festplatte</td><td>1 bis 4 TB</td></tr>
+</tbody>
+</table>
+</div>
+
+<Explorable name="treppe" titel="Speicher-Treppe">
+
+In Wirklichkeit geht alles viel schneller. Wir dehnen die Zeit, bis ein Zugriff auf den Arbeitsspeicher 1 Sekunde dauert. Klick eine Stufe an. Der Balken läuft in dieser Zeitlupe, bis die Stufe ihre Daten geliefert hat. Vermute zuerst, bevor du klickst: Wenn der Arbeitsspeicher 1 Sekunde braucht, wie lange braucht dann die SSD? 2 Sekunden, 50 Sekunden, 17 Minuten oder 30 Stunden?
+
+<Ohne>
+
+Für die Speicher-Treppe wird JavaScript benötigt. Der Baustein zeigt vier Stufen als Balken: Speicher im Prozessor, Arbeitsspeicher, SSD und Festplatte. Die Länge zeigt die Größe, ungefähr. Ein Klick lässt für die Stufe einen Wartebalken in Zeitlupe laufen, daneben steht die Zeit.
+
+</Ohne>
+
+</Explorable>
+
+**Was der Baustein zeigt.** In Zeitlupe, mit dem Arbeitsspeicher als 1 Sekunde, sieht es so aus:
+
+<div class="k-tablewrap">
+<table class="k-types">
+<thead><tr><th scope="col">Stufe</th><th scope="col">In Zeitlupe</th></tr></thead>
+<tbody>
+<tr><td>Speicher im Prozessor</td><td>0,01 Sekunden</td></tr>
+<tr><td>Arbeitsspeicher</td><td>1 Sekunde</td></tr>
+<tr><td>SSD</td><td>rund 17 Minuten</td></tr>
+<tr><td>Festplatte</td><td>rund 28 Stunden</td></tr>
+</tbody>
+</table>
+</div>
+
+Von Stufe zu Stufe wird es langsamer: vom Arbeitsspeicher zur SSD etwa tausendmal, von der SSD zur Festplatte noch einmal etwa hundertmal. Dafür werden die Stufen größer und billiger. Die Regel: Je schneller ein Speicher ist, desto kleiner und teurer ist er. Darum liegt oben, was jetzt gebraucht wird.
+
+**Die Größen.** Die kleinste Einheit ist das <Begriff e="8 Bit. Die Einheit, in der Speicher gemessen wird.">Byte</Begriff>. Ein Byte sind 8 Bit (Termin 05) und reicht für eine Zahl bis 255 oder einen Buchstaben. Gerechnet wird in Tausenderschritten:
+
+<div class="k-tablewrap">
+<table class="k-types">
+<thead><tr><th scope="col">Einheit</th><th scope="col">Kurz</th><th scope="col">Größe</th><th scope="col">Beispiel</th></tr></thead>
+<tbody>
+<tr><td>Kilobyte</td><td>KB</td><td>1000 Byte</td><td>eine Textseite, etwa 2 KB</td></tr>
+<tr><td>Megabyte</td><td>MB</td><td>1000 KB</td><td>ein Foto, etwa 3 MB</td></tr>
+<tr><td><Begriff e="Etwa 1 Milliarde Byte: 1000 MB.">Gigabyte</Begriff></td><td>GB</td><td>1000 MB</td><td>ein Film, etwa 2 GB</td></tr>
+<tr><td>Terabyte</td><td>TB</td><td>1000 GB</td><td>eine große Festplatte</td></tr>
+</tbody>
+</table>
+</div>
+
+Viele Programme rechnen mit 1024 statt 1000, weil 2¹⁰ gleich 1024 ist. Wir rechnen mit 1000. Das ist einfacher und für uns genau genug.
+
+Ein Rechenbeispiel: Wie viele Musikdateien mit 5 MB passen auf einen Stick mit 1 GB? 1 GB sind 1000 MB. 1000 MB geteilt durch 5 MB ergibt 200 Dateien.
+
+<Hinweis art="merke">
+
+Ein Rechner hat mehrere Speicher: schnell und klein oder langsam und groß. Je schneller, desto kleiner und teurer. Ein Byte sind 8 Bit, 1 KB sind 1000 Byte, 1 MB sind 1000 KB, 1 GB sind 1000 MB.
+
+</Hinweis>
+
+**Zeichen als Zahlen.** Der Rechner kennt nur Zahlen. Damit auch Buchstaben im Speicher stehen können, ist jedem <Begriff e="Ein Buchstabe, eine Ziffer, ein Leerzeichen oder ein Satzzeichen.">Zeichen</Begriff> eine Zahl zugeordnet, der <Begriff e="Eine feste Zuordnung: Jedes Zeichen bekommt eine Zahl.">Code</Begriff>. Der verbreitete einfache Code heißt <Begriff e="Ein Code, der jedem Zeichen eine Zahl von 0 bis 127 gibt, zum Beispiel A gleich 65.">ASCII</Begriff>. Er hat 7 Bit, also 2⁷ gleich 128 Zeichen (Termin 05).
+
+Das `A` ist die 65, das `B` die 66, und so weiter bis `Z` mit 90:
+
+<div class="k-tablewrap">
+<table class="k-types">
+<thead><tr><th scope="col">Zeichen</th><th scope="col">Code</th></tr></thead>
+<tbody>
+<tr><td><code>A</code></td><td>65</td></tr>
+<tr><td><code>B</code></td><td>66</td></tr>
+<tr><td><code>C</code></td><td>67</td></tr>
+<tr><td><code>…</code></td><td>…</td></tr>
+<tr><td><code>Z</code></td><td>90</td></tr>
+</tbody>
+</table>
+</div>
+
+Auch Ziffern sind Zeichen und haben einen Code.
+
+<div class="k-try">
+
+### Vorhersage: Code des kleinen a
+
+<Vorhersage>
+
+Das große `A` hat im ASCII-Code die Nummer 65. Welche Nummer hat das kleine `a`?
+
+- 66
+- [x] 97
+- 1
+- 65
+
+Zwischen `A` und `a` liegen 32. Das kleine `a` hat die 97. Bei `b` und `B`, `c` und `C` ist es genauso: Der Unterschied zwischen groß und klein ist immer 32.
+
+</Vorhersage>
+
+</div>
+
+<Explorable name="zeichen" titel="Zeichen sind Zahlen">
+
+Schreib bis zu 8 Zeichen in das Feld: Buchstaben, Ziffern und Leerzeichen. Du siehst zu jedem Zeichen seine Zahl. Vermute zuerst: Welche Zahl hat das Zeichen 5? Fünf, 35, 53 oder 65?
+
+<Ohne>
+
+Für den Baustein wird JavaScript benötigt. Er zeigt zu jedem Zeichen, das du eingibst, die Zahl im ASCII-Code. Ein Knopf tauscht groß und klein: Dabei ändert sich jeder Buchstabencode um 32. Ziffern und Leerzeichen bleiben, wie sie sind.
+
+</Ohne>
+
+</Explorable>
+
+**Was der Baustein zeigt.** Das Zeichen `5` hat die Zahl 53. Die Zahl 5 ist etwas anderes. Darum liefert `input()` Text, und du brauchst `int()`, um daraus eine Zahl zu machen (Termin 08). Beim Tauschen von groß und klein ändert sich jeder Buchstabe um genau 32.
+
+Umlaute und Emojis stehen nicht in ASCII. Dafür gibt es eine größere Tabelle, <Begriff e="Eine größere Zeichentabelle, die auch Umlaute und Emojis enthält, mit mehr Bit je Zeichen.">Unicode</Begriff>. Hier bleiben wir bei ASCII.
+
+<Hinweis art="merke">
+
+Zeichen stehen als Zahlen im Speicher. Im ASCII-Code ist `A` gleich 65, `a` gleich 97, und das Zeichen `5` ist 53. Zwischen großem und kleinem Buchstaben liegen immer 32.
+
+</Hinweis>
+
+### Erklärvideo (ca. 2 Min)
+
+<Video name="v10-theorie" id="video-theorie" titel="Erklärvideo: Schnell, groß, Zahlen" fehlt="Video folgt. Bis dahin: Die Speicher-Treppe und der Zeichen-Baustein oben zeigen dasselbe.">
+
+Erklärvideo: Schnell, groß, Zahlen (ca. 2 Min). Untertitel sind eingeschaltet (Deutsch).
+
+</Video>
+
+</Abschnitt>
+
+<Abschnitt id="raten" nr="2" titel="Zahlenraten, Teil 2: Raten, bis es stimmt">
+
+In Termin 09 hast du `hinweis(geraten, geheim)` geschrieben und einen Tipp bewertet. Jetzt soll das Spiel weiterfragen, bis du die Zahl hast. Dafür kennst du die Schleife aus Termin 04: `while`, solange eine Bedingung gilt.
+
+Das Muster siehst du zuerst an einem anderen Beispiel, ohne das Spiel: **Zahlen addieren, bis eine 0 kommt.** Der Plan:
+
+<Plan titel="Zahlen addieren bis 0">
+
+```text
+summe = 0
+zahl = -1
+Schleife: zahl != 0?
+  Eingabe: zahl
+  summe = summe + zahl
+Ausgabe: "Summe:", summe
+```
+
+</Plan>
+
+Der Code. Mit den Eingaben 5, 3 und 0 erscheint `Summe: 8`:
+
+```python data-stdin="5\n3\n0"
+summe = 0
+zahl = -1
+while zahl != 0:
+    zahl = int(input("Zahl (0 = Ende): "))
+    summe = summe + zahl
+print("Summe:", summe)
+```
+
+<p class="k-small k-muted">Führ das Programm aus und geh es mit „Schritt für Schritt“ durch.</p>
+
+Zwei Fragen an den Plan. Warum haben `summe` und `zahl` vor der Schleife einen Wert? Die Bedingung braucht schon beim ersten Mal einen Wert. Und `-1` ist nicht 0, also läuft die Schleife an. Warum steht die Eingabe im Rumpf? Jede Runde liest eine neue Zahl.
+
+Wie bei Termin 04 steht die Bedingung oben, und der Rumpf läuft nur, solange sie stimmt.
+
+Dasselbe Muster trägt dein Spiel. Den Plan zeichnest du im Labor in Station 2, den Code schreibst du in Station 3. Der fertige Code steht nicht hier, sondern bei den Stationen unter „Musterlösung ansehen“, sobald du einmal geprüft hast. So probierst du es zuerst selbst. Das übst du für später, wenn du allein schreibst.
+
+<div class="k-try">
+
+### Vorhersage: Was zeigt das Spiel?
+
+```python data-run="no"
+geheim = 42
+geraten = 0
+while geraten != geheim:
+    geraten = int(input("Dein Tipp: "))
+    print(hinweis(geraten, geheim))
+```
+
+<Vorhersage>
+
+Die Funktion `hinweis` ist dieselbe wie in Termin 09. Sie steht im Programm über diesen Zeilen und ist hier weggelassen. Die Zahl `geheim` ist 42, fest eingetragen. Die Eingaben sind 60, 10 und 42. Was erscheint?
+
+- `Zu klein`, `Zu groß`, `Richtig!`
+- [x] `Zu groß`, `Zu klein`, `Richtig!`
+- `Zu groß`, `Zu klein`
+- `Richtig!`
+
+60 ist größer als 42, 10 ist kleiner, 42 stimmt. Die Schleife endet nach dem dritten Tipp, nicht vor ihm: Der Tipp, der das Spiel beendet, wird noch bewertet (`Richtig!`). Der Rumpf läuft bis zum Ende, und die Bedingung wird erst danach wieder gefragt.
+
+</Vorhersage>
+
+</div>
+
+<Hinweis art="merke">
+
+Eine Schleife mit `while geraten != geheim:` fragt weiter, bis der Tipp stimmt. Eine Variable, die in der Bedingung steht, braucht vor der Schleife einen Wert. Der letzte Tipp wird noch bewertet, bevor die Schleife endet.
+
+</Hinweis>
+
+</Abschnitt>
+
+<Abschnitt id="zaehlen" nr="3" titel="Zahlenraten, Teil 3: Versuche zählen">
+
+Ein Zähler in der Schleife zählt die Versuche. Das siehst du wieder am Beispiel „Summe“: `anzahl = 0` steht vor der Schleife, `anzahl = anzahl + 1` im Rumpf (Termin 04). Nach der Schleife steht die Zahl. Mit den Eingaben 5, 3 und 0 erscheint `Summe: 8, Zahlen: 3`. Die 0 zählt mit, denn auch sie ist eine Eingabe. Im Spiel zählt genauso der Tipp mit, der trifft:
+
+```python data-stdin="5\n3\n0"
+summe = 0
+anzahl = 0
+zahl = -1
+while zahl != 0:
+    zahl = int(input("Zahl (0 = Ende): "))
+    summe = summe + zahl
+    anzahl = anzahl + 1
+print(f"Summe: {summe}, Zahlen: {anzahl}")
+```
+
+<p class="k-small k-muted">Führ das Programm aus. Probier auch die Eingabe 0 allein: Die Schleife läuft genau einmal.</p>
+
+Dasselbe machst du im Labor in Station 4 mit `versuche`. Die letzte Zeile heißt dort zum Beispiel `Versuche: 3`. Der fertige Code steht bei Station 4 unter „Musterlösung ansehen“, nicht hier.
+
+Hier steht die Zeile mit der Zufallszahl zweimal im Programm.
+
+<div class="k-try">
+
+### Vorhersage: Zufall in der Schleife
+
+```python data-run="no"
+geheim = random.randint(1, 100)
+geraten = 0
+while geraten != geheim:
+    geheim = random.randint(1, 100)
+    geraten = int(input("Dein Tipp (1 bis 100): "))
+    print(hinweis(geraten, geheim))
+```
+
+<Vorhersage>
+
+Die Zeile `geheim = random.randint(1, 100)` steht vor der Schleife und noch einmal im Rumpf. Was passiert?
+
+- Das Spiel läuft wie vorher
+- [x] Die Zahl ändert sich in jeder Runde, ein Treffer ist Glück
+- Python meldet `SyntaxError`
+- Das Spiel zeigt immer `Richtig!`
+
+Jede Runde zieht eine neue Zahl. Der Tipp passt nur, wenn er zufällig mit der gerade gezogenen übereinstimmt. Die Zufallszahl gehört vor die Schleife, und nur dorthin. Steht die Zeile nur im Rumpf, meldet Python `NameError: name 'geheim' is not defined`. Die Bedingung braucht `geheim` schon vor der ersten Runde.
+
+</Vorhersage>
+
+</div>
+
+**Die Falle.** Wird die Zufallszahl in der Schleife gezogen, ändert sich die Zahl in jeder Runde, und das Spiel ist nur mit Glück zu gewinnen. Im freiwilligen Training 4 kannst du diesen Fehler selbst suchen.
+
+Wie rät man klug? Man braucht eine <Begriff e="Eine Regel, nach der man rät.">Strategie</Begriff>. Eine einfache heißt „immer die Mitte“: Du tippst die Mitte des Bereichs, in dem die Zahl noch liegen kann.
+
+<Explorable name="halbieren" titel="Immer die Mitte">
+
+Der Baustein denkt sich eine Zahl von 1 bis 100. Rate sie mit dem Feld „Dein Tipp“, oder lass den Baustein mit „Die Mitte tippen“ für dich raten. Du siehst, in welchem Bereich die Zahl noch liegen kann. Vermute zuerst: Wie viele Versuche braucht „immer die Mitte“ höchstens für 1 bis 100? Fünf, sieben, zehn oder fünfzig?
+
+<Ohne>
+
+Für den Baustein wird JavaScript benötigt. Er denkt sich eine Zahl von 1 bis 100. Du tippst, und er zeigt `Zu klein`, `Zu groß` oder `Richtig!`, dazu den Bereich, in dem die Zahl noch liegen kann, und die Zahl der Versuche. Ein Knopf tippt immer die Mitte des Bereichs.
+
+</Ohne>
+
+</Explorable>
+
+**Was der Baustein zeigt.** Wer immer die Mitte tippt, halbiert jedes Mal die Zahl der Möglichkeiten: 100, 50, 25, 12, 6, 3, 1. Vor dem 7. Tipp bleibt höchstens eine Zahl übrig, der 7. Tipp trifft sie. Das sind höchstens **7 Versuche**. Mit 6 Tipps kommst du nur durch 2⁶ gleich 64 Zahlen. Mit 7 Tipps reicht es für 2⁷ gleich 128 Zahlen, also auch für 100 (Termin 05). Die Mitte rechnet man mit `int((unten + oben) / 2)`. Das `int` schneidet ab (Termin 08).
+
+Das ist auch der Stoff der Knobelaufgabe im Labor: Der Computer rät deine Zahl mit der Mitte.
+
+<Hinweis art="merke">
+
+Ein Zähler beginnt vor der Schleife bei 0 und wächst im Rumpf um 1. Die Zufallszahl gehört vor die Schleife, einmal je Spiel. Wer immer die Mitte tippt, braucht für 1 bis 100 höchstens 7 Versuche.
+
+</Hinweis>
+
+</Abschnitt>
+
+<Abschnitt id="spiel" nr="4" titel="Zahlenraten, Teil 4: Dein Spiel">
+
+Dein Spiel besteht aus zwei Funktionen und einem kurzen Hauptprogramm. Damit ist es fertig, wenn du die Pflichtliste abhaken kannst. Wer schneller ist, baut aus.
+
+**Gliedern.** Aus Termin 09 kennst du das Zerlegen. Wieder am Beispiel „Summe“: Die Schleife samt Startwerten wird die Funktion `summiere()`, sie gibt die Summe zurück. Das Hauptprogramm ruft sie auf und zeigt das Ergebnis. Zwei Pläne:
+
+<Plan titel="Hauptprogramm der Summe">
+
+```text
+Unterprogramm: ergebnis = summiere()
+Ausgabe: "Summe:", ergebnis
+```
+
+</Plan>
+
+<Plan titel="Funktion summiere">
+
+```text
+Funktion: summiere()
+summe = 0
+zahl = -1
+Schleife: zahl != 0?
+  Eingabe: zahl
+  summe = summe + zahl
+Rückgabe: summe
+```
+
+</Plan>
+
+Der Code. Mit den Eingaben 5, 3 und 0 erscheint `Summe: 8`:
+
+```python data-stdin="5\n3\n0"
+def summiere():
+    summe = 0
+    zahl = -1
+    while zahl != 0:
+        zahl = int(input("Zahl (0 = Ende): "))
+        summe = summe + zahl
+    return summe
+
+ergebnis = summiere()
+print(f"Summe: {ergebnis}")
+```
+
+<p class="k-small k-muted">Führ das Programm aus und geh es mit „Schritt für Schritt“ durch: Der Aufruf springt in die Funktion und kehrt mit dem Wert zurück.</p>
+
+Dein Spiel gliederst du genauso in Station 5. Die Schleife samt Zufallszahl und Zähler wird die Funktion `spiel()`. Sie gibt die Zahl der Versuche zurück, und das Hauptprogramm hat zwei Zeilen. Den Plan von `spiel()` bekommst du dort mit dem dritten Tipp, den fertigen Code danach unter „Musterlösung ansehen“.
+
+**Die Pflichtliste.** Dein Spiel ist fertig, wenn es alles kann:
+
+- Der Rechner zieht eine Zufallszahl von 1 bis 100.
+- Das Spiel fragt, bis der Tipp stimmt.
+- Nach jedem Tipp erscheint `Zu klein` oder `Zu groß`, am Ende `Richtig!`.
+- Das Spiel zählt die Versuche und zeigt sie am Schluss.
+- `hinweis` und `spiel` sind Funktionen.
+
+**Ausbau für die Schnellen (freiwillig).** Begrenzte Versuche: Nach 7 Versuchen ist Schluss, entweder mit `Gewonnen! Versuche: 4` oder mit `Verloren, die Zahl war 57`. Und „Noch einmal?“: Nach jedem Spiel fragt das Programm, ob du weiterspielen willst. Beides ist im Labor in Station 6 und 7 ausgearbeitet.
+
+**Knobelaufgabe „Der Computer rät“ (freiwillig).** Du denkst dir eine Zahl, und der Computer findet sie mit der Mitte. Sie steht am Ende des Labors.
+
+<Hinweis art="merke">
+
+Ein Spiel wird fertig, wenn du es in Funktionen gliederst: `hinweis` bewertet einen Tipp, `spiel` spielt eine Runde und gibt die Zahl der Versuche zurück. Das Hauptprogramm ruft nur auf und zeigt das Ergebnis.
+
+</Hinweis>
+
+</Abschnitt>
+
+<Abschnitt id="selbstcheck" nr="5" titel="Selbstcheck">
+
+Sechs Fragen in den Formen der Klausur: Speicher ordnen, rechnen, Zeichen als Zahlen, das Spiel verstehen. Die Reihenfolge der Fragen und Antworten ist bei jedem Aufruf anders. Rechne im Kopf oder auf Papier, nicht im Editor.
+
+<Quiz id="v10">
+
+<Frage id="schnell-und-klein" typ="mc" punkte="3" titel="Schnell und klein">
+
+Welcher Speicher ist der schnellste und kleinste?
+
+- [x] Der Speicher im Prozessor
+- Der Arbeitsspeicher
+- Die SSD
+- Die Festplatte
+
+<Erklaerung>
+
+Je schneller ein Speicher ist, desto kleiner und teurer ist er. Darum liegt im Prozessor nur, was jetzt gebraucht wird.
+
+</Erklaerung>
+
+</Frage>
+
+<Frage id="fotos-auf-dem-stick" typ="num" punkte="4" antwort="500" tol="0" titel="Fotos auf dem Stick">
+
+Ein Foto hat 4 MB. Wie viele Fotos passen auf einen Stick mit 2 GB? Rechne mit 1 GB gleich 1000 MB.
+
+<Erklaerung>
+
+2 GB sind 2000 MB. 2000 MB geteilt durch 4 MB ergibt 500.
+
+</Erklaerung>
+
+</Frage>
+
+<Frage id="code-eines-buchstabens" typ="num" punkte="3" antwort="68" tol="0" titel="Code eines Buchstabens">
+
+Im ASCII-Code hat `A` die Nummer 65, `B` die 66 und so weiter. Welche Nummer hat `D`?
+
+<Erklaerung>
+
+`D` kommt drei Buchstaben nach `A`: 65 plus 3 ergibt 68.
+
+</Erklaerung>
+
+</Frage>
+
+<Frage id="wie-viele-zeichen" typ="mc" punkte="3" titel="Wie viele Zeichen">
+
+Der ASCII-Code hat 7 Bit. Wie viele verschiedene Zeichen kann er darstellen?
+
+- [x] 128
+- 7
+- 256
+- 700
+
+<Erklaerung>
+
+Mit 7 Bit gibt es 2⁷ gleich 128 Werte (Termin 05). Mit 8 Bit wären es 256.
+
+</Erklaerung>
+
+</Frage>
+
+<Frage id="zufallszahl-im-spiel" typ="mc" punkte="4" titel="Zufallszahl im Spiel">
+
+Wo muss `geheim = random.randint(1, 100)` stehen, damit dir die Hinweise beim Raten helfen?
+
+- [x] Vor der Schleife, einmal je Spiel
+- Im Rumpf der Schleife, damit es jede Runde neu ist
+- Nach der Schleife
+- Nach dem `print`
+
+<Erklaerung>
+
+Die Zahl muss das ganze Spiel gleich bleiben. Wird sie in jeder Runde neu gezogen, ändert sich das Ziel mit jedem Tipp.
+
+</Erklaerung>
+
+</Frage>
+
+<Frage id="halbieren" typ="num" punkte="3" antwort="7" tol="0" titel="Halbieren">
+
+Du rätst eine Zahl von 1 bis 100 und tippst immer die Mitte des Rests. Wie viele Versuche brauchst du höchstens?
+
+<Erklaerung>
+
+Die Möglichkeiten halbieren sich: 100, 50, 25, 12, 6, 3, 1. Das sind 7 Tipps.
+
+</Erklaerung>
+
+</Frage>
+
+</Quiz>
+
+</Abschnitt>
+
+<Weiter ziel="v10-labor.html">
+
+Jetzt bist du dran. Im Labor zeichnest du den Plan des Spiels, schreibst es Stufe für Stufe und gliederst es am Ende in Funktionen. Zwei weitere Videos findest du dort an der passenden Station: der Python-Werkzeugkasten und das Beispiel „Dein Spiel Schritt für Schritt“. Zu Hause sind 15 Minuten Pflicht: Werkzeugkasten (5), Selbstcheck (7) und Spiel sichern (3). Spiel sichern heißt: Kopier dein fertiges Spiel in eine eigene Datei, damit du es nicht verlierst.
+
+</Weiter>
+
+<Dozent titel="Für Dozierende: Ablauf des Termins (125 Minuten), Ausblick und Praxisphase">
+
+<p class="k-small k-muted">Vier Blöcke: einer Theorie (T6 Rechneraufbau, Teil 3 von 3) und drei Programmieren (P5 Zahlenraten, Teil 2 bis 4 von 4). Die Theorie steht am Anfang, das Zahlenraten füllt die drei folgenden Blöcke: So endet der letzte Termin des 1. Semesters mit dem fertigen Spiel. Jeder Block à 30 Minuten verplant höchstens 28 Minuten, der letzte (25 Minuten) höchstens 24; die Minuten eines Abschnitts enthalten das Zeigen der genannten Karte. Die Lerneinheit ist zum Zeigen und Nachlesen, geübt wird im <a href="v10-labor.html">Programmierlabor</a>. Die Videos laufen nicht im Termin. Gerechnet wird mit 1 GB gleich 1000 MB.</p>
+
+<div class="k-tablewrap">
+<table class="k-plan">
+<thead><tr><th scope="col">Minuten</th><th scope="col">Wo</th><th scope="col">Was zu tun ist</th></tr></thead>
+<tbody>
+<tr><td>0–10</td><td>Papier, Beamer</td><td><strong>Warm-up.</strong> Training Termin 09, Aufgabe 1 „Spielzeug-Rechner von Hand“ auf Papier (5). Auflösung: 9, 9, 6, 15, 15, und das Programm braucht 18 Takte (2). Brücke in die Runde: Der Spielzeug-Rechner hat vier Zellen, dein Rechner Milliarden. Wie viel ist das, und wie schnell kommt der Prozessor an eine Zelle? Die Auflösung kommt in der Theorie: Der Speicher hat Stufen, die kleinste ist die schnellste (3).</td></tr>
+<tr><td>10–40</td><td>Lerneinheit 1</td><td><strong>Theorie: Speicher und Zeichen.</strong> Stufen, Baustein „Speicher-Treppe“ mit Vermutung (8). KB, MB, GB, ein Rechenbeispiel (6). Vorhersage „Code des kleinen a“ (2). Baustein „Zeichen sind Zahlen“ mit Vermutung „Zeichen 5“ (8). Verplant: 24.</td></tr>
+<tr><td>40–70</td><td>Lerneinheit 2, Labor 2, 3</td><td><strong>Programmieren 1: Zahlenraten, Stufe 2.</strong> Rückgriff und das Beispiel „Summe bis 0“ am Beamer (4). Plan zeichnen, Station 2 (8). Vorhersage „Was zeigt das Spiel?“ (3). Code zum Plan mit Gerüst, Station 3 (9). Läufe und Grenzfälle am Beamer (3). Verplant: 27.</td></tr>
+<tr><td>70–100</td><td>Lerneinheit 3, Labor 4</td><td><strong>Programmieren 2: Zahlenraten, Stufe 3.</strong> Der Zähler (3). Stufe 3 selbst, kein Gerüst, Station 4 (10). Vorhersage „Zufall in der Schleife“ (3). Baustein „Immer die Mitte“ mit Vermutung (7). Läufe und Grenzfälle am Beamer (2). Verplant: 25.</td></tr>
+<tr><td>100–125</td><td>Lerneinheit 4, Labor 5, 6, 7</td><td><strong>Programmieren 3: dein Spiel.</strong> Gliedern: das Beispiel „Summe“ als Funktion am Beamer (1). Stufe 4 selbst, der Plan von <code>spiel()</code> als Tipp 3, Station 5 (12). Pflichtliste abhaken, Meldung „Dein Spiel läuft“ (3). Ausbau und Knobel für die Schnellen laufen parallel zum Abhaken, ohne eigene Minuten. Ausblick auf das 2. Semester (3). Hinweis für die Praxisphase: Spiel sichern, Training 10 freiwillig, Empfehlung (3). Auftrag für zu Hause, 15 Minuten Pflicht: Werkzeugkasten (5), Selbstcheck (7), Spiel sichern (3) (2). Verplant: 24.</td></tr>
+</tbody>
+</table>
+</div>
+
+<p class="k-small k-muted">Wenn die Zeit knapp wird: Im Block 10–40 entfällt zuerst die Vorhersage „Code des kleinen a“, dann wird die Speicher-Treppe in der Lerneinheit gelesen statt im Termin gespielt (3 Minuten gespart). Im Block 40–70 wird der Plan nur gelesen, nicht gezeichnet; Code zum Plan (Station 3) hat Vorrang. Im Block 70–100 entfällt zuerst das Beamer-Lauf-Beispiel, dann der Baustein „Immer die Mitte“ (er läuft in der Lerneinheit, und die Knobelaufgabe nutzt ihn). Die Stufe 3 hat Vorrang, weil ohne sie die Stufe 4 nicht beginnen kann. Im letzten Block gilt: Wer die Stufe 4 nicht schafft, bekommt nach dem dritten Tipp die Musterlösung zum Nachbauen zu Hause. Die Pflicht zu Hause wächst dann auf 25 Minuten, das wird ausdrücklich gesagt. Der Ausblick und der Hinweis für die Praxisphase bleiben immer im Termin, weil sie nur hier gesagt werden können.</p>
+
+<p class="k-small k-muted">Die drei Klausurformen im Termin: Plan zeichnen (Station 2), Plan in Code übertragen (Station 3), Code lesen (die Vorhersagen in den Blöcken 1 bis 3, Station 5 in der Auswertung). Zu Hause kommen dazu, freiwillig: Plan in Code im Klausurmodus (Training 2), Ablauf des eigenen Spiels verfolgen (Training 3) und Fehler finden (Training 4).</p>
+
+<p class="k-small k-muted"><strong>Ausblick (3 Minuten).</strong> Im 2. Semester kommen Listen (viele Werte in einer Variablen), Messwerte aus Dateien und ein Diagramm, Raster für ein Spielfeld und am Ende das Spiel Schiffe versenken gegen den Computer. In der Theorie: Wie funktioniert KI, Datenbanken, Netzwerke und IT-Sicherheit. Termin 11 beginnt mit Auffrischern, und das Zahlenraten wird dort wieder ausgepackt und ausgebaut.</p>
+
+<p class="k-small k-muted"><strong>Hinweis für die Praxisphase (3 Minuten).</strong> (1) Spiel sichern: Die App merkt sich deinen Stand nur in diesem Browser. Klick am Editor auf „Kopieren“ und füge dein fertiges Spiel in eine eigene Datei ein, oder schick ihn dir per Mail. Es gibt keinen Knopf „Meinen Stand sichern“, nur das Kopieren des Codes. (2) Das Training 10 ist freiwillig und die Wiederholung: Wer sich sicherer fühlen will, macht es in der letzten Woche vor Termin 11. (3) Empfehlung für die Praxisphase, freiwillig: dreimal 20 Minuten, zum Beispiel nach vier, acht und zwölf Wochen. Das Spiel starten, einmal spielen, ein Ausbau oder ein Fehler aus dem Training. (4) Termin 11 beginnt mit Auffrischern. Du musst in der Praxisphase nichts Neues lernen, der Auffrischer übernimmt, was fehlt.</p>
+
+<p class="k-small k-muted">Wie weit die Gruppe im Training ist und an welcher Aufgabe sie hängt, zeigt vor dem nächsten Termin die Kursübersicht (Konto, „Kursübersicht für Dozierende“). Gezählt wird dort nur, wer mit Konto lernt. Die Knobelaufgabe am Ende des Labors, der Ausbau und das Training sind freiwillig und zählen dort nicht mit.</p>
+
+</Dozent>
+
+</Lerneinheit>
