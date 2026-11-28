@@ -5,7 +5,9 @@
    - KursApp.api: DELETE ohne Body mit content-type JSON, keepalive wird durchgereicht.
    - KursApp.fortschritt: Deep Dive (freiwillig) zählt nicht, Zählung je prüfbarem Teil.
    - Anmelden/Abmelden: Rücksprungziel bleibt auf dieser Herkunft (kein //fremd.example);
-     Abmelden entfernt Tutor-Verlauf und -Kontingent aus dem sessionStorage. */
+     Abmelden entfernt Tutor-Verlauf und -Kontingent aus dem sessionStorage.
+   - Angemeldet bleiben: abgelaufene Sitzung wird beim Seitenaufruf still über GitHub erneuert,
+     nicht nach Abmelden, nicht mitten in der Arbeit, nur ein Versuch ohne Erfolg. */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -26,11 +28,11 @@ function ablage(start = {}) {
 
 /* Ein Seitenaufruf: frisches window, gemeinsamer sessionStorage/localStorage (wie derselbe Tab) */
 function seite({ pfad = '/lernpfad.html', referrer = '', art = 'lernpfad', navTyp = 'navigate', session, lokal, ich = { angemeldet: false }, jetzt = Date.now(), speicher = {} }) {
-  const aufrufe = [];
+  const aufrufe = [], hoerer = {};
   const attr = { 'data-page': art };
   const body = { getAttribute: (n) => (n in attr ? attr[n] : null), classList: { add() {}, remove() {} } };
   const ctx = {
-    addEventListener() {},
+    addEventListener: (typ, fn) => { (hoerer[typ] ||= []).push(fn); },
     KursSpeicher: { pfad: (l, k) => 'inf-mb/' + l.toLowerCase() + '/' + k, sofort: { lesen: (p) => speicher[p] || null } },
     document: { body, currentScript: { src: URSPRUNG + '/app/kern.js?v=1' }, referrer, querySelector: () => null, contains: () => false },
     location: { origin: URSPRUNG, pathname: pfad, search: '', hash: '', href: URSPRUNG + pfad },
@@ -46,7 +48,8 @@ function seite({ pfad = '/lernpfad.html', referrer = '', art = 'lernpfad', navTy
   ctx.window = ctx;   /* window ist das globale Objekt, wie im Browser */
   vm.createContext(ctx);
   vm.runInContext(QUELLE, ctx);
-  return { KA: ctx.KursApp, ctx, aufrufe, ichAufrufe: () => aufrufe.filter((a) => a.url.endsWith('/api/ich')).length };
+  const ausloesen = (typ) => (hoerer[typ] || []).forEach((fn) => fn({}));
+  return { KA: ctx.KursApp, ctx, aufrufe, ausloesen, ichAufrufe: () => aufrufe.filter((a) => a.url.endsWith('/api/ich')).length };
 }
 
 test('Gast: zweite Seite im selben Tab fragt /api/ich nicht erneut', async () => {
@@ -167,4 +170,95 @@ test('Abmelden entfernt Tutor-Verlauf und -Kontingent des Tabs, sonst nichts', (
   const s = seite({ session, lokal: ablage() });
   s.KA.konto.abmelden();
   assert.deepEqual(Object.keys(session.d), ['inf-mb-app:kurs']);
+});
+
+const ADA = { angemeldet: true, benutzerId: 'b1', anzeigename: 'Ada' };
+const zielVon = (s) => s.ctx.location.href;
+
+test('Angemeldet bleiben: abgelaufene Sitzung wird beim Seitenaufruf still erneuert', async () => {
+  const session = ablage(), lokal = ablage();
+  await seite({ session, lokal, ich: ADA }).KA.konto.status();
+  assert.equal(lokal.getItem('inf-mb-app:angemeldet-bleiben'), '1');
+  /* Stunden später: Sitzung weg, auch innerhalb der App (Gast-Marke im Tab zählt nicht) */
+  const s = seite({ session, lokal, pfad: '/lektionen/v05-labor.html', referrer: URSPRUNG + '/index.html' });
+  assert.equal((await s.KA.konto.status()).angemeldet, false);
+  assert.equal(s.ichAufrufe(), 1);
+  const ziel = new URL(zielVon(s));
+  assert.equal(ziel.pathname, '/.auth/login/github');
+  assert.equal(ziel.searchParams.get('post_login_redirect_uri'), '/lektionen/v05-labor.html');
+  assert.ok(lokal.getItem('inf-mb-app:erneuert'));
+  /* Rückkehr mit Sitzung: Marke weg, bleibt gewünscht */
+  await seite({ session, lokal, referrer: 'https://github.com/', ich: ADA }).KA.konto.status();
+  assert.equal(lokal.getItem('inf-mb-app:erneuert'), null);
+  assert.equal(lokal.getItem('inf-mb-app:angemeldet-bleiben'), '1');
+  /* nächstes Ablaufen: wieder still erneuert */
+  const s2 = seite({ session, lokal });
+  await s2.KA.konto.status();
+  assert.equal(new URL(zielVon(s2)).pathname, '/.auth/login/github');
+});
+
+test('Angemeldet bleiben: Versuch ohne Erfolg wird nicht wiederholt', async () => {
+  const session = ablage(), lokal = ablage();
+  await seite({ session, lokal, ich: ADA }).KA.konto.status();
+  await seite({ session, lokal }).KA.konto.status();               /* erster Versuch */
+  const zurueck = seite({ session, lokal, referrer: URSPRUNG + '/.auth/login/github/callback' });
+  await zurueck.KA.konto.status();                                  /* ohne Sitzung zurück */
+  assert.equal(zielVon(zurueck), URSPRUNG + '/lernpfad.html', 'kein zweiter Sprung');
+  assert.equal(lokal.getItem('inf-mb-app:angemeldet-bleiben'), '0');
+  const spaeter = seite({ session: ablage(), lokal });
+  await spaeter.KA.konto.status();
+  assert.equal(zielVon(spaeter), URSPRUNG + '/lernpfad.html');
+  /* selbst angemeldet: gilt wieder */
+  await seite({ session, lokal, ich: ADA }).KA.konto.status();
+  assert.equal(lokal.getItem('inf-mb-app:angemeldet-bleiben'), '1');
+});
+
+test('Angemeldet bleiben: nicht nach Abmelden, nicht als Gast, nicht mitten in der Arbeit', async () => {
+  /* Abmelden */
+  const session = ablage(), lokal = ablage();
+  const a = seite({ session, lokal, ich: ADA });
+  await a.KA.konto.status();
+  a.KA.konto.abmelden();
+  const nachher = seite({ session, lokal });
+  await nachher.KA.konto.status();
+  assert.equal(zielVon(nachher), URSPRUNG + '/lernpfad.html');
+  assert.equal(lokal.getItem('inf-mb-app:angemeldet-bleiben'), '0');
+  /* nie angemeldet */
+  const gast = seite({ session: ablage(), lokal: ablage() });
+  await gast.KA.konto.status();
+  assert.equal(zielVon(gast), URSPRUNG + '/lernpfad.html');
+  /* Eingabe auf der Seite: kein Sprung, beim nächsten Seitenaufruf aber schon */
+  const session2 = ablage(), lokal2 = ablage();
+  await seite({ session: session2, lokal: lokal2, ich: ADA }).KA.konto.status();
+  const arbeit = seite({ session: session2, lokal: lokal2 });
+  arbeit.ausloesen('keydown');
+  await arbeit.KA.konto.status(true);
+  assert.equal(zielVon(arbeit), URSPRUNG + '/lernpfad.html', 'mitten in der Arbeit kein Sprung');
+  assert.equal(lokal2.getItem('inf-mb-app:erneuert'), null);
+  const naechste = seite({ session: session2, lokal: lokal2, referrer: URSPRUNG + '/lernpfad.html', pfad: '/index.html' });
+  await naechste.KA.konto.status();
+  assert.equal(new URL(zielVon(naechste)).pathname, '/.auth/login/github');
+  /* lange nach dem Laden (Tab blieb offen): kein Sprung */
+  const session3 = ablage(), lokal3 = ablage();
+  await seite({ session: session3, lokal: lokal3, ich: ADA }).KA.konto.status();
+  const t0 = 1e12, lang = seite({ session: session3, lokal: lokal3, jetzt: t0 });
+  lang.ctx.Date.now = () => t0 + 60000;
+  await lang.KA.konto.status(true);
+  assert.equal(zielVon(lang), URSPRUNG + '/lernpfad.html');
+});
+
+test('Angemeldet bleiben: wer vorher angemeldet war, bleibt es (Bestand)', async () => {
+  const lokal = ablage({ 'inf-mb-app:konto': JSON.stringify({ angemeldet: true, benutzerId: 'b1', anzeigename: null }) });
+  const s = seite({ session: ablage(), lokal });
+  await s.KA.konto.status();
+  assert.equal(new URL(zielVon(s)).pathname, '/.auth/login/github');
+});
+
+test('Angemeldet bleiben: 5xx oder fehlende API lösen keinen Sprung aus', async () => {
+  const session = ablage(), lokal = ablage();
+  await seite({ session, lokal, ich: ADA }).KA.konto.status();
+  const s = seite({ session, lokal });
+  s.ctx.fetch = () => Promise.resolve({ ok: false, status: 503, headers: { get: () => 'application/json' }, json: () => Promise.resolve({}), text: () => Promise.resolve('') });
+  await s.KA.konto.status(true);
+  assert.equal(zielVon(s), URSPRUNG + '/lernpfad.html');
 });

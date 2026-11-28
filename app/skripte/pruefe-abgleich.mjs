@@ -15,7 +15,9 @@
      t5  Löschung wandert mit (Löschmarke), Abonnent bekommt „geloescht“
      t6  erster Login mit lokalem Stand: Ja (hochladen) und Nein (getrennt halten, kommt nach Abmelden zurück)
      t7  Benutzerwechsel auf demselben Gerät: Stand des anderen Kontos wandert nicht ins neue Konto
-     t8  abgelaufene Sitzung: Abgleich pausiert, Anzeige, nach neuem Anmelden wird nachgereicht
+     t8  abgelaufene Sitzung mitten in der Arbeit: Abgleich pausiert, Anzeige, nach neuem Anmelden wird nachgereicht
+     t14 angemeldet bleiben: abgelaufene Sitzung wird beim nächsten Seitenaufruf still über /.auth/login/github
+         erneuert (zurück auf dieselbe Seite); ein Versuch ohne Anmeldung wird nicht wiederholt
      t9  zwei Tabs desselben Browsers: keine doppelten Übertragungen, nichts geht verloren
      t10 Zeitstempel in der Zukunft, abgelehnte Einträge und Taktabfrage (60 s) im sichtbaren Tab
      t12 Konto-Seite: Anzeigename (freundliche Fehler), Daten herunterladen, Sichern/Laden, Konto löschen in zwei Stufen
@@ -343,6 +345,7 @@ async function t8() {
   const id = uid('t8');
   const A = await geraet(id);
   await A.page.evaluate(() => { window.__abg = []; window.KursApp.an('abgleich', (e) => window.__abg.push(e)); });
+  await A.page.keyboard.press('Shift');   /* mitten in der Arbeit: keine stille Erneuerung auf dieser Seite (t14) */
   await A.ctx.clearCookies();   /* Sitzung abgelaufen */
   await schreibe(A, 'inf-mb/v08/done', { s: 1 });
   const text = await bis(async () => { const t = await A.page.locator('[data-abgleich-status]').innerText(); return /Sitzung abgelaufen/.test(t) ? t : false; }, 12000);
@@ -361,6 +364,41 @@ async function t8() {
   await oeffne(A, A.page, 'lernpfad.html', true);
   const ok = await bis(async () => (await server(A))['inf-mb/v08/done'], 12000);
   pruefe('t8 nach erneutem Anmelden wird die offene Änderung übertragen', !!ok);
+  await ende(A);
+}
+
+/* ── t14 ───────────────────────────────────────────────────── */
+async function t14() {
+  const id = uid('t14');
+  const A = await geraet(id);
+  pruefe('t14 nach Anmeldung gemerkt: angemeldet bleiben', (await A.page.evaluate(() => localStorage.getItem('inf-mb-app:angemeldet-bleiben'))) === '1');
+  await schreibe(A, 'inf-mb/v14/done', { s: 1 });
+  await bis(async () => (await server(A))['inf-mb/v14/done'], 12000);
+  await A.ctx.clearCookies();   /* Sitzung abgelaufen (z. B. nach Stunden oder nach Browserneustart) */
+  await A.page.goto(BASIS + '/index.html', { waitUntil: 'domcontentloaded' });
+  const beimLogin = await bis(async () => { const u = new URL(A.page.url()); return u.pathname.startsWith('/.auth/login/github') ? u : false; }, 12000);
+  pruefe('t14 nächster Seitenaufruf springt still zu /.auth/login/github', !!beimLogin, A.page.url());
+  pruefe('t14 Rücksprung auf dieselbe Seite', !!beimLogin && /\/index\.html/.test(decodeURIComponent(beimLogin.search)), beimLogin ? beimLogin.search : '');
+  /* GitHub springt ohne Rückfrage zurück; im Emulator steht dafür das Formular */
+  const f = A.page.locator('#userId'); await f.fill(id); await f.dispatchEvent('keyup');
+  const d = A.page.locator('#userDetails'); await d.fill('Test ' + id); await d.dispatchEvent('keyup');
+  await Promise.all([A.page.waitForURL((u) => !u.pathname.startsWith('/.auth/login'), { timeout: 15000 }), A.page.locator('#submit').click()]);
+  pruefe('t14 wieder auf der Seite von vorher', new URL(A.page.url()).pathname === '/index.html', A.page.url());
+  pruefe('t14 wieder angemeldet, Abgleich läuft', await bereit(A.page));
+  const leiste = await A.page.locator('[data-app-konto] .app-rail__text').innerText().catch(() => '');
+  pruefe('t14 Leiste zeigt „Konto“', /Konto/.test(leiste), leiste);
+  pruefe('t14 Stand unverändert da', gleich(await lies(A, 'inf-mb/v14/done'), { s: 1 }));
+  /* Versuch ohne Anmeldung (bei GitHub abgemeldet, abgebrochen): kein zweiter Sprung */
+  await A.ctx.clearCookies();
+  await A.page.goto(BASIS + '/lernpfad.html', { waitUntil: 'domcontentloaded' });
+  await bis(async () => new URL(A.page.url()).pathname.startsWith('/.auth/login/github'), 12000);
+  await A.page.goto(BASIS + '/lernpfad.html', { waitUntil: 'domcontentloaded' });   /* ohne Anmeldung zurück */
+  await bis(async () => (await A.page.evaluate(() => localStorage.getItem('inf-mb-app:angemeldet-bleiben'))) === '0', 8000);
+  await warte(1500);
+  pruefe('t14 nach erfolglosem Versuch bleibt die Seite (kein zweiter Sprung)', new URL(A.page.url()).pathname === '/lernpfad.html', A.page.url());
+  const leiste2 = await A.page.locator('[data-app-konto] .app-rail__text').innerText().catch(() => '');
+  pruefe('t14 Leiste zeigt „Anmelden“', /Anmelden/.test(leiste2), leiste2);
+  pruefe('t14 keine Konsolenfehler', A.konsole.length === 0, A.konsole.join(' | '));
   await ende(A);
 }
 
@@ -627,7 +665,7 @@ async function t13() {
 }
 
 /* ── Lauf ──────────────────────────────────────────────────── */
-const tests = { t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t12, t13, t11 };
+const tests = { t1, t2, t3, t4, t5, t6, t7, t8, t14, t9, t10, t12, t13, t11 };
 browser = await chromium.launch();
 try {
   const st = await fetch(BASIS + '/api/status').then((r) => r.json()).catch(() => null);

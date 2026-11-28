@@ -214,9 +214,46 @@
     } catch (e) {}
     return true;
   }
+  /* Angemeldet bleiben: Die Sitzung von Static Web Apps läuft nach einigen Stunden ab (nicht
+     einstellbar, auch beim Schließen des Browsers kann sie weg sein). Wer sich nicht selbst
+     abgemeldet hat, wird dann still über GitHub neu angemeldet: Ist man bei GitHub noch angemeldet
+     und hat die App schon zugelassen, springt GitHub ohne Rückfrage zurück, man landet auf derselben
+     Seite. Nur, wenn die Seite gerade erst geladen oder der Tab gerade wieder sichtbar wurde und noch
+     keine Eingabe kam; mitten in der Arbeit erst beim nächsten Seitenaufruf. Kommt ein Versuch ohne
+     Sitzung zurück (bei GitHub abgemeldet, abgebrochen), versucht die App es nicht wieder; dann
+     gilt der Knopf „Anmelden“ wie bisher. */
+  var DAUER_SCHLUESSEL = 'inf-mb-app:angemeldet-bleiben'; /* localStorage: '1' nach Anmeldung, '0' nach Abmelden oder Aufgeben */
+  var ERNEUERT_SCHLUESSEL = 'inf-mb-app:erneuert';        /* localStorage: Zeit des laufenden stillen Versuchs */
+  var RUHE_DAUER = 20000;
+  function lsLesen(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function lsSetzen(k, v) { try { if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) {} }
+  /* Bestand: wer vor dieser Regel angemeldet war, bleibt es auch */
+  if (lsLesen(DAUER_SCHLUESSEL) === null && kontoStand && kontoStand.angemeldet) lsSetzen(DAUER_SCHLUESSEL, '1');
+  function bleibenGewuenscht() { return lsLesen(DAUER_SCHLUESSEL) === '1'; }
+  var ruheSeit = Date.now(), eingabe = false;
+  ['keydown', 'pointerdown', 'input'].forEach(function (typ) {
+    window.addEventListener(typ, function () { eingabe = true; }, true);
+  });
+  if (document.addEventListener) document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'visible') { ruheSeit = Date.now(); eingabe = false; }
+  });
+  function ungestoert() { return !eingabe && Date.now() - ruheSeit < RUHE_DAUER; }
+  function anmeldeAdresse() {
+    return WURZEL + '.auth/login/github?post_login_redirect_uri=' + encodeURIComponent(eigenerPfad() + location.search + location.hash);
+  }
+  function erneuern() {
+    if (!bleibenGewuenscht()) return false;
+    if (lsLesen(ERNEUERT_SCHLUESSEL)) { lsSetzen(ERNEUERT_SCHLUESSEL, null); lsSetzen(DAUER_SCHLUESSEL, '0'); return false; }
+    if (!ungestoert()) return false;
+    lsSetzen(ERNEUERT_SCHLUESSEL, String(Date.now()));
+    if (typeof location.replace === 'function') location.replace(anmeldeAdresse()); else location.href = anmeldeAdresse();
+    return true;
+  }
+
   function gastBekannt() {
     var t = zahl(sessionStorage, GAST_SCHLUESSEL);
     if (!t || Date.now() - t > GAST_DAUER) return false;
+    if (bleibenGewuenscht()) return false;   /* abgelaufene Sitzung: bei jedem Seitenaufruf prüfen, ob still erneuert werden kann */
     if (zahl(localStorage, ANMELDUNG_SCHLUESSEL) >= t) return false;
     var g = kontoGemerkt();
     if (g && g.angemeldet) return false;
@@ -226,6 +263,7 @@
   function kontoSetzen(s) {
     var alt = kontoStand;
     kontoStand = s; kontoMerken(s);
+    if (s.angemeldet) { lsSetzen(DAUER_SCHLUESSEL, '1'); lsSetzen(ERNEUERT_SCHLUESSEL, null); }
     if (!alt || alt.angemeldet !== s.angemeldet || alt.benutzerId !== s.benutzerId || alt.anzeigename !== s.anzeigename || !!alt.dozent !== !!s.dozent) sende('konto', s);
     return s;
   }
@@ -234,7 +272,7 @@
       if (kontoAnfrage && !neu) return kontoAnfrage;
       if (!neu && gastBekannt()) { kontoAnfrage = Promise.resolve(kontoSetzen(NICHT_ANGEMELDET)); return kontoAnfrage; }
       kontoAnfrage = api('ich').then(function (d) {
-        if (!d || !d.angemeldet) { gastMerken(); return kontoSetzen(NICHT_ANGEMELDET); }
+        if (!d || !d.angemeldet) { gastMerken(); var gast = kontoSetzen(NICHT_ANGEMELDET); erneuern(); return gast; }
         gastVergessen();
         return kontoSetzen({ angemeldet: true, anzeigename: d.anzeigename || null, benutzerId: d.benutzerId || null, neu: !!d.neu, dozent: !!d.dozent });
       }, function (e) {
@@ -246,10 +284,12 @@
     anmelden: function () {
       gastVergessen();
       try { localStorage.setItem(ANMELDUNG_SCHLUESSEL, String(Date.now())); } catch (e) {}
-      location.href = WURZEL + '.auth/login/github?post_login_redirect_uri=' + encodeURIComponent(eigenerPfad() + location.search + location.hash);
+      lsSetzen(ERNEUERT_SCHLUESSEL, null);
+      location.href = anmeldeAdresse();
     },
     abmelden: function () {
       gastVergessen();
+      lsSetzen(DAUER_SCHLUESSEL, '0'); lsSetzen(ERNEUERT_SCHLUESSEL, null);
       sitzungsdatenWeg();
       kontoSetzen(NICHT_ANGEMELDET);
       location.href = WURZEL + '.auth/logout?post_logout_redirect_uri=' + encodeURIComponent(eigenerPfad());
